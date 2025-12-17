@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>01. Linear Algebra Advanced — Convex Optimization</title>
+  <link rel="stylesheet" href="../../static/css/lecture-styles.css" />
+  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="site-header sticky">
+    <div class="container">
+      <div class="brand">
+        <a href="../../index.html">Convex Optimization</a>
+      </div>
+      <nav class="nav">
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../00-linear-algebra-basics/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../02-introduction/index.html">Next <i data-feather="arrow-right"></i></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>01. Linear Algebra Advanced</h1>
+      <div class="lecture-meta">
+        <span>Date: 2025-10-21</span>
+        <span>Duration: 90 min</span>
+        <span>Tags: prerequisites, linear-algebra, svd, qr, conditioning</span>
+      </div>
+      <div class="lecture-summary">
+        <p>This lecture bridges the gap between basic linear algebra and the robust numerical tools used in modern optimization. We move beyond the Normal Equations to explore numerically stable factorizations like QR and the Singular Value Decomposition (SVD), which reveal the geometry of linear maps in their purest form. We also introduce the Moore-Penrose pseudoinverse for solving ill-posed or rank-deficient problems and define the condition number—the fundamental metric for analyzing the stability of algorithms and the convergence speed of gradient descent.</p>
+        <p><strong>Prerequisites:</strong> <a href="../00-linear-algebra-basics/index.html">Lecture 00: Linear Algebra Basics</a> (Subspaces, Norms, Least Squares).</p>
+        <p><strong>Forward Connections:</strong> The SVD is central to the analysis of the Nuclear Norm and matrix completion in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>. The condition number is the key parameter determining the convergence rates of First-Order Methods in <a href="../13-unconstrained-minimization/index.html">Lecture 13</a> and motivates the use of Newton's Method.</p>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2><i data-feather="target"></i> Learning Objectives</h2>
+      <p>After this lecture, you will be able to:</p>
+      <ul>
+        <li><b>Factorize Matrices:</b> Compute and interpret the QR decomposition and Singular Value Decomposition (SVD) as fundamental tools for numerical linear algebra.</li>
+        <li><b>Solve Robust Least Squares:</b> Apply QR and SVD to solve least squares problems without forming the potentially ill-conditioned matrix $A^\top A$.</li>
+        <li><b>Handle Rank Deficiency:</b> Use the Moore-Penrose pseudoinverse to find minimum-norm solutions for rank-deficient or underdetermined systems.</li>
+        <li><b>Analyze Stability:</b> Calculate condition numbers and estimate the sensitivity of linear systems to perturbations in data.</li>
+        <li><b>Approximate Matrices:</b> Apply the Eckart-Young-Mirsky theorem for optimal low-rank matrix approximations (PCA) using truncated SVD.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 1: QR DECOMPOSITION -->
+    <!-- SECTION 1: BASES AND COORDINATES -->
+    <section class="section-card" id="section-bases">
+      <h2>1. Bases, Coordinates, and Change of Basis</h2>
+
+      <h3>0. The Core Strategy: Change of Coordinates</h3>
+      <p>Advanced linear algebra for optimization often relies on a single strategy: <b>simplify the operator by changing the coordinate system</b>. Instead of solving a problem in the standard basis (where variables are coupled), we transform to a basis that decouples the interactions.</p>
+      <ul>
+        <li><b>Eigendecomposition:</b> Finds a basis where the operator acts as simple scaling along independent axes ($Av_i = \lambda_i v_i$). This transforms the matrix into a diagonal one.</li>
+        <li><b>SVD:</b> Generalizes this to rectangular matrices by allowing different bases for the input and output spaces. It reveals the fundamental geometry of the map: rotation $\to$ scaling $\to$ rotation.</li>
+      </ul>
+      <p>This section formalizes the machinery of basis changes, which connects the matrix algebra you know to the geometric intuition you need.</p>
+
+      <h3>1. Span and Independence</h3>
+      <p>Given vectors $v_1, \dots, v_k \in \mathbb{R}^n$:</p>
+      <ul>
+        <li><b>Span:</b> The set of all linear combinations $\sum \alpha_i v_i$. It is always a subspace.</li>
+        <li><b>Independence:</b> $\sum \alpha_i v_i = 0 \implies \alpha_i = 0$ for all $i$.</li>
+      </ul>
+      <p><i>Key Equivalence:</i> Vectors are dependent if and only if one of them is in the span of the others (redundancy).</p>
+
+      <h3>2. Basis and Dimension</h3>
+      <p>A <b>basis</b> for a subspace $V$ is a list of vectors $B = (b_1, \dots, b_m)$ that is:</p>
+      <ol>
+        <li><b>Spanning:</b> $\mathrm{span}(B) = V$.</li>
+        <li><b>Independent:</b> No redundancy.</li>
+      </ol>
+
+      <h4>Theorem: Dimension is Well-Defined</h4>
+      <p>All bases for $V$ have the same number of elements. This number is $\dim(V)$.
+      <br>This relies on the <b>Steinitz Exchange Lemma</b>:</p>
+      <div class="proof-box">
+        <h4>Steinitz Exchange Lemma</h4>
+        <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is independent in $V$, then $k \le m$.
+        <br>Moreover, we can replace $k$ vectors from $S$ with the vectors in $L$ to form a new spanning set.</p>
+        <p><i>Logic:</i> We swap in $\ell_1$ for some $s_i$ (essential for spanning $\ell_1$). We repeat $k$ times. If $k > m$, we would run out of $s$'s to swap, forcing a linear dependence among the $\ell$'s.</p>
+      </div>
+
+      <h3>3. Coordinates: The Dictionary</h3>
+      <p>A basis $B = (b_1, \dots, b_m)$ provides a bijection between abstract vectors $v \in V$ and coordinate lists $\alpha \in \mathbb{R}^m$.</p>
+      <p><b>Coordinate Theorem:</b> For every $v \in V$, there exists a <b>unique</b> $\alpha$ such that $v = \sum_{i=1}^m \alpha_i b_i$.
+      <br>We write $[v]_B = \alpha$.
+      <br>If we form the matrix $B = [b_1 \dots b_m] \in \mathbb{R}^{n \times m}$, then $v = B [v]_B$.</p>
+
+      <div class="insight">
+        <h4>Computing Coordinates</h4>
+        <p>To find $\alpha = [v]_B$, we solve $B\alpha = v$.
+        <br><b>Case 1: Full Space ($m=n$).</b> $B$ is square and invertible. $\alpha = B^{-1}v$.
+        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $v \in V$) using Gaussian elimination or $B^\dagger v$.
+        </p>
+      </div>
+
+      <h3>4. Change of Basis: The Deep Dive</h3>
+      <p>How do coordinates change when we swap basis $B$ for basis $C$? And more importantly, how does the <i>matrix of a linear map</i> change? This is the core mechanic behind Diagonalization and SVD.</p>
+
+      <h4>4.1 Coordinate Transformation (The Dictionary)</h4>
+      <p>Let $B$ and $C$ be two bases for $\mathbb{R}^n$. A vector $x$ has different coordinate representations in each:</p>
+      <ul>
+        <li>$x = B [x]_B$ (coords in $B$)</li>
+        <li>$x = C [x]_C$ (coords in $C$)</li>
+      </ul>
+      <p>Since it's the <b>same vector</b>, we have $B [x]_B = C [x]_C$.
+      <br>To convert from $B$-coordinates to $C$-coordinates, we solve for $[x]_C$:
+      $$ [x]_C = \underbrace{C^{-1}B}_{P} [x]_B $$
+      The matrix $P = C^{-1}B$ is the <b>change-of-basis matrix</b>.</p>
+
+      <h4>4.2 Transformation of the Matrix Map</h4>
+      <p>Suppose we have a linear map $T(x) = Ax$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
+      <p><b>The Mechanism:</b> Think of the operation in three stages: $x_{in} \to x_{out}$.</p>
+      <ol>
+        <li><b>Input Change ($V \to \text{Standard}$):</b> We are given input coordinates $y_{in}$ in the basis $V$. The actual vector is $x_{in} = V y_{in}$.</li>
+        <li><b>The Action ($A$):</b> Apply the linear map in the standard basis: $x_{out} = A x_{in} = A V y_{in}$.</li>
+        <li><b>Output Change ($\text{Standard} \to V$):</b> We want the output coordinates $y_{out}$ in the basis $V$. So we invert the basis matrix: $y_{out} = V^{-1} x_{out}$.</li>
+      </ol>
+      <p>Chaining these together gives the formula for the matrix $\tilde{A}$ in the new basis:</p>
+      $$ y_{out} = (V^{-1} A V) y_{in} \implies \boxed{\tilde{A} = V^{-1} A V} $$
+
+      <div class="insight">
+        <h4>💡 "Same Vectors, Same Map, Different Coordinates"</h4>
+        <p>This formula $\tilde{A} = V^{-1} A V$ (similarity) is the algebraic expression of a geometric truth: we are performing the <b>same linear transformation</b> on the <b>same vectors</b>, but describing inputs and outputs using a <b>different coordinate system</b>.</p>
+      </div>
+
+      <h4>4.3 Diagonalization as the Ultimate Simplification</h4>
+        <p>Diagonalization is simply finding a basis $V$ such that the new matrix $\Lambda = V^{-1} A V$ is diagonal. This corresponds to finding a coordinate system where the axes are decoupled.</p>
+        <p><b>Algebraic Mechanism:</b>
+        <br>Rearrange the similarity equation to $AV = V\Lambda$. Let $V = [v_1, \dots, v_n]$ be the basis vectors.
+        <br>On the RHS, matrix multiplication $V\Lambda$ scales each column of $V$: the $i$-th column is $\lambda_i v_i$.
+        <br>On the LHS, matrix multiplication $AV$ applies the map to each basis vector: the $i$-th column is $A v_i$.
+        <br>Equating columns: $A v_i = \lambda_i v_i$.
+        <br>Thus, the basis vectors $v_i$ must be <b>eigenvectors</b> and the diagonal entries $\lambda_i$ must be <b>eigenvalues</b>.</p>
+
+      <div class="example">
+        <h4>A Tiny 2D Concrete Picture</h4>
+        <p>Suppose $A$ has eigenvectors $v_1=(1,1)^\top$ and $v_2=(1,-1)^\top$ with eigenvalues $3$ and $1$.
+        <br>Let $V = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Then $\Lambda = V^{-1}AV = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}$.
+        <br>Consider a vector with new coordinates $y = (2, 3)^\top$.
+        <br><b>Physical Vector:</b> $x = 2v_1 + 3v_2 = (5, -1)^\top$.
+        <br><b>Action in Eigen-coords:</b> The map scales the first component by 3 and the second by 1.
+        $$ y_{out} = \Lambda y = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
+        <br><b>Result:</b> The output vector is $6v_1 + 3v_2$. The mixing is gone; the axes act independently.</p>
+      </div>
+
+      <h3>5. Orthonormal Bases</h3>
+      <p>If basis $Q$ has orthonormal columns ($Q^\top Q = I_m$), geometry becomes algebra.
+      <br><b>Coordinates:</b> $\alpha_i = q_i^\top v$. So $[v]_Q = Q^\top v$.
+      <br><b>Norms:</b> $\|v\|_2 = \|Q\alpha\|_2 = \|\alpha\|_2$. (Parseval's Identity).
+      <br>This is why we love SVD: it diagonalizes matrices using only orthonormal bases, preserving geometry.</p>
+    </section>
+
+    <!-- SECTION 2: LINEAR MAPS AND RANK-NULLITY -->
+    <section class="section-card" id="section-linear-maps">
+      <h2>2. Linear Maps, Image/Kernel, and Rank-Nullity</h2>
+      <p><i>Note: The basic definitions of subspace, nullspace, and rank are covered in <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>. Here, we revisit them briefly to emphasize their role in understanding linear maps as geometric transformations.</i></p>
+
+      <h3>1. The Geometry of Linear Maps</h3>
+      <p>A linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ distorts space. It can collapse dimensions (singular) or preserve them (nonsingular). The Rank-Nullity theorem is the conservation law governing this distortion.</p>
+
+      <h3>2. The "Conservation of Dimension"</h3>
+      <p>The Rank-Nullity Theorem states that every input dimension must either be preserved (mapped to the range) or destroyed (mapped to zero).
+      $$ \underbrace{n}_{\text{Inputs}} = \underbrace{\dim(\ker(A))}_{\text{Collapsed}} + \underbrace{\dim(\mathrm{im}(A))}_{\text{Preserved}} $$
+      </p>
+
+      <h3>3. Anatomy of $Ax=b$ (Geometric View)</h3>
+      <p>This theorem dictates the structure of solutions to linear systems:</p>
+      <ul>
+        <li><b>Existence (Range):</b> $Ax=b$ is solvable if $b$ lies in the "preserved" subspace.</li>
+        <li><b>Uniqueness (Kernel):</b> If solvable, the solution is unique only if no dimensions were collapsed ($\ker(A) = \{0\}$). Otherwise, we can add any vector from the "collapsed" space to our solution without changing the output.</li>
+        <li><b>Affine Structure:</b> The solution set is $S = x_p + \ker(A)$. It is a "shifted subspace" parallel to the kernel.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 3: EIGENVALUES -->
+    <section class="section-card" id="section-eigenvalues">
+      <h2>3. Eigenvalues and the Rayleigh Quotient</h2>
+      <p>Eigenvectors are the "invariant directions" of a square matrix $A$. Along these directions, the matrix acts as a simple scalar multiplication.</p>
+
+      <h3>3.1 Eigenvalues and Eigenvectors</h3>
+      <p>A non-zero vector $v$ is an <b>eigenvector</b> of $A \in \mathbb{R}^{n \times n}$ with <b>eigenvalue</b> $\lambda$ if:
+      $$ Av = \lambda v $$
+      Equivalently, $(A - \lambda I)v = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.</p>
+
+      <h3>3.2 Spectral Theorem for Symmetric Matrices</h3>
+      <p>If $A$ is symmetric ($A = A^\top$), then:</p>
+      <ol>
+        <li>All eigenvalues are real.</li>
+        <li>Eigenvectors corresponding to distinct eigenvalues are orthogonal.</li>
+        <li>$A$ is diagonalized by an orthogonal matrix $Q$: $A = Q \Lambda Q^\top = \sum_{i=1}^n \lambda_i q_i q_i^\top$.</li>
+      </ol>
+      <p>This decomposition expresses $A$ as a sum of rank-1 projections scaled by $\lambda_i$.</p>
+
+      <h3>3.3 The Rayleigh Quotient</h3>
+      <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
+      $$ R_A(x) = \frac{x^\top A x}{x^\top x} $$
+      This scalar measures the "gain" of the matrix in the direction $x$. Its critical points are the eigenvectors.</p>
+      <div class="theorem-box">
+        <h4>Variational Characterization of Eigenvalues</h4>
+        <p>The eigenvalues of a symmetric matrix $A$ are the stationary values of the Rayleigh Quotient. Specifically:
+        $$ \lambda_{\min}(A) = \min_{x \ne 0} R_A(x) \quad \text{and} \quad \lambda_{\max}(A) = \max_{x \ne 0} R_A(x) $$
+        </p>
+      </div>
+      <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
+    </section>
+
+    <!-- SECTION 4: INDUCED NORMS -->
+    <section class="section-card" id="section-induced-norms">
+      <h2>4. Induced Matrix Norms</h2>
+      <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
+      $$ \|A\|_{p} = \sup_{x \ne 0} \frac{\|Ax\|_p}{\|x\|_p} = \max_{\|x\|_p = 1} \|Ax\|_p $$
+
+      <h3>4.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
+      <p>$$ \|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}| $$</p>
+      <div class="proof-box">
+        <h4>Derivation</h4>
+        <p>Let $x$ be a unit vector in $\ell_1$. Then $Ax = \sum x_j a_j$ (linear combination of columns).
+        $$ \|Ax\|_1 = \|\sum_j x_j a_j\|_1 \le \sum_j |x_j| \|a_j\|_1 \le (\max_j \|a_j\|_1) \sum_j |x_j| = \max_j \|a_j\|_1 $$
+        Equality is achieved by choosing $x = e_k$ where $k$ is the index of the column with the largest norm.</p>
+      </div>
+
+      <h3>4.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
+      <p>$$ \|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}| $$</p>
+      <p><i>Intuition:</i> To maximize the $\infty$-norm of $Ax$, we want to maximize a single component $|(Ax)_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
+
+      <h3>4.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
+      <p>$$ \|A\|_2 = \max_{\|x\|_2=1} \|Ax\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
+      <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
+
+      <h3>4.4 Convexity of Induced Norms (Deep Dive)</h3>
+      <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>
+      <div class="proof-box">
+        <h4>Proof: Convexity via Dual Norms</h4>
+        <div class="proof-step">
+          <strong>Step 1: Definition.</strong> The induced norm is defined as:
+          $$ \|X\|_{a,b} = \sup_{v \ne 0} \frac{\|Xv\|_a}{\|v\|_b} = \sup_{\|v\|_b = 1} \|Xv\|_a $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Dual Norm Representation.</strong> Recall that any norm $\|z\|_a$ can be expressed as a supremum over its dual norm ball: $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
+          Substituting this into the definition:
+          $$ \|X\|_{a,b} = \sup_{\|v\|_b = 1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top (Xv) \right) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Linear Structure.</strong>
+          $$ \|X\|_{a,b} = \sup \{ u^\top X v \mid \|u\|_{a^*} \le 1, \|v\|_b = 1 \} $$
+          Notice that for fixed vectors $u$ and $v$, the function $f_{u,v}(X) = u^\top X v$ is <b>linear</b> in the entries of $X$.
+          Specifically, $u^\top X v = \mathrm{tr}(u^\top X v) = \mathrm{tr}(v u^\top X) = \langle uv^\top, X \rangle$.
+        </div>
+        <div class="proof-step">
+          <strong>Conclusion:</strong>
+          The induced norm $\|X\|_{a,b}$ is the <b>pointwise supremum</b> of a family of linear functions. Since the supremum of any collection of convex functions is convex, the induced norm is a convex function of $X$.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: QR DECOMPOSITION -->
+    <section class="section-card" id="section-qr">
+      <h2>5. The QR Decomposition</h2>
+
+      <h3>5.1 Motivation: Numerical Stability</h3>
+      <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|Ax - b\|_2$ using the normal equations $A^\top A x = A^\top b$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
+      <p>The <b>QR decomposition</b> offers a solution that depends on $\kappa(A)$ rather than $\kappa(A)^2$, providing significantly better stability. The key property is that orthogonal matrices $Q$ have a condition number of 1 ($\kappa(Q)=1$) and preserve the Euclidean norm. Thus, multiplying by $Q$ (or $Q^\top$) does not amplify errors.</p>
+
+      <h3>5.2 Definition and Existence</h3>
+      <div class="theorem-box">
+        <h4>Theorem: QR Factorization</h4>
+        <p>Any matrix $A \in \mathbb{R}^{m \times n}$ with $m \ge n$ and linearly independent columns can be factored as:</p>
+        $$ A = QR $$
+        <p>where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns ($Q^\top Q = I_n$) and $R \in \mathbb{R}^{n \times n}$ is upper triangular with positive diagonal entries.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Construction via Gram-Schmidt</h4>
+        <p>The QR decomposition is the matrix-algebraic equivalent of the Gram-Schmidt orthogonalization process. It takes a set of linearly independent vectors (columns of $A$) and produces an orthonormal set (columns of $Q$) that spans the same sequence of subspaces.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Initialization.</strong>
+          Let $a_1, \dots, a_n$ be the columns of $A$. We define the first basis vector $q_1$ by normalizing $a_1$:
+          $$ r_{11} = \|a_1\|_2, \quad q_1 = \frac{a_1}{r_{11}} $$
+          Thus, $a_1 = r_{11} q_1$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 2: Iteration ($k=2, \dots, n$).</strong>
+          For the $k$-th column $a_k$, we subtract its projection onto the subspace spanned by the previously constructed orthonormal vectors $\{q_1, \dots, q_{k-1}\}$.
+          <br>Calculate the coefficients (dot products):
+          $$ r_{jk} = q_j^\top a_k \quad \text{for } j=1, \dots, k-1 $$
+          Compute the orthogonal residual vector $v_k$:
+          $$ v_k = a_k - \sum_{j=1}^{k-1} r_{jk} q_j $$
+          Normalize to get the next basis vector:
+          $$ r_{kk} = \|v_k\|_2, \quad q_k = \frac{v_k}{r_{kk}} $$
+          Since the columns of $A$ are linearly independent, $v_k$ is never zero, so $r_{kk} > 0$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 3: Matrix Form.</strong>
+          Rewrite the equation for $a_k$:
+          $$ a_k = \sum_{j=1}^{k-1} r_{jk} q_j + r_{kk} q_k $$
+          This expresses the $k$-th column of $A$ as a linear combination of the first $k$ columns of $Q$. In matrix notation, $A = QR$, where $R$ is upper triangular because $a_k$ does not depend on future basis vectors $q_{k+1}, \dots, q_n$.
+        </div>
+      </div>
+
+      <h3>5.3 Solving Least Squares with QR</h3>
+      <p>Given $A = QR$, the least squares objective simplifies due to the orthogonal invariance of the Euclidean norm. The standard efficient approach uses the normal equations:</p>
+      $$ A^\top A x = A^\top b \iff (QR)^\top (QR) x = (QR)^\top b \iff R^\top Q^\top Q R x = R^\top Q^\top b $$
+      <p>Since $Q^\top Q = I$, this simplifies to $R^\top R x = R^\top Q^\top b$. Since $R$ is invertible (full rank assumption), we multiply by $R^{-\top}$:
+      $$ R x = Q^\top b $$
+      This is a triangular system, easily solvable by <b>back substitution</b> in $O(n^2)$ time.</p>
+    </section>
+
+    <!-- SECTION 6: SVD -->
+    <section class="section-card" id="section-svd">
+      <h2>6. The Singular Value Decomposition (SVD)</h2>
+
+      <h3>6.1 Geometric Intuition</h3>
+      <p>The Singular Value Decomposition (SVD) generalizes the concept of diagonalization to all matrices, including non-square ones. It expresses any linear transformation $A$ as a composition of three simple operations: a rotation, a scaling, and another rotation.</p>
+      $$ A = U \Sigma V^\top $$
+      <p>Let's unpack this operation step-by-step for an input vector $x$:</p>
+      <ol>
+        <li><b>Rotate/Reflect (Analysis via $V^\top$):</b> The matrix $V^\top$ is orthogonal. It takes the vector $x$ and expresses it in a new coordinate system defined by the columns of $V$ (the "right singular vectors"). Essentially, it rotates space so the "principal input axes" align with the standard axes.</li>
+        <li><b>Scale (Gain via $\Sigma$):</b> The matrix $\Sigma$ is diagonal with non-negative entries $\sigma_i$. It independently stretches or shrinks each coordinate $i$ by the factor $\sigma_i$. This is where the magnitude change happens.</li>
+        <li><b>Rotate/Reflect (Synthesis via $U$):</b> The matrix $U$ is orthogonal. It takes the scaled coordinates and rotates them to the final orientation in the output space, defined by the columns of $U$ (the "left singular vectors").</li>
+      </ol>
+
+      <div class="insight">
+        <h4>Mapping SVD to the Four Fundamental Subspaces</h4>
+        <p>The SVD provides an explicit orthonormal basis for the four fundamental subspaces of $A$. Let $r = \mathrm{rank}(A)$.
+        <ul>
+            <li><b>Column Space $\mathcal{R}(A)$:</b> Spanned by the first $r$ columns of $U$ (left singular vectors $u_1, \dots, u_r$).</li>
+            <li><b>Nullspace $\mathcal{N}(A)$:</b> Spanned by the last $n-r$ columns of $V$ (right singular vectors $v_{r+1}, \dots, v_n$).</li>
+            <li><b>Row Space $\mathcal{R}(A^\top)$:</b> Spanned by the first $r$ columns of $V$ (right singular vectors $v_1, \dots, v_r$).</li>
+            <li><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> Spanned by the last $m-r$ columns of $U$ (left singular vectors $u_{r+1}, \dots, u_m$).</li>
+        </ul>
+        This geometric alignment is why SVD is the "gold standard" for rank-deficient problems.</p>
+      </div>
+
+      <p>This decomposition reveals that the image of the unit sphere under any linear map is a hyperellipse. The singular values are the lengths of the hyperellipse's semi-axes, and the columns of $U$ are the directions of these axes.</p>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/svd-ellipsoid-2d.png"
+             alt="A unit circle mapped to an ellipse with singular vectors showing axis directions and singular values showing axis lengths"
+             style="max-width: 90%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 6.1:</i> Geometric meaning of SVD: the unit circle maps to an ellipse; singular values are semi-axis lengths and singular vectors give the axis directions.</figcaption>
+      </figure>
+
+      <div class="example">
+        <h4>Numerical Example: SVD in 2D</h4>
+        <p>Consider the matrix $A = \begin{bmatrix} 3 & 0 \\ 0 & -2 \end{bmatrix}$. It stretches the x-axis by 3 and the y-axis by 2, while reflecting the y-axis.</p>
+        <p>Its SVD is $A = U \Sigma V^\top$:</p>
+        $$ A = \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}}_{U} \underbrace{\begin{bmatrix} 3 & 0 \\ 0 & 2 \end{bmatrix}}_{\Sigma} \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}}_{V^\top} $$
+        <ul>
+          <li><b>$V^\top = I$:</b> The input basis aligns with the standard axes (no rotation needed).</li>
+          <li><b>$\Sigma$:</b> The singular values are $3$ and $2$. The map stretches $e_1$ by 3 and $e_2$ by 2.</li>
+          <li><b>$U$:</b> The reflection $\begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$ flips the y-component, accounting for the negative entry in $A$. Note that singular values must be non-negative, so the negative sign is absorbed into $U$ (or $V$).</li>
+        </ul>
+      </div>
+
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
+             alt="SVD Geometric Interpretation"
+             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+        <figcaption><i>Figure 6.2:</i> SVD decomposes a transformation into Rotation ($V^\top$) $\to$ Stretch ($\Sigma$) $\to$ Rotation ($U$).</figcaption>
+      </figure>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/svd-transformation-sequence.png"
+             alt="Step-by-step visualization of the SVD transformation sequence V^T then Sigma then U"
+             style="max-width: 95%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 6.3:</i> SVD as a transformation pipeline: rotate/reflect ($V^\top$), stretch along orthogonal axes ($\Sigma$), then rotate/reflect again ($U$).</figcaption>
+      </figure>
+
+      <h3>6.2 Theorem: Existence of SVD</h3>
+      <div class="theorem-box">
+        <p>Every matrix $A \in \mathbb{R}^{m \times n}$ can be factored as $A = U \Sigma V^\top$, where:</p>
+        <ul>
+          <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal ($U^\top U = I$).</li>
+          <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal ($V^\top V = I$).</li>
+          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
+        </ul>
+      </div>
+
+      <div class="proof-box">
+        <h4>Constructive Proof via Spectral Theorem (Detailed)</h4>
+        <p>This proof demonstrates that the SVD is not magic, but a direct consequence of the eigendecomposition of the symmetric PSD matrix $A^\top A$. We construct $V$ from the eigenvectors of $A^\top A$ and $U$ by mapping them through $A$.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Eigendecomposition of the Gram Matrix.</strong>
+          Let $G = A^\top A \in \mathbb{R}^{n \times n}$.
+          <br>1. <b>Symmetry:</b> $G^\top = (A^\top A)^\top = A^\top A = G$.
+          <br>2. <b>PSD:</b> For any $x$, $x^\top G x = x^\top A^\top A x = \|Ax\|_2^2 \ge 0$.
+          <br>By the Spectral Theorem, there exists an orthonormal basis of eigenvectors $\{v_1, \dots, v_n\}$ with real eigenvalues $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n \ge 0$.
+          <br>Let $r$ be the number of non-zero eigenvalues ($\lambda_r > 0, \lambda_{r+1}=0$).
+          <br>Define the singular values $\sigma_i = \sqrt{\lambda_i}$.
+          <br>Construct the matrix $V = [v_1 \dots v_n]$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 2: Constructing the Image Basis ($u_i$).</strong>
+          For the $r$ indices where $\sigma_i > 0$, we define vectors $u_i \in \mathbb{R}^m$ by mapping the $v_i$ through $A$ and normalizing:
+          $$ u_i = \frac{1}{\sigma_i} A v_i, \quad i=1,\dots,r $$
+          Why are these valid orthonormal basis vectors?
+          <br><b>Normality:</b> $\|u_i\|^2 = u_i^\top u_i = \frac{1}{\sigma_i^2} v_i^\top A^\top A v_i = \frac{1}{\lambda_i} v_i^\top (\lambda_i v_i) = v_i^\top v_i = 1$.
+          <br><b>Orthogonality:</b> For $i \ne j$, $\langle u_i, u_j \rangle = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{1}{\sigma_i \sigma_j} v_i^\top (\lambda_j v_j) = \frac{\lambda_j}{\sigma_i \sigma_j} \delta_{ij} = 0$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 3: Completing the Basis ($U$).</strong>
+          We have found $r$ orthonormal vectors $\{u_1, \dots, u_r\}$ in $\mathbb{R}^m$.
+          If $r < m$, the set is not a complete basis. We can extend it to a full orthonormal basis $\{u_1, \dots, u_m\}$ using the Gram-Schmidt process or simply by picking vectors from the orthogonal complement.
+          <br>Define $U = [u_1 \dots u_m]$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 4: Matrix Verification ($AV = U\Sigma$).</strong>
+          We check that the action of $A$ on the basis $V$ matches the action of $U\Sigma$.
+          <br><b>Case 1 ($i \le r$):</b>
+          LHS: $A v_i$.
+          RHS: The $i$-th column of $U\Sigma$ is $\sum_{k=1}^m u_k \Sigma_{ki} = u_i \sigma_i$.
+          Since we defined $u_i = \frac{1}{\sigma_i} A v_i$, we have $A v_i = \sigma_i u_i$. Match.
+          <br><b>Case 2 ($i > r$):</b>
+          LHS: $A v_i$. Since $\lambda_i = 0$, we have $\|A v_i\|^2 = v_i^\top A^\top A v_i = v_i^\top (0 v_i) = 0$. So $A v_i = 0$.
+          RHS: The $i$-th column of $U\Sigma$ is $u_i \cdot 0 = 0$. Match.
+          <br><b>Conclusion:</b> Since $AV = U\Sigma$ and $V$ is invertible (orthogonal), $A = U \Sigma V^\top$.
+        </div>
+      </div>
+
+      <h3>6.3 SVD vs. Eigendecomposition (Conceptual Contrast)</h3>
+      <p>Eigendecomposition asks for <i>invariant directions</i> ($Av=\lambda v$) and is tied to square matrices; for non-symmetric matrices it may require complex eigenvalues/eigenvectors and the eigenvectors need not be orthogonal. The SVD always exists (for any rectangular matrix) and instead describes how $A$ maps one <i>orthonormal</i> basis to another:</p>
+      <ul>
+        <li><b>Input frame:</b> right singular vectors $\{v_i\}$ are orthonormal directions in the domain.</li>
+        <li><b>Output frame:</b> left singular vectors $\{u_i\}$ are orthonormal directions in the range.</li>
+        <li><b>Gains:</b> singular values $\sigma_i$ are nonnegative stretch factors linking them: $Av_i = \sigma_i u_i$.</li>
+      </ul>
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/svd-vs-eigendecomposition.png"
+             alt="Comparison of eigendecomposition and SVD showing invariant directions versus orthonormal input/output frames"
+             style="max-width: 90%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 6.4:</i> SVD maps one orthonormal frame to another ($Av_i=\sigma_i u_i$), while eigendecomposition looks for directions that stay parallel under $A$.</figcaption>
+      </figure>
+
+      <h3>6.4 Matrix Norms via SVD</h3>
+      <p>The SVD provides the most natural characterization of matrix norms:</p>
+      <ul>
+        <li><b>Spectral Norm (Operator Norm):</b> $\|A\|_2 = \sigma_{\max}(A) = \sigma_1$. It measures the maximum gain.</li>
+        <li><b>Frobenius Norm (Energy):</b> $\|A\|_F = \sqrt{\sum \sigma_i^2}$. It measures the total energy.</li>
+        <li><b>Nuclear Norm (Trace Norm):</b> $\|A\|_* = \sum \sigma_i$. This is the convex envelope of the rank function on the unit ball, playing the same role for matrices that the $\ell_1$ norm plays for vectors (sparsity promotion).</li>
+      </ul>
+
+      <div class="insight">
+        <h4>Analogy: Vectors vs. Matrices</h4>
+        <p>There is a direct correspondence between vector norms on the singular values and matrix norms:</p>
+        <ul>
+          <li>$\ell_\infty$ norm on $\sigma \implies$ Spectral norm on $A$. ($\max |\sigma_i|$)</li>
+          <li>$\ell_2$ norm on $\sigma \implies$ Frobenius norm on $A$. ($\sqrt{\sum \sigma_i^2}$)</li>
+          <li>$\ell_1$ norm on $\sigma \implies$ Nuclear norm on $A$. ($\sum |\sigma_i|$)</li>
+        </ul>
+        <p>This explains why the Nuclear Norm promotes low-rank solutions (sparsity in singular values) just as the $\ell_1$ norm promotes sparse vectors.</p>
+      </div>
+
+      <h3>6.5 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
+      <p>The SVD allows us to find the best approximation of a matrix $A$ by a matrix of lower rank $k$. This is crucial for compression (keeping signal) and denoising (discarding noise).</p>
+      <div class="theorem-box">
+        <h4>Theorem: Eckart-Young-Mirsky</h4>
+        <p>Let $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$ be the truncated SVD. Then $A_k$ is the solution to:</p>
+        $$ \min_{\text{rank}(B) \le k} \|A - B\| $$
+        <p>Intuitively, by keeping the largest singular values, we capture the directions where the matrix has the most energy (action), minimizing the residual energy.</p>
+        <p>The truncated SVD $A_k$ is the optimal approximation for both the spectral norm ($\|\cdot\|_2$) and the Frobenius norm ($\|\cdot\|_F$). The errors are:</p>
+        <ul>
+          <li>Spectral Error: $\|A - A_k\|_2 = \sigma_{k+1}$</li>
+          <li>Frobenius Error: $\|A - A_k\|_F = \sqrt{\sum_{i=k+1}^r \sigma_i^2}$</li>
+        </ul>
+      </div>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/low-rank-image-approximation.png"
+             alt="Image reconstructed at different ranks using truncated SVD"
+             style="max-width: 95%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 6.5:</i> Low-rank approximation via truncated SVD: keeping more singular values preserves more visual detail, while very small ranks keep only coarse structure.</figcaption>
+      </figure>
+
+      <div class="proof-box">
+        <h4>Sketch of Proof (Spectral Norm)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Upper Bound.</strong>
+          Since $A - A_k = \sum_{i=k+1}^r \sigma_i u_i v_i^\top$, the error is $\|A - A_k\|_2 = \sigma_{k+1}$.
+          Thus, $\min_{\text{rank}(B) \le k} \|A - B\|_2 \le \sigma_{k+1}$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Lower Bound.</strong>
+          Let $B$ be any matrix with rank $k$. By Rank-Nullity, its nullspace has dimension $n-k$.
+          Consider the subspace $S$ spanned by the first $k+1$ right singular vectors $\{v_1, \dots, v_{k+1}\}$. $\dim(S) = k+1$.
+          Since $\dim(S) + \dim(\mathcal{N}(B)) = (k+1) + (n-k) = n+1 > n$, the intersection $S \cap \mathcal{N}(B)$ must be non-trivial.
+          Let $w \in S \cap \mathcal{N}(B)$ with $\|w\|_2=1$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Energy Estimate.</strong>
+          Since $w \in \mathcal{N}(B)$, we have $Bw = 0$, so $\|(A-B)w\| = \|Aw\|$.
+          Since $w \in \text{span}(v_1, \dots, v_{k+1})$, we have $\|Aw\| \ge \sigma_{k+1}$.
+          (The smallest gain in the first $k+1$ directions is $\sigma_{k+1}$).
+          Thus $\|A-B\|_2 = \sup_{\|x\|=1} \|(A-B)x\| \ge \|(A-B)w\| \ge \sigma_{k+1}$.
+        </div>
+      </div>
+
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: SVD for Image Compression</h3>
+        <p><b>The Power of Low-Rank Approximation:</b> An image can be viewed as a matrix of pixel intensities. By computing its SVD and keeping only the largest singular values, we can reconstruct the image with far less data.</p>
+        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+          <li><b>Concept:</b> $A \approx \sum_{i=1}^k \sigma_i u_i v_i^\top$.</li>
+          <li><b>Observation:</b> Notice how the structure (large features) is captured by the first few modes, while details (and noise) reside in the smaller singular values.</li>
+        </ul>
+        <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: PSEUDOINVERSE -->
+    <section class="section-card" id="section-pseudoinverse">
+      <h2>7. The Pseudoinverse and Condition Number</h2>
+
+      <h3>7.1 The Moore-Penrose Pseudoinverse ($A^+$)</h3>
+      <p>When $A$ is not square or not invertible, we cannot define $A^{-1}$. However, we can define a generalized inverse $A^+$ that "inverts" the action of $A$ on its range and sends the orthogonal complement to zero.</p>
+
+      <h4>The Moore-Penrose Axioms</h4>
+      <p>The pseudoinverse $A^+$ is the unique matrix satisfying these four algebraic conditions:
+      <ol>
+        <li>$A A^+ A = A$ ( $A A^+$ is a projection on the range).</li>
+        <li>$A^+ A A^+ = A^+$ ( $A^+$ acts like an inverse on the range of $A$).</li>
+        <li>$(A A^+)^\top = A A^+$ (Symmetry of projector).</li>
+        <li>$(A^+ A)^\top = A^+ A$ (Symmetry of projector).</li>
+      </ol>
+      </p>
+
+      <div class="proof-box">
+        <h4>Proof: Uniqueness of the Pseudoinverse</h4>
+        <p>Suppose $X$ and $Y$ both satisfy the four Moore-Penrose axioms. We show $X=Y$.
+        <br>1. Start with $X = X A X$.
+        <br>2. Use $A = A Y A$: $X = X (A Y A) X$.
+        <br>3. Group terms: $X = (X A) Y (A X)$.
+        <br>4. Use Axiom 3/4 to introduce symmetry: $X A = (X A)^\top = A^\top X^\top$ and $A X = (A X)^\top = X^\top A^\top$. (Wait, this direction is harder).
+        <br><b>Alternative Clean Derivation:</b>
+        $$ X = X A X = (X A) X = (X A)^\top X = A^\top X^\top X = (A Y A)^\top X^\top X = A^\top Y^\top A^\top X^\top X $$
+        $$ = (Y A)^\top (X A)^\top X = Y A X A X = Y A X $$
+        Symmetrically, $Y = Y A Y = Y A (X A Y) = Y A X A Y = (Y A X) A Y$.
+        From above, $Y A X = X$, so $Y = X A Y$.
+        <br>Now apply symmetry again:
+        $X = Y A X = Y (A X) = Y (A X)^\top = Y X^\top A^\top = Y X^\top (A Y A)^\top = Y X^\top A^\top Y^\top A^\top$.
+        This algebraic manipulation confirms that the geometric definition (via SVD) produces the <i>unique</i> matrix satisfying the algebraic axioms.
+        </p>
+      </div>
+
+      <p><b>Definition via SVD:</b> If $A = U \Sigma V^\top$, then:
+      $$ A^+ = V \Sigma^+ U^\top $$
+      where $\Sigma^+$ is the $n \times m$ matrix obtained by transposing $\Sigma$ and inverting the non-zero singular values:
+      $$
+      \Sigma^+ = \begin{bmatrix}
+      1/\sigma_1 & & & 0 & \dots \\
+      & \ddots & & \vdots & \\
+      & & 1/\sigma_r & 0 & \dots \\
+      0 & \dots & 0 & 0 & \dots \\
+      \vdots & & \vdots & \vdots & \ddots
+      \end{bmatrix}
+      $$
+      (The non-zero block is diagonal with entries $1/\sigma_i$; all other entries are zero).</p>
+
+      <h4>Properties and Applications</h4>
+      <ul>
+        <li><b>Minimum Norm Solution:</b> For any system $Ax=b$ (or the least squares problem), the vector $x^\star = A^+ b$ is the solution that has the <b>minimum Euclidean norm</b>.
+        <br>
+        <div class="proof-box">
+          <h4>Proof: $x_{LS} = A^+b$ minimizes norm</h4>
+        <p>The set of all least-squares solutions is given by $S_{LS} = \{x \mid A^\top A x = A^\top b\}$. Since this is an affine set $x_p + \mathcal{N}(A)$, there is a unique element with minimum Euclidean norm. We show $x^+ = A^+b$ is that element.</p>
+
+          <div class="proof-step">
+          <strong>Step 1: Verification of Solution.</strong>
+          First, we check that $x^+$ actually solves the least squares problem (satisfies Normal Equations).
+          Recall $A = U \Sigma V^\top$ and $A^+ = V \Sigma^+ U^\top$.
+          $$ A x^+ = U \Sigma V^\top V \Sigma^+ U^\top b = U (\Sigma \Sigma^+) U^\top b $$
+          The product $\Sigma \Sigma^+$ is a diagonal projection matrix (1s for indices $1 \dots r$, 0s otherwise). It projects onto the range of $A$.
+          Thus $Ax^+$ is the orthogonal projection of $b$ onto $\mathcal{R}(A)$, which defines the least squares solution.
+          </div>
+
+          <div class="proof-step">
+          <strong>Step 2: Orthogonality of $x^+$.</strong>
+          We check where $x^+$ lies.
+          $x^+ = V (\Sigma^+ U^\top b)$. This vector is a linear combination of the columns of $V$ corresponding to non-zero singular values (indices $1 \dots r$).
+          These columns span the <b>row space</b> $\mathcal{R}(A^\top)$.
+          Thus, $x^+ \in \mathcal{R}(A^\top)$.
+          Recall the fundamental orthogonality: $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
+          </div>
+
+          <div class="proof-step">
+          <strong>Step 3: Pythagorean Minimization.</strong>
+          Let $x$ be any solution to the least squares problem. The set of all solutions is the affine set $S = x^+ + \mathcal{N}(A)$.
+          Any solution $x$ can be written as $x = x^+ + z$, where $z \in \mathcal{N}(A)$.
+          <br>We established in Step 2 that $x^+ \in \mathcal{R}(A^\top)$.
+          The Fundamental Theorem of Linear Algebra states that $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
+          Therefore, $x^+ \perp z$.
+          <br>By the Pythagorean Theorem:
+          $$ \|x\|_2^2 = \|x^+ + z\|_2^2 = \|x^+\|_2^2 + \|z\|_2^2 $$
+          Since $\|z\|_2^2 \ge 0$, the minimum possible value for $\|x\|_2^2$ occurs when $\|z\|_2^2 = 0$, i.e., $z=0$.
+          Thus, $x = x^+$ is the unique solution with minimum norm.
+          </div>
+        </div>
+        </li>
+        <li><b>Projectors:</b> $AA^+$ is the orthogonal projector onto the column space $\mathcal{R}(A)$. $A^+A$ is the orthogonal projector onto the row space $\mathcal{R}(A^\top)$.</li>
+      </ul>
+
+      <h3>7.2 Condition Number</h3>
+      <p>The condition number $\kappa(A)$ measures the sensitivity of the solution of a linear system to perturbations in the data. Formally, it is defined as:</p>
+      $$ \kappa(A) = \|A\|_2 \|A^+\|_2 = \frac{\sigma_{\max}(A)}{\sigma_{\min}(A)} $$
+      <p>where $\sigma_{\min}$ is the smallest <i>non-zero</i> singular value.</p>
+
+      <ul>
+        <li><b>$\kappa \approx 1$:</b> Well-conditioned. Errors are not amplified. Orthogonal matrices have $\kappa = 1$.</li>
+        <li><b>$\kappa \gg 1$:</b> Ill-conditioned. Small errors in $b$ can lead to massive errors in $x$.</li>
+      </ul>
+
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/conditioning-geometry.png"
+               alt="Well-conditioned versus ill-conditioned error amplification geometry"
+               style="width: 100%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 7.1:</i> Condition number as error magnification: the same small uncertainty in $b$ can map to a small or huge uncertainty in $x$ depending on $\kappa(A)$.</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/zig-zag-ill-conditioning.png"
+               alt="Gradient descent zig-zagging on elongated contours in an ill-conditioned problem"
+               style="width: 100%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 7.2:</i> Ill-conditioning creates elongated level sets; first-order methods like gradient descent can zig-zag across the valley, slowing convergence.</figcaption>
+        </figure>
+      </div>
+
+      <div class="insight">
+        <h4>Impact on Optimization Algorithms</h4>
+        <p>The condition number is not just a numerical nuisance; it fundamentally limits the speed of optimization algorithms.
+        For a quadratic function $f(x) = \frac{1}{2}x^\top A x$, Gradient Descent converges at a rate determined by $\frac{\kappa-1}{\kappa+1}$.
+        <ul>
+            <li>If $\kappa=1$ (spherical), convergence is instant.</li>
+            <li>If $\kappa \gg 1$ (valley), convergence is arbitrarily slow.</li>
+        </ul>
+        This motivates <b>Newton's Method</b> and preconditioning, which effectively transform the problem to make $\kappa \approx 1$. We will study this in <a href="../13-unconstrained-minimization/index.html">Lecture 13</a>.</p>
+      </div>
+
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive: Condition Number & Stability</h3>
+        <p><b>Visualize Ill-Conditioning:</b> Compare solving $Ax=b$ for a well-conditioned matrix versus an ill-conditioned one. In the ill-conditioned case, the "ellipse" of the matrix is very skinny. A small change in the target vector $b$ (moving the target slightly off the major axis) requires a massive change in $x$ to compensate.</p>
+        <div id="widget-condition-number" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: REVIEW -->
+    <section class="section-card" id="section-review">
+      <h2>8. Review & Cheat Sheet</h2>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Decomposition</th>
+            <th>Formula</th>
+            <th>Components</th>
+            <th>Primary Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>QR</b></td>
+            <td>$A = QR$</td>
+            <td>$Q$ orthonormal, $R$ upper triangular</td>
+            <td>Least squares, Gram-Schmidt</td>
+          </tr>
+          <tr>
+            <td><b>SVD</b></td>
+            <td>$A = U \Sigma V^\top$</td>
+            <td>$U, V$ orthogonal, $\Sigma$ diagonal</td>
+            <td>Rank, Norms, Approximation, PCA</td>
+          </tr>
+          <tr>
+            <td><b>Spectral</b></td>
+            <td>$A = Q \Lambda Q^\top$</td>
+            <td>$Q$ orthogonal, $\Lambda$ real diagonal</td>
+            <td>Symmetric matrices ($A=A^\top$)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Key Identities</h3>
+      <ul>
+        <li>$\|A\|_2 = \sigma_1$</li>
+        <li>$\|A\|_F = \sqrt{\sum \sigma_i^2}$</li>
+        <li>$A^+ = V \Sigma^+ U^\top$</li>
+        <li>$\kappa(A) = \sigma_1 / \sigma_r$</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 9: EXERCISES -->
+    <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 9. Exercises</h2>
+      <div class="insight">
+        <h4>Recap & Key Concepts</h4>
+        <p>These exercises explore the theoretical depths of matrix norms, the geometry of projections, and the algebraic properties of the trace. P1.1 links norms to duality (Lecture 02). P1.14 links SVD to the operator norm.</p>
+      </div>
+
+      <h3>P1.1 — Dual of $\ell_p$ Norm</h3>
+      <p>Show that for $1 < p < \infty$, the dual norm of $\|\cdot\|_p$ is $\|\cdot\|_q$ where $\frac{1}{p} + \frac{1}{q} = 1$. Use Hölder's Inequality for the upper bound and construct an alignment vector for the lower bound.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <div class="proof-step">
+          <strong>Upper bound ($\le$):</strong> By Hölder's inequality, $x^\top y \le \|x\|_p \|y\|_q$.
+          The definition of the dual norm is $\|y\|_* = \sup_{\|x\|_p \le 1} x^\top y$.
+          From Hölder, if $\|x\|_p \le 1$, then $x^\top y \le \|y\|_q$. Thus $\|y\|_* \le \|y\|_q$.
+        </div>
+        <div class="proof-step">
+          <strong>Lower bound ($\ge$):</strong> We need to construct a vector $x$ that "aligns" with $y$ to maximize the inner product.
+          We want $x_i$ to have the same sign as $y_i$, and magnitudes such that equality holds in Hölder's.
+          Choose $x_i = \mathrm{sign}(y_i) |y_i|^{q-1}$.
+          <br>Check inner product: $x^\top y = \sum \mathrm{sign}(y_i)|y_i|^{q-1} y_i = \sum |y_i|^q = \|y\|_q^q$.
+          <br>Check norm of $x$: $\|x\|_p^p = \sum |x_i|^p = \sum |y_i|^{p(q-1)}$.
+          Since $(p-1)q = p \implies p(q-1) = q$: $\|x\|_p^p = \sum |y_i|^q = \|y\|_q^q$.
+          So $\|x\|_p = \|y\|_q^{q/p}$.
+          <br>Now normalize to get a unit vector $\tilde{x} = x / \|x\|_p = x / \|y\|_q^{q/p}$.
+          $$ \tilde{x}^\top y = \frac{\|y\|_q^q}{\|y\|_q^{q/p}} = \|y\|_q^{q - q/p} = \|y\|_q^1 = \|y\|_q $$
+          Since we found a unit vector achieving this value, $\|y\|_* \ge \|y\|_q$.
+        </div>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Dual Norm:</b> Defined by $\|y\|_* = \sup \{ y^\top x \mid \|x\| \le 1 \}$.
+        <br><b>$\ell_p$ Dual:</b> The dual of the $\ell_p$ norm ($1 < p < \infty$) is the $\ell_q$ norm, where $1/p + 1/q = 1$.
+        <br><b>Hölder's Inequality:</b> $|x^\top y| \le \|x\|_p \|y\|_q$. This is the generalized Cauchy-Schwarz inequality.
+        <br><b>Alignment Condition:</b> Equality holds if $|x_i|^p$ is proportional to $|y_i|^q$ (and signs match). This is crucial for constructing worst-case examples in robustness analysis.</p>
+      </div>
+
+      <h3>P1.2 — Frobenius Cauchy–Schwarz</h3>
+      <p>Prove that $|\mathrm{tr}(A^\top B)| \le \|A\|_F \|B\|_F$ by viewing matrices in $\mathbb{R}^{m \times n}$ as vectors in $\mathbb{R}^{mn}$.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>The Frobenius norm corresponds to the standard Euclidean norm of the vectorized matrix: $\|A\|_F = \|\mathrm{vec}(A)\|_2$.
+        The inner product of matrices is $\langle A, B \rangle = \mathrm{tr}(A^\top B) = \sum_{i,j} A_{ij} B_{ij}$.
+        This is exactly the dot product of the vectorized forms: $\mathrm{vec}(A)^\top \mathrm{vec}(B)$.
+        By the standard Cauchy-Schwarz inequality for vectors:
+        $$ |\mathrm{vec}(A)^\top \mathrm{vec}(B)| \le \|\mathrm{vec}(A)\|_2 \|\mathrm{vec}(B)\|_2 $$
+        Substituting back the matrix notation yields $|\mathrm{tr}(A^\top B)| \le \|A\|_F \|B\|_F$.
+        </p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>The $\mathrm{vec}$ Operator:</b> Stacks columns of a matrix into a single vector in $\mathbb{R}^{mn}$.
+        <br><b>Isometry:</b> The mapping $A \mapsto \mathrm{vec}(A)$ is an isometry between $(\mathbb{R}^{m \times n}, \|\cdot\|_F)$ and $(\mathbb{R}^{mn}, \|\cdot\|_2)$.
+        <br><b>Inner Product Consistency:</b> $\langle A, B \rangle = \mathrm{tr}(A^\top B) = \mathrm{vec}(A)^\top \mathrm{vec}(B)$.
+        <br><b>Result:</b> Cauchy-Schwarz for vectors immediately implies $|\mathrm{tr}(A^\top B)| \le \|A\|_F \|B\|_F$.</p>
+      </div>
+
+      <h3>P1.3 — SVD Computation</h3>
+      <p>Compute the Singular Value Decomposition $A = U \Sigma V^\top$ by hand for the matrix $A = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$. Verify that the singular values are the square roots of the eigenvalues of $A^\top A$.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <div class="proof-step">
+          <strong>1. Compute $A^\top A$ and its eigenvalues:</strong>
+          $A^\top A = \begin{bmatrix} 1 & 0 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$.
+          Characteristic eq: $(1-\lambda)^2 - 1 = 0 \implies \lambda^2 - 2\lambda = 0 \implies \lambda_1=2, \lambda_2=0$.
+          Singular values: $\sigma_1 = \sqrt{2}, \sigma_2 = 0$.
+        </div>
+        <div class="proof-step">
+          <strong>2. Compute $V$ (eigenvectors of $A^\top A$):</strong>
+          For $\lambda_1=2$: $\begin{bmatrix} -1 & 1 \\ 1 & -1 \end{bmatrix} v = 0 \implies v_1 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+          For $\lambda_2=0$: $v_2 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ -1 \end{bmatrix}$.
+          $V = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$.
+        </div>
+        <div class="proof-step">
+          <strong>3. Compute $U$:</strong>
+          $u_1 = \frac{1}{\sigma_1} A v_1 = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \frac{1}{2} \begin{bmatrix} 2 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$.
+          Since $m=2$, we need a second vector $u_2$ orthogonal to $u_1$. $u_2 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$.
+          $U = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.
+        </div>
+        <div class="proof-step">
+          <strong>Result:</strong> $A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} \sqrt{2} & 0 \\ 0 & 0 \end{bmatrix} \left(\frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\right)^\top$.
+        </div>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Hand-Calculation Strategy for SVD:</b>
+        <ol>
+            <li>Compute the Gram matrix $G = A^\top A$.</li>
+            <li>Find eigenvalues $\lambda_i$ of $G$. Singular values are $\sigma_i = \sqrt{\lambda_i}$.</li>
+            <li>Find normalized eigenvectors $v_i$ of $G$ to form $V$.</li>
+            <li>Compute $u_i = \frac{1}{\sigma_i} A v_i$ for non-zero $\sigma_i$.</li>
+            <li>If $m > r$, complete $U$ using Gram-Schmidt or inspection (orthogonality).</li>
+        </ol>
+        <br><b>Check:</b> Verify $AV = U\Sigma$.</p>
+      </div>
+
+      <h3>P1.6 — Normal Equations vs. QR</h3>
+      <p>Solve the system $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}, b = \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}$ using (a) Normal Equations and (b) QR factorization. Compare the intermediate steps.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p><b>(a) Normal Equations:</b> $A^\top A x = A^\top b$.
+        $A^\top A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$.
+        $A^\top b = \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
+        Solve $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix} x = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
+        Multiply by inverse $\frac{1}{3} \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$:
+        $x = \frac{1}{3} \begin{bmatrix} 6-4 \\ -3+8 \end{bmatrix} = \frac{1}{3} \begin{bmatrix} 2 \\ 5 \end{bmatrix}$.</p>
+        <p><b>(b) QR Factorization:</b>
+        Gram-Schmidt on columns $a_1, a_2$.
+        $u_1 = a_1 = (1, 0, 1)^\top$. $q_1 = (1/\sqrt{2}, 0, 1/\sqrt{2})^\top$.
+        $v_2 = a_2 - \langle a_2, q_1 \rangle q_1 = (1, 1, 0)^\top - (1/\sqrt{2}) (1/\sqrt{2}, 0, 1/\sqrt{2})^\top = (1, 1, 0)^\top - (1/2, 0, 1/2)^\top = (1/2, 1, -1/2)^\top$.
+        Normalize $v_2$: $\|v_2\|^2 = 1/4 + 1 + 1/4 = 1.5 = 3/2$. $\|v_2\| = \sqrt{3/2}$.
+        $q_2 = \sqrt{2/3} (1/2, 1, -1/2)^\top$.
+        Solve $Rx = Q^\top b$.
+        $R = \begin{bmatrix} \sqrt{2} & 1/\sqrt{2} \\ 0 & \sqrt{3/2} \end{bmatrix}$. $Q^\top b = \begin{bmatrix} 3/\sqrt{2} \\ 4\sqrt{2/3}-1/\sqrt{6} \end{bmatrix}$.
+        Back substitution yields same $x$. QR avoids forming $A^\top A$ (better condition number).</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Comparing Least Squares Algorithms:</b>
+        <ul>
+            <li><b>Normal Equations:</b>
+                <ul><li>Cost: $O(n^2 m)$ (forming $A^\top A$) + $O(n^3)$ (Cholesky).</li>
+                <li>Stability: Unstable. Dependence on $\kappa(A)^2$.</li></ul>
+            </li>
+            <li><b>QR Factorization:</b>
+                <ul><li>Cost: $2 \times$ Normal Equations (roughly).</li>
+                <li>Stability: Stable. Dependence on $\kappa(A)$. Standard choice.</li></ul>
+            </li>
+            <li><b>SVD:</b> Most expensive, but most robust (handles rank deficiency gracefully).</li>
+        </ul></p>
+      </div>
+
+      <h3>P1.7 — Pseudoinverse Projectors</h3>
+      <p>Show that $P = AA^+$ is the orthogonal projector onto $\mathcal{R}(A)$. Verify $P^2=P$ and $P^\top=P$ using SVD.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>Let $A = U \Sigma V^\top$. Then $A^+ = V \Sigma^+ U^\top$.
+        $P = AA^+ = (U \Sigma V^\top)(V \Sigma^+ U^\top) = U (\Sigma \Sigma^+) U^\top$.
+        $\Sigma \Sigma^+$ is a diagonal matrix with 1s for non-zero singular values and 0s otherwise.
+        Let $U_r$ be the first $r$ columns of $U$. Then $P = U_r U_r^\top$.
+        <br><b>Idempotent:</b> $P^2 = (U_r U_r^\top)(U_r U_r^\top) = U_r (U_r^\top U_r) U_r^\top = U_r I U_r^\top = P$.
+        <br><b>Symmetric:</b> $P^\top = (U_r U_r^\top)^\top = (U_r^\top)^\top U_r^\top = U_r U_r^\top = P$.
+        <br>Since the columns of $U_r$ form a basis for $\mathcal{R}(A)$, $P$ is the orthogonal projector onto $\mathcal{R}(A)$.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Fundamental Projectors via SVD:</b>
+        <ul>
+            <li><b>Column Space Projector:</b> $P_{\mathcal{R}(A)} = A A^+ = U_r U_r^\top$.</li>
+            <li><b>Row Space Projector:</b> $P_{\mathcal{R}(A^\top)} = A^+ A = V_r V_r^\top$.</li>
+        </ul>
+        <br><b>Intuition:</b> $A^+$ inverts the action on the range and kills the orthogonal complement. $AA^+$ maps range $\to$ range (identity) and orthogonal complement $\to$ 0.</p>
+      </div>
+
+      <h3>P1.8 — Projector Formula</h3>
+      <p>Let $A$ have linearly independent columns. Derive the projection formula $P = A(A^\top A)^{-1}A^\top$ by minimizing $\|Ax - b\|_2^2$.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>We want to find the point $p = Ax$ in the column space closest to $b$.
+        Problem: $\min_x \|Ax - b\|_2^2$.
+        Gradient: $2A^\top (Ax - b) = 0$.
+        Normal eqs: $A^\top A x = A^\top b$.
+        Since cols are independent, $A^\top A$ is invertible.
+        Solution: $x^* = (A^\top A)^{-1} A^\top b$.
+        Projection: $p = A x^* = A(A^\top A)^{-1} A^\top b$.
+        The matrix mapping $b$ to $p$ is $P = A(A^\top A)^{-1} A^\top$.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>The "Hat" Matrix:</b> $P = A(A^\top A)^{-1} A^\top$.
+        <br><b>Requirements:</b> Valid only when $A$ has full column rank (so $A^\top A$ is invertible).
+        <br><b>General Case:</b> If $A$ is rank-deficient, use the pseudoinverse form $P = AA^+$.
+        <br><b>Properties:</b> $P^2=P$ and $P^\top=P$. The residual is $(I-P)b$, which projects onto $\mathcal{N}(A^\top)$.</p>
+      </div>
+
+      <h3>P1.9 — Hyperplane Projection</h3>
+      <p>Find the projection of $(1, 2, 3)^\top$ onto $x_1 + x_2 + x_3 = 3$. Verify your result using the standard formula for distance to a plane.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>Normal $a = (1, 1, 1)^\top$. Point $y = (1, 2, 3)^\top$. Target $b=3$.
+        $p = y - \frac{a^\top y - b}{\|a\|^2} a$.
+        $a^\top y = 1+2+3 = 6$. $\|a\|^2 = 3$.
+        $p = (1, 2, 3)^\top - \frac{6-3}{3} (1, 1, 1)^\top = (1, 2, 3)^\top - (1, 1, 1)^\top = (0, 1, 2)^\top$.
+        Check: $0+1+2=3$. Correct.
+        Distance: $\|y-p\| = \|(1, 1, 1)\| = \sqrt{3}$.
+        Formula: $\frac{|a^\top y - b|}{\|a\|} = \frac{|6-3|}{\sqrt{3}} = \frac{3}{\sqrt{3}} = \sqrt{3}$. Matches.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Constraint Projection:</b> The projection of $y$ onto the affine set $\{x \mid a^\top x = b\}$ is:
+        $$ \Pi(y) = y - \frac{a^\top y - b}{\|a\|^2} a $$
+        <b>Optimization View:</b> This is the solution to $\min_x \frac{1}{2}\|x-y\|^2$ s.t. $a^\top x = b$.
+        <br><b>Lagrange Multiplier:</b> The term $\frac{a^\top y - b}{\|a\|^2}$ corresponds to the Lagrange multiplier $\nu$ associated with the constraint.</p>
+      </div>
+
+      <h3>P1.10 — Condition Number Calculation</h3>
+      <p>Calculate the condition number $\kappa(A) = \sigma_{\max}(A)/\sigma_{\min}(A)$ for the matrix $A = \begin{bmatrix} 1 & 0 \\ 0 & \epsilon \end{bmatrix}$ where $\epsilon > 0$. What happens as $\epsilon \to 0$?</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>The matrix is diagonal, so its singular values are the absolute values of diagonal entries: $1$ and $\epsilon$.
+        Assuming $\epsilon < 1$: $\sigma_{\max} = 1, \sigma_{\min} = \epsilon$.
+        $\kappa(A) = 1/\epsilon$.
+        As $\epsilon \to 0$, $\kappa(A) \to \infty$. The matrix becomes ill-conditioned (nearly singular).</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Condition Number $\kappa(A)$:</b> The ratio $\sigma_{\max}/\sigma_{\min}$ (for square invertible matrices).
+        <br><b>Interpretation:</b> The aspect ratio of the hyperellipse image of the unit sphere.
+        <br><b>Impact:</b>
+        <ul>
+            <li><b>Sensitivity:</b> Relative error in $x$ $\le \kappa(A) \times$ Relative error in $b$.</li>
+            <li><b>Optimization:</b> Controls convergence rate of gradient descent. High $\kappa$ $\implies$ "Zig-zagging".</li>
+        </ul></p>
+      </div>
+
+      <h3>P1.11 — Pseudoinverse of Rank-1 Matrix</h3>
+      <p>Let $A = xy^\top$ where $x, y \in \mathbb{R}^n$ are non-zero vectors. Show that $A^+ = \frac{A^\top}{\|x\|_2^2 \|y\|_2^2}$.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>SVD of rank-1 matrix: $A = \sigma u v^\top$.
+        $\|A\|_F = \|x\|\|y\| = \sigma$.
+        $u = x/\|x\|$, $v = y/\|y\|$.
+        Check: $A = (\|x\|\|y\|) \frac{x}{\|x\|} \frac{y^\top}{\|y\|} = xy^\top$. Correct.
+        Pseudoinverse: $A^+ = \frac{1}{\sigma} v u^\top = \frac{1}{\|x\|\|y\|} \frac{y}{\|y\|} \frac{x^\top}{\|x\|} = \frac{yx^\top}{\|x\|^2 \|y\|^2}$.
+        Note that $A^\top = (xy^\top)^\top = yx^\top$.
+        Thus $A^+ = \frac{A^\top}{\|x\|^2 \|y\|^2}$.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Rank-1 SVD:</b> A matrix $A = xy^\top$ has exactly one non-zero singular value $\sigma_1 = \|x\|_2 \|y\|_2$.
+        <br><b>Singular Vectors:</b> $u_1 = x/\|x\|$, $v_1 = y/\|y\|$.
+        <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2} = \frac{yx^\top}{\|x\|^2 \|y\|^2}$.</p>
+      </div>
+
+      <h3>P1.12 — Operator Norm Properties</h3>
+      <p>Prove that $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$. Use the Rayleigh Quotient definition of eigenvalues.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>$\|A\|_2^2 = \sup_{x \ne 0} \frac{\|Ax\|^2}{\|x\|^2} = \sup_{x \ne 0} \frac{x^\top A^\top A x}{x^\top x}$.
+        The term on the right is the Rayleigh quotient for the symmetric matrix $M = A^\top A$.
+        By the variational characterization of eigenvalues, the maximum value of the Rayleigh quotient is $\lambda_{\max}(M)$.
+        Thus $\|A\|_2^2 = \lambda_{\max}(A^\top A)$, so $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Variational Definition of Eigenvalues:</b> For symmetric $M$, $\lambda_{\max}(M) = \max_{\|x\|=1} x^\top M x$.
+        <br><b>Spectral Norm Connection:</b> $\|A\|_2^2 = \max_{\|x\|=1} \|Ax\|^2 = \max_{\|x\|=1} x^\top (A^\top A) x = \lambda_{\max}(A^\top A)$.
+        <br><b>Implication:</b> The spectral norm is the square root of the largest eigenvalue of the Gram matrix.</p>
+      </div>
+
+      <h3>P1.13 — Orthogonal Invariance</h3>
+      <p>Show that $\|U A V^\top\|_F = \|A\|_F$ and $\|U A V^\top\|_2 = \|A\|_2$ for orthogonal $U, V$. This proves that these norms depend only on the singular values.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p><b>Frobenius:</b> $\|X\|_F^2 = \mathrm{tr}(X^\top X)$.
+        $\|UAV^\top\|_F^2 = \mathrm{tr}(V A^\top U^\top U A V^\top) = \mathrm{tr}(V A^\top A V^\top) = \mathrm{tr}(V^\top V A^\top A) = \mathrm{tr}(A^\top A) = \|A\|_F^2$.
+        <br><b>Spectral:</b> $\|UAV^\top\|_2 = \sup_{\|x\|=1} \|UAV^\top x\|$.
+        Since $U$ is orthogonal, $\|Uy\| = \|y\|$. So we maximize $\|A (V^\top x)\|$.
+        Since $V$ is orthogonal, as $x$ ranges over the unit sphere, $y = V^\top x$ also ranges over the unit sphere.
+        Thus $\sup_{\|x\|=1} \|A V^\top x\| = \sup_{\|y\|=1} \|Ay\| = \|A\|_2$.
+        </p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Orthogonal Invariance:</b> A matrix norm is orthogonally invariant if $\|UAV^\top\| = \|A\|$ for all orthogonal $U, V$.
+        <br><b>Schatten p-norms:</b> Defined as the $\ell_p$ norm of the singular values vector $\sigma(A)$.
+        <ul>
+            <li>$p=\infty$: Spectral Norm.</li>
+            <li>$p=2$: Frobenius Norm.</li>
+            <li>$p=1$: Nuclear Norm (Trace Norm).</li>
+        </ul>
+        <br>These are the "natural" norms for matrix analysis.</p>
+      </div>
+
+      <h3>P1.14 — The Orthogonal Group</h3>
+      <p>Show that the set of orthogonal matrices forms a compact group.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p><b>Group:</b>
+        1. Closure: $(Q_1 Q_2)^\top (Q_1 Q_2) = Q_2^\top Q_1^\top Q_1 Q_2 = Q_2^\top I Q_2 = I$.
+        2. Inverse: $Q^{-1} = Q^\top$, which is orthogonal since $(Q^\top)^\top Q^\top = Q Q^\top = I$.
+        3. Identity: $I \in O(n)$.
+        <br><b>Compactness:</b>
+        1. Bounded: The columns are unit vectors, so $\|Q\|_F = \sqrt{n}$. The set is bounded.
+        2. Closed: The condition $Q^\top Q = I$ is a continuous equality constraint (level set of a continuous function). Thus the set is closed.
+        By Heine-Borel, closed and bounded in finite dimensions implies compact.
+        </p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>The Orthogonal Group $O(n)$:</b> The set of all $n \times n$ orthogonal matrices.
+        <br><b>Compactness Proof:</b>
+        <ul>
+            <li><b>Boundedness:</b> $\|Q\|_F = \sqrt{n}$, so $O(n)$ is contained in a ball of radius $\sqrt{n}$.</li>
+            <li><b>Closedness:</b> It is the solution set of continuous polynomial equations $Q^\top Q - I = 0$.</li>
+        </ul>
+        <br><b>Optimization Consequence:</b> Any continuous function (like a norm or trace) maximized over orthogonal matrices <i>attains</i> its maximum. This is often used to prove existence of SVD.</p>
+      </div>
+</section>
+
+    <!-- SECTION 6: READINGS -->
+    <section class="section-card" id="section-readings">
+      <h2>6. Readings & Resources</h2>
+      <ul class="link-list">
+        <li><strong>Required:</strong> Boyd & Vandenberghe, Appendix A.</li>
+        <li><strong>Recommended:</strong> Trefethen & Bau, <em>Numerical Linear Algebra</em>, Lectures 1–5.</li>
+        <li><strong>Advanced References:</strong> Golub & Van Loan, <em>Matrix Computations</em>, Chapter 2.</li>
+      </ul>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Convex Optimization Course</p>
+      </div>
+    </footer>
+  </main></div>
+
+  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="../../static/js/math-renderer.js"></script>
+  <script src="../../static/js/toc.js"></script>
+  <script src="../../static/js/theme-switcher.js"></script>
+  <script src="../../static/js/ui.js"></script>
+  <script src="../../static/js/notes-widget.js"></script>
+  <script src="../../static/js/pomodoro.js"></script>
+  <script src="../../static/js/progress-tracker.js"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Widget Loaders -->
+  <script type="module">
+    import { initSvdApproximator } from './widgets/js/svd-approximator.js';
+    initSvdApproximator('widget-svd-approximator');
+  </script>
+  <script type="module">
+    import { initConditionNumber } from './widgets/js/condition-number.js';
+    initConditionNumber('widget-condition-number');
+  </script>
+  <script src="../../static/js/glossary-loader.js"></script>
+</body>
+</html>

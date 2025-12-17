@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>03. Convex Sets: Geometry — Convex Optimization</title>
+  <link rel="stylesheet" href="../../static/css/lecture-styles.css" />
+  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <header class="site-header sticky">
+    <div class="container">
+      <div class="brand">
+        <a href="../../index.html">Convex Optimization</a>
+      </div>
+      <nav class="nav">
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../02-introduction/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../04-convex-sets-cones/index.html">Next <i data-feather="arrow-right"></i></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>03. Convex Sets: Geometry</h1>
+      <div class="lecture-summary">
+        <p>This lecture builds the geometric foundation of convex optimization. We formalize affine and convex sets, construct key examples (halfspaces, norm balls, polyhedra, and the PSD cone), and learn a small set of operations that generate most convex sets used in practice. We end with a topological toolkit (closure, interior, relative interior) that becomes essential later for constraint qualifications and duality.</p>
+        <p><strong>Prerequisites:</strong> <a href="../00-linear-algebra-basics/index.html">Lecture 00</a> (vectors, inner products, norms) and <a href="../02-introduction/index.html">Lecture 02</a> (convexity motivation).</p>
+        <p><strong>Forward Connections:</strong> Cone geometry and separation (<a href="../04-convex-sets-cones/index.html">Lecture 04</a>) and convex functions (<a href="../05-convex-functions-basics/index.html">Lecture 05</a>) build directly on these set constructions. Standard and conic problem classes (<a href="../07-convex-problems-standard/index.html">Lecture 07</a>, <a href="../08-convex-problems-conic/index.html">Lecture 08</a>) are largely “recognize the set.”</p>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2><i data-feather="target"></i> Learning Objectives</h2>
+      <p>After this lecture, you will be able to:</p>
+      <ul>
+        <li><b>Distinguish affine vs. convex geometry:</b> Tell apart affine hulls, convex hulls, and their geometric meaning (lines vs. line segments).</li>
+        <li><b>Recognize canonical convex sets:</b> Identify halfspaces, hyperplanes, norm balls, ellipsoids, polyhedra/polytopes, and the PSD cone as “building blocks.”</li>
+        <li><b>Generate new convex sets:</b> Use intersection, affine images/preimages, perspective, and linear-fractional maps to prove convexity quickly.</li>
+        <li><b>Use relative interior correctly:</b> Work with $\mathrm{ri}(C)$ when $\mathrm{int}(C)$ is empty and connect this to feasibility notions used in duality.</li>
+      </ul>
+    </section>
+
+    <article>
+      <section class="section-card" id="section-1">
+        <h2>1. Affine and Convex Sets: Definitions and Basic Properties</h2>
+
+        <p>The geometry of optimization is built on understanding how points combine. Two fundamental operations define the landscape:</p>
+
+        <h3>1.1 Affine Combinations and Affine Sets</h3>
+
+        <p>An <a href="#" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one. Geometrically, this operation generates lines, planes, and hyperplanes passing through the given points, without reference to the origin.</p>
+        $$
+        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1
+        $$
+        <p><b>Intuition (Infinite Sheet):</b> The coefficients $\theta_i$ may be negative. For two points $x_1, x_2$, the combination $x = \theta x_1 + (1-\theta)x_2$ traces the <b>infinite line</b> through them. For three points, it traces the infinite plane. Think of affine sets as "infinite sheets" that extend forever.</p>
+
+        <div class="theorem-box">
+          <h4>Definition (Affine Set)</h4>
+          <p>A set $C$ is <a href="#" class="definition-link">affine</a> if it contains all affine combinations of its points. Equivalently, the <b>infinite line</b> passing through any two points in $C$ lies entirely in $C$.</p>
+          $$ x_1, x_2 \in C, \ \theta \in \mathbb{R} \implies \theta x_1 + (1-\theta)x_2 \in C $$
+        </div>
+
+        <h4>Affine Sets as Translated Subspaces</h4>
+        <p>Geometrically, every affine set is a linear subspace that has been shifted (translated) away from the origin.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem: Affine Set $\iff$ Translated Subspace</h4>
+          <p>A set $C \subseteq \mathbb{R}^n$ is affine if and only if it can be written as:</p>
+          $$
+          C = x_0 + V = \{x_0 + v \mid v \in V\}
+          $$
+          <p>where $x_0$ is any specific point in $C$, and $V$ is a linear subspace of $\mathbb{R}^n$.</p>
+          <div class="proof-box">
+            <h4>Proof: The Geometric Shift</h4>
+            <div class="proof-step">
+              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. Let $x_1, x_2 \in C$. Then $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
+              For any $\theta \in \mathbb{R}$:
+              $$
+              \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
+            = x_0 + [\theta v_1 + (1-\theta)v_2]
+              $$
+              Since $V$ is a subspace, it is closed under linear combinations, so the bracketed term is in $V$. Thus the combination is in $x_0 + V = C$.
+            </div>
+            <div class="proof-step">
+              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick any $x_0 \in C$ and define $V = C - x_0$. We show $V$ is a subspace.
+              <ul>
+                <li><b>Contains zero:</b> $x_0 - x_0 = 0 \in V$.</li>
+                <li><b>Closed under scaling:</b> Let $v \in V$, so $x_0 + v \in C$. Since $C$ is affine, the combination $\alpha(x_0 + v) + (1-\alpha)x_0 = x_0 + \alpha v$ is in $C$. Thus $\alpha v \in V$.</li>
+                <li><b>Closed under addition:</b> Let $u, v \in V$. Then $x_0+u, x_0+v \in C$. Since $C$ is affine, the midpoint $\frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+v) = x_0 + \frac{1}{2}(u+v)$ is in $C$. Thus $\frac{1}{2}(u+v) \in V$. By scaling (proven above), $u+v \in V$.</li>
+              </ul>
+              Thus $V$ is a subspace.
+            </div>
+          </div>
+        </div>
+
+        <!-- Moved P3.20 to Section 6 -->
+
+        <figure style="text-align: center;">
+          <img src="assets/affine-subspace.png"
+               alt="An affine set C shown as a red plane parallel to a blue subspace V passing through the origin"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.0:</i> An affine set $C$ (red) is a subspace $V$ (blue) translated by a vector $x_0$. Note that $V$ passes through the origin, while $C$ does not necessarily.</figcaption>
+        </figure>
+
+        <div class="example">
+          <h4>Examples of Affine Sets</h4>
+          <ul>
+            <li><b>Solution set of linear equations:</b> $C = \{x \mid Ax = b\}$. If $x_0$ is a particular solution ($Ax_0 = b$), then $C = x_0 + \mathcal{N}(A)$, where the nullspace $\mathcal{N}(A)$ is the associated subspace.</li>
+            <li><b>$\mathbb{R}^n$ itself:</b> The entire space is affine by definition ($V = \mathbb{R}^n, x_0 = 0$).</li>
+            <li><b>Single point $\{x_0\}$:</b> Affine ($V = \{0\}$).</li>
+          </ul>
+        </div>
+
+        <h3>1.2 Convex Combinations and Convex Sets</h3>
+
+        <p>A <a href="#" class="definition-link">convex combination</a> is an affine combination with the additional constraint that all weights are nonnegative:</p>
+        $$
+        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1
+        $$
+        <p><b>Intuition (Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band. Unlike affine sets, convex sets are "bounded" by their generating points.</p>
+
+        <div class="theorem-box">
+          <h4>Definition (Convex Set)</h4>
+          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="#" class="definition-link" data-term="convex set">convex</a> if for any two points $x, y \in C$ and any $\theta \in [0,1]$:</p>
+          $$
+          \theta x + (1-\theta)y \in C
+          $$
+          <p><b>Geometric meaning:</b> The line segment connecting any two points in the set lies entirely within the set-no "dents" or "holes."</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/convex-vs-nonconvex.png"
+               alt="Visual definition of convex and non-convex sets"
+               style="max-width: 100%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.1:</i> In a convex set (right), the line segment between any two points lies entirely within the set. In a non-convex set (left), some line segments (red) cross outside the set boundaries.</figcaption>
+        </figure>
+
+        <h3>1.3 Convex Hull</h3>
+
+        <p>The <a href="#" class="definition-link">convex hull</a> of a set $S$ is the smallest convex set that contains $S$. Intuitively, it is the shape formed by "shrink-wrapping" the set $S$ or stretching a rubber band around it. Mathematically, it is the set of all possible convex combinations of points in $S$:</p>
+        $$
+        \mathrm{conv}(S) = \left\{\sum_{i=1}^k \theta_i x_i \ \bigg| \ x_i \in S, \ \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1, \ k \in \mathbb{N}\right\}
+        $$
+        <p>Think of this definition as creating "mixtures" of the points in $S$. If $S$ represents pure ingredients, $\mathrm{conv}(S)$ represents all possible mixtures (all possible percentages summing to 100%).</p>
+
+        <h4>Recession Cone (Asymptotic Directions)</h4>
+        <p>For unbounded convex sets, it is useful to characterize directions in which the set extends infinitely. The <b>recession cone</b> of a convex set $C$ is defined as:</p>
+        $$ R_C = \{v \in \mathbb{R}^n \mid x + tv \in C \text{ for all } x \in C, t \ge 0\} $$
+        <p>Intuitively, if you look at $C$ from "infinitely far away", it looks like $R_C$.
+        <br><b>Key Properties:</b>
+        <ul>
+            <li>$R_C$ is always a closed convex cone.</li>
+            <li>A closed convex set is <b>bounded</b> if and only if its recession cone is trivial ($R_C = \{0\}$).</li>
+            <li>If $C = \{x \mid Ax \le b\}$, then $R_C = \{v \mid Av \le 0\}$. The recession directions are those that keep you feasible as you move infinitely far.</li>
+        </ul>
+        This concept is crucial for proving the existence of solutions: if a problem is unbounded, the improving direction lives in the recession cone.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem (Carathéodory's Theorem)</h4>
+          <p>If $S \subseteq \mathbb{R}^n$, then every point in $\mathrm{conv}(S)$ can be written as a convex combination of at most $n+1$ points from $S$.</p>
+          <p><b>Implication:</b> To describe any point in the convex hull, we never need more than $n+1$ points, regardless of how large $S$ is!</p>
+          <div class="example">
+            <h4>Example: $\mathbb{R}^2$</h4>
+            <p>In 2D, $n=2$, so we need at most $n+1=3$ points.
+            <br>Consider a cloud of 100 points. The convex hull is a polygon. Any point <i>inside</i> that polygon can be covered by a triangle formed by just 3 of the original vertices. You don't need all 100.</p>
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof of Carathéodory's Theorem</h4>
+          <div class="proof-step">
+            <strong>Step 1: Affine Dependence from Linear Dependence.</strong>
+            Let $x \in \mathrm{conv}(S)$. By definition, $x$ is a convex combination of $k$ points $x_1, \dots, x_k$ with strictly positive coefficients $\theta_i > 0$. Suppose $k > n+1$.
+            The $k$ points $x_1, \dots, x_k$ must be <b>affinely dependent</b> because there are more than $n+1$ of them in $\mathbb{R}^n$.
+            (Recall: $k$ points are affinely dependent iff $k-1$ difference vectors are linearly dependent. Here $k-1 > n$, so dependence is guaranteed).
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Constructing a Zero Sum.</strong>
+            Affine dependence means there exist scalars $\alpha_1, \dots, \alpha_k$, not all zero, such that:
+            $$ \sum_{i=1}^k \alpha_i x_i = 0 \quad \text{and} \quad \sum_{i=1}^k \alpha_i = 0 $$
+            Since the $\alpha_i$ sum to 0 and are not all zero, at least one must be positive.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Perturbing the Weights.</strong>
+            We want to reduce the number of points in the combination. Consider new weights $\theta'_i = \theta_i - \lambda \alpha_i$.
+            Note that for any $\lambda$:
+            $$ \sum \theta'_i = \sum \theta_i - \lambda \sum \alpha_i = 1 - 0 = 1 $$
+            $$ \sum \theta'_i x_i = \sum \theta_i x_i - \lambda \sum \alpha_i x_i = x - 0 = x $$
+            So $x$ is still an affine combination. We need to choose $\lambda$ such that all $\theta'_i \ge 0$ and at least one $\theta'_j = 0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Finding the Step Size.</strong>
+            To ensure $\theta'_i \ge 0$, we need $\theta_i - \lambda \alpha_i \ge 0$, or $\lambda \alpha_i \le \theta_i$.
+            If $\alpha_i \le 0$, this holds for any $\lambda \ge 0$.
+            If $\alpha_i > 0$, we need $\lambda \le \theta_i / \alpha_i$.
+            To eliminate one coefficient, we choose the largest possible $\lambda$:
+            $$ \lambda^* = \min \{ \theta_i / \alpha_i \mid \alpha_i > 0 \} $$
+            Let $j$ be an index achieving this minimum. Then $\theta'_j = 0$, and $\theta'_i \ge 0$ for all $i$.
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> We have expressed $x$ as a convex combination of at most $k-1$ points (since the $j$-th coefficient is zero). We can repeat this reduction process as long as $k > n+1$. The recursion stops when we have at most $n+1$ points.
+          </div>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/convex-hull.png"
+               alt="Illustration of a convex hull"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.2:</i> The convex hull of a set of points (black dots) acts like a rubber band (blue polygon) snapped tight around them.</figcaption>
+        </figure>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+            <figure style="text-align: center; flex: 1;">
+              <img src="assets/convex-hull-nonconvex.png"
+                   alt="Convex hull of a crescent shape"
+                   style="width: 100%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 1.3:</i> The convex hull of a non-convex set (dark grey crescent) fills in the "gaps" (light blue), creating the smallest convex superset.</figcaption>
+            </figure>
+            <figure style="text-align: center; flex: 1;">
+              <img src="assets/caratheodory.png"
+                   alt="Caratheodory's theorem visualization"
+                   style="width: 100%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 1.4:</i> Carathéodory's Theorem: Any point $x$ in the hull of many points (black) can be formed by a convex combination of $n+1$ of them (red triangle in $\mathbb{R}^2$).</figcaption>
+            </figure>
+        </div>
+
+        <h3>1.4 Sets Defined by Functions</h3>
+
+        <p>A powerful way to generate convex sets is to derive them from convex functions (<a href="../05-convex-functions-basics/index.html">Lecture 05</a>). Two primary objects bridge the gap between sets and functions: sublevel sets and epigraphs.</p>
+
+        <h4>(a) Sublevel Sets</h4>
+        <p>The $\alpha$-<a href="#" class="definition-link">sublevel set</a> of a function $f : \mathbb{R}^n \to \mathbb{R}$ is the set of all points where the function value is below a threshold $\alpha$:</p>
+        $$
+        C_\alpha = \{x \in \mathrm{dom} f \mid f(x) \le \alpha\}
+        $$
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>If $f$ is a convex function, then its sublevel set $C_\alpha$ is a convex set for any $\alpha \in \mathbb{R}$.</p>
+          <p><i>Proof:</i> Let $x, y \in C_\alpha$ and $\theta \in [0,1]$. Then $f(x) \le \alpha$ and $f(y) \le \alpha$. By convexity, $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) \le \theta \alpha + (1-\theta)\alpha = \alpha$. Thus the combination is in $C_\alpha$.</p>
+          <p><i>Note:</i> The converse is false. Functions whose sublevel sets are convex but who are not themselves convex are called <b>quasiconvex</b>.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+             <img src="assets/indicator-function.png"
+                  alt="3D plot of an indicator function"
+                  style="max-width: 60%; height: auto; border-radius: 8px;" />
+             <figcaption><i>Figure 1.5:</i> The sublevel set of a convex function corresponds to a convex set. For example, the unit ball is the 1-sublevel set of the norm function $f(x) = \|x\|$.</figcaption>
+        </figure>
+
+        <h4>(b) Epigraphs</h4>
+        <p>The <a href="#" class="definition-link">epigraph</a> of a function $f$ is the set of points lying on or above its graph in $\mathbb{R}^{n+1}$:</p>
+        $$
+        \mathrm{epi}(f) = \{(x, t) \in \mathbb{R}^{n+1} \mid x \in \mathrm{dom} f, \ f(x) \le t\}
+        $$
+        <p>This object is the "Rosetta Stone" connecting the algebra of functions to the geometry of sets.</p>
+
+        <div class="theorem-box">
+          <h4>Fundamental Bridge Theorem</h4>
+          <p>A function $f$ is <b>convex</b> if and only if its <b>epigraph</b> $\mathrm{epi}(f)$ is a <b>convex set</b>.</p>
+          <p><b>Why is this useful?</b> This equivalence allows us to translate analytic properties of functions into geometric properties of sets. For example, why is the maximum of two convex functions also convex?
+          <br> Analytically, proving $f(x) = \max(f_1(x), f_2(x))$ is convex requires checking inequalities.
+          <br> Geometrically, $\mathrm{epi}(f) = \mathrm{epi}(f_1) \cap \mathrm{epi}(f_2)$. Since the intersection of convex sets is convex, the result is immediate.</p>
+        </div>
+
+        <h3>1.5 Key Properties</h3>
+
+        <ul>
+          <li>Every affine set is convex (but not vice versa).</li>
+          <li>The intersection of any collection of convex sets is convex (proven in Section 3).</li>
+          <li>The union of convex sets is generally <b>not</b> convex.</li>
+        </ul>
+
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Tool: Convex Set Checker</h3>
+          <p><b>Test Convexity Interactively:</b> Use the drawing tools below to create shapes and verify their convexity. Any "dent" will be flagged as a violation of the line segment property.</p>
+          <!-- Note: The standalone drawing widget has been merged into the lab below for a unified experience. -->
+        </div>
+      </section>
+
+
+      <section class="section-card" id="section-2">
+        <h2>2. Canonical Convex Sets: Building Blocks</h2>
+
+        <p>These fundamental convex sets appear repeatedly in optimization formulations. Recognizing them is essential for problem classification.</p>
+
+        <h3>2.1 Hyperplanes and Halfspaces</h3>
+
+        <p>A <a href="#" class="definition-link">hyperplane</a> is a set of the form:</p>
+        $$
+        H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
+        $$
+        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).</p>
+
+        <div class="theorem-box">
+          <h4>Geometric Interpretation</h4>
+          <p>A hyperplane is an affine set of dimension $n-1$. It can be viewed as:</p>
+          <ul>
+            <li>The solution set of a single linear equation.</li>
+            <li>A linear subspace ($a^\top x = 0$) translated by some vector $x_0$ (where $a^\top x_0 = b$).</li>
+          </ul>
+        </div>
+
+        <h4>Supporting Hyperplanes</h4>
+        <p>A hyperplane $H = \{x \mid a^\top x = b\}$ supports a set $C$ at a point $x_0$ if:
+        <ol>
+            <li>$x_0$ lies on the hyperplane ($a^\top x_0 = b$).</li>
+            <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le b$ for all $x \in C$).</li>
+        </ol>
+        Supporting hyperplanes are the geometric realization of <b>subgradients</b> (which we will meet in Lecture 05). For a convex set, every boundary point has at least one supporting hyperplane.</p>
+
+        <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
+        $$
+        H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
+        $$
+        <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
+
+        <h4>Normal Cones (Geometry at the Boundary)</h4>
+        <p>For a convex set $C$ and a point $x \in C$, the <b>normal cone</b> $N_C(x)$ describes the "outward" directions at $x$. It is defined as:</p>
+        $$ N_C(x) = \{g \in \mathbb{R}^n \mid g^\top (y - x) \le 0 \text{ for all } y \in C\} $$
+        <p>If $x$ is in the interior of $C$, then $N_C(x) = \{0\}$. If $x$ is on the boundary, $N_C(x)$ contains the normal vectors to all supporting hyperplanes at $x$. This geometric object is fundamental to optimality conditions: $x^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(x^*) \in N_C(x^*)$.</p>
+
+        <div class="proof-box">
+          <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
+
+          <div class="proof-step">
+            <strong>Hyperplane:</strong> Take $x_1, x_2 \in H$ and $\theta \in [0,1]$. Then:
+            $$
+            a^\top(\theta x_1 + (1-\theta)x_2) = \theta a^\top x_1 + (1-\theta)a^\top x_2 = \theta b + (1-\theta)b = b
+            $$
+            So the entire segment lies in $H$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Halfspace:</strong> Take $x_1, x_2 \in H^-$ (so $a^\top x_i \le b$) and $\theta \in [0,1]$. Then:
+            $$
+            a^\top(\theta x_1 + (1-\theta)x_2) = \theta a^\top x_1 + (1-\theta)a^\top x_2 \le \theta b + (1-\theta)b = b
+            $$
+            So the segment lies in $H^-$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Alternate View (Preimage):</strong> Define the linear function $f(x) = a^\top x$. Then $H^- = f^{-1}((-\infty, b])$. Since $(-\infty, b]$ is a convex interval in $\mathbb{R}$ and preimages of convex sets under affine maps are convex, $H^-$ is convex.
+          </div>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/hyperplane-halfspace.png"
+               alt="A 3D visualization of a hyperplane dividing space into two halfspaces"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2.1:</i> A hyperplane (transparent plane) divides $\mathbb{R}^3$ into two halfspaces. The normal vector $a$ determines the orientation.</figcaption>
+        </figure>
+
+        <h3>2.2 Norm Balls and Ellipsoids</h3>
+
+        <p>A <a href="#" class="definition-link" data-term="norm ball">norm ball</a> centered at $x_c$ with radius $r$ is:</p>
+        $$
+        B(x_c, r) = \{x \in \mathbb{R}^n \mid \|x - x_c\| \le r\}
+        $$
+        <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality).</p>
+
+        <div class="theorem-box">
+          <h4>Proof: Norm Balls are Convex</h4>
+          <p>Let $x, y \in B(x_c, r)$ and $\theta \in [0,1]$. Then $\|x - x_c\| \le r$ and $\|y - x_c\| \le r$.</p>
+          $$
+          \begin{aligned}
+          \|(\theta x + (1-\theta)y) - x_c\| &= \|\theta(x - x_c) + (1-\theta)(y - x_c)\| \\
+          &\le \theta\|x - x_c\| + (1-\theta)\|y - x_c\| \\
+          &\le \theta r + (1-\theta)r = r
+          \end{aligned}
+          $$
+          <p>Thus the convex combination is in the ball.</p>
+        </div>
+
+        <h4>Support Functions of Norm Balls = Dual Norms</h4>
+        <p>The geometry of a convex set $C$ is fully described by its support function $\sigma_C(y) = \sup_{x \in C} y^\top x$. For a norm ball $B = \{x : \|x\| \le 1\}$, this supremum is exactly the definition of the <b>dual norm</b>:</p>
+        $$ \|y\|_* = \sup_{\|x\| \le 1} y^\top x = \sigma_B(y) $$
+        <p>This establishes a fundamental duality: the support function of the primal unit ball is the dual norm.</p>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/norm-balls.png"
+               alt="Comparison of unit balls for L1, L2, and L-infinity norms"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2.2:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
+        </figure>
+
+        <p>An <a href="#" class="definition-link">ellipsoid</a> is a generalized Euclidean ball, defined as:</p>
+        $$
+        \mathcal{E} = \{x \in \mathbb{R}^n \mid (x - x_c)^\top P^{-1} (x - x_c) \le 1\}
+        $$
+        <p>where $P \in \mathbb{S}^n_{++}$ (symmetric positive definite). $P$ determines the shape and orientation.</p>
+
+        <div class="insight">
+          <h4>Geometric Interpretation via Eigendecomposition</h4>
+          <p>Let $P = Q \Lambda Q^\top$ be the eigendecomposition of $P$, where $\Lambda = \text{diag}(\lambda_1, \dots, \lambda_n)$. The semi-axes of the ellipsoid are aligned with the eigenvectors $q_i$ (columns of $Q$) and have lengths $\sqrt{\lambda_i}$.</p>
+          <p>Alternatively, an ellipsoid is the image of the unit Euclidean ball under an affine mapping: $\mathcal{E} = f(B(0,1))$ where $f(u) = P^{1/2}u + x_c$. Since affine maps preserve convexity, ellipsoids are convex.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/ellipsoid-axes.png"
+               alt="Anatomy of an ellipsoid showing principal axes aligned with eigenvectors"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2.3:</i> An ellipsoid is defined by a PSD matrix $P$. Its principal axes align with the eigenvectors of $P$, and their lengths are the square roots of the eigenvalues.</figcaption>
+        </figure>
+
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Explorer: Ellipsoid Geometry</h3>
+          <p><b>See How PSD Matrices Define Ellipsoids:</b> An ellipsoid is defined by $\{x \mid (x-x_c)^\top P^{-1} (x-x_c) \le 1\}$ where $P \succ 0$. This tool lets you:</p>
+          <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <li><b>Adjust matrix P:</b> Modify the PSD matrix entries and watch the ellipsoid reshape in real-time</li>
+            <li><b>Visualize eigenvectors:</b> The principal axes align with eigenvectors of $P$</li>
+            <li><b>Observe eigenvalue effects:</b> Axis lengths are proportional to $\sqrt{\lambda_i}$ where $\lambda_i$ are eigenvalues</li>
+          </ul>
+          <div id="widget-ellipsoid-explorer" style="width: 100%; height: 400px; position: relative;"></div>
+        </div>
+
+        <h3>2.3 Polyhedra</h3>
+
+        <p>A <a href="#" class="definition-link">polyhedron</a> is the solution set of finitely many linear inequalities and equalities:</p>
+        $$
+        \mathcal{P} = \{x \in \mathbb{R}^n \mid Ax \le b, \ Cx = d\}
+        $$
+        <p>Geometrically, a polyhedron is the intersection of a finite number of halfspaces and hyperplanes. This description is known as the <b>H-representation</b> (Hyperplane representation).</p>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/polyhedron-construction.png"
+               alt="A polyhedron formed by the intersection of multiple halfspaces"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2.4:</i> A polyhedron (central solid region) is formed by intersecting multiple halfspaces. Each face corresponds to one linear inequality constraint.</figcaption>
+        </figure>
+
+        <div class="proof-box">
+          <h4>Convexity of Polyhedra</h4>
+          <p>Since halfspaces and hyperplanes are convex sets, and the intersection of any collection of convex sets is convex (see Section 3), a polyhedron is convex.</p>
+        </div>
+
+        <h3>Polytope vs. Polyhedron: H-Rep and V-Rep</h3>
+        <p>A <a href="#" class="definition-link">polytope</a> is a bounded polyhedron.</p>
+        <ul>
+            <li><b>H-Representation (Intersection):</b> $\mathcal{P} = \{x \mid Ax \le b\}$. This describes the set by its "walls" (facets). It is efficient for checking if a point is in the set ($Ax \le b$?) but hard for generating points.</li>
+            <li><b>V-Representation (Hull):</b> $\mathcal{P} = \mathrm{conv}\{v_1, \dots, v_k\}$. This describes the set by its "corners" (vertices). It is efficient for generating points (just mix the vertices) but hard for checking membership.</li>
+        </ul>
+        <div class="theorem-box">
+            <h4>Minkowski-Weyl Theorem</h4>
+            <p>A set $\mathcal{P}$ is a polyhedron if and only if it is the sum of a convex hull of a finite set of points and a conical hull of a finite set of directions (rays):
+            $$ \mathcal{P} = \mathrm{conv}\{v_1, \dots, v_k\} + \mathrm{cone}\{r_1, \dots, r_m\} $$
+            If the set is bounded (a polytope), the conical part is zero, and $\mathcal{P} = \mathrm{conv}\{v_1, \dots, v_k\}$.</p>
+        </div>
+
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Visualizer: Polyhedron Builder</h3>
+          <p><b>Build Feasible Regions from Constraints:</b> A polyhedron is the intersection of finitely many halfspaces. This tool brings LP feasible sets to life:</p>
+          <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <li><b>Add constraints one at a time:</b> Drag to define linear inequalities $a^\top x \le b$</li>
+            <li><b>Visualize normals:</b> See the normal vector $a$ pointing <i>out</i> of the feasible region</li>
+            <li><b>Watch the intersection:</b> As you add constraints, see how the feasible region is carved out of the plane</li>
+          </ul>
+          <div id="widget-polyhedron-visualizer" style="width: 100%; height: 520px; position: relative;"></div>
+        </div>
+
+        <h3>2.4 The Positive Semidefinite (PSD) Cone</h3>
+
+        <p>The set of symmetric positive semidefinite matrices forms a convex cone, denoted $\mathbb{S}^n_+$. This object is the engine of <b>Semidefinite Programming (SDP)</b>.</p>
+        $$
+        \mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}
+        $$
+        <p><b>Generalized Inequalities:</b> As we will detail in <a href="../04-convex-sets-cones/index.html">Lecture 04</a>, a convex cone $K$ induces a partial ordering on the vector space. For the PSD cone, we write $X \succeq Y$ to mean $X - Y \in \mathbb{S}^n_+$ (i.e., $X-Y$ is PSD). This generalizes the standard inequality $\ge$ on real numbers.</p>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/psd-cone-3d.png"
+               alt="Visualization of the 2x2 PSD cone in 3D space"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2.5:</i> The cone of $2 \times 2$ PSD matrices visualized in 3D space (axes are the matrix entries $x, y, z$). It is a convex cone with a specific "ice-cream" like shape but with a flat boundary structure.</figcaption>
+        </figure>
+
+        <div class="proof-box">
+          <h4>Proof: The PSD Cone is Convex</h4>
+          <p>We need to show that if $A, B \in \mathbb{S}^n_+$ and $\theta \in [0,1]$, then $\theta A + (1-\theta)B \in \mathbb{S}^n_+$.</p>
+          <div class="proof-step">
+            <strong>Definition Check:</strong> Let $z \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination:
+            $$
+            z^\top (\theta A + (1-\theta)B) z = \theta (z^\top A z) + (1-\theta) (z^\top B z)
+            $$
+          </div>
+          <div class="proof-step">
+            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know $z^\top A z \ge 0$ and $z^\top B z \ge 0$ for all $z$. Since $\theta \in [0,1]$, both coefficients $\theta$ and $1-\theta$ are non-negative.
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> The sum of non-negative terms is non-negative, so $z^\top (\theta A + (1-\theta)B) z \ge 0$ for all $z$. Thus the combination is PSD.
+          </div>
+        </div>
+
+        <div class="example">
+            <h4>Spectrahedra: The Shape of SDP</h4>
+            <p>The intersection of the PSD cone with an affine subspace is called a <a href="#" class="definition-link">spectrahedron</a>. These are the feasible sets for Semidefinite Programs (SDPs). Unlike polyhedra, they have smooth, curved boundaries.</p>
+            <figure style="text-align: center; margin: 24px 0;">
+              <img src="assets/spectrahedron.png"
+                   alt="A spectrahedron (feasible set of an LMI)"
+                   style="max-width: 50%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 2.6:</i> A spectrahedron looks like a "puffy" polygon. Its faces are flat where the affine space cuts the cone's boundary, but its edges and corners can be smooth curves.</figcaption>
+            </figure>
+        </div>
+      </section>
+
+
+      <section class="section-card" id="section-3">
+        <h2>3. Operations that Preserve Convexity</h2>
+
+        <p>We can prove that a complex set is convex by building it from simpler convex sets using operations that preserve convexity. This is the "calculus" of convex sets.</p>
+
+
+        <h3>3.1 Intersection</h3>
+
+        <div class="theorem-box">
+          <h4>Theorem (Intersection Preserves Convexity)</h4>
+          <p>The intersection of any collection (finite or infinite) of convex sets is convex.</p>
+          $$ C = \bigcap_{i \in I} C_i $$
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/convex-intersection.png"
+               alt="Venn diagram showing the intersection of two convex sets is convex"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 3.1:</i> The intersection of two convex sets (blue and yellow) is the green region. Note that while the union is not necessarily convex, the intersection always is.</figcaption>
+        </figure>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <div class="proof-step">
+            Let $x, y \in C$. By definition, $x \in C_i$ and $y \in C_i$ for all $i \in I$.
+          </div>
+          <div class="proof-step">
+            Since each $C_i$ is convex, $\theta x + (1-\theta)y \in C_i$ for all $i \in I$.
+          </div>
+          <div class="proof-step">
+            Therefore, $\theta x + (1-\theta)y \in \bigcap_{i \in I} C_i = C$.
+          </div>
+        </div>
+
+        <div class="example">
+          <h4>Advanced Example: Trigonometric Polynomials</h4>
+          <p>Consider the set of coefficients $x \in \mathbb{R}^m$ such that the trigonometric polynomial $p_x(t) = \sum_{k=1}^m x_k \cos(kt)$ is bounded by 1 on an interval:</p>
+          $$
+          S = \{x \in \mathbb{R}^m \mid |p_x(t)| \le 1 \text{ for all } |t| \le \pi/3\}
+          $$
+          <p>This set can be written as an infinite intersection of halfspaces:</p>
+          $$
+          S = \bigcap_{|t| \le \pi/3} \{x \mid -1 \le c(t)^\top x \le 1\}
+          $$
+          <p>where $c(t) = (\cos(t), \dots, \cos(mt))$. Since each constraint defines a convex "slab" (intersection of two halfspaces), the infinite intersection $S$ is convex.</p>
+        </div>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+            <figure style="text-align: center; flex: 1;">
+              <img src="assets/trig-poly-intersection.png"
+                   alt="Plot of the convex set of bounded trigonometric polynomials"
+                   style="width: 100%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 3.2:</i> The set $S$ defined by infinite constraints.</figcaption>
+            </figure>
+            <figure style="text-align: center; flex: 1;">
+              <img src="assets/gonzo-shape.png"
+                   alt="Visualizing the intersection of infinite halfspaces"
+                   style="width: 100%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 3.3:</i> The smooth convex "safe zone" formed by tangent hyperplanes.</figcaption>
+            </figure>
+        </div>
+<h3>3.2 Affine Functions Preserve Convexity</h3>
+
+        <p>Let $f : \mathbb{R}^n \to \mathbb{R}^m$ be an affine function, $f(x) = Ax + b$.</p>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/affine-image-projection.png"
+                    alt="Projection of a polyhedron onto 2D space"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.4:</i> The image of a convex set (polyhedron) under an affine map (projection) is convex.</figcaption>
+             </figure>
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/affine-preimage-cone.png"
+                    alt="Slice of a cone by a plane"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.5:</i> The preimage of a convex cone (intersection with a plane) is a convex set (an ellipse).</figcaption>
+             </figure>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem (Affine Image and Preimage)</h4>
+          <ul>
+            <li><b>Image:</b> If $C \subseteq \mathbb{R}^n$ is convex, then $f(C) = \{Ax + b \mid x \in C\} \subseteq \mathbb{R}^m$ is convex.</li>
+            <li><b>Preimage (Inverse Image):</b> If $D \subseteq \mathbb{R}^m$ is convex, then $f^{-1}(D) = \{x \in \mathbb{R}^n \mid Ax + b \in D\}$ is convex.</li>
+          </ul>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+
+          <div class="proof-step">
+            <strong>Image:</strong> Take $y_1, y_2 \in f(C)$, so $y_1 = Ax_1 + b$ and $y_2 = Ax_2 + b$ for some $x_1, x_2 \in C$. For $\theta \in [0,1]$:
+            $$
+            \theta y_1 + (1-\theta)y_2 = \theta(Ax_1 + b) + (1-\theta)(Ax_2 + b) = A(\theta x_1 + (1-\theta)x_2) + b
+            $$
+            Since $C$ is convex, $\theta x_1 + (1-\theta)x_2 \in C$, so $\theta y_1 + (1-\theta)y_2 \in f(C)$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Preimage:</strong> Take $x_1, x_2 \in f^{-1}(D)$, so $Ax_1 + b \in D$ and $Ax_2 + b \in D$. For $\theta \in [0,1]$:
+            $$
+            A(\theta x_1 + (1-\theta)x_2) + b = \theta(Ax_1 + b) + (1-\theta)(Ax_2 + b)
+            $$
+            Since $D$ is convex, the right side is in $D$, so $\theta x_1 + (1-\theta)x_2 \in f^{-1}(D)$.
+          </div>
+        </div>
+
+        <div class="example">
+          <h4>Application: Ellipsoids are Convex</h4>
+          <p>An ellipsoid $\mathcal{E} = \{x \mid (x - x_c)^\top P^{-1} (x - x_c) \le 1\}$ where $P \succ 0$ can be written as:</p>
+          $$
+          \mathcal{E} = \{x \mid \|P^{-1/2}(x - x_c)\|_2 \le 1\}
+          $$
+          <p>This is the preimage of the Euclidean ball $\{z \mid \|z\|_2 \le 1\}$ (convex) under the affine map $f(x) = P^{-1/2}(x - x_c)$. Since preimages preserve convexity, $\mathcal{E}$ is convex.</p>
+          <div class="insight">
+            <h4>Strict vs Non-Strict Separation</h4>
+            <p>The <b>Separating Hyperplane Theorem</b> states that disjoint convex sets $C, D$ can be separated by a hyperplane ($a^\top x \le b$ for $x \in C$, $a^\top x \ge b$ for $x \in D$).
+            <ul>
+                <li><b>Non-Strict:</b> Always possible if $C, D$ are disjoint and convex. But they might touch at the boundary.</li>
+                <li><b>Strict:</b> Possible if $C$ is closed and $D$ is compact (closed & bounded). Then there exists $\epsilon > 0$ such that the gap is strictly positive.</li>
+            </ul></p>
+          </div>
+          <figure style="text-align: center; margin: 24px 0;">
+               <img src="assets/image-vs-preimage-ball.png"
+                    alt="Comparison of image vs preimage of a ball"
+                    style="max-width: 60%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.6:</i> The image of a ball is an ellipsoid (left). The preimage of a ball (slab) is also convex (right).</figcaption>
+          </figure>
+        </div>
+
+        <div class="insight">
+            <h4>Counterexample: Non-Affine Maps</h4>
+            <p>Convexity is fragile. Non-affine maps, such as $f(x) = 1/x$ or $f(x) = x^2$, do not generally preserve convexity of sets.</p>
+            <figure style="text-align: center; margin: 24px 0;">
+               <img src="assets/division-counterexample.png"
+                    alt="Division function mapping a convex set to non-convex"
+                    style="max-width: 50%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.7:</i> The "division" map $f(x,y) = x/y$ can tear a convex square into two disjoint (non-convex) pieces.</figcaption>
+            </figure>
+        </div>
+
+        <h3>3.3 Perspective and Linear-Fractional Functions</h3>
+
+        <p>The <b>perspective function</b> $P : \mathbb{R}^{n+1} \to \mathbb{R}^n$ is defined by:</p>
+        $$
+        P(x, t) = x/t, \quad \mathrm{dom}\, P = \{(x, t) \mid t > 0\}
+        $$
+        <p>Geometrically, this corresponds to a pinhole camera projection: points $(x,t)$ are projected onto the plane $t=1$ via lines through the origin.</p>
+
+        <div class="insight">
+            <h4>Why does Perspective Preserve Convexity?</h4>
+            <p>Imagine a convex object (like a solid ellipsoid) floating in 3D space. Place a light source at the origin (0,0,0). The shadow cast by this object onto a screen (the plane $t=1$) is also convex.
+            <br>The perspective function maps points to their shadows. Since the "cone of light" generated by a convex object is a convex cone, its slice by the screen is a convex set.</p>
+        </div>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/pinhole-camera.png"
+                    alt="Geometric intuition of perspective projection"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.8:</i> The perspective map $P(x,t) = x/t$ projects 3D points onto the $t=1$ plane. The image of a convex object (ellipsoid) is a convex shadow.</figcaption>
+             </figure>
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/perspective-domain.png"
+                    alt="Domain of the perspective map"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 3.9:</i> The domain is restricted to $t > 0$. As $t \to 0$, the projected point shoots to infinity.</figcaption>
+             </figure>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>The perspective function preserves convexity: if $C \subseteq \mathbb{R}^{n+1}$ is convex, then $P(C)$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof: Perspective Preserves Convexity (Step-by-Step)</h4>
+          <p>We want to show that if $u, v$ are in the perspective image $P(C)$, then the entire line segment connecting them is also in $P(C)$.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: Lift to the source set (Pre-image).</strong>
+            Since $u \in P(C)$, there exists $(y, t) \in C$ with $t>0$ such that $u = y/t$.
+            Since $v \in P(C)$, there exists $(y', t') \in C$ with $t'>0$ such that $v = y'/t'$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Target point (Image).</strong>
+            Consider a point on the segment in the image space: $w = \alpha u + (1-\alpha)v$ for $\alpha \in [0, 1]$.
+            $$ w = \alpha \frac{y}{t} + (1-\alpha) \frac{y'}{t'} $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Construct the convex combination in the domain.</strong>
+            We need to find a point in $C$ that maps to $w$. This point will be a convex combination of $(y,t)$ and $(y',t')$.
+            The perspective map is non-linear, so the mixing weights in the domain ($\mu$) will be different from the mixing weights in the image ($\alpha$).
+            We define the weights proportional to the denominators:
+            $$ \mu = \frac{\alpha t'}{\alpha t' + (1-\alpha)t} $$
+            Note that $\mu \in [0, 1]$ because $t, t' > 0$.
+            Consider the point $z = \mu (y, t) + (1-\mu) (y', t')$. Since $C$ is convex, $z \in C$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Verify mapping.</strong>
+            Let's calculate $P(z)$. The $t$-coordinate of $z$ is $D = \mu t + (1-\mu)t'$.
+            Substituting $\mu$:
+            $$ D = \frac{\alpha t' t + (1-\alpha)t t'}{\alpha t' + (1-\alpha)t} = \frac{tt'}{\alpha t' + (1-\alpha)t} $$
+            The $y$-coordinate of $z$ is $Y_{num} = \mu y + (1-\mu) y'$.
+            $$ P(z) = \frac{Y_{num}}{D} = \frac{\mu}{D} y + \frac{1-\mu}{D} y' $$
+            Calculating the coefficients: $\frac{\mu}{D} = \frac{\alpha t' / (\dots)}{t t' / (\dots)} \cdot \frac{1}{t} ... $ wait, simpler algebra:
+            $$ \mu = \frac{\alpha/t}{\alpha/t + (1-\alpha)/t'} \implies \frac{\mu}{\mu t + (1-\mu)t'} = \frac{\alpha}{t} $$
+            Thus $P(z) = \frac{\alpha}{t} y + \frac{1-\alpha}{t'} y' = \alpha u + (1-\alpha) v = w$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Conclusion:</strong>
+            We found a point $z \in C$ such that $P(z) = w$. Thus $w \in P(C)$.
+          </div>
+        </div>
+
+        <p>A <a href="#" class="definition-link">linear-fractional function</a> is a composition of perspective with an affine function:</p>
+        $$
+        f(x) = \frac{Ax + b}{c^\top x + d}
+        $$
+        <p>Since it is composed of operations that preserve convexity (Affine $\to$ Perspective), linear-fractional functions also preserve convexity.</p>
+
+        <figure style="text-align: center; margin: 24px 0;">
+             <img src="assets/composition-maps.png"
+                  alt="Block diagram of function composition"
+                  style="max-width: 60%; height: auto; border-radius: 8px;" />
+             <figcaption><i>Figure 3.10:</i> Linear-fractional functions are built by composing an affine map $g(x)$ with the perspective map $P$.</figcaption>
+        </figure>
+
+        <div class="example">
+             <h4>Visualizing Projective Geometry</h4>
+             <p>Linear-fractional maps can distort space significantly, turning parallel lines into converging ones (like train tracks on a horizon), yet they strictly preserve the convexity of sets.</p>
+             <figure style="text-align: center; margin: 24px 0;">
+                  <img src="assets/warping-grid.png"
+                       alt="Grid warped by a linear-fractional map"
+                       style="max-width: 60%; height: auto; border-radius: 8px;" />
+                  <figcaption><i>Figure 3.11:</i> A regular grid (left) is warped by a linear-fractional transformation (right). Squares become "conic" quadrilaterals, but they remain convex sets.</figcaption>
+             </figure>
+        </div>
+
+        <h3>3.4 Minkowski Sum</h3>
+        <p>The <a href="#" class="definition-link">Minkowski sum</a> of two sets $C, D \subseteq \mathbb{R}^n$ is the set of all vector sums:</p>
+        $$ C + D = \{x + y \mid x \in C, y \in D\} $$
+
+        <div class="intuition-box">
+          <p><b>Geometric picture:</b> Build $C+D$ by taking every point $c \in C$, shifting the whole set $D$ by $c$, and then taking the union of all these shifted copies: $C+D=\bigcup_{c\in C}(c+D)$. The result is a “thickened” version of $C$ whose boundary is smoothed/expanded according to the shape of $D$.</p>
+          <p><b>Special case:</b> If $D$ is a ball of radius $\varepsilon$, then $C + D$ is the $\varepsilon$-offset of $C$: all points within distance $\varepsilon$ of $C$.</p>
+        </div>
+
+        <div class="interpretation-box">
+          <p><b>Modeling view:</b> Minkowski sum is “resource aggregation.” If $C$ is what you can do with resource bundle 1 and $D$ is what you can do with resource bundle 2, then $C+D$ is what you can do with both. In robust modeling, adding an uncertainty set $U$ often turns “nominal” constraints into constraints that hold for all perturbations in $U$; geometrically this corresponds to offsetting or shrinking feasible sets (sum/difference).</p>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>If $C$ and $D$ are convex, then $C+D$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p>Let $u, v \in C+D$. Then $u = c_1 + d_1$ and $v = c_2 + d_2$ for some $c_i \in C, d_i \in D$.
+          For any $\theta \in [0,1]$:</p>
+          $$
+          \theta u + (1-\theta)v = \theta(c_1 + d_1) + (1-\theta)(c_2 + d_2)
+          = [\theta c_1 + (1-\theta)c_2] + [\theta d_1 + (1-\theta)d_2]
+          $$
+          <p>Since $C$ is convex, the first bracket is in $C$. Since $D$ is convex, the second is in $D$. Thus the sum is in $C+D$.</p>
+        </div>
+
+        <h4>3.4.1 Minkowski Difference (Erosion)</h4>
+        <p>There is a related operation that “shrinks” a set. The <b>Minkowski difference</b> (also called <b>erosion</b>) of $C$ by $D$ is defined as:</p>
+        $$
+        C \ominus D := \{x \in \mathbb{R}^n \mid x + D \subseteq C\}
+        $$
+        <p>In words: $x$ is in $C \ominus D$ if, when you place a translated copy of $D$ centered at $x$, it still fits entirely inside $C$. This makes “safety margins” precise.</p>
+        <p>A useful equivalent form is an intersection of translations:</p>
+        $$
+        C \ominus D = \bigcap_{d \in D} (C - d)
+        $$
+        <p>because $x+D \subseteq C \iff x \in C-d$ for every $d\in D$.</p>
+
+        <div class="theorem-box">
+          <h4>Convexity of Minkowski Difference (when nonempty)</h4>
+          <p>If $C$ and $D$ are convex, then $C \ominus D$ is convex (and it may be empty if $D$ is “too large” to fit inside $C$ anywhere).</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p>For each fixed $d \in D$, the translate $C-d = \{x \mid x+d \in C\}$ is convex because translation preserves convexity. Since $C\ominus D$ is the intersection $\bigcap_{d\in D}(C-d)$, and intersections of convex sets are convex, $C\ominus D$ is convex.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/minkowski-sum-difference.png"
+               alt="Minkowski sum and Minkowski difference (erosion) of two convex sets"
+               style="max-width: 90%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 3.12:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
+        </figure>
+
+        <h3>3.5 Cartesian Product</h3>
+        <p>The product of convex sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is convex in $\mathbb{R}^{n+m}$:</p>
+        $$ C \times D = \{(x, y) \mid x \in C, y \in D\} $$
+        <p>This follows because component-wise convex combinations preserve membership in $C$ and $D$ respectively.</p>
+
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Laboratory: Convex Geometry</h3>
+          <p><b>Draw, Combine, and Verify:</b> This unified workspace lets you experiment with convex sets and operations. It combines drawing capabilities with set algebra:</p>
+          <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <li><b>Draw Custom Sets:</b> Use the pen tool to draw polygons. Double-click to close.</li>
+            <li><b>Add Primitives:</b> Quickly add standard convex sets like circles and squares.</li>
+            <li><b>Apply Operations:</b> Select multiple sets (Shift+Click) and apply operations like <b>Intersection</b>, <b>Convex Hull</b>, or <b>Minkowski Sum</b>.</li>
+            <li><b>Verify Convexity:</b> The lab automatically labels sets as Convex (C) or Non-Convex (NC).</li>
+          </ul>
+          <p><i>Key Concept:</i> Notice how the intersection of any two sets (even non-convex ones) doesn't guarantee convexity, but the intersection of <i>convex</i> sets is always convex!</p>
+          <div id="widget-convex-geometry-lab" style="width: 100%; position: relative;"></div>
+        </div>
+      </section>
+
+      <section class="section-card" id="section-4">
+        <h2>4. Topological Toolkit: Closure, Interior, Relative Interior</h2>
+
+        <p>To work precisely with convex sets and optimality conditions, we need clear notions of "inside," "edge," and "outside."</p>
+
+        <h3>4.1 Basic Topological Definitions</h3>
+
+        <p>Let $C \subseteq \mathbb{R}^n$ be any set.</p>
+
+        <ul>
+          <li><b>Closure</b> $\mathrm{cl}(C)$: The set of all limits of convergent sequences in $C$. It's the smallest closed set containing $C$.</li>
+          <li><b>Interior</b> $\mathrm{int}(C)$: Points with some open ball fully contained in $C$. Intuitively, "strictly inside" $C$.</li>
+          <li><b>Boundary</b> $\partial C = \mathrm{cl}(C) \setminus \mathrm{int}(C)$: The "edge" of $C$.</li>
+          <li><b>Affine hull</b> $\mathrm{aff}(C)$: The smallest affine set containing $C$.</li>
+          <li><b>Relative interior</b> $\mathrm{ri}(C)$: The interior of $C$ <i>relative to</i> $\mathrm{aff}(C)$. Points strictly inside when viewed in the affine hull.</li>
+        </ul>
+
+        <div class="example">
+          <h4>Example 1: Line Segment in $\mathbb{R}^2$</h4>
+          <p>Consider $C = \{(t, 0) \mid 0 \le t \le 1\}$ (a line segment on the $x$-axis).</p>
+          <ul>
+            <li>$\mathrm{int}(C) = \emptyset$ (no open ball in $\mathbb{R}^2$ fits inside a line)</li>
+            <li>$\mathrm{aff}(C) = \{(t, 0) \mid t \in \mathbb{R}\}$ (the entire $x$-axis)</li>
+            <li>$\mathrm{ri}(C) = \{(t, 0) \mid 0 < t < 1\}$ (interior relative to the $x$-axis)</li>
+          </ul>
+        </div>
+
+        <div class="example">
+          <h4>Example 1b: A Flat Disk in 3D (The "Frisbee" Intuition)</h4>
+          <p>Imagine a Frisbee floating in the air. Mathematically, this is the set $C = \{(x, y, 0) \mid x^2 + y^2 \le 1\} \subset \mathbb{R}^3$.</p>
+          <ul>
+            <li><b>Interior $\mathrm{int}(C) = \emptyset$:</b> If you try to fit a solid 3D ball inside the Frisbee, you fail because the Frisbee has zero thickness. Thus, strictly speaking, it has no interior points in $\mathbb{R}^3$.</li>
+            <li><b>Affine Hull $\mathrm{aff}(C)$:</b> The "minimal universe" containing the Frisbee is the flat 2D plane $z=0$. This is its affine hull.</li>
+            <li><b>Relative Interior $\mathrm{ri}(C)$:</b> If we restrict our view to just that 2D plane, the Frisbee <i>does</i> have an interior! It is the set of points strictly inside the rim: $\{(x, y, 0) \mid x^2 + y^2 < 1\}$. This is the relative interior.</li>
+          </ul>
+          <p><i>Why this matters:</i> Optimization solvers (like interior-point methods) move through the <i>relative</i> interior of the feasible set. They don't care that the set has no volume in the full space, as long as it has volume in its "native" subspace.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 2: Standard Simplex</h4>
+          <p>$\Delta^n = \{x \in \mathbb{R}^n \mid x \ge 0, \mathbf{1}^\top x = 1\}$.</p>
+          <ul>
+            <li>$\mathrm{int}(\Delta^n) = \emptyset$ (lies in a hyperplane)</li>
+            <li>$\mathrm{aff}(\Delta^n) = \{x \mid \mathbf{1}^\top x = 1\}$ (the hyperplane)</li>
+            <li>$\mathrm{ri}(\Delta^n) = \{x > 0 \mid \mathbf{1}^\top x = 1\}$ (all coordinates strictly positive)</li>
+          </ul>
+        </div>
+
+        <h3>4.2 Key Properties for Convex Sets</h3>
+
+        <div class="theorem-box">
+          <h4>Facts About Convex Sets</h4>
+          <ol>
+            <li><b>Closure is Convex:</b> $\mathrm{cl}(C)$ is convex.
+              <br><i>Proof:</i> Let $a, b \in \mathrm{cl}(C)$. Then there exist sequences $a_k \to a, b_k \to b$ with $a_k, b_k \in C$. For any $\theta$, the sequence $z_k = \theta a_k + (1-\theta)b_k$ lies in $C$ (by convexity) and converges to $\theta a + (1-\theta)b$. Thus the limit is in $\mathrm{cl}(C)$.
+            </li>
+            <li>$\mathrm{int}(C)$ (if nonempty) and $\mathrm{ri}(C)$ are convex.</li>
+            <li>If $C$ is convex with nonempty interior, then $\mathrm{cl}(C) = \mathrm{cl}(\mathrm{int}(C))$ and $\mathrm{int}(C) = \mathrm{int}(\mathrm{cl}(C))$.</li>
+            <li><b>Relative interior of intersection:</b> If $\mathrm{ri}(C) \cap \mathrm{ri}(D) \neq \emptyset$, then:
+              $$
+              \mathrm{ri}(C \cap D) = \mathrm{ri}(C) \cap \mathrm{ri}(D)
+              $$
+            </li>
+            <li><b>Affine functions:</b> If $f(x) = Ax + b$, then $f(\mathrm{ri}(C)) = \mathrm{ri}(f(C))$ for convex $C$.</li>
+          </ol>
+        </div>
+
+        <h3>4.3 Why Relative Interior Matters</h3>
+
+        <p>Relative interior is crucial for:</p>
+        <ul>
+          <li><b>Constraint qualifications:</b> Slater's condition for strong duality (Lecture 09) requires a point in $\mathrm{ri}(\mathrm{dom}(f_0))$</li>
+          <li><b>Optimality conditions:</b> KKT conditions require regularity at boundary points</li>
+          <li><b>Interior-point methods:</b> Algorithms that approach optimality from the relative interior</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 5: REVIEW -->
+      <section class="section-card" id="section-5">
+        <h2>5. Review & Cheat Sheet</h2>
+        <h3>Key Definitions</h3>
+        <ul>
+          <li><b>Affine Set:</b> Contains the line through any two points. ($C = x_0 + V$)</li>
+          <li><b>Convex Set:</b> Contains the line segment between any two points.</li>
+          <li><b>Convex Hull:</b> Smallest convex set containing $S$. ($\text{conv}(S)$)</li>
+          <li><b>Cone:</b> Closed under positive scaling ($\theta x \in C$ for $\theta \ge 0$).</li>
+        </ul>
+
+        <h3>Operations Preserving Convexity</h3>
+        <ul>
+          <li>Intersection ($\bigcap C_i$)</li>
+          <li>Affine map ($f(x) = Ax+b$) and inverse map ($f^{-1}(D)$)</li>
+          <li>Perspective function ($P(x,t) = x/t$)</li>
+          <li>Linear-fractional function ($f(x) = \frac{Ax+b}{c^\top x+d}$)</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 6: EXERCISES -->
+      <section class="section-card" id="section-6">
+        <h2><i data-feather="edit-3"></i> 6. Exercises</h2>
+
+        <div class="problem">
+          <h3>P3.1 — Voronoi Regions</h3>
+          <p><b>Problem:</b> Let $x_1, \dots, x_k \in \mathbb{R}^n$ be a set of points. The Voronoi region associated with $x_i$ is defined as:
+          $$ V_i = \{x \in \mathbb{R}^n \mid \|x - x_i\|_2 \le \|x - x_j\|_2, \ \forall j \neq i\} $$
+          Prove that $V_i$ is a polyhedron (and thus a convex set).</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Polyhedron Definition:</b> A polyhedron is the intersection of a finite number of halfspaces. The goal is to show $V_i$ fits the form $\{x \mid Ax \le b\}$.</li>
+                <li><b>Geometry of Distance:</b> The condition $\|x - a\| \le \|x - b\|$ is equivalent to a linear inequality $2(b-a)^\top x \le \|b\|^2 - \|a\|^2$. This defines a halfspace bounded by the perpendicular bisector of $a$ and $b$.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Step 1: Expand the inequality.</strong>
+              The condition $\|x - x_i\|_2 \le \|x - x_j\|_2$ is equivalent to $\|x - x_i\|_2^2 \le \|x - x_j\|_2^2$.
+              $$ x^\top x - 2x_i^\top x + x_i^\top x_i \le x^\top x - 2x_j^\top x + x_j^\top x_j $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Linearize.</strong>
+              The quadratic term $x^\top x$ cancels out from both sides (this is the key step). Rearranging terms:
+              $$ 2(x_j - x_i)^\top x \le \|x_j\|_2^2 - \|x_i\|_2^2 $$
+              This is a linear inequality $a_{ij}^\top x \le b_{ij}$ defining a closed halfspace $H_{ij}$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Intersection.</strong>
+              The Voronoi region is the intersection of these halfspaces for all $j \neq i$:
+              $$ V_i = \bigcap_{j \neq i} H_{ij} $$
+              Since $V_i$ is the intersection of a finite number ($k-1$) of halfspaces, it is a polyhedron. Since halfspaces are convex and intersections preserve convexity, $V_i$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.2 — Midpoint Convexity</h3>
+          <p><b>Problem:</b> A set $C$ is <b>midpoint convex</b> if $\frac{1}{2}(x+y) \in C$ whenever $x, y \in C$. Prove that if $C$ is closed and midpoint convex, then $C$ is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Dyadic Rationals:</b> Fractions of the form $k/2^n$. These are dense in the real numbers.</li>
+                <li><b>Jensen's Logic:</b> If a property holds for midpoints, it holds for quarters, eighths, etc.</li>
+                <li><b>Role of Topology:</b> Midpoint convexity implies convexity only for closed (or open) sets. Counter-example: The set of rational numbers $\mathbb{Q}$ is midpoint convex but not convex (contains holes).</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Step 1: Dyadic Combinations.</strong>
+              By induction, we show $\lambda x + (1-\lambda)y \in C$ for all dyadic rationals $\lambda = k/2^n \in [0,1]$.
+              Base case ($n=1$): $\lambda=1/2$, true by assumption.
+              Inductive step: If true for $n$, any dyadic at $n+1$ is the midpoint of two dyadics at level $n$. Since $C$ is midpoint convex, the property holds.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Density Argument.</strong>
+              Let $\theta \in [0, 1]$ be any real number. Since dyadic rationals are dense in $[0, 1]$, there exists a sequence $\lambda_k \in \{m/2^n\}$ such that $\lambda_k \to \theta$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Limit via Closure.</strong>
+              Let $z_k = \lambda_k x + (1-\lambda_k)y$. From Step 1, $z_k \in C$ for all $k$.
+              The sequence converges: $z_k \to z = \theta x + (1-\theta)y$.
+              Since $C$ is closed, it must contain all its limit points. Thus $z \in C$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.3 — Convex Hull of a Union</h3>
+          <p><b>Problem:</b> Let $S_1, S_2$ be convex sets. Show that $\mathrm{conv}(S_1 \cup S_2)$ consists exactly of all line segments connecting points in $S_1$ to points in $S_2$. i.e., $x \in \mathrm{conv}(S_1 \cup S_2) \iff x = \theta y + (1-\theta)z$ for $y \in S_1, z \in S_2, \theta \in [0,1]$.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Join of Sets:</b> The convex hull of a union $A \cup B$ is called the "join". Geometrically, it fills the space between $A$ and $B$.</li>
+                <li><b>Reduction:</b> A generic convex combination of points in $S_1 \cup S_2$ can be grouped into a "weighted center" for $S_1$ and a "weighted center" for $S_2$.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>($\Leftarrow$):</strong> Let $x = \theta y + (1-\theta)z$ with $y \in S_1, z \in S_2$. Since $S_1, S_2 \subseteq S_1 \cup S_2$, both $y$ and $z$ are in the union. Since the convex hull contains all convex combinations, $x \in \mathrm{conv}(S_1 \cup S_2)$.
+            </div>
+            <div class="proof-step">
+              <strong>($\Rightarrow$):</strong> Let $x \in \mathrm{conv}(S_1 \cup S_2)$. By definition, $x = \sum_{i=1}^k \lambda_i u_i$ with $u_i \in S_1 \cup S_2$.
+              Reorder indices so $u_1, \dots, u_m \in S_1$ and $u_{m+1}, \dots, u_k \in S_2$.
+              $$ x = \sum_{i=1}^m \lambda_i u_i + \sum_{j=m+1}^k \lambda_j u_j $$
+              Let $\theta = \sum_{i=1}^m \lambda_i$. If $\theta=0$, $x$ is a convex combination of points only in $S_2$, so $x \in S_2$ (convex). Same for $\theta=1$.
+              If $0 < \theta < 1$, define:
+              $$ y = \sum_{i=1}^m \frac{\lambda_i}{\theta} u_i, \quad z = \sum_{j=m+1}^k \frac{\lambda_j}{1-\theta} u_j $$
+              These coefficients sum to 1, so $y \in S_1$ and $z \in S_2$ (by convexity of $S_1, S_2$).
+              Substituting back, $x = \theta y + (1-\theta)z$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.4 — Linear-Fractional Functions</h3>
+          <p><b>Problem:</b> Show that the range of a linear-fractional function $f(x) = \frac{Ax+b}{c^\top x+d}$ on a convex domain $C$ (where $c^\top x + d > 0$) is a convex set.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Perspective Composition:</b> Linear-fractional functions are the composition of an affine map with the perspective function $P(u, v) = u/v$.</li>
+                <li><b>Preservation Rules:</b> Affine maps preserve convexity. The perspective map preserves convexity. Therefore, their composition preserves convexity. This is a purely structural proof avoiding messy algebra.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Step 1: Identify components.</strong>
+              Define the affine map $g(x) = (Ax+b, c^\top x+d) \in \mathbb{R}^{m+1}$.
+              Define the perspective map $P(y, t) = y/t$.
+              Then $f(x) = P(g(x))$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Apply preservation theorems.</strong>
+              Since $C$ is convex, its image under the affine map, $D = g(C)$, is convex.
+              The range of $f$ is $P(D)$. Since the perspective function preserves convexity (Theorem in 3.3), $P(D)$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.5 — Convexity of Quadratic Sublevel Set</h3>
+          <p>Show that the set $C = \{x \in \mathbb{R}^n \mid x^\top A x + b^\top x + c \le 0\}$ is convex when $A \in \mathbb{S}^n_+$ (positive semidefinite).</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Algebraic Convexity:</b> We prove convexity directly from the definition $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$.</li>
+                <li><b>Correction Term:</b> The value of a quadratic at an average is the average of values <i>minus</i> a term depending on the variance: $f(\bar{x}) = \overline{f(x)} - \text{variance}$. For convex functions ($A \succeq 0$), this 'variance' term is non-positive.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Step 1: Expand the Quadratic Form.</strong>
+              Let $z = \theta x + (1-\theta)y$. We want to compute $z^\top A z$.
+              $$
+              z^\top A z = \theta^2 x^\top A x + (1-\theta)^2 y^\top A y + 2\theta(1-\theta)x^\top A y
+              $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: The Key Identity.</strong>
+              Using $\theta^2 = \theta - \theta(1-\theta)$, we derive:
+              $$
+              z^\top A z = \theta x^\top A x + (1-\theta)y^\top A y - \theta(1-\theta)(x-y)^\top A (x-y)
+              $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Combine with Linear Terms.</strong>
+              Let $f(u) = u^\top A u + b^\top u + c$. By linearity of the other terms:
+              $$
+              f(z) = \theta f(x) + (1-\theta)f(y) - \theta(1-\theta)(x-y)^\top A (x-y)
+              $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 4: Apply PSD Condition.</strong>
+              Since $A \succeq 0$, $(x-y)^\top A (x-y) \ge 0$. Thus:
+              $$ f(z) \le \theta f(x) + (1-\theta)f(y) $$
+              Since $f(x) \le 0$ and $f(y) \le 0$, we have $f(z) \le 0$. Thus $C$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.6 — Relative Interior of the Simplex</h3>
+          <p>Let $\Delta^n = \{x \in \mathbb{R}^n \mid x \ge 0, \mathbf{1}^\top x = 1\}$. Show that:
+          $$ \mathrm{ri}(\Delta^n) = \{x \in \mathbb{R}^n \mid x > 0, \mathbf{1}^\top x = 1\} $$</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Relative Interior:</b> The interior relative to the affine hull. It excludes "edges" that lie on the relative boundary.</li>
+                <li><b>Simplex Geometry:</b> The simplex lives in the hyperplane $\sum x_i = 1$. Its relative interior consists of strictly positive probability distributions.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Step 1: Identify affine hull.</strong> $\mathrm{aff}(\Delta^n) = \{x \in \mathbb{R}^n \mid \mathbf{1}^\top x = 1\}$ (the hyperplane).
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Necessity ($\Rightarrow$).</strong> If any $x_i = 0$, any ball in the affine hull centered at $x$ contains points with negative coordinates. Thus $x \notin \mathrm{ri}(\Delta^n)$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Sufficiency ($\Leftarrow$).</strong> If $x > 0$ and $\mathbf{1}^\top x = 1$, let $\varepsilon = \min x_i > 0$. Any point $y$ in the affine hull with $\|y-x\|_\infty < \varepsilon$ satisfies $y > 0$, hence $y \in \Delta^n$. Thus $x \in \mathrm{ri}(\Delta^n)$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.7 — Convex Hull Characterizations</h3>
+          <p>Given points $x_1, \dots, x_k \in \mathbb{R}^n$, show that the convex hull equals the intersection of all convex sets containing the points.</p>
+
+          <div class="recap-box">
+             <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+             <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                 <li><b>Constructive vs. Intersection:</b> The convex hull can be built 'from the inside' (combinations) or 'from the outside' (intersections).</li>
+                 <li><b>Minimality:</b> The intersection definition proves that the convex hull is the <i>smallest</i> convex set containing $S$.</li>
+             </ul>
+           </div>
+
+           <div class="solution-box">
+             <h4>Solution</h4>
+             <div class="proof-step">
+               Let $C_{comb}$ be the set of convex combinations, and $C_{int} = \bigcap_{S \subseteq K, K \text{ convex}} K$.
+             </div>
+             <div class="proof-step">
+               <strong>($C_{comb} \subseteq C_{int}$):</strong> Let $x \in C_{comb}$. Then $x = \sum \theta_i x_i$. Any convex set $K$ containing $\{x_i\}$ must contain $x$ by definition. Thus $x$ is in the intersection of all such sets.
+             </div>
+             <div class="proof-step">
+               <strong>($C_{int} \subseteq C_{comb}$):</strong> $C_{comb}$ is itself a convex set containing the points. Therefore, it is one of the sets $K$ in the intersection. Thus the intersection is contained in $C_{comb}$.
+             </div>
+           </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.8 — Minkowski Sum of Sets</h3>
+          <p>The Minkowski sum is $X + Y = \{x+y \mid x \in X, y \in Y\}$. Show that if $X, Y$ are convex, $X+Y$ is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Linear Maps:</b> $X+Y$ is the image of $X \times Y$ under the linear map $f(x,y)=x+y$. Linear maps preserve convexity.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              Let $u, v \in X+Y$. Then $u = x_1+y_1$ and $v = x_2+y_2$ with $x_i \in X, y_i \in Y$.
+              For $\lambda \in [0,1]$:
+              $$ \lambda u + (1-\lambda)v = \lambda(x_1+y_1) + (1-\lambda)(x_2+y_2) = (\lambda x_1 + (1-\lambda)x_2) + (\lambda y_1 + (1-\lambda)y_2) $$
+              By convexity of $X$ and $Y$, the terms in parentheses are in $X$ and $Y$ respectively. Thus the sum is in $X+Y$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.9 — Convexity of Thickened Sets</h3>
+          <p>Let $C \subseteq \mathbb{R}^n$ be a closed convex set. Define $C_\varepsilon = \{y \mid \mathrm{dist}(y, C) \le \varepsilon\}$. Show that $C_\varepsilon$ is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Minkowski Sum Interpretation:</b> The thickened set $C_\varepsilon$ is exactly $C + B(0, \varepsilon)$.</li>
+                <li><b>Convexity Preservation:</b> Since $C$ is convex and the ball $B(0, \varepsilon)$ is convex, their Minkowski sum is convex.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              We observe that $C_\varepsilon = C + \{z \mid \|z\| \le \varepsilon\}$.
+              The set $\{z \mid \|z\| \le \varepsilon\}$ is a norm ball, which is convex.
+              The Minkowski sum of two convex sets is convex (Problem 3.8). Thus $C_\varepsilon$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.10 — Closure of a Convex Set</h3>
+          <p>Show that if $C$ is convex, its closure $\mathrm{cl}(C)$ is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Sequences:</b> Limit points preserve non-strict inequalities like $\theta x + (1-\theta)y \in \dots$.</li>
+                <li><b>Intuition:</b> You cannot "bend" the boundary of a convex shape inwards (making it non-convex) without affecting the interior points.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              Let $a, b \in \mathrm{cl}(C)$. By definition, there exist sequences $x_k \to a, y_k \to b$ with $x_k, y_k \in C$.
+            </div>
+            <div class="proof-step">
+              Let $\lambda \in [0,1]$. By convexity, $z_k = \lambda x_k + (1-\lambda)y_k \in C$.
+            </div>
+            <div class="proof-step">
+              Taking limits: $z_k \to \lambda a + (1-\lambda)b$. Since limits of sequences in $C$ are in $\mathrm{cl}(C)$, the combination is in $\mathrm{cl}(C)$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.11 — Product of Convex Sets</h3>
+          <p>Show that if $X, Y$ are convex, then $X \times Y$ is convex.</p>
+
+          <div class="recap-box">
+             <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+             <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                 <li><b>Component-wise Convexity:</b> The Cartesian product stacks convexity conditions. A segment in the product space projects to segments in the components.</li>
+             </ul>
+           </div>
+
+           <div class="solution-box">
+             <h4>Solution</h4>
+             <div class="proof-step">
+               Let $u_1 = (x_1, y_1), u_2 = (x_2, y_2) \in X \times Y$.
+               $$ \lambda u_1 + (1-\lambda)u_2 = (\lambda x_1 + (1-\lambda)x_2, \lambda y_1 + (1-\lambda)y_2) $$
+               Since $X$ is convex, the first component is in $X$. Since $Y$ is convex, the second is in $Y$. Thus the pair is in $X \times Y$.
+             </div>
+           </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.12 — Finite Convex Combinations (Jensen's for Sets)</h3>
+          <p>Prove by induction that if $C$ is convex, then any convex combination of $k$ points from $C$ lies in $C$.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Recursive Structure:</b> Any $k$-point combination can be viewed as a 2-point combination of one point and a $(k-1)$-point combination.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Base Case ($k=2$):</strong> Definition of convexity.
+            </div>
+            <div class="proof-step">
+              <strong>Inductive Step:</strong> Assume true for $k$. Consider $x = \sum_{i=1}^{k+1} \theta_i x_i$. Let $\alpha = \sum_{i=1}^k \theta_i$. If $\alpha=0$, the statement holds. Otherwise, write:
+              $$ x = \alpha \sum_{i=1}^k \frac{\theta_i}{\alpha} x_i + \theta_{k+1} x_{k+1} $$
+              The sum term is a convex combination of $k$ points (in $C$ by hypothesis). Let's call it $y$.
+              Then $x = \alpha y + (1-\alpha)x_{k+1}$, which is a convex combination of 2 points. Thus $x \in C$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.13 — Convexity via Line Intersections</h3>
+          <p>Prove that $C$ is convex if and only if its intersection with every line is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Reduction to 1D:</b> This allows checking convexity by 'slicing' the set.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>($\Rightarrow$):</strong> Suppose $C$ is convex. A line $L$ is an affine set, hence convex. Since the intersection of any collection of convex sets is convex (Theorem 3.1), the intersection $C \cap L$ is convex.
+            </div>
+            <div class="proof-step">
+              <strong>($\Leftarrow$):</strong> Assume the intersection of $C$ with every line is convex. For any two points $x, y \in C$, let $L$ be the unique line passing through them. By assumption, the set $S = C \cap L$ is convex. Since $x, y \in S$, the convexity of $S$ implies the segment $[x, y] \subseteq S$. Since $S \subseteq C$, it follows that $[x, y] \subseteq C$. Thus, $C$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.14 — Hyperbolic Sets</h3>
+          <p>Show that $C = \{ x \in \mathbb{R}^n_+ \mid \prod x_i \ge 1 \}$ is convex.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>AM-GM Power:</b> $\prod z_i \ge \prod (x_i^\theta y_i^{1-\theta})$ allows component-wise analysis.</li>
+                <li><b>Superlevel Set:</b> Equivalently $\sum \log x_i \ge 0$, a superlevel set of a concave function.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              Let $z = \theta x + (1-\theta)y$. We want to show $\prod z_i \ge 1$.
+              Apply the weighted AM-GM inequality to each component $i$:
+              $$ z_i = \theta x_i + (1-\theta)y_i \ge x_i^\theta y_i^{1-\theta} $$
+              (Here we treat $\theta$ and $1-\theta$ as the weights. This is valid since they sum to 1 and are non-negative).
+            </div>
+            <div class="proof-step">
+              Taking the product over all $i$:
+              $$ \prod z_i \ge \prod (x_i^\theta y_i^{1-\theta}) = \left(\prod x_i\right)^\theta \left(\prod y_i\right)^{1-\theta} $$
+            </div>
+            <div class="proof-step">
+              Since $x, y \in C$, $\prod x_i \ge 1$ and $\prod y_i \ge 1$. Thus:
+              $$ \prod z_i \ge 1^\theta \cdot 1^{1-\theta} = 1 $$
+              Thus $z \in C$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.15 — Set Classification Challenge</h3>
+          <p>Determine whether the following are convex: (a) Slab, (b) Rectangle, (c) Wedge, (d) Apollonius Set $\{x \mid \|x-a\| \le \theta \|x-b\|\}$.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Intersection Principle:</b> Slabs, rectangles, wedges are intersections of halfspaces.</li>
+                <li><b>Quadratic Inequalities:</b> Apollonius set reduces to a quadratic inequality.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <ul>
+              <li>(a-c) <b>Yes</b>, they are intersections of halfspaces (polyhedra).</li>
+              <li>(d) <b>Yes, if $\theta \le 1$.</b>
+              <br>Squaring the condition $\|x-a\| \le \theta \|x-b\|$ gives:
+              $$ \|x\|^2 - 2a^\top x + \|a\|^2 \le \theta^2 (\|x\|^2 - 2b^\top x + \|b\|^2) $$
+              Rearranging terms to group quadratics:
+              $$ (1-\theta^2)\|x\|^2 - 2(a - \theta^2 b)^\top x + (\|a\|^2 - \theta^2 \|b\|^2) \le 0 $$
+              <ul>
+                <li>If $\theta = 1$: The quadratic term vanishes. We get a linear inequality (halfspace), which is convex.</li>
+                <li>If $\theta < 1$: The coefficient $(1-\theta^2)$ is positive. This defines a sublevel set of a convex quadratic (a ball), which is convex.</li>
+                <li>If $\theta > 1$: The coefficient is negative. This defines a superlevel set of a convex quadratic (the region exterior to a ball), which is <b>not convex</b> (it has a hole).</li>
+              </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.16 — Partial Sum of Convex Sets</h3>
+          <p>Show that $S = \{(x, y_1+y_2) \mid (x, y_1) \in S_1, (x, y_2) \in S_2\}$ is convex.</p>
+
+          <div class="recap-box">
+             <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+             <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                 <li><b>Fiber-wise Sum:</b> For fixed $x$, the set is $S_1(x) + S_2(x)$.</li>
+             </ul>
+           </div>
+
+           <div class="solution-box">
+             <h4>Solution</h4>
+             <div class="proof-step">
+               Let $z^a, z^b \in S$. Then $y^a = y_1^a + y_2^a$.
+               Consider $\theta z^a + (1-\theta)z^b$. The $x$-component is $x^\theta$. The $y$-component is $y^\theta$.
+               We can decompose $y^\theta$ into $\tilde{y}_1 + \tilde{y}_2$ where $\tilde{y}_1$ is the combination of $y_1$'s.
+               Since $(x^\theta, \tilde{y}_1) \in S_1$ (by convexity) and $(x^\theta, \tilde{y}_2) \in S_2$, the sum is in $S$.
+             </div>
+           </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.17 — Perspective of Polyhedral Sets</h3>
+          <p>Determine the image of a convex hull $C = \mathrm{conv}\{(v_i, t_i)\}$ under $P(v,t) = v/t$.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Projective Map:</b> Perspective maps convex hulls to convex hulls.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              $P(C) = \mathrm{conv}\{v_i/t_i\}$.
+              Any point in $P(C)$ is $\frac{\sum \theta_i v_i}{\sum \theta_i t_i}$. This is a weighted average of the points $v_i/t_i$ with weights $\lambda_i \propto \theta_i t_i$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.18 — Invertible Linear-Fractional Functions</h3>
+          <p>Find the inverse of $f(x) = (Ax+b)/(c^\top x + d)$ assuming matrix $Q$ is nonsingular.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Matrix Representation:</b> Linear-fractional maps correspond to matrix multiplication in homogeneous coordinates. The inverse map corresponds to the inverse matrix.</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              The function corresponds to $y \propto Q x_{hom}$. Inverting, $x_{hom} \propto Q^{-1} y_{hom}$.
+              If $Q^{-1} = \begin{bmatrix} E & f \\ g^\top & h \end{bmatrix}$, then $f^{-1}(y) = \frac{Ey + f}{g^\top y + h}$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.19 — Projection onto a Convex Set</h3>
+          <p>Let $C$ be a closed convex set. The projection $P_C(x)$ is the unique point in $C$ minimizing $\|z-x\|_2$. Prove the optimality condition: $\langle x - P_C(x), z - P_C(x) \rangle \le 0$ for all $z \in C$.</p>
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              Let $y = P_C(x)$. The function $f(z) = \frac{1}{2}\|z-x\|_2^2$ is convex.
+              The optimality condition for minimizing a convex function over a convex set is $\langle \nabla f(y), z-y \rangle \ge 0$ for all feasible $z$.
+              $\nabla f(y) = y-x$.
+              So $\langle y-x, z-y \rangle \ge 0$.
+              Multiplying by -1 reverses the inequality: $\langle x-y, z-y \rangle \le 0$.
+              Geometrically, the angle between the residual vector $x-y$ and any vector $z-y$ into the set is obtuse ( $\ge 90^\circ$ ).
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.20 — Preimages under Linear-Fractional Maps</h3>
+          <p>Find the inverse image of a halfspace, polyhedron, and ellipsoid under a linear-fractional map.</p>
+
+          <div class="recap-box">
+            <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+            <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                <li><b>Complexity Preservation:</b> Polyhedra map to polyhedra. Ellipsoids map to sets defined by quadratic inequalities (related to SOCs).</li>
+            </ul>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              <strong>Setup (multiply by the positive denominator).</strong>
+              Let $f(x) = \dfrac{Ax+b}{c^\top x + d}$ with domain $\{x \mid c^\top x + d > 0\}$.
+              For any target set $S$ in the output space,
+              $$ f^{-1}(S) = \{x \mid f(x)\in S,\; c^\top x + d > 0\}. $$
+              The key simplification is that on the domain $c^\top x + d$ is strictly positive, so multiplying an inequality by $c^\top x + d$ does not flip the inequality direction.
+            </div>
+
+            <div class="proof-step">
+              <strong>(a) Halfspace.</strong>
+              Let $H = \{y \mid a^\top y \le \beta\}$. Then $f(x)\in H$ iff
+              $$ a^\top \frac{Ax+b}{c^\top x + d} \le \beta. $$
+              Multiply by $c^\top x + d > 0$ and rearrange:
+              $$ a^\top(Ax+b) \le \beta(c^\top x + d)\;\;\Longleftrightarrow\;\;(a^\top A - \beta c^\top)x \le \beta d - a^\top b. $$
+              Therefore $f^{-1}(H)$ is a halfspace intersected with the domain constraint $c^\top x + d > 0$.
+            </div>
+
+            <div class="proof-step">
+              <strong>(b) Polyhedron.</strong>
+              Any polyhedron can be written as $P = \{y \mid My \le h\}$, i.e., an intersection of finitely many halfspaces.
+              Apply the halfspace computation to each row inequality $m_i^\top y \le h_i$.
+              The preimage is an intersection of finitely many halfspaces in $x$ (plus $c^\top x + d > 0$), hence a polyhedron.
+            </div>
+
+            <div class="proof-step">
+              <strong>(c) Ellipsoid (SOC form).</strong>
+              Write the ellipsoid as $E = \{y \mid \|P^{-1/2}(y-y_0)\|_2 \le 1\}$ with $P \succ 0$.
+              Then $x \in f^{-1}(E)$ if and only if:
+              $$ \left\|P^{-1/2}\left(\frac{Ax+b}{c^\top x+d}-y_0\right)\right\|_2 \le 1 \quad \text{and} \quad c^\top x + d > 0 $$
+              Since the denominator $t = c^\top x + d$ is positive, we can multiply the inequality by $t$ without changing its direction.
+              Inside the norm, we multiply by $t$:
+              $$ \|P^{-1/2}(Ax+b) - P^{-1/2}y_0(c^\top x + d)\|_2 \le c^\top x + d $$
+              Let $A' = P^{-1/2}A$, $b' = P^{-1/2}b$, and $v = P^{-1/2}y_0$. The condition becomes:
+              $$ \|A'x + b' - v(c^\top x + d)\|_2 \le c^\top x + d $$
+              This inequality describes a convex set. Specifically, it is the intersection of a <b>second-order cone constraint</b> (of the form $\|Mz + q\|_2 \le \ell^\top z + r$) and the open halfspace $c^\top x + d > 0$.
+              Thus, the preimage of an ellipsoid under a linear-fractional map is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.21 — Projection onto the Probability Simplex</h3>
+          <p>The probability simplex is $\Delta_n = \{x \in \mathbb{R}^n \mid x \ge 0, \mathbf{1}^\top x = 1\}$. Find the projection of a vector $z \in \mathbb{R}^n$ onto $\Delta_n$. This is the solution to $\min_x \frac{1}{2}\|x-z\|_2^2$ s.t. $x \in \Delta_n$.</p>
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              This is a classic problem solvable via KKT conditions (we will cover this fully in later lectures, but the geometry is relevant here).
+              The solution structure is $x_i = \max(z_i - \nu, 0)$, where $\nu$ is a scalar chosen such that $\sum x_i = 1$.
+              This corresponds to a "water-filling" algorithm: finding a threshold $\nu$ to chop off values of $z$.
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="section-card" id="section-7">
+        <h2>7. Recap &amp; What's Next</h2>
+        <div class="recap-box">
+          <ul style="margin: 0 0 0 20px;">
+            <li><b>Affine vs. convex:</b> affine sets contain whole lines; convex sets contain line segments.</li>
+            <li><b>Canonical convex sets:</b> halfspaces/hyperplanes, norm balls, ellipsoids, polyhedra/polytopes, and the PSD cone appear repeatedly as feasible regions.</li>
+            <li><b>Convexity-preserving operations:</b> intersections, affine images/preimages, perspective, and linear-fractional maps are the fastest way to prove a set is convex.</li>
+            <li><b>Topology that matters:</b> when $\mathrm{int}(C)=\emptyset$ (common in constrained problems), the right notion is $\mathrm{ri}(C)$, the interior inside the affine hull.</li>
+          </ul>
+        </div>
+        <div class="interpretation-box">
+          <p style="margin: 0;"><b>Forward look:</b> In <a href="../04-convex-sets-cones/index.html">Lecture 04</a>, cones and separating hyperplanes explain why convex problems admit powerful certificates (duals). In <a href="../05-convex-functions-basics/index.html">Lecture 05</a>, convex functions are introduced largely by studying the geometry of sets like epigraphs and sublevel sets.</p>
+        </div>
+      </section>
+    </article>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Convex Optimization Course</p>
+      </div>
+    </footer>
+  </main></div>
+
+  <script src="../../static/js/math-renderer.js"></script>
+  <script src="../../static/js/ui.js"></script>
+  <script src="../../static/js/toc.js"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Widget Loaders -->
+  <script type="module">
+    import { initEllipsoidExplorer } from './widgets/js/ellipsoid-explorer.js';
+    initEllipsoidExplorer('widget-ellipsoid-explorer');
+  </script>
+  <script type="module">
+    import { initPolyhedronVisualizer } from './widgets/js/polyhedron-visualizer.js';
+    initPolyhedronVisualizer('widget-polyhedron-visualizer');
+  </script>
+  <script type="module">
+    import { initConvexGeometryLab } from './widgets/js/convex-geometry-lab.js';
+    initConvexGeometryLab('widget-convex-geometry-lab');
+  </script>
+  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/notes-widget.js"></script>
+<script src="../../static/js/pomodoro.js"></script>
+<script src="../../static/js/progress-tracker.js"></script>
+</body>
+</html>

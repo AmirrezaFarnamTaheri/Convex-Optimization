@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>06. Convex Functions: Advanced Topics — Convex Optimization</title>
+  <link rel="stylesheet" href="../../static/css/lecture-styles.css" />
+  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <header class="site-header sticky">
+    <div class="container">
+      <div class="brand">
+        <a href="../../index.html">Convex Optimization</a>
+      </div>
+      <nav class="nav">
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../05-convex-functions-basics/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../07-convex-problems-standard/index.html">Next <i data-feather="arrow-right"></i></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>06. Convex Functions: Advanced Topics</h1>
+      <div class="lecture-meta">
+        <span>Date: 2025-10-21</span>
+        <span>Duration: 90 min</span>
+        <span>Tags: conjugate, quasiconvex, log-concave, advanced</span>
+      </div>
+      <div class="lecture-summary">
+        <p>This lecture explores advanced topics in convex analysis that bridge theory and modern applications. We examine the convex conjugate (Fenchel conjugate) and its central role in duality, define quasi-convex functions and their properties, and study log-concave functions, which are essential for probabilistic modeling and volume approximation.</p>
+        <p><strong>Prerequisites:</strong> <a href="../05-convex-functions-basics/index.html">Lecture 05: Convex Functions Basics</a>.</p>
+        <p><strong>Forward Connections:</strong> The convex conjugate is the key tool for deriving dual problems in <a href="../09-duality/index.html">Lecture 09</a>. Quasi-convexity appears in fractional programming problems in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>.</p>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2><i data-feather="target"></i> Learning Objectives</h2>
+      <p>After this lecture, you will be able to:</p>
+      <ul>
+        <li><b>Compute Conjugates:</b> Derive the convex conjugate for standard functions like norms, quadratics, and log-sum-exp.</li>
+        <li><b>Apply Duality Mappings:</b> Connect primal domain properties to dual domain constraints via conjugation.</li>
+        <li><b>Analyze Quasi-Convexity:</b> Identify functions defined by convex sublevel sets and apply operations that preserve this property.</li>
+        <li><b>Work with Log-Concavity:</b> Recognize log-concave probability distributions and use their properties (integration, marginalization) in modeling.</li>
+      </ul>
+    </section>
+
+    <article>
+      <section class="section-card" id="section-1">
+      <h2>1. The Convex Conjugate (Fenchel Conjugate)</h2>
+
+      <h3>1.1 Definition and Geometric Meaning</h3>
+      <p>Start with a function $f : \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. Allowing $+\infty$ is a standard way of encoding hard constraints ("$x$ not allowed"). The <a href="#" class="definition-link" data-term="convex conjugate">Fenchel conjugate</a> is defined as:</p>
+      $$
+      \boxed{f^*(y) := \sup_{x\in\mathrm{dom} f} \big( y^\top x - f(x) \big), \quad y\in\mathbb{R}^n}
+      $$
+
+      <div class="interpretation-box">
+        <p><b>Economic Interpretation (Prices & Profit):</b> Imagine $x$ is a production plan and $f(x)$ is the cost of production. If the market price vector is $y$, then the revenue is $y^\top x$. The term $y^\top x - f(x)$ represents the <b>net profit</b>.
+        <br>The conjugate $f^*(y)$ is the <b>maximum possible profit</b> achievable given prices $y$. This explains why $f^*$ is convex: profit is the pointwise supremum of linear functions (revenue minus fixed cost) as prices vary.</p>
+      </div>
+
+      <h3>Supporting Hyperplane Viewpoint</h3>
+      <p>Fix $y \in \mathbb{R}^n$. Consider affine functions of $x$ with slope $y$:
+      $$ \ell_y(x) = y^\top x - c, \quad c \in \mathbb{R} $$
+      We want $\ell_y$ to lie <b>below</b> $f$ everywhere:
+      $$ y^\top x - c \le f(x) \quad \forall x \iff c \ge y^\top x - f(x) \quad \forall x $$
+      For this to hold for all $x$, $c$ must be at least the supremum of the RHS. The <b>smallest</b> possible $c$ that maintains the lower bound property is:
+      $$ c_{\min}(y) = \sup_x (y^\top x - f(x)) = f^*(y) $$
+      Thus, the tightest affine lower bound with slope $y$ is:
+      $$ \ell_y(x) = y^\top x - f^*(y) $$</p>
+
+      <div class="insight">
+        <h4>Geometric Intuition</h4>
+        <ul>
+            <li><b>Epigraph View:</b> The epigraph $\mathrm{epi} f$ is supported by the hyperplane $H = \{(x,t) \mid t = y^\top x - f^*(y)\}$. The conjugate $f^*$ encodes all non-vertical supporting hyperplanes of the epigraph.</li>
+            <li><b>Gap View (1D):</b> For a fixed slope $y$, the quantity $yx - f(x)$ is the vertical gap between the line through the origin with slope $y$ and the graph of $f$. $f^*(y)$ is the <b>maximum vertical gap</b>.</li>
+        </ul>
+      </div>
+
+
+      <h3>1.2 Why $f^*$ is Always Convex</h3>
+      <p>A crucial property is that $f^*$ is convex <b>regardless</b> of whether $f$ is convex.</p>
+      <div class="proof-box">
+        <h4>Proof</h4>
+        <p>Take any fixed $x$. As a function of $y$, the expression $\phi_x(y) := y^\top x - f(x)$ is <b>affine</b> in $y$ (linear term $y^\top x$ plus constant $-f(x)$).
+        <br>Now $f^*$ is the pointwise supremum over all these affine functions:
+        $$ f^*(y) = \sup_{x} \phi_x(y) $$
+        <b>Fact:</b> The pointwise supremum of any family of convex (or affine) functions is convex.
+        <br>Explicitly, if $g(y) = \sup_i g_i(y)$ where each $g_i$ is convex, then for any $\theta \in [0,1]$:
+        $$
+        \begin{aligned}
+        g(\theta y_1+(1-\theta)y_2) &= \sup_i g_i(\theta y_1+(1-\theta)y_2) \\
+        &\le \sup_i \big( \theta g_i(y_1) + (1-\theta)g_i(y_2) \big) \\
+        &\le \theta \sup_i g_i(y_1) + (1-\theta)\sup_i g_i(y_2) \\
+        &= \theta g(y_1) + (1-\theta)g(y_2)
+        \end{aligned}
+        $$
+        Thus, $f^*$ is convex for <b>any</b> $f$. The conjugate lives in the "convex world" even if $f$ doesn't.</p>
+      </div>
+
+        <div class="theorem-box">
+            <h4>Deep Dive: Biconjugate and Convex Hulls</h4>
+            <p>While $f^*$ is always convex, $f^{**}$ (the conjugate of the conjugate) relates back to $f$ in a special way.
+            $$ f^{**}(x) = \text{cl}(\text{conv}(f))(x) $$
+            The biconjugate is the <b>closed convex envelope</b> of $f$. It is the largest lower semicontinuous convex function that is less than or equal to $f$.
+            <br><b>Consequence:</b> $f^{**} = f$ if and only if $f$ is closed and convex. This is the <b>Fenchel-Moreau Theorem</b>.</p>
+        </div>
+
+      <h3>1.3 1D Examples in Detail</h3>
+
+      <div class="example">
+        <h4>(a) Affine function $f(x) = ax + b$</h4>
+        <p>Compute $f^*(y) = \sup_{x} (yx - (ax+b)) = \sup_x ((y-a)x - b)$.</p>
+        <ul>
+              <li><b>Case 1: $y \ne a$.</b> The term $((y-a)x - b)$ is a line with nonzero slope. As $x \to \pm \infty$, this goes to $+\infty$ (since we can choose sign of $x$ to match sign of slope). So $f^*(y) = +\infty$.</li>
+              <li><b>Case 2: $y = a$.</b> The term simplifies to $0 \cdot x - b = -b$. Supremum is $-b$.</li>
+        </ul>
+          <p><b>Result:</b> $f^*(y) = -b$ if $y=a$, else $+\infty$. Domain is the singleton $\{a\}$. This conjugate is the convex indicator of the point $a$, shifted by $-b$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(b) Negative Log: $f(x) = -\log x$ on $(0,\infty)$</h4>
+        <p>We compute $f^*(y) = \sup_{x>0} (yx + \log x)$. Let $\phi(x) = yx + \log x$.</p>
+        <ol>
+          <li><b>Derivative:</b> $\phi'(x) = y + 1/x$. Setting to zero gives $x = -1/y$.</li>
+          <li><b>Domain Check:</b> Since we require $x > 0$, we must have $y < 0$.
+            <ul>
+              <li>If $y \ge 0$, then $\phi'(x) > 0$ for all $x$. As $x \to \infty$, $\phi(x) \to \infty$. So $f^*(y) = \infty$.</li>
+              <li>If $y < 0$, the critical point $x^* = -1/y$ is a global maximum (since $\phi''(x) = -1/x^2 < 0$).</li>
+            </ul>
+          </li>
+          <li><b>Value:</b> Plug $x^*$ back in:
+            $$ f^*(y) = y(-1/y) + \log(-1/y) = -1 + \log(1/(-y)) = -1 - \log(-y) $$
+          </li>
+        </ol>
+        <p><b>Result:</b> $f^*(y) = -1 - \log(-y)$ for $y < 0$. Domain $(-\infty, 0)$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(c) Exponential: $f(x) = e^x$ on $\mathbb{R}$</h4>
+        <p>We compute $f^*(y) = \sup_{x} (yx - e^x)$. Let $\phi(x) = yx - e^x$.</p>
+        <ol>
+          <li><b>Derivative:</b> $\phi'(x) = y - e^x$. Setting to zero gives $e^x = y$, or $x = \log y$. This requires $y > 0$.</li>
+          <li><b>Case $y > 0$:</b> The critical point $x^* = \log y$ is a global max ($\phi'' = -e^x < 0$).
+            $$ f^*(y) = y \log y - e^{\log y} = y \log y - y $$
+          </li>
+          <li><b>Case $y = 0$:</b> $\phi(x) = -e^x$. Supremum is $0$ (approached as $x \to -\infty$). Note that limit of $y \log y - y$ as $y \to 0$ is $0$.</li>
+          <li><b>Case $y < 0$:</b> $\phi'(x) = y - e^x < 0$. Function is strictly decreasing. As $x \to -\infty$, $\phi(x) \approx yx \to \infty$ (since $y<0, x<0$). So $f^*(y) = \infty$.</li>
+        </ol>
+        <p><b>Result:</b> $f^*(y) = y \log y - y$ for $y \ge 0$, else $\infty$. Domain $[0, \infty)$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(d) Reciprocal: $f(x) = 1/x$ on $(0,\infty)$</h4>
+        <p>We compute $f^*(y) = \sup_{x>0} (yx - 1/x)$. Let $\phi(x) = yx - 1/x$.</p>
+        <ol>
+          <li><b>Derivative:</b> $\phi'(x) = y + 1/x^2$. Setting to zero gives $x^2 = -1/y$, so $x = \sqrt{-1/y}$. This requires $y < 0$.</li>
+          <li><b>Domain Analysis:</b>
+            <ul>
+              <li>If $y > 0$: $\phi(x) \approx yx \to \infty$ as $x \to \infty$. Supremum is $\infty$.</li>
+              <li>If $y = 0$: $\phi(x) = -1/x$. Supremum is $0$ (approached as $x \to \infty$).</li>
+              <li>If $y < 0$: The critical point $x^* = 1/\sqrt{-y}$ is a global max ($\phi'' = -2/x^3 < 0$).</li>
+            </ul>
+          </li>
+          <li><b>Value (for $y<0$):</b>
+            $$ f^*(y) = y \frac{1}{\sqrt{-y}} - \sqrt{-y} = \frac{-(-y)}{\sqrt{-y}} - \sqrt{-y} = -\sqrt{-y} - \sqrt{-y} = -2\sqrt{-y} $$
+          </li>
+        </ol>
+        <p><b>Result:</b> $f^*(y) = -2\sqrt{-y}$ for $y \le 0$ (with value 0 at $y=0$), else $\infty$. Domain $(-\infty, 0]$.</p>
+      </div>
+
+      <h3>1.4 Quadratic and Matrix Examples</h3>
+
+      <div class="example">
+        <h4>(a) Quadratic: $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$</h4>
+        <p>Maximize $\phi(x) = y^\top x - \frac{1}{2} x^\top Q x$. This is a concave quadratic.
+        <br>Gradient $\nabla \phi(x) = y - Qx = 0 \implies x^* = Q^{-1}y$.
+        <br>Value: $y^\top (Q^{-1}y) - \frac{1}{2} (Q^{-1}y)^\top Q (Q^{-1}y) = y^\top Q^{-1} y - \frac{1}{2} y^\top Q^{-1} y = \frac{1}{2} y^\top Q^{-1} y$.
+        <br><b>Result:</b> Quadratic with matrix $Q$ conjugates to quadratic with $Q^{-1}$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(b) Log-Determinant: $f(X) = -\log \det X$ on $\mathbb{S}^n_{++}$</h4>
+        <p>Maximize $\mathrm{tr}(YX) + \log \det X$ over $X \succ 0$.
+        <br>Gradient: $Y + X^{-1} = 0 \implies X = -Y^{-1}$.
+        <br>Requires $Y$ invertible and $-Y^{-1} \succ 0 \implies Y \prec 0$ (negative definite).
+        <br>Value: $\mathrm{tr}(Y(-Y^{-1})) + \log \det (-Y^{-1}) = -n - \log \det(-Y)$.
+        <br><b>Result:</b> $f^*(Y) = -\log \det(-Y) - n$ on domain $\mathbb{S}^n_{--}$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(c) Indicator $\leftrightarrow$ Support Function</h4>
+        <p>Let $I_S(x)$ be the indicator of a set $S$ (0 if $x \in S$, $+\infty$ else).
+        <br>$I_S^*(y) = \sup_x (y^\top x - I_S(x)) = \sup_{x \in S} (y^\top x)$.
+        <br><b>Result:</b> $I_S^* = \sigma_S$, the support function of $S$.</p>
+      </div>
+
+      <div class="example">
+        <h4>(d) Norm $\leftrightarrow$ Indicator of Dual Ball</h4>
+        <p>Let $f(x) = \|x\|$. Dual norm definition: $\|y\|_* = \sup_{\|x\|\le 1} y^\top x$.
+        <br>$f^*(y) = \sup_x (y^\top x - \|x\|)$.
+        <br>Case 1: $\|y\|_* \le 1$. Then $y^\top x \le \|y\|_* \|x\| \le \|x\|$. So $y^\top x - \|x\| \le 0$. Max is 0 (at $x=0$).
+        <br>Case 2: $\|y\|_* > 1$. There exists $x_0$ with $\|x_0\|=1$ and $y^\top x_0 > 1$. Let $x = t x_0$. Value $t(y^\top x_0 - 1) \to \infty$.
+        <br><b>Result:</b> $f^*$ is the indicator of the unit ball of the dual norm $\|\cdot\|_*$.
+        $$ f^*(y) = \begin{cases} 0 & \|y\|_* \le 1 \\ +\infty & \|y\|_* > 1 \end{cases} $$</p>
+      </div>
+
+      <div class="example">
+        <h4>(e) Negative Entropy & Log-Sum-Exp</h4>
+          <p>Let $f(x) = \sum_{i=1}^n x_i \log x_i$ on the probability simplex $\Delta_n = \{x \mid x \ge 0, \sum x_i = 1\}$. This is the negative Shannon entropy.
+          <br><b>Conjugate Derivation:</b>
+          Maximize $y^\top x - \sum x_i \log x_i$ subject to $\sum x_i = 1$ and $x \ge 0$.
+          <br>Lagrangian: $L(x, \nu) = \sum y_i x_i - \sum x_i \log x_i + \nu (\sum x_i - 1)$.
+          <br>Stationarity: $y_i - (1 + \log x_i) + \nu = 0 \implies \log x_i = y_i + \nu - 1 \implies x_i = e^{y_i + \nu - 1}$.
+          <br>Normalize using $\sum x_i = 1$: $\sum e^{y_i + \nu - 1} = e^{\nu - 1} \sum e^{y_i} = 1 \implies e^{\nu - 1} = 1 / \sum e^{y_k}$.
+          <br>Substitute back: $x_i^* = \frac{e^{y_i}}{\sum e^{y_k}}$.
+          <br><b>Value:</b> $\sum y_i x_i^* - \sum x_i^* \log x_i^*$. Note $\log x_i^* = y_i - \log(\sum e^{y_k})$.
+          <br>Sum is $\sum x_i^* (y_i - (y_i - \log \sum e^{y_k})) = \sum x_i^* \log(\sum e^{y_k}) = \log(\sum e^{y_k})$.
+          <br><b>Result:</b> $f^*(y) = \log\left(\sum_{i=1}^n e^{y_i}\right)$ (Log-Sum-Exp).
+          <br>This duality is fundamental to Maximum Entropy modeling and Logistic Regression.</p>
+      </div>
+
+      <div class="example">
+        <h4>(f) Geometric Mean via Conjugates</h4>
+        <p>Consider $f(x) = -g(x) = -(\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We show $f$ is convex by proving its conjugate is the indicator of a convex set.
+        <br>The conjugate is $f^*(y) = \sup_{x>0} (y^\top x + (\prod x_i)^{1/n})$. Let $\Phi_y(x) = y^\top x + g(x)$.
+        <br><b>Step 1: Necessary conditions.</b>
+        <ul>
+          <li>If any $y_i > 0$, taking $x_i \to \infty$ gives $\sup = \infty$. So we require $y \le 0$.</li>
+          <li>Consider scaling $x$ by $t > 0$: $\Phi_y(tx) = t(y^\top x + g(x))$. For the supremum to be finite (not $+\infty$), we must have $y^\top x + g(x) \le 0$ for all $x$. But if it is strictly negative somewhere, the supremum over $t$ is 0. If it is positive somewhere, it is $\infty$.
+          <br>Crucially, testing $x = \mathbf{1}$ gives $t(\sum y_i + 1)$. If $\sum y_i > -1$, limit is $\infty$. If $\sum y_i < -1$, we can find other directions.
+          <br> Detailed analysis shows we must have $\sum y_i = -1$ to avoid blowup.</li>
+        </ul>
+        <b>Step 2: Explicit Optimization.</b>
+        Stationary condition $\nabla_x \Phi_y = 0 \implies y_i + \frac{g(x)}{n x_i} = 0 \implies x_i = \frac{g(x)}{n(-y_i)}$.
+        Substituting back into $g(x) = (\prod x_i)^{1/n}$ yields the condition $\prod (-y_i) = n^{-n}$.
+        <br>However, evaluating the objective at the optimizer gives $y^\top x + g(x) = \sum (-g(x)/n) + g(x) = -g(x) + g(x) = 0$.
+        <br>
+        Since $f$ is 1-homogeneous, its conjugate $f^*(y)$ must be the indicator function of some convex set $S$. Specifically, $f^*(y) = 0$ if $y \in S$ and $\infty$ otherwise.
+        <br>The scaling condition requires that for any $t > 0$, the supremum must not blow up. Considering $f(x) = - (\prod x_i)^{1/n}$, the condition $y^\top x - f(x) \le 0$ for all $x$ implies that the arithmetic mean (weighted by $-y$) dominates the geometric mean.
+        <br>Using the weighted AM-GM inequality, $\sum \lambda_i z_i \ge \prod z_i^{\lambda_i}$ for $\sum \lambda_i = 1$.
+        Let $\lambda_i = 1/n$. We have $\frac{1}{n} \sum x_i \ge (\prod x_i)^{1/n}$.
+        This inequality can be rewritten as $\sum (-1/n) x_i + (\prod x_i)^{1/n} \le 0$.
+        This matches the form $y^\top x - f(x) \le 0$ with $y_i = -1/n$.
+        <br>More generally, for the geometric mean $f(x) = -(\prod x_i)^{1/n}$, the conjugate is the indicator of the set:
+        $$ D = \left\{ y \prec 0 \ \middle|\ \left(\prod (-y_i)\right)^{1/n} \ge \frac{1}{n} \right\} $$
+        <br><b>Result:</b> $f^*(y) = \delta_D(y)$. Since $D$ is a convex set (superlevel set of a concave geometric mean), $f$ is convex.
+      </div>
+
+      <h3>1.5 Algebra Rules for Conjugates</h3>
+
+      <h4>(a) Scaling and Vertical Shift</h4>
+      <p>Let $g(x) = a f(x) + b$ with $a > 0, b \in \mathbb{R}$.
+      $$
+      \begin{aligned}
+      g^*(y) &= \sup_x (y^\top x - a f(x) - b) \\
+      &= \sup_x (y^\top x - a f(x)) - b \\
+      &= a \sup_x \left( \frac{y}{a}^\top x - f(x) \right) - b \\
+      &= a f^*(y/a) - b
+      \end{aligned}
+      $$
+      So $\boxed{(af+b)^*(y) = a f^*(y/a) - b}$.</p>
+
+      <h4>(b) Affine Precomposition</h4>
+      <p>Let $g(x) = f(Ax + b)$.
+      $$ g^*(y) = \sup_x (y^\top x - f(Ax+b)) $$
+      Let $z = Ax+b$. If $A$ is invertible, $x = A^{-1}(z-b)$.
+      $$
+      \begin{aligned}
+      g^*(y) &= \sup_z (y^\top A^{-1}(z-b) - f(z)) \\
+      &= \sup_z ((A^{-\top}y)^\top z - f(z)) - y^\top A^{-1}b \\
+      &= f^*(A^{-\top}y) - y^\top A^{-1}b
+      \end{aligned}
+      $$
+      If $A$ is not square/invertible, we use the general rule from convex analysis involving an infimum over preimages:
+      $$ g^*(y) = \inf \{ f^*(z) - z^\top b \mid A^\top z = y \} $$
+      If $A$ is invertible, $z$ is uniquely determined as $z = A^{-\top}y$, and the infimum collapses to the simple substitution:
+      $$ \boxed{ g^*(y) = f^*(A^{-\top}y) - y^\top A^{-1}b } \quad (\text{invertible case}) $$</p>
+
+      <h4>(c) Sum of Independent Functions</h4>
+      <p>Let $f(x, z) = f_1(x) + f_2(z)$.
+      $$
+      \begin{aligned}
+      f^*(y, w) &= \sup_{x,z} (y^\top x + w^\top z - f_1(x) - f_2(z)) \\
+      &= \sup_x (y^\top x - f_1(x)) + \sup_z (w^\top z - f_2(z)) \\
+      &= f_1^*(y) + f_2^*(w)
+      \end{aligned}
+      $$
+      So $\boxed{(f_1 \oplus f_2)^* = f_1^* \oplus f_2^*}$. This separation is key in duality.</p>
+
+      <h3>1.6 Fenchel Inequality and Biconjugate</h3>
+      <p>From the definition $f^*(y) \ge y^\top x - f(x)$, we immediately get <b>Fenchel's Inequality</b>:</p>
+      $$ \boxed{ f(x) + f^*(y) \ge x^\top y } $$
+      <p>Equality holds exactly when $y \in \partial f(x)$ (for convex $f$).</p>
+
+      <h4>The Biconjugate $f^{**}$</h4>
+      <p>The conjugate of the conjugate is $f^{**}(x) = \sup_y (x^\top y - f^*(y))$.
+      <br><b>Theorem:</b> $f^{**} \le f$ always. If $f$ is closed and convex, then $f^{**} = f$.
+      <br><i>Geometric Intuition:</i> $\mathrm{epi}(f^{**})$ is the closed convex hull of $\mathrm{epi}(f)$. Conjugation encodes all supporting hyperplanes; taking it again reconstructs the convex envelope from these planes.</p>
+
+      <h3>1.7 Legendre Transform: Smooth Case</h3>
+      <p>Assume $f$ is strictly convex and differentiable everywhere. The optimizer $x^*$ in the definition of $f^*(y)$ is characterized by:
+      $$ \nabla_x (y^\top x - f(x)) = y - \nabla f(x) = 0 \implies y = \nabla f(x^*) $$
+      Thus $x^* = (\nabla f)^{-1}(y)$. We can write:
+      $$ f^*(y) = y^\top (\nabla f)^{-1}(y) - f((\nabla f)^{-1}(y)) $$
+      Alternatively, parametrizing by $z$ where $y = \nabla f(z)$, we get a cleaner form:
+      $$ f^*(\nabla f(z)) = z^\top \nabla f(z) - f(z) $$
+      <b>Nice Identities:</b>
+      <ul>
+          <li>The gradient maps are inverses: $\nabla f^*(y) = x$ where $y = \nabla f(x)$. So $\nabla f^* = (\nabla f)^{-1}$.</li>
+          <li>At the optimum, Fenchel's inequality holds with equality: $f(x) + f^*(y) = x^\top y$ where $y = \nabla f(x)$.</li>
+      </ul>
+      This transformation connects Lagrangian and Hamiltonian mechanics.</p>
+    </section>
+
+    <section class="section-card" id="section-2">
+        <h2>2. Quasiconvex Functions</h2>
+
+        <h3>2.1 Definition: Sublevel Sets</h3>
+        <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <a href="#" class="definition-link">quasiconvex</a> if its domain is convex and all its <b>sublevel sets</b> are convex:</p>
+        $$
+        S_\alpha := \{x \in \mathrm{dom}\, f \mid f(x) \le \alpha\}
+        $$
+        <p>is a convex set for every $\alpha \in \mathbb{R}$.
+        <br><i>Note:</i> Convex $\implies$ Quasiconvex, but not conversely. Quasiconvexity allows "bendy" graphs, as long as the "valley" shape is maintained.</p>
+
+        <h3>2.2 Simple 1D Examples</h3>
+        <div class="example">
+            <h4>(a) Logarithm: $f(x) = \log x$</h4>
+            <p>Sublevel set $\{x > 0 \mid \log x \le \alpha\} = \{x \mid x \le e^\alpha\} = (0, e^\alpha]$. This is a convex interval.
+            <br>So $\log x$ is quasiconvex. (It is also concave, so $-\log x$ is convex).</p>
+        </div>
+        <div class="example">
+            <h4>(b) Ceiling: $f(x) = \lceil x \rceil$</h4>
+            <p>Sublevel set $\{x \mid \lceil x \rceil \le k\} = (-\infty, k]$. This is an interval.
+            <br>So $\lceil x \rceil$ is quasiconvex. (It is step-like and definitely not convex).</p>
+        </div>
+
+        <h3>2.3 Vector Examples</h3>
+        <div class="example">
+            <h4>1. Length of a Vector</h4>
+            <p>Define len$(x) = \max\{i \mid x_i \ne 0\}$ (index of last nonzero element).
+            <br>Sublevel set $\{x \mid \text{len}(x) \le k\} = \{x \mid x_{k+1} = \dots = x_n = 0\}$.
+            <br>This is a linear subspace, hence convex. So len$(x)$ is quasiconvex.</p>
+        </div>
+        <div class="example">
+            <h4>2. Bilinear: $f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$</h4>
+            <p>Hessian is indefinite (not convex).
+            <br>Superlevel set $\{x \in \mathbb{R}^2_{++} \mid x_1 x_2 \ge \alpha\}$ is convex (bounded by hyperbola).
+            <br>Thus $f$ is <b>quasiconcave</b> on the positive quadrant.</p>
+        </div>
+        <div class="example">
+            <h4>3. Linear-Fractional: $f(x) = \frac{a^\top x + b}{c^\top x + d}$</h4>
+            <p>Defined on the halfspace $D = \{x \mid c^\top x + d > 0\}$.
+            <br>Consider the sublevel set $S_\alpha = \{x \in D \mid \frac{a^\top x + b}{c^\top x + d} \le \alpha\}$.
+            $$ \frac{a^\top x + b}{c^\top x + d} \le \alpha \iff a^\top x + b \le \alpha (c^\top x + d) \iff (a - \alpha c)^\top x + (b - \alpha d) \le 0 $$
+            This is a linear inequality, which defines a closed halfspace (if $a-\alpha c \ne 0$) or the whole space/empty set (degenerate cases).
+            <br>Thus $S_\alpha$ is the intersection of the domain $D$ (halfspace) and another halfspace. The intersection of convex sets is convex.
+            <br>Conclusion: Linear-fractional functions are quasiconvex. (Applying the same logic to $-f$ shows they are also quasiconcave, i.e., <b>quasilinear</b>).</p>
+        </div>
+        <div class="example">
+            <h4>4. Distance Ratio (Rigorous Analysis)</h4>
+            <p>Let $f(x) = \frac{\|x-a\|_2}{\|x-b\|_2}$. We analyze the sublevel set $S_\alpha = \{x \mid \|x-a\| \le \alpha \|x-b\|\}$.
+            <br>Squaring leads to the quadratic inequality:
+            $$ (1-\alpha^2)x^\top x + 2(\alpha^2 b - a)^\top x + (\|a\|^2 - \alpha^2 \|b\|^2) \le 0 $$
+            <ul>
+              <li><b>Case $\alpha < 1$:</b> The coefficient of $x^\top x$ is positive ($1-\alpha^2 > 0$).
+                The inequality takes the form $|x-c|^2 \le R^2$. This describes a <b>Euclidean ball</b>, which is a convex set.</li>
+              <li><b>Case $\alpha = 1$:</b> The quadratic term vanishes. We are left with a linear inequality $2(b-a)^\top x + C \le 0$, which describes a <b>halfspace</b>. This is a convex set.</li>
+              <li><b>Case $\alpha > 1$:</b> The coefficient of $x^\top x$ is negative ($1-\alpha^2 < 0$).
+                Dividing by the negative coefficient reverses the inequality: $x^\top x + v^\top x + C \ge 0$.
+                Completing the square, this is equivalent to $\|x-c\|^2 \ge R^2$.
+                This describes the <b>exterior (complement) of an open ball</b>.
+                <br><i>Correction:</i> The complement of a ball is <b>not convex</b>. (e.g., midpoint of two distant points is inside the hole).
+                <br>Therefore, the distance ratio function is <b>quasiconvex</b> only on the halfspace defined by $\alpha \le 1$ (the set of points closer to $a$ than $b$). It is not globally quasiconvex on $\mathbb{R}^n$.</li>
+            </ul></p>
+        </div>
+        <div class="example">
+            <h4>7. Internal Rate of Return (IRR)</h4>
+            <p>Let $x = (x_0, \dots, x_n)$ be a cash flow stream.
+            <br>Present value at rate $r$: $PV(x, r) = \sum_{i=0}^n x_i (1+r)^{-i}$.
+            <br>IRR is defined as $\mathrm{IRR}(x) = \inf \{r \ge 0 \mid PV(x, r) = 0\}$.
+            <br>Consider the superlevel set $S_R = \{x \mid \mathrm{IRR}(x) \ge R\}$.
+            <br>Assuming standard cash flows (initial investment, then returns), $\mathrm{IRR}(x) \ge R$ roughly means the present value at rate $R$ is non-negative:
+            $$ PV(x, R) = \sum_{i=0}^n (1+R)^{-i} x_i \ge 0 $$
+            For a fixed $R$, this is a <b>linear inequality</b> in $x$.
+            <br>A superlevel set formed by a linear inequality is a halfspace (convex).
+            <br>So $\mathrm{IRR}(x)$ is a <b>quasiconcave</b> function of the cash flows.</p>
+        </div>
+
+        <h3>2.4 Second-Order Condition</h3>
+        <p>Assume $f$ is twice differentiable.</p>
+
+        <h4>Necessary Condition</h4>
+        <p>If $f$ is quasiconvex, then for any $x \in \mathrm{dom}\, f$ and $y \in \mathbb{R}^n$:
+        $$ y^\top \nabla f(x) = 0 \implies y^\top \nabla^2 f(x) y \ge 0 $$
+        <i>Interpretation:</i> If we look in a direction $y$ tangent to the level set ($\nabla f \perp y$), the function must curve upwards (positive curvature). The level sets cannot curve "inward" to create a disconnected or non-convex shape.</p>
+        <div class="insight">
+            <h4>Quasiconvexity vs. Unimodality</h4>
+            <p>In 1D, quasiconvexity is equivalent to being <b>unimodal</b> (decreasing then increasing).
+            <br>In high dimensions, quasiconvexity requires that <b>every</b> 1D restriction is unimodal. This implies the sublevel sets are convex bodies (e.g., nested eggs), forbidding "two-humped" mountains or saddle shapes that would trap gradient descent.</p>
+        </div>
+
+        <h4>Sufficient Condition</h4>
+        <p>If $f$ satisfies the stronger condition:
+        $$ y^\top \nabla f(x) = 0, \ y \ne 0 \implies y^\top \nabla^2 f(x) y > 0 $$
+        then $f$ is <b>strictly quasiconvex</b>. This ensures no "flat" regions along the contours that could hide non-convexity.</p>
+
+        <h3>2.5 Operations Preserving Quasiconvexity</h3>
+        <ul>
+            <li><b>Max:</b> $f(x) = \max_i f_i(x)$ is quasiconvex (Intersection of convex sublevel sets).</li>
+            <li><b>Composition:</b> $g(h(x))$ is quasiconvex if $h$ is quasiconvex and $g$ is <b>non-decreasing</b>.</li>
+            <li><b>Warning:</b> Sums of quasiconvex functions are generally <b>not</b> quasiconvex.</li>
+        </ul>
+
+        <h3>2.6 Worked Example: Classification Challenge</h3>
+        <p>Determine the convexity properties of the following functions.</p>
+
+        <div class="example">
+            <h4>(a) $f(x) = e^x - 1$ on $\mathbb{R}$</h4>
+            <p><b>Analysis:</b> $f'(x) = e^x$, $f''(x) = e^x > 0$.
+            <br>Strictly convex. Since it is monotone increasing, it is also both quasiconvex and quasiconcave.</p>
+        </div>
+
+        <div class="example">
+            <h4>(b) $f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$</h4>
+            <p><b>Analysis:</b> Hessian is indefinite ($\det = -1$). Not convex or concave.
+            <br>Sublevel sets ($x_1 x_2 \le \alpha$) are non-convex (region under hyperbola). Not quasiconvex.
+            <br>Superlevel sets ($x_1 x_2 \ge \alpha$) are convex (region above hyperbola). <b>Quasiconcave</b>.</p>
+        </div>
+
+        <div class="example">
+            <h4>(c) $f(x_1, x_2) = 1/(x_1 x_2)$ on $\mathbb{R}^2_{++}$</h4>
+            <p><b>Analysis:</b> $f(x) = (x_1 x_2)^{-1}$. The Hessian is $H = \begin{bmatrix} 2x_1^{-3}x_2^{-1} & x_1^{-2}x_2^{-2} \\ x_1^{-2}x_2^{-2} & 2x_1^{-1}x_2^{-3} \end{bmatrix}$. $\det(H) = 3(x_1 x_2)^{-4} > 0$. Trace $> 0$.
+            <br><b>Convex</b> (and thus quasiconvex).
+            <br>Superlevel sets are the same as sublevel sets of $x_1 x_2$. Non-convex. Not quasiconcave.</p>
+        </div>
+
+        <div class="example">
+            <h4>(d) $f(x_1, x_2) = x_1 / x_2$ on $\mathbb{R}_{++}^2$</h4>
+            <p><b>Analysis:</b> Linear-fractional function.
+            <br>Sublevel sets $x_1 \le \alpha x_2$ are halfspaces (convex).
+            <br>Superlevel sets $x_1 \ge \alpha x_2$ are halfspaces (convex).
+            <br><b>Quasilinear</b> (both quasiconvex and quasiconcave). Not convex/concave.</p>
+        </div>
+
+        <div class="example">
+            <h4>(e) $f(x_1, x_2) = x_1^2 / x_2$ on $\mathbb{R} \times \mathbb{R}_{++}$</h4>
+            <p><b>Analysis:</b> This is the perspective of the square function $h(u)=u^2$.
+            <br>Since $h$ is convex, its perspective is <b>convex</b>.</p>
+        </div>
+
+        <div class="example">
+            <h4>(f) $f(x_1, x_2) = x_1^\alpha x_2^{1-\alpha}$ on $\mathbb{R}^2_{++}$ for $\alpha \in [0,1]$</h4>
+            <p><b>Analysis:</b> Geometric mean (Cobb-Douglas function).
+            <br>It is <b>concave</b> (Hessian is negative semidefinite).
+            <br>Thus it is <b>quasiconcave</b>. It is generally not quasiconvex.</p>
+        </div>
+    </section>
+
+    <section class="section-card" id="section-3">
+        <h2>3. Log-Concave and Log-Convex Functions</h2>
+
+        <h3>3.1 Definitions</h3>
+        <p>Let $f: \mathbb{R}^n \to \mathbb{R}_{++}$.
+        <ul>
+            <li>$f$ is <b>log-concave</b> if $\log f(x)$ is concave.</li>
+            <li>$f$ is <b>log-convex</b> if $\log f(x)$ is convex.</li>
+        </ul>
+        Equivalently, for log-concavity (multiplicative form):
+        $$ f(\theta x + (1-\theta)y) \ge f(x)^\theta f(y)^{1-\theta} $$
+        Log-concavity is crucial in probability (unimodality, tail bounds).</p>
+
+        <div class="theorem-box">
+          <h4>Gradient Condition (3.47)</h4>
+          <p>If $f$ is differentiable and $f(x) > 0$, then $f$ is log-concave if and only if for all $x, y \in \mathrm{dom}\, f$:</p>
+          $$ \boxed{ \frac{f(y)}{f(x)} \le \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) } $$
+          <p><b>Interpretation:</b> Log-concavity means $f$ grows at most exponentially, with a rate controlled by the tangent of the log. In log-space, this is simply the statement that the tangent hyperplane is a global upper bound.</p>
+
+          <div class="proof-box">
+            <h4>Detailed Proof</h4>
+            <p>Let $h(x) = \log f(x)$. Then $f$ is log-concave $\iff h$ is concave.</p>
+            <div class="proof-step">
+                <strong>Step 1: The Concavity Inequality.</strong>
+                A differentiable function $h$ is concave if and only if for all $x, y$:
+                $$ h(y) \le h(x) + \nabla h(x)^\top (y-x) $$
+            </div>
+            <div class="proof-step">
+                <strong>Step 2: Compute the Gradient of Log.</strong>
+                Using the chain rule:
+                $$ \nabla h(x) = \nabla (\log f(x)) = \frac{1}{f(x)} \nabla f(x) $$
+            </div>
+            <div class="proof-step">
+                <strong>Step 3: Substitute and Rearrange.</strong>
+                Substitute $\nabla h(x)$ into the inequality:
+                $$ \log f(y) \le \log f(x) + \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
+                Move $\log f(x)$ to the left side:
+                $$ \log f(y) - \log f(x) \le \frac{\nabla f(x)^\top (y-x)}{f(x)} \implies \log \left( \frac{f(y)}{f(x)} \right) \le \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
+            </div>
+            <div class="proof-step">
+                <strong>Step 4: Exponentiate.</strong>
+                Since $e^z$ is strictly increasing, we can exponentiate both sides:
+                $$ \frac{f(y)}{f(x)} \le \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) $$
+                This completes the proof.
+            </div>
+          </div>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Second-Order Characterization</h4>
+          <p>If $f$ is twice differentiable, we can check log-concavity via the Hessian of $\log f(x)$.
+          Using the chain rule and quotient rule, the Hessian of $h(x) = \log f(x)$ is:
+          $$ \nabla^2 \log f(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
+          Since $f$ is log-concave if and only if $\nabla^2 \log f(x) \preceq 0$, this yields the condition:
+          $$ f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top $$
+          This matrix inequality ($A \preceq bb^\top$) is a standard test for log-concavity.
+          </p>
+        </div>
+
+        <div class="insight">
+          <h4>Property: Shifting Down (3.48)</h4>
+          <p>If $f$ is log-concave and $f(x) > a \ge 0$, then the shifted function $g(x) = f(x) - a$ is log-concave on its domain $\{x \mid f(x) > a\}$.
+          <br><b>Proof:</b> We need to show $\log g$ is concave. Let $x_1, x_2$ be in the domain and $z = \theta x_1 + (1-\theta)x_2$.
+          <br>We want to show $\log(f(z)-a) \ge \theta \log(f(x_1)-a) + (1-\theta)\log(f(x_2)-a)$.
+          <br>Consider the function $h(u) = \log(u-a)$ for $u > a$.
+          <br>Derivatives: $h'(u) = \frac{1}{u-a} > 0$ (increasing) and $h''(u) = -\frac{1}{(u-a)^2} < 0$ (concave).
+          <br>1. From log-concavity of $f$: $f(z) \ge f(x_1)^\theta f(x_2)^{1-\theta}$.
+          <br>2. Since $h$ is increasing and defined on the range of $f$ (where $f>a$), we can apply it:
+          $$ h(f(z)) \ge h(f(x_1)^\theta f(x_2)^{1-\theta}) $$
+          3. We rely on the property that for $u, v > a$, $\log(u^\theta v^{1-\theta} - a) \ge \theta \log(u-a) + (1-\theta)\log(v-a)$.
+          This inequality holds because the function $\phi(t) = \log(e^t - a)$ is concave for $t > \log a$.
+          Checking the second derivative of $\phi(t)$: $\phi'(t) = \frac{e^t}{e^t - a}$, $\phi''(t) = \frac{e^t(e^t - a) - e^t(e^t)}{(e^t - a)^2} = \frac{-a e^t}{(e^t - a)^2}$.
+          Since $a \ge 0$, $\phi''(t) \le 0$, so $\phi$ is concave.
+          <br>Conclusion: Subtracting a non-negative constant from a positive log-concave function preserves log-concavity.</p>
+        </div>
+
+        <h3>3.2 Examples</h3>
+        <div class="example">
+            <h4>1. Uniform Distribution on Convex Set</h4>
+            <p>Let $C$ be convex. $f(x) = 1/\alpha$ if $x \in C$, else 0.
+            <br>$\log f(x) = -\log \alpha$ on $C$, $-\infty$ outside.
+            <br>This is a concave function (indicator of convex set). So uniform density is log-concave.</p>
+        </div>
+        <div class="example">
+            <h4>2. Wishart Distribution</h4>
+            <p>Density $f(X) \propto (\det X)^{k} e^{-\mathrm{tr}(\Sigma^{-1}X)}$.
+            <br>$\log f(X) = c + k \log \det X - \mathrm{tr}(\Sigma^{-1}X)$.
+            <br>$\log \det$ is concave; trace is linear. Sum is concave.
+            <br>Thus Wishart is log-concave.</p>
+        </div>
+
+        <h3>3.3 Integration Rules</h3>
+        <p>Log-convexity and log-concavity behave nicely under integration, though the conditions differ.</p>
+        <div class="theorem-box">
+            <h4>(a) Integrals of Log-Convex Functions</h4>
+            <p>If $f(x, y) \ge 0$ is log-convex in $x$ for each fixed $y$, then $g(x) = \int_C f(x, y) dy$ is log-convex.</p>
+            <div class="insight">
+                <h4>Intuition Sketch</h4>
+                <p>We need $g(\theta x + (1-\theta)z) \le g(x)^\theta g(z)^{1-\theta}$.
+                <br>By log-convexity of $f$:
+                $$ f(\theta x + (1-\theta)z, y) \le f(x, y)^\theta f(z, y)^{1-\theta} $$
+                Integrate both sides over $y$. The RHS integral is bounded using <b>Hölder's Inequality</b> for integrals (with $p=1/\theta, q=1/(1-\theta)$):
+                $$ \int f(x, y)^\theta f(z, y)^{1-\theta} dy \le \left(\int f(x, y) dy\right)^\theta \left(\int f(z, y) dy\right)^{1-\theta} = g(x)^\theta g(z)^{1-\theta} $$
+                This proves log-convexity of $g$.
+                <br><b>Examples:</b> Gamma function, Moment Generating Function ($M(z) = \mathbb{E} e^{z^\top X}$), Laplace Transform.</p>
+            </div>
+        </div>
+        <div class="theorem-box">
+            <h4>(b) Integrals of Log-Concave Functions (Prékopa-Leindler)</h4>
+            <p>If $f(x, y)$ is <b>jointly</b> log-concave in $(x, y)$, then the marginal $g(x) = \int f(x, y) dy$ is log-concave.</p>
+            <p>This is a consequence of the <b>Prékopa-Leindler Theorem</b>, which relates integrals of functions satisfying log-concave-like conditions:
+            Let $f, g, h: \mathbb{R}^n \to \mathbb{R}_+$ be integrable functions. If for some $\lambda \in (0, 1)$ and all $x, y \in \mathbb{R}^n$:
+            $$ h(\lambda x + (1-\lambda)y) \ge f(x)^\lambda g(y)^{1-\lambda} $$
+            Then:
+            $$ \int_{\mathbb{R}^n} h(z) dz \ge \left( \int_{\mathbb{R}^n} f(x) dx \right)^\lambda \left( \int_{\mathbb{R}^n} g(y) dy \right)^{1-\lambda} $$
+            </p>
+            <p><b>Consequence:</b> Convolution of log-concave functions is log-concave. If $f, g$ are log-concave, so is $(f*g)(x) = \int f(x-y)g(y) dy$. This theorem is a functional generalization of the Brunn-Minkowski inequality for volumes of convex bodies.</p>
+        </div>
+
+        <h3>3.4 Probability Examples</h3>
+        <div class="example">
+            <h4>(a) Hitting a Convex Set with Log-Concave Noise</h4>
+            <p>Let $w$ be a random vector with log-concave density $p(w)$. Let $C$ be a convex set. Define:
+            $$ f(x) = \mathbb{P}(x + w \in C) $$
+            We can express this as a convolution:
+            $$ f(x) = \int \mathbf{1}_C(x+w) p(w) dw $$
+            Change of variables $u = x+w \implies w = u-x$:
+            $$ f(x) = \int \mathbf{1}_C(u) p(u-x) du $$
+            Consider the integrand $F(x, u) = \mathbf{1}_C(u) p(u-x)$.
+            <ul>
+                <li>$\mathbf{1}_C(u)$ is log-concave (indicator of convex set).</li>
+                <li>$p(u-x)$ is log-concave in $(x, u)$ (composition of log-concave $p$ with affine map).</li>
+                <li>The product is log-concave in $(x, u)$.</li>
+            </ul>
+            By the integration rule, $f(x)$ is log-concave.
+            <br><i>Interpretation:</i> The probability of a random point landing in a moving target $C$ varies "smoothly" (unimodally) as we shift the center $x$.</p>
+        </div>
+        <div class="example">
+            <h4>(b) Cumulative Distribution Function (CDF)</h4>
+            <p>If a PDF $p(z)$ is log-concave on $\mathbb{R}^n$, then its CDF is log-concave:
+            $$ F(x) = \mathbb{P}(w \preceq x) = \int \mathbf{1}_{(-\infty, x]}(z) p(z) dz $$
+            We can view the indicator $\mathbf{1}_{(-\infty, x]}(z)$ as the function:
+            $$ I(x, z) = \begin{cases} 1 & z_i \le x_i \ \forall i \\ 0 & \text{otherwise} \end{cases} $$
+            The set $\{(x, z) \mid z_i \le x_i\}$ is a convex polyhedron (defined by linear inequalities). Thus its indicator $I(x, z)$ is log-concave in $(x, z)$.
+            <br>Since $p(z)$ is log-concave, the product $I(x, z)p(z)$ is jointly log-concave.
+            <br>Integrating out $z$ implies $F(x)$ is log-concave.
+            <br><b>Example:</b> The Gaussian CDF $\Phi(x)$ is log-concave.</p>
+        </div>
+    </section>
+
+    <section class="section-card" id="section-4">
+      <h2>4. Review & Cheat Sheet</h2>
+      <h3>Conjugate Transformations</h3>
+      <table class="data-table">
+        <tr><th>Primal $f(x)$</th><th>Conjugate $f^*(y)$</th><th>Domain of $f^*$</th></tr>
+        <tr><td>$\frac{1}{2}x^\top Q x$ ($Q \succ 0$)</td><td>$\frac{1}{2}y^\top Q^{-1} y$</td><td>$\mathbb{R}^n$</td></tr>
+        <tr><td>$-\log x$</td><td>$-1 - \log(-y)$</td><td>$y < 0$</td></tr>
+        <tr><td>$e^x$</td><td>$y \log y - y$</td><td>$y \ge 0$</td></tr>
+        <tr><td>$1/x$ ($x>0$)</td><td>$-2\sqrt{-y}$</td><td>$y < 0$</td></tr>
+        <tr><td>$I_C(x)$</td><td>$\sigma_C(y)$ (Support)</td><td>$\mathbb{R}^n$</td></tr>
+        <tr><td>$\|x\|$</td><td>$I_{B_*}(y)$ (Dual Ball)</td><td>$\|y\|_* \le 1$</td></tr>
+      </table>
+
+      <h3>Key Concepts</h3>
+      <ul>
+          <li><b>Conjugate $f^*$:</b> Best linear lower bound (support function of epigraph). Always convex.</li>
+          <li><b>Fenchel Inequality:</b> $f(x) + f^*(y) \ge x^\top y$.</li>
+          <li><b>Quasiconvex:</b> Convex sublevel sets. $f(\theta x + (1-\theta)y) \le \max(f(x), f(y))$.</li>
+          <li><b>Log-Concave:</b> $\log f$ is concave. Closed under product, marginals, convolution.</li>
+      </ul>
+    </section>
+
+    <section class="section-card" id="section-5">
+      <h2><i data-feather="edit-3"></i> 5. Exercises</h2>
+
+<div class="problem">
+  <h3>P6.1 — Conjugate of Norm Squared</h3>
+  <p>Compute the conjugate of $f(x) = \frac{1}{2}\|x\|^2$ for a general norm $\|\cdot\|$. Show it is $\frac{1}{2}\|y\|_*^2$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Self-Conjugacy:</b> For the Euclidean norm, $f(x)=\frac{1}{2}\|x\|_2^2$ is self-conjugate ($f^*=f$).</li>
+        <li><b>Dual Norms:</b> For general norms, the conjugate of $\frac{1}{2}\|x\|^2$ is $\frac{1}{2}\|y\|_*^2$. This is the basis for the relationship between Primal and Dual problems in optimization.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Definition.</strong>
+    $f^*(y) = \sup_x (y^\top x - \frac{1}{2}\|x\|^2)$.</div>
+    <div class="proof-step"><strong>Step 2: Dual Norm Bound.</strong>
+    By definition of the dual norm, $y^\top x \le \|y\|_* \|x\|$.
+    Let $u = \|x\|$. Then $y^\top x - \frac{1}{2}\|x\|^2 \le \|y\|_* u - \frac{1}{2}u^2$.</div>
+    <div class="proof-step"><strong>Step 3: Optimize Scalar $u$.</strong>
+    The function $g(u) = \|y\|_* u - \frac{1}{2}u^2$ is a concave quadratic.
+    Maximum occurs at $g'(u) = \|y\|_* - u = 0 \implies u^* = \|y\|_*$.
+    Max value: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.</div>
+    <div class="proof-step"><strong>Step 4: Tightness.</strong>
+    Can we achieve this bound? By definition of the dual norm, there exists a vector $x_0$ with $\|x_0\|=1$ such that $y^\top x_0 = \|y\|_*$.
+    Choose $x = \|y\|_* x_0$. Then $\|x\| = \|y\|_*$.
+    $y^\top x = \|y\|_* (y^\top x_0) = \|y\|_*^2$.
+    Objective: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.
+    Thus the supremum is exactly $\frac{1}{2}\|y\|_*^2$.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.2 — Quasi-Convexity of Ceiling</h3>
+  <p>Show that $f(x) = \lceil x \rceil$ (on $\mathbb{R}$) is quasi-convex.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Monotonicity:</b> Any monotonic function on $\mathbb{R}$ is both quasi-convex and quasi-concave (quasilinear), regardless of discontinuities.</li>
+        <li><b>Sublevel Sets:</b> The definition relies purely on the geometry of the sets $\{x \mid f(x) \le \alpha\}$, making it robust to re-parameterization.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Definition of Quasi-Convexity.</strong>
+    A function is quasi-convex if its sublevel sets $S_\alpha = \{x \mid f(x) \le \alpha\}$ are convex for all $\alpha \in \mathbb{R}$.</div>
+    <div class="proof-step"><strong>Step 2: Analyze Sublevel Sets.</strong>
+    Condition: $\lceil x \rceil \le \alpha$.
+    Since $\lceil x \rceil$ is an integer, let $k = \lfloor \alpha \rfloor$. The condition is $\lceil x \rceil \le k$.
+    This is equivalent to $x \le k$ (since if $x > k$, $\lceil x \rceil \ge k+1$).
+    So $S_\alpha = (-\infty, \lfloor \alpha \rfloor]$.</div>
+    <div class="proof-step"><strong>Step 3: Conclusion.</strong>
+    The set $(-\infty, k]$ is an interval, which is a convex set in $\mathbb{R}$.
+    Therefore, $f$ is quasi-convex.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.3 — Softmax Analysis</h3>
+  <p>For $f(x) = \log(\sum_{i=1}^n e^{x_i})$: <ol type="a"><li>Show $\max x_i \le f(x) \le \max x_i + \log n$.</li><li>Show $f$ is convex via Hessian analysis.</li></ol></p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Smooth Max:</b> Log-Sum-Exp is to $\max$ what the Huber loss is to absolute value—a smooth, convex differentiable approximation.</li>
+        <li><b>Hessian-Covariance:</b> $\nabla^2 \text{lse}(x) = \text{Var}(p)$, where $p$ is the softmax distribution. Since variance is non-negative, convexity follows immediately.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Part A: Bounds.</strong>
+    Let $x_{\max} = \max_i x_i$.
+    Lower bound: $\sum e^{x_i} \ge e^{x_{\max}}$.
+    $f(x) \ge \log(e^{x_{\max}}) = x_{\max}$.
+    Upper bound: $\sum e^{x_i} = e^{x_{\max}} \sum e^{x_i - x_{\max}}$.
+    Since $x_i - x_{\max} \le 0$, each term $e^{x_i - x_{\max}} \le 1$.
+    Sum is bounded by $n$.
+    $f(x) = x_{\max} + \log(\sum e^{x_i - x_{\max}}) \le x_{\max} + \log n$.</div>
+    <div class="proof-step"><strong>Part B: Hessian.</strong>
+    Gradient $\nabla f(x) = p$ where $p_i = e^{x_i}/\sum e^{x_k}$. Note $\mathbf{1}^\top p = 1, p > 0$.
+    Hessian $\nabla^2 f(x) = \text{diag}(p) - pp^\top$.
+    Let $v \in \mathbb{R}^n$.
+    $v^\top \nabla^2 f v = \sum p_i v_i^2 - (p^\top v)^2 = \sum p_i v_i^2 - (\sum p_i v_i)^2$.</div>
+    <div class="proof-step"><strong>Part C: Variance Interpretation.</strong>
+    Consider a discrete random variable $Z$ that takes value $v_i$ with probability $p_i$ (where $p$ is the softmax vector defined above).
+    <br>The term $\sum p_i v_i$ is the expected value $\mathbb{E}[Z]$.
+    <br>The term $\sum p_i v_i^2$ is the second moment $\mathbb{E}[Z^2]$.
+    <br>The expression for the quadratic form is $\mathbb{E}[Z^2] - (\mathbb{E}[Z])^2$, which is exactly the variance $\text{Var}(Z)$.
+    <br>Since variance is always non-negative, $v^\top \nabla^2 f v \ge 0$. Thus $f$ is convex.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.4 — Concavity of Geometric Mean</h3>
+  <p>Prove $G(x) = (\prod_{i=1}^n x_i)^{1/n}$ is concave on $\mathbb{R}^n_{++}$ using log-concavity properties.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>The H-L-C Theorem:</b> Homogeneity + Log-Concavity $\implies$ Concavity. This powerful theorem turns multiplicative properties (geometric mean) into additive inequalities.</li>
+        <li><b>Superadditivity:</b> The core geometric property derived is $G(x+y) \ge G(x) + G(y)$.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Check Log-Concavity.</strong>
+    Consider $\log G(x)$.
+    $$ \log \left( \prod x_i^{1/n} \right) = \frac{1}{n} \sum_{i=1}^n \log x_i $$
+    The function $\log x_i$ is concave. The sum of concave functions is concave.
+    Thus $\log G(x)$ is a concave function.
+    This means $G(x)$ is <b>log-concave</b>.</div>
+    <div class="proof-step"><strong>Step 2: Homogeneity.</strong>
+    $G(\alpha x) = (\prod (\alpha x_i))^{1/n} = (\alpha^n \prod x_i)^{1/n} = \alpha G(x)$.
+    $G$ is homogeneous of degree 1.</div>
+    <div class="proof-step"><strong>Step 3: Theorem.</strong>
+    We show that a function $G$ that is log-concave and homogeneous of degree 1 is concave.
+    We rely on the property of <strong>superadditivity</strong>: $G(x+y) \ge G(x) + G(y)$, which implies concavity for homogeneous functions.
+    <br><b>Proof of Superadditivity:</b>
+    Let $\alpha = G(x)$ and $\beta = G(y)$. If $\alpha=0$ or $\beta=0$, the result is trivial. Assume $\alpha, \beta > 0$.
+    Define the mixing weight $\lambda = \frac{\alpha}{\alpha+\beta}$. Then $1-\lambda = \frac{\beta}{\alpha+\beta}$.
+    Consider the point $z$ formed by combining normalized versions of $x$ and $y$:
+    $$ z = \frac{x+y}{\alpha+\beta} = \frac{\alpha}{\alpha+\beta} \frac{x}{\alpha} + \frac{\beta}{\alpha+\beta} \frac{y}{\beta} = \lambda \frac{x}{\alpha} + (1-\lambda) \frac{y}{\beta} $$
+    By log-concavity, $G(z) \ge G(x/\alpha)^\lambda G(y/\beta)^{1-\lambda}$.
+    Using 1-homogeneity, $G(x/\alpha) = G(x)/\alpha = 1$ and $G(y/\beta) = 1$.
+    Thus $G(z) \ge 1^\lambda 1^{1-\lambda} = 1$.
+    Finally, using homogeneity on $G(x+y)$:
+    $$ G(x+y) = G((\alpha+\beta)z) = (\alpha+\beta)G(z) \ge \alpha+\beta = G(x) + G(y) $$
+    Superadditivity plus homogeneity implies concavity: $G(\theta x + (1-\theta)y) \ge G(\theta x) + G((1-\theta)y) = \theta G(x) + (1-\theta)G(y)$.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.5 — Geometric Mean Cone</h3>
+  <p>Show $K = \{x \in \mathbb{R}^n_+ \mid G(x) \ge \alpha A(x)\}$ is a convex cone for $\alpha \in [0,1]$, where $A(x) = \frac{1}{n}\sum x_i$ is the arithmetic mean.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Concave Superlevel Sets:</b> For a concave function $f$, the set $\{x \mid f(x) \ge 0\}$ is convex.</li>
+        <li><b>Conic Extension:</b> Any inequality involving 1-homogeneous functions ($G(x) \ge A(x)$) naturally defines a cone, as scaling $x$ by $k$ scales both sides equally.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Rewrite condition.</strong>
+    $G(x) - \alpha A(x) \ge 0$.
+    Let $h(x) = G(x) - \alpha A(x)$.</div>
+    <div class="proof-step"><strong>Step 2: Check Concavity.</strong>
+    $G(x)$ is concave (from P6.4).
+    $A(x)$ is linear, so $-A(x)$ is concave.
+    Since $\alpha \ge 0$, $-\alpha A(x)$ is concave.
+    Thus $h(x)$ is a sum of concave functions, so $h$ is concave.</div>
+    <div class="proof-step"><strong>Step 3: Superlevel Set.</strong>
+    The set $K = \{x \mid h(x) \ge 0\}$ is the 0-superlevel set of a concave function.
+    Superlevel sets of concave functions are convex sets.</div>
+    <div class="proof-step"><strong>Step 4: Cone Property.</strong>
+    $G(kx) = kG(x)$ and $A(kx) = kA(x)$ for $k \ge 0$.
+    $G(kx) \ge \alpha A(kx) \iff kG(x) \ge k\alpha A(x) \iff G(x) \ge \alpha A(x)$ (for $k>0$).
+    Thus $K$ is a cone.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.6 — Matrix Fractional Function</h3>
+  <p>Prove convexity of $f(x, Y) = x^\top Y^{-1} x$ (for $Y \succ 0$) using the epigraph characterization.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Schur Complement:</b> The bridge between non-linear rational functions and linear matrix inequalities (LMIs). $x^\top Y^{-1} x \le t \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
+        <li><b>Joint Convexity:</b> This proves that optimizing jointly over the filter/controller $x$ and the preconditioner $Y$ is a convex problem.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Epigraph Definition.</strong>
+    $(x, Y, t) \in \text{epi } f \iff t \ge x^\top Y^{-1} x$ and $Y \succ 0$.</div>
+    <div class="proof-step"><strong>Step 2: Schur Complement.</strong>
+    The inequality $t - x^\top Y^{-1} x \ge 0$ is the Schur complement condition for the block matrix:
+    $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
+    (Assuming $Y \succ 0$. If $Y \succeq 0$ singular, we need $x \in \text{range}(Y)$ etc, but usually defined on open domain).</div>
+    <div class="proof-step"><strong>Step 3: Convexity of LMI.</strong>
+    The set of matrices $\mathcal{S}_+^k$ is a convex cone (PSD cone).
+    The map $(x, Y, t) \to M(x, Y, t)$ is linear.
+    The inverse image of a convex set under a linear map is convex.
+    Thus $\text{epi } f = \{(x, Y, t) \mid M(x, Y, t) \succeq 0\}$ is convex.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.7 — Fenchel's Inequality & Biconjugate</h3>
+  <p>For $f(x) = \frac{1}{2}x^\top Q x$ with $Q \succ 0$: 1. Verify Fenchel's inequality. 2. Verify $f^{**} = f$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Fundamental Inequality:</b> $f(x) + f^*(y) \ge x^\top y$ is the "Cauchy-Schwarz" of Convex Analysis. It bounds the inner product by the sum of energies.</li>
+        <li><b>Duality Gap:</b> In optimization, this inequality manifests as Weak Duality (Primal $\ge$ Dual). The gap closes (equality holds) exactly at optimality.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Part 1: Fenchel's Inequality.</strong>
+    We need $f(x) + f^*(y) \ge x^\top y$.
+    We found $f^*(y) = \frac{1}{2}y^\top Q^{-1} y$.
+    LHS - RHS = $\frac{1}{2}x^\top Q x + \frac{1}{2}y^\top Q^{-1} y - x^\top y$.
+    Let $u = Q^{1/2}x$ and $v = Q^{-1/2}y$. Then $x = Q^{-1/2}u, y = Q^{1/2}v$.
+    $x^\top y = u^\top v$.
+    Expression: $\frac{1}{2}u^\top u + \frac{1}{2}v^\top v - u^\top v = \frac{1}{2}\|u-v\|^2 \ge 0$.
+    Verified.</div>
+    <div class="proof-step"><strong>Part 2: Biconjugate.</strong>
+    $f^{**}(x) = (f^*)^*(x)$. Let $g(y) = f^*(y) = \frac{1}{2}y^\top P y$ with $P = Q^{-1}$.
+    The conjugate of a quadratic $\frac{1}{2}y^\top P y$ is $\frac{1}{2}x^\top P^{-1} x$.
+    $P^{-1} = (Q^{-1})^{-1} = Q$.
+    So $f^{**}(x) = \frac{1}{2}x^\top Q x = f(x)$. Verified.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.8 — Quasiconvexity of Distance Ratio</h3>
+  <p>Show $S_\theta = \{x \mid \|x-a\|_2 \le \theta \|x-b\|_2\}$ is convex for $\theta \le 1$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Voronoi Regions:</b> For $\theta=1$, this defines a halfspace (Voronoi boundary).</li>
+        <li><b>Apollonius Circles:</b> For $\theta \ne 1$, the boundary is a sphere. For $\theta < 1$, the sublevel set is the ball; for $\theta > 1$, it is the exterior (not convex). Thus, distance ratios are only quasiconvex for "contractive" ratios.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Square the condition.</strong>
+    $\|x-a\|^2 \le \theta^2 \|x-b\|^2$.
+    $(x-a)^\top (x-a) \le \theta^2 (x-b)^\top (x-b)$.
+    $x^\top x - 2a^\top x + a^\top a \le \theta^2 (x^\top x - 2b^\top x + b^\top b)$.</div>
+    <div class="proof-step"><strong>Step 2: Group terms.</strong>
+    $(1 - \theta^2) x^\top x - 2(a - \theta^2 b)^\top x + (\|a\|^2 - \theta^2 \|b\|^2) \le 0$.</div>
+    <div class="proof-step"><strong>Step 3: Analyze coefficient.</strong>
+    Let $q(x)$ be this quadratic expression. The quadratic term is $(1-\theta^2)\|x\|^2$.
+    If $\theta \le 1$, then $1-\theta^2 \ge 0$.
+    The sublevel set of a convex quadratic ($P \succeq 0$) is convex (an ellipsoid or halfspace).
+    Thus $S_\theta$ is convex. (If $\theta > 1$, it's the complement of an ellipsoid, which is non-convex).</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.9 — Log-Concavity of Probability Measures</h3>
+  <p>If $p(x)$ is a log-concave probability density, show that the function $f(x) = \mathbb{P}(x+W \in C)$ is log-concave, where $W \sim p$ and $C$ is a convex set.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Prékopa-Leindler Theorem:</b> The marginal of a log-concave function is log-concave. Since convolution is an integral operation, it preserves log-concavity.</li>
+        <li><b>Robustness:</b> This implies that if your noise is "nice" (log-concave, e.g., Gaussian, Uniform) and your target set is convex, the success probability behaves nicely (unimodally).</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Write as Convolution.</strong>
+    The condition $x+W \in C$ is equivalent to $W \in C-x$. The probability is:
+    $$ f(x) = \int_{C-x} p(w) dw = \int_{\mathbb{R}^n} I_C(u) p(u-x) du $$
+    where we used the substitution $u = w+x$. This integral is exactly the convolution of the indicator function $I_C(x)$ and the reflected density $\tilde{p}(x) = p(-x)$.</div>
+    <div class="proof-step"><strong>Step 2: Apply Prékopa-Leindler.</strong>
+    The theorem states that the convolution of two log-concave functions is log-concave. We check the components:
+    <ul>
+        <li>$p(x)$ is log-concave (given), so $p(-x)$ is also log-concave.</li>
+        <li>$I_C(x)$ is the indicator function of a convex set (1 on C, 0 else), which is log-concave.</li>
+    </ul>
+    </div>
+    <div class="proof-step"><strong>Step 3: Conclusion.</strong>
+    Since $f$ is the convolution of two log-concave functions, $f$ is log-concave.</div>
+    $I_C(x)$ is the indicator function of a convex set (1 on C, 0 else).
+    Is it log-concave? $\log I_C(x)$ is 0 on C, $-\infty$ else.
+    Since $C$ is convex, this is a concave function (extended value).
+    So $I_C$ is log-concave.</div>
+    <div class="proof-step"><strong>Step 4: Conclusion.</strong>
+    Since $f$ is the convolution of two log-concave functions, $f$ is log-concave.
+    (Note: The integral is essentially measuring the measure of the set $C$ shifted by $-x$. Prekopa-Leindler directly applies to marginals of log-concave functions).</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.10 — Log-Concavity of Gaussian</h3>
+  <p>Show that the multivariate Gaussian density function $f(x)$ is log-concave. $$ f(x) = \frac{1}{(2\pi)^{n/2} (\det \Sigma)^{1/2}} \exp\left(-\frac{1}{2}(x-\mu)^\top \Sigma^{-1} (x-\mu)\right) $$ where $\Sigma \succ 0$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Log-Quadratic:</b> The Gaussian is the "most" log-concave function (log is strictly concave quadratic).</li>
+        <li><b>Closure:</b> Because the Gaussian is log-concave, any marginal, conditional, or linear transformation of a Gaussian is also log-concave (and in fact, Gaussian).</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Take the logarithm:
+      $$ \log f(x) = -\frac{n}{2}\log(2\pi) - \frac{1}{2}\log(\det \Sigma) - \frac{1}{2}(x-\mu)^\top \Sigma^{-1} (x-\mu) $$
+    </div>
+    <div class="proof-step">
+      The first two terms are constants. The third term is a quadratic form.
+      Let $g(x) = \log f(x)$. The gradient is $\nabla g(x) = -\Sigma^{-1}(x-\mu)$.
+      The Hessian is $\nabla^2 g(x) = -\Sigma^{-1}$.
+    </div>
+    <div class="proof-step">
+      Since $\Sigma \succ 0$, its inverse $\Sigma^{-1} \succ 0$, so $-\Sigma^{-1} \prec 0$ (negative definite).
+      Since the Hessian is negative definite everywhere, $g(x)$ is strictly concave.
+      Therefore, $f(x)$ is log-concave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.11 — Legendre Transform of Quadratic</h3>
+  <p>Consider $f(x) = \frac{1}{2}x^\top Q x$ with $Q \succ 0$. Verify the Legendre transform formula $f^*(y) = x^\top y - f(x)$ where $y = \nabla f(x)$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Variable Swap:</b> The Legendre transform changes coordinates from position $x$ to slope (force) $y = \nabla f(x)$.</li>
+        <li><b>Hamiltonian Mechanics:</b> This is exactly the transformation from Lagrangian $L(q, \dot{q})$ to Hamiltonian $H(q, p)$ used in physics.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Gradient Map.</strong>
+      $\nabla f(x) = Qx$. So we set $y = Qx$.
+      This implies $x = Q^{-1}y$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Apply Formula.</strong>
+      $f^*(y) = x^\top y - f(x)$ evaluated at $x = Q^{-1}y$.
+      $$ f^*(y) = (Q^{-1}y)^\top y - \frac{1}{2}(Q^{-1}y)^\top Q (Q^{-1}y) $$
+      $$ = y^\top Q^{-1} y - \frac{1}{2} y^\top Q^{-1} y = \frac{1}{2}y^\top Q^{-1} y $$
+    </div>
+    <div class="proof-step">
+      <strong>Conclusion:</strong>
+      This matches the result from Example 1.4(a). The Legendre transform provides a mechanical way to compute conjugates for smooth strictly convex functions.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.12 — Log-Concavity Examples (3.49)</h3>
+  <p>Verify the log-concavity of the following functions.</p>
+  <ol type="a">
+    <li><b>Logistic:</b> $f(x) = e^x / (1+e^x)$ on $\mathbb{R}$.</li>
+    <li><b>Harmonic Mean:</b> $f(x) = (\sum x_i^{-1})^{-1}$ on $\mathbb{R}_{++}^n$.</li>
+    <li><b>Product over Sum:</b> $f(x) = (\prod x_i) / (\sum x_i)$ on $\mathbb{R}_{++}^n$.</li>
+    <li><b>Determinant over Trace:</b> $f(X) = \det X / \mathrm{tr} X$ on $\mathbb{S}_{++}^n$.</li>
+  </ol>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Ratio Rule:</b> $\frac{\text{Log-Concave}}{\text{Log-Convex}} = \text{Log-Concave}$.</li>
+        <li><b>Examples:</b> Logistic function, Harmonic mean, Determinant over Trace. These structures appear frequently in information theory and spectral graph theory.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Logistic Function.</strong>
+      <p>$f(x) = \frac{e^x}{1+e^x}$. We want $\log f$ concave.</p>
+      <ul>
+        <li><b>Step 1: Compute log.</b> $\log f(x) = \log e^x - \log(1+e^x) = x - \log(1+e^x)$.</li>
+        <li><b>Step 2: Check curvature.</b>
+        The term $x$ is affine (convex/concave).
+        The term $g(x) = \log(1+e^x) = \log(e^0 + e^x)$ is Log-Sum-Exp, so $g$ is convex.
+        Therefore $-g$ is concave.
+        $\log f(x) = \text{Affine} + \text{Concave} = \text{Concave}$.
+        So $f$ is log-concave.</li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>(b) Harmonic-type Mean.</strong>
+      <p>$f(x) = \frac{1}{\sum 1/x_i}$. We show $\log f$ is concave.</p>
+      <ul>
+        <li><b>Step 1: Analyze components.</b> Let $s(x) = \sum_{i=1}^n x_i^{-1}$. Since $u \mapsto 1/u$ is convex, $s(x)$ is a convex function.</li>
+        <li><b>Step 2: Log-transformation.</b>
+        $\log f(x) = -\log s(x)$.
+        The function $h(u) = -\log u$ is convex and decreasing.
+        The composition of a convex decreasing function ($h$) with a convex function ($s$) is <b>convex</b>? No, that rule yields convexity.
+        Wait, we want $\log f$ to be <i>concave</i>.
+        Let's check the Hessian directly for $g(x) = -\log(\sum x_i^{-1})$.
+        Or simply recall that the harmonic mean is a concave function. Since $\log$ is concave and increasing, $\log(\text{concave})$ is concave.
+        Therefore, $\log f$ is concave.</li>
+      </ul>
+    </div>
+
+    <div class="proof-step">
+          <h4>Deep Dive: Log-Concavity of Ratio Functions (Rigorous Hessian Proof)</h4>
+          <p>We prove log-concavity for $f(x) = \frac{\prod x_i}{\sum x_i}$ and its matrix analog $F(X) = \frac{\det X}{\mathrm{tr} X}$.</p>
+
+          <h5>(c) Product over Sum: $g(x) = \log f(x) = \sum \log x_i - \log(\sum x_i)$</h5>
+          <p><b>Gradient:</b> $\frac{\partial g}{\partial x_j} = \frac{1}{x_j} - \frac{1}{S}$ where $S = \sum x_k$.
+          <br><b>Hessian:</b> $H = \nabla^2 g$.
+          $$ H_{jk} = -\frac{1}{x_j^2}\delta_{jk} + \frac{1}{S^2} $$
+          <b>PSD Check:</b> For a vector $v$,
+          $$ v^\top H v = -\sum \frac{v_j^2}{x_j^2} + \frac{1}{S^2} (\sum v_j)^2 $$
+          Let $a_j = v_j/x_j$ and $b_j = x_j$. By Cauchy-Schwarz: $(\sum a_j b_j)^2 \le (\sum a_j^2)(\sum b_j^2)$.
+          $$ (\sum v_j)^2 \le (\sum \frac{v_j^2}{x_j^2}) (\sum x_j^2) $$
+          Thus $\frac{(\sum v_j)^2}{S^2} \le (\sum \frac{v_j^2}{x_j^2}) \frac{\sum x_j^2}{S^2}$.
+          Since $\sum x_j^2 \le (\sum x_j)^2 = S^2$, the factor is $\le 1$.
+          $$ v^\top H v \le -\sum \frac{v_j^2}{x_j^2} + \sum \frac{v_j^2}{x_j^2} = 0 $$
+          Thus $\nabla^2 g \preceq 0$, so $f$ is log-concave.</p>
+
+          <h5>(d) Matrix Analog: $G(X) = \log \det X - \log \mathrm{tr} X$</h5>
+          <p>Let $X \in \mathbb{S}^n_{++}$ and direction $H$.
+          <br><b>Second Directional Derivative:</b>
+          $$ D^2 G(X)[H,H] = -\mathrm{tr}(X^{-1}HX^{-1}H) + \frac{(\mathrm{tr}H)^2}{(\mathrm{tr}X)^2} $$
+          We need to show $(\mathrm{tr}H)^2 \le (\mathrm{tr}X)^2 \mathrm{tr}(X^{-1}HX^{-1}H)$.
+          <br><b>Matrix Cauchy-Schwarz:</b> Define inner product $\langle A, B \rangle = \mathrm{tr}(A^\top B)$.
+          Let $A = X^{-1/2} H X^{-1/2}$ and $B = X$.
+          $$ \langle A, B \rangle = \mathrm{tr}(X^{-1/2} H X^{-1/2} X) = \mathrm{tr}(H) $$
+          $$ \|A\|_F^2 = \mathrm{tr}(A^2) = \mathrm{tr}(X^{-1} H X^{-1} H) $$
+          $$ \|B\|_F^2 = \mathrm{tr}(X^2) $$
+          By Cauchy-Schwarz: $(\mathrm{tr}H)^2 \le \mathrm{tr}(X^{-1} H X^{-1} H) \mathrm{tr}(X^2)$.
+          Since $\mathrm{tr}(X^2) = \sum \lambda_i^2 \le (\sum \lambda_i)^2 = (\mathrm{tr}X)^2$ (for $\lambda_i > 0$), we have:
+          $$ \frac{(\mathrm{tr}H)^2}{(\mathrm{tr}X)^2} \le \mathrm{tr}(X^{-1} H X^{-1} H) $$
+          Thus $D^2 G(X)[H,H] \le 0$. The function is log-concave.</p>
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.13 — Log-Convexity of the Gamma Function</h3>
+  <p>The Gamma function is defined as $\Gamma(x) = \int_0^\infty t^{x-1} e^{-t} dt$ for $x > 0$. Show that $\Gamma(x)$ is log-convex using the integration rule.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Artin's Theorem:</b> The log-convexity of the Gamma function (Bohr-Mollerup theorem) is a specific instance of the general rule: integrals of log-convex functions are log-convex.</li>
+        <li><b>Moment Generating Functions:</b> The MGF $\mathbb{E}[e^{tX}]$ is always log-convex for the same reason.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Identify the Integrand.</strong>
+      We can rewrite the integral as:
+      $$ \Gamma(x) = \int_0^\infty f(x, t) dt $$
+      where $f(x, t) = t^{x-1} e^{-t}$. Note that the domain of integration $(0, \infty)$ does not depend on $x$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Check Log-Convexity of Integrand.</strong>
+      Consider $g(x) = \log f(x, t)$ for a fixed $t > 0$.
+      $$ g(x) = \log(t^{x-1} e^{-t}) = (x-1)\log t - t $$
+      This function is linear (affine) in $x$ (slope $\log t$, intercept $-\log t - t$).
+      Since affine functions are convex, $g(x)$ is convex in $x$.
+      Thus, $f(x, t)$ is log-convex in $x$ for every $t$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Apply Integration Rule.</strong>
+      The theorem states that if $f(x, t)$ is log-convex in $x$ for each $t$, then $\int f(x, t) dt$ is log-convex (assuming convergence).
+      Therefore, $\Gamma(x)$ is log-convex.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.14 — Log-Sum-Exp Conjugate</h3>
+  <p>Derive the conjugate of $f(x) = \log(\sum_{i=1}^n e^{x_i})$. Show that $f^*(y) = \sum y_i \log y_i$ if $y \in \Delta$ (simplex), else $\infty$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      See Example 1.4(e) for the derivation. The key steps are:
+      1. Gradient condition $y = \nabla f(x)$ implies $y$ is a probability vector.
+      2. If $y$ is not a probability vector, the supremum is infinite.
+      3. Substituting $x$ back gives the negative entropy term.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.15 — Norm Conjugate</h3>
+  <p>Let $\|\cdot\|$ be a norm. Show that its conjugate is the indicator function of the dual norm unit ball: $f^*(y) = 0$ if $\|y\|_* \le 1$, else $\infty$. Use Lemma A3 from the Drill.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      See Lemma A3 in Drill.md for the rigorous proof. Key idea: if $\|y\|_* > 1$, align $x$ with $y$ and scale to infinity. If $\|y\|_* \le 1$, Hölder implies $y^\top x - \|x\| \le 0$, max is 0.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.16 — Convex Hull of a Function</h3>
+  <p>The convex envelope of $f$ is defined as the function $g$ whose epigraph is the convex hull of $\mathrm{epi}(f)$. Prove that $g(x) = \inf \{ \sum \theta_i f(x_i) \mid \sum \theta_i x_i = x, \theta \ge 0, \sum \theta_i = 1 \}$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Epigraph Hull:</b> Convexifying the geometric object (epigraph) corresponds to convexifying the function values via mixtures.</li>
+        <li><b>Lower Semicontinuity:</b> $g$ is also the biconjugate $f^{**}$ (if we take the closure).</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      A point $(x, t)$ is in $\mathrm{conv}(\mathrm{epi}(f))$ iff it is a convex combination of points $(x_i, t_i) \in \mathrm{epi}(f)$.
+      $(x, t) = \sum \theta_i (x_i, t_i)$ where $t_i \ge f(x_i)$.
+      To find the value of the function $g(x)$, we minimize $t$ for a fixed $x$.
+      $g(x) = \inf \{ t \mid (x, t) \in \mathrm{conv}(\mathrm{epi}(f)) \} = \inf \{ \sum \theta_i t_i \mid \sum \theta_i x_i = x, t_i \ge f(x_i) \}$.
+      Since we minimize $t$, we should choose $t_i$ as small as possible, i.e., $t_i = f(x_i)$.
+      Thus $g(x) = \inf \{ \sum \theta_i f(x_i) \mid \sum \theta_i x_i = x \}$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.17 — Log-Concavity Characterization (Breakdown of 3.47)</h3>
+  <p>Let $f > 0$ be differentiable on a convex domain. Prove that $f$ is log-concave if and only if $f(y) \le f(x) \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right)$ for all $x, y$.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>First-Order Condition:</b> A differentiable function $h$ is concave iff $h(y) \le h(x) + \nabla h(x)^\top (y-x)$.</li>
+        <li><b>Chain Rule:</b> $\nabla (\log f(x)) = \frac{\nabla f(x)}{f(x)}$.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Transform to Log-Space.</strong>
+      Take the logarithm of the inequality (monotonicity preserves direction):
+      $\log f(y) \le \log f(x) + \frac{\nabla f(x)}{f(x)}^\top (y-x)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Identify Gradients.</strong>
+      Let $h(x) = \log f(x)$. Then $\nabla h(x) = \frac{\nabla f(x)}{f(x)}$.
+      The inequality becomes $h(y) \le h(x) + \nabla h(x)^\top (y-x)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Equivalence.</strong>
+      This is exactly the first-order condition for the concavity of $h(x)$.
+      Thus, the inequality holds iff $\log f$ is concave, i.e., $f$ is log-concave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.18 — Convexity of Maximum Eigenvalue (3.10)</h3>
+  <p>Define $f(X) = \lambda_{\max}(X)$ for symmetric matrices $X \in \mathbb{S}^n$. Show that $f$ is convex.</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Variational Form:</b> $\lambda_{\max}(X)$ is the supremum of the linear function $u^\top X u$ over the unit sphere.</li>
+        <li><b>Pointwise Supremum:</b> The pointwise supremum of a family of convex (or linear) functions is convex. This is the "meta-theorem" for proving convexity of spectral functions.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Rayleigh Quotient Representation.</strong>
+      For a symmetric matrix $X$, the largest eigenvalue is given by the maximum value of the quadratic form on the unit sphere:
+      $$ \lambda_{\max}(X) = \sup_{\|u\|_2 = 1} u^\top X u $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Linearity in $X$.</strong>
+      For a fixed vector $u$, the function $g_u(X) = u^\top X u = \mathrm{tr}(u u^\top X)$ is a linear function of the matrix $X$.
+      Linear functions are convex.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Supremum Property.</strong>
+      $f(X)$ is the pointwise supremum of the family of linear functions $\{g_u(X) \mid \|u\|_2 = 1\}$.
+      Since the pointwise supremum of any collection of convex functions is convex, $f(X)$ is convex.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.19 — Convexity of Induced Matrix Norms (3.11)</h3>
+  <p>Let $\|\cdot\|_a$ and $\|\cdot\|_b$ be norms on $\mathbb{R}^m$ and $\mathbb{R}^n$. The induced norm (operator norm) is defined as:
+  $$ \|X\|_{a,b} = \sup_{v \ne 0} \frac{\|Xv\|_a}{\|v\|_b} = \sup_{\|v\|_b=1} \|Xv\|_a $$
+  Show that $f(X) = \|X\|_{a,b}$ is convex.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Dual Norm Representation.</strong>
+      Recall that any norm can be written as a supremum over the dual ball: $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
+      Substitute $z = Xv$:
+      $$ \|Xv\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top (Xv) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Bilinear Supremum.</strong>
+      Substitute this back into the definition of the operator norm:
+      $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top X v \right) = \sup \{ u^\top X v \mid \|v\|_b=1, \|u\|_{a^*} \le 1 \} $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Convexity via Linearity.</strong>
+      For fixed $u$ and $v$, the mapping $X \mapsto u^\top X v$ is linear in $X$.
+      The function $f(X)$ is the pointwise supremum of these linear functions.
+      Therefore, the induced norm is convex.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.20 — Vector Composition Rules (3.14)</h3>
+  <p>Use the composition rules to prove convexity/concavity for the following functions constructed from convex/concave components $g_i(x)$.
+  <br><strong>(a)</strong> $f(x) = \sum_{i=1}^r g_{[i]}(x)$ (sum of $r$ largest), where $g_i$ are convex.
+  <br><strong>(b)</strong> $f(x) = \log(\sum e^{g_i(x)})$, where $g_i$ are convex.
+  <br><strong>(c)</strong> $f(x) = (\prod g_i(x))^{1/k}$, where $g_i$ are concave and non-negative.
+  </p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>General Rule:</b> $h(g_1(x), \dots, g_k(x))$ is convex if $h$ is convex and non-decreasing in each argument (for convex $g_i$).</li>
+        <li><b>Concave Rule:</b> If $h$ is concave and non-decreasing, and $g_i$ are concave, the composition is concave.</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Sum of $r$ Largest.</strong>
+      Let $h(z) = \sum_{i=1}^r z_{[i]}$. This function is convex and non-decreasing in every argument $z_i$ (increasing one component cannot decrease the sum of the top $r$).
+      Since $g_i(x)$ are convex, the composition $h(g(x))$ is convex.
+    </div>
+    <div class="proof-step">
+      <strong>(b) Log-Sum-Exp Composition.</strong>
+      Let $h(z) = \log(\sum e^{z_i})$. We know $h$ is convex.
+      Check monotonicity: $\frac{\partial h}{\partial z_i} = \frac{e^{z_i}}{\sum e^{z_k}} > 0$.
+      Since $h$ is convex and non-decreasing, and $g_i$ are convex, the composition is convex.
+    </div>
+    <div class="proof-step">
+      <strong>(c) Geometric Mean Composition.</strong>
+      Let $h(z) = (\prod z_i)^{1/k}$ on $\mathbb{R}^k_+$.
+      We know $h$ is concave.
+      Check monotonicity: $\frac{\partial h}{\partial z_i} = \frac{1}{k} \frac{h(z)}{z_i} \ge 0$ (for $z \ge 0$).
+      Since $h$ is concave and non-decreasing, and $g_i$ are concave, the composition is concave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.21 — Perspective of Affine Composition (3.20)</h3>
+  <p>Let $f: \mathbb{R}^m \to \mathbb{R}$ be convex. Show that $g(x) = (c^\top x + d) f\left( \frac{Ax+b}{c^\top x + d} \right)$ is convex on $\{x \mid c^\top x + d > 0\}$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Perspective Transform.</strong>
+      The perspective of $f$ is $\tilde{f}(y, t) = t f(y/t)$, which is convex for $t > 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Affine Mapping.</strong>
+      Define the affine map $\mathcal{A}(x) = (Ax+b, c^\top x + d)$.
+      The function $g(x)$ is the composition of the convex function $\tilde{f}$ with the affine map $\mathcal{A}$:
+      $$ g(x) = \tilde{f}(\mathcal{A}(x)) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Conclusion.</strong>
+      Since affine pre-composition preserves convexity, $g(x)$ is convex on the domain where $t(x) > 0$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.22 — Convexity Drills (3.22)</h3>
+  <p>Determine the convexity of the following functions using composition rules.</p>
+  <p><strong>(a)</strong> $f(x) = -\log(-\log(\sum e^{a_i^\top x + b_i}))$ on domain where sum $< 1$.
+  <br><strong>(b)</strong> $f(x, u, v) = -\sqrt{uv - x^\top x}$ on $uv > x^\top x, u,v > 0$.
+  <br><strong>(c)</strong> $f(x, t) = -\log(t^p - \|x\|_p^p)$ for $p > 1, t > \|x\|_p$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Double Log.</strong>
+      Let $s(x) = \log(\sum e^{a_i^\top x + b_i})$. This is convex (Log-Sum-Exp of affine).
+      The domain restricts $s(x) < 0$.
+      The outer function is $h(u) = -\log(-u)$ for $u < 0$.
+      $h'(u) = -1/u > 0$, $h''(u) = 1/u^2 > 0$. So $h$ is convex and increasing.
+      Composition: $h(s(x))$ is convex.
+    </div>
+    <div class="proof-step">
+      <strong>(b) Rotated Lorentz.</strong>
+      Rewrite as $-\sqrt{u(v - x^\top x/u)}$.
+      The term $g(x, u) = x^\top x/u$ is convex (quadratic-over-linear).
+      So $h(x, u, v) = v - g(x, u)$ is concave.
+      The outer function is $\phi(a, b) = -\sqrt{ab}$, which is convex (negative geometric mean) and decreasing in $a, b$.
+      Wait, monotonicity must match. $\phi(u, h)$ is decreasing in $h$. $h$ is concave. This fits the rule: Convex Decreasing $\circ$ Concave $\implies$ Convex.
+      Actually, let's view it as perspective. $f(x, u, v) = -\sqrt{u} \sqrt{v - x^\top x/u}$.
+      Alternative: The epigraph is $t \le -\sqrt{uv - x^\top x} \iff t^2 \ge uv - x^\top x, t \le 0 \iff x^\top x + t^2 \le uv$.
+      This is a rotated second-order cone constraint, which defines a convex set. Thus $f$ is convex.
+    </div>
+    <div class="proof-step">
+      <strong>(c) Log p-Norm Barrier.</strong>
+      $t^p - \|x\|_p^p = t^p (1 - (\|x\|_p/t)^p)$.
+      $-\log(t^p - \|x\|_p^p) = -p \log t - \log(1 - (\|x\|_p/t)^p)$.
+      Let $u = \|x\|_p/t$. This is a convex function (perspective of norm) on $t>0$.
+      Let $h(u) = -\log(1-u^p)$. We need to check if $h(u)$ is convex and increasing.
+      For $p \ge 1$, $u^p$ is convex on $u \ge 0$. $-\log(1-y)$ is convex increasing.
+      Composition holds.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.23 — Perspective Practice (3.23)</h3>
+  <p>Show that $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ is convex for $t > 0, p \ge 1$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Let $g(x) = \|x\|_p^p = \sum |x_i|^p$.
+      For $p \ge 1$, $z \mapsto |z|^p$ is convex, so $g(x)$ is convex.
+      The function $f(x, t)$ is exactly the perspective of $g$:
+      $$ t g(x/t) = t \sum |x_i/t|^p = t \sum \frac{|x_i|^p}{t^p} = \frac{1}{t^{p-1}} \sum |x_i|^p = \frac{\|x\|_p^p}{t^{p-1}} $$
+      Since the perspective of a convex function is convex, $f(x, t)$ is convex.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.24 — Shifting Log-Concavity (3.48)</h3>
+  <p>If $f$ is log-concave and $a \ge 0$, show that $g(x) = f(x) - a$ is log-concave on its domain $\{x \mid f(x) > a\}$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      We need to show $\log(f(x) - a)$ is concave.
+      Let $h(y) = \log(e^y - a)$ for $y > \log a$.
+      Calculate derivatives w.r.t $y$:
+      $h'(y) = \frac{e^y}{e^y - a}$.
+      $h''(y) = \frac{e^y(e^y - a) - e^y(e^y)}{(e^y - a)^2} = \frac{-a e^y}{(e^y - a)^2}$.
+      Since $a \ge 0$, $h''(y) \le 0$, so $h(y)$ is concave.
+      Also $h'(y) > 0$, so $h$ is non-decreasing.
+    </div>
+    <div class="proof-step">
+      Now write $\log g(x) = \log(f(x) - a) = h(\log f(x))$.
+      We know $\log f(x)$ is concave (definition of log-concave).
+      We have $h$ is concave and non-decreasing.
+      By composition rules, $h(\log f(x))$ is concave.
+      Thus $f(x) - a$ is log-concave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.25 — Cardinality on $\mathbb{R}_+^n$ (3.35)</h3>
+  <p>Show that $\operatorname{card}(x)$ (number of nonzeros) is not quasiconvex on $\mathbb{R}_+^n$, but is quasiconcave.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Not Quasiconvex:</strong> Consider $x=(1,0)$ and $y=(0,1)$. Both have cardinality 1.
+      Their midpoint $z=(0.5, 0.5)$ has cardinality 2.
+      Quasiconvexity requires $\operatorname{card}(z) \le \max(\operatorname{card}(x), \operatorname{card}(y)) = 1$. Since $2 > 1$, it fails.
+    </div>
+    <div class="proof-step">
+      <strong>Quasiconcave:</strong> We need to show superlevel sets $S_k = \{x \ge 0 \mid \operatorname{card}(x) \ge k\}$ are convex.
+      Consider $z = \theta x + (1-\theta)y$ with $\theta \in (0,1)$.
+      If $x_i > 0$ or $y_i > 0$, then $z_i > 0$ (since $x, y \ge 0$).
+      Thus $\operatorname{supp}(z) = \operatorname{supp}(x) \cup \operatorname{supp}(y)$.
+      Cardinality is $|\operatorname{supp}(x) \cup \operatorname{supp}(y)|$.
+      Since $|A \cup B| \ge \max(|A|, |B|)$, we have $\operatorname{card}(z) \ge \max(\operatorname{card}(x), \operatorname{card}(y))$.
+      Thus $\operatorname{card}(z) \ge \min(\operatorname{card}(x), \operatorname{card}(y))$ (actually stronger).
+      So it is quasiconcave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.26 — Rank on PSD Cone (3.36)</h3>
+  <p>Show that $f(X) = \operatorname{rank}(X)$ is quasiconcave on $\mathbb{S}_+^n$.
+  <br>Specifically, show $\operatorname{rank}(\theta X + (1-\theta)Y) \ge \min(\operatorname{rank}(X), \operatorname{rank}(Y))$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Nullspace Intersection.</strong>
+      Let $Z = \theta X + (1-\theta)Y$ with $\theta \in (0,1)$.
+      If $v \in \ker(Z)$, then $v^\top Z v = 0$. Since $X, Y \succeq 0$, this implies $v^\top X v = 0$ and $v^\top Y v = 0$.
+      For PSD matrices, $v^\top A v = 0 \iff Av = 0$.
+      Thus $v \in \ker(X) \cap \ker(Y)$.
+      So $\ker(Z) = \ker(X) \cap \ker(Y)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Rank-Nullity.</strong>
+      $\dim \ker(Z) = \dim(\ker(X) \cap \ker(Y)) \le \min(\dim \ker X, \dim \ker Y)$.
+      $\operatorname{rank}(Z) = n - \dim \ker(Z) \ge n - \min(\dim \ker X, \dim \ker Y) = \max(n - \dim \ker X, n - \dim \ker Y)$.
+      $\operatorname{rank}(Z) \ge \max(\operatorname{rank}(X), \operatorname{rank}(Y))$.
+    </div>
+    <div class="proof-step">
+      <strong>Conclusion:</strong>
+      Since the rank of a convex combination is at least the maximum of the ranks (which is $\ge$ the minimum), the function is quasiconcave.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.27 — Homogenization (3.31)</h3>
+  <p>Let $f$ be convex with $f(0)=0$. Define $g(x) = \inf_{\alpha > 0} \frac{f(\alpha x)}{\alpha}$.
+  Show that $g$ is convex, homogeneous, and the largest homogeneous underestimator of $f$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Homogeneity:</strong>
+      $g(tx) = \inf_\alpha \frac{f(\alpha t x)}{\alpha}$. Let $\beta = \alpha t$. Then $\alpha = \beta/t$.
+      $g(tx) = \inf_\beta \frac{f(\beta x)}{\beta/t} = t \inf_\beta \frac{f(\beta x)}{\beta} = t g(x)$.
+    </div>
+    <div class="proof-step">
+      <strong>(b) Underestimator:</strong>
+      Set $\alpha=1$ in the infimum: $g(x) \le f(x)/1 = f(x)$.
+      If $h$ is homogeneous and $h \le f$, then $h(\alpha x) \le f(\alpha x) \implies \alpha h(x) \le f(\alpha x) \implies h(x) \le f(\alpha x)/\alpha$.
+      Taking infimum over $\alpha$, $h(x) \le g(x)$.
+    </div>
+    <div class="proof-step">
+      <strong>(c) Convexity:</strong>
+      Since $f(0)=0$ and $f$ is convex, the function $\phi(\alpha) = f(\alpha x)/\alpha$ is non-decreasing in $\alpha$ (slope of secant from 0).
+      Thus the infimum is the limit as $\alpha \to 0$: $g(x) = \lim_{\alpha \to 0} \frac{f(\alpha x) - f(0)}{\alpha} = f'(0; x)$ (directional derivative).
+      The directional derivative of a convex function is sublinear (convex).
+      Proof: $g(x+y) = \lim \frac{f(t(x+y))}{t} \le \lim \frac{t/2 f(2tx) + t/2 f(2ty)}{t} = g(x) + g(y)$ (using convexity with weights $1/2$).
+    </div>
+  </div>
+</div>
+
+</section>
+
+    <section class="section-card" id="section-6">
+      <h2>6. Recap &amp; What's Next</h2>
+      <div class="recap-box">
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Conjugates:</b> $f^*(y)=\sup_x (y^\top x - f(x))$ packages all supporting hyperplanes of $f$ into a single convex function.</li>
+          <li><b>Quasiconvexity:</b> sublevel sets are convex even when the function is not; fractional and max-type objectives often land here.</li>
+          <li><b>Log-concavity/log-convexity:</b> turns multiplicative structure into additive structure via $\log$, which is why it appears in probability and geometry.</li>
+        </ul>
+      </div>
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> In <a href="../07-convex-problems-standard/index.html">Lecture 07</a> you will translate modeling statements into “standard form.” In <a href="../08-convex-problems-conic/index.html">Lecture 08</a> you will see how many nonlinear-looking constraints become SOC/SDP constraints. In <a href="../09-duality/index.html">Lecture 09</a>, conjugates and separation become dual problems and optimality certificates.</p>
+      </div>
+    </section>
+    </article>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Convex Optimization Course</p>
+      </div>
+    </footer>
+  </main></div>
+
+  <script src="../../static/js/math-renderer.js"></script>
+  <script src="../../static/js/ui.js"></script>
+  <script src="../../static/js/toc.js"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Widget Loaders -->
+  <script type="module">
+    import { initConvexFunctionInspector } from './widgets/js/convex-function-inspector.js';
+    initConvexFunctionInspector('widget-convex-function-inspector');
+  </script>
+  <script type="module">
+    import { initHessianHeatmap } from './widgets/js/hessian-heatmap.js';
+    initHessianHeatmap('widget-hessian-heatmap');
+  </script>
+  <script type="module">
+    import { initOperationsPreserving } from './widgets/js/operations-preserving.js';
+    initOperationsPreserving('widget-operations-preserving');
+  </script>
+  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/notes-widget.js"></script>
+<script src="../../static/js/pomodoro.js"></script>
+<script src="../../static/js/progress-tracker.js"></script>
+</body>
+</html>

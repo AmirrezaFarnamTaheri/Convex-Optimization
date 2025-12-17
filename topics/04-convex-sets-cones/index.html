@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>04. Convex Sets: Cones and Separation — Convex Optimization</title>
+  <link rel="stylesheet" href="../../static/css/lecture-styles.css" />
+  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <header class="site-header sticky">
+    <div class="container">
+      <div class="brand">
+        <a href="../../index.html">Convex Optimization</a>
+      </div>
+      <nav class="nav">
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../03-convex-sets-geometry/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../05-convex-functions-basics/index.html">Next <i data-feather="arrow-right"></i></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>04. Convex Sets: Cones and Separation</h1>
+      <div class="lecture-summary">
+        <p>This lecture introduces the two geometric ideas that power much of modern convex optimization: (1) separation/support by hyperplanes and (2) convex cones and the generalized inequalities they induce. Separation theorems explain why convex problems admit certificates of optimality (duality), while cones provide the unified language behind SOCPs and SDPs.</p>
+        <p><strong>Prerequisites:</strong> <a href="../03-convex-sets-geometry/index.html">Lecture 03</a> (convex sets and operations) and <a href="../00-linear-algebra-basics/index.html">Lecture 00</a> (inner products, orthogonality).</p>
+        <p><strong>Forward Connections:</strong> Conic formulations (<a href="../08-convex-problems-conic/index.html">Lecture 08</a>) are built from cones, and duality/KKT theory (<a href="../09-duality/index.html">Lecture 09</a>) is built from separation.</p>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2><i data-feather="target"></i> Learning Objectives</h2>
+      <p>After this lecture, you will be able to:</p>
+      <ul>
+        <li><b>Use separation correctly:</b> State and apply separating and supporting hyperplane theorems, including when strict separation is possible.</li>
+        <li><b>Connect projection to separation:</b> Use the nearest-point (projection) characterization to derive a separating hyperplane.</li>
+        <li><b>Work with cones:</b> Recognize proper cones, define generalized inequalities, and compute/interpret dual cones.</li>
+        <li><b>See conic optimization coming:</b> Recognize how SOCP/SDP constraints are just “membership in a cone.”</li>
+      </ul>
+    </section>
+
+    <article>
+      <section class="section-card" id="section-1">
+        <h2>1. Separating and Supporting Hyperplane Theorems</h2>
+
+        <p>These theorems form the geometric backbone of duality theory, optimality conditions, and many algorithms in convex optimization. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
+
+        <h3>1.1 The Separating Hyperplane Theorem</h3>
+
+        <div class="theorem-box">
+          <h4>Theorem (Separating Hyperplane)</h4>
+          <p>Let $C, D \subseteq \mathbb{R}^n$ be nonempty, disjoint, convex sets. Then there exists a hyperplane that separates them: there exist $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$ such that:</p>
+          $$
+          a^\top x \le b \quad \forall x \in C, \qquad a^\top y \ge b \quad \forall y \in D
+          $$
+          <p>If additionally one of $C$ or $D$ is closed and the other is compact, then we can achieve <b>strict separation</b> (where $a^\top x < b < a^\top y$).</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/separating-hyperplane-strict.png"
+               alt="Illustration of the Separating Hyperplane Theorem"
+               style="max-width: 80%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.1:</i> A hyperplane separating two disjoint convex sets $C$ and $D$. For closed sets, we can construct the separator using the projection of 0 onto their difference set $C-D$.</figcaption>
+        </figure>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/projection-onto-convex-set.png"
+               alt="Projection of a point outside a convex set onto the closest point in the set"
+               style="max-width: 70%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.2:</i> Nearest-point projection onto a convex set. The closest point $x_0=\Pi_C(y)$ is unique, and the residual $y-x_0$ defines a normal direction for a supporting/separating hyperplane at $x_0$.</figcaption>
+        </figure>
+
+        <div class="proof-box">
+          <h4>Proof (Constructive via Projection)</h4>
+          <p>This proof is the "heavy lifting" of convex geometry. We prove the strict separation case where $C$ is closed and $D$ is compact.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: Construct the Difference Set $S$.</strong>
+            Define the Minkowski difference $S = C - D = \{c - d \mid c \in C, d \in D\}$.
+            <br>Since $C$ and $D$ are convex, their difference $S$ is also convex.
+            <br>Since $C$ is closed and $D$ is compact, $S$ is <b>closed</b> (this relies on compactness; the sum of two closed sets is not necessarily closed).
+            <br>Because $C \cap D = \emptyset$, the origin $0$ is <b>not</b> in $S$. (If $0 = c-d$, then $c=d \in C \cap D$).
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Project Zero onto $S$.</strong>
+            We want to find the point in $S$ closest to the origin.
+            Since $S$ is a non-empty, closed, convex set, there exists a unique point $p = \Pi_S(0)$ that minimizes the Euclidean norm $\|z\|_2$ for $z \in S$.
+            <br>Since $0 \notin S$, we must have $p \neq 0$, so $\|p\|_2 > 0$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Variational Characterization.</strong>
+            By the projection theorem, for any $z \in S$:
+            $$ (z - p)^\top (0 - p) \le 0 \implies (z - p)^\top (-p) \le 0 \implies z^\top p \ge p^\top p = \|p\|_2^2 $$
+            This inequality $z^\top p \ge \|p\|_2^2$ holds for all $z \in S$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Translating back to $C$ and $D$.</strong>
+            Any point $z \in S$ is of the form $c - d$. Thus for all $c \in C, d \in D$:
+            $$ (c - d)^\top p \ge \|p\|_2^2 \implies p^\top c \ge p^\top d + \|p\|_2^2 $$
+            Let the normal vector be $a = -p$. (Note: We can choose $a=p$ or $a=-p$ depending on which side we want greater). Let's stick to the theorem statement form $a^\top x \le b$ for $C$.
+            <br>Let $a = -p$. Then $(-p)^\top c \ge (-p)^\top d + \|p\|_2^2 \implies -a^\top c \ge -a^\top d + \|a\|_2^2 \implies a^\top c \le a^\top d - \|a\|_2^2$.
+            <br>Define $b = \sup_{c \in C} a^\top c$. Then $b \le a^\top d - \|a\|_2^2$.
+            <br>We have $a^\top c \le b$ for all $c \in C$.
+            <br>For $d \in D$, $a^\top d \ge b + \|a\|_2^2 > b$ (since $\|a\|_2 > 0$).
+            <br>Thus, the hyperplane defined by $(a, b)$ strictly separates $C$ and $D$.
+          </div>
+        </div>
+
+        <h3>1.2 The Supporting Hyperplane Theorem</h3>
+
+        <div class="theorem-box">
+          <h4>Theorem (Supporting Hyperplane)</h4>
+          <p>Let $C \subseteq \mathbb{R}^n$ be a nonempty convex set, and let $x_0 \in \partial C$ (the boundary of $C$). Then there exists a <b>supporting hyperplane</b> to $C$ at $x_0$: there exists $a \in \mathbb{R}^n \setminus \{0\}$ such that:</p>
+          $$
+          a^\top x \le a^\top x_0 \quad \forall x \in C
+          $$
+          <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ "supports" $C$ at $x_0$—it touches $C$ at $x_0$ and $C$ lies entirely on one side.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof (Limit Argument)</h4>
+          <p>This proof handles the subtle case where separation isn't strictly possible (touching at the boundary) by taking a limit.</p>
+          <div class="proof-step">
+            <strong>Step 1: Sequence of External Points.</strong>
+            Since $x_0$ is on the boundary $\partial C$, it is in the closure of the complement $\mathbb{R}^n \setminus \text{cl}(C)$.
+            Therefore, there exists a sequence of points $\{y_k\}$ such that $y_k \notin \text{cl}(C)$ and $y_k \to x_0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Projection and Separation.</strong>
+            Since $\text{cl}(C)$ is closed and convex, for each $y_k$, there is a unique projection $p_k = \Pi_{\text{cl}(C)}(y_k)$.
+            By the separation theorem (constructive version), the vector $a_k = y_k - p_k$ defines a separating hyperplane:
+            $$ a_k^\top x \le a_k^\top p_k \quad \forall x \in C $$
+            Also note that $a_k \neq 0$ since $y_k \notin \text{cl}(C)$.
+            We normalize the normal vectors: let $u_k = a_k / \|a_k\|_2$. Then $\|u_k\|_2 = 1$.
+            $$ u_k^\top x \le u_k^\top p_k \quad \forall x \in C $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Convergence.</strong>
+            The sequence $\{u_k\}$ lies on the unit sphere (a compact set). By the Bolzano-Weierstrass theorem, there exists a convergent subsequence $u_{k_j} \to a$, where $\|a\|_2 = 1$ (so $a \neq 0$).
+            Also, since $y_k \to x_0$ and $p_k$ is the projection of $y_k$, by continuity of projection, $p_k \to \Pi_{\text{cl}(C)}(x_0) = x_0$ (since $x_0 \in \text{cl}(C)$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Limit Inequality.</strong>
+            Taking the limit as $k \to \infty$ in the inequality $u_k^\top x \le u_k^\top p_k$:
+            $$ a^\top x \le a^\top x_0 \quad \forall x \in C $$
+            This $a$ is the normal vector of the supporting hyperplane at $x_0$.
+          </div>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/supporting-hyperplane-tangent.png"
+               alt="Illustration of the Supporting Hyperplane Theorem"
+               style="max-width: 80%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1.2:</i> A supporting hyperplane to a convex set at a boundary point. It "kisses" the set without cutting into it.</figcaption>
+        </figure>
+
+        <h3>1.3 The Support Function</h3>
+
+        <p>The concept of supporting hyperplanes leads naturally to the <b>support function</b>, which provides an alternative, dual description of a convex set. While a set is typically defined by its internal points ("what it contains"), the support function describes it by its external boundaries ("what contains it").</p>
+
+        <div class="theorem-box">
+          <h4>Definition (Support Function)</h4>
+          <p>For a set $C \subseteq \mathbb{R}^n$, the support function $S_C: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ is defined as:</p>
+          $$ S_C(y) := \sup_{x \in C} y^\top x $$
+          <p><b>Geometric Meaning:</b> For a direction $y$, $S_C(y)$ quantifies the maximum extent of the set $C$ in that direction. The hyperplane $H = \{x \mid y^\top x = S_C(y)\}$ is a <b>supporting hyperplane</b> to $C$ with normal vector $y$. The set $C$ lies entirely in the halfspace $\{x \mid y^\top x \le S_C(y)\}$.</p>
+          <p><b>Forward Connection:</b> The support function $S_C(y)$ is exactly the <b>convex conjugate</b> of the indicator function $I_C(x)$ (see <a href="../06-convex-functions-advanced/index.html">Lecture 06</a>). This duality allows us to manipulate sets algebraically.</p>
+        </div>
+
+        <h3>1.4 Theorems of the Alternative (Farkas' Lemma)</h3>
+        <p>Theorems of the alternative provide a rigorous way to determine solvability: either a system of linear inequalities has a solution, or there exists a "certificate" proving it does not. These results are algebraic translations of the Separating Hyperplane Theorem.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem (Farkas' Lemma)</h4>
+          <p>Let $A \in \mathbb{R}^{m \times n}$ and $b \in \mathbb{R}^m$. Exactly one of the following two systems has a solution:</p>
+          <ol>
+            <li><b>System 1 (Primal):</b> $Ax = b, \ x \ge 0$.</li>
+            <li><b>System 2 (Alternative):</b> $A^\top y \ge 0, \ b^\top y < 0$.</li>
+          </ol>
+          <p><i>Interpretation:</i> System 1 asks if $b$ is in the cone generated by the columns of $A$. System 2 asks for a separating hyperplane between $b$ and that cone.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof via Separation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Define the Cone.</strong> Let $K = \{Ax \mid x \ge 0\}$ be the cone generated by the columns of $A$. This is a closed convex cone.
+            <br>System 1 is feasible if and only if $b \in K$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Apply Separation.</strong> If $b \notin K$, then by the Separating Hyperplane Theorem (Strict Separation, since $K$ is closed and $\{b\}$ is compact), there exists a hyperplane strictly separating $b$ from $K$.
+            <br>There exists a vector $y$ and scalar $\alpha$ such that:
+            $$ y^\top b < \alpha \quad \text{and} \quad y^\top z \ge \alpha \ \forall z \in K $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Analyze the Cone Condition.</strong> Since $0 \in K$, we must have $y^\top 0 \ge \alpha \implies \alpha \le 0$.
+            Also, $K$ is a cone. If $y^\top z < 0$ for some $z \in K$, then for large $\lambda$, $\lambda z \in K$ would make $y^\top (\lambda z) \to -\infty$, violating the lower bound $\alpha$.
+            Thus, we must have $y^\top z \ge 0$ for all $z \in K$.
+            This implies $\alpha$ can be taken as $0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Translate back.</strong>
+            The condition $y^\top z \ge 0$ for all $z = Ax$ (with $x \ge 0$) means $y^\top A x = (A^\top y)^\top x \ge 0$ for all $x \ge 0$.
+            This implies $A^\top y \ge 0$.
+            The separation condition $y^\top b < \alpha \le 0$ implies $b^\top y < 0$.
+            Thus, if System 1 is infeasible ($b \notin K$), System 2 has a solution ($y$).
+          </div>
+        </div>
+
+        <div class="insight">
+          <h4>🔑 Why These Theorems Matter</h4>
+          <ul>
+            <li><b>Duality:</b> The separating hyperplane theorem is the geometric foundation of <b>Lagrangian duality</b> (<a href="../09-duality/index.html">Lecture 09</a>). Specifically, Strong Duality holds because we can separate the set of achievable values from the "better-than-optimal" region.</li>
+            <li><b>Optimality:</b> The supporting hyperplane theorem leads to first-order optimality conditions (KKT conditions).</li>
+            <li><b>Algorithms:</b> Cutting-plane methods and support vector machines (SVMs) rely explicitly on finding these separators.</li>
+          </ul>
+          <figure style="text-align: center; margin: 24px 0;">
+               <img src="assets/separation-failure.png"
+                    alt="Failure of separation for non-convex sets"
+                    style="max-width: 60%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 1.3:</i> <b>Cautionary Tale:</b> If the sets are not convex (like the C-shape), a separating hyperplane may not exist. This is why convexity is often required for strong duality.</figcaption>
+          </figure>
+        </div>
+
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Explorer: Separating Hyperplanes</h3>
+          <p><b>Find Hyperplanes that Separate Convex Sets:</b> This widget makes the Separating Hyperplane Theorem tangible:</p>
+          <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <li><b>Draw two sets:</b> Click to define vertices of two convex polygons.</li>
+            <li><b>Drag to move:</b> Move the sets around and watch the separating hyperplane update in real-time.</li>
+            <li><b>Auto-compute separation:</b> The tool uses the closest-point algorithm (constructive proof logic) to find the optimal separator.</li>
+            <li><b>Collision:</b> See how the separator vanishes when the sets overlap.</li>
+          </ul>
+          <div id="widget-separating-hyperplane" style="width: 100%; height: 450px; position: relative;"></div>
+        </div>
+      </section>
+
+
+      <section class="section-card" id="section-2">
+        <h2>2. Cones, Proper Cones, and Dual Cones</h2>
+
+        <h3>2.1 Cones and Convex Cones</h3>
+
+        <p>A set $K \subseteq \mathbb{R}^n$ is a <a href="#" class="definition-link">cone</a> if it is closed under non-negative scaling:</p>
+        $$ x \in K, \ \alpha \ge 0 \implies \alpha x \in K $$
+
+        <p>A <a href="#" class="definition-link">convex cone</a> is a cone that is also a convex set. Equivalently, it is closed under non-negative linear combinations (conic combinations):</p>
+        $$ x, y \in K, \ \alpha, \beta \ge 0 \implies \alpha x + \beta y \in K $$
+
+        <div class="theorem-box">
+          <h4>Deep Dive: Polyhedral Cones and Weyl-Minkowski</h4>
+          <p>A fundamental result in the theory of convex cones is the equivalence between two ways of representing polyhedral cones:</p>
+          <ul>
+            <li><b>V-Representation (Vertex/Generator):</b> A cone is finitely generated if it is the conic hull of a finite set of vectors: $K = \{Ay \mid y \ge 0\}$.</li>
+            <li><b>H-Representation (Halfspace/Intersection):</b> A cone is polyhedral if it is the intersection of finitely many closed halfspaces passing through the origin: $K = \{x \mid Bx \le 0\}$.</li>
+          </ul>
+          <p><b>The Weyl-Minkowski Theorem</b> states that a convex cone is finitely generated if and only if it is polyhedral. This is the conical analog of the vertex-facet equivalence for polytopes. It underpins algorithms like the Simplex method (moving between vertices) and Fourier-Motzkin elimination (projecting H-representations).</p>
+        </div>
+
+        <div class="example">
+            <h4>Examples of Convex Cones</h4>
+            <ul>
+                <li><b>Non-negative orthant:</b> $\mathbb{R}^n_+ = \{x \in \mathbb{R}^n \mid x_i \ge 0\}$</li>
+                <li><b>Second-order cone (Lorentz cone):</b> $\mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$</li>
+                <li><b>PSD Cone:</b> $\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}$</li>
+            </ul>
+        </div>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/second-order-cone.png"
+                    alt="3D visualization of the second-order cone (ice cream cone)"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.1:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
+             </figure>
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/hyperbolic-cone.png"
+                    alt="3D visualization of a hyperbolic cone"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.2:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
+             </figure>
+        </div>
+
+        <h3>2.2 Proper Cones</h3>
+
+        <p>A <a href="#" class="definition-link">proper cone</a> is a convex cone $K$ that satisfies three additional properties:</p>
+        <ol>
+          <li><b>Closed:</b> $K$ contains its boundary.</li>
+          <li><b>Pointed:</b> $K$ contains no lines ($K \cap -K = \{0\}$).</li>
+          <li><b>Solid:</b> $K$ has a non-empty interior.</li>
+        </ol>
+
+        <p>Proper cones are geometrically "sharp" (pointed) and "full-dimensional" (solid). They are used to define generalized inequalities.</p>
+
+        <div class="intuition-box">
+          <p><b>Why these three conditions?</b> They make “$\preceq_K$” behave like a sensible notion of “$\le$”. <b>Pointed</b> prevents cycles (otherwise you could have $x \preceq_K y$ and $y \preceq_K x$ with $x\neq y$). <b>Solid</b> ensures there are truly “positive” directions (so strict inequality using $\mathrm{int}(K)$ is meaningful). <b>Closed</b> ensures the order is stable under limits (important in optimization where solutions arise as limits of approximations).</p>
+        </div>
+
+        <div class="interpretation-box">
+          <p><b>Decision/economic view:</b> Think of $K$ as the set of “acceptable improvements” (e.g., more output, less cost, lower risk). Then $x \preceq_K y$ means “$y$ dominates $x$ up to an improvement in $K$.” Properness ensures this dominance relation is non-degenerate and supports optimization and “Pareto” style comparisons.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+             <img src="assets/cone-zoo.png"
+                  alt="Examples of proper and improper cones"
+                  style="max-width: 90%; height: auto; border-radius: 8px;" />
+             <figcaption><i>Figure 2.3:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
+        </figure>
+
+        <h3>2.3 Generalized Inequalities</h3>
+
+        <p>A proper cone $K$ defines a partial ordering $\preceq_K$ on $\mathbb{R}^n$:</p>
+        $$
+        x \preceq_K y \iff y - x \in K
+        $$
+        <p>Strict inequality is defined using the interior of the cone:</p>
+        $$
+        x \prec_K y \iff y - x \in \text{int}(K)
+        $$
+
+        <h4>Vector Optimization (Pareto Optimality)</h4>
+        <p>This partial order allows us to define optimization for vector-valued functions. A point $x^*$ is <b>Pareto optimal</b> (or efficient) with respect to a cone $K$ if there is no feasible $y$ such that $f(y) \preceq_K f(x^*)$ and $f(y) \neq f(x^*)$. In other words, you cannot improve any component of the objective (in the cone sense) without degrading another.
+        <br>For $K = \mathbb{R}^n_+$, this recovers standard multi-objective optimization.</p>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/generalized-inequality-cone.png"
+                    alt="Visualizing generalized inequality"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.4:</i> Visualizing $x \preceq_K y$. The point $x$ must lie in the "shadow" of $y$ cast by the cone $-K$.</figcaption>
+             </figure>
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/matrix-inequality-cone.png"
+                    alt="Matrix inequality ordering"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.5:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
+             </figure>
+        </div>
+
+        <div class="insight">
+             <h4>Minimum vs. Minimal</h4>
+             <p>Because the ordering is partial, we distinguish between a <b>minimum</b> element (smaller than everyone, e.g., the origin in $\mathbb{R}^n_+$) and a <b>minimal</b> element (nothing is smaller than it, but it might not compare to everyone).</p>
+             <figure style="text-align: center; margin: 24px 0;">
+                  <img src="assets/minimum-vs-minimal.png"
+                       alt="Minimum vs minimal elements"
+                       style="max-width: 60%; height: auto; border-radius: 8px;" />
+                  <figcaption><i>Figure 2.6:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
+             </figure>
+        </div>
+
+        <h3>2.4 The Dual Cone</h3>
+
+        <p>The <a href="#" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
+        $$
+        K^* = \{y \in \mathbb{R}^n \mid y^\top x \ge 0 \ \forall x \in K\}
+        $$
+        <p><b>Geometric Intuition (Non-Negative Normals):</b> If $K$ is the set of "allowable directions," $K^*$ is the set of "allowable gradients" that don't decrease the objective as you move along $K$. It generalizes the concept of the non-negative orthant. If $K$ is a "sharp" cone (pointed), $K^*$ is a "wide" cone (solid). If $K$ is a subspace (flat), $K^*$ is its orthogonal complement (normal).</p>
+        <p>The dual cone $K^*$ is always a closed convex cone, regardless of whether $K$ is convex or closed.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem (Bipolar Theorem)</h4>
+          <p>If $K$ is a convex cone, then its second dual (bipolar) is its closure:</p>
+          $$ K^{**} = \mathrm{cl}(K) $$
+          <p>Consequently, if $K$ is a <b>closed convex cone</b>, then $K^{**} = K$. This is the "reflexive" property of cones, analogous to $(V^\perp)^\perp = V$ for subspaces.</p>
+          <div class="proof-box">
+            <h4>Proof Sketch</h4>
+            <p>1. $K \subseteq K^{**}$: If $x \in K$, then for all $y \in K^*$, $y^\top x \ge 0$. Thus $x$ makes a non-negative angle with everything in $K^*$, so $x \in K^{**}$.</p>
+            <p>2. $K^{**} \subseteq \mathrm{cl}(K)$: If $x \notin \mathrm{cl}(K)$, by the Separating Hyperplane Theorem, there exists $y$ strictly separating $x$ from $\mathrm{cl}(K)$. This $y$ can be shown to lie in $K^*$ while $y^\top x < 0$, proving $x \notin K^{**}$.</p>
+          </div>
+        </div>
+
+      <h4>The Polar Cone</h4>
+      <p>The <a href="#" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
+      $$ K^\circ = -K^* = \{y \in \mathbb{R}^n \mid y^\top x \le 0 \ \forall x \in K\} $$
+      <p>It contains all vectors making an obtuse angle with $K$. It is related to the normal cone at the origin: $K^\circ = N_K(0)$ for a convex cone $K$.</p>
+
+      <h4>Geometric Normal Cones</h4>
+      <p>For a general closed convex set $C$ and a point $x \in C$, the <b>normal cone</b> $N_C(x)$ is the set of outward directions:</p>
+      $$ N_C(x) = \{g \in \mathbb{R}^n \mid g^\top(y - x) \le 0 \ \forall y \in C\} $$
+      <p>This generalizes the gradient of constraints. If $C$ is defined by smooth inequalities $f_i(x) \le 0$, the normal cone is the cone generated by the gradients of the active constraints.</p>
+
+        <div class="intuition-box">
+          <p><b>Geometric test:</b> A vector $y$ is in $K^*$ if it can serve as an “outward normal” at the origin: the halfspace $\{x \mid y^\top x \ge 0\}$ contains the cone $K$. In 2D, if $K$ is a wedge, then $K^*$ is the wedge of normals that still form an acute angle with every direction in $K$.</p>
+        </div>
+
+        <div class="interpretation-box">
+          <p><b>Prices/supporting weights:</b> If $K$ represents “nonnegative” directions (improvements), then $K^*$ is the set of linear functionals that assign <i>nonnegative value</i> to every improvement: $y^\top x \ge 0$ for all $x\in K$. A key consequence used later in duality is: if $x \preceq_K y$ then $w^\top x \le w^\top y$ for every $w \in K^*$ (dual cone weights turn vector dominance into scalar inequalities).</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+             <img src="assets/dual-cone-geometry.png"
+                  alt="Geometry of primal and dual cones"
+                  style="max-width: 50%; height: auto; border-radius: 8px;" />
+             <figcaption><i>Figure 2.7:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
+        </figure>
+
+        <div class="theorem-box">
+            <h4>Important Dualities</h4>
+            <ul>
+                <li>$\mathbb{R}^n_+$ is <b>self-dual</b>: $(\mathbb{R}^n_+)^* = \mathbb{R}^n_+$</li>
+                <li>$\mathbb{S}^n_+$ is <b>self-dual</b>: $(\mathbb{S}^n_+)^* = \mathbb{S}^n_+$ (under trace inner product). This property is crucial for the symmetry of primal and dual <b>Semidefinite Programs</b> (<a href="../09-duality/index.html">Lecture 09</a>).</li>
+                <li>$\mathcal{Q}^{n+1}$ is <b>self-dual</b>: $(\mathcal{Q}^{n+1})^* = \mathcal{Q}^{n+1}$</li>
+                <li>$(L_p \text{ norm cone})^* = L_q \text{ norm cone}$ where $1/p + 1/q = 1$.</li>
+            </ul>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof: Self-Duality of the PSD Cone</h4>
+          <p>We want to show that $(\mathbb{S}^n_+)^* = \mathbb{S}^n_+$ under the trace inner product $\langle A, B \rangle = \mathrm{tr}(AB)$.</p>
+
+          <div class="proof-step">
+            <strong>Part 1: $\mathbb{S}^n_+ \subseteq (\mathbb{S}^n_+)^*$ (Primal implies Dual)</strong>
+            <p>Assume $A \in \mathbb{S}^n_+$. We must show that for any $B \in \mathbb{S}^n_+$, $\mathrm{tr}(AB) \ge 0$.</p>
+            <ul>
+              <li>Since $A$ is PSD, it has a "square root" decomposition $A = L L^\top$ (e.g., Cholesky or spectral).</li>
+              <li>Then $\mathrm{tr}(AB) = \mathrm{tr}(L L^\top B) = \mathrm{tr}(L^\top B L)$ by the cyclic property.</li>
+              <li>Let $M = L^\top B L$. Notice that for any vector $x$, $x^\top M x = x^\top L^\top B L x = (Lx)^\top B (Lx)$.</li>
+              <li>Since $B \succeq 0$, $(Lx)^\top B (Lx) \ge 0$ for any vector $Lx$. Thus $M$ is PSD.</li>
+              <li>The trace of a PSD matrix is the sum of its eigenvalues (which are non-negative), so $\mathrm{tr}(M) \ge 0$.</li>
+            </ul>
+            <p>Thus $\mathrm{tr}(AB) \ge 0$, so $A \in (\mathbb{S}^n_+)^*$.</p>
+          </div>
+
+          <div class="proof-step">
+            <strong>Part 2: $(\mathbb{S}^n_+)^* \subseteq \mathbb{S}^n_+$ (Dual implies Primal)</strong>
+            <p>Assume $Y \in (\mathbb{S}^n_+)^*$. By definition, this means $\mathrm{tr}(XY) \ge 0$ for <i>all</i> test matrices $X \in \mathbb{S}^n_+$.</p>
+            <ul>
+              <li>We choose a specific family of test matrices. For any arbitrary vector $v \in \mathbb{R}^n$, let $X = vv^\top$.</li>
+              <li>Check if $X$ is PSD: $z^\top X z = z^\top v v^\top z = (v^\top z)^2 \ge 0$. Yes, it is.</li>
+              <li>Apply the dual condition: $\mathrm{tr}(XY) = \mathrm{tr}(vv^\top Y) = \mathrm{tr}(v^\top Y v) = v^\top Y v$.</li>
+              <li>The condition $\mathrm{tr}(XY) \ge 0$ implies $v^\top Y v \ge 0$.</li>
+            </ul>
+            <p>Since $v^\top Y v \ge 0$ holds for <i>all</i> vectors $v$, $Y$ satisfies the definition of a PSD matrix. Thus $Y \in \mathbb{S}^n_+$.</p>
+          </div>
+
+          <div class="proof-step">
+            <strong>Conclusion:</strong> Since both inclusions hold, $(\mathbb{S}^n_+)^* = \mathbb{S}^n_+$.
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Rigorous Proof that the SOC is self-dual ($\mathcal{Q}^* = \mathcal{Q}$)</h4>
+          <p>We prove that the Second-Order Cone $\mathcal{Q} = \{(z, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|z\|_2 \le t\}$ is self-dual under the standard inner product $\langle (z,t), (y,s) \rangle = z^\top y + ts$.</p>
+
+          <div class="proof-step">
+            <strong>Part 1: $\mathcal{Q} \subseteq \mathcal{Q}^*$ (Self-Polarity)</strong>
+            <br>Let $(y,s) \in \mathcal{Q}$. This means $\|y\|_2 \le s$.
+            <br>Let $(z,t) \in \mathcal{Q}$ be any vector in the cone. So $\|z\|_2 \le t$.
+            <br>We compute the inner product:
+            $$ \langle (z,t), (y,s) \rangle = z^\top y + ts $$
+            Using Cauchy-Schwarz: $z^\top y \ge -\|z\|_2 \|y\|_2$.
+            <br>Thus $z^\top y + ts \ge ts - \|z\|_2 \|y\|_2$.
+            <br>Since $t \ge \|z\|_2 \ge 0$ and $s \ge \|y\|_2 \ge 0$, we have $ts \ge \|z\|_2 \|y\|_2$.
+            <br>Therefore, the sum is non-negative ($ts - \|z\|\|y\| \ge 0$). Since $(z,t)$ was arbitrary, $(y,s) \in \mathcal{Q}^*$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Part 2: $\mathcal{Q}^* \subseteq \mathcal{Q}$</strong>
+            <br>Let $(y,s) \in \mathcal{Q}^*$. By definition, $z^\top y + ts \ge 0$ for all $(z,t) \in \mathcal{Q}$.
+            <br>1. <b>Non-negativity of s:</b> Choose $(z,t) = (0,1) \in \mathcal{Q}$. The condition gives $0^\top y + 1\cdot s = s \ge 0$.
+            <br>2. <b>Norm bound:</b> If $y=0$, then $0 \le s$ implies $(0,s) \in \mathcal{Q}$ trivially.
+            <br>If $y \neq 0$, choose a specific test vector designed to "oppose" $y$. Let $z = -\frac{y}{\|y\|_2}$. Let $t=1$.
+            <br>Since $\|z\|_2 = 1 \le t$, this vector $(z,t)$ is in $\mathcal{Q}$.
+            <br>The dual condition implies:
+            $$ z^\top y + ts = -\frac{y^\top y}{\|y\|_2} + s \ge 0 \implies -\frac{\|y\|_2^2}{\|y\|_2} + s \ge 0 \implies -\|y\|_2 + s \ge 0 \implies s \ge \|y\|_2 $$
+            <br>Thus $\|y\|_2 \le s$, which means $(y,s) \in \mathcal{Q}$.
+            <br>Since both inclusions hold, $\mathcal{Q}^* = \mathcal{Q}$.
+          </div>
+        </div>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/self-dual-cones.png"
+                    alt="The three major self-dual cones"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.8:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
+             </figure>
+             <figure style="text-align: center; flex: 1;">
+               <img src="assets/dual-norm-cones.png"
+                    alt="Dual relationship between L1 and L-infinity cones"
+                    style="width: 100%; height: auto; border-radius: 8px;" />
+               <figcaption><i>Figure 2.9:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
+             </figure>
+        </div>
+      </section>
+
+      <section class="section-card" id="section-3">
+        <h2>3. Review & Cheat Sheet</h2>
+        <h3>Separation Theorems</h3>
+        <ul>
+          <li><b>Separating Hyperplane:</b> Any two disjoint convex sets can be separated by a hyperplane ($a^\top x \le b \le a^\top y$).</li>
+          <li><b>Strict Separation:</b> Requires disjoint, closed, and one set compact.</li>
+          <li><b>Supporting Hyperplane:</b> At every boundary point of a convex set, there exists a hyperplane containing the set on one side.</li>
+          <li><b>Farkas Lemma:</b> The fundamental theorem of the alternative for linear inequalities, derived from separation.</li>
+        </ul>
+
+        <h3>Cones and Duality</h3>
+        <ul>
+          <li><b>Proper Cone:</b> Convex, Closed, Pointed, Solid. Induces a partial order $\preceq_K$.</li>
+          <li><b>Dual Cone ($K^*$):</b> The set of vectors making a non-obtuse angle with $K$.</li>
+          <li><b>Self-Dual Cones:</b> $\mathbb{R}^n_+$, $\mathcal{Q}^{n+1}$ (SOC), $\mathbb{S}^n_+$ (PSD).</li>
+          <li><b>Dual Operations:</b> $(K_1 + K_2)^* = K_1^* \cap K_2^*$ (for closed convex cones).</li>
+        </ul>
+      </section>
+
+    <section class="section-card" id="section-4">
+      <h2><i data-feather="edit-3"></i> 4. Exercises</h2>
+
+<div class="problem">
+  <h3>P4.1 — Separation by Projection</h3>
+  <p>Let $C$ be a nonempty closed convex set and $y \notin C$. Prove that the vector $a = y - \Pi_C(y)$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $y$ and $C$.</p>
+
+      <div class="recap-box">
+        <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+        <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+            <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $y$ can be proven constructively using the projection theorem.</li>
+            <li><b>Variational Inequality:</b> The projection $p$ is the unique point in $C$ such that the angle between $y-p$ and $x-p$ is obtuse ($\ge 90^\circ$) for all $x \in C$.</li>
+        </ul>
+      </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+              <strong>Step 1: Projection characterization.</strong> Let $p = \Pi_C(y)$. By the variational characterization of the projection onto a closed convex set, for all $x \in C$:
+              $$
+              (y - p)^\top (x - p) \le 0
+              $$
+              Let $a = y - p$. The inequality becomes $a^\top (x - p) \le 0$, which implies $a^\top x \le a^\top p$.
+            </div>
+
+            <div class="proof-step">
+              <strong>Step 2: Strict inequality at $y$.</strong> Since $y \notin C$ and $p \in C$, we must have $y \neq p$. Thus $a = y - p$ is a non-zero vector, so $\|a\|_2^2 > 0$.
+              Now consider the value of the linear functional at $y$:
+              $$
+              a^\top y = a^\top (p + a) = a^\top p + \|a\|_2^2
+              $$
+              Since $\|a\|_2^2 > 0$, we have $a^\top y > a^\top p$.
+            </div>
+
+            <div class="proof-step">
+              <strong>Conclusion:</strong> We have shown that for all $x \in C$, $a^\top x \le a^\top p$, while $a^\top y > a^\top p$.
+              The hyperplane defined by $\{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $y$ from $C$.
+            </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.2 — Dual of a Subspace</h3>
+  <p>Let $V \subseteq \mathbb{R}^n$ be a linear subspace. Prove that its dual cone is the orthogonal complement $V^\perp$.</p>
+
+      <div class="recap-box">
+        <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+        <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+            <li><b>Subspace Duality:</b> For a subspace, $y^\top x \ge 0$ implies $y^\top x = 0$ because both $x$ and $-x$ are in $V$.</li>
+            <li><b>Geometric Intuition:</b> A subspace is a "flat" cone. If you widen a cone until it becomes a plane, its dual cone narrows until it becomes the normal line (orthogonal complement).</li>
+        </ul>
+      </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+              <strong>($\subseteq$):</strong> If $y \in V^\perp$, then $y^\top x = 0 \ge 0$ for all $x \in V$. So $y \in V^*$.
+    </div>
+    <div class="proof-step">
+              <strong>($\supseteq$):</strong> Suppose $y \in V^*$, so $y^\top x \ge 0$ for all $x \in V$. Since $V$ is a subspace, $-x \in V$. Thus $y^\top (-x) \ge 0 \implies y^\top x \le 0$.
+              Combining $\ge 0$ and $\le 0$ gives $y^\top x = 0$. Thus $y \in V^\perp$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.3 — Self-Duality of Second-Order Cone</h3>
+  <p>Prove that the second-order cone $\mathcal{Q} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$ is self-dual: $\mathcal{Q}^* = \mathcal{Q}$.</p>
+
+      <div class="recap-box">
+        <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+        <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+            <li><b>Cauchy-Schwarz:</b> The inequality $u^\top v \ge -\|u\|\|v\|$ is central to proving this inclusion.</li>
+        </ul>
+      </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>Let $u=(x,t)$ and $v=(y,s)$.</p>
+    <div class="proof-step">
+      <strong>($\subseteq$):</strong> Let $v \in \mathcal{Q}$. For any $u \in \mathcal{Q}$, we have $\|x\| \le t$ and $\|y\| \le s$.
+      Using Cauchy-Schwarz $x^\top y \ge -\|x\|\|y\|$:
+      $$ u^\top v = x^\top y + ts \ge -\|x\|\|y\| + ts \ge -ts + ts = 0 $$
+      Thus $u^\top v \ge 0$ for all $u \in \mathcal{Q}$, so $v \in \mathcal{Q}^*$.
+    </div>
+    <div class="proof-step">
+      <strong>($\supseteq$):</strong> Let $v = (y,s) \in \mathcal{Q}^*$. We must show $v \in \mathcal{Q}$, i.e., $s \ge \|y\|$.
+      <br>First, test with the vector $u=(0,1)$. Since $\|0\| \le 1$, $u \in \mathcal{Q}$.
+      The dual condition implies $u^\top v = 0^\top y + 1 \cdot s = s \ge 0$. So $s$ must be non-negative.
+      <br>Now, consider the vector $y$.
+      <br><b>Case 1: $y = 0$.</b> Then $\|y\|=0$. Since we already showed $s \ge 0$, we have $s \ge \|y\|$. Thus $(0, s) \in \mathcal{Q}$.
+      <br><b>Case 2: $y \neq 0$.</b> Construct the test vector $u = (-\frac{y}{\|y\|}, 1)$.
+      Check primal feasibility: the spatial part has norm $\left\|-\frac{y}{\|y\|}\right\| = 1$, which is $\le$ the time part $1$. So $u \in \mathcal{Q}$.
+      <br>Apply the dual condition $u^\top v \ge 0$:
+      $$ -\frac{y}{\|y\|}^\top y + 1 \cdot s \ge 0 \implies -\frac{\|y\|^2}{\|y\|} + s \ge 0 \implies -\|y\| + s \ge 0 \implies s \ge \|y\| $$
+      Thus $v \in \mathcal{Q}$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.4 — Dual Cone Identities</h3>
+  <p>For closed convex cones $K_1, K_2$, prove $(K_1 + K_2)^* = K_1^* \cap K_2^*$.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Duality of Operations:</b> Dual of sum is intersection.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>($\subseteq$):</strong>
+      $y \in (K_1 + K_2)^*$ iff $y^\top (x_1+x_2) \ge 0$ for all $x_1 \in K_1, x_2 \in K_2$.
+      Choosing $x_2=0$, $y^\top x_1 \ge 0 \implies y \in K_1^*$.
+      Choosing $x_1=0$, $y^\top x_2 \ge 0 \implies y \in K_2^*$.
+      Thus $y \in K_1^* \cap K_2^*$.
+    </div>
+    <div class="proof-step">
+      <strong>($\supseteq$):</strong>
+      Let $y \in K_1^* \cap K_2^*$. For any element $z \in K_1 + K_2$, we can write $z = x_1 + x_2$ with $x_1 \in K_1, x_2 \in K_2$.
+      Then $y^\top z = y^\top x_1 + y^\top x_2$.
+      Since $y \in K_1^*$, $y^\top x_1 \ge 0$. Since $y \in K_2^*$, $y^\top x_2 \ge 0$.
+      Therefore $y^\top z \ge 0$ for all $z \in K_1 + K_2$, so $y \in (K_1 + K_2)^*$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.5 — Generalized Inequality Properties</h3>
+  <p>Let $K$ be a proper cone. Prove $\preceq_K$ is antisymmetric: $x \preceq_K y \land y \preceq_K x \implies x=y$.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Pointedness:</b> $K \cap -K = \{0\}$ is the key property ensuring antisymmetry.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      $x \preceq_K y \implies y-x \in K$.
+      $y \preceq_K x \implies x-y \in K \implies -(y-x) \in K$.
+      So $y-x \in K \cap -K$. Since $K$ is proper (pointed), $K \cap -K = \{0\}$.
+      Thus $y-x=0 \implies x=y$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.6 — Norm Cone (Epigraph of Norm)</h3>
+  <p>Show that the set $C = \{(x,t) \mid \|x\| \le t\}$ is a convex cone.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Epigraphs of Convex Functions:</b> The set is the epigraph of the convex function $f(x)=\|x\|$.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <b>Cone:</b> If $\|x\| \le t$, then $\|\alpha x\| = \alpha \|x\| \le \alpha t$. So $\alpha(x,t) \in C$ for $\alpha \ge 0$.
+    </div>
+    <div class="proof-step">
+      <b>Convex:</b> If $(x,t), (y,s) \in C$, then $\|x+y\| \le \|x\|+\|y\| \le t+s$. So $(x+y, t+s) \in C$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.7 — Support Function Determines Set</h3>
+  <p>Prove that if $C, D$ are closed convex sets and $S_C(y) = S_D(y)$ for all $y$, then $C=D$.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>A closed convex set is uniquely determined by its support function because it is the intersection of all its supporting halfspaces.</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      A closed convex set is the intersection of its supporting halfspaces: $C = \bigcap_y \{x \mid y^\top x \le S_C(y)\}$.
+      If $S_C = S_D$, the intersections are identical, so $C=D$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.8 — Converse Supporting Hyperplane Theorem</h3>
+  <p>Prove that if a closed set $C$ with nonempty interior has a supporting hyperplane at every boundary point, $C$ is convex.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>This theorem (Tietze-Nakajima) shows that "local convexity" at every boundary point (existence of support) implies global convexity for connected sets with interior.</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Assume $C$ is not convex. Then there exists a point in the convex hull $D = \mathrm{conv}(C)$ that is not in $C$.
+      Consider a line segment connecting an interior point of $C$ to this point. It must cross the boundary of $C$ at some $x^*$.
+      The supporting hyperplane at $x^*$ must separate $C$ from the rest of the segment.
+      However, the endpoints of the segment are in $D$ (convex hull). Separation implies $D$ lies on one side, which contradicts the segment crossing the plane.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.9 — Cones in $\mathbb{R}^2$</h3>
+  <p>Describe all closed convex cones in $\mathbb{R}^2$.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>In 2D, convex cones are simply wedges radiating from the origin. The dual cone relationship is purely geometric: if the primal cone has angle $\phi$, the dual cone has angle $\pi - \phi$.</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Any closed convex cone $K \subset \mathbb{R}^2$ must be one of the following:
+      <ul>
+        <li>The origin $\{0\}$.</li>
+        <li>A single ray $\{t v \mid t \ge 0\}$.</li>
+        <li>A "wedge" defined by the intersection of two half-planes passing through the origin. This can be parameterized by two angles $[\theta_1, \theta_2]$ where $|\theta_2 - \theta_1| \le \pi$. If the difference is $\pi$, it is a half-plane.</li>
+        <li>The entire plane $\mathbb{R}^2$.</li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      Analytically, any proper cone in $\mathbb{R}^2$ can be written as $K = \{x \mid a_1^\top x \ge 0, a_2^\top x \ge 0\}$ for two linearly independent vectors $a_1, a_2$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.10 — Properties of Dual Cones</h3>
+  <p>Prove that if $\mathrm{int}(K) \neq \emptyset$, then $K^*$ is pointed.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>There is a duality between "solidness" and "pointedness". A fat cone (solid) forces its dual to be sharp (pointed). A flat cone (subspace) allows its dual to be wide (subspace).</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      If $y \in K^* \cap -K^*$, then $y^\top x = 0$ for all $x \in K$.
+      Since $K$ has interior, it contains a basis of $\mathbb{R}^n$.
+      A vector orthogonal to a basis must be the zero vector. Thus $y=0$, so $K^*$ is pointed.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.11 — Dual Cone of Generated Cone</h3>
+  <p>Let $K = \{Ax \mid x \ge 0\}$. Show $K^* = \{y \mid A^\top y \ge 0\}$.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>This is the dual of the finitely generated cone (polyhedral cone). It corresponds to the Farkas Lemma: $y$ is in the dual cone if it makes a non-negative angle with all generators (columns of $A$).</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      $y \in K^* \iff y^\top (Ax) \ge 0 \ \forall x \ge 0 \iff (A^\top y)^\top x \ge 0 \ \forall x \ge 0$.
+      This is true iff $A^\top y \ge 0$ (component-wise).
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.12 — The Monotone Nonnegative Cone</h3>
+  <p>Find the dual of $K = \{x \in \mathbb{R}^n \mid x_1 \ge x_2 \ge \dots \ge 0\}$.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>The dual of the cone of monotonic sequences is the cone of sequences with non-negative partial sums. This duality is often used in isotonic regression.</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Using summation by parts (Abel's lemma), the condition $\sum x_i y_i \ge 0$ for all monotone $x$ requires the partial sums of $y$ to be non-negative.
+      $K^* = \{y \mid \sum_{i=1}^k y_i \ge 0, k=1\dots n\}$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.13 — The Lexicographic Cone</h3>
+  <p>Let $K_{lex} = \{0\} \cup \{x \mid \text{first nonzero of } x > 0\}$. Find $K_{lex}^*$.</p>
+
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>The lexicographic cone is not closed (it misses the boundary where the first coordinate is zero but the second is positive). Its dual is extremely thin (a single ray), illustrating that $K^{**} \neq K$ for non-closed cones.</p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      The cone is "almost" a halfspace but includes boundaries delicately.
+      Any vector $y$ with a non-zero component at index $k > 1$ can form a negative dot product with some $x \in K_{lex}$ (by dominating the first component with a large value at $k$).
+      Thus $y$ must be zero everywhere except index 1. $y_1$ must be non-negative.
+      $K_{lex}^* = \{ \alpha e_1 \mid \alpha \ge 0 \}$ (The ray along the first axis).
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.14 — Dual of Intersection</h3>
+  <p>Let $K_1, K_2$ be closed convex cones. Prove that $(K_1 \cap K_2)^* = \mathrm{cl}(K_1^* + K_2^*)$.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Duality Symmetry:</b> Since $K^{**} = K$ for closed convex cones, properties of the primal operations map to dual operations. Intersection in primal corresponds to sum in dual (with closure).</li>
+        <li><b>Closure is Crucial:</b> The sum of two closed cones is not always closed. The closure operation is necessary for the equality to hold.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Use P4.4.</strong> From Problem 4.4, we know that for closed convex cones $A, B$, $(A + B)^* = A^* \cap B^*$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Apply to Duals.</strong> Let $A = K_1^*$ and $B = K_2^*$. Then $(K_1^* + K_2^*)^* = K_1^{**} \cap K_2^{**}$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Biconjugate.</strong> Since $K_i$ are closed convex cones, $K_i^{**} = K_i$. Thus $(K_1^* + K_2^*)^* = K_1 \cap K_2$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Take Dual again.</strong> Taking the dual of both sides: $(K_1^* + K_2^*)^{**} = (K_1 \cap K_2)^*$.
+      The biconjugate of a cone is its closure (if it's convex). Thus $\mathrm{cl}(K_1^* + K_2^*) = (K_1 \cap K_2)^*$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.15 — Euclidean Distance Matrices (EDM)</h3>
+  <p>A matrix $D \in \mathbb{S}^n$ is a Euclidean Distance Matrix if there exist points $x_1, \dots, x_n$ such that $D_{ij} = \|x_i - x_j\|_2^2$. Show that the set of all EDMs is a convex cone.</p>
+  <div class="recap-box">
+    <h4>Recap</h4>
+    <p>EDMs are linear images of the PSD cone. Since linear maps preserve convexity and conical structure, the set of EDMs inherits the cone property from $\mathbb{S}^n_+$.</p>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Expand definition.</strong>
+      $D_{ij} = \|x_i - x_j\|^2 = \|x_i\|^2 + \|x_j\|^2 - 2x_i^\top x_j$.
+      Let $G$ be the Gram matrix where $G_{ij} = x_i^\top x_j$. Then $G \succeq 0$.
+      Let $v$ be the vector where $v_i = G_{ii} = \|x_i\|^2$.
+      We can write $D = v\mathbf{1}^\top + \mathbf{1}v^\top - 2G$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Identify Linear Structure.</strong>
+      The mapping $\mathcal{L}(G) = \text{diag}(G)\mathbf{1}^\top + \mathbf{1}\text{diag}(G)^\top - 2G$ is a linear map from $\mathbb{S}^n$ to $\mathbb{S}^n$.
+      The set of EDMs is the image of the PSD cone $\mathbb{S}^n_+$ under this linear map $\mathcal{L}$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Convexity.</strong>
+      Since $\mathbb{S}^n_+$ is a convex cone and linear maps preserve convexity and conical structure, the set of EDMs is a convex cone.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.16 — SOCP Canonical Dual</h3>
+  <p>Consider the canonical Second-Order Cone Program (SOCP):
+  $$ \min c^\top x \quad \text{s.t.} \quad Ax = b, \quad \|D_i x + e_i\|_2 \le f_i^\top x + g_i $$
+  Derive the dual problem and show it is also an SOCP. Use the fact that the second-order cone is self-dual.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      The constraint can be written as $(f_i^\top x + g_i, D_i x + e_i) \in \mathcal{Q}$.
+      Let $z_i = (f_i^\top x + g_i, D_i x + e_i)$.
+      The Lagrangian involves multipliers $\lambda_i \in \mathcal{Q}^* = \mathcal{Q}$ and $\nu$ for the equality.
+      $$ L(x, \lambda, \nu) = c^\top x + \nu^\top (b - Ax) - \sum \lambda_i^\top z_i $$
+      Minimizing over $x$ gives the dual equality constraint. The condition $\lambda_i \in \mathcal{Q}$ is explicitly an SOC constraint.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.17 — Homogeneous Envelope and Directional Derivatives</h3>
+  <p>Given a convex function $f$ with $f(0)=0$, define its <b>homogeneous envelope</b>:
+  $$ g(x) = \inf_{\alpha > 0} \frac{f(\alpha x)}{\alpha} $$
+  (a) Prove $g$ is positively homogeneous ($g(tx) = tg(x)$ for $t \ge 0$).
+  <br>(b) Prove $g$ is the largest homogeneous underestimator of $f$.
+  <br>(c) Prove $g$ is convex. (Hint: relate it to the directional derivative $f'(0; x)$).</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Directional Derivative:</b> For convex $f$ with $f(0)=0$, the directional derivative at 0 is $f'(0;x) = \inf_{t>0} \frac{f(tx)}{t}$. This matches the definition of $g(x)$.</li>
+        <li><b>Support Function:</b> $g(x)$ is actually the support function of the subdifferential $\partial f(0)$. Support functions are always convex and homogeneous.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Homogeneity.</strong>
+      For $t > 0$: $g(tx) = \inf_{\alpha > 0} \frac{f(\alpha t x)}{\alpha}$. Let $\beta = \alpha t$. Then $\alpha = \beta/t$.
+      $$ g(tx) = \inf_{\beta > 0} \frac{f(\beta x)}{\beta/t} = t \inf_{\beta > 0} \frac{f(\beta x)}{\beta} = t g(x). $$
+      For $t=0$, $g(0)=0$ (assuming properness), so it holds.
+    </div>
+    <div class="proof-step">
+      <strong>(b) Largest Underestimator.</strong>
+      First, $g(x) \le f(x)$ (take $\alpha=1$ in infimum).
+      Second, let $h$ be homogeneous with $h \le f$. Then $h(x) = \frac{h(\alpha x)}{\alpha} \le \frac{f(\alpha x)}{\alpha}$ for all $\alpha$. Taking infimum, $h(x) \le g(x)$.
+    </div>
+    <div class="proof-step">
+      <strong>(c) Convexity via Directional Derivative.</strong>
+      Since $f$ is convex with $f(0)=0$, the difference quotient $\frac{f(\alpha x)}{\alpha} = \frac{f(0+\alpha x)-f(0)}{\alpha}$ is non-decreasing in $\alpha$.
+      Thus the infimum is the limit as $\alpha \downarrow 0$, which is the directional derivative $f'(0; x)$.
+      Directional derivatives of convex functions are sublinear (convex):
+      $$ f'(0; x+y) \le f'(0; x) + f'(0; y) \quad \text{(Subadditivity)} $$
+      Combined with homogeneity (part a), $g$ is convex.
+    </div>
+  </div>
+</div>
+
+</div>
+
+    </section>
+
+    <section class="section-card" id="section-5">
+      <h2>5. Readings & Resources</h2>
+      <ul class="link-list">
+        <li><strong>Required Reading:</strong> Boyd & Vandenberghe, Chapter 2 (Convex Sets, specifically Cones and Dual Cones).</li>
+        <li><strong>Supplementary:</strong> Rockafellar, <em>Convex Analysis</em>, Sections 11 (Separation Theorems) and 14 (Cones).</li>
+        <li><strong>Interactive:</strong> Use the <a href="#widget-separating-hyperplane">Separating Hyperplane Explorer</a> to test intuition.</li>
+      </ul>
+    </section>
+
+    <section class="section-card" id="section-6">
+      <h2>6. Recap &amp; What's Next</h2>
+      <div class="recap-box">
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Separation:</b> convex sets can be separated from disjoint convex sets by a hyperplane; boundary points admit supporting hyperplanes.</li>
+          <li><b>Projection viewpoint:</b> projecting onto a closed convex set produces a normal direction that defines a separating/supporting hyperplane.</li>
+          <li><b>Cones:</b> a cone is closed under nonnegative scaling; a proper cone is closed, pointed, and solid and induces a generalized inequality.</li>
+          <li><b>Dual cones:</b> $K^* = \{y \mid y^\top x \ge 0 \ \forall x \in K\}$ encodes which linear functionals are “nonnegative” on $K$.</li>
+        </ul>
+      </div>
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> In <a href="../08-convex-problems-conic/index.html">Lecture 08</a> you will see constraints written as “$(x,t)\in K$,” where $K$ is a cone like the SOC or PSD cone. In <a href="../09-duality/index.html">Lecture 09</a> you will see separation reappear as dual variables and optimality certificates.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Convex Optimization Course</p>
+      </div>
+    </footer>
+  </main></div>
+
+  <script src="../../static/js/math-renderer.js"></script>
+  <script src="../../static/js/ui.js"></script>
+  <script src="../../static/js/toc.js"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Widget Loaders -->
+  <script type="module">
+    import { initSeparatingHyperplane } from './widgets/js/separating-hyperplane.js';
+    initSeparatingHyperplane('widget-separating-hyperplane');
+  </script>
+  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/notes-widget.js"></script>
+<script src="../../static/js/pomodoro.js"></script>
+<script src="../../static/js/progress-tracker.js"></script>
+</body>
+</html>

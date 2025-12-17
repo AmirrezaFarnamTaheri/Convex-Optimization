@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>07. Convex Optimization Problems: Standard Forms — Convex Optimization</title>
+  <link rel="stylesheet" href="../../static/css/lecture-styles.css" />
+  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <!-- Header with navigation -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="../../index.html">Convex Optimization</a>
+      </div>
+      <nav class="nav">
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../06-convex-functions-advanced/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../08-convex-problems-conic/index.html">Next <i data-feather="arrow-right"></i></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>07. Convex Optimization Problems: Standard Forms</h1>
+      <div class="lecture-meta">
+        <span>Date: 2025-11-11</span>
+        <span>Duration: 90 min</span>
+        <span>Tags: standard-forms, classification, LP, QP, LFP</span>
+      </div>
+      <div class="lecture-summary">
+        <p><strong>Overview:</strong> This lecture covers the standard form of convex optimization problems and the fundamental problem classes: Linear Programs (LP), Quadratic Programs (QP), and Linear-Fractional Programs (LFP). We develop techniques for recognizing and formulating convex problems, delving deep into the geometry of LPs and the reformulation of fractional problems.</p>
+        <p><strong>Prerequisites:</strong> <a href="../06-convex-functions-advanced/index.html">Lecture 06: Convex Functions Advanced</a> (convex functions, first- and second-order conditions).</p>
+        <p><strong>Forward Connections:</strong> Conic programming (SOCP, SDP) is covered in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>. Duality theory (<a href="../09-duality/index.html">Lecture 09</a>) provides optimality conditions for these problem classes.</p>
+      </div>
+    </header>
+
+    <section class="section-card">
+      <h2><i data-feather="target"></i> Learning Objectives</h2>
+      <p>After this lecture, you will be able to:</p>
+      <ul>
+        <li>Define and recognize the standard form of a convex optimization problem.</li>
+        <li>Visualize Linear Programs using sliding hyperplanes and identify solutions at vertices.</li>
+        <li>Formulate complex problems like the Chebyshev Center and Piecewise-Linear minimization as LPs.</li>
+        <li>Understand Linear-Fractional Programming and the perspective transformation.</li>
+        <li>Apply problem reformulation techniques (epigraph, slack variables) to convert non-standard forms.</li>
+      </ul>
+    </section>
+
+    <article>
+      <section class="section-card" id="section-1">
+      <h2>1. The Standard Form of Convex Optimization</h2>
+
+      <h3>1.1 Definition</h3>
+      <p>A <strong>convex optimization problem</strong> in <a href="#" class="definition-link">standard form</a> is:</p>
+
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $
+          \begin{aligned}
+          \text{minimize} \quad & f_0(x) \\
+          \text{subject to} \quad & f_i(x) \le 0, \quad i = 1, \dots, m \\
+          & h_j(x) = 0, \quad j = 1, \dots, p
+          \end{aligned}
+          $
+        </p>
+      </div>
+
+      <p>where:</p>
+      <ul>
+        <li>The variable is $x \in \mathbb{R}^n$</li>
+        <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="#" class="definition-link" data-term="convex function">convex</a>)</li>
+        <li>$f_i: \mathbb{R}^n \to \mathbb{R}$, $i = 1, \dots, m$ are <strong>inequality constraint functions</strong> (all convex)</li>
+        <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(x) = a_j^\top x - b_j$)</li>
+      </ul>
+
+      <p>The standard form explicitly requires equality constraints to be affine. This is because $\{x \mid h(x) = 0\}$ is convex only if $h$ is affine (or can be replaced by one). Non-affine equality constraints generally define curved surfaces (manifolds) that are not convex sets.</p>
+
+      <h3>1.2 The Feasible Set</h3>
+      <p>The <strong>feasible set</strong> (or constraint set) is:</p>
+      <p style="text-align: center;">
+        $
+        \mathcal{F} = \{x \in \mathbb{R}^n \mid f_i(x) \le 0, \; i = 1, \dots, m; \; h_j(x) = 0, \; j = 1, \dots, p\}
+        $
+      </p>
+
+      <div class="theorem-box">
+        <h4>Deep Dive: Slack Variables and Standard Forms</h4>
+        <p>Some communities (e.g., in linear programming) define "standard form" as minimizing $c^\top x$ subject to $Ax=b, x \ge 0$.
+        <br>We can convert inequality constraints $f_i(x) \le 0$ into equality constraints by introducing <b>slack variables</b> $s_i \ge 0$:
+        $$ f_i(x) + s_i = 0 $$
+        This technique lifts the feasible set into a higher dimension where the geometry might be simpler (e.g., an intersection of a manifold with the non-negative orthant). While useful for solver implementation (Simplex/Interior Point), we primarily stick to the inequality form for modeling.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Theorem: Convexity of Feasible Set</h4>
+        <p><strong>Statement:</strong> If the problem is in standard convex form ($f_i$ convex, $h_j$ affine), the feasible set $\mathcal{F}$ is convex.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Inequality Constraints.</strong> The set $S_i = \{x \mid f_i(x) \le 0\}$ is the 0-sublevel set of the convex function $f_i$. By the basic property of convex functions, $S_i$ is a convex set.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Equality Constraints.</strong> The set $H_j = \{x \mid h_j(x) = 0\}$ is a hyperplane (affine set) because $h_j$ is affine. All affine sets are convex.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Intersection.</strong> The full feasible set $\mathcal{F} = (\cap_{i=1}^m S_i) \cap (\cap_{j=1}^p H_j)$ is the intersection of a collection of convex sets. Since the intersection of convex sets is always convex, $\mathcal{F}$ is convex.
+        </div>
+      </div>
+
+      <h3>1.3 Optimal Value and Optimal Points</h3>
+      <ul>
+        <li>The <strong>optimal value</strong> is $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$</li>
+        <li>$x^*$ is <strong>optimal</strong> (or a <strong>minimizer</strong>) if $x^* \in \mathcal{F}$ and $f_0(x^*) = p^*$</li>
+        <li>$x$ is <strong>$\epsilon$-suboptimal</strong> if $x \in \mathcal{F}$ and $f_0(x) \le p^* + \epsilon$</li>
+        <li>$x$ is <strong>locally optimal</strong> if there exists $R > 0$ such that $f_0(x) = \inf\{f_0(z) \mid z \in \mathcal{F}, \|z - x\|_2 \le R\}$</li>
+      </ul>
+
+      <div class="proof-box">
+        <h4>Fundamental Property: Local = Global</h4>
+        <p><strong>Statement:</strong> For convex optimization problems, any locally optimal point is globally optimal.</p>
+
+        <div class="proof-step">
+            <strong>Proof:</strong> This is a consequence of the convexity of $f_0$ and $\mathcal{F}$, as established in <a href="../02-introduction/index.html">Lecture 02</a>. If $x$ is locally optimal but not globally optimal, there exists a better point $y$. By convexity, the entire line segment connecting $x$ to $y$ lies in the feasible set, and the objective decreases along this segment. This means points arbitrarily close to $x$ are better than $x$, contradicting local optimality.
+        </div>
+      </div>
+
+      <div class="intuition-box">
+        <p><b>Intuition:</b> In a convex problem, “going halfway” is always allowed and never worse. If there were a better point $y$ somewhere, then the line segment from your current point $x$ toward $y$ stays feasible, and the objective must drop immediately as you move away from $x$. So a point can’t be locally best unless it’s globally best.</p>
+      </div>
+    </section>
+
+    <!-- Section 2: Linear Programs (LP) -->
+    <section class="section-card" id="section-2">
+      <h2>2. Linear Programs (LP)</h2>
+
+      <h3>2.1 Definition and Geometry</h3>
+      <p>A <strong>Linear Program (<a href="#" class="definition-link">LP</a>)</strong> is an optimization problem of the form:</p>
+
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $
+          \begin{aligned}
+          \text{minimize} \quad & c^\top x + d \\
+          \text{subject to} \quad & Gx \le h \\
+          & Ax = b
+          \end{aligned}
+          $
+        </p>
+      </div>
+
+      <p>where $x \in \mathbb{R}^n$ is the variable. The objective is an affine function, and the constraints are affine inequalities and equalities.</p>
+
+      <h4>Geometric Interpretation</h4>
+      <p>Geometrically, an LP is the minimization of a linear function over a <strong>polyhedron</strong>.
+      <ul>
+          <li><strong>Affine Functions and Hyperplanes:</strong> The level sets of the objective $c^\top x$ are hyperplanes $H_\alpha = \{x \mid c^\top x = \alpha\}$. The vector $c$ is normal to these hyperplanes.</li>
+          <li><strong>Halfspaces and Polyhedra:</strong> Each inequality constraint $g_i^\top x \le h_i$ defines a halfspace. The feasible set $\mathcal{P} = \{x \mid Gx \le h, Ax = b\}$ is the intersection of finitely many halfspaces and affine sets, which forms a polyhedron.</li>
+      </ul>
+      </p>
+
+      <h4>Geometry of the Objective: Sliding Hyperplanes</h4>
+        <p>Minimizing $c^\top x$ corresponds to moving the hyperplane $H_\alpha = \{x \mid c^\top x = \alpha\}$ in the direction of $-c$ (the direction of steepest descent).
+        Imagine "pushing the objective down" by sliding this supporting hyperplane until it just touches the feasible polyhedron. The point where it makes contact is the optimal solution.</p>
+      <ul>
+            <li><strong>Why Vertices?</strong> If the optimum is unique, it must be at a vertex (extreme point). If it is not unique (e.g., the hyperplane is parallel to a face), then an entire face is optimal, but at least one vertex on that face is also optimal.</li>
+            <li><strong>The Fundamental Theorem of LP:</strong> If an LP has an optimal solution, it has an optimal solution at a vertex of the feasible set. This geometric fact underpins the Simplex method.</li>
+      </ul>
+
+      <div class="proof-box">
+        <h4>Proof Sketch: Why Vertices?</h4>
+        <p>This property relies on the fact that the objective function is linear (and thus both convex and concave).</p>
+        <div class="proof-step">
+          <strong>Step 1: Representation.</strong>
+          A bounded polyhedron (polytope) is the convex hull of its vertices $\{v_1, \dots, v_k\}$. Any point $x$ in the feasible set can be written as a convex combination $x = \sum_{i=1}^k \theta_i v_i$, where $\theta_i \ge 0, \sum \theta_i = 1$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Linearity.</strong>
+          Evaluate the cost at $x$:
+          $$ c^\top x = c^\top \left( \sum_{i=1}^k \theta_i v_i \right) = \sum_{i=1}^k \theta_i (c^\top v_i) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Bounding.</strong>
+          Let $v_{min}$ be the vertex with the smallest cost, so $c^\top v_{min} \le c^\top v_i$ for all $i$.
+          $$ c^\top x = \sum_{i=1}^k \theta_i (c^\top v_i) \ge \sum_{i=1}^k \theta_i (c^\top v_{min}) = (c^\top v_{min}) \sum_{i=1}^k \theta_i = c^\top v_{min} $$
+        </div>
+        <div class="proof-step">
+          <strong>Conclusion.</strong>
+          No point $x$ can have a lower cost than the best vertex $v_{min}$. Thus, $v_{min}$ is an optimal solution.
+        </div>
+      </div>
+
+      <figure style="margin: 16px 0; text-align: center;">
+        <img src="assets/linear-programming-feasible-region.svg" alt="An example of a feasible region in a Linear Program" style="max-width: 450px; height: auto;" />
+        <figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+          Geometric view: The gray polygon is the feasible set. The parallel lines represent level sets of the cost function $c^\top x$. The optimal point $x^*$ is the vertex "lowest" in the direction of $-c$.
+        </figcaption>
+      </figure>
+
+      <h3>2.2 Key Properties</h3>
+      <ul>
+        <li><strong>Feasible set:</strong> A polyhedron (convex).</li>
+        <li><strong>Convexity:</strong> Both the objective and feasible set are convex, so LP is a convex optimization problem.</li>
+        <li><strong>Complexity:</strong> Polynomial-time solvable (simplex method, interior-point methods).</li>
+      </ul>
+
+      <h3>2.3 Standard LP Examples</h3>
+
+      <h4>Example 2.1: The Diet Problem</h4>
+      <p>Setup:
+      <ul>
+          <li>There are $n$ different foods. Variable $x_j \ge 0$ is the quantity of food $j$.</li>
+          <li>Food $j$ costs $c_j$. Total cost is $c^\top x$.</li>
+          <li>There are $m$ nutrients. Food $j$ contains $a_{ij}$ units of nutrient $i$.</li>
+          <li>We need at least $b_i$ units of nutrient $i$.</li>
+      </ul>
+      Constraint for nutrient $i$: $\sum_{j=1}^n a_{ij} x_j \ge b_i$.
+      Stacking these into a matrix $A$ and vector $b$, we get $Ax \ge b$.
+      To fit the standard form $Gx \le h$, we multiply by $-1$: $-Ax \le -b$.
+      </p>
+      <p><strong>The Diet LP:</strong></p>
+      <p style="text-align: center;">
+        $
+        \begin{aligned}
+        \text{minimize} \quad & c^\top x \\
+        \text{subject to} \quad & Ax \ge b \\
+        & x \ge 0
+        \end{aligned}
+        $
+      </p>
+      <p>Interpretation: We search over the polyhedron of healthy diets to find the one that the cost hyperplane hits first.</p>
+
+      <h4>Example 2.2: L-infinity Minimization</h4>
+      <p>Find $x \in \mathbb{R}^n$ minimizing $\|Ax - b\|_\infty$. This can be reformulated as:</p>
+      <p style="text-align: center;">
+        $
+        \begin{aligned}
+        \text{minimize} \quad & t \\
+        \text{subject to} \quad & -t \mathbf{1} \preceq Ax - b \preceq t \mathbf{1}
+        \end{aligned}
+        $
+      </p>
+      <p>where $\mathbf{1}$ is the vector of ones. This is an LP in variables $(x, t)$.</p>
+
+      <h4>Example 2.3: Chebyshev Center of a Polyhedron</h4>
+      <p>We want to find the largest Euclidean ball inside a polyhedron $\mathcal{P} = \{x \mid a_i^\top x \le b_i, i=1,\dots,m\}$. This is called the <strong>Chebyshev center</strong>.</p>
+      <p>Let the ball be $\mathcal{B} = \{x_c + u \mid \|u\|_2 \le r\}$, centered at $x_c$ with radius $r$.
+      We want to maximize $r$ subject to $\mathcal{B} \subseteq \mathcal{P}$.</p>
+
+      <div class="intuition-box">
+        <h4>Geometric Intuition (Sliding Hyperplanes)</h4>
+        <p>Imagine finding the deepest point in a polyhedral lake. The surface of the water corresponds to the hyperplanes $a_i^\top x = b_i$.
+        <br>For a point $x_c$ to be the center of a ball of radius $r$, its distance to every wall $i$ must be at least $r$.
+        <br>The distance from $x_c$ to the hyperplane $a_i^\top x = b_i$ is given by $(b_i - a_i^\top x_c) / \|a_i\|_2$ (assuming $x_c$ is feasible).
+        <br>So we require $r \le (b_i - a_i^\top x_c) / \|a_i\|_2$ for all $i$. This rearranges to the linear constraint $a_i^\top x_c + r\|a_i\|_2 \le b_i$.
+        </p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Derivation of the Chebyshev LP</h4>
+        <div class="proof-step">
+            <strong>Step 1: Set Containment.</strong>
+            The condition $\mathcal{B} \subseteq \mathcal{P}$ is equivalent to requiring that every point $x \in \mathcal{B}$ satisfies $a_i^\top x \le b_i$ for all $i$.
+            $$ \sup_{x \in \mathcal{B}} a_i^\top x \le b_i $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Support Function of the Ball.</strong>
+            Substitute $x = x_c + u$ where $\|u\|_2 \le r$.
+            $$ \sup_{\|u\|_2 \le r} a_i^\top (x_c + u) = a_i^\top x_c + \sup_{\|u\|_2 \le r} a_i^\top u $$
+            Recall the definition of the dual norm: $\|v\|_* = \sup \{v^\top u \mid \|u\| \le 1\}$. Scaling the variable $u$ by $r$, we get $\sup \{v^\top u \mid \|u\| \le r\} = r \|v\|_*$.
+            For the Euclidean norm, the dual is the Euclidean norm itself ($\|\cdot\|_2^* = \|\cdot\|_2$). Thus:
+            $$ \sup_{\|u\| \le r} a_i^\top u = r \|a_i\|_2 $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Linear Constraints.</strong>
+            The containment condition becomes:
+            $$ a_i^\top x_c + r \|a_i\|_2 \le b_i $$
+            Since $\|a_i\|_2$ is a constant (computed from data), this is a linear inequality in variables $x_c$ (center) and $r$ (radius).
+        </div>
+      </div>
+
+      <p><strong>LP Formulation:</strong></p>
+      <p style="text-align: center;">
+        $
+        \begin{aligned}
+        \text{maximize} \quad & r \\
+        \text{subject to} \quad & a_i^\top x_c + r \|a_i\|_2 \le b_i, \quad i=1,\dots,m
+        \end{aligned}
+        $
+      </p>
+      <p>This is a classic example of robust optimization via LP.</p>
+
+      <h3>2.4 Piecewise-Linear Minimization</h3>
+      <p>Consider minimizing a <strong>maximum of affine functions</strong>:</p>
+      $$ \text{minimize} \quad f(x) = \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
+      <p>The function $f(x)$ is convex and piecewise-linear. Its graph is the "upper envelope" of several hyperplanes.</p>
+
+      <div class="proof-box">
+        <h4>The Epigraph Trick: Reformulation as LP</h4>
+        <p>We introduce a scalar variable $t$ to represent the upper bound.</p>
+        <p style="text-align: center;">
+            $
+            \begin{aligned}
+            \text{minimize} \quad & t \\
+            \text{subject to} \quad & a_i^\top x + b_i \le t, \quad i=1,\dots,m
+            \end{aligned}
+            $
+        </p>
+        <div class="proof-step">
+            <strong>Equivalence:</strong>
+            <ul>
+                <li><strong>(1) Original to LP:</strong> For any $x$, let $t = \max_i(a_i^\top x + b_i)$. Then $(x, t)$ is feasible for the LP and has the same objective value.</li>
+                <li><strong>(2) LP to Original:</strong> If $(x, t)$ is feasible, then $a_i^\top x + b_i \le t$ for all $i$, implying $f(x) \le t$. If we minimize $t$, we push it down until $t = f(x)$.</li>
+            </ul>
+        </div>
+        <div class="proof-step">
+            Thus, minimizing the piecewise-linear function is equivalent to solving this LP with one extra variable.
+        </div>
+      </div>
+
+      <h3>2.5 Matrix Norm Approximation (LP)</h3>
+      <p>We can extend the $\ell_\infty$ norm minimization to matrices (Exercise 4.14). Let $A(x) = A_0 + \sum_{i=1}^k x_i A_i$. We want to minimize the induced $\ell_\infty$ norm (max row sum):</p>
+      $$ \text{minimize} \quad \|A(x)\|_\infty = \max_{i=1,\dots,m} \sum_{j=1}^n |a_{ij}(x)| $$
+
+      <div class="proof-box">
+        <h4>Deep Dive: The "Lifting" Technique for Norms</h4>
+        <p>This formulation is a classic example of "lifting"—introducing variables to represent non-linear terms. Let's walk through the logic step-by-step.</p>
+        <div class="proof-step">
+            <strong>Step 1: Epigraph Form.</strong>
+            Minimize $t$ subject to $\|A(x)\|_\infty \le t$.
+            By definition of the infinity norm, this means $\max_i \sum_j |a_{ij}(x)| \le t$.
+            This splits into $m$ constraints: $\sum_j |a_{ij}(x)| \le t$ for each row $i$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Lifting Absolute Values.</strong>
+            We cannot put absolute values in an LP. We introduce new variables $y_{ij}$ to "upper bound" the magnitudes:
+            $$ |a_{ij}(x)| \le y_{ij} $$
+            This condition is equivalent to two linear inequalities:
+            $$ -y_{ij} \le a_{ij}(x) \le y_{ij} $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Replacing Terms.</strong>
+            We replace the sum of absolute values with the sum of these upper bounds:
+            $$ \sum_{j=1}^n y_{ij} \le t $$
+            Wait, why is this valid?
+            Since we are minimizing $t$, the solver will try to make $t$ as small as possible. This forces the sum $\sum y_{ij}$ to be small. To minimize the sum, the solver pushes each $y_{ij}$ down until it hits the constraint boundary $y_{ij} = |a_{ij}(x)|$.
+            Thus, at the optimal solution, the slack variables become tight, and we recover the original norm.
+        </div>
+      </div>
+
+      <div class="proof-box">
+        <h4>LP Formulation Summary</h4>
+        <p>
+        <p style="text-align: center;">
+            $
+            \begin{aligned}
+            \text{minimize} \quad & t \\
+            \text{subject to} \quad & -y_{ij} \le a_{ij}(x) \le y_{ij}, \quad \forall i,j \\
+            & \sum_{j=1}^n y_{ij} \le t, \quad \forall i
+            \end{aligned}
+            $
+        </p>
+        <div class="proof-step">
+            <strong>Significance of Auxiliary Variables:</strong>
+            The variables $y_{ij}$ serve as the "epigraph representation" of the absolute values $|a_{ij}(x)|$.
+            <ul>
+                <li>For any feasible $x$, the smallest feasible $y_{ij}$ satisfying the constraints is exactly $y_{ij} = |a_{ij}(x)|$.</li>
+                <li>Any larger $y_{ij}$ would satisfy the constraints but could only increase the sum $\sum y_{ij}$, potentially violating the upper bound $t$ or requiring a larger $t$.</li>
+                <li>Since we minimize $t$, the solver drives $y_{ij}$ down to its lower bound $|a_{ij}(x)|$ at optimality.</li>
+            </ul>
+        </div>
+        <p>This is a standard LP. It demonstrates how to lift complex norm objectives into higher-dimensional linear spaces. This technique is often called "slack variable introduction" or "lifting".</p>
+      </div>
+
+      <h3>2.6 Minimum Fuel Optimal Control (LP)</h3>
+      <p>Consider a dynamic system $x(t+1) = A x(t) + b u(t)$ driving the state from $0$ to $x_{\text{des}}$ in $N$ steps (Exercise 4.16). We want to minimize fuel consumption.</p>
+      $$ \text{minimize} \quad \sum_{t=0}^{N-1} f(u(t)) $$
+      <p>where the fuel cost $f(u)$ is the piecewise-linear function:
+      $
+      f(a) = \begin{cases} |a| & |a| \le 1 \\ 2|a| - 1 & |a| > 1 \end{cases}
+      $
+      </p>
+
+      <div class="proof-box">
+        <h4>LP Formulation</h4>
+        <div class="proof-step">
+            <strong>Step 1: Epigraph of Cost.</strong>
+            We can express the fuel cost as the maximum of 2 convex functions of $|a|$.
+            Let $s = |a|$. Then $f(a) = \max(s, 2s-1)$.
+            Since $s$ is the pointwise max of $a$ and $-a$, we can characterize the epigraph of $f$ using:
+            <ul>
+              <li>$p \ge s$ and $s \ge |a| \iff s \ge a, s \ge -a$.</li>
+              <li>$p \ge 2s - 1$.</li>
+            </ul>
+            Here $p$ is the cost variable and $s$ is the magnitude variable.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Dynamics.</strong>
+            The state constraints $x(t+1) = Ax(t) + bu(t)$ are linear equalities.
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Full LP.</strong>
+            $$
+            \begin{aligned}
+            \text{minimize} \quad & \sum_{t=0}^{N-1} p_t \\
+            \text{subject to} \quad & x(t+1) = Ax(t) + bu(t) \\
+            & s_t \ge u_t, \quad s_t \ge -u_t, \quad s_t \ge 0 \\
+            & p_t \ge s_t, \quad p_t \ge 2s_t-1
+            \end{aligned}
+            $$
+            This separates the "absolute value" logic from the "piecewise cost" logic, making it cleaner than listing 4 affine inequalities for $u$.
+        </div>
+
+        <div class="example">
+          <h4>Example: Trust-Region QCQP</h4>
+          <p>Minimize a quadratic over the unit ball (trust region):</p>
+          $$ \min_x \frac{1}{2}x^\top P x + q^\top x + r \quad \text{s.t.} \quad x^\top x \le 1 $$
+          <p>This is a QP if $P \succeq 0$. If $P$ is indefinite, it is non-convex, but its dual is an SDP (strong duality holds by S-lemma).</p>
+        </div>
+      </div>
+
+      <h3>2.7 Hierarchy of Convex Problems</h3>
+      <p>The standard problem classes are nested:</p>
+      $$ \text{LP} \subset \text{QP} \subset \text{SOCP} \subset \text{SDP} $$
+    </section>
+
+    <!-- Section 3: Quadratic Programs (QP) -->
+    <section class="section-card" id="section-3">
+      <h2>3. Quadratic Programs (QP)</h2>
+
+      <h3>3.1 Definition</h3>
+      <p>A <strong>Quadratic Program (QP)</strong> has the form:</p>
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $
+          \begin{aligned}
+          \text{minimize} \quad & \frac{1}{2} x^\top P x + q^\top x + r \\
+          \text{subject to} \quad & Gx \preceq h \\
+          & Ax = b
+          \end{aligned}
+          $
+        </p>
+      </div>
+      <p>where $P \in \mathbb{S}_+^n$ (positive semidefinite). If $P=0$, this reduces to an LP.</p>
+
+      <h3>3.2 Geometry and Convexity</h3>
+      <p>The objective function is a convex quadratic.
+      <ul>
+          <li><strong>Gradient:</strong> $\nabla f_0(x) = Px + q$.</li>
+          <li><strong>Hessian:</strong> $\nabla^2 f_0(x) = P$.</li>
+      </ul>
+      Since $P \succeq 0$, the Hessian is positive semidefinite everywhere, ensuring convexity.
+      Geometrically, the level sets of the objective are <strong>ellipsoids</strong>. We are finding the lowest point of an ellipsoidal bowl subject to polyhedral constraints.</p>
+
+      <h3>3.3 Least-Squares as a QP</h3>
+      <p>The classic unconstrained least-squares problem is to minimize $\|Ax - b\|_2^2$. This is a QP in disguise.</p>
+
+      <div class="proof-box">
+        <h4>Algebraic Expansion</h4>
+        <p>Expanding the squared norm:</p>
+        $$
+        \begin{aligned}
+        \|Ax - b\|_2^2 &= (Ax - b)^\top (Ax - b) \\
+        &= x^\top A^\top A x - 2 b^\top A x + b^\top b
+        \end{aligned}
+        $$
+        <p>Comparing to the standard QP form $\frac{1}{2} x^\top P x + q^\top x + r$:</p>
+        <ul>
+            <li>$P = 2 A^\top A$ (Note: $A^\top A$ is always PSD).</li>
+            <li>$q = -2 A^\top b$.</li>
+            <li>$r = b^\top b$.</li>
+        </ul>
+        <p>Setting the gradient to zero ($\nabla f(x) = 2A^\top A x - 2A^\top b = 0$) recovers the <strong>Normal Equations</strong>:
+        $$ A^\top A x = A^\top b $$</p>
+      </div>
+
+      <h4>Constrained Least-Squares</h4>
+      <p>If we add linear constraints (e.g., $l \le x \le u$), the problem becomes:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & \|Ax - b\|_2^2 \\
+      \text{subject to} \quad & Gx \le h
+      \end{aligned}
+      $$
+      <p>This is a standard QP. Geometrically, we are projecting the vector $b$ onto the image of the feasible set under $A$. Unlike the unconstrained case, there is generally no closed-form solution.</p>
+
+      <h3>3.4 Application: Mean-Variance Analysis</h3>
+      <p>In finance and stochastic control, we often face random costs.</p>
+      <ul>
+          <li>Let $c$ be a random cost vector with mean $\bar{c}$ and covariance $\Sigma \succeq 0$.</li>
+          <li>The cost is $c^\top x$. Its expectation is $\bar{c}^\top x$.</li>
+          <li>Its variance is $\text{var}(c^\top x) = x^\top \Sigma x$.</li>
+      </ul>
+      <p>A risk-averse decision maker minimizes a weighted combination of expected cost and variance:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & \bar{c}^\top x + \gamma x^\top \Sigma x \\
+      \text{subject to} \quad & Ax = b, \quad Gx \le h
+      \end{aligned}
+      $$
+      <p>where $\gamma > 0$ is the risk aversion parameter. This is a QP with $P = 2\gamma \Sigma$. It balances the "linear" desire for low cost with the "quadratic" penalty for risk.</p>
+
+      <h3>3.5 Application: Distance Between Polyhedra</h3>
+      <p>Consider two polyhedra $\mathcal{P}_1 = \{x \mid A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{y \mid A_2 y \le b_2\}$. We want to find the distance between them:
+      $$ \min \|x - y\|_2^2 \quad \text{s.t.} \quad x \in \mathcal{P}_1, y \in \mathcal{P}_2 $$
+      </p>
+
+      <div class="insight">
+        <h4>Block Matrix Formulation</h4>
+        <p>We can stack the variables into a single vector $z = (x, y)$. The objective becomes:</p>
+        $$ \|x - y\|_2^2 = x^\top x - 2 x^\top y + y^\top y = \begin{bmatrix} x^\top & y^\top \end{bmatrix} \begin{bmatrix} I & -I \\ -I & I \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} $$
+        <p>The matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ is PSD (it factorizes as $B^\top B$ where $B = [I, -I]$).
+        <br>The constraints stack diagonally:
+        $$ \begin{bmatrix} A_1 & 0 \\ 0 & A_2 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} \le \begin{bmatrix} b_1 \\ b_2 \end{bmatrix} $$
+        Thus, distance computation is a standard QP in the variable $z$.</p>
+      </div>
+
+      <h3>3.6 Robust Least Squares and the Huber Penalty</h3>
+      <p>Robustness often leads to different formulations of the same underlying problem. Consider robust regression with the <strong>Huber penalty</strong> (Exercise 4.5):</p>
+      $$ \phi(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
+      <p>This penalty is quadratic for small errors and linear for large outliers, combining the efficiency of LS with the robustness of $\ell_1$.</p>
+
+      <div class="insight">
+        <h4>Three Equivalent Formulations</h4>
+        <p>The problem can be formulated in three distinct ways, each offering a different algorithmic perspective.</p>
+
+        <p><strong>(A) Direct Convex Optimization</strong></p>
+        <p>$\min_x \sum_{i=1}^m \phi(a_i^\top x - b_i)$. This is an unconstrained minimization of a sum of convex functions.</p>
+
+        <p><strong>(B) Weighted Least Squares</strong></p>
+        <p>We can view the Huber penalty as the infimum of a family of quadratic functions. Consider the problem:
+        $$ \min_{x, w \succeq 0} \quad \sum_{i=1}^m \left( \frac{r_i(x)^2}{w_i + 1} + M^2 w_i \right) $$
+        </p>
+        <div class="proof-step">
+            <strong>Equivalence Proof:</strong> Fix $x$ and minimize over $w_i \ge 0$ for each residual $r = r_i(x)$.
+            The function $f(w) = \frac{r^2}{w+1} + M^2 w$ has derivative $f'(w) = -\frac{r^2}{(w+1)^2} + M^2$.
+            Setting to zero gives $(w+1)^2 = r^2/M^2 \implies w+1 = |r|/M$ (since $w \ge 0 \implies w+1 \ge 1 > 0$), or $w^* = |r|/M - 1$.
+            <ul>
+                <li>If $|r| \le M$: Then $w^* \le 0$, so the constraint $w \ge 0$ binds. $w_{opt}=0$, giving cost $r^2$.</li>
+                <li>If $|r| > M$: Then $w^* > 0$ is feasible. The cost is $\frac{r^2}{|r|/M} + M^2(\frac{|r|}{M}-1) = M|r| + M|r| - M^2 = 2M|r| - M^2 = M(2|r|-M)$.</li>
+            </ul>
+            This exactly matches $\phi(r)$. Thus, robust regression is equivalent to reweighted LS where outliers get larger weights ($w_i+1$).
+        </div>
+
+        <p><strong>(C) Quadratic Program (QP)</strong></p>
+        <p>We can lift the problem into a higher dimension to remove the non-smoothness:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & \sum_{i=1}^m (u_i^2 + 2M v_i) \\
+        \text{subject to} \quad & -u-v \preceq Ax - b \preceq u+v \\
+        & 0 \preceq u \preceq M\mathbf{1}, \quad v \succeq 0
+        \end{aligned}
+        $$
+        </p>
+        <div class="proof-step">
+            <strong>Equivalence Proof:</strong> The constraints imply $|r_i| \le u_i + v_i$.
+            To minimize cost, we make this tight. For fixed $u_i$, optimal $v_i = \max(0, |r_i| - u_i)$.
+            The cost becomes $u_i^2 + 2M \max(0, |r_i| - u_i)$ with $0 \le u_i \le M$.
+            <ul>
+                <li>If $|r_i| \le M$: We can set $u_i = |r_i|$ and $v_i=0$. Cost is $r_i^2$.</li>
+                <li>If $|r_i| > M$: Best we can do is saturate $u_i = M$, taking the remainder in $v_i = |r_i| - M$. Cost is $M^2 + 2M(|r_i| - M) = M(2|r_i| - M)$.</li>
+            </ul>
+        </div>
+      </div>
+
+      <h3>3.7 Quadratically Constrained Quadratic Programs (QCQP)</h3>
+      <p>A natural generalization of QP is to allow quadratic inequality constraints:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & \frac{1}{2} x^\top P_0 x + q_0^\top x + r_0 \\
+      \text{subject to} \quad & \frac{1}{2} x^\top P_i x + q_i^\top x + r_i \le 0, \quad i=1,\dots,m
+      \end{aligned}
+      $$
+      <p>where $P_i \succeq 0$. If $P_i$ are not PSD, the problem is NP-hard.</p>
+
+      <h4>Example: QCQP over the Unit Ball</h4>
+      <p>Consider minimizing a convex quadratic over the unit ball (Exercise 4.22):</p>
+      $$ \text{minimize} \quad \frac{1}{2} x^\top P x + q^\top x + r \quad \text{subject to} \quad x^\top x \le 1 $$
+      <p>where $P \succeq 0$. We can derive the analytical solution via KKT conditions.</p>
+
+      <div class="proof-box">
+        <h4>Derivation</h4>
+        <div class="proof-step">
+            <strong>Step 1: KKT Conditions.</strong>
+            Lagrangian: $\mathcal{L}(x, \lambda) = \frac{1}{2} x^\top P x + q^\top x + r + \frac{\lambda}{2} (x^\top x - 1)$ with $\lambda \ge 0$.
+            <ul>
+                <li>Stationarity: $(P + \lambda I)x + q = 0 \implies x(\lambda) = -(P + \lambda I)^{-1} q$.</li>
+                <li>Complementary Slackness: $\lambda (x^\top x - 1) = 0$.</li>
+            </ul>
+        </div>
+
+        <div class="proof-step">
+            <strong>Step 2: The Secular Equation.</strong>
+            We need to find $\lambda \ge 0$.
+            Define $\phi(\lambda) = \|x(\lambda)\|^2 = q^\top (P + \lambda I)^{-2} q$.
+            Ideally, we want $\phi(\lambda) = 1$ when $\lambda > 0$.
+            Using the eigendecomposition $P = U \Lambda U^\top$, $\phi(\lambda) = \sum \frac{(u_i^\top q)^2}{(\mu_i + \lambda)^2}$.
+            This function is strictly decreasing in $\lambda$.
+        </div>
+
+        <div class="proof-step">
+            <strong>Step 3: The Solution.</strong>
+            There are two cases:
+            <ol>
+                <li><strong>Inactive Constraint:</strong> If the unconstrained minimizer $x_{unc} = -P^{-1}q$ is feasible ($\|x_{unc}\| \le 1$), then $\lambda^* = 0$ and $x^* = x_{unc}$. This corresponds to $\phi(0) \le 1$.</li>
+                <li><strong>Active Constraint:</strong> If $\|x_{unc}\| > 1$, then the solution must lie on the boundary ($x^\top x = 1$). We solve $\phi(\lambda) = 1$ for the unique $\lambda^* > 0$. Then $x^* = -(P + \lambda^* I)^{-1} q$.</li>
+            </ol>
+            Combined, $\lambda^* = \max(0, \bar{\lambda})$ where $\bar{\lambda}$ is the root of $\phi(\lambda)=1$.
+            This form explains why the constraint acts as <strong>Tikhonov regularization</strong>: it adds a "ridge" $\lambda I$ to the Hessian.
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW SECTION 4: Linear-Fractional Programming -->
+    <section class="section-card" id="section-4">
+      <h2>4. Linear-Fractional Programming</h2>
+
+      <p>We now "level up" from linear functions to <strong>linear-fractional functions</strong>, which have the form:</p>
+      $$ f_0(x) = \frac{c^\top x + d}{e^\top x + f}, \quad \text{dom } f_0 = \{x \mid e^\top x + f > 0\} $$
+      <p>These functions are <strong>quasiconvex</strong> (their sublevel sets are convex). Optimization problems involving them can be surprisingly transformed into LPs.</p>
+
+      <h3>4.1 The Geometric Perspective</h3>
+      <p>The linear-fractional function arises from the <strong>perspective map</strong>. To see this, let's start with 1D.</p>
+
+      <h4>4.1.1 The 1D Case</h4>
+      <p>Consider $f(x) = \frac{x}{ax + b}$ with domain $ax+b > 0$. We can visualize this construction in three steps:</p>
+      <ol>
+        <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$.</li>
+        <li><strong>Project:</strong> Draw a ray from the origin through the point $(x, ax+b)$.</li>
+        <li><strong>Intersect:</strong> Find where this ray hits the horizontal line $v=1$.</li>
+      </ol>
+      <p>The intersection point is $(\frac{x}{ax+b}, 1)$. The x-coordinate is exactly our function value! This geometric operation—projecting onto a plane through the origin—is the definition of the perspective map.</p>
+
+      <h4>4.1.2 The General Case</h4>
+      <p>In higher dimensions ($x \in \mathbb{R}^n$), we do the same:</p>
+      <ul>
+          <li>Map $x \in \mathbb{R}^n$ to $(c^\top x + d, e^\top x + f)$ in $\mathbb{R}^2$.</li>
+          <li>Apply the perspective projection $P(u, v) = u/v$. This corresponds to drawing a ray from the origin through $(u, v)$ and seeing where it intersects the line $v=1$.</li>
+      </ul>
+      <p>This perspective viewpoint explains why these functions preserve certain convexity properties.</p>
+
+      <h3>4.2 Linear-Fractional Programs (LFP)</h3>
+      <p>A Linear-Fractional Program is:</p>
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & \frac{c^\top x + d}{e^\top x + f} \\
+          \text{subject to} \quad & Gx \le h \\
+          & Ax = b \\
+          & e^\top x + f > 0
+          \end{aligned}
+          \tag{LFP}
+          $$
+        </p>
+      </div>
+
+      <h3>4.3 Reformulation as an LP</h3>
+      <p>We can transform the LFP into an equivalent LP using the <strong>Charnes-Cooper transformation</strong>. This is a specific instance of the "perspective transformation" applied to the entire problem.</p>
+
+      <div class="proof-box">
+        <h4>Derivation of Charnes-Cooper Transformation</h4>
+        <div class="proof-step">
+            <strong>Step 1: Homogenization Variable.</strong>
+            Introduce a scalar variable $z = \frac{1}{e^\top x + f}$. Since the domain assumes $e^\top x + f > 0$, we have $z > 0$.
+            Define the vector $y = x z$. Note that $x = y/z$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Constraint Transformation.</strong>
+            Substitute $x = y/z$ into the original constraints:
+            <ul>
+                <li>$Ax = b \iff A(y/z) = b \iff Ay - bz = 0$.</li>
+                <li>$Gx \le h \iff G(y/z) \le h \iff Gy - hz \le 0$ (multiplying by $z>0$ preserves inequality).</li>
+            </ul>
+            We also need to enforce the definition of $z$:
+            $$ e^\top x + f = \frac{1}{z} \iff z(e^\top x + f) = 1 \iff e^\top (xz) + fz = 1 \iff e^\top y + fz = 1 $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Objective Transformation.</strong>
+            The objective function becomes:
+            $$ \frac{c^\top x + d}{e^\top x + f} = \frac{c^\top (y/z) + d}{1/z} = z(c^\top (y/z) + d) = c^\top y + dz $$
+            This is a linear function of $(y, z)$.
+        </div>
+      </div>
+
+      <p>This yields the equivalent <strong>Linear Program</strong>:</p>
+      <p style="text-align: center;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & c^\top y + dz \\
+          \text{subject to} \quad & Gy - hz \le 0 \\
+          & Ay - bz = 0 \\
+          & e^\top y + fz = 1 \\
+          & z \ge 0
+          \end{aligned}
+          \tag{LP}
+          $$
+      </p>
+
+      <h3>4.4 Recovering the Solution and the Case $z=0$</h3>
+      <p>Once we solve the LP, we need to map the solution $(y^*, z^*)$ back to $x^*$.</p>
+
+      <h4>Case 1: $z^* > 0$</h4>
+      <p>If $z^* > 0$, we simply compute $x^* = y^* / z^*$. This $x^*$ is optimal for the original LFP, and the optimal values coincide.</p>
+
+      <h4>Case 2: $z^* = 0$ (Deep Dive)</h4>
+      <p>What if the optimal solution has $z^* = 0$? We cannot divide by zero.
+      A solution with $z=0$ satisfies:
+      $$ Gy \le 0, \quad Ay = 0, \quad e^\top y = 1 $$
+      This corresponds to a <strong>direction</strong> (ray) rather than a point.</p>
+      <ul>
+          <li>It implies the optimal value of the LFP is approached asymptotically along the ray defined by $y$.</li>
+          <li>Specifically, consider the ray $x(\alpha) = \hat{x} + \alpha y$ for some feasible $\hat{x}$.</li>
+          <li>As $\alpha \to \infty$, the objective value approaches $c^\top y$. Let's prove this rigorously:
+          $$
+          \begin{aligned}
+          \lim_{\alpha \to \infty} f_0(x(\alpha)) &= \lim_{\alpha \to \infty} \frac{c^\top(\hat{x} + \alpha y) + d}{e^\top(\hat{x} + \alpha y) + f} \\
+          &= \lim_{\alpha \to \infty} \frac{\alpha c^\top y + (c^\top \hat{x} + d)}{\alpha (e^\top y) + (e^\top \hat{x} + f)} \\
+          &= \lim_{\alpha \to \infty} \frac{\alpha c^\top y + C_1}{\alpha (1) + C_2} = c^\top y
+          \end{aligned}
+          $$
+          </li>
+          <li><strong>Conclusion:</strong> If $z^*=0$, the LFP optimal value is finite but <strong>not attained</strong>.</li>
+      </ul>
+
+      <h3>4.5 Generalized Linear-Fractional Programming (GLFP)</h3>
+      <p>The "LP trick" above relies on having a <strong>single denominator</strong>. What if we have multiple ratios?</p>
+      <p>Consider the <strong>Generalized Linear-Fractional Program (GLFP)</strong>:</p>
+      $$ f_0(x) = \max_{i=1,\dots,r} \frac{c_i^\top x + d_i}{e_i^\top x + f_i} $$
+      <p>subject to linear constraints. The domain is the intersection of the domains of each ratio ($e_i^\top x + f_i > 0$).</p>
+
+      <h4>Properties</h4>
+      <ul>
+          <li><strong>Quasiconvexity:</strong> Each ratio is quasiconvex. The maximum of quasiconvex functions is quasiconvex. Thus, GLFP is a <strong>quasiconvex optimization problem</strong>.</li>
+          <li><strong>No LP Reduction:</strong> Unlike the single ratio case, we cannot use a single variable transformation $z = 1/(e^\top x + f)$ because each term has a <strong>different denominator</strong>. There is no universal "scaling" that linearizes all terms simultaneously.</li>
+          <li><strong>Solution Method:</strong> These are typically solved via <strong>bisection</strong> on the optimal value. Determining if the optimal value is $\le t$ is a feasibility problem for a system of linear inequalities:
+          $$ \frac{c_i^\top x + d_i}{e_i^\top x + f_i} \le t \iff c_i^\top x + d_i \le t(e_i^\top x + f_i) \quad (\forall i) $$
+          </li>
+      </ul>
+
+      <div class="example">
+        <h4>Case Study: Von Neumann Growth Model</h4>
+        <p>Consider an economy with $n$ sectors.
+        <ul>
+            <li>$x \in \mathbb{R}^n$: Current activity levels.</li>
+            <li>$x^+ \in \mathbb{R}^n$: Next period activity levels.</li>
+            <li>$Ax$: Goods produced now. $Bx^+$: Goods required for next period.</li>
+            <li>Constraint: $Bx^+ \le Ax$ (Consumption cannot exceed production).</li>
+        </ul>
+        The growth rate of sector $i$ is $x_i^+ / x_i$. We want to maximize the growth rate of the slowest growing sector (max-min fairness):
+        $$ \max_{x, x^+} \min_{i} \frac{x_i^+}{x_i} $$
+        This is a GLFP. It cannot be reduced to a single LP, but it is quasiconvex and efficiently solvable.</p>
+      </div>
+
+      <h3>4.6 Convex-Concave Fractional Programming</h3>
+      <p>The perspective transform trick extends beyond linear functions (Exercise 4.7). Consider minimizing:</p>
+      $$ f_0(x) = \frac{f(x)}{h(x)}, \quad h(x) > 0 $$
+      <p>where $f$ is convex ($f(x) \ge 0$) and $h$ is <strong>concave</strong>. (Note: standard LFP has affine $f, h$).</p>
+
+      <div class="insight">
+        <h4>Practical Approach: Quasiconvex Bisection</h4>
+        <p>Before jumping to the full reformulation, note that $f_0(x)$ is quasiconvex.
+        <br>The sublevel set condition $f(x)/h(x) \le \alpha$ rearranges to $f(x) - \alpha h(x) \le 0$ (for $\alpha \ge 0$).
+        <br>This is a convex inequality ($f$ convex, $-h$ convex, $\alpha \ge 0$).
+        <br>Thus, we can solve the problem by <strong>bisection on $\alpha$</strong>, solving a sequence of convex feasibility problems.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Convex Reformulation (Single Shot)</h4>
+        <p>Alternatively, we can solve it in a single convex optimization pass using the perspective transform.</p>
+        <div class="proof-step">
+            <strong>Variable Transformation:</strong>
+            Let $t = 1/h(x)$ and $y = tx$.
+            Since $h$ is concave, its perspective function $\tilde{h}(y,t) = t h(y/t)$ is concave.
+            The condition $h(x) = 1/t$ becomes $t h(y/t) = 1$.
+        </div>
+        <div class="proof-step">
+            <strong>The Relaxation Trick:</strong>
+            The equality constraint $t h(y/t) = 1$ is not convex (boundary of a convex set).
+            However, we can relax it to $t h(y/t) \ge 1$. Since we minimize the objective (which scales with $t$), the solver will push $t$ to be as small as possible, making the constraint tight at optimum (provided $f \ge 0$).
+            The set $\{(y,t) \mid t h(y/t) \ge 1\}$ is convex (superlevel set of a concave function).
+        </div>
+        <div class="proof-step">
+            <strong>Transformed Problem:</strong>
+            $$
+            \begin{aligned}
+            \text{minimize} \quad & t f(y/t) \quad \text{(Perspective of } f, \text{ convex)} \\
+            \text{subject to} \quad & t h(y/t) \ge 1 \quad \text{(Perspective of } h, \text{ concave)} \\
+            & Ay = bt, \quad t > 0
+            \end{aligned}
+            $$
+            This is a standard convex optimization problem.
+        </div>
+      </div>
+
+      <h4>Example: Trace-Determinant Ratio</h4>
+      <p>Consider minimizing the ratio of the arithmetic mean to the geometric mean of eigenvalues of a matrix $F(x) = F_0 + \sum x_i F_i$:</p>
+      $$ \text{minimize} \quad \frac{\frac{1}{m}\text{tr}(F(x))}{\det(F(x))^{1/m}} $$
+      <ul>
+          <li>Numerator $f(x) = \frac{1}{m}\text{tr}(F(x))$ is affine (convex).</li>
+          <li>Denominator $h(x) = \det(F(x))^{1/m}$ is concave (Recall Lecture 05).</li>
+      </ul>
+      <p>This fits the convex-concave framework perfectly and can be solved efficiently either via bisection or the perspective formulation.</p>
+    </section>
+
+        <!-- NEW SECTION 5: Geometric Programming -->
+    <section class="section-card" id="section-5">
+      <h2>5. Geometric Programming (GP)</h2>
+      <p>Geometric Programs (GP) are a class of quasiconvex optimization problems that become convex under a logarithmic change of variables. They naturally model problems involving powers, products, and ratios, such as circuit sizing and chemical equilibrium.</p>
+
+      <h3>5.1 Monomials and Posynomials</h3>
+      <p>We work with variables $x \in \mathbb{R}_{++}^n$ (strictly positive).
+      <ul>
+          <li>A <strong>monomial</strong> is a function $f(x) = c x_1^{a_1} x_2^{a_2} \dots x_n^{a_n}$ with $c > 0$ and $a_i \in \mathbb{R}$.</li>
+          <li>A <strong>posynomial</strong> is a sum of monomials: $f(x) = \sum_{k=1}^K c_k x_1^{a_1^k} \dots x_n^{a_n^k}$ with $c_k > 0$.</li>
+      </ul>
+      Posynomials are closed under addition, multiplication, and nonnegative scaling. Monomials are closed under multiplication and division.</p>
+
+      <h3>5.2 Standard GP Form</h3>
+      <p>A <strong>Geometric Program</strong> in standard form is:</p>
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & f_0(x) \\
+          \text{subject to} \quad & f_i(x) \le 1, \quad i=1,\dots,m \\
+          & h_j(x) = 1, \quad j=1,\dots,p
+          \end{aligned}
+          $$
+        </p>
+      </div>
+      <p>where $f_0, \dots, f_m$ are posynomials and $h_1, \dots, h_p$ are monomials.
+      <br><em>Note:</em> The constraints are upper-bound 1 for posynomials and equality to 1 for monomials.</p>
+
+      <h3>5.3 Convex Reformulation via Log-Transform</h3>
+      <p>GPs are not convex in their natural variables $x$. We convexify them by transforming variables to the log-domain.</p>
+      <p>Let $y_i = \log x_i$, so $x_i = e^{y_i}$.</p>
+
+      <h4>Transforming Monomials</h4>
+      <p>A monomial $f(x) = c \prod x_i^{a_i}$ becomes:
+      $$ f(e^y) = c \prod (e^{y_i})^{a_i} = c e^{\sum a_i y_i} = e^{a^\top y + b} $$
+      where $b = \log c$. Taking the log gives an <strong>affine function</strong>: $\log f(e^y) = a^\top y + b$.</p>
+
+      <h4>Transforming Posynomials</h4>
+      <p>A posynomial $f(x) = \sum_k c_k \prod x_i^{a_{ik}}$ becomes:
+      $$ f(e^y) = \sum_k e^{a_k^\top y + b_k} $$
+      Taking the log gives the <strong>Log-Sum-Exp</strong> function:
+      $$ \log f(e^y) = \log \left( \sum_{k=1}^K e^{a_k^\top y + b_k} \right) $$
+      Recall from <a href="../05-convex-functions-basics/index.html">Lecture 05</a> that Log-Sum-Exp is convex.</p>
+
+      <h4>The Convexified GP</h4>
+      <p>Taking the log of the objective and constraints in the standard GP transforms it into a convex problem in $y$:</p>
+      <p style="text-align: center;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & \log \left( \sum_{k} e^{a_{0k}^\top y + b_{0k}} \right) \\
+          \text{subject to} \quad & \log \left( \sum_{k} e^{a_{ik}^\top y + b_{ik}} \right) \le 0, \quad i=1,\dots,m \\
+          & G y + d = 0
+          \end{aligned}
+          $$
+      </p>
+      <p>This is a convex optimization problem. We can solve it for $y^*$ and recover $x^* = e^{y^*}$.</p>
+
+      <div class="example">
+        <h4>Example: Box Volume Maximization</h4>
+        <p>We want to maximize the volume of a box with dimensions $x, y, z$ (so maximize $xyz$), subject to:
+        <ul>
+          <li><strong>Wall Area Limit:</strong> The total area of the walls (excluding top/bottom) is at most $A_{wall}$. ($2xz + 2yz \le A_{wall}$)</li>
+          <li><strong>Floor Area Limit:</strong> The floor area is at most $A_{floor}$. ($xy \le A_{floor}$)</li>
+          <li><strong>Aspect Ratio:</strong> The height cannot be more than twice the width. ($z/x \le 2$)</li>
+        </ul>
+        </p>
+        <p><strong>GP Formulation:</strong>
+        Minimize the inverse volume $x^{-1} y^{-1} z^{-1}$ (a monomial).
+        Constraints must be in the form (Posynomial $\le 1$).
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & x^{-1} y^{-1} z^{-1} \\
+        \text{subject to} \quad & \frac{2}{A_{wall}} x z + \frac{2}{A_{wall}} y z \le 1 \\
+        & \frac{1}{A_{floor}} x y \le 1 \\
+        & 0.5 x^{-1} z \le 1
+        \end{aligned}
+        $$
+        All constraints are posynomials (or monomials). This is a standard GP.
+        </p>
+      </div>
+    </section>
+
+<!-- NEW SECTION 5: Summary Pattern Library -->
+    <section class="section-card" id="section-6">
+      <h2>6. Summary: The Convex Optimization Pattern Library</h2>
+      <p>We have encountered three fundamental patterns that translate geometric or analytic descriptions into standard convex problems. Internalizing these is key to mastering formulation.</p>
+
+      <div class="proof-box">
+        <h4>Pattern 1: The Epigraph Trick</h4>
+        <p><strong>Problem:</strong> Minimize a maximum of functions, $\min_x \max_i f_i(x)$.</p>
+        <p><strong>Transformation:</strong> Introduce a scalar variable $t$. Minimize $t$ subject to $f_i(x) \le t$ for all $i$.</p>
+        <p><strong>Result:</strong> Turns piecewise-linear objectives into LPs.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Pattern 2: Robustness via Dual Norms</h4>
+        <p><strong>Problem:</strong> Constraints must hold for all perturbations in a ball ("Ball inside Polyhedron").</p>
+        <p><strong>Transformation:</strong> The condition $\sup_{\|u\| \le r} a^\top u \le b$ becomes $r\|a\|_* \le b$.</p>
+        <p><strong>Result:</strong> Turns semi-infinite constraints into standard norm constraints (LP or SOCP). This generalizes Cauchy-Schwarz (where the dual of L2 is L2).</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Pattern 3: The Perspective Transform</h4>
+        <p><strong>Problem:</strong> Minimize a ratio of affine functions (Linear-Fractional).</p>
+        <p><strong>Transformation:</strong> Homogenize variables: $y = x/(e^\top x + f)$, $z = 1/(e^\top x + f)$.</p>
+        <p><strong>Result:</strong> Turns fractional objectives into linear ones (LP).</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Pattern 4: Geometric Programming</h4>
+        <p><strong>Problem:</strong> Minimize posynomials (sums of products) with positive variables.</p>
+        <p><strong>Transformation:</strong> Log-transform variables ($y=\log x$) and functions.</p>
+        <p><strong>Result:</strong> Turns multiplicative structure into additive convex structure (Log-Sum-Exp).</p>
+      </div>
+
+    </section>
+
+    <!-- NEW SECTION 6: Matrix Viewpoint -->
+    <section class="section-card" id="section-7">
+      <h2>7. Matrix Viewpoint: The Algebra of QPs</h2>
+      <p>Throughout this lecture, we've used block matrices and quadratic forms to construct optimization problems. Let's formalize the linear algebra that makes this work.</p>
+
+      <h3>7.1 Congruence and PSD Matrices</h3>
+      <p>When we write a quadratic form in a new coordinate system $x = Bz$ (where $B$ is invertible), the expression transforms as:</p>
+      $$ x^\top A x = (Bz)^\top A (Bz) = z^\top (B^\top A B) z $$
+      <p>The transformation $A \mapsto B^\top A B$ is called a <strong>congruence transform</strong>.</p>
+      <div class="insight">
+        <h4>Key Property: Preservation of Definiteness</h4>
+        <p><strong>Sylvester's Law of Inertia:</strong> Congruence transforms preserve the number of positive, negative, and zero eigenvalues.
+        <br>Specifically, $A \succeq 0 \iff B^\top A B \succeq 0$.
+        <br>This is why we can build complex QPs using block matrices. For example, the distance matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ represents squared distance $\|x-y\|^2$. Since squared distance is non-negative in <em>any</em> coordinate system, $Q$ must be PSD.</p>
+      </div>
+
+      <h3>7.2 Similarity and Eigenvalues</h3>
+      <p>Contrast congruence with <strong>similarity transforms</strong> $A \mapsto B^{-1} A B$, which arise in eigen-analysis.</p>
+      $$ Ax = \lambda x \iff (B^{-1}AB)(B^{-1}x) = \lambda (B^{-1}x) $$
+      <ul>
+          <li><strong>Similarity</strong> preserves the <strong>values</strong> of the eigenvalues (spectrum).</li>
+          <li><strong>Congruence</strong> preserves the <strong>signs</strong> of the eigenvalues (inertia).</li>
+      </ul>
+      <p>In Convex Optimization:</p>
+      <ul>
+          <li>We use <strong>Congruence</strong> to check if a problem formulation is convex (is the Hessian PSD?).</li>
+          <li>We use <strong>Similarity</strong> (diagonalization) to understand the geometry (shape of ellipsoids) and conditioning of the problem.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 7: Reformulation -->
+    <section class="section-card" id="section-8">
+      <h2>8. Problem Reformulation</h2>
+      <h3>8.1 Equivalent Problems</h3>
+      <p>Two optimization problems are equivalent if the solution of one can be readily obtained from the solution of the other, and vice versa. Common techniques include:</p>
+      <ul>
+        <li><strong>Change of variables:</strong> $x = \phi(y)$.</li>
+        <li><strong>Slack variables:</strong> $f(x) \le t \to f(x) + s = t, s \ge 0$.</li>
+        <li><strong>Eliminating equality constraints:</strong> $x = x_0 + Zz$.</li>
+      </ul>
+
+      <!-- Widget 6: Problem Reformulation Tool -->
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive: Problem Reformulation Tool</h3>
+        <p><strong>Purpose:</strong> Learn how to reformulate non-standard problems.</p>
+        <div id="widget-reformulation-tool" style="width: 100%; height: 400px; position: relative;">
+          <!-- Widget will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: EXERCISES -->
+    <section class="section-card" id="section-9">
+      <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
+
+      <div class="problem">
+        <h3>P7.1 — Diet Problem (LP)</h3>
+        <p>Formulate the classic diet problem as an LP. (See Example 2.1 for the derivation).
+        Is the feasible set bounded?</p>
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Canonical Form:</b> The Diet Problem ($\min c^\top x$ s.t. $Ax \ge b, x \ge 0$) is the prototype for all covering problems.</li>
+              <li><b>Geometry:</b> The feasible region is unbounded (an inverted pyramid). The cost vector $c$ points "up", and the solution lies at a vertex where the "floor" defined by constraints holds.</li>
+          </ul>
+        </div>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>Matrix Form: $\min c^\top x$ s.t. $Ax \ge b, x \ge 0$.
+          The feasible set is generally unbounded (you can eat infinite food), but the cost is bounded below by 0.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.2 — Transportation Problem (LP)</h3>
+        <p>Supply $s_i$ at sources, demand $d_j$ at destinations. Cost $C_{ij}$. Formulate as LP.</p>
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Structure:</b> Network flow problems (like Transportation) have constraint matrices containing only $0, 1, -1$.</li>
+              <li><b>Integrality:</b> Due to Total Unimodularity (TU), the vertices of the feasible polyhedron are integers. This allows solving discrete allocation problems using continuous LPs.</li>
+          </ul>
+        </div>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>$\min \sum C_{ij} x_{ij}$ s.t. $\sum_j x_{ij} \le s_i$, $\sum_i x_{ij} = d_j$, $x_{ij} \ge 0$.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.3 — PSD Block Matrix (Matrix Viewpoint)</h3>
+        <p>Verify that the matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ is positive semidefinite by explicitly factoring it as $B^\top B$. What is $B$?</p>
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Block Construction:</b> A block matrix $Q = [A, B; B^\top, C]$ is PSD if and only if $A \succeq 0$ and the Schur complement $C - B^\top A^{-1} B \succeq 0$.</li>
+              <li><b>Coupling:</b> This structure allows us to treat coupled problems (like distance between two sets) as a single high-dimensional QP.</li>
+          </ul>
+        </div>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>We want to find $B$ such that $z^\top Q z = \|Bz\|^2$.
+          <br>Recall the objective function for distance: $f(x,y) = \|x - y\|^2$.
+          Let $z = (x, y)$. Then:
+          $$ \|x - y\|^2 = \|\begin{bmatrix} I & -I \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix}\|^2 = \|B z\|^2 $$
+          So $B = \begin{bmatrix} I & -I \end{bmatrix}$.
+          <br><strong>Verification:</strong>
+          $$ B^\top B = \begin{bmatrix} I \\ -I \end{bmatrix} \begin{bmatrix} I & -I \end{bmatrix} = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix} = Q $$
+          Since $Q$ can be written as $B^\top B$, it is Positive Semidefinite.
+          <br><strong>Schur Complement Connection:</strong>
+          Alternatively, we can use the Schur complement. For $Q = \begin{bmatrix} A & B_{block} \\ B_{block}^\top & C \end{bmatrix} = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$:
+          $$ S = C - B_{block}^\top A^{-1} B_{block} = I - (-I)^\top (I)^{-1} (-I) = I - I = 0 $$
+          Since $A=I \succ 0$ and $S=0 \succeq 0$, the matrix $Q$ is PSD.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.4 — L1 Reformulation</h3>
+        <p>Reformulate $\min \|Ax - b\|_1$ subject to $\|x\|_\infty \le 1$ as an LP.</p>
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Pattern:</b> Minimizing L1 norm $\iff$ Minimizing sum of slack variables with linear bounds ($\min \sum t_i$ s.t. $-t_i \le r_i \le t_i$).</li>
+              <li><b>Efficiency:</b> L1 minimization promotes sparsity in residuals (robustness to outliers), unlike L2 which spreads error.</li>
+          </ul>
+        </div>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>Standard slack variable trick: $-t \le Ax - b \le t$. Constraints on $x$ become $-\mathbf{1} \le x \le \mathbf{1}$. Minimize $\mathbf{1}^\top t$.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.5 — LP Reformulation: Piecewise Linear Objective</h3>
+        <p>Consider the problem of minimizing the sum of hinge losses:</p>
+        $$ \min_{x} \quad c^\top x + \sum_{i=1}^m \max(0, a_i^\top x + b_i) $$
+        <p>Formulate this as a Linear Program.</p>
+
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Epigraph Trick:</b> The universal solvent of convex reformulation. $\min \max(A, B) \iff \min t \text{ s.t. } t \ge A, t \ge B$.</li>
+              <li><b>Dimension Lifting:</b> By adding variables (one per max term), we remove non-smoothness and "linearize" the objective.</li>
+          </ul>
+        </div>
+
+        <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+            <strong>Step 1: Epigraph Variables.</strong>
+            The objective is a sum of convex functions $h_i(x) = \max(0, a_i^\top x + b_i)$.
+            We introduce a slack variable $t_i$ for each term to represent its value: $t_i \ge h_i(x)$.
+            The new objective is linear: $\sum t_i + c^\top x$.
+            </div>
+            <div class="proof-step">
+            <strong>Step 2: Split Max Constraints.</strong>
+            The condition $t_i \ge \max(0, a_i^\top x + b_i)$ is equivalent to requiring $t_i$ to be greater than or equal to <i>both</i> arguments of the max function:
+            $$ t_i \ge 0 \quad \text{and} \quad t_i \ge a_i^\top x + b_i $$
+            (If $t_i$ satisfies both, it satisfies the max. Since we minimize $t_i$, it will be tight at the max).
+            </div>
+            <div class="proof-step">
+            <strong>Step 3: Final LP.</strong>
+            $$
+            \begin{aligned}
+            \min_{x, t} \quad & c^\top x + \sum_{i=1}^m t_i \\
+            \text{s.t.} \quad & t_i \ge 0, \quad i=1,\dots,m \\
+            & t_i \ge a_i^\top x + b_i, \quad i=1,\dots,m
+            \end{aligned}
+            $$
+            This is an LP with $n+m$ variables and $2m$ constraints. The solution $x^*$ will minimize the sum of hinge losses.
+            </div>
+        </div>
+        </div>
+
+      <div class="problem">
+        <h3>P7.6 — The Log-Barrier Problem</h3>
+        <p>Consider $f_0(x) = -\sum_{i=1}^m \log(b_i - a_i^\top x)$ with domain $\{x \mid Ax \prec b\}$.
+        Analyze the existence of minimizers (Exercise 4.2).</p>
+        <p><strong>(a)</strong> Show that the domain is unbounded if and only if there exists $v \ne 0$ such that $Av \preceq 0$.</p>
+        <p><strong>(b)</strong> Show that $f_0$ is unbounded below if and only if there exists $v$ such that $Av \preceq 0$ and $Av \ne 0$.</p>
+        <p><strong>(c)</strong> Show that if $f_0$ is bounded below, a minimizer exists and is unique (modulo the nullspace of $A$).</p>
+
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Analytic Center:</b> The minimizer of the log-barrier is the "geometric center" of the polytope.</li>
+              <li><b>Existence Theorem:</b> The analytic center exists iff the feasible set is bounded (or has no recession directions). This condition is checked via the alternative theorem ($Av \preceq 0$).</li>
+          </ul>
+        </div>
+
+        <div class="solution-box">
+          <h4>Detailed Proof</h4>
+          <p>This problem connects the geometry of the domain to the analytic properties of the function.</p>
+
+          <p><strong>(a) Domain Unboundedness</strong></p>
+          <div class="proof-step">
+              The domain is $C = \{x \mid Ax \prec b\}$. Its recession cone is $\operatorname{rec}(C) = \{v \mid x + tv \in C, \forall t \ge 0\}$.
+              $$ x+tv \in C \iff A(x+tv) \prec b \iff Ax + tAv \prec b \implies Av \preceq 0 $$
+              Thus, the domain is unbounded iff there exists a nonzero direction $v$ such that $Av \preceq 0$.
+          </div>
+
+          <p><strong>(b) Function Unbounded Below</strong></p>
+          <div class="proof-step">
+              Recall $\nabla f_0(x) = A^\top z(x)$ where $z_i = 1/(b_i - a_i^\top x) > 0$.
+              Using a theorem of alternatives:
+              <ul>
+                  <li>Either $\exists v$ s.t. $Av \preceq 0, Av \neq 0$ (some slacks grow, none shrink).</li>
+                  <li>Or $\exists z \succ 0$ s.t. $A^\top z = 0$.</li>
+              </ul>
+              <strong>If (1) holds:</strong> Along the ray $x+tv$, slacks $s_i(t) = s_i(0) - t a_i^\top v$ are non-decreasing. Since $Av \ne 0$, at least one slack grows linearly to $\infty$. Thus $-\sum \log s_i(t) \to -\infty$.
+              <br><strong>If (2) holds:</strong> Consider $\psi(s) = -\sum \log s_i + z^\top s$. This function is bounded below on $\mathbb{R}_{++}^m$.
+              For feasible $x$, $\psi(b-Ax) = f_0(x) + z^\top b - z^\top Ax = f_0(x) + z^\top b$. Since $\psi$ is bounded below, $f_0(x)$ is bounded below.
+          </div>
+
+          <p><strong>(c) Existence and Uniqueness</strong></p>
+          <div class="proof-step">
+              If $f_0$ is bounded below, condition (2) holds ($A^\top z = 0$ for some $z \succ 0$).
+              Since the domain is open, any minimizer $x^*$ must satisfy $\nabla f_0(x^*) = 0$.
+              This requires solving $A^\top z(x) = 0$ for $x$, which is possible when $f_0$ is bounded below.
+              <br>
+              <strong>Optimal Set:</strong> $f_0$ is constant along any direction $v$ in the nullspace of $A$ ($Av=0$).
+              If $x^*$ is optimal, the set of all optimal points is the affine subspace $x^* + \operatorname{null}(A)$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.7 — LASSO Primal</h3>
+        <p>Formulate the LASSO problem as a QP:
+        $$ \min_x \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1 $$
+        </p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>Introduce $t$ such that $|x_i| \le t_i$.
+          The problem becomes:
+          $$
+          \begin{aligned}
+          \min_{x, t} \quad & \frac{1}{2}\|Ax - b\|_2^2 + \lambda \sum t_i \\
+          \text{subject to} \quad & -t_i \le x_i \le t_i
+          \end{aligned}
+          $$
+          The objective is quadratic in $x$ and linear in $t$. Constraints are linear.
+          This is a QP.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.8 — Soft-Margin SVM Primal</h3>
+        <p>Formulate the Soft-Margin SVM as a QP:
+        $$
+        \min_{w, b, \xi} \frac{1}{2}\|w\|_2^2 + C \sum_{i=1}^m \xi_i
+        $$
+        subject to $y_i(w^\top x_i + b) \ge 1 - \xi_i$ and $\xi_i \ge 0$.
+        </p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>The objective is quadratic (in $w$) plus linear (in $\xi$).
+          The constraints are affine inequalities.
+          $$ \frac{1}{2} \begin{bmatrix} w \\ b \\ \xi \end{bmatrix}^\top \begin{bmatrix} I & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} \begin{bmatrix} w \\ b \\ \xi \end{bmatrix} + \begin{bmatrix} 0 \\ 0 \\ C\mathbf{1} \end{bmatrix}^\top \begin{bmatrix} w \\ b \\ \xi \end{bmatrix} $$
+          This is a standard QP.</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.9 — Robust Least Squares (Huber Penalty) Formulation</h3>
+        <p>The Huber penalty function is defined as:
+        $$ \phi(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
+        We minimize $\sum \phi(a_i^\top x - b_i)$. Show that the following three formulations are equivalent.</p>
+        <p><strong>(A) Unconstrained:</strong> $\min_x \sum \phi(r_i(x))$.</p>
+        <p><strong>(B) Weighted LS:</strong> $\min_{x, w \succeq 0} \sum \left( \frac{r_i(x)^2}{1+w_i} + M^2 w_i \right)$.</p>
+        <p><strong>(C) Quadratic Program:</strong> $\min_{x, u, v} \sum (u_i^2 + 2M v_i)$ subject to $|r_i(x)| \le u_i + v_i, 0 \le u_i \le M, v_i \ge 0$.</p>
+
+        <div class="recap-box">
+          <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+          <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+              <li><b>Inliers vs Outliers:</b> The formulations explicitly separate "small errors" (inliers, handled by quadratic terms) from "large errors" (outliers, handled by linear terms or weights).</li>
+              <li><b>Infimal Convolution:</b> The structure of Huber is exactly the infimal convolution of $f(x)=x^2$ and $g(x)=|x|$, which smooths the corner of the absolute value.</li>
+          </ul>
+        </div>
+
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Equivalence of (A) and (B):</strong>
+            Consider the scalar function $g(u) = \inf_{w \ge 0} \left( \frac{u^2}{1+w} + M^2 w \right)$.
+            Differentiating w.r.t $w$: $-\frac{u^2}{(1+w)^2} + M^2 = 0 \implies (1+w)^2 = u^2/M^2 \implies w = |u|/M - 1$.
+            Constraint $w \ge 0$ implies we use this root only if $|u| \ge M$.
+            <ul>
+              <li>If $|u| \le M$, optimal $w=0$. Value is $u^2$.</li>
+              <li>If $|u| > M$, optimal $w = |u|/M - 1$. Value is $\frac{u^2}{|u|/M} + M^2(|u|/M - 1) = M|u| + M|u| - M^2 = 2M|u| - M^2$.</li>
+            </ul>
+            This matches $\phi(u)$. Since the sum is separable, the equivalence holds.
+          </div>
+          <div class="proof-step">
+            <strong>Equivalence of (A) and (C):</strong>
+            Fix $x$ (and thus $r_i$). We minimize $u_i^2 + 2M v_i$ subject to $u_i + v_i \ge |r_i|, 0 \le u_i \le M, v_i \ge 0$.
+            To minimize cost, we should make $u_i + v_i = |r_i|$ (tight constraint). So $v_i = |r_i| - u_i$.
+            Since $v_i \ge 0$, we need $u_i \le |r_i|$. Combined with $0 \le u_i \le M$, the feasible range for $u_i$ is $[0, \min(M, |r_i|)]$.
+            The objective becomes $u_i^2 + 2M(|r_i| - u_i)$ in terms of $u_i$.
+            This is a convex parabola opening up ($u_i^2 - 2Mu_i + 2M|r_i|$), with vertex at $u_i = M$.
+            <ul>
+              <li>If $|r_i| \le M$: The interval is $[0, |r_i|]$. The vertex $M$ is to the right (or at boundary). Minimum is at $u_i = |r_i|$. Value: $|r_i|^2 + 2M(0) = r_i^2$.</li>
+              <li>If $|r_i| > M$: The interval is $[0, M]$. The vertex is at the boundary $u_i = M$. Minimum is at $u_i = M$. Value: $M^2 + 2M(|r_i| - M) = M(2|r_i| - M)$.</li>
+            </ul>
+            This matches $\phi(u)$.
+          </div>
+          <div class="proof-step">
+            <strong>Interpretation:</strong>
+            In (C), $u_i$ represents the "inlier" portion of the residual (up to $M$), and $v_i$ represents the "outlier" portion (excess).
+            In (B), $w_i > 0$ flags an outlier, reducing the effective weight of the squared error to dampen its influence.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.10 — Matrix Norm Approximation (4.14)</h3>
+        <p>Let $\|A\|_\infty = \max_i \sum_j |a_{ij}|$ be the induced infinity norm.
+        We want to minimize $\|A_0 + \sum x_k A_k\|_\infty$. Formulate this as an LP.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: Epigraph Form.</strong>
+            Minimize $t$ subject to $\|A(x)\|_\infty \le t$.
+            This is equivalent to: $\sum_{j=1}^n |A_{ij}(x)| \le t$ for all $i = 1, \dots, m$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Linearize Absolute Values.</strong>
+            Introduce auxiliary variables $Y_{ij}$ to bound the absolute values.
+            $$ -Y_{ij} \le A_{ij}(x) \le Y_{ij} $$
+            This implies $Y_{ij} \ge |A_{ij}(x)|$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Sum Constraint.</strong>
+            Replace the sum of absolute values with the sum of upper bounds:
+            $$ \sum_{j=1}^n Y_{ij} \le t, \quad i=1,\dots,m $$
+            Since we minimize $t$, which pushes down on the sums, and the sums push down on $Y_{ij}$, the variables $Y_{ij}$ will be tight at optimality ($Y_{ij} = |A_{ij}(x)|$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Final LP.</strong>
+            Variables: $x \in \mathbb{R}^k, Y \in \mathbb{R}^{m \times n}, t \in \mathbb{R}$.
+            $$
+            \begin{aligned}
+            \min \quad & t \\
+            \text{s.t.} \quad & -Y_{ij} \le (A_0)_{ij} + \sum_k x_k (A_k)_{ij} \le Y_{ij} \\
+            & \sum_j Y_{ij} \le t
+            \end{aligned}
+            $$
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.11 — Minimum Fuel Optimal Control (4.16)</h3>
+        <p>Minimize fuel consumption $\sum_{t=0}^{N-1} f(u(t))$ for a linear system $x(t+1) = Ax(t) + bu(t)$, where the fuel cost is piecewise linear:
+        $$ f(a) = \begin{cases} |a| & |a| \le 1 \\ 2|a| - 1 & |a| > 1 \end{cases} $$
+        Formulate as an LP.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: Characterize Cost Function.</strong>
+            Let $s = |a|$. Then $f(a) = s$ if $s \le 1$ and $2s-1$ if $s > 1$.
+            Notice that for $s \ge 0$, $f(a) = \max(s, 2s-1)$.
+            (Check: if $s \le 1$, $s \ge 2s-1$. If $s > 1$, $2s-1 > s$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Epigraph Variables.</strong>
+            Introduce $z_t$ for the cost $f(u_t)$ and $s_t$ for the magnitude $|u_t|$.
+            $$ s_t \ge u_t, \quad s_t \ge -u_t $$
+            $$ z_t \ge s_t, \quad z_t \ge 2s_t - 1 $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Final LP.</strong>
+            Minimize $\sum z_t$ subject to dynamics $x(t+1)=Ax(t)+bu(t)$, boundary conditions, and the inequalities above.
+            This avoids casework or binary variables by using the convexity of $f$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P7.12 — Convex-Concave Fractional Programming (4.7)</h3>
+        <p>Minimize $f_0(x) = \frac{f(x)}{h(x)}$ subject to $Ax \le b$, where $f$ is convex, $h$ is concave, $f \ge 0, h > 0$.
+        <br>Show this is quasiconvex and derive the convex reformulation.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>(a) Quasiconvexity:</strong>
+            Sublevel sets $S_\alpha = \{x \mid f(x)/h(x) \le \alpha\}$.
+            If $\alpha < 0$, empty (since $f \ge 0, h > 0$).
+            If $\alpha \ge 0$, $f(x) \le \alpha h(x) \iff f(x) - \alpha h(x) \le 0$.
+            Since $f$ is convex and $h$ is concave (so $-h$ is convex), the function $f - \alpha h$ is convex.
+            Thus $S_\alpha$ is a convex set. The problem is quasiconvex.
+          </div>
+          <div class="proof-step">
+            <strong>(b) Convex Reformulation (Perspective Trick):</strong>
+            We perform a change of variables to linearize the fraction. Let $t = 1/h(x)$ and $y = x/h(x)$. Note that since $h(x) > 0$, we have $t > 0$, so this transformation is well-defined.
+            <br>Substituting back, $x = y/t$.
+            <br><b>Objective:</b> The original objective is $f(x) \cdot \frac{1}{h(x)} = f(y/t) \cdot t$. This is exactly the <b>perspective function</b> of $f$, denoted $\tilde{f}(y,t)$. Since $f$ is convex, $\tilde{f}$ is convex.
+            <br><b>Constraint (Denominator):</b> By definition, $t h(x) = 1$. Substituting $x=y/t$, we get $t h(y/t) = 1$.
+            The function $g(y, t) = t h(y/t)$ is the perspective of the concave function $h$, so $g$ is concave.
+            The equality constraint $g(y, t) = 1$ defines a non-convex set (the boundary of a convex set).
+            <br><b>Relaxation:</b> We relax the equality to an inequality $g(y, t) \ge 1$ (i.e., $t h(y/t) \ge 1$). Since $g$ is concave, the set $\{(y,t) \mid g(y,t) \ge 1\}$ is convex.
+            <br><b>Tightness Argument:</b> Why does this relaxation work? We minimize the objective $t f(y/t)$. Assuming $f(x) \ge 0$, the objective is non-increasing in the "scaling" of the denominator. If we find a solution where $t h(y/t) > 1$, we can scale down $t$ (and $y$) to make the constraint tight without increasing the objective (often decreasing it). Thus, at optimality, the constraint holds with equality.
+            <br><b>Result:</b> Min $t f(y/t)$ subject to $Ay - bt \le 0$ (from $Ax \le b$), $t h(y/t) \ge 1$, and $t > 0$. This is a convex optimization problem.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 9: READINGS -->
+    <section class="section-card" id="section-10">
+      <h2>10. Readings & Resources</h2>
+      <ul class="link-list">
+        <li><strong>Required Reading:</strong> Boyd & Vandenberghe, Chapter 4.</li>
+      </ul>
+    </section>
+
+    <section class="section-card" id="section-11">
+      <h2>11. Recap &amp; What's Next</h2>
+      <div class="recap-box">
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Standard form is a checklist:</b> convex objective, convex inequalities, affine equalities.</li>
+          <li><b>LP geometry:</b> linear objectives push level sets until they hit a face/vertex of a polyhedron.</li>
+          <li><b>Reformulation patterns:</b> epigraph variables, slack variables, and perspective/linear-fractional transforms turn “weird” models into standard form.</li>
+          <li><b>Problem classes are reusable:</b> once you can recognize LP/QP/LFP/GP structure, you can model faster and solve reliably.</li>
+        </ul>
+      </div>
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> <a href="../08-convex-problems-conic/index.html">Lecture 08</a> shows how many constraints can be written as membership in a cone (SOCP/SDP), expanding what you can model while keeping convexity. <a href="../09-duality/index.html">Lecture 09</a> explains why solvers can certify optimality and how dual variables interpret constraints.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p style="margin: 0;">© <span id="year"></span> Convex Optimization Course · <a href="../../README.md" style="color: var(--brand);">About</a></p>
+      </div>
+    </footer>
+  </main></div>
+
+  <!-- Load Pyodide for Python widgets (optional) -->
+  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+
+  <!-- Widget loaders -->
+  <script type="module">
+    import { initProblemReformulationTool } from './widgets/js/reformulation-tool.js';
+    initProblemReformulationTool('widget-reformulation-tool');
+  </script>
+
+  <!-- Global utilities -->
+  <script src="../../static/js/math-renderer.js"></script>
+<script src="../../static/js/ui.js"></script>
+<script src="../../static/js/toc.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/notes-widget.js"></script>
+<script src="../../static/js/pomodoro.js"></script>
+<script src="../../static/js/progress-tracker.js"></script>
+</body>
+</html>

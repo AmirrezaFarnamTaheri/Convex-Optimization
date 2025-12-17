@@ -105,7 +105,7 @@
           <img src="assets/affine-subspace.png"
                alt="An affine set C shown as a red plane parallel to a blue subspace V passing through the origin"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.0:</i> An affine set $C$ (red) is a subspace $V$ (blue) translated by a vector $x_0$. Note that $V$ passes through the origin, while $C$ does not necessarily.</figcaption>
+          <figcaption><i>Figure 1:</i> An affine set $C$ (red) is a subspace $V$ (blue) translated by a vector $x_0$. Note that $V$ passes through the origin, while $C$ does not necessarily.</figcaption>
         </figure>
 
         <div class="example">
@@ -138,7 +138,7 @@
           <img src="assets/convex-vs-nonconvex.png"
                alt="Visual definition of convex and non-convex sets"
                style="max-width: 100%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.1:</i> In a convex set (right), the line segment between any two points lies entirely within the set. In a non-convex set (left), some line segments (red) cross outside the set boundaries.</figcaption>
+          <figcaption><i>Figure 2:</i> In a convex set (right), the line segment between any two points lies entirely within the set. In a non-convex set (left), some line segments (red) cross outside the set boundaries.</figcaption>
         </figure>
 
         <h3>1.3 Convex Hull</h3>
@@ -212,7 +212,7 @@
           <img src="assets/convex-hull.png"
                alt="Illustration of a convex hull"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.2:</i> The convex hull of a set of points (black dots) acts like a rubber band (blue polygon) snapped tight around them.</figcaption>
+          <figcaption><i>Figure 3:</i> The convex hull of a set of points (black dots) acts like a rubber band (blue polygon) snapped tight around them.</figcaption>
         </figure>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
@@ -220,13 +220,13 @@
               <img src="assets/convex-hull-nonconvex.png"
                    alt="Convex hull of a crescent shape"
                    style="width: 100%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 1.3:</i> The convex hull of a non-convex set (dark grey crescent) fills in the "gaps" (light blue), creating the smallest convex superset.</figcaption>
+              <figcaption><i>Figure 4:</i> The convex hull of a non-convex set (dark grey crescent) fills in the "gaps" (light blue), creating the smallest convex superset.</figcaption>
             </figure>
             <figure style="text-align: center; flex: 1;">
               <img src="assets/caratheodory.png"
                    alt="Caratheodory's theorem visualization"
                    style="width: 100%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 1.4:</i> Carathéodory's Theorem: Any point $x$ in the hull of many points (black) can be formed by a convex combination of $n+1$ of them (red triangle in $\mathbb{R}^2$).</figcaption>
+              <figcaption><i>Figure 5:</i> Carathéodory's Theorem: Any point $x$ in the hull of many points (black) can be formed by a convex combination of $n+1$ of them (red triangle in $\mathbb{R}^2$).</figcaption>
             </figure>
         </div>
 
@@ -250,7 +250,7 @@
              <img src="assets/indicator-function.png"
                   alt="3D plot of an indicator function"
                   style="max-width: 60%; height: auto; border-radius: 8px;" />
-             <figcaption><i>Figure 1.5:</i> The sublevel set of a convex function corresponds to a convex set. For example, the unit ball is the 1-sublevel set of the norm function $f(x) = \|x\|$.</figcaption>
+             <figcaption><i>Figure 6:</i> The sublevel set of a convex function corresponds to a convex set. For example, the unit ball is the 1-sublevel set of the norm function $f(x) = \|x\|$.</figcaption>
         </figure>
 
         <h4>(b) Epigraphs</h4>
@@ -353,7 +353,7 @@
           <img src="assets/hyperplane-halfspace.png"
                alt="A 3D visualization of a hyperplane dividing space into two halfspaces"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 2.1:</i> A hyperplane (transparent plane) divides $\mathbb{R}^3$ into two halfspaces. The normal vector $a$ determines the orientation.</figcaption>
+          <figcaption><i>Figure 7:</i> A hyperplane (transparent plane) divides $\mathbb{R}^3$ into two halfspaces. The normal vector $a$ determines the orientation.</figcaption>
         </figure>
 
         <h3>2.2 Norm Balls and Ellipsoids</h3>
@@ -386,7 +386,7 @@
           <img src="assets/norm-balls.png"
                alt="Comparison of unit balls for L1, L2, and L-infinity norms"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 2.2:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
+          <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
         </figure>
 
         <p>An <a href="#" class="definition-link">ellipsoid</a> is a generalized Euclidean ball, defined as:</p>
@@ -405,7 +405,7 @@
           <img src="assets/ellipsoid-axes.png"
                alt="Anatomy of an ellipsoid showing principal axes aligned with eigenvectors"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 2.3:</i> An ellipsoid is defined by a PSD matrix $P$. Its principal axes align with the eigenvectors of $P$, and their lengths are the square roots of the eigenvalues.</figcaption>
+          <figcaption><i>Figure 9:</i> An ellipsoid is defined by a PSD matrix $P$. Its principal axes align with the eigenvectors of $P$, and their lengths are the square roots of the eigenvalues.</figcaption>
         </figure>
 
         <div class="widget-container" style="margin: 24px 0;">
@@ -431,7 +431,7 @@
           <img src="assets/polyhedron-construction.png"
                alt="A polyhedron formed by the intersection of multiple halfspaces"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 2.4:</i> A polyhedron (central solid region) is formed by intersecting multiple halfspaces. Each face corresponds to one linear inequality constraint.</figcaption>
+          <figcaption><i>Figure 10:</i> A polyhedron (central solid region) is formed by intersecting multiple halfspaces. Each face corresponds to one linear inequality constraint.</figcaption>
         </figure>
 
         <div class="proof-box">
@@ -475,7 +475,7 @@
           <img src="assets/psd-cone-3d.png"
                alt="Visualization of the 2x2 PSD cone in 3D space"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 2.5:</i> The cone of $2 \times 2$ PSD matrices visualized in 3D space (axes are the matrix entries $x, y, z$). It is a convex cone with a specific "ice-cream" like shape but with a flat boundary structure.</figcaption>
+          <figcaption><i>Figure 11:</i> The cone of $2 \times 2$ PSD matrices visualized in 3D space (axes are the matrix entries $x, y, z$). It is a convex cone with a specific "ice-cream" like shape but with a flat boundary structure.</figcaption>
         </figure>
 
         <div class="proof-box">
@@ -502,7 +502,7 @@
               <img src="assets/spectrahedron.png"
                    alt="A spectrahedron (feasible set of an LMI)"
                    style="max-width: 50%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 2.6:</i> A spectrahedron looks like a "puffy" polygon. Its faces are flat where the affine space cuts the cone's boundary, but its edges and corners can be smooth curves.</figcaption>
+              <figcaption><i>Figure 12:</i> A spectrahedron looks like a "puffy" polygon. Its faces are flat where the affine space cuts the cone's boundary, but its edges and corners can be smooth curves.</figcaption>
             </figure>
         </div>
       </section>
@@ -526,7 +526,7 @@
           <img src="assets/convex-intersection.png"
                alt="Venn diagram showing the intersection of two convex sets is convex"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 3.1:</i> The intersection of two convex sets (blue and yellow) is the green region. Note that while the union is not necessarily convex, the intersection always is.</figcaption>
+          <figcaption><i>Figure 13:</i> The intersection of two convex sets (blue and yellow) is the green region. Note that while the union is not necessarily convex, the intersection always is.</figcaption>
         </figure>
 
         <div class="proof-box">
@@ -560,13 +560,13 @@
               <img src="assets/trig-poly-intersection.png"
                    alt="Plot of the convex set of bounded trigonometric polynomials"
                    style="width: 100%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 3.2:</i> The set $S$ defined by infinite constraints.</figcaption>
+              <figcaption><i>Figure 14:</i> The set $S$ defined by infinite constraints.</figcaption>
             </figure>
             <figure style="text-align: center; flex: 1;">
               <img src="assets/gonzo-shape.png"
                    alt="Visualizing the intersection of infinite halfspaces"
                    style="width: 100%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 3.3:</i> The smooth convex "safe zone" formed by tangent hyperplanes.</figcaption>
+              <figcaption><i>Figure 15:</i> The smooth convex "safe zone" formed by tangent hyperplanes.</figcaption>
             </figure>
         </div>
 <h3>3.2 Affine Functions Preserve Convexity</h3>
@@ -578,13 +578,13 @@
                <img src="assets/affine-image-projection.png"
                     alt="Projection of a polyhedron onto 2D space"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.4:</i> The image of a convex set (polyhedron) under an affine map (projection) is convex.</figcaption>
+               <figcaption><i>Figure 16:</i> The image of a convex set (polyhedron) under an affine map (projection) is convex.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/affine-preimage-cone.png"
                     alt="Slice of a cone by a plane"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.5:</i> The preimage of a convex cone (intersection with a plane) is a convex set (an ellipse).</figcaption>
+               <figcaption><i>Figure 17:</i> The preimage of a convex cone (intersection with a plane) is a convex set (an ellipse).</figcaption>
              </figure>
         </div>
 
@@ -635,7 +635,7 @@
                <img src="assets/image-vs-preimage-ball.png"
                     alt="Comparison of image vs preimage of a ball"
                     style="max-width: 60%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.6:</i> The image of a ball is an ellipsoid (left). The preimage of a ball (slab) is also convex (right).</figcaption>
+               <figcaption><i>Figure 18:</i> The image of a ball is an ellipsoid (left). The preimage of a ball (slab) is also convex (right).</figcaption>
           </figure>
         </div>
 
@@ -646,7 +646,7 @@
                <img src="assets/division-counterexample.png"
                     alt="Division function mapping a convex set to non-convex"
                     style="max-width: 50%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.7:</i> The "division" map $f(x,y) = x/y$ can tear a convex square into two disjoint (non-convex) pieces.</figcaption>
+               <figcaption><i>Figure 19:</i> The "division" map $f(x,y) = x/y$ can tear a convex square into two disjoint (non-convex) pieces.</figcaption>
             </figure>
         </div>
 
@@ -669,13 +669,13 @@
                <img src="assets/pinhole-camera.png"
                     alt="Geometric intuition of perspective projection"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.8:</i> The perspective map $P(x,t) = x/t$ projects 3D points onto the $t=1$ plane. The image of a convex object (ellipsoid) is a convex shadow.</figcaption>
+               <figcaption><i>Figure 20:</i> The perspective map $P(x,t) = x/t$ projects 3D points onto the $t=1$ plane. The image of a convex object (ellipsoid) is a convex shadow.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/perspective-domain.png"
                     alt="Domain of the perspective map"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 3.9:</i> The domain is restricted to $t > 0$. As $t \to 0$, the projected point shoots to infinity.</figcaption>
+               <figcaption><i>Figure 21:</i> The domain is restricted to $t > 0$. As $t \to 0$, the projected point shoots to infinity.</figcaption>
              </figure>
         </div>
 
@@ -738,7 +738,7 @@
              <img src="assets/composition-maps.png"
                   alt="Block diagram of function composition"
                   style="max-width: 60%; height: auto; border-radius: 8px;" />
-             <figcaption><i>Figure 3.10:</i> Linear-fractional functions are built by composing an affine map $g(x)$ with the perspective map $P$.</figcaption>
+             <figcaption><i>Figure 22:</i> Linear-fractional functions are built by composing an affine map $g(x)$ with the perspective map $P$.</figcaption>
         </figure>
 
         <div class="example">
@@ -748,7 +748,7 @@
                   <img src="assets/warping-grid.png"
                        alt="Grid warped by a linear-fractional map"
                        style="max-width: 60%; height: auto; border-radius: 8px;" />
-                  <figcaption><i>Figure 3.11:</i> A regular grid (left) is warped by a linear-fractional transformation (right). Squares become "conic" quadrilaterals, but they remain convex sets.</figcaption>
+                  <figcaption><i>Figure 23:</i> A regular grid (left) is warped by a linear-fractional transformation (right). Squares become "conic" quadrilaterals, but they remain convex sets.</figcaption>
              </figure>
         </div>
 
@@ -807,7 +807,7 @@
           <img src="assets/minkowski-sum-difference.png"
                alt="Minkowski sum and Minkowski difference (erosion) of two convex sets"
                style="max-width: 90%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 3.12:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
+          <figcaption><i>Figure 24:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
         </figure>
 
         <h3>3.5 Cartesian Product</h3>

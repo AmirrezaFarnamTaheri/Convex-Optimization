@@ -358,7 +358,7 @@
         <img src="assets/svd-ellipsoid-2d.png"
              alt="A unit circle mapped to an ellipse with singular vectors showing axis directions and singular values showing axis lengths"
              style="max-width: 90%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 6.1:</i> Geometric meaning of SVD: the unit circle maps to an ellipse; singular values are semi-axis lengths and singular vectors give the axis directions.</figcaption>
+        <figcaption><i>Figure 1:</i> Geometric meaning of SVD: the unit circle maps to an ellipse; singular values are semi-axis lengths and singular vectors give the axis directions.</figcaption>
       </figure>
 
       <div class="example">
@@ -377,14 +377,14 @@
         <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
              alt="SVD Geometric Interpretation"
              style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 6.2:</i> SVD decomposes a transformation into Rotation ($V^\top$) $\to$ Stretch ($\Sigma$) $\to$ Rotation ($U$).</figcaption>
+        <figcaption><i>Figure 2:</i> SVD decomposes a transformation into Rotation ($V^\top$) $\to$ Stretch ($\Sigma$) $\to$ Rotation ($U$).</figcaption>
       </figure>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/svd-transformation-sequence.png"
              alt="Step-by-step visualization of the SVD transformation sequence V^T then Sigma then U"
              style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 6.3:</i> SVD as a transformation pipeline: rotate/reflect ($V^\top$), stretch along orthogonal axes ($\Sigma$), then rotate/reflect again ($U$).</figcaption>
+        <figcaption><i>Figure 3:</i> SVD as a transformation pipeline: rotate/reflect ($V^\top$), stretch along orthogonal axes ($\Sigma$), then rotate/reflect again ($U$).</figcaption>
       </figure>
 
       <h3>6.2 Theorem: Existence of SVD</h3>
@@ -453,7 +453,7 @@
         <img src="assets/svd-vs-eigendecomposition.png"
              alt="Comparison of eigendecomposition and SVD showing invariant directions versus orthonormal input/output frames"
              style="max-width: 90%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 6.4:</i> SVD maps one orthonormal frame to another ($Av_i=\sigma_i u_i$), while eigendecomposition looks for directions that stay parallel under $A$.</figcaption>
+        <figcaption><i>Figure 4:</i> SVD maps one orthonormal frame to another ($Av_i=\sigma_i u_i$), while eigendecomposition looks for directions that stay parallel under $A$.</figcaption>
       </figure>
 
       <h3>6.4 Matrix Norms via SVD</h3>
@@ -493,7 +493,7 @@
         <img src="assets/low-rank-image-approximation.png"
              alt="Image reconstructed at different ranks using truncated SVD"
              style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 6.5:</i> Low-rank approximation via truncated SVD: keeping more singular values preserves more visual detail, while very small ranks keep only coarse structure.</figcaption>
+        <figcaption><i>Figure 5:</i> Low-rank approximation via truncated SVD: keeping more singular values preserves more visual detail, while very small ranks keep only coarse structure.</figcaption>
       </figure>
 
       <div class="proof-box">
@@ -637,13 +637,13 @@
           <img src="assets/conditioning-geometry.png"
                alt="Well-conditioned versus ill-conditioned error amplification geometry"
                style="width: 100%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 7.1:</i> Condition number as error magnification: the same small uncertainty in $b$ can map to a small or huge uncertainty in $x$ depending on $\kappa(A)$.</figcaption>
+          <figcaption><i>Figure 6:</i> Condition number as error magnification: the same small uncertainty in $b$ can map to a small or huge uncertainty in $x$ depending on $\kappa(A)$.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/zig-zag-ill-conditioning.png"
                alt="Gradient descent zig-zagging on elongated contours in an ill-conditioned problem"
                style="width: 100%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 7.2:</i> Ill-conditioning creates elongated level sets; first-order methods like gradient descent can zig-zag across the valley, slowing convergence.</figcaption>
+          <figcaption><i>Figure 7:</i> Ill-conditioning creates elongated level sets; first-order methods like gradient descent can zig-zag across the valley, slowing convergence.</figcaption>
         </figure>
       </div>
 
@@ -1011,7 +1011,7 @@
 
     <!-- SECTION 6: READINGS -->
     <section class="section-card" id="section-readings">
-      <h2>6. Readings & Resources</h2>
+      <h2>10. Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Required:</strong> Boyd & Vandenberghe, Appendix A.</li>
         <li><strong>Recommended:</strong> Trefethen & Bau, <em>Numerical Linear Algebra</em>, Lectures 1–5.</li>

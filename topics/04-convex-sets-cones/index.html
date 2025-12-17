@@ -67,14 +67,14 @@
           <img src="assets/separating-hyperplane-strict.png"
                alt="Illustration of the Separating Hyperplane Theorem"
                style="max-width: 80%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.1:</i> A hyperplane separating two disjoint convex sets $C$ and $D$. For closed sets, we can construct the separator using the projection of 0 onto their difference set $C-D$.</figcaption>
+          <figcaption><i>Figure 1:</i> A hyperplane separating two disjoint convex sets $C$ and $D$. For closed sets, we can construct the separator using the projection of 0 onto their difference set $C-D$.</figcaption>
         </figure>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/projection-onto-convex-set.png"
                alt="Projection of a point outside a convex set onto the closest point in the set"
                style="max-width: 70%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.2:</i> Nearest-point projection onto a convex set. The closest point $x_0=\Pi_C(y)$ is unique, and the residual $y-x_0$ defines a normal direction for a supporting/separating hyperplane at $x_0$.</figcaption>
+          <figcaption><i>Figure 2:</i> Nearest-point projection onto a convex set. The closest point $x_0=\Pi_C(y)$ is unique, and the residual $y-x_0$ defines a normal direction for a supporting/separating hyperplane at $x_0$.</figcaption>
         </figure>
 
         <div class="proof-box">
@@ -161,7 +161,7 @@
           <img src="assets/supporting-hyperplane-tangent.png"
                alt="Illustration of the Supporting Hyperplane Theorem"
                style="max-width: 80%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 1.2:</i> A supporting hyperplane to a convex set at a boundary point. It "kisses" the set without cutting into it.</figcaption>
+          <figcaption><i>Figure 3:</i> A supporting hyperplane to a convex set at a boundary point. It "kisses" the set without cutting into it.</figcaption>
         </figure>
 
         <h3>1.3 The Support Function</h3>
@@ -226,7 +226,7 @@
                <img src="assets/separation-failure.png"
                     alt="Failure of separation for non-convex sets"
                     style="max-width: 60%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 1.3:</i> <b>Cautionary Tale:</b> If the sets are not convex (like the C-shape), a separating hyperplane may not exist. This is why convexity is often required for strong duality.</figcaption>
+               <figcaption><i>Figure 4:</i> <b>Cautionary Tale:</b> If the sets are not convex (like the C-shape), a separating hyperplane may not exist. This is why convexity is often required for strong duality.</figcaption>
           </figure>
         </div>
 
@@ -279,13 +279,13 @@
                <img src="assets/second-order-cone.png"
                     alt="3D visualization of the second-order cone (ice cream cone)"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.1:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
+               <figcaption><i>Figure 5:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/hyperbolic-cone.png"
                     alt="3D visualization of a hyperbolic cone"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.2:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
+               <figcaption><i>Figure 6:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
              </figure>
         </div>
 
@@ -312,7 +312,7 @@
              <img src="assets/cone-zoo.png"
                   alt="Examples of proper and improper cones"
                   style="max-width: 90%; height: auto; border-radius: 8px;" />
-             <figcaption><i>Figure 2.3:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
+             <figcaption><i>Figure 7:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
         </figure>
 
         <h3>2.3 Generalized Inequalities</h3>
@@ -335,13 +335,13 @@
                <img src="assets/generalized-inequality-cone.png"
                     alt="Visualizing generalized inequality"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.4:</i> Visualizing $x \preceq_K y$. The point $x$ must lie in the "shadow" of $y$ cast by the cone $-K$.</figcaption>
+               <figcaption><i>Figure 8:</i> Visualizing $x \preceq_K y$. The point $x$ must lie in the "shadow" of $y$ cast by the cone $-K$.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/matrix-inequality-cone.png"
                     alt="Matrix inequality ordering"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.5:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
+               <figcaption><i>Figure 9:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
              </figure>
         </div>
 
@@ -352,7 +352,7 @@
                   <img src="assets/minimum-vs-minimal.png"
                        alt="Minimum vs minimal elements"
                        style="max-width: 60%; height: auto; border-radius: 8px;" />
-                  <figcaption><i>Figure 2.6:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
+                  <figcaption><i>Figure 10:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
              </figure>
         </div>
 
@@ -399,7 +399,7 @@
              <img src="assets/dual-cone-geometry.png"
                   alt="Geometry of primal and dual cones"
                   style="max-width: 50%; height: auto; border-radius: 8px;" />
-             <figcaption><i>Figure 2.7:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
+             <figcaption><i>Figure 11:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
         </figure>
 
         <div class="theorem-box">
@@ -481,13 +481,13 @@
                <img src="assets/self-dual-cones.png"
                     alt="The three major self-dual cones"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.8:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
+               <figcaption><i>Figure 12:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/dual-norm-cones.png"
                     alt="Dual relationship between L1 and L-infinity cones"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 2.9:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
+               <figcaption><i>Figure 13:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
              </figure>
         </div>
       </section>

@@ -24,7 +24,9 @@ def verify_pages():
                 # Check for specific elements that indicate success
                 # e.g., the last exercise
                 if "02" in page_path:
-                    selector = "h3:has-text('P2.31')"
+                    # P2.31 is not present in the HTML, P2.9 is the last one.
+                    # P2.31 is mentioned in the recap box, but not as a problem div.
+                    selector = "h3:has-text('P2.9')"
                 elif "05" in page_path:
                     selector = "h3:has-text('P5.12')"
                 elif "06" in page_path:

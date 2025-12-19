@@ -490,20 +490,35 @@
       <p>This is a standard QP. Geometrically, we are projecting the vector $b$ onto the image of the feasible set under $A$. Unlike the unconstrained case, there is generally no closed-form solution.</p>
 
       <h3>3.4 Application: Mean-Variance Analysis</h3>
-      <p>In finance and stochastic control, we often face random costs.</p>
+      <p>In finance and stochastic control, we often face random costs (or returns).</p>
       <ul>
-          <li>Let $c$ be a random cost vector with mean $\bar{c}$ and covariance $\Sigma \succeq 0$.</li>
-          <li>The cost is $c^\top x$. Its expectation is $\bar{c}^\top x$.</li>
-          <li>Its variance is $\text{var}(c^\top x) = x^\top \Sigma x$.</li>
+          <li>Let $\mathbf{c}$ be a random cost vector with mean $\bar{\mathbf{c}}$ and covariance $\Sigma \succeq 0$.</li>
+          <li>The cost is $\mathbf{c}^\top \mathbf{x}$. Its expectation is $\bar{\mathbf{c}}^\top \mathbf{x}$.</li>
+          <li>Its variance is $\text{var}(\mathbf{c}^\top \mathbf{x}) = \mathbf{x}^\top \Sigma \mathbf{x}$.</li>
       </ul>
       <p>A risk-averse decision maker minimizes a weighted combination of expected cost and variance:</p>
       $$
       \begin{aligned}
-      \text{minimize} \quad & \bar{c}^\top x + \gamma x^\top \Sigma x \\
-      \text{subject to} \quad & Ax = b, \quad Gx \le h
+      \text{minimize} \quad & \bar{\mathbf{c}}^\top \mathbf{x} + \gamma \mathbf{x}^\top \Sigma \mathbf{x} \\
+      \text{subject to} \quad & A\mathbf{x} = \mathbf{b}, \quad G\mathbf{x} \le \mathbf{h}
       \end{aligned}
       $$
-      <p>where $\gamma > 0$ is the risk aversion parameter. This is a QP with $P = 2\gamma \Sigma$. It balances the "linear" desire for low cost with the "quadratic" penalty for risk.</p>
+      <p>where $\gamma > 0$ is the risk aversion parameter. This balances the "linear" desire for low cost with the "quadratic" penalty for risk.</p>
+
+      <div class="proof-box">
+        <h4>Mapping to Standard QP Form</h4>
+        <p>To see exactly how this fits the standard form $\text{minimize } \frac{1}{2} \mathbf{x}^\top P \mathbf{x} + \mathbf{q}^\top \mathbf{x} + r$, we identify the matrices:</p>
+        <ul>
+            <li><strong>Quadratic Term:</strong> The term $\gamma \mathbf{x}^\top \Sigma \mathbf{x}$ matches $\frac{1}{2} \mathbf{x}^\top P \mathbf{x}$ if we set $P = 2\gamma \Sigma$. Since $\Sigma \succeq 0$ and $\gamma > 0$, we have $P \succeq 0$, ensuring convexity.</li>
+            <li><strong>Linear Term:</strong> The term $\bar{\mathbf{c}}^\top \mathbf{x}$ matches $\mathbf{q}^\top \mathbf{x}$ by setting $\mathbf{q} = \bar{\mathbf{c}}$.</li>
+            <li><strong>Constraints:</strong>
+                <ul>
+                    <li>Budget constraint (fully invested): $\mathbf{1}^\top \mathbf{x} = 1$ (a row in $A\mathbf{x}=\mathbf{b}$).</li>
+                    <li>No-shorting constraint (long only): $\mathbf{x} \ge 0 \implies -\mathbf{x} \le 0$ (rows in $G\mathbf{x} \le \mathbf{h}$ where $G=-I, \mathbf{h}=0$).</li>
+                </ul>
+            </li>
+        </ul>
+      </div>
 
       <h3>3.5 Application: Distance Between Polyhedra</h3>
       <p>Consider two polyhedra $\mathcal{P}_1 = \{x \mid A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{y \mid A_2 y \le b_2\}$. We want to find the distance between them:

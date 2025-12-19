@@ -421,11 +421,66 @@
       <p><b>Computational Trade-off:</b> While SDP is the most general, its solvers (typically $O(n^6)$ or $O(n^4)$ depending on structure) are significantly slower than dedicated SOCP ($O(n^3)$) or LP/QP solvers. <strong>Rule of Thumb:</strong> Always use the most specific problem class that fits your model.</p>
     </section>
 
-    <!-- Section 4: Quasiconvex Optimization -->
+    <!-- Section 4: Exponential Cone Programming -->
+    <section class="section-card" id="section-4">
+      <h2>4. Exponential Cone Programming</h2>
 
+      <h3>4.1 The Exponential Cone</h3>
+      <p>While LP, SOCP, and SDP cover many applications, they cannot directly model constraints involving logarithms, exponentials, or entropy. For these, we use the <strong>exponential cone</strong> $K_{\exp} \subset \mathbb{R}^3$, defined as the closure of the epigraph of the perspective of the exponential function.</p>
 
-      <section class="section-card" id="section-4">
-      <h2>4. Quasiconvex Optimization</h2>
+      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
+        <p style="margin: 0;">
+          $$
+          K_{\exp} = \left\{ (x, y, z) \in \mathbb{R}^3 \Biggm| y > 0, y e^{x/y} \le z \right\} \cup \{ (x, 0, z) \mid x \le 0, z \ge 0 \}
+          $$
+        </p>
+      </div>
+
+      <p>This cone is convex, closed, and non-polyhedral.</p>
+
+      <h3>4.2 Applications</h3>
+      <p>Many common convex functions can be modeled using $K_{\exp}$.</p>
+      <ul>
+          <li><strong>Exponential:</strong> $e^x \le t \iff (x, 1, t) \in K_{\exp}$.</li>
+          <li><strong>Logarithm:</strong> $-\log x \le t \iff \log x \ge -t \iff x \ge e^{-t} \iff 1 \cdot e^{-t/1} \le x \iff (-t, 1, x) \in K_{\exp}$.</li>
+          <li><strong>Entropy:</strong> $-x \log x \ge t \iff x \log x \le -t$.
+              <br>Since $x \log x$ is the perspective of $u \log u$ at $u=x$? No, simpler:
+              <br>$x \log(x/1) \le -t \iff -t \ge x \log(x) \iff -t \ge x \log(x/1)$.
+              <br>Wait, the definition $y e^{x/y} \le z$ is equivalent to $x/y \le \log(z/y) \iff x \le y \log(z/y) \iff -x \ge -y \log(z/y) \iff -x \ge y \log(y/z)$.
+              <br>Let's check the Entropy mapping:
+              To model $t \le -x \log x$, we rewrite as $x \log x + t \le 0$? No.
+              Use $y e^{x/y} \le z$. Let $y=1$ (standard exp) or general.
+              Standard form for entropy $-x \log x \ge t$:
+              $\iff x \log x \le -t$.
+              Consider $(x, y, z) \in K_{\exp} \implies y e^{x/y} \le z \iff x/y \le \log(z/y)$.
+              Let's try to map $u \log u$.
+          </li>
+      </ul>
+
+      <div class="proof-box">
+        <h4>Mapping Entropy to $K_{\exp}$</h4>
+        <p>We want to represent the constraint $-u \log u \ge t$ (where $u > 0$).
+        <br>Rearranging: $u \log u \le -t \iff \log u \le -t/u \iff u \le e^{-t/u} \iff 1 \le (1/u) e^{-t/u}$.
+        <br>Multiply by $u$: $u \le e^{-t/u}$. No.
+        <br>Let's start from $y e^{x/y} \le z$.
+        <br>Set $z=u$, $y=1$? Then $e^x \le u \iff x \le \log u$. Not entropy.
+        <br>Set $y=u, z=1$? Then $u e^{x/u} \le 1 \iff e^{x/u} \le 1/u \iff x/u \le -\log u \iff x \le -u \log u$.
+        <br>Thus, the constraint $t \le -u \log u$ is represented by $(t, u, 1) \in K_{\exp}$.
+        </p>
+      </div>
+
+      <h4>Geometric Programming in Conic Form</h4>
+      <p>Recall from Lecture 07 that Geometric Programs (GPs) become convex under a log transformation $y_i = \log x_i$. This involves Log-Sum-Exp functions.
+      <br>The constraint $\log(\sum e^{a_i^\top y + b_i}) \le 0$ can be modeled using exponential cones.
+      <br>$\sum \exp(a_i^\top y + b_i) \le 1$. Introduce $u_i \ge \exp(a_i^\top y + b_i)$.
+      <br>Each $u_i \ge \exp(\dots)$ is $(a_i^\top y + b_i, 1, u_i) \in K_{\exp}$.
+      <br>Then $\sum u_i \le 1$.
+      <br>This shows GPs are actually Exponential Cone Programs.</p>
+    </section>
+
+    <!-- Section 5: Quasiconvex Optimization -->
+    <section class="section-card" id="section-5">
+      <h2>5. Quasiconvex Optimization</h2>
 
        <h3>4.1 Quasiconvex Functions</h3>
       <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{x \mid f(x) \le \alpha\}$ are convex.</p>
@@ -469,18 +524,18 @@
       <p>This method allows us to solve any quasiconvex problem using a standard convex solver, at the cost of solving multiple (logarithmically many) instances.</p>
     </section>
 
-    <!-- Section 5: Disciplined Convex Programming (DCP) -->
-    <section class="section-card" id="section-5">
-      <h2>5. Disciplined Convex Programming (DCP)</h2>
+    <!-- Section 6: Disciplined Convex Programming (DCP) -->
+    <section class="section-card" id="section-6">
+      <h2>6. Disciplined Convex Programming (DCP)</h2>
 
-      <h3>5.1 Motivation</h3>
+      <h3>6.1 Motivation</h3>
       <p>While we can recognize many convex problems, it's often unclear whether a complex formulation is convex. <strong>Disciplined Convex Programming</strong> is a system of rules for constructing convex optimization problems from basic atoms.</p>
 
       <div class="intuition-box">
         <p><b>Intuition:</b> DCP is a “type system” for convexity. You build an expression tree; each atom (like $\|\cdot\|_2$, $\log$, $\max$) has known curvature and monotonicity rules. If the whole expression type-checks, the model is guaranteed convex (or concave/affine) and the solver can safely transform it into a standard conic form.</p>
       </div>
 
-      <h3>5.2 DCP Rules (a practical checklist)</h3>
+      <h3>6.2 DCP Rules (a practical checklist)</h3>
       <div class="theorem-box">
         <ul style="margin: 0 0 0 20px;">
           <li><b>Every atom has metadata:</b> curvature (convex/concave/affine), monotonicity in each argument, and domain/sign requirements.</li>
@@ -494,7 +549,7 @@
         <p><b>Interpretation:</b> When a model satisfies DCP, you are providing a mechanically checkable convexity proof. This reduces modeling errors and makes solver behavior more predictable because transformations are justified by the expression structure.</p>
       </div>
 
-      <h3>5.3 DCP in Practice: CVXPY</h3>
+      <h3>6.3 DCP in Practice: CVXPY</h3>
       <p>Tools like CVXPY verify DCP compliance and automatically transform problems to standard solver forms (LP, SOCP, SDP).</p>
 
       <!-- Widget 8: Solver Selection Guide -->
@@ -512,8 +567,8 @@
       </div>
     </section>
 
-<section class="section-card" id="section-6">
-      <h2>6. Review & Cheat Sheet</h2>
+<section class="section-card" id="section-7">
+      <h2>7. Review & Cheat Sheet</h2>
 
 
       <h3>Meta-Patterns: Convexification Recipes</h3>
@@ -578,8 +633,8 @@
       </ul>
     </section>
 
-<section class="section-card" id="section-7">
-      <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
+<section class="section-card" id="section-8">
+      <h2><i data-feather="edit-3"></i> 8. Exercises</h2>
       <p>These problems consolidate the lecture material and provide practice in problem classification, formulation, and reformulation.</p>
 
       <!-- Problem 4.1 -->
@@ -1168,10 +1223,47 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P8.15 — Entropy Maximization via Exponential Cone</h3>
+  <p>Maximize the entropy $H(p) = -\sum p_i \log p_i$ subject to $\mathbf{1}^\top p = 1, p \ge 0$.
+  Write this as a conic program using $K_{\exp}$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>We want to minimize $\sum p_i \log p_i$.
+    Introduce variables $t_i$. Constraint: $p_i \log p_i \le t_i$.
+    Or equivalently, $-t_i \le -p_i \log p_i$.
+    Objective: minimize $\sum t_i$.
+    Recall from the lecture that $t \le -u \log u$ corresponds to $(t, u, 1) \in K_{\exp}$.
+    Here we want $t_i \ge p_i \log p_i$. This means $-t_i \le -p_i \log p_i$.
+    So we need $(-t_i, p_i, 1) \in K_{\exp}$.
+    <br>Full Problem:
+    $$
+    \begin{aligned}
+    \text{minimize} \quad & \sum t_i \\
+    \text{subject to} \quad & (-t_i, p_i, 1) \in K_{\exp}, \quad \forall i \\
+    & \sum p_i = 1
+    \end{aligned}
+    $$
+    </p>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.16 — Dual of the Exponential Cone</h3>
+  <p>The dual cone of $K_{\exp}$ is defined as $K_{\exp}^* = \{(u, v, w) \mid x u + y v + z w \ge 0, \forall (x,y,z) \in K_{\exp}\}$.
+  <br>Verify that $K_{\exp}^*$ relates to the condition $u < 0, -u \log(-u/w) \le u - v$. (Note: precise formulation is tricky, often $K_{\exp}^*$ is related to $K_{\exp}$ itself).</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>The exponential cone is not self-dual. Its dual is given by:
+    $$ K_{\exp}^* = \{(u, v, w) \mid u < 0, -u e^{v/u} \le e w \} \cup \{(0, v, w) \mid v \ge 0, w \ge 0\} $$
+    This looks remarkably similar to the primal cone (up to scaling by $e$ and signs).</p>
+  </div>
+</div>
+
     </section>
 
-<section class="section-card" id="section-10">
-      <h2>10. Readings & Resources</h2>
+<section class="section-card" id="section-9">
+      <h2>9. Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 4 — Convex Optimization Problems</li>
         <li><strong>Nesterov, Introductory Lectures on Convex Optimization:</strong> Chapter 1 — Linear and Conic Programming</li>
@@ -1180,8 +1272,8 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-11">
-      <h2>11. Recap &amp; What's Next</h2>
+    <section class="section-card" id="section-10">
+      <h2>10. Recap &amp; What's Next</h2>
       <div class="recap-box">
         <ul style="margin: 0 0 0 20px;">
           <li><b>Conic viewpoint:</b> many constraints can be written as “(expression) $\in K$” for a cone $K$ (SOC, PSD cone, etc.).</li>

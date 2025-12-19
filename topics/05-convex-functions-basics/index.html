@@ -248,27 +248,6 @@
           <p><b>Implication:</b> Strictly convex functions have at most one minimizer (uniqueness of optimal solution).</p>
         </div>
 
-        <div class="subsection">
-          <h4>Strongly Convex</h4>
-          <p>A function $f$ is <a href="#" class="definition-link">strongly convex</a> (with parameter $m > 0$) if for all $x, y \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$:</p>
-          $$
-          f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) - \frac{m}{2} \theta(1-\theta) \|x - y\|_2^2
-          $$
-          <p>Equivalently, the function $g(x) = f(x) - \frac{m}{2}\|x\|_2^2$ is convex. For twice differentiable functions, this is equivalent to:</p>
-          $$ \nabla^2 f(x) \succeq mI $$
-          <p>For differentiable functions, this implies a <b>quadratic lower bound</b>:</p>
-          $$ f(y) \ge f(x) + \nabla f(x)^\top (y - x) + \frac{m}{2}\|y - x\|_2^2 $$
-          <p><b>Optimization Significance:</b>
-          <ul>
-            <li><b>Condition Number:</b> If $f$ is $m$-strongly convex and has $L$-Lipschitz gradients ($mI \preceq \nabla^2 f \preceq LI$), the condition number is $\kappa = L/m$. Gradient descent converges at a linear rate determined by $(1 - 1/\kappa)$.</li>
-            <li><b>Upper Bound:</b> Lipschitz gradients ($\nabla^2 f(x) \preceq LI$) imply a quadratic upper bound: $f(y) \le f(x) + \nabla f(x)^\top (y - x) + \frac{L}{2}\|y - x\|_2^2$.</li>
-            <li><b>Stability:</b> The solution is stable to perturbations in the objective. A small change $\epsilon$ in the gradient moves the minimizer by at most $\epsilon/m$.</li>
-          </ul></p>
-          <div class="insight">
-            <h4>Condition Number Intuition</h4>
-            <p>The parameter $m$ controls the minimum curvature (flatness), while $L$ controls the maximum curvature (sharpness). The ratio $L/m$ is the condition number of the Hessian. If $L/m$ is large, the function is shaped like a long narrow valley (steep in some directions, flat in others). Optimization algorithms struggle with such "ill-conditioned" functions because steps must be small to handle the steep directions, but large to traverse the flat ones.</p>
-          </div>
-        </div>
 
         <h3>1.6 Concave Functions</h3>
         <p>A function $f$ is <a href="#" class="definition-link">concave</a> if $-f$ is convex. Equivalently, the chord lies below the graph. All results for convex functions can be "flipped" for concave functions by negating.</p>
@@ -600,11 +579,6 @@
           <p><b>Note:</b> The converse is false! $f(x) = x^4$ is strictly convex but $f''(0) = 0$.</p>
         </div>
 
-        <div class="subsection">
-          <h4>Strongly Convex</h4>
-          <p>If $\nabla^2 f(x) \succeq mI$ for some $m > 0$ and all $x \in \mathrm{dom}\, f$, then $f$ is <b>$m$-strongly convex</b>.</p>
-          <p>Equivalently, the minimum eigenvalue of the Hessian is at least $m$ everywhere.</p>
-        </div>
 
         <h3>4.3 Practical Verification</h3>
 
@@ -1731,37 +1705,9 @@
               Consequently, $f$ is strictly convex.
             </div>
           </div>
-<div class="problem">
-  <h3>P5.7 — Strong Convexity of Quadratic</h3>
-  <p>Let $f(x) = \frac{1}{2}x^\top P x + q^\top x + r$. Under what condition on $P$ is $f$ strongly convex?</p>
-
-  <div class="recap-box">
-    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Quadratic Growth:</b> Strong convexity means the function grows at least quadratically away from the minimum.</li>
-        <li><b>Eigenvalue Bound:</b> For twice differentiable functions, strong convexity is equivalent to $\nabla^2 f(x) \succeq mI$, or $\lambda_{\min}(\text{Hessian}) \ge m$.</li>
-    </ul>
-  </div>
-
-  <div class="intuition-box">
-    <p><b>Geometric picture:</b> A function is $m$-strongly convex if, after subtracting the tangent plane at any point, what remains is at least a quadratic bowl of curvature $m$. For quadratics, the Hessian <i>is</i> the curvature everywhere, so the smallest eigenvalue of $P$ sets the weakest direction of curvature.</p>
-  </div>
-
-  <div class="interpretation-box">
-    <p><b>Why you care:</b> Strong convexity implies a <i>unique</i> minimizer and rules out “flat valleys.” In algorithms, larger $m$ typically means better conditioning and faster convergence (connect this to conditioning geometry in Lecture 01).</p>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <p>The Hessian is $\nabla^2 f(x) = P$ (assuming $P$ is symmetric).
-    <br>Strong convexity requires $\nabla^2 f(x) \succeq mI$ for some $m > 0$.
-    <br>Therefore, we need $P \succeq mI$, which means the smallest eigenvalue $\lambda_{\min}(P) \ge m > 0$.
-    <br>Thus, $f$ is strongly convex if and only if $P$ is <b>positive definite</b> ($P \succ 0$).</p>
-  </div>
-</div>
 
 <div class="problem">
-  <h3>P5.8 — Convexity of Log-Sum-Exp via Cauchy-Schwarz</h3>
+  <h3>P5.7 — Convexity of Log-Sum-Exp via Cauchy-Schwarz</h3>
   <p>Prove that $f(x) = \log(\sum e^{x_i})$ is convex by restricting it to a line and using the Cauchy-Schwarz inequality on the second derivative.</p>
 
   <div class="recap-box">
@@ -1808,97 +1754,9 @@
   </div>
 </div>
 
-<div class="problem">
-  <h3>P5.9 — Dual of a Strictly Convex Function</h3>
-  <p>Let $f$ be a closed, strictly convex function. Prove that its conjugate $f^*(y) = \sup_x (y^\top x - f(x))$ is differentiable. (Hint: The maximizing $x$ is unique).</p>
-
-  <div class="recap-box">
-    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Duality of Regularity:</b> There is a deep symmetry: Strict Convexity $\leftrightarrow$ Differentiability.</li><li><b>Envelope Theorem:</b> The gradient of the value function $\nabla f^*(y)$ is the optimal solution $x^*(y)$.</li>
-    </ul>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Uniqueness of Maximizer.</strong>
-    Consider the maximization problem defining the conjugate: maximize $h_y(x) = y^\top x - f(x)$.
-    Since $f$ is strictly convex, $h_y(x)$ is strictly concave.
-    A strictly concave function has at most one global maximizer. Let's assume it exists and denote it $x^*(y)$.</div>
-    <div class="proof-step"><strong>Step 2: Danskin's Theorem (simplified).</strong>
-    For a function $g(y) = \max_x \phi(x, y)$, if the maximizer $x^*$ is unique, the gradient is $\nabla g(y) = \nabla_y \phi(x^*, y)$.
-    Here $\phi(x, y) = y^\top x - f(x)$.
-    $\nabla_y \phi = x$.
-    </div>
-    <div class="proof-step"><strong>Conclusion:</strong>
-    Since $x^*(y)$ is unique (due to strict convexity of $f$), the gradient exists and is unique:
-    $$ \nabla f^*(y) = x^*(y) $$
-    Thus $f^*$ is differentiable. This is a fundamental result: smoothness of the dual comes from curvature of the primal.</div>
-  </div>
-</div>
 
 <div class="problem">
-  <h3>P5.10 — Dual via Conjugates</h3>
-  <p>Using the definition of the convex conjugate, show that the dual of the problem $\min f(x)$ subject to $Ax = b$ is $\max -b^\top \nu - f^*(-A^\top \nu)$.</p>
-
-  <div class="recap-box">
-    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Lagrangian Duality:</b> The dual function $g(\nu) = \inf_x L(x, \nu)$.</li><li><b>Conjugate Link:</b> $\inf_x (\dots)$ can often be rewritten as $-\sup_x (\dots) = -f^*(\cdot)$.</li>
-    </ul>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Lagrangian.</strong>
-    The Lagrangian is $L(x, \nu) = f(x) + \nu^\top (Ax - b) = f(x) + x^\top A^\top \nu - b^\top \nu$.</div>
-    <div class="proof-step"><strong>Step 2: Dual Function.</strong>
-    $g(\nu) = \inf_x L(x, \nu) = -b^\top \nu + \inf_x (f(x) + (A^\top \nu)^\top x)$.
-    We know $\inf_x h(x) = -\sup_x (-h(x))$.
-    So $\inf_x (f(x) + y^\top x) = -\sup_x (-y^\top x - f(x)) = -\sup_x ((-y)^\top x - f(x))$.
-    Let $y = A^\top \nu$.
-    The term is $-\sup_x ((-A^\top \nu)^\top x - f(x))$.
-    By definition of conjugate, $\sup_x (z^\top x - f(x)) = f^*(z)$.
-    Here $z = -A^\top \nu$.
-    So $\inf_x (\dots) = -f^*(-A^\top \nu)$.</div>
-    <div class="proof-step"><strong>Step 3: Conclusion.</strong>
-    $g(\nu) = -b^\top \nu - f^*(-A^\top \nu)$.
-    The dual problem is to maximize this quantity.</div>
-  </div>
-</div>
-
-<div class="problem">
-  <h3>P5.11 — Derivation: Dual of QP</h3>
-  <p>Consider the equality constrained Quadratic Program: $\min \frac{1}{2}x^\top P x + q^\top x$ s.t. $Ax = b$, with $P \succ 0$. Derive the dual problem using the conjugate method from P5.10.</p>
-
-  <div class="recap-box">
-    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Conjugate of Quadratic:</b> If $f(x) = \frac{1}{2}x^\top P x + q^\top x$, then $f^*(y) = \frac{1}{2}(y-q)^\top P^{-1} (y-q)$.</li>
-    </ul>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Conjugate of the Objective.</strong>
-    Let $f(x) = \frac{1}{2}x^\top P x + q^\top x$.
-    $f^*(y) = \sup_x (y^\top x - \frac{1}{2}x^\top P x - q^\top x) = \sup_x ((y-q)^\top x - \frac{1}{2}x^\top P x)$.
-    Optimal $x$: $\nabla = (y-q) - Px = 0 \implies x = P^{-1}(y-q)$.
-    Substitute back: $(y-q)^\top P^{-1}(y-q) - \frac{1}{2}(y-q)^\top P^{-1} P P^{-1} (y-q) = \frac{1}{2}(y-q)^\top P^{-1}(y-q)$.</div>
-    <div class="proof-step"><strong>Step 2: Apply P5.10 Formula.</strong>
-    Dual is $\max -b^\top \nu - f^*(-A^\top \nu)$.
-    Substitute $y = -A^\top \nu$:
-    $$ f^*(-A^\top \nu) = \frac{1}{2}(-A^\top \nu - q)^\top P^{-1} (-A^\top \nu - q) $$
-    $$ = \frac{1}{2}(A^\top \nu + q)^\top P^{-1} (A^\top \nu + q) $$
-    (Minus signs cancel in quadratic form).</div>
-    <div class="proof-step"><strong>Step 3: Final Dual Problem.</strong>
-    $$ \max_\nu \ -b^\top \nu - \frac{1}{2}(A^\top \nu + q)^\top P^{-1} (A^\top \nu + q) $$
-    This is an unconstrained concave quadratic maximization in $\nu$.</div>
-  </div>
-</div>
-
-<div class="problem">
-  <h3>P5.12 — Sensitivity Analysis using Subgradients</h3>
+  <h3>P5.8 — Sensitivity Analysis using Subgradients</h3>
   <p>Let $p^*(u)$ be the optimal value of the perturbed problem $\min f_0(x)$ s.t. $f_i(x) \le u_i, Ax=b$. Prove that the optimal dual variables $\lambda^*$ provide a lower bound on the perturbed value: $p^*(u) \ge p^*(0) - \lambda^{*\top} u$. This implies $\lambda_i^* \approx -\frac{\partial p^*}{\partial u_i}$ (Shadow Prices).</p>
 
   <div class="recap-box">
@@ -1931,7 +1789,7 @@
 </div>
 
 <div class="problem">
-  <h3>P5.13 — Advanced Composition Rules (3.22)</h3>
+  <h3>P5.9 — Advanced Composition Rules (3.22)</h3>
   <p>Determine the convexity of the following functions and identify the composition rule used. ($x \in \mathbb{R}^n$).</p>
   <ol type="a">
     <li>$f(x) = -\log(-\log \sum_{i=1}^m e^{a_i^\top x + b_i})$ on domain $\sum e^{a_i^\top x + b_i} < 1$.</li>
@@ -2033,7 +1891,7 @@
 </div>
 
 <div class="problem">
-  <h3>P5.14 — Perspective Examples (3.23)</h3>
+  <h3>P5.10 — Perspective Examples (3.23)</h3>
   <p>Show that the following functions are convex using the perspective transformation.</p>
   <ol type="a">
     <li>$f(x, t) = \|x\|_p^p / t^{p-1}$ for $p > 1, t > 0$.</li>

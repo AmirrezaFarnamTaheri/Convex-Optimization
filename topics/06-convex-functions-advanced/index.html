@@ -53,7 +53,55 @@
 
     <article>
       <section class="section-card" id="section-1">
-      <h2>1. The Convex Conjugate (Fenchel Conjugate)</h2>
+      <h2>1. Subgradients and Subdifferentials</h2>
+
+      <p>For differentiable convex functions, the gradient $\nabla f(x)$ defines a unique global underestimator: the tangent hyperplane. For non-differentiable convex functions (like $|x|$ or $\max_i x_i$), the "tangent" is not unique. The <b>subgradient</b> generalizes the gradient to capture this geometry.</p>
+
+      <h3>1.1 Definition</h3>
+      <div class="theorem-box">
+        <h4>Definition (Subgradient)</h4>
+        <p>A vector $g \in \mathbb{R}^n$ is a <a href="#" class="definition-link">subgradient</a> of a convex function $f$ at $x$ if:</p>
+        $$ f(y) \ge f(x) + g^\top (y - x) \quad \forall y \in \mathrm{dom}\, f $$
+        <p>The set of all subgradients at $x$ is called the <b>subdifferential</b>, denoted $\partial f(x)$.</p>
+      </div>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="../../static/assets/topics/06-convex-functions-advanced/subgradient-geometry.png"
+             alt="Geometric interpretation of a subgradient as a supporting hyperplane"
+             style="max-width: 60%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 1:</i> At a "kink" (non-differentiable point), there are multiple supporting hyperplanes. Their slopes correspond to the subgradients in $\partial f(x)$.</figcaption>
+      </figure>
+
+      <h3>1.2 Properties</h3>
+      <ul>
+        <li><b>Existence:</b> If $x \in \mathrm{int}(\mathrm{dom}\, f)$, then $\partial f(x)$ is nonempty.</li>
+        <li><b>Convexity:</b> The set $\partial f(x)$ is a closed convex set (intersection of halfspaces).</li>
+        <li><b>Differentiability:</b> If $f$ is differentiable at $x$, then $\partial f(x) = \{\nabla f(x)\}$.</li>
+        <li><b>Optimality Condition:</b> A point $x^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(x^*)$. This generalizes $\nabla f(x^*) = 0$.</li>
+      </ul>
+
+      <h3>1.3 Calculus of Subgradients</h3>
+      <p>Subgradients follow rules similar to gradients, but with set operations:</p>
+      <ul>
+        <li><b>Sum Rule:</b> $\partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x)$.</li>
+        <li><b>Scaling:</b> $\partial (\alpha f)(x) = \alpha \partial f(x)$ for $\alpha \ge 0$.</li>
+        <li><b>Pointwise Max:</b> If $f(x) = \max_i f_i(x)$, then $\partial f(x) = \mathrm{conv} \bigcup \{ \partial f_i(x) \mid f_i(x) = f(x) \}$.
+            <br><i>Intuition:</i> The subgradient is a convex combination of the gradients of the "active" functions.</li>
+      </ul>
+
+      <div class="example">
+        <h4>Example: Absolute Value</h4>
+        <p>Let $f(x) = |x|$.
+        <br>If $x > 0$, $f'(x) = 1$. $\partial f(x) = \{1\}$.
+        <br>If $x < 0$, $f'(x) = -1$. $\partial f(x) = \{-1\}$.
+        <br>If $x = 0$, any line with slope $g \in [-1, 1]$ lies below the graph. $\partial f(0) = [-1, 1]$.
+        <br><b>Optimality:</b> To minimize $|x|$, we need $0 \in \partial f(x)$. This happens only at $x=0$.</p>
+      </div>
+
+      </section>
+
+      <section class="section-card" id="section-2">
+      <h2>2. The Convex Conjugate (Fenchel Conjugate)</h2>
 
       <h3>1.1 Definition and Geometric Meaning</h3>
       <p>Start with a function $f : \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. Allowing $+\infty$ is a standard way of encoding hard constraints ("$x$ not allowed"). The <a href="#" class="definition-link" data-term="convex conjugate">Fenchel conjugate</a> is defined as:</p>
@@ -320,8 +368,39 @@
       This transformation connects Lagrangian and Hamiltonian mechanics.</p>
     </section>
 
-    <section class="section-card" id="section-2">
-        <h2>2. Quasiconvex Functions</h2>
+    <section class="section-card" id="section-3">
+        <h2>3. Strong Convexity and Smoothness</h2>
+        <p>In algorithm analysis, simple convexity is often not enough to guarantee fast convergence. We need bounds on the curvature of the function. Strong convexity provides a lower bound on curvature, while smoothness provides an upper bound.</p>
+
+        <h3>3.1 Strong Convexity</h3>
+        <p>A function $f$ is <a href="#" class="definition-link">strongly convex</a> with parameter $m > 0$ if the function $g(x) = f(x) - \frac{m}{2}\|x\|_2^2$ is convex.
+        <br>For twice-differentiable functions, this is equivalent to:
+        $$ \nabla^2 f(x) \succeq m I $$
+        Geometrically, the function curves up at least as fast as a quadratic with curvature $m$. This implies a <b>quadratic lower bound</b>:
+        $$ f(y) \ge f(x) + \nabla f(x)^\top (y-x) + \frac{m}{2}\|y-x\|_2^2 $$
+        </p>
+
+        <h3>3.2 Lipschitz Smoothness</h3>
+        <p>A function $f$ is <a href="#" class="definition-link">$L$-smooth</a> (or has $L$-Lipschitz gradients) if:
+        $$ \|\nabla f(x) - \nabla f(y)\|_2 \le L \|x - y\|_2 $$
+        For twice-differentiable functions, this implies $\nabla^2 f(x) \preceq L I$.
+        Smoothness provides a <b>quadratic upper bound</b> (the "descent lemma"):
+        $$ f(y) \le f(x) + \nabla f(x)^\top (y-x) + \frac{L}{2}\|y-x\|_2^2 $$
+        </p>
+
+        <h3>3.3 The Condition Number</h3>
+        <p>If $f$ is both $m$-strongly convex and $L$-smooth, then:
+        $$ m I \preceq \nabla^2 f(x) \preceq L I $$
+        The ratio $\kappa = L/m$ is the <b>condition number</b> of the function.
+        <ul>
+            <li><b>$\kappa \approx 1$:</b> The level sets are spherical. Gradient descent converges very fast.</li>
+            <li><b>$\kappa \gg 1$:</b> The level sets are elongated ellipsoids. Gradient descent zig-zags and converges slowly.</li>
+        </ul>
+        </p>
+    </section>
+
+    <section class="section-card" id="section-4">
+        <h2>4. Quasiconvex Functions</h2>
 
         <h3>2.1 Definition: Sublevel Sets</h3>
         <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <a href="#" class="definition-link">quasiconvex</a> if its domain is convex and all its <b>sublevel sets</b> are convex:</p>
@@ -465,8 +544,8 @@
         </div>
     </section>
 
-    <section class="section-card" id="section-3">
-        <h2>3. Log-Concave and Log-Convex Functions</h2>
+    <section class="section-card" id="section-5">
+        <h2>5. Log-Concave and Log-Convex Functions</h2>
 
         <h3>3.1 Definitions</h3>
         <p>Let $f: \mathbb{R}^n \to \mathbb{R}_{++}$.
@@ -615,8 +694,8 @@
         </div>
     </section>
 
-    <section class="section-card" id="section-4">
-      <h2>4. Review & Cheat Sheet</h2>
+    <section class="section-card" id="section-6">
+      <h2>6. Review & Cheat Sheet</h2>
       <h3>Conjugate Transformations</h3>
       <table class="data-table">
         <tr><th>Primal $f(x)$</th><th>Conjugate $f^*(y)$</th><th>Domain of $f^*$</th></tr>
@@ -637,8 +716,8 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-5">
-      <h2><i data-feather="edit-3"></i> 5. Exercises</h2>
+    <section class="section-card" id="section-7">
+      <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
 
 <div class="problem">
   <h3>P6.1 — Conjugate of Norm Squared</h3>
@@ -1434,6 +1513,62 @@
       Thus the infimum is the limit as $\alpha \to 0$: $g(x) = \lim_{\alpha \to 0} \frac{f(\alpha x) - f(0)}{\alpha} = f'(0; x)$ (directional derivative).
       The directional derivative of a convex function is sublinear (convex).
       Proof: $g(x+y) = \lim \frac{f(t(x+y))}{t} \le \lim \frac{t/2 f(2tx) + t/2 f(2ty)}{t} = g(x) + g(y)$ (using convexity with weights $1/2$).
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.28 — Strong Convexity of Quadratic</h3>
+  <p>Let $f(x) = \frac{1}{2}x^\top P x + q^\top x + r$. Under what condition on $P$ is $f$ strongly convex?</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>The Hessian is $\nabla^2 f(x) = P$ (assuming $P$ is symmetric).
+    <br>Strong convexity requires $\nabla^2 f(x) \succeq mI$ for some $m > 0$.
+    <br>Therefore, we need $P \succeq mI$, which means the smallest eigenvalue $\lambda_{\min}(P) \ge m > 0$.
+    <br>Thus, $f$ is strongly convex if and only if $P$ is <b>positive definite</b> ($P \succ 0$).</p>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.29 — Dual of a Strictly Convex Function</h3>
+  <p>Let $f$ be a closed, strictly convex function. Prove that its conjugate $f^*(y) = \sup_x (y^\top x - f(x))$ is differentiable.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Uniqueness.</strong>
+    Since $f$ is strictly convex, the function $y^\top x - f(x)$ is strictly concave in $x$. Thus, the maximizer $x^*(y)$ is unique.</div>
+    <div class="proof-step"><strong>Step 2: Envelope Theorem.</strong>
+    For $g(y) = \max_x \phi(x, y)$, if $x^*$ is unique, $\nabla g(y) = \nabla_y \phi(x^*, y)$.
+    Here $\phi(x, y) = y^\top x - f(x)$, so $\nabla_y \phi = x$.
+    Thus $\nabla f^*(y) = x^*(y)$, so $f^*$ is differentiable.</div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.30 — Dual via Conjugates</h3>
+  <p>Using the definition of the convex conjugate, show that the dual of the problem $\min f(x)$ subject to $Ax = b$ is $\max -b^\top \nu - f^*(-A^\top \nu)$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+    Lagrangian $L(x, \nu) = f(x) + \nu^\top(Ax-b)$.
+    Dual function $g(\nu) = \inf_x (f(x) + (A^\top \nu)^\top x) - b^\top \nu$.
+    The term $\inf_x (f(x) + y^\top x) = -\sup_x (-y^\top x - f(x)) = -f^*(-y)$.
+    Here $y = A^\top \nu$. So $g(\nu) = -f^*(-A^\top \nu) - b^\top \nu$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P6.31 — Derivation: Dual of QP</h3>
+  <p>Consider $\min \frac{1}{2}x^\top P x + q^\top x$ s.t. $Ax = b$ ($P \succ 0$). Derive the dual problem.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+    Dual is $\max -b^\top \nu - f^*(-A^\top \nu)$.
+    $f(x) = \frac{1}{2}x^\top P x + q^\top x$.
+    $f^*(y) = \frac{1}{2}(y-q)^\top P^{-1} (y-q)$.
+    Substitute $y = -A^\top \nu$:
+    $f^*(-A^\top \nu) = \frac{1}{2}(-A^\top \nu - q)^\top P^{-1} (-A^\top \nu - q) = \frac{1}{2}(A^\top \nu + q)^\top P^{-1} (A^\top \nu + q)$.
+    Result: $\max -b^\top \nu - \frac{1}{2}(A^\top \nu + q)^\top P^{-1} (A^\top \nu + q)$.
     </div>
   </div>
 </div>

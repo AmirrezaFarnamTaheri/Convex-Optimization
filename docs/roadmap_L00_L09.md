@@ -1,218 +1,179 @@
-# Convex Optimization Course: Comprehensive Audit and Improvement Roadmap (Lectures 00-09)
+# Roadmap for Auditing and Improving Lectures 00–09 (Convex Optimization Course)
 
-## 1. Executive Summary
-This document provides a granular, lecture-by-lecture audit of the first ten modules of the Convex Optimization course. It benchmarks the current content against standard academic rigor (Boyd & Vandenberghe, Rockafellar, Strang) and specific user requirements.
+## Overview
 
-**Overall Status:** The course content is mathematically robust and covers the required advanced topics (SVD, Conjugates, Duality). However, significant structural refactoring is needed to improve pedagogical flow, eliminate redundancies, and standardize notation.
+The task covers ten lecture files in the `Convex‑Optimization` repository (`topics/00-linear-algebra-basics/index.html` through `topics/09-duality/index.html`). Each file is a self‑contained module of a wider course, yet they share themes and build on each other. The goal is to audit every lecture thoroughly, verify mathematical accuracy, eliminate redundancies, ensure numbering consistency and improve the explanatory narrative. The final deliverable should preserve existing functionality (widgets, interactive exercises), avoid regressions, and maintain compatibility with the site’s build system. Below is a comprehensive plan broken down by preparatory work, per‑lecture tasks, cross‑lecture integration, and final checks.
 
-**Key Action Items:**
-1.  **Global Notation Update:** Switch all vector variables from italic $x$ to bold $\mathbf{x}$.
-2.  **Structural Reordering:** Move "Separation Theorems" from L04 to L03; move "Strong Convexity" from L05 to L06.
-3.  **Content Additions:** Add "Subgradients" to L06 and "Exponential Cone" to L08.
+### Preparatory Work
 
----
+1.  **Environment Setup**
+    *   Clone or pull the `Convex-Optimization` repository and create a new working branch (e.g., `lecture-audit`). Install dependencies as specified in the project’s README (likely Node.js dependencies for the interactive components and Python packages for pre‑commit hooks).
+    *   Build the site locally (e.g., `npm run build` or `make docs`) to get an initial baseline. Take notes of any warnings or broken links.
+    *   Run the existing `pre-commit` hooks to see current linting standards. Fix any issues unrelated to lecture content (e.g., formatting) first.
+2.  **Reference Material**
+    *   Gather authoritative references (e.g., Boyd & Vandenberghe _Convex Optimization_, Rockafellar _Convex Analysis_, Strang _Linear Algebra_) for cross‑checking definitions and proofs. Keep them handy during auditing.
+    *   For specific theorems (e.g., Carathéodory’s theorem, fundamental property of convex optimization), cross-check their statements with these sources. The lecture on convex sets already cites Carathéodory’s theorem correctly; use that as a baseline.
+3.  **Document Current Structure**
+    *   For each lecture, create an outline listing sections, subsections, theorems, proofs, examples and exercises. This outline makes it easier to identify missing concepts, misordered sections, or duplicated topics across lectures.
+    *   Note file‑specific features (e.g., interactive widgets, solution toggles) to ensure they remain functional after edits.
 
-## 2. Global Cross-Cutting Issues
-*   **Vector Notation:** Current HTML files use `$x$` (italic). **Requirement:** Switch to `\mathbf{x}` (bold) to distinguish vectors from scalars.
-*   **Terminology:** Standardize "Positive Semidefinite" vs "PSD". (Recommendation: Use "PSD" as abbreviation after first definition).
-*   **Navigation:** Ensure forward/backward links in headers are updated after content moves.
+## Per‑Lecture Audit and Improvement
 
----
+For each lecture file `topics/XX.../index.html`, carry out the following steps systematically. Keep a log of identified issues, proposed changes, and implemented fixes. The order of lectures in the list matches their numbering; however, many tasks repeat across lectures.
 
-## 3. Detailed Lecture Audits
+### 00. Linear Algebra Basics
 
-### Lecture 00: Linear Algebra Basics
-*   **Current Content:**
-    *   Sec 1: Mathematical Atoms (Vectors, Matrices, Calculus).
-    *   Sec 2: Subspaces, Rank-Nullity.
-    *   Sec 3: Invariants (Trace, Det, Eigenvalues).
-    *   Sec 4: Inner Products, Norms.
-    *   Sec 5: Orthogonality, QR.
-    *   Sec 6: PSD Matrices (Schur Complement).
-    *   Sec 7: Projections.
-    *   Sec 8: Least Squares.
-*   **Flow Analysis:**
-    *   *Current:* Atoms $\to$ Subspaces $\to$ Invariants $\to$ Norms $\to$ Orthogonality $\to$ PSD $\to$ Projections $\to$ LS.
-    *   *Critique:* "Algebraic Invariants" (Sec 3) appears before "Norms" (Sec 4). User flow prefers: ... $\to$ eigenvalues $\to$ PSD $\to$ projections. The current flow is acceptable but could be tightened. "Matrix Calculus" (Sec 1.6) is advanced and might overwhelm beginners early on.
-*   **Exercises:**
-    *   P0.1 Independence; P0.2 Rank-Nullity; P0.3 Trace/Det; P0.4 Norms; P0.5 LS Derivation; P0.6 Matrix Calc; P0.7 Hessian; P0.8 PSD Test; P0.9 Schur; P0.10-11 Projections; P0.12 Orthogonal Complements; P0.13-14 Norm proofs; P0.15 Isometries; P0.16 Loewner; P0.17 Weighted IP; P0.18 Projectors; P0.19 PSD Cone; P0.20 Quad Min.
-    *   *Assessment:* Comprehensive. P0.5 (LS) appears before P0.6 (Matrix Calc) which is slightly out of order if P0.5 requires calculus.
-*   **Action Plan:**
-    1.  **Reorder:** Move "Matrix Calculus" (1.6) to an appendix or later section (before LS).
-    2.  **Refine:** Ensure "Algebraic Invariants" (Sec 3) focuses on *geometry* (volume, stretch) rather than just formulas.
-    3.  **Notation:** Apply $\mathbf{x}$ global change.
+1.  **Content Audit**
+    *   Read the lecture end‑to‑end. Identify definitions (vectors, matrices, subspaces, rank, nullspace), invariants (trace, determinant, eigenvalues), inner products and norms, orthogonality, PSD matrices, projections, least squares, and any exercises. Record the current numbering of sections, theorems and exercises.
+    *   Check each explanation for mathematical accuracy. For instance, confirm that the properties of determinants, the statement about eigenvalues summing to the trace, and the proof of the spectral theorem match standard sources.
+2.  **Completeness and Redundancy**
+    *   Look for missing prerequisite explanations: e.g., does the lecture sufficiently define subspaces before using them in an example? If not, add a brief definition or forward reference.
+    *   Remove repeated material (e.g., if the rank–nullity theorem is defined twice). Consolidate scattered explanations about PSD matrices into a single subsection.
+3.  **Pedagogical Flow**
+    *   Reorder sections so that basic notions precede advanced ones. A typical progression is: scalars and vectors → matrices → operations (addition, multiplication) → subspaces and dimension → eigenvalues/eigenvectors → PSD matrices → projections and least squares.
+    *   Where proofs appear abruptly, preface them with intuition or a motivating example. For example, before deriving the formula for orthogonal projection, remind the reader of the geometric meaning of projecting onto a subspace.
+4.  **Writing Style**
+    *   Rewrite verbose sentences into clear, concise prose. Avoid jargon and unnatural synonyms; use consistent notation (bold for vectors, capital letters for matrices, italic for scalars) throughout the lecture.
+    *   Use lists or numbered steps for proofs to guide the reader through the logic.
+5.  **Exercises**
+    *   Ensure exercises progress logically: simple computational problems first, then conceptual questions, followed by proofs. Merge similar exercises if they test the same concept.
+    *   Each exercise should clearly state the problem; solutions should be detailed and reference the relevant section. If an exercise solution references an unproven claim, insert that claim into the main text or adjust the problem.
+6.  **Numbering and Cross‑References**
+    *   Fix section numbering if the current HTML has inconsistent or missing numbers. Use hierarchical numbering (e.g., 1.1, 1.2, etc.).
+    *   Check that hyperlinks to other lectures or definitions point to valid anchors.
+7.  **Verification**
+    *   After edits, build the site locally and verify that all LaTeX expressions render, interactive widgets load, and exercises toggle correctly.
 
-### Lecture 01: Linear Algebra Advanced
-*   **Current Content:**
-    *   Sec 1: Bases, Coordinates, Change of Basis.
-    *   Sec 2: Linear Maps, Rank-Nullity (Recap).
-    *   Sec 3: Eigenvalues, Rayleigh Quotient.
-    *   Sec 4: Induced Norms ($\ell_1, \ell_\infty, \ell_2$).
-    *   Sec 5: QR Decomposition.
-    *   Sec 6: SVD (Geometry, Existence, Low-rank).
-    *   Sec 7: Pseudoinverse, Condition Number.
-*   **Flow Analysis:**
-    *   *Redundancy:* Section 2 ("Linear Maps and Rank-Nullity") overlaps with L00 Section 2.
-    *   *Strengths:* Section 6 (SVD) has excellent geometric intuition (Rotate-Stretch-Rotate).
-*   **Exercises:**
-    *   P1.1 Dual of $\ell_p$ (Advanced); P1.2 Frobenius CS; P1.3 SVD Hand Calc; P1.6 Normal vs QR; P1.7-1.9 Projectors; P1.10 Condition Number; P1.11 Rank-1 Pseudo; P1.12-1.13 Operator Norms; P1.14 Orthogonal Group.
-    *   *Assessment:* Strong set. P1.1 relies on Hölder's inequality (check if defined in L00).
-*   **Action Plan:**
-    1.  **Prune:** Compress Section 2 (Rank-Nullity) into a brief "Advanced View" to reduce overlap with L00.
-    2.  **Verify:** Ensure Hölder's inequality is defined in L00 (Sec 4) or L01 (Sec 4) before P1.1.
+### 01. Linear Algebra Advanced
 
-### Lecture 02: Introduction to Convex Optimization
-*   **Current Content:**
-    *   Sec 1: Definition (3 conditions).
-    *   Sec 2: Fundamental Theorem (Local=Global).
-    *   Sec 3: Complexity & Impact.
-    *   Sec 4: Hierarchy (LP, QP, SOCP, SDP).
-    *   Sec 5: Loss + Regularizer.
-    *   Sec 6: Transformations (Abs, Max, SOCP, Epigraph, Linear-Fractional).
-    *   Sec 7: DCP.
-    *   Sec 8: Verification.
-*   **Flow Analysis:**
-    *   *Gap:* "Modeling Tricks" (Sec 6) is present but needs to be very explicit (step-by-step) about slack variables.
-    *   *Gap:* Section 3 mentions NP-hardness but lacks concrete examples (e.g., Integer Programming) as requested.
-*   **Exercises:**
-    *   P2.1 Classify; P2.2 Warehouse (QP); P2.3 L1 Regression (LP); P2.4 Feasible Set Convexity; P2.5 Uniqueness; P2.6 MLE (Logistic); P2.7 Definition Proof; P2.8 Strict vs Strong; P2.9 Voronoi.
-    *   *Assessment:* Excellent mix of modeling and theory. P2.9 (Voronoi) duplicates P3.1 in L03.
-*   **Action Plan:**
-    1.  **Expand:** Add explicit "slack variable" tutorial in Section 6.
-    2.  **Add Example:** Add Integer Programming example to Section 3 to illustrate non-convex complexity.
-    3.  **De-duplicate:** Remove P2.9 (Voronoi) or cross-reference it.
+1.  **Coverage Audit**
+    *   Topics include basis change, linear maps, eigenvalues and Rayleigh quotient, induced norms, QR decomposition, SVD, pseudoinverse, condition number, and reviews. Confirm that each concept is defined and derived. Cross-check definitions with references.
+    *   Pay particular attention to subtle topics like the induced operator norm and condition number. Provide explicit formulas and examples to illustrate their computation.
+2.  **Enhance Intuition**
+    *   For SVD and pseudoinverse, include geometric interpretations (e.g., SVD as rotation–scaling–rotation). Provide simple numerical examples demonstrating how the pseudoinverse solves least squares problems.
+    *   For the Rayleigh quotient, explain its relationship to eigenvalues and show how it bounds the quadratic form; cite that this is covered in the lecture summary.
+3.  **Refactor Redundancies**
+    *   Remove repeated definitions that already appear in Lecture 00 (e.g., eigenvalue basics) and instead refer back. Use forward references for concepts that will be explored in Lectures 05 and 06 (e.g., convex conjugates) rather than redefining them here.
+4.  **Proofs and Derivations**
+    *   Verify each derivation, such as the proof that every matrix has an SVD, and that the pseudoinverse satisfies the Moore–Penrose conditions. Fill in missing steps or supply intuitive explanations.
+    *   Where the lecture states results without proof (e.g., the Eckart–Young theorem), either provide a proof or supply an external reference.
+5.  **Exercises**
+    *   Re‑order exercises to match the lecture flow. For example, practice problems on induced norms should follow the definition of norms. Add new exercises where necessary (e.g., computing the SVD of a 2×2 matrix by hand).
 
-### Lecture 03: Convex Sets – Geometry
-*   **Current Content:**
-    *   Sec 1: Affine/Convex Sets, Hulls.
-    *   Sec 2: Canonical Sets (Hyperplanes, Balls, Polyhedra, PSD Cone).
-    *   Sec 3: Operations (Intersection, Affine, Perspective, Minkowski).
-    *   Sec 4: Topology (Closure, Interior).
-*   **Flow Analysis:**
-    *   *Gap:* **Separation Theorems are missing.** They are currently in L04. User expects them here (Geometry).
-    *   *Order:* Current is Definitions $\to$ Canonical $\to$ Operations. User prefers Definitions $\to$ Operations $\to$ Canonical.
-*   **Exercises:**
-    *   P3.1 Voronoi; P3.2 Midpoint; P3.3 Hull of Union; P3.4 Linear-Fractional; P3.5 Quadratic Sublevel; P3.6 Relative Interior; P3.7-3.21 (Various properties).
-    *   *Assessment:* Very comprehensive. P3.19 (Projection) is key for Separation proof.
-*   **Action Plan:**
-    1.  **Major Move:** Move "Separation Theorems" (L04 Sec 1) to L03 (new Section 5).
-    2.  **Reorder:** Move Section 3 (Operations) before Section 2 (Canonical Sets).
+### 02. Introduction to Convex Optimization
 
-### Lecture 04: Convex Sets – Cones
-*   **Current Content:**
-    *   Sec 1: Separation Theorems (Separating, Supporting, Farkas).
-    *   Sec 2: Cones (Proper, Generalized Inequalities, Dual Cones).
-*   **Flow Analysis:**
-    *   *Orphaned Content:* If Separation (Sec 1) moves to L03, L04 becomes too short.
-    *   *Gap:* User wants "Cone Operations" (Direct sum, etc.) and "Cone Programming" basics.
-*   **Exercises:**
-    *   P4.1 Separation by Projection; P4.2 Dual of Subspace; P4.3 Self-Dual SOC; P4.4 Dual Identities; P4.5 Generalized Inequality; P4.6-4.17 (Advanced Cone properties).
-    *   *Assessment:* Strong on theory. P4.1 belongs with Separation (L03).
-*   **Action Plan:**
-    1.  **Restructure:** Move Sec 1 to L03.
-    2.  **Expand:** Rename lecture to "Cones and Generalized Inequalities". Add sections on "Cone Operations" and "Cone Programming" (preview of L08).
+1.  **Content and Flow**
+    *   The lecture defines convex optimization problems, proves the fundamental theorem that local minima are global, classifies standard problem families (LP, QP, SOCP, SDP), introduces the loss+regularizer modeling paradigm and DCP rules, and provides comprehensive examples and exercises. Verify the mathematical definitions and theorems. For example, check that the three conditions for convexity (convex objective, convex inequality constraints, affine equality constraints) are correct and clearly stated.
+    *   Ensure the historical perspective and complexity discussions are accurate (e.g., interior‑point methods’ development). Update dated statements if necessary.
+2.  **Pedagogical Improvements**
+    *   Replace general statements with specific examples. For instance, when discussing NP‑hardness of non‑convex problems, cite a concrete NP‑hard problem (e.g., integer programming) and briefly outline why it is hard.
+    *   In the loss+regularizer section, include a comparative table of common loss functions and regularizers, as the current file does (least squares, logistic loss, hinge loss, etc.). Ensure each entry mentions its convexity and typical use cases (already present in the lecture but confirm accuracy).
+3.  **Clarify Modeling Tricks**
+    *   In the standard form transformation section, step through each conversion slowly: e.g., show how introducing slack variables converts an  $\ell_1$  norm minimization into a linear program. Provide pseudo‑code for variable introductions.
+    *   Use diagrams to illustrate the epigraph transformation or perspective functions where appropriate.
+4.  **Exercises and Solutions**
+    *   Audit each exercise to ensure it aligns with the preceding material. Provide complete solutions with reasoning. For proof‑based exercises (e.g., proving that  $\|Ax-b\|_2^2$  is convex), give a step‑by‑step derivation using the definition of convexity rather than only quoting the Hessian condition.
+    *   Add hints to challenging exercises to help learners without giving away answers.
 
-### Lecture 05: Convex Functions – Basics
-*   **Current Content:**
-    *   Sec 1: Definition, Jensen's, Strong/Strict Convexity.
-    *   Sec 2: Epigraphs.
-    *   Sec 3: First-Order Conditions.
-    *   Sec 4: Second-Order Conditions.
-    *   Sec 5: Operations.
-*   **Flow Analysis:**
-    *   *Placement:* "Strong Convexity" is introduced in Sec 1.5 and 4.2. User prefers this topic in **Lecture 06**.
-*   **Exercises:**
-    *   P5.1 Basic Functions; P5.2 AM-GM; P5.3 Log-Sum-Exp; P5.4 Quad-over-Lin; P5.5 Distance; P5.6 Entropy; P5.7 Strong Convexity; P5.12 Sensitivity (Subgradients).
-    *   *Assessment:* Good. P5.12 uses subgradients, but subgradients are not formally defined in text.
-*   **Action Plan:**
-    1.  **Move:** Move "Strict and Strong Convexity" sections to Lecture 06.
-    2.  **Refine:** Ensure Section 5 (Operations) covers "Pointwise Maximum" and "Composition" thoroughly.
+### 03. Convex Sets – Geometry
 
-### Lecture 06: Convex Functions – Advanced
-*   **Current Content:**
-    *   Sec 1: Conjugates (Definition, Fenchel Inequality, Examples).
-    *   Sec 2: Quasiconvexity.
-    *   Sec 3: Log-Concavity.
-*   **Flow Analysis:**
-    *   *Missing:* **Subgradients** are missing as a main section.
-    *   *Missing:* **Strong Convexity** (moved from L05).
-    *   *Gap:* Fenchel Duality theorem is typically here (currently just inequality).
-*   **Exercises:**
-    *   P6.1 Conjugate of Norm; P6.2 Quasiconvexity; P6.3 Softmax; P6.7 Fenchel.
-    *   *Assessment:* Needs exercises on Subgradients.
-*   **Action Plan:**
-    1.  **Add Section:** "1. Subgradients and Subdifferentials".
-    2.  **Add Section:** "2. Smoothness and Strong Convexity" (from L05).
-    3.  **Enhance:** Expand Conjugates section to include full Fenchel Duality theorem.
+1.  **Content Review**
+    *   Topics include affine sets, convex sets, convex hulls, sublevel sets, epigraphs, canonical convex sets (hyperplanes, halfspaces, balls, ellipsoids, polyhedra, PSD cone), operations preserving convexity (intersection, affine maps, Minkowski sum, perspective and linear fractional functions, Cartesian products), topological concepts (closure, interior, relative interior, boundary), separation theorems, and Carathéodory’s theorem. Verify all definitions and proofs. The lecture currently states Carathéodory’s theorem accurately; ensure the proof is complete and accessible.
+    *   Cross-check the statement of separation theorems with standard references. If hyperplane separation is only sketched, add a more detailed proof or a geometric illustration.
+2.  **Structure and Coherence**
+    *   Sequence the material logically: start with definitions and geometric intuition (affine → convex), then move to operations preserving convexity, then explore canonical sets, and finally discuss topological concepts. This helps learners build a mental map.
+    *   For each canonical set, include both algebraic and geometric definitions, as well as pictures. Explain the intuition behind why, for example, the PSD cone is convex.
+3.  **Examples and Visualizations**
+    *   Ensure that interactive widgets (e.g., convex combination visualizer) work correctly. Provide instructions on how to use them and what learners should observe.
+    *   Where possible, add diagrams or 2‑D sketches to illustrate abstract concepts like the Minkowski sum or perspective map.
+4.  **Exercises**
+    *   Group exercises by topic (e.g., convex hulls, separation, topological notions). Provide detailed solutions with references back to the relevant definitions. Remove duplicates if any.
+5.  **Numbering and References**
+    *   Verify numbering consistency for theorems and examples. Ensure cross‑references to Lecture 02 for convex sets used in optimization definitions are correct.
 
-### Lecture 07: Convex Problems – Standard Forms
-*   **Current Content:**
-    *   Sec 1: Standard Form.
-    *   Sec 2: LP (Diet, Chebyshev, etc.).
-    *   Sec 3: QP (LS, Mean-Variance, Robust LS).
-    *   Sec 4: Linear-Fractional (Charnes-Cooper).
-    *   Sec 5: Geometric Programming.
-    *   Sec 6: Patterns.
-    *   Sec 7: Matrix View.
-    *   Sec 8: Reformulation.
-*   **Flow Analysis:**
-    *   *Status:* Excellent. QP coverage (Sec 3) is very detailed.
-    *   *Clarification:* Ensure the distinction between "Standard Forms" (L07) and "Conic Forms" (L08) is clear (L07 focuses on scalar inequalities, L08 on cone memberships).
-*   **Exercises:**
-    *   P7.1 Diet; P7.3 PSD Block; P7.7 LASSO; P7.8 SVM; P7.9 Robust LS.
-    *   *Assessment:* Excellent coverage of modeling.
-*   **Action Plan:**
-    1.  **Refine:** Ensure QP section explicitly walks through the "Portfolio Optimization" derivation.
+### 04. Convex Sets – Cones
 
-### Lecture 08: Convex Problems – Conic Forms
-*   **Current Content:**
-    *   Sec 1: SOCP (Lorentz Cone, Robust LS).
-    *   Sec 2: Robust LP.
-    *   Sec 3: SDP (PSD Cone, Hierarchy).
-    *   Sec 4: Quasiconvex Opt.
-    *   Sec 5: DCP.
-*   **Flow Analysis:**
-    *   *Missing:* **Exponential Cone** programming is missing.
-    *   *Balance:* Section 3 (SDP) is brief on examples compared to SOCP.
-*   **Exercises:**
-    *   P8.1 Max Abs Dev; P8.3 SOCP Reformulation; P8.4 SDP Eigenvalue.
-    *   *Assessment:* Good, but needs Exponential Cone exercises.
-*   **Action Plan:**
-    1.  **Add Section:** "Exponential Cone Programming" (Entropy max, Log-Sum-Exp).
-    2.  **Expand:** Add more SDP examples (e.g., Max Cut relaxation).
+1.  **Focus on Cones**
+    *   Audit definitions of cones (convex cones, pointed cones, proper cones), dual cones, polar cones, and examples such as the positive orthant, Lorentz cone, and PSD cone. Provide geometric interpretations and ensure definitions are correct.
+    *   Present the correspondence between cones and generalized inequalities; prove properties of dual cones and self‑dual cones.
+2.  **Operations and Constructions**
+    *   Discuss cone operations (direct sum, Cartesian product) and how they interact with convexity. Include proofs or intuitive arguments.
+    *   Introduce the concept of cone programming and connect to standard forms in Lectures 07–08.
+3.  **Examples and Visual Aids**
+    *   Include diagrams of the positive orthant, Lorentz cone, and a PSD cone to aid understanding. Use interactive widgets if available.
+4.  **Exercises**
+    *   Provide problems requiring computation of dual cones and identifying whether a given set is a cone or convex. Ensure solutions are detailed.
 
-### Lecture 09: Duality
-*   **Current Content:**
-    *   Sec 1: Conjugates/Support Recap.
-    *   Sec 2: Lagrangian.
-    *   Sec 3: Dual Function.
-    *   Sec 4: Dual Problem (Weak/Strong, Slater).
-    *   Sec 5: KKT.
-    *   Sec 6: Sensitivity.
-    *   Sec 7: Examples.
-*   **Flow Analysis:**
-    *   *Status:* Complete and robust.
-*   **Exercises:**
-    *   P9.1 Dual QP; P9.3 Sensitivity; P9.4 Dual LP; P9.5 Farkas; P9.6 KKT.
-    *   *Assessment:* Solid.
-*   **Action Plan:**
-    1.  **Link:** Ensure Sensitivity Analysis (Sec 6) connects back to "Shadow Prices" interpretation.
+### 05. Convex Functions – Basics
 
----
+1.  **Core Definitions**
+    *   Define convex functions, epigraphs, and sublevel sets. Provide the first principles definition and simple examples (linear, quadratic, exponential). Emphasize the difference between convex and strictly convex functions.
+    *   Prove Jensen’s inequality and show how it implies convexity of common functions.
+2.  **Operations that Preserve Convexity**
+    *   Cover pointwise maxima, sums, nonnegative scaling, composition rules, and perspective functions. Provide formal statements and proofs or intuitive explanations.
+3.  **Examples**
+    *   Provide both 1‑D and multivariate examples. Use plots or interactive widgets to illustrate convex vs. non‑convex functions. Discuss functions that are convex but not differentiable (e.g., absolute value).
+4.  **Exercises**
+    *   Design problems asking students to prove convexity of functions using the definition rather than Hessian tests. Provide complete solutions.
 
-## 4. Implementation Roadmap
+### 06. Convex Functions – Advanced
 
-### Phase 1: Structural Hygiene (Immediate)
-1.  **Notation:** Run script to replace `$x$` with `$\mathbf{x}$` (and similar for $y, z, u, v, w$) in all `topics/` HTML files.
-2.  **Move Separation:** Extract L04 Sec 1 and insert into L03 (as Sec 5 or integrated). Update indices/links.
-3.  **Move Strong Convexity:** Extract L05 Sec 1.5/4.2 and insert into L06.
+1.  **Subdifferentials and Conjugates**
+    *   Introduce subgradients, subdifferentials and the Fenchel conjugate. Provide definitions, examples (e.g., subgradients of  $\|x\|_1$  and indicator functions), and interpretation.
+    *   Derive conjugate functions for common examples (quadratic, exponential, indicator of a ball). Show how conjugation relates to duality.
+2.  **Smoothness and Strong Convexity**
+    *   Define Lipschitz continuity, smoothness, and strong convexity. Show how these properties translate into algorithmic convergence rates. Include examples of functions that are strictly convex but not strongly convex (e.g.,  $x^4$ ) and explain why.
+3.  **Fenchel Duality**
+    *   Present Fenchel’s inequality and Fenchel duality theorem. Work through a complete example (e.g., computing the dual of the LASSO problem). Provide step‑by‑step derivations.
+4.  **Exercises**
+    *   Design problems involving subgradient computation, conjugates, and checking strong convexity. Include guided solutions.
 
-### Phase 2: Content Injection (High Value)
-1.  **L06 Update:** Write new section on **Subgradients**.
-2.  **L08 Update:** Write new section on **Exponential Cone**.
-3.  **L02 Update:** Add explicit "Slack Variable" walkthrough in Section 6.
+### 07. Convex Problems – Standard Forms
 
-### Phase 3: Refinement (Polish)
-1.  **L00 Reorder:** Swap Invariants and Norms.
-2.  **L03 Reorder:** Swap Operations and Canonical Sets.
-3.  **De-duplication:** Remove P2.9/P3.1 duplication. Consolidate Rank-Nullity in L01.
+1.  **Standard Form Details**
+    *   Revisit the definitions of LP, QP, SOCP and SDP from Lecture 02 and provide more depth. For each class, define the objective and constraints formally, discuss the feasible set (polyhedron, ellipsoid, cone, PSD cone), and mention typical algorithms. Ensure that the definitions agree with those given in the introduction (Lecture 02).
+2.  **Modeling Examples**
+    *   Expand on the examples in Lecture 02 by providing detailed derivations. E.g., fully derive how a portfolio optimization problem fits into a QP, including variable definitions and matrices. For SOCP and SDP, provide at least one non‑trivial example (robust least squares, beamforming) with step‑by‑step reformulation.
+3.  **Connections to Geometry**
+    *   Relate each standard form to geometric structures from Lectures 03 and 04 (polyhedra, second‑order cones, PSD cones). This helps unify the narrative and fosters understanding of why certain constraints are allowed in a convex problem.
+4.  **Exercises**
+    *   Provide modeling exercises requiring identification of the correct standard form and reformulation into that form. Include solutions and highlight common pitfalls (e.g., the need for PSD matrices in QPs).
+
+### 08. Convex Problems – Conic Forms
+
+1.  **Conic Programming**
+    *   Introduce the general conic form: minimize a linear function subject to the variable lying in an affine set intersected with a convex cone. Explain how LP, QP, SOCP and SDP are special cases of conic programs.
+    *   Present dual cone and conic duality. Derive the dual of a general conic problem step by step.
+2.  **Examples and Transformations**
+    *   Provide examples of conic reformulations beyond the standard forms (e.g., exponential cone programs). Show how to express exponential and power functions using conic constraints.
+    *   Walk through the derivation of a primal–dual pair for an SDP to illustrate the dual cone concept.
+3.  **Exercises**
+    *   Create exercises on deriving the dual of a given conic program and identifying the appropriate cone. Provide complete solutions with hints where necessary.
+
+### 09. Duality
+
+1.  **Lagrangian and Dual Functions**
+    *   Define the Lagrangian for a general convex optimization problem and the dual function. Derive the dual problem by maximizing the dual function over dual variables.
+    *   Include a step‑by‑step derivation for an example (e.g., equality‑constrained QP). Clarify the roles of inequality multipliers and sign conventions.
+2.  **Strong Duality and KKT Conditions**
+    *   State conditions (Slater’s condition) under which strong duality holds. Provide proofs or intuitive arguments. Derive Karush–Kuhn–Tucker (KKT) conditions and relate them to optimality.
+    *   Connect back to the fundamental theorem of convex optimization from Lecture 02.
+3.  **Applications**
+    *   Discuss sensitivity analysis (how dual variables measure constraint tightness) and complementary slackness. Provide examples such as deriving the dual of a linear program and interpreting shadow prices.
+4.  **Exercises**
+    *   Offer problems deriving duals of small problems (LP, QP, SOCP). Include checks for strong duality. Provide full solutions.
+
+## Cross‑Lecture Integration and Consistency
+
+1.  **Consistent Notation and Terminology**
+    *   Create a style guide summarizing notation for scalars, vectors, matrices, cones, and functions. Ensure all lectures adhere to this (e.g., vectors in boldface, sets in calligraphic font).
+    *   Standardize terminology (e.g., always use “positive semidefinite” rather than mixing “PSD” and “semi‑definite”).
+2.  **Inter‑Lecture References**
+    *   Update forward and backward connections in each lecture’s summary. For instance, Lecture 02 should link to Lecture 03 for the proof that feasible sets are convex, as it currently does. Ensure these links remain valid after renumbering.
+    *   Use a consistent scheme for referring to definitions and theorems across lectures (e.g., “Definition 3.1 (Convex Set)” rather than generic phrases).
+3.  **Remove Duplicates, Maintain Necessary Background**
+    *   If a concept is introduced in Lecture 00, do not redefine it in Lecture 01; instead, link back. Conversely, ensure that later lectures do not assume knowledge of concepts that were not introduced previously.
+    *   Consolidate overlapping exercises. For example, if both Lectures 02 and 03 have exercises on convex hulls, merge or cross‑reference them to avoid repetition.
+4.  **Narrative Flow Across the Course**
+    *   Revisit the course roadmap section (Lecture 02) and ensure it accurately reflects the improved content. Align the narrative so that the geometry of convex sets (Lectures 03–04) naturally leads into convex functions (Lectures 05–06), which then feeds into standard and conic problem forms (Lectures 07–08), culminating in duality (Lecture 09).
+    *   Add summary sections at the end of each lecture summarizing the main takeaways and hinting at the next lecture.

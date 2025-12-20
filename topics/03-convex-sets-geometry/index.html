@@ -99,6 +99,82 @@
           </div>
         </div>
 
+        <div class="problem">
+          <h3>P3.22 — Separation by Projection</h3>
+          <p>Let $C$ be a nonempty closed convex set and $y \notin C$. Prove that the vector $a = y - \Pi_C(y)$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $y$ and $C$.</p>
+
+              <div class="recap-box">
+                <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+                <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+                    <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $y$ can be proven constructively using the projection theorem.</li>
+                    <li><b>Variational Inequality:</b> The projection $p$ is the unique point in $C$ such that the angle between $y-p$ and $x-p$ is obtuse ($\ge 90^\circ$) for all $x \in C$.</li>
+                </ul>
+              </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+                      <strong>Step 1: Projection characterization.</strong> Let $p = \Pi_C(y)$. By the variational characterization of the projection onto a closed convex set, for all $x \in C$:
+                      $$
+                      (y - p)^\top (x - p) \le 0
+                      $$
+                      Let $a = y - p$. The inequality becomes $a^\top (x - p) \le 0$, which implies $a^\top x \le a^\top p$.
+                    </div>
+
+                    <div class="proof-step">
+                      <strong>Step 2: Strict inequality at $y$.</strong> Since $y \notin C$ and $p \in C$, we must have $y \neq p$. Thus $a = y - p$ is a non-zero vector, so $\|a\|_2^2 > 0$.
+                      Now consider the value of the linear functional at $y$:
+                      $$
+                      a^\top y = a^\top (p + a) = a^\top p + \|a\|_2^2
+                      $$
+                      Since $\|a\|_2^2 > 0$, we have $a^\top y > a^\top p$.
+                    </div>
+
+                    <div class="proof-step">
+                      <strong>Conclusion:</strong> We have shown that for all $x \in C$, $a^\top x \le a^\top p$, while $a^\top y > a^\top p$.
+                      The hyperplane defined by $\{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $y$ from $C$.
+                    </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.23 — Support Function Determines Set</h3>
+          <p>Prove that if $C, D$ are closed convex sets and $S_C(y) = S_D(y)$ for all $y$, then $C=D$.</p>
+
+          <div class="recap-box">
+            <h4>Recap</h4>
+            <p>A closed convex set is uniquely determined by its support function because it is the intersection of all its supporting halfspaces.</p>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              A closed convex set is the intersection of its supporting halfspaces: $C = \bigcap_y \{x \mid y^\top x \le S_C(y)\}$.
+              If $S_C = S_D$, the intersections are identical, so $C=D$.
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <h3>P3.24 — Converse Supporting Hyperplane Theorem</h3>
+          <p>Prove that if a closed set $C$ with nonempty interior has a supporting hyperplane at every boundary point, $C$ is convex.</p>
+
+          <div class="recap-box">
+            <h4>Recap</h4>
+            <p>This theorem (Tietze-Nakajima) shows that "local convexity" at every boundary point (existence of support) implies global convexity for connected sets with interior.</p>
+          </div>
+
+          <div class="solution-box">
+            <h4>Solution</h4>
+            <div class="proof-step">
+              Assume $C$ is not convex. Then there exists a point in the convex hull $D = \mathrm{conv}(C)$ that is not in $C$.
+              Consider a line segment connecting an interior point of $C$ to this point. It must cross the boundary of $C$ at some $x^*$.
+              The supporting hyperplane at $x^*$ must separate $C$ from the rest of the segment.
+              However, the endpoints of the segment are in $D$ (convex hull). Separation implies $D$ lies on one side, which contradicts the segment crossing the plane.
+            </div>
+          </div>
+        </div>
+
         <!-- Moved P3.20 to Section 6 -->
 
         <figure style="text-align: center;">

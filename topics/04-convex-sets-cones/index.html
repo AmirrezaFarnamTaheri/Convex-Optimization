@@ -293,6 +293,62 @@
                <figcaption><i>Figure 13:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
              </figure>
         </div>
+
+        <h3>1.5 Cone Operations</h3>
+        <p>Just as with convex sets, we can construct new cones from existing ones. This is particularly useful for modeling complex constraints in conic programming. Below we detail the primary operations and, crucially, how to compute their duals.</p>
+
+        <h4>(a) Intersection</h4>
+        <p>The intersection of any collection of cones is a cone. If the cones are convex, the intersection is a convex cone.</p>
+        $$ K = \bigcap_{i \in I} K_i $$
+        <p><b>Dual Property:</b> For closed convex cones, the dual of the intersection involves the Minkowski sum of the duals. However, this sum is not always closed, so we must take the closure:</p>
+        $$ \left(\bigcap_{i} K_i\right)^* = \mathrm{cl}\left(\sum_{i} K_i^*\right) $$
+        <div class="intuition-box">
+          <h4>Why the closure?</h4>
+          <p>Consider two "ice cream" cones in $\mathbb{R}^3$ that intersect only at a line. Their duals are also ice cream cones. The sum of these two dual cones might effectively cover an open half-space plus some boundary, but miss a specific ray on the boundary. The closure operation ensures that the resulting set is mathematically closed (contains all its limit points), which is required for it to be a valid dual cone.</p>
+        </div>
+
+        <h4>(b) Cartesian Product (Direct Sum)</h4>
+        <p>The Cartesian product of cones $K_1 \subseteq \mathbb{R}^n$ and $K_2 \subseteq \mathbb{R}^m$ is a cone in the product space $\mathbb{R}^{n+m}$:</p>
+        $$ K = K_1 \times K_2 = \{(x, y) \mid x \in K_1, y \in K_2\} $$
+        <p>This is the standard way to build complex problems from simple blocks. For example, a Semidefinite Program (SDP) might require variable $x$ to be non-negative ($x \in \mathbb{R}^n_+$) AND a matrix $S$ to be PSD ($S \in \mathbb{S}^k_+$). The solver treats this as a single variable $(x, \mathrm{vec}(S))$ living in the product cone $\mathbb{R}^n_+ \times \mathbb{S}^k_+$.</p>
+        <p><b>Dual Property:</b> The dual of a product is simply the product of the duals:</p>
+        $$ (K_1 \times K_2)^* = K_1^* \times K_2^* $$
+        <p>This simplificity is why block-diagonal structure is so computationally efficient.</p>
+
+        <h4>(c) Minkowski Sum</h4>
+        <p>The Minkowski sum of two convex cones is defined as:</p>
+        $$ K_1 + K_2 = \{x + y \mid x \in K_1, y \in K_2\} $$
+        <p><b>Dual Property:</b> The dual of the sum is the <b>intersection</b> of the duals:</p>
+        $$ (K_1 + K_2)^* = K_1^* \cap K_2^* $$
+        <div class="proof-box">
+          <h4>Proof of Dual Sum</h4>
+          <p>Let $z \in (K_1 + K_2)^*$. By definition, $z^\top (x+y) \ge 0$ for all $x \in K_1, y \in K_2$.
+          <br>Setting $y=0$, we get $z^\top x \ge 0 \forall x \in K_1 \implies z \in K_1^*$.
+          <br>Setting $x=0$, we get $z^\top y \ge 0 \forall y \in K_2 \implies z \in K_2^*$.
+          <br>Thus $z \in K_1^* \cap K_2^*$. The reverse inclusion holds by linearity.</p>
+        </div>
+        <p><b>Note:</b> Even if $K_1$ and $K_2$ are closed, their sum $K_1 + K_2$ might not be closed. This is a subtle topological issue that often necessitates "constraint qualifications" in duality theory.</p>
+
+        <h4>(d) Linear Maps</h4>
+        <p>Let $A \in \mathbb{R}^{m \times n}$ be a linear map.</p>
+        <ul>
+            <li><b>Image of a Cone:</b> If $K \subseteq \mathbb{R}^n$ is a cone, its image $A(K) = \{Ax \mid x \in K\}$ is a cone in $\mathbb{R}^m$.
+            <br><b>Dual:</b> $(A(K))^* = (A^*)^{-1}(K^*) = \{y \mid A^\top y \in K^*\}$. (The preimage of the dual under the adjoint).</li>
+
+            <li><b>Inverse Image (Preimage):</b> If $K \subseteq \mathbb{R}^m$ is a cone, its preimage $A^{-1}(K) = \{x \in \mathbb{R}^n \mid Ax \in K\}$ is a cone in $\mathbb{R}^n$.
+            <br>This operation creates <b>Linear Matrix Inequalities (LMIs)</b>. For example, if $K = \mathbb{S}^k_+$, then $A^{-1}(K)$ is the set of $x$ such that the matrix combination $\sum x_i A_i$ is PSD.</li>
+        </ul>
+
+        <div class="theorem-box">
+          <h4>Deep Dive: Dual of the Preimage (The Adjoint Rule)</h4>
+          <p>For the preimage cone $C = \{x \mid Ax \in K\}$, what is its dual $C^*$?
+          <br>Ideally, we want:
+          $$ (A^{-1}(K))^* = A^\top K^* = \{A^\top y \mid y \in K^*\} $$
+          However, similar to intersection, the set $A^\top K^*$ (image of a closed cone) is not necessarily closed. The rigorous statement requires closure:</p>
+          $$ (A^{-1}(K))^* = \mathrm{cl}(A^\top K^*) $$
+          <p><b>Constraint Qualifications:</b> If a condition like Slater's condition holds (e.g., there exists $x$ such that $Ax \in \mathrm{int}(K)$), then the closure is unnecessary, and we get the clean formula $(A^{-1}(K))^* = A^\top K^*$. This is equivalent to strong duality holding.</p>
+        </div>
+
       </section>
 
       <section class="section-card" id="section-3">
@@ -316,44 +372,6 @@
 
     <section class="section-card" id="section-4">
       <h2><i data-feather="edit-3"></i> 4. Exercises</h2>
-
-<div class="problem">
-  <h3>P4.1 — Separation by Projection</h3>
-  <p>Let $C$ be a nonempty closed convex set and $y \notin C$. Prove that the vector $a = y - \Pi_C(y)$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $y$ and $C$.</p>
-
-      <div class="recap-box">
-        <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-        <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-            <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $y$ can be proven constructively using the projection theorem.</li>
-            <li><b>Variational Inequality:</b> The projection $p$ is the unique point in $C$ such that the angle between $y-p$ and $x-p$ is obtuse ($\ge 90^\circ$) for all $x \in C$.</li>
-        </ul>
-      </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-              <strong>Step 1: Projection characterization.</strong> Let $p = \Pi_C(y)$. By the variational characterization of the projection onto a closed convex set, for all $x \in C$:
-              $$
-              (y - p)^\top (x - p) \le 0
-              $$
-              Let $a = y - p$. The inequality becomes $a^\top (x - p) \le 0$, which implies $a^\top x \le a^\top p$.
-            </div>
-
-            <div class="proof-step">
-              <strong>Step 2: Strict inequality at $y$.</strong> Since $y \notin C$ and $p \in C$, we must have $y \neq p$. Thus $a = y - p$ is a non-zero vector, so $\|a\|_2^2 > 0$.
-              Now consider the value of the linear functional at $y$:
-              $$
-              a^\top y = a^\top (p + a) = a^\top p + \|a\|_2^2
-              $$
-              Since $\|a\|_2^2 > 0$, we have $a^\top y > a^\top p$.
-            </div>
-
-            <div class="proof-step">
-              <strong>Conclusion:</strong> We have shown that for all $x \in C$, $a^\top x \le a^\top p$, while $a^\top y > a^\top p$.
-              The hyperplane defined by $\{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $y$ from $C$.
-            </div>
-  </div>
-</div>
 
 <div class="problem">
   <h3>P4.2 — Dual of a Subspace</h3>
@@ -488,43 +506,6 @@
   </div>
 </div>
 
-<div class="problem">
-  <h3>P4.7 — Support Function Determines Set</h3>
-  <p>Prove that if $C, D$ are closed convex sets and $S_C(y) = S_D(y)$ for all $y$, then $C=D$.</p>
-
-  <div class="recap-box">
-    <h4>Recap</h4>
-    <p>A closed convex set is uniquely determined by its support function because it is the intersection of all its supporting halfspaces.</p>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      A closed convex set is the intersection of its supporting halfspaces: $C = \bigcap_y \{x \mid y^\top x \le S_C(y)\}$.
-      If $S_C = S_D$, the intersections are identical, so $C=D$.
-    </div>
-  </div>
-</div>
-
-<div class="problem">
-  <h3>P4.8 — Converse Supporting Hyperplane Theorem</h3>
-  <p>Prove that if a closed set $C$ with nonempty interior has a supporting hyperplane at every boundary point, $C$ is convex.</p>
-
-  <div class="recap-box">
-    <h4>Recap</h4>
-    <p>This theorem (Tietze-Nakajima) shows that "local convexity" at every boundary point (existence of support) implies global convexity for connected sets with interior.</p>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      Assume $C$ is not convex. Then there exists a point in the convex hull $D = \mathrm{conv}(C)$ that is not in $C$.
-      Consider a line segment connecting an interior point of $C$ to this point. It must cross the boundary of $C$ at some $x^*$.
-      The supporting hyperplane at $x^*$ must separate $C$ from the rest of the segment.
-      However, the endpoints of the segment are in $D$ (convex hull). Separation implies $D$ lies on one side, which contradicts the segment crossing the plane.
-    </div>
-  </div>
-</div>
 
 <div class="problem">
   <h3>P4.9 — Cones in $\mathbb{R}^2$</h3>

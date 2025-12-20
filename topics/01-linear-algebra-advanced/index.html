@@ -98,16 +98,16 @@
       </div>
 
       <h3>3. Coordinates: The Dictionary</h3>
-      <p>A basis $B = (b_1, \dots, b_m)$ provides a bijection between abstract vectors $v \in V$ and coordinate lists $\alpha \in \mathbb{R}^m$.</p>
-      <p><b>Coordinate Theorem:</b> For every $v \in V$, there exists a <b>unique</b> $\alpha$ such that $v = \sum_{i=1}^m \alpha_i b_i$.
-      <br>We write $[v]_B = \alpha$.
-      <br>If we form the matrix $B = [b_1 \dots b_m] \in \mathbb{R}^{n \times m}$, then $v = B [v]_B$.</p>
+      <p>A basis $B = (b_1, \dots, b_m)$ provides a bijection between abstract vectors $\mathbf{v} \in V$ and coordinate lists $\alpha \in \mathbb{R}^m$.</p>
+      <p><b>Coordinate Theorem:</b> For every $\mathbf{v} \in V$, there exists a <b>unique</b> $\alpha$ such that $\mathbf{v} = \sum_{i=1}^m \alpha_i b_i$.
+      <br>We write $[\mathbf{v}]_B = \alpha$.
+      <br>If we form the matrix $B = [b_1 \dots b_m] \in \mathbb{R}^{n \times m}$, then $\mathbf{v} = B [\mathbf{v}]_B$.</p>
 
       <div class="insight">
         <h4>Computing Coordinates</h4>
-        <p>To find $\alpha = [v]_B$, we solve $B\alpha = v$.
-        <br><b>Case 1: Full Space ($m=n$).</b> $B$ is square and invertible. $\alpha = B^{-1}v$.
-        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $v \in V$) using Gaussian elimination or $B^\dagger v$.
+        <p>To find $\alpha = [\mathbf{v}]_B$, we solve $B\alpha = \mathbf{v}$.
+        <br><b>Case 1: Full Space ($m=n$).</b> $B$ is square and invertible. $\alpha = B^{-1}\mathbf{v}$.
+        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $\mathbf{v} \in V$) using Gaussian elimination or $B^\dagger \mathbf{v}$.
         </p>
       </div>
 
@@ -115,18 +115,18 @@
       <p>How do coordinates change when we swap basis $B$ for basis $C$? And more importantly, how does the <i>matrix of a linear map</i> change? This is the core mechanic behind Diagonalization and SVD.</p>
 
       <h4>4.1 Coordinate Transformation (The Dictionary)</h4>
-      <p>Let $B$ and $C$ be two bases for $\mathbb{R}^n$. A vector $x$ has different coordinate representations in each:</p>
+      <p>Let $B$ and $C$ be two bases for $\mathbb{R}^n$. A vector $\mathbf{x}$ has different coordinate representations in each:</p>
       <ul>
-        <li>$x = B [x]_B$ (coords in $B$)</li>
-        <li>$x = C [x]_C$ (coords in $C$)</li>
+        <li>$\mathbf{x} = B [\mathbf{x}]_B$ (coords in $B$)</li>
+        <li>$\mathbf{x} = C [\mathbf{x}]_C$ (coords in $C$)</li>
       </ul>
-      <p>Since it's the <b>same vector</b>, we have $B [x]_B = C [x]_C$.
-      <br>To convert from $B$-coordinates to $C$-coordinates, we solve for $[x]_C$:
-      $$ [x]_C = \underbrace{C^{-1}B}_{P} [x]_B $$
+      <p>Since it's the <b>same vector</b>, we have $B [\mathbf{x}]_B = C [\mathbf{x}]_C$.
+      <br>To convert from $B$-coordinates to $C$-coordinates, we solve for $[\mathbf{x}]_C$:
+      $$ [\mathbf{x}]_C = \underbrace{C^{-1}B}_{P} [\mathbf{x}]_B $$
       The matrix $P = C^{-1}B$ is the <b>change-of-basis matrix</b>.</p>
 
       <h4>4.2 Transformation of the Matrix Map</h4>
-      <p>Suppose we have a linear map $T(x) = Ax$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
+      <p>Suppose we have a linear map $T(\mathbf{x}) = A\mathbf{x}$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
       <p><b>The Mechanism:</b> Think of the operation in three stages: $x_{in} \to x_{out}$.</p>
       <ol>
         <li><b>Input Change ($V \to \text{Standard}$):</b> We are given input coordinates $y_{in}$ in the basis $V$. The actual vector is $x_{in} = V y_{in}$.</li>
@@ -154,16 +154,16 @@
         <h4>A Tiny 2D Concrete Picture</h4>
         <p>Suppose $A$ has eigenvectors $v_1=(1,1)^\top$ and $v_2=(1,-1)^\top$ with eigenvalues $3$ and $1$.
         <br>Let $V = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Then $\Lambda = V^{-1}AV = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}$.
-        <br>Consider a vector with new coordinates $y = (2, 3)^\top$.
-        <br><b>Physical Vector:</b> $x = 2v_1 + 3v_2 = (5, -1)^\top$.
+        <br>Consider a vector with new coordinates $\mathbf{y} = (2, 3)^\top$.
+        <br><b>Physical Vector:</b> $\mathbf{x} = 2v_1 + 3v_2 = (5, -1)^\top$.
         <br><b>Action in Eigen-coords:</b> The map scales the first component by 3 and the second by 1.
-        $$ y_{out} = \Lambda y = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
+        $$ y_{out} = \Lambda \mathbf{y} = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
         <br><b>Result:</b> The output vector is $6v_1 + 3v_2$. The mixing is gone; the axes act independently.</p>
       </div>
 
       <h3>5. Orthonormal Bases</h3>
       <p>If basis $Q$ has orthonormal columns ($Q^\top Q = I_m$), geometry becomes algebra.
-      <br><b>Coordinates:</b> $\alpha_i = q_i^\top v$. So $[v]_Q = Q^\top v$.
+      <br><b>Coordinates:</b> $\alpha_i = q_i^\top \mathbf{v}$. So $[\mathbf{v}]_Q = Q^\top \mathbf{v}$.
       <br><b>Norms:</b> $\|v\|_2 = \|Q\alpha\|_2 = \|\alpha\|_2$. (Parseval's Identity).
       <br>This is why we love SVD: it diagonalizes matrices using only orthonormal bases, preserving geometry.</p>
     </section>
@@ -181,10 +181,10 @@
       $$ \underbrace{n}_{\text{Inputs}} = \underbrace{\dim(\ker(A))}_{\text{Collapsed}} + \underbrace{\dim(\mathrm{im}(A))}_{\text{Preserved}} $$
       </p>
 
-      <h3>3. Anatomy of $Ax=b$ (Geometric View)</h3>
+      <h3>3. Anatomy of $A\mathbf{x}=\mathbf{b}$ (Geometric View)</h3>
       <p>This theorem dictates the structure of solutions to linear systems:</p>
       <ul>
-        <li><b>Existence (Range):</b> $Ax=b$ is solvable if $b$ lies in the "preserved" subspace.</li>
+        <li><b>Existence (Range):</b> $A\mathbf{x}=\mathbf{b}$ is solvable if $\mathbf{b}$ lies in the "preserved" subspace.</li>
         <li><b>Uniqueness (Kernel):</b> If solvable, the solution is unique only if no dimensions were collapsed ($\ker(A) = \{0\}$). Otherwise, we can add any vector from the "collapsed" space to our solution without changing the output.</li>
         <li><b>Affine Structure:</b> The solution set is $S = x_p + \ker(A)$. It is a "shifted subspace" parallel to the kernel.</li>
       </ul>
@@ -196,9 +196,9 @@
       <p>Eigenvectors are the "invariant directions" of a square matrix $A$. Along these directions, the matrix acts as a simple scalar multiplication.</p>
 
       <h3>3.1 Eigenvalues and Eigenvectors</h3>
-      <p>A non-zero vector $v$ is an <b>eigenvector</b> of $A \in \mathbb{R}^{n \times n}$ with <b>eigenvalue</b> $\lambda$ if:
-      $$ Av = \lambda v $$
-      Equivalently, $(A - \lambda I)v = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.</p>
+      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> of $A \in \mathbb{R}^{n \times n}$ with <b>eigenvalue</b> $\lambda$ if:
+      $$ A\mathbf{v} = \lambda \mathbf{v} $$
+      Equivalently, $(A - \lambda I)\mathbf{v} = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.</p>
 
       <h3>3.2 Spectral Theorem for Symmetric Matrices</h3>
       <p>If $A$ is symmetric ($A = A^\top$), then:</p>
@@ -211,12 +211,12 @@
 
       <h3>3.3 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
-      $$ R_A(x) = \frac{x^\top A x}{x^\top x} $$
-      This scalar measures the "gain" of the matrix in the direction $x$. Its critical points are the eigenvectors.</p>
+      $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} $$
+      This scalar measures the "gain" of the matrix in the direction $\mathbf{x}$. Its critical points are the eigenvectors.</p>
       <div class="theorem-box">
         <h4>Variational Characterization of Eigenvalues</h4>
         <p>The eigenvalues of a symmetric matrix $A$ are the stationary values of the Rayleigh Quotient. Specifically:
-        $$ \lambda_{\min}(A) = \min_{x \ne 0} R_A(x) \quad \text{and} \quad \lambda_{\max}(A) = \max_{x \ne 0} R_A(x) $$
+        $$ \lambda_{\min}(A) = \min_{\mathbf{x} \ne 0} R_A(\mathbf{x}) \quad \text{and} \quad \lambda_{\max}(A) = \max_{\mathbf{x} \ne 0} R_A(\mathbf{x}) $$
         </p>
       </div>
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
@@ -226,23 +226,23 @@
     <section class="section-card" id="section-induced-norms">
       <h2>4. Induced Matrix Norms</h2>
       <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
-      $$ \|A\|_{p} = \sup_{x \ne 0} \frac{\|Ax\|_p}{\|x\|_p} = \max_{\|x\|_p = 1} \|Ax\|_p $$
+      $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
 
       <h3>4.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
       <p>$$ \|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}| $$</p>
       <div class="proof-box">
         <h4>Derivation</h4>
-        <p>Let $x$ be a unit vector in $\ell_1$. Then $Ax = \sum x_j a_j$ (linear combination of columns).
-        $$ \|Ax\|_1 = \|\sum_j x_j a_j\|_1 \le \sum_j |x_j| \|a_j\|_1 \le (\max_j \|a_j\|_1) \sum_j |x_j| = \max_j \|a_j\|_1 $$
-        Equality is achieved by choosing $x = e_k$ where $k$ is the index of the column with the largest norm.</p>
+        <p>Let $\mathbf{x}$ be a unit vector in $\ell_1$. Then $A\mathbf{x} = \sum x_j a_j$ (linear combination of columns).
+        $$ \|A\mathbf{x}\|_1 = \|\sum_j x_j a_j\|_1 \le \sum_j |x_j| \|a_j\|_1 \le (\max_j \|a_j\|_1) \sum_j |x_j| = \max_j \|a_j\|_1 $$
+        Equality is achieved by choosing $\mathbf{x} = e_k$ where $k$ is the index of the column with the largest norm.</p>
       </div>
 
       <h3>4.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
       <p>$$ \|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}| $$</p>
-      <p><i>Intuition:</i> To maximize the $\infty$-norm of $Ax$, we want to maximize a single component $|(Ax)_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
+      <p><i>Intuition:</i> To maximize the $\infty$-norm of $A\mathbf{x}$, we want to maximize a single component $|(A\mathbf{x})_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
 
       <h3>4.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
-      <p>$$ \|A\|_2 = \max_{\|x\|_2=1} \|Ax\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
+      <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
 
       <h3>4.4 Convexity of Induced Norms (Deep Dive)</h3>
@@ -251,18 +251,18 @@
         <h4>Proof: Convexity via Dual Norms</h4>
         <div class="proof-step">
           <strong>Step 1: Definition.</strong> The induced norm is defined as:
-          $$ \|X\|_{a,b} = \sup_{v \ne 0} \frac{\|Xv\|_a}{\|v\|_b} = \sup_{\|v\|_b = 1} \|Xv\|_a $$
+          $$ \|X\|_{a,\mathbf{b}} = \sup_{\mathbf{v} \ne 0} \frac{\|X\mathbf{v}\|_a}{\|\mathbf{v}\|_\mathbf{b}} = \sup_{\|\mathbf{v}\|_\mathbf{b} = 1} \|X\mathbf{v}\|_a $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Dual Norm Representation.</strong> Recall that any norm $\|z\|_a$ can be expressed as a supremum over its dual norm ball: $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
+          <strong>Step 2: Dual Norm Representation.</strong> Recall that any norm $\|z\|_a$ can be expressed as a supremum over its dual norm ball: $\|z\|_a = \sup_{\|\mathbf{u}\|_{a^*} \le 1} \mathbf{u}^\top \mathbf{z}$.
           Substituting this into the definition:
-          $$ \|X\|_{a,b} = \sup_{\|v\|_b = 1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top (Xv) \right) $$
+          $$ \|X\|_{a,\mathbf{b}} = \sup_{\|\mathbf{v}\|_\mathbf{b} = 1} \left( \sup_{\|\mathbf{u}\|_{a^*} \le 1} \mathbf{u}^\top (X\mathbf{v}) \right) $$
         </div>
         <div class="proof-step">
           <strong>Step 3: Linear Structure.</strong>
-          $$ \|X\|_{a,b} = \sup \{ u^\top X v \mid \|u\|_{a^*} \le 1, \|v\|_b = 1 \} $$
-          Notice that for fixed vectors $u$ and $v$, the function $f_{u,v}(X) = u^\top X v$ is <b>linear</b> in the entries of $X$.
-          Specifically, $u^\top X v = \mathrm{tr}(u^\top X v) = \mathrm{tr}(v u^\top X) = \langle uv^\top, X \rangle$.
+          $$ \|X\|_{a,\mathbf{b}} = \sup \{ \mathbf{u}^\top X \mathbf{v} \mid \|\mathbf{u}\|_{a^*} \le 1, \|\mathbf{v}\|_\mathbf{b} = 1 \} $$
+          Notice that for fixed vectors $\mathbf{u}$ and $\mathbf{v}$, the function $f_{\mathbf{u},\mathbf{v}}(X) = \mathbf{u}^\top X \mathbf{v}$ is <b>linear</b> in the entries of $X$.
+          Specifically, $\mathbf{u}^\top X \mathbf{v} = \mathrm{tr}(\mathbf{u}^\top X \mathbf{v}) = \mathrm{tr}(\mathbf{v} \mathbf{u}^\top X) = \langle uv^\top, X \rangle$.
         </div>
         <div class="proof-step">
           <strong>Conclusion:</strong>
@@ -276,7 +276,7 @@
       <h2>5. The QR Decomposition</h2>
 
       <h3>5.1 Motivation: Numerical Stability</h3>
-      <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|Ax - b\|_2$ using the normal equations $A^\top A x = A^\top b$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
+      <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|A\mathbf{x} - \mathbf{b}\|_2$ using the normal equations $A^\top A \mathbf{x} = A^\top \mathbf{b}$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
       <p>The <b>QR decomposition</b> offers a solution that depends on $\kappa(A)$ rather than $\kappa(A)^2$, providing significantly better stability. The key property is that orthogonal matrices $Q$ have a condition number of 1 ($\kappa(Q)=1$) and preserve the Euclidean norm. Thus, multiplying by $Q$ (or $Q^\top$) does not amplify errors.</p>
 
       <h3>5.2 Definition and Existence</h3>
@@ -320,9 +320,9 @@
 
       <h3>5.3 Solving Least Squares with QR</h3>
       <p>Given $A = QR$, the least squares objective simplifies due to the orthogonal invariance of the Euclidean norm. The standard efficient approach uses the normal equations:</p>
-      $$ A^\top A x = A^\top b \iff (QR)^\top (QR) x = (QR)^\top b \iff R^\top Q^\top Q R x = R^\top Q^\top b $$
-      <p>Since $Q^\top Q = I$, this simplifies to $R^\top R x = R^\top Q^\top b$. Since $R$ is invertible (full rank assumption), we multiply by $R^{-\top}$:
-      $$ R x = Q^\top b $$
+      $$ A^\top A \mathbf{x} = A^\top \mathbf{b} \iff (QR)^\top (QR) \mathbf{x} = (QR)^\top \mathbf{b} \iff R^\top Q^\top Q R \mathbf{x} = R^\top Q^\top \mathbf{b} $$
+      <p>Since $Q^\top Q = I$, this simplifies to $R^\top R \mathbf{x} = R^\top Q^\top \mathbf{b}$. Since $R$ is invertible (full rank assumption), we multiply by $R^{-\top}$:
+      $$ R \mathbf{x} = Q^\top \mathbf{b} $$
       This is a triangular system, easily solvable by <b>back substitution</b> in $O(n^2)$ time.</p>
     </section>
 
@@ -333,9 +333,9 @@
       <h3>6.1 Geometric Intuition</h3>
       <p>The Singular Value Decomposition (SVD) generalizes the concept of diagonalization to all matrices, including non-square ones. It expresses any linear transformation $A$ as a composition of three simple operations: a rotation, a scaling, and another rotation.</p>
       $$ A = U \Sigma V^\top $$
-      <p>Let's unpack this operation step-by-step for an input vector $x$:</p>
+      <p>Let's unpack this operation step-by-step for an input vector $\mathbf{x}$:</p>
       <ol>
-        <li><b>Rotate/Reflect (Analysis via $V^\top$):</b> The matrix $V^\top$ is orthogonal. It takes the vector $x$ and expresses it in a new coordinate system defined by the columns of $V$ (the "right singular vectors"). Essentially, it rotates space so the "principal input axes" align with the standard axes.</li>
+        <li><b>Rotate/Reflect (Analysis via $V^\top$):</b> The matrix $V^\top$ is orthogonal. It takes the vector $\mathbf{x}$ and expresses it in a new coordinate system defined by the columns of $V$ (the "right singular vectors"). Essentially, it rotates space so the "principal input axes" align with the standard axes.</li>
         <li><b>Scale (Gain via $\Sigma$):</b> The matrix $\Sigma$ is diagonal with non-negative entries $\sigma_i$. It independently stretches or shrinks each coordinate $i$ by the factor $\sigma_i$. This is where the magnitude change happens.</li>
         <li><b>Rotate/Reflect (Synthesis via $U$):</b> The matrix $U$ is orthogonal. It takes the scaled coordinates and rotates them to the final orientation in the output space, defined by the columns of $U$ (the "left singular vectors").</li>
       </ol>
@@ -405,7 +405,7 @@
           <strong>Step 1: Eigendecomposition of the Gram Matrix.</strong>
           Let $G = A^\top A \in \mathbb{R}^{n \times n}$.
           <br>1. <b>Symmetry:</b> $G^\top = (A^\top A)^\top = A^\top A = G$.
-          <br>2. <b>PSD:</b> For any $x$, $x^\top G x = x^\top A^\top A x = \|Ax\|_2^2 \ge 0$.
+          <br>2. <b>PSD:</b> For any $\mathbf{x}$, $\mathbf{x}^\top G \mathbf{x} = \mathbf{x}^\top A^\top A \mathbf{x} = \|A\mathbf{x}\|_2^2 \ge 0$.
           <br>By the Spectral Theorem, there exists an orthonormal basis of eigenvectors $\{v_1, \dots, v_n\}$ with real eigenvalues $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n \ge 0$.
           <br>Let $r$ be the number of non-zero eigenvalues ($\lambda_r > 0, \lambda_{r+1}=0$).
           <br>Define the singular values $\sigma_i = \sqrt{\lambda_i}$.
@@ -443,7 +443,7 @@
       </div>
 
       <h3>6.3 SVD vs. Eigendecomposition (Conceptual Contrast)</h3>
-      <p>Eigendecomposition asks for <i>invariant directions</i> ($Av=\lambda v$) and is tied to square matrices; for non-symmetric matrices it may require complex eigenvalues/eigenvectors and the eigenvectors need not be orthogonal. The SVD always exists (for any rectangular matrix) and instead describes how $A$ maps one <i>orthonormal</i> basis to another:</p>
+      <p>Eigendecomposition asks for <i>invariant directions</i> ($A\mathbf{v}=\lambda \mathbf{v}$) and is tied to square matrices; for non-symmetric matrices it may require complex eigenvalues/eigenvectors and the eigenvectors need not be orthogonal. The SVD always exists (for any rectangular matrix) and instead describes how $A$ maps one <i>orthonormal</i> basis to another:</p>
       <ul>
         <li><b>Input frame:</b> right singular vectors $\{v_i\}$ are orthonormal directions in the domain.</li>
         <li><b>Output frame:</b> left singular vectors $\{u_i\}$ are orthonormal directions in the range.</li>
@@ -508,14 +508,14 @@
           Let $B$ be any matrix with rank $k$. By Rank-Nullity, its nullspace has dimension $n-k$.
           Consider the subspace $S$ spanned by the first $k+1$ right singular vectors $\{v_1, \dots, v_{k+1}\}$. $\dim(S) = k+1$.
           Since $\dim(S) + \dim(\mathcal{N}(B)) = (k+1) + (n-k) = n+1 > n$, the intersection $S \cap \mathcal{N}(B)$ must be non-trivial.
-          Let $w \in S \cap \mathcal{N}(B)$ with $\|w\|_2=1$.
+          Let $\mathbf{w} \in S \cap \mathcal{N}(B)$ with $\|w\|_2=1$.
         </div>
         <div class="proof-step">
           <strong>Step 3: Energy Estimate.</strong>
-          Since $w \in \mathcal{N}(B)$, we have $Bw = 0$, so $\|(A-B)w\| = \|Aw\|$.
-          Since $w \in \text{span}(v_1, \dots, v_{k+1})$, we have $\|Aw\| \ge \sigma_{k+1}$.
+          Since $\mathbf{w} \in \mathcal{N}(B)$, we have $B\mathbf{w} = 0$, so $\|(A-B)w\| = \|Aw\|$.
+          Since $\mathbf{w} \in \text{span}(v_1, \dots, v_{k+1})$, we have $\|Aw\| \ge \sigma_{k+1}$.
           (The smallest gain in the first $k+1$ directions is $\sigma_{k+1}$).
-          Thus $\|A-B\|_2 = \sup_{\|x\|=1} \|(A-B)x\| \ge \|(A-B)w\| \ge \sigma_{k+1}$.
+          Thus $\|A-B\|_2 = \sup_{\|\mathbf{x}\|=1} \|(A-B)\mathbf{x}\| \ge \|(A-B)\mathbf{w}\| \ge \sigma_{k+1}$.
         </div>
       </div>
 
@@ -581,41 +581,41 @@
 
       <h4>Properties and Applications</h4>
       <ul>
-        <li><b>Minimum Norm Solution:</b> For any system $Ax=b$ (or the least squares problem), the vector $x^\star = A^+ b$ is the solution that has the <b>minimum Euclidean norm</b>.
+        <li><b>Minimum Norm Solution:</b> For any system $A\mathbf{x}=\mathbf{b}$ (or the least squares problem), the vector $\mathbf{x}^\star = A^+ \mathbf{b}$ is the solution that has the <b>minimum Euclidean norm</b>.
         <br>
         <div class="proof-box">
-          <h4>Proof: $x_{LS} = A^+b$ minimizes norm</h4>
-        <p>The set of all least-squares solutions is given by $S_{LS} = \{x \mid A^\top A x = A^\top b\}$. Since this is an affine set $x_p + \mathcal{N}(A)$, there is a unique element with minimum Euclidean norm. We show $x^+ = A^+b$ is that element.</p>
+          <h4>Proof: $x_{LS} = A^+\mathbf{b}$ minimizes norm</h4>
+        <p>The set of all least-squares solutions is given by $S_{LS} = \{\mathbf{x} \mid A^\top A \mathbf{x} = A^\top \mathbf{b}\}$. Since this is an affine set $x_p + \mathcal{N}(A)$, there is a unique element with minimum Euclidean norm. We show $\mathbf{x}^+ = A^+\mathbf{b}$ is that element.</p>
 
           <div class="proof-step">
           <strong>Step 1: Verification of Solution.</strong>
-          First, we check that $x^+$ actually solves the least squares problem (satisfies Normal Equations).
+          First, we check that $\mathbf{x}^+$ actually solves the least squares problem (satisfies Normal Equations).
           Recall $A = U \Sigma V^\top$ and $A^+ = V \Sigma^+ U^\top$.
-          $$ A x^+ = U \Sigma V^\top V \Sigma^+ U^\top b = U (\Sigma \Sigma^+) U^\top b $$
+          $$ A \mathbf{x}^+ = U \Sigma V^\top V \Sigma^+ U^\top \mathbf{b} = U (\Sigma \Sigma^+) U^\top \mathbf{b} $$
           The product $\Sigma \Sigma^+$ is a diagonal projection matrix (1s for indices $1 \dots r$, 0s otherwise). It projects onto the range of $A$.
-          Thus $Ax^+$ is the orthogonal projection of $b$ onto $\mathcal{R}(A)$, which defines the least squares solution.
+          Thus $A\mathbf{x}^+$ is the orthogonal projection of $\mathbf{b}$ onto $\mathcal{R}(A)$, which defines the least squares solution.
           </div>
 
           <div class="proof-step">
-          <strong>Step 2: Orthogonality of $x^+$.</strong>
-          We check where $x^+$ lies.
-          $x^+ = V (\Sigma^+ U^\top b)$. This vector is a linear combination of the columns of $V$ corresponding to non-zero singular values (indices $1 \dots r$).
+          <strong>Step 2: Orthogonality of $\mathbf{x}^+$.</strong>
+          We check where $\mathbf{x}^+$ lies.
+          $\mathbf{x}^+ = V (\Sigma^+ U^\top \mathbf{b})$. This vector is a linear combination of the columns of $V$ corresponding to non-zero singular values (indices $1 \dots r$).
           These columns span the <b>row space</b> $\mathcal{R}(A^\top)$.
-          Thus, $x^+ \in \mathcal{R}(A^\top)$.
+          Thus, $\mathbf{x}^+ \in \mathcal{R}(A^\top)$.
           Recall the fundamental orthogonality: $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
           </div>
 
           <div class="proof-step">
           <strong>Step 3: Pythagorean Minimization.</strong>
-          Let $x$ be any solution to the least squares problem. The set of all solutions is the affine set $S = x^+ + \mathcal{N}(A)$.
-          Any solution $x$ can be written as $x = x^+ + z$, where $z \in \mathcal{N}(A)$.
-          <br>We established in Step 2 that $x^+ \in \mathcal{R}(A^\top)$.
+          Let $\mathbf{x}$ be any solution to the least squares problem. The set of all solutions is the affine set $S = \mathbf{x}^+ + \mathcal{N}(A)$.
+          Any solution $\mathbf{x}$ can be written as $\mathbf{x} = \mathbf{x}^+ + \mathbf{z}$, where $\mathbf{z} \in \mathcal{N}(A)$.
+          <br>We established in Step 2 that $\mathbf{x}^+ \in \mathcal{R}(A^\top)$.
           The Fundamental Theorem of Linear Algebra states that $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
-          Therefore, $x^+ \perp z$.
+          Therefore, $\mathbf{x}^+ \perp \mathbf{z}$.
           <br>By the Pythagorean Theorem:
-          $$ \|x\|_2^2 = \|x^+ + z\|_2^2 = \|x^+\|_2^2 + \|z\|_2^2 $$
-          Since $\|z\|_2^2 \ge 0$, the minimum possible value for $\|x\|_2^2$ occurs when $\|z\|_2^2 = 0$, i.e., $z=0$.
-          Thus, $x = x^+$ is the unique solution with minimum norm.
+          $$ \|\mathbf{x}\|_2^2 = \|\mathbf{x}^+ + \mathbf{z}\|_2^2 = \|\mathbf{x}^+\|_2^2 + \|\mathbf{z}\|_2^2 $$
+          Since $\|z\|_2^2 \ge 0$, the minimum possible value for $\|x\|_2^2$ occurs when $\|z\|_2^2 = 0$, i.e., $\mathbf{z}=0$.
+          Thus, $\mathbf{x} = \mathbf{x}^+$ is the unique solution with minimum norm.
           </div>
         </div>
         </li>
@@ -629,7 +629,7 @@
 
       <ul>
         <li><b>$\kappa \approx 1$:</b> Well-conditioned. Errors are not amplified. Orthogonal matrices have $\kappa = 1$.</li>
-        <li><b>$\kappa \gg 1$:</b> Ill-conditioned. Small errors in $b$ can lead to massive errors in $x$.</li>
+        <li><b>$\kappa \gg 1$:</b> Ill-conditioned. Small errors in $\mathbf{b}$ can lead to massive errors in $\mathbf{x}$.</li>
       </ul>
 
       <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
@@ -637,7 +637,7 @@
           <img src="assets/conditioning-geometry.png"
                alt="Well-conditioned versus ill-conditioned error amplification geometry"
                style="width: 100%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 6:</i> Condition number as error magnification: the same small uncertainty in $b$ can map to a small or huge uncertainty in $x$ depending on $\kappa(A)$.</figcaption>
+          <figcaption><i>Figure 6:</i> Condition number as error magnification: the same small uncertainty in $\mathbf{b}$ can map to a small or huge uncertainty in $\mathbf{x}$ depending on $\kappa(A)$.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/zig-zag-ill-conditioning.png"
@@ -650,7 +650,7 @@
       <div class="insight">
         <h4>Impact on Optimization Algorithms</h4>
         <p>The condition number is not just a numerical nuisance; it fundamentally limits the speed of optimization algorithms.
-        For a quadratic function $f(x) = \frac{1}{2}x^\top A x$, Gradient Descent converges at a rate determined by $\frac{\kappa-1}{\kappa+1}$.
+        For a quadratic function $f(\mathbf{x}) = \frac{1}{2}\mathbf{x}^\top A \mathbf{x}$, Gradient Descent converges at a rate determined by $\frac{\kappa-1}{\kappa+1}$.
         <ul>
             <li>If $\kappa=1$ (spherical), convergence is instant.</li>
             <li>If $\kappa \gg 1$ (valley), convergence is arbitrarily slow.</li>
@@ -660,7 +660,7 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive: Condition Number & Stability</h3>
-        <p><b>Visualize Ill-Conditioning:</b> Compare solving $Ax=b$ for a well-conditioned matrix versus an ill-conditioned one. In the ill-conditioned case, the "ellipse" of the matrix is very skinny. A small change in the target vector $b$ (moving the target slightly off the major axis) requires a massive change in $x$ to compensate.</p>
+        <p><b>Visualize Ill-Conditioning:</b> Compare solving $A\mathbf{x}=\mathbf{b}$ for a well-conditioned matrix versus an ill-conditioned one. In the ill-conditioned case, the "ellipse" of the matrix is very skinny. A small change in the target vector $\mathbf{b}$ (moving the target slightly off the major axis) requires a massive change in $\mathbf{x}$ to compensate.</p>
         <div id="widget-condition-number" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
     </section>
@@ -721,28 +721,28 @@
       <div class="solution-box">
         <h4>Solution</h4>
         <div class="proof-step">
-          <strong>Upper bound ($\le$):</strong> By Hölder's inequality, $x^\top y \le \|x\|_p \|y\|_q$.
-          The definition of the dual norm is $\|y\|_* = \sup_{\|x\|_p \le 1} x^\top y$.
-          From Hölder, if $\|x\|_p \le 1$, then $x^\top y \le \|y\|_q$. Thus $\|y\|_* \le \|y\|_q$.
+          <strong>Upper bound ($\le$):</strong> By Hölder's inequality, $\mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\|_p \|\mathbf{y}\|_q$.
+          The definition of the dual norm is $\|y\|_* = \sup_{\|\mathbf{x}\|_p \le 1} \mathbf{x}^\top \mathbf{y}$.
+          From Hölder, if $\|x\|_p \le 1$, then $\mathbf{x}^\top \mathbf{y} \le \|\mathbf{y}\|_q$. Thus $\|y\|_* \le \|\mathbf{y}\|_q$.
         </div>
         <div class="proof-step">
-          <strong>Lower bound ($\ge$):</strong> We need to construct a vector $x$ that "aligns" with $y$ to maximize the inner product.
+          <strong>Lower bound ($\ge$):</strong> We need to construct a vector $\mathbf{x}$ that "aligns" with $\mathbf{y}$ to maximize the inner product.
           We want $x_i$ to have the same sign as $y_i$, and magnitudes such that equality holds in Hölder's.
           Choose $x_i = \mathrm{sign}(y_i) |y_i|^{q-1}$.
-          <br>Check inner product: $x^\top y = \sum \mathrm{sign}(y_i)|y_i|^{q-1} y_i = \sum |y_i|^q = \|y\|_q^q$.
-          <br>Check norm of $x$: $\|x\|_p^p = \sum |x_i|^p = \sum |y_i|^{p(q-1)}$.
-          Since $(p-1)q = p \implies p(q-1) = q$: $\|x\|_p^p = \sum |y_i|^q = \|y\|_q^q$.
+          <br>Check inner product: $\mathbf{x}^\top \mathbf{y} = \sum \mathrm{sign}(y_i)|y_i|^{q-1} y_i = \sum |y_i|^q = \|\mathbf{y}\|_q^q$.
+          <br>Check norm of $\mathbf{x}$: $\|x\|_p^p = \sum |x_i|^p = \sum |y_i|^{p(q-1)}$.
+          Since $(p-1)q = p \implies p(q-1) = q$: $\|x\|_p^p = \sum |y_i|^q = \|\mathbf{y}\|_q^q$.
           So $\|x\|_p = \|y\|_q^{q/p}$.
-          <br>Now normalize to get a unit vector $\tilde{x} = x / \|x\|_p = x / \|y\|_q^{q/p}$.
-          $$ \tilde{x}^\top y = \frac{\|y\|_q^q}{\|y\|_q^{q/p}} = \|y\|_q^{q - q/p} = \|y\|_q^1 = \|y\|_q $$
-          Since we found a unit vector achieving this value, $\|y\|_* \ge \|y\|_q$.
+          <br>Now normalize to get a unit vector $\tilde{\mathbf{x}} = \mathbf{x} / \|\mathbf{x}\|_p = \mathbf{x} / \|\mathbf{y}\|_q^{q/p}$.
+          $$ \tilde{\mathbf{x}}^\top \mathbf{y} = \frac{\|\mathbf{y}\|_q^q}{\|\mathbf{y}\|_q^{q/p}} = \|\mathbf{y}\|_q^{q - q/p} = \|\mathbf{y}\|_q^1 = \|\mathbf{y}\|_q $$
+          Since we found a unit vector achieving this value, $\|y\|_* \ge \|\mathbf{y}\|_q$.
         </div>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
-        <p><b>Dual Norm:</b> Defined by $\|y\|_* = \sup \{ y^\top x \mid \|x\| \le 1 \}$.
+        <p><b>Dual Norm:</b> Defined by $\|y\|_* = \sup \{ \mathbf{y}^\top \mathbf{x} \mid \|\mathbf{x}\| \le 1 \}$.
         <br><b>$\ell_p$ Dual:</b> The dual of the $\ell_p$ norm ($1 < p < \infty$) is the $\ell_q$ norm, where $1/p + 1/q = 1$.
-        <br><b>Hölder's Inequality:</b> $|x^\top y| \le \|x\|_p \|y\|_q$. This is the generalized Cauchy-Schwarz inequality.
+        <br><b>Hölder's Inequality:</b> $|\mathbf{x}^\top \mathbf{y}| \le \|\mathbf{x}\|_p \|\mathbf{y}\|_q$. This is the generalized Cauchy-Schwarz inequality.
         <br><b>Alignment Condition:</b> Equality holds if $|x_i|^p$ is proportional to $|y_i|^q$ (and signs match). This is crucial for constructing worst-case examples in robustness analysis.</p>
       </div>
 
@@ -778,7 +778,7 @@
         </div>
         <div class="proof-step">
           <strong>2. Compute $V$ (eigenvectors of $A^\top A$):</strong>
-          For $\lambda_1=2$: $\begin{bmatrix} -1 & 1 \\ 1 & -1 \end{bmatrix} v = 0 \implies v_1 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+          For $\lambda_1=2$: $\begin{bmatrix} -1 & 1 \\ 1 & -1 \end{bmatrix} \mathbf{v} = 0 \implies v_1 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
           For $\lambda_2=0$: $v_2 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ -1 \end{bmatrix}$.
           $V = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$.
         </div>
@@ -806,24 +806,24 @@
       </div>
 
       <h3>P1.6 — Normal Equations vs. QR</h3>
-      <p>Solve the system $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}, b = \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}$ using (a) Normal Equations and (b) QR factorization. Compare the intermediate steps.</p>
+      <p>Solve the system $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}, \mathbf{b} = \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}$ using (a) Normal Equations and (b) QR factorization. Compare the intermediate steps.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p><b>(a) Normal Equations:</b> $A^\top A x = A^\top b$.
+        <p><b>(a) Normal Equations:</b> $A^\top A \mathbf{x} = A^\top \mathbf{b}$.
         $A^\top A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$.
-        $A^\top b = \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
-        Solve $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix} x = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
+        $A^\top \mathbf{b} = \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
+        Solve $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix} \mathbf{x} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
         Multiply by inverse $\frac{1}{3} \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$:
-        $x = \frac{1}{3} \begin{bmatrix} 6-4 \\ -3+8 \end{bmatrix} = \frac{1}{3} \begin{bmatrix} 2 \\ 5 \end{bmatrix}$.</p>
+        $\mathbf{x} = \frac{1}{3} \begin{bmatrix} 6-4 \\ -3+8 \end{bmatrix} = \frac{1}{3} \begin{bmatrix} 2 \\ 5 \end{bmatrix}$.</p>
         <p><b>(b) QR Factorization:</b>
         Gram-Schmidt on columns $a_1, a_2$.
         $u_1 = a_1 = (1, 0, 1)^\top$. $q_1 = (1/\sqrt{2}, 0, 1/\sqrt{2})^\top$.
         $v_2 = a_2 - \langle a_2, q_1 \rangle q_1 = (1, 1, 0)^\top - (1/\sqrt{2}) (1/\sqrt{2}, 0, 1/\sqrt{2})^\top = (1, 1, 0)^\top - (1/2, 0, 1/2)^\top = (1/2, 1, -1/2)^\top$.
         Normalize $v_2$: $\|v_2\|^2 = 1/4 + 1 + 1/4 = 1.5 = 3/2$. $\|v_2\| = \sqrt{3/2}$.
         $q_2 = \sqrt{2/3} (1/2, 1, -1/2)^\top$.
-        Solve $Rx = Q^\top b$.
-        $R = \begin{bmatrix} \sqrt{2} & 1/\sqrt{2} \\ 0 & \sqrt{3/2} \end{bmatrix}$. $Q^\top b = \begin{bmatrix} 3/\sqrt{2} \\ 4\sqrt{2/3}-1/\sqrt{6} \end{bmatrix}$.
-        Back substitution yields same $x$. QR avoids forming $A^\top A$ (better condition number).</p>
+        Solve $R\mathbf{x} = Q^\top \mathbf{b}$.
+        $R = \begin{bmatrix} \sqrt{2} & 1/\sqrt{2} \\ 0 & \sqrt{3/2} \end{bmatrix}$. $Q^\top \mathbf{b} = \begin{bmatrix} 3/\sqrt{2} \\ 4\sqrt{2/3}-1/\sqrt{6} \end{bmatrix}$.
+        Back substitution yields same $\mathbf{x}$. QR avoids forming $A^\top A$ (better condition number).</p>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
@@ -867,41 +867,41 @@
       <p>Let $A$ have linearly independent columns. Derive the projection formula $P = A(A^\top A)^{-1}A^\top$ by minimizing $\|Ax - b\|_2^2$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>We want to find the point $p = Ax$ in the column space closest to $b$.
-        Problem: $\min_x \|Ax - b\|_2^2$.
-        Gradient: $2A^\top (Ax - b) = 0$.
-        Normal eqs: $A^\top A x = A^\top b$.
+        <p>We want to find the point $\mathbf{p} = A\mathbf{x}$ in the column space closest to $\mathbf{b}$.
+        Problem: $\min_\mathbf{x} \|A\mathbf{x} - \mathbf{b}\|_2^2$.
+        Gradient: $2A^\top (A\mathbf{x} - \mathbf{b}) = 0$.
+        Normal eqs: $A^\top A \mathbf{x} = A^\top \mathbf{b}$.
         Since cols are independent, $A^\top A$ is invertible.
-        Solution: $x^* = (A^\top A)^{-1} A^\top b$.
-        Projection: $p = A x^* = A(A^\top A)^{-1} A^\top b$.
-        The matrix mapping $b$ to $p$ is $P = A(A^\top A)^{-1} A^\top$.</p>
+        Solution: $\mathbf{x}^* = (A^\top A)^{-1} A^\top \mathbf{b}$.
+        Projection: $\mathbf{p} = A \mathbf{x}^* = A(A^\top A)^{-1} A^\top \mathbf{b}$.
+        The matrix mapping $\mathbf{b}$ to $\mathbf{p}$ is $P = A(A^\top A)^{-1} A^\top$.</p>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
         <p><b>The "Hat" Matrix:</b> $P = A(A^\top A)^{-1} A^\top$.
         <br><b>Requirements:</b> Valid only when $A$ has full column rank (so $A^\top A$ is invertible).
         <br><b>General Case:</b> If $A$ is rank-deficient, use the pseudoinverse form $P = AA^+$.
-        <br><b>Properties:</b> $P^2=P$ and $P^\top=P$. The residual is $(I-P)b$, which projects onto $\mathcal{N}(A^\top)$.</p>
+        <br><b>Properties:</b> $P^2=P$ and $P^\top=P$. The residual is $(I-P)\mathbf{b}$, which projects onto $\mathcal{N}(A^\top)$.</p>
       </div>
 
       <h3>P1.9 — Hyperplane Projection</h3>
       <p>Find the projection of $(1, 2, 3)^\top$ onto $x_1 + x_2 + x_3 = 3$. Verify your result using the standard formula for distance to a plane.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>Normal $a = (1, 1, 1)^\top$. Point $y = (1, 2, 3)^\top$. Target $b=3$.
-        $p = y - \frac{a^\top y - b}{\|a\|^2} a$.
-        $a^\top y = 1+2+3 = 6$. $\|a\|^2 = 3$.
-        $p = (1, 2, 3)^\top - \frac{6-3}{3} (1, 1, 1)^\top = (1, 2, 3)^\top - (1, 1, 1)^\top = (0, 1, 2)^\top$.
+        <p>Normal $a = (1, 1, 1)^\top$. Point $\mathbf{y} = (1, 2, 3)^\top$. Target $\mathbf{b}=3$.
+        $\mathbf{p} = \mathbf{y} - \frac{a^\top \mathbf{y} - \mathbf{b}}{\|a\|^2} a$.
+        $a^\top \mathbf{y} = 1+2+3 = 6$. $\|a\|^2 = 3$.
+        $\mathbf{p} = (1, 2, 3)^\top - \frac{6-3}{3} (1, 1, 1)^\top = (1, 2, 3)^\top - (1, 1, 1)^\top = (0, 1, 2)^\top$.
         Check: $0+1+2=3$. Correct.
         Distance: $\|y-p\| = \|(1, 1, 1)\| = \sqrt{3}$.
-        Formula: $\frac{|a^\top y - b|}{\|a\|} = \frac{|6-3|}{\sqrt{3}} = \frac{3}{\sqrt{3}} = \sqrt{3}$. Matches.</p>
+        Formula: $\frac{|a^\top \mathbf{y} - \mathbf{b}|}{\|a\|} = \frac{|6-3|}{\sqrt{3}} = \frac{3}{\sqrt{3}} = \sqrt{3}$. Matches.</p>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
-        <p><b>Constraint Projection:</b> The projection of $y$ onto the affine set $\{x \mid a^\top x = b\}$ is:
-        $$ \Pi(y) = y - \frac{a^\top y - b}{\|a\|^2} a $$
-        <b>Optimization View:</b> This is the solution to $\min_x \frac{1}{2}\|x-y\|^2$ s.t. $a^\top x = b$.
-        <br><b>Lagrange Multiplier:</b> The term $\frac{a^\top y - b}{\|a\|^2}$ corresponds to the Lagrange multiplier $\nu$ associated with the constraint.</p>
+        <p><b>Constraint Projection:</b> The projection of $\mathbf{y}$ onto the affine set $\{x \mid a^\top \mathbf{x} = \mathbf{b}\}$ is:
+        $$ \Pi(\mathbf{y}) = \mathbf{y} - \frac{a^\top \mathbf{y} - \mathbf{b}}{\|a\|^2} a $$
+        <b>Optimization View:</b> This is the solution to $\min_\mathbf{x} \frac{1}{2}\|\mathbf{x}-\mathbf{y}\|^2$ s.t. $a^\top \mathbf{x} = \mathbf{b}$.
+        <br><b>Lagrange Multiplier:</b> The term $\frac{a^\top \mathbf{y} - \mathbf{b}}{\|a\|^2}$ corresponds to the Lagrange multiplier $\nu$ associated with the constraint.</p>
       </div>
 
       <h3>P1.10 — Condition Number Calculation</h3>
@@ -919,43 +919,43 @@
         <br><b>Interpretation:</b> The aspect ratio of the hyperellipse image of the unit sphere.
         <br><b>Impact:</b>
         <ul>
-            <li><b>Sensitivity:</b> Relative error in $x$ $\le \kappa(A) \times$ Relative error in $b$.</li>
+            <li><b>Sensitivity:</b> Relative error in $\mathbf{x}$ $\le \kappa(A) \times$ Relative error in $\mathbf{b}$.</li>
             <li><b>Optimization:</b> Controls convergence rate of gradient descent. High $\kappa$ $\implies$ "Zig-zagging".</li>
         </ul></p>
       </div>
 
       <h3>P1.11 — Pseudoinverse of Rank-1 Matrix</h3>
-      <p>Let $A = xy^\top$ where $x, y \in \mathbb{R}^n$ are non-zero vectors. Show that $A^+ = \frac{A^\top}{\|x\|_2^2 \|y\|_2^2}$.</p>
+      <p>Let $A = xy^\top$ where $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ are non-zero vectors. Show that $A^+ = \frac{A^\top}{\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2}$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>SVD of rank-1 matrix: $A = \sigma u v^\top$.
+        <p>SVD of rank-1 matrix: $A = \sigma \mathbf{u} \mathbf{v}^\top$.
         $\|A\|_F = \|x\|\|y\| = \sigma$.
-        $u = x/\|x\|$, $v = y/\|y\|$.
-        Check: $A = (\|x\|\|y\|) \frac{x}{\|x\|} \frac{y^\top}{\|y\|} = xy^\top$. Correct.
-        Pseudoinverse: $A^+ = \frac{1}{\sigma} v u^\top = \frac{1}{\|x\|\|y\|} \frac{y}{\|y\|} \frac{x^\top}{\|x\|} = \frac{yx^\top}{\|x\|^2 \|y\|^2}$.
+        $\mathbf{u} = \mathbf{x}/\|\mathbf{x}\|$, $\mathbf{v} = \mathbf{y}/\|\mathbf{y}\|$.
+        Check: $A = (\|\mathbf{x}\|\|\mathbf{y}\|) \frac{\mathbf{x}}{\|\mathbf{x}\|} \frac{\mathbf{y}^\top}{\|\mathbf{y}\|} = xy^\top$. Correct.
+        Pseudoinverse: $A^+ = \frac{1}{\sigma} \mathbf{v} \mathbf{u}^\top = \frac{1}{\|\mathbf{x}\|\|\mathbf{y}\|} \frac{\mathbf{y}}{\|\mathbf{y}\|} \frac{\mathbf{x}^\top}{\|\mathbf{x}\|} = \frac{yx^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.
         Note that $A^\top = (xy^\top)^\top = yx^\top$.
-        Thus $A^+ = \frac{A^\top}{\|x\|^2 \|y\|^2}$.</p>
+        Thus $A^+ = \frac{A^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.</p>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
-        <p><b>Rank-1 SVD:</b> A matrix $A = xy^\top$ has exactly one non-zero singular value $\sigma_1 = \|x\|_2 \|y\|_2$.
-        <br><b>Singular Vectors:</b> $u_1 = x/\|x\|$, $v_1 = y/\|y\|$.
-        <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2} = \frac{yx^\top}{\|x\|^2 \|y\|^2}$.</p>
+        <p><b>Rank-1 SVD:</b> A matrix $A = xy^\top$ has exactly one non-zero singular value $\sigma_1 = \|\mathbf{x}\|_2 \|\mathbf{y}\|_2$.
+        <br><b>Singular Vectors:</b> $u_1 = \mathbf{x}/\|\mathbf{x}\|$, $v_1 = \mathbf{y}/\|\mathbf{y}\|$.
+        <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2} = \frac{yx^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.</p>
       </div>
 
       <h3>P1.12 — Operator Norm Properties</h3>
       <p>Prove that $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$. Use the Rayleigh Quotient definition of eigenvalues.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>$\|A\|_2^2 = \sup_{x \ne 0} \frac{\|Ax\|^2}{\|x\|^2} = \sup_{x \ne 0} \frac{x^\top A^\top A x}{x^\top x}$.
+        <p>$\|A\|_2^2 = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|^2}{\|\mathbf{x}\|^2} = \sup_{\mathbf{x} \ne 0} \frac{\mathbf{x}^\top A^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}}$.
         The term on the right is the Rayleigh quotient for the symmetric matrix $M = A^\top A$.
         By the variational characterization of eigenvalues, the maximum value of the Rayleigh quotient is $\lambda_{\max}(M)$.
         Thus $\|A\|_2^2 = \lambda_{\max}(A^\top A)$, so $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$.</p>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
-        <p><b>Variational Definition of Eigenvalues:</b> For symmetric $M$, $\lambda_{\max}(M) = \max_{\|x\|=1} x^\top M x$.
-        <br><b>Spectral Norm Connection:</b> $\|A\|_2^2 = \max_{\|x\|=1} \|Ax\|^2 = \max_{\|x\|=1} x^\top (A^\top A) x = \lambda_{\max}(A^\top A)$.
+        <p><b>Variational Definition of Eigenvalues:</b> For symmetric $M$, $\lambda_{\max}(M) = \max_{\|\mathbf{x}\|=1} \mathbf{x}^\top M \mathbf{x}$.
+        <br><b>Spectral Norm Connection:</b> $\|A\|_2^2 = \max_{\|\mathbf{x}\|=1} \|A\mathbf{x}\|^2 = \max_{\|\mathbf{x}\|=1} \mathbf{x}^\top (A^\top A) \mathbf{x} = \lambda_{\max}(A^\top A)$.
         <br><b>Implication:</b> The spectral norm is the square root of the largest eigenvalue of the Gram matrix.</p>
       </div>
 
@@ -965,10 +965,10 @@
         <h4>Solution</h4>
         <p><b>Frobenius:</b> $\|X\|_F^2 = \mathrm{tr}(X^\top X)$.
         $\|UAV^\top\|_F^2 = \mathrm{tr}(V A^\top U^\top U A V^\top) = \mathrm{tr}(V A^\top A V^\top) = \mathrm{tr}(V^\top V A^\top A) = \mathrm{tr}(A^\top A) = \|A\|_F^2$.
-        <br><b>Spectral:</b> $\|UAV^\top\|_2 = \sup_{\|x\|=1} \|UAV^\top x\|$.
-        Since $U$ is orthogonal, $\|Uy\| = \|y\|$. So we maximize $\|A (V^\top x)\|$.
-        Since $V$ is orthogonal, as $x$ ranges over the unit sphere, $y = V^\top x$ also ranges over the unit sphere.
-        Thus $\sup_{\|x\|=1} \|A V^\top x\| = \sup_{\|y\|=1} \|Ay\| = \|A\|_2$.
+        <br><b>Spectral:</b> $\|UAV^\top\|_2 = \sup_{\|\mathbf{x}\|=1} \|UAV^\top \mathbf{x}\|$.
+        Since $U$ is orthogonal, $\|Uy\| = \|y\|$. So we maximize $\|A (V^\top \mathbf{x})\|$.
+        Since $V$ is orthogonal, as $\mathbf{x}$ ranges over the unit sphere, $\mathbf{y} = V^\top \mathbf{x}$ also ranges over the unit sphere.
+        Thus $\sup_{\|\mathbf{x}\|=1} \|A V^\top \mathbf{x}\| = \sup_{\|\mathbf{y}\|=1} \|A\mathbf{y}\| = \|A\|_2$.
         </p>
       </div>
       <div class="recap-box">

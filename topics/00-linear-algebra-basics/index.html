@@ -81,14 +81,14 @@
       <h4>Line through two points</h4>
       <p>Given two distinct points $x_1, x_2 \in \mathbb{R}^n$, the <b>line</b> passing through them is the set of all affine combinations of these points:</p>
       $$
-      \mathbf{y} = \theta x_1 + (1-\theta)x_2 = x_2 + \theta(x_1 - x_2), \quad \theta \in \mathbb{R}
+      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2 = \mathbf{x}_2 + \theta(\mathbf{x}_1 - \mathbf{x}_2), \quad \theta \in \mathbb{R}
       $$
       <p>As $\theta$ varies over $\mathbb{R}$, $\mathbf{y}$ traces out the infinite line passing through $x_2$ in the direction of $x_1 - x_2$. The value $\theta=0$ corresponds to $x_2$, and $\theta=1$ corresponds to $x_1$.</p>
 
       <h4>Line segment between two points</h4>
       <p>The <b>line segment</b> connecting $x_1$ and $x_2$, denoted $[x_1, x_2]$, corresponds to restricting the parameter $\theta$ to the unit interval $[0, 1]$:</p>
       $$
-      \mathbf{y} = \theta x_1 + (1-\theta)x_2, \quad 0 \le \theta \le 1
+      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \quad 0 \le \theta \le 1
       $$
       <p>This parametrization is the definition of a <b>convex combination</b> of two points. Intuitively, a convex combination is a "weighted average" that lies physically between the points. If you imagine a mass at $x_1$ and a mass at $x_2$, the point $\mathbf{y}$ is the center of mass when the weights are $\theta$ and $1-\theta$. A set is defined to be <b>convex</b> if and only if it contains the entire line segment between any pair of its points.</p>
 
@@ -789,7 +789,7 @@
       <h3>The Gram-Schmidt Process</h3>
       <p>The Gram-Schmidt process is an algorithm for constructing an orthonormal basis from a set of linearly independent vectors. Starting with a vector, it iteratively subtracts the components that lie in the direction of the previously processed vectors, leaving a new, orthogonal vector that is then normalized.
       $$
-      \tilde{\mathbf{q}}_k = a_k - \sum_{i=1}^{k-1} (q_i^\top a_k) q_i, \quad q_k = \frac{\tilde{\mathbf{q}}_k}{\|\tilde{\mathbf{q}}_k\|_2}
+      \tilde{\mathbf{q}}_k = \mathbf{a}_k - \sum_{i=1}^{k-1} (\mathbf{q}_i^\top \mathbf{a}_k) \mathbf{q}_i, \quad \mathbf{q}_k = \frac{\tilde{\mathbf{q}}_k}{\|\tilde{\mathbf{q}}_k\|_2}
       $$
       </p>
 
@@ -1447,7 +1447,7 @@
       <h4>Euclidean Projection Formula (Nullspace)</h4>
       <p>The <b>Euclidean projection</b> of any point $\mathbf{y} \in \mathbb{R}^n$ onto $\mathcal{A}$ can also be computed via the nullspace basis:</p>
       $$
-      \Pi_{\mathcal{A}}(\mathbf{y}) = x_0 + Z(Z^\top Z)^{-1} Z^\top (\mathbf{y} - x_0)
+      \Pi_{\mathcal{A}}(\mathbf{y}) = \mathbf{x}_0 + Z(Z^\top Z)^{-1} Z^\top (\mathbf{y} - \mathbf{x}_0)
       $$
 
       <div class="proof-box">
@@ -1668,7 +1668,8 @@
         <br><b>Geometric Intuition:</b> Linearly dependent vectors are "redundant"; one can be written as a combination of the others, collapsing the span into a lower-dimensional subspace.</p>
       </div>
 
-      <h3>P0.2 — The Rank-Nullity Theorem</h3>
+
+<h3>P0.2 — The Rank-Nullity Theorem</h3>
       <p>Let $A$ be a $10 \times 15$ matrix.</p>
       <ol type="a">
         <li>What is the maximum possible rank of $A$?</li>
@@ -1695,7 +1696,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.12 — Orthogonal Complements</h3>
+
+<h3>P0.12 — Orthogonal Complements</h3>
       <p>Let $S$ be a subspace of $\mathbb{R}^n$. The orthogonal complement is $S^\perp = \{\mathbf{y} \mid \mathbf{y}^\top \mathbf{x} = 0 \ \forall \mathbf{x} \in S\}$.</p>
       <ol type="a">
         <li>Prove that $S^\perp$ is a subspace.</li>
@@ -1730,7 +1732,8 @@
         <br><b>Connection to Matrices:</b> $\mathcal{R}(A)^\perp = \mathcal{N}(A^\top)$. (Fundamental Theorem of Linear Algebra).</p>
       </div>
 
-      <h3>P0.4 — Norm Equivalence</h3>
+
+<h3>P0.4 — Norm Equivalence</h3>
       <p>In finite dimensions, all norms are equivalent. For $\mathbf{x} \in \mathbb{R}^n$, prove the following inequalities:</p>
       <ol type="a">
         <li>$\|x\|_\infty \le \|\mathbf{x}\|_2 \le \sqrt{n} \|\mathbf{x}\|_\infty$</li>
@@ -1765,7 +1768,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.13 — Frobenius Norm Submultiplicativity</h3>
+
+<h3>P0.13 — Frobenius Norm Submultiplicativity</h3>
       <p>We proved $\|AB\|_F \le \|A\|_F \|B\|_F$ in the lecture using Cauchy-Schwarz.
       <br>Re-derive this result by writing $\|X\|_F^2 = \mathrm{tr}(X^\top X)$ and using the property $\mathrm{tr}(M) = \sum \lambda_i(M)$ along with the fact that $\lambda_{\max}(A^\top A) \le \mathrm{tr}(A^\top A)$.</p>
       <div class="solution-box">
@@ -1799,7 +1803,8 @@
         <br><b>Comparison:</b> $\|A\|_2 \le \|A\|_F \le \sqrt{rank(A)} \|A\|_2$. The spectral norm is "tighter".</p>
       </div>
 
-      <h3>P0.14 — Spectral Norm Properties</h3>
+
+<h3>P0.14 — Spectral Norm Properties</h3>
       <p>Let $\|A\|_2$ denote the spectral norm (max singular value).</p>
       <ol type="a">
         <li>Show that $\|A\|_2 = 0$ if and only if $A=0$.</li>
@@ -1820,7 +1825,8 @@
         <br><b>Invariance:</b> The spectral norm is <b>orthogonally invariant</b>. $\|Q A Z\|_2 = \|A\|_2$ for any orthogonal matrices $Q, Z$. It depends only on the singular values (intrinsic geometry).</p>
       </div>
 
-      <h3>P0.15 — Isometries</h3>
+
+<h3>P0.15 — Isometries</h3>
       <p>An isometry is a linear map $f(\mathbf{x}) = Q\mathbf{x}$ that preserves distances: $\|Qx - Qy\|_2 = \|x - y\|_2$ for all $\mathbf{x}, \mathbf{y}$.
       <br>Show that this condition implies $Q^\top Q = I$. Thus, isometries are represented by orthogonal matrices.</p>
       <div class="solution-box">
@@ -1852,7 +1858,8 @@
         <br><b>Conclusion:</b> Preserving lengths is equivalent to preserving angles (inner products). Thus, isometries in Euclidean space are exactly the orthogonal matrices ($Q^\top Q = I$).</p>
       </div>
 
-      <h3>P0.17 — Weighted Inner Product</h3>
+
+<h3>P0.17 — Weighted Inner Product</h3>
       <p>Let $A \in \mathbb{S}^n_{++}$ be a symmetric positive definite matrix.
       <br>(a) Prove that $\langle \mathbf{x}, \mathbf{y} \rangle_A = \mathbf{x}^\top A \mathbf{y}$ satisfies all axioms of an inner product.
       <br>(b) Write down the Cauchy-Schwarz inequality for this inner product.</p>
@@ -1875,7 +1882,8 @@
         <br><b>Geometric Meaning:</b> The unit ball $\{x \mid \mathbf{x}^\top P \mathbf{x} \le 1\}$ is an ellipsoid centered at the origin.</p>
       </div>
 
-      <h3>P0.18 — Characterization of Projectors</h3>
+
+<h3>P0.18 — Characterization of Projectors</h3>
       <p>A matrix $P$ is an orthogonal projector if and only if it is idempotent ($P^2=P$) and symmetric ($P^\top=P$).
       <br>(a) Prove that if $P$ is an orthogonal projector onto a subspace $S$, it satisfies these conditions.
       <br>(b) Prove the converse.</p>
@@ -1909,7 +1917,8 @@
         <br><b>Oblique Projectors:</b> If $P^2=P$ but $P \neq P^\top$, it is an <i>oblique</i> projection (projects along a non-orthogonal angle).</p>
       </div>
 
-      <h3>P0.10 — Projection onto a Line</h3>
+
+<h3>P0.10 — Projection onto a Line</h3>
       <p>Let $a = (1, 1, 1)^\top$. Find the projection of $\mathbf{b} = (1, 0, 0)^\top$ onto the line spanned by $a$. Verify that the residual $\mathbf{b} - \mathbf{p}$ is orthogonal to $a$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -1928,7 +1937,8 @@
         <br><b>Projection Matrix:</b> $P = \frac{a a^\top}{a^\top a}$ is a rank-1 orthogonal projector.</p>
       </div>
 
-      <h3>P0.11 — Projection onto a Hyperplane</h3>
+
+<h3>P0.11 — Projection onto a Hyperplane</h3>
       <p>Find the projection of the point $\mathbf{y} = (3, 3)^\top$ onto the line (hyperplane in 2D) defined by $x_1 + x_2 = 2$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -1947,7 +1957,8 @@
         <br><b>Signed Distance:</b> The quantity $\frac{a^\top \mathbf{y} - \mathbf{b}}{\|a\|}$ is the signed distance from $\mathbf{y}$ to the hyperplane.</p>
       </div>
 
-      <h3>P0.3 — Trace and Determinant</h3>
+
+<h3>P0.3 — Trace and Determinant</h3>
       <ol type="a">
         <li>Show that $\mathrm{tr}(ABC) = \mathrm{tr}(BCA)$ but generally $\mathrm{tr}(ABC) \neq \mathrm{tr}(BAC)$. Construct a $2 \times 2$ counterexample.</li>
         <li>Let $A \in \mathbb{R}^{n \times n}$ be skew-symmetric ($A^\top = -A$). Show that $\mathbf{x}^\top A \mathbf{x} = 0$ for all $\mathbf{x}$.</li>
@@ -1991,7 +2002,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.6 — Matrix Calculus Practice</h3>
+
+<h3>P0.6 — Matrix Calculus Practice</h3>
       <p>Compute the gradient with respect to $X \in \mathbb{R}^{n \times n}$ for the following functions:</p>
       <ol type="a">
         <li>$f(X) = \mathrm{tr}(A X B)$, where $A, B$ are constant matrices.</li>
@@ -2029,7 +2041,8 @@
         <br><b>Strategy:</b> Perturb $X \to X + H$, expand terms linear in $H$, and rearrange trace terms to match the form $\mathrm{tr}(G^\top H)$.</p>
       </div>
 
-      <h3>P0.8 — Testing Positive Semidefiniteness</h3>
+
+<h3>P0.8 — Testing Positive Semidefiniteness</h3>
       <p>Determine whether the following matrices are PSD, PD, Indefinite, or Negative Definite/Semidefinite.</p>
       <ol type="a">
         <li>$A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$</li>
@@ -2060,7 +2073,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.9 — Schur Complement Application</h3>
+
+<h3>P0.9 — Schur Complement Application</h3>
       <p>Use the Schur Complement condition (assuming the top-left pivot is positive) to determine the range of $\mathbf{x}$ for which the matrix $M(\mathbf{x})$ is Positive Semidefinite:</p>
       $$ M(\mathbf{x}) = \begin{bmatrix} \mathbf{x} & 1 \\ 1 & \mathbf{x} \end{bmatrix} $$
       <p>Verify your answer by computing the eigenvalues directly.</p>
@@ -2088,7 +2102,8 @@
         <br><b>Trick:</b> Use Schur complements to convert nonlinear constraints (like $\mathbf{x}^2 \le \mathbf{y}$ or quadratic-over-linear forms) into equivalent Linear Matrix Inequalities. This allows them to be solved using Semidefinite Programming (SDP).</p>
       </div>
 
-      <h3>P0.16 — Loewner Order Transitivity</h3>
+
+<h3>P0.16 — Loewner Order Transitivity</h3>
       <p>The Loewner order is defined as $X \succeq Y \iff X - Y \succeq 0$. Prove that this order is transitive: if $X \succeq Y$ and $Y \succeq Z$, then $X \succeq Z$. Use the variational definition of PSD matrices.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -2111,7 +2126,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.19 — PSD Cone in 2D</h3>
+
+<h3>P0.19 — PSD Cone in 2D</h3>
       <p>Consider the space of $2 \times 2$ symmetric matrices, which has dimension 3.
       <br>Write down the explicit inequalities defining the PSD cone $S \succeq 0$ in terms of the matrix entries $\mathbf{x}, \mathbf{y}, \mathbf{z}$ (where $S = \begin{bmatrix} \mathbf{x} & \mathbf{y} \\ \mathbf{y} & \mathbf{z} \end{bmatrix}$). Relate this to the trace and determinant conditions.</p>
       <div class="solution-box">
@@ -2133,7 +2149,8 @@
         <br><b>Interior:</b> The interior consists of Positive Definite (PD) matrices ($\det(X)>0, \mathbf{x}>0$).</p>
       </div>
 
-      <h3>P0.7 — Hessian of a Cubic</h3>
+
+<h3>P0.7 — Hessian of a Cubic</h3>
       <p>Let $f: \mathbb{R}^2 \to \mathbb{R}$ be defined by $f(\mathbf{x}) = x_1^3 + x_2^3 + 2x_1 x_2$.</p>
       <ol type="a">
         <li>Compute the gradient $\nabla f(\mathbf{x})$.</li>
@@ -2167,7 +2184,8 @@
         <br><b>2x2 PSD Test:</b> $\begin{bmatrix} a & \mathbf{b} \\ \mathbf{b} & c \end{bmatrix} \succeq 0 \iff a \ge 0, c \ge 0, ac - \mathbf{b}^2 \ge 0$. (Trace $\ge 0$ and Det $\ge 0$).</p>
       </div>
 
-      <h3>P0.5 — Least Squares from Scratch</h3>
+
+<h3>P0.5 — Least Squares from Scratch</h3>
       <p>Consider the function $f(\mathbf{x}) = \frac{1}{2} \|A\mathbf{x} - \mathbf{b}\|_2^2$.</p>
       <ol type="a">
         <li>Expand the squared norm into terms involving $\mathbf{x}^\top A^\top A \mathbf{x}$, etc.</li>
@@ -2216,7 +2234,8 @@
         </ul></p>
       </div>
 
-      <h3>P0.20 — General Quadratic Minimization</h3>
+
+<h3>P0.20 — General Quadratic Minimization</h3>
       <p>Solve the unconstrained minimization problem for a general quadratic function:
       $$ \min_{\mathbf{x} \in \mathbb{R}^n} f(\mathbf{x}) := \frac{1}{2} \mathbf{x}^\top H \mathbf{x} + \mathbf{g}^\top \mathbf{x} + c $$
       where $H \in \mathbb{S}_{++}^n$ (Positive Definite).</p>
@@ -2238,7 +2257,8 @@
     </section>
 
 
-    <!-- SECTION 12: READINGS -->
+
+<!-- SECTION 12: READINGS -->
     <section class="section-card" id="section-readings">
       <h2>12. Readings & Resources</h2>
       <ul>

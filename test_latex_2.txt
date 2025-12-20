@@ -1,0 +1,1 @@
+Test: $\mathbf{x} + \mathbf{y} = \mathbf{z}$. Vector $\mathbf{x}$. Matrix $A\mathbf{x}$. Subscript $x_i$. Function $f(\mathbf{x})$. Command \\mathbf{x}.

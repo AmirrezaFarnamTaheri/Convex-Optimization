@@ -58,6 +58,6 @@
 
 ## 6. Implementation Checklist
 *   [ ] **Notation:** Global replace `$x$` -> `$\mathbf{x}$` etc.
-*   [ ] **Renumber Exercises:** Fix P1.4, P1.5 gap.
-*   [ ] **Refine Section 2:** Rename to "Geometric Review of Linear Maps" to acknowledge redundancy.
+*   [x] **Renumber Exercises:** Fix P1.4, P1.5 gap. ✅ COMPLETED (P1.6→P1.4, P1.7→P1.5, etc.)
+*   [x] **Refine Section 2:** Rename to "Geometric Review of Linear Maps" to acknowledge redundancy. ✅ COMPLETED
 *   [ ] **Review Forward References:** Check $B^\dagger$ usage in Section 1.

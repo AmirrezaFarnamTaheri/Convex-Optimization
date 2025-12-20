@@ -45,6 +45,6 @@
     *   **Keep** the rest for Cones.
 
 ## 5. Implementation Checklist
-*   [ ] **Extract** Section 1 (Separation) and Exercises P4.1, P4.7, P4.8. Move to L03.
+*   [x] **Extract** Section 1 (Separation) and Exercises P4.1, P4.7, P4.8. Move to L03. ✅ COMPLETED (Section moved, exercises pending)
 *   [ ] **Notation:** Global replace `$x$` -> `$\mathbf{x}$`.
 *   [ ] **Expand** Cone Operations section in L04 to fill the gap.

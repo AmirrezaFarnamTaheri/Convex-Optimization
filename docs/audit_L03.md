@@ -49,7 +49,8 @@
     *   Ensure P3.19 connects to the Separation Theorem if moved here.
 
 ## 5. Implementation Checklist
-*   [ ] **Move** Separation Theorems (L04 Sec 1) to L03 (New Section 5).
+*   [x] **Move** Separation Theorems (L04 Sec 1) to L03 (New Section 5). ✅ COMPLETED
 *   [ ] **Notation:** Global replace `$x$` -> `$\mathbf{x}$`.
 *   [ ] **Reorder:** Consider swapping Operations and Canonical Sets if strictly following roadmap, but current flow is defensible.
-*   [ ] **De-duplicate:** Confirm P2.9 removal (handled in L02 audit).
+*   [x] **De-duplicate:** Confirm P2.9 removal (handled in L02 audit). ✅ COMPLETED
+*   [ ] **Move exercises** P4.1, P4.7, P4.8 from L04 to L03.

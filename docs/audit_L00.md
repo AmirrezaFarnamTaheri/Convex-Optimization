@@ -78,8 +78,8 @@
         *   Least Squares/Opt: P0.5, P0.20.
 
 ## 6. Implementation Checklist
-*   [ ] **Move** Section 1.6 to Section 5 (before PSD) or Appendix.
-*   [ ] **Swap** Sections 1.2 and 1.3.
+*   [x] **Move** Section 1.6 to Section 5 (before PSD) or Appendix. (Note: Already in Section 6, no move needed)
+*   [x] **Swap** Sections 1.2 and 1.3. ✅ COMPLETED
 *   [ ] **Global Replace:** `$x$` $\to$ `$\mathbf{x}$` (and other vector variables).
 *   [ ] **Reorder Exercises** in the HTML file.
 *   [ ] **Verify** broken links after section moves.

@@ -56,4 +56,4 @@
 ## 6. Implementation Checklist
 *   [ ] **Notation:** Global replace `$x$` -> `$\mathbf{x}$`.
 *   [ ] **Enhance Sec 3:** Add specific Integer Programming complexity note if needed.
-*   [ ] **Review P2.9:** Check against L03 P3.1.
+*   [x] **Review P2.9:** Check against L03 P3.1. ✅ COMPLETED (Removed duplicate)

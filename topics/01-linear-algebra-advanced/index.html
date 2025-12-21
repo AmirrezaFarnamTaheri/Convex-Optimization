@@ -238,26 +238,30 @@
       </p>
     </section>
 
-    <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->
-    <section class="section-card" id="section-linear-maps">
-      <h2>3. Geometric Review of Linear Maps</h2>
-      <p><i>Note: The basic definitions of subspace, nullspace, and rank are covered in <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>. Here, we revisit them briefly to emphasize their role in understanding linear maps as geometric transformations.</i></p>
+    <!-- SECTION 3: SCALAR INVARIANTS -->
+    <section class="section-card" id="section-invariants">
+      <h2>3. Scalar Invariants: Determinant and Trace</h2>
+      <p>Beyond the "Big Three" definitions from Lecture 00, we now explore <i>why</i> these scalars exist. They are not arbitrary formulas; they are the unique solutions to specific geometric problems.</p>
 
-      <h3>3.1 The Geometry of Linear Maps</h3>
-      <p>A linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ distorts space. It can collapse dimensions (singular) or preserve them (nonsingular). The Rank-Nullity theorem is the conservation law governing this distortion.</p>
-
-      <h3>3.2 The "Conservation of Dimension"</h3>
-      <p>The Rank-Nullity Theorem states that every input dimension must either be preserved (mapped to the range) or destroyed (mapped to zero).
-      $$ \underbrace{n}_{\text{Inputs}} = \underbrace{\dim(\ker(A))}_{\text{Collapsed}} + \underbrace{\dim(\mathrm{im}(A))}_{\text{Preserved}} $$
+      <h3>3.1 Determinant: The Signed Volume</h3>
+      <p>The determinant is the <b>unique</b> function $\det: \mathbb{R}^{n \times n} \to \mathbb{R}$ satisfying three axioms that define "signed volume":</p>
+      <ol>
+        <li><b>Multilinearity:</b> Linear in each column separately.</li>
+        <li><b>Alternating:</b> Swapping two columns flips the sign (or $\det(A)=0$ if two columns are equal). This captures <b>orientation</b>.</li>
+        <li><b>Normalization:</b> $\det(I) = 1$ (The unit cube has volume 1).</li>
+      </ol>
+      <p><b>Consequences:</b>
+      <ul>
+        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are independent $\iff$ volume is not collapsed to zero.</li>
+        <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. This means the volume scaling of a composition is the product of the scalings.</li>
+      </ul>
       </p>
 
-      <h3>3. Anatomy of $A\mathbf{x}=\mathbf{b}$ (Geometric View)</h3>
-      <p>This theorem dictates the structure of solutions to linear systems:</p>
-      <ul>
-        <li><b>Existence (Range):</b> $A\mathbf{x}=\mathbf{b}$ is solvable if $\mathbf{b}$ lies in the "preserved" subspace.</li>
-        <li><b>Uniqueness (Kernel):</b> If solvable, the solution is unique only if no dimensions were collapsed ($\ker(A) = \{0\}$). Otherwise, we can add any vector from the "collapsed" space to our solution without changing the output.</li>
-        <li><b>Affine Structure:</b> The solution set is $S = x_p + \ker(A)$. It is a "shifted subspace" parallel to the kernel.</li>
-      </ul>
+      <h3>3.2 Trace: The Infinitesimal Volume</h3>
+      <p>While determinant measures global volume scaling, the <b>trace</b> measures <b>infinitesimal</b> volume expansion. It is the unique linear, cyclic-invariant functional.
+      <br><b>Linearization of Determinant:</b>
+      $$ \det(I + \epsilon A) = 1 + \epsilon \mathrm{tr}(A) + O(\epsilon^2) $$
+      This explains why the trace appears in the divergence of vector fields ($\nabla \cdot \mathbf{v} = \mathrm{tr}(J)$) and in the derivative of the determinant ($\nabla \log \det X = X^{-\top}$).</p>
     </section>
 
     <!-- SECTION 4: EIGENVALUES -->
@@ -265,19 +269,16 @@
       <h2>4. The Spectral Layer: Eigenvalues and Diagonalization</h2>
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It decomposes the space into invariant 1D subspaces.</p>
 
-      <h3>4.1 Eigenvalues and Diagonalization: Decoupling Dynamics</h3>
-      <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b>
-      <br>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$.
-      <br>Equivalently, $\mathbf{v} \in \ker(A - \lambda I)$. Thus, eigenvalues are roots of $\det(A - \lambda I) = 0$.
+      <h3>4.1 Eigenvalues and Invariant Directions</h3>
+      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$. This equation forces $(A - \lambda I)\mathbf{v} = 0$, which implies that the matrix $A - \lambda I$ is singular. Thus, eigenvalues are the roots of the characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$.</p>
 
-      <div class="theorem-box">
-        <h4>Diagonalization Criterion</h4>
-        <p>A matrix $A \in \mathbb{R}^{n \times n}$ is <b>diagonalizable</b> (similar to a diagonal matrix) if and only if there exists a basis of $V$ consisting of eigenvectors.
-        <br>This happens iff for every eigenvalue $\lambda$:
-        $$ \underbrace{\dim \ker(A-\lambda I)}_{\text{Geometric Multiplicity } g_\lambda} = \underbrace{\text{mult}_\lambda(p_A)}_{\text{Algebraic Multiplicity } m_\lambda} $$
-        and $\sum g_\lambda = n$.
-        <br><i>Meaning:</i> If diagonalizable, the map decouples into $n$ independent 1D scalar actions. $A = PDP^{-1} \implies A^k = PD^kP^{-1}$.</p>
-      </div>
+      <h4>Algebraic vs. Geometric Multiplicity</h4>
+      <p>For an eigenvalue $\lambda$, there are two ways to count its "presence":</p>
+      <ul>
+        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity as a root of $p_A(\lambda)$.</li>
+        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $\ker(A - \lambda I)$. This counts the number of independent invariant directions.</li>
+      </ul>
+      <p><b>Always:</b> $1 \le g_\lambda \le m_\lambda$. The failure $g_\lambda < m_\lambda$ is what prevents diagonalization.</p>
 
       <h3>4.2 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
@@ -286,7 +287,7 @@
         <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
         <li>$A$ admits an <b>orthonormal eigenbasis</b> ($A = Q \Lambda Q^\top$ with $Q^\top Q = I$).</li>
       </ol>
-      </p>
+      This means symmetric matrices represent pure stretching along perpendicular axes—the "perfect" matrices for optimization (Hessians).</p>
 
       <div class="proof-box">
         <h4>Proof: Why is the spectrum real and orthogonal?</h4>
@@ -302,21 +303,14 @@
         Compute inner product $\langle Av, w \rangle$.
         <br>• $\langle Av, w \rangle = \lambda \langle v, w \rangle$.
         <br>• $\langle Av, w \rangle = \langle v, A^\top w \rangle = \langle v, Aw \rangle = \mu \langle v, w \rangle$.
-        <br>Subtracting gives $(\lambda - \mu)\langle v, w \rangle = 0$. Since $\lambda \ne \mu$, we must have $\langle v, w \rangle = 0$.
-        <br><b>Conclusion:</b> Symmetric matrices represent a pure stretch along perpendicular axes. No shearing. This makes them the "perfect" matrices for optimization (Hessians).</p>
+        <br>Subtracting gives $(\lambda - \mu)\langle v, w \rangle = 0$. Since $\lambda \ne \mu$, we must have $\langle v, w \rangle = 0$.</p>
       </div>
 
       <h3>4.3 Jordan Canonical Form: The Defective Reality</h3>
-      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It implies there are not enough eigenvectors to span the space.
-      <br>However, we can always complete the basis using <b>generalized eigenvectors</b>: vectors $\mathbf{v}$ such that $(A-\lambda I)^k \mathbf{v} = 0$.
-      <br>This leads to the <b>Jordan Canonical Form</b> $A = P J P^{-1}$, where $J$ contains <b>Jordan Blocks</b> on the diagonal:
+      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It implies there are not enough eigenvectors to span the space. However, the space can still be decomposed into <b>generalized eigenspaces</b> $\ker((A-\lambda I)^k)$.
+      <br>This leads to the <b>Jordan Canonical Form</b> $A = P J P^{-1}$, where $J$ consists of <b>Jordan Blocks</b>:
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} = \lambda I + N $$
-      <br><b>Structure:</b>
-      <ul>
-        <li><b>Diagonal ($\lambda I$):</b> Pure scaling.</li>
-        <li><b>Superdiagonal ($N$):</b> Nilpotent "drift" ($N^k=0$). This represents the intrinsic coupling of dimensions that no basis change can remove.</li>
-      </ul>
-      <b>Dynamics:</b> $J_k(\lambda)^t$ contains terms like $t \lambda^{t-1}$ (polynomial growth), which explains transient instability even in stable systems.</p>
+      Here $N$ is <b>nilpotent</b> ($N^k=0$). This nilpotent core represents the "coupling" or "drift" between dimensions that cannot be decoupled by any coordinate change.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
@@ -388,51 +382,47 @@
       <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|A\mathbf{x} - \mathbf{b}\|_2$ using the normal equations $A^\top A \mathbf{x} = A^\top \mathbf{b}$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
       <p>The <b>QR decomposition</b> offers a solution that depends on $\kappa(A)$ rather than $\kappa(A)^2$, providing significantly better stability. The key property is that orthogonal matrices $Q$ have a condition number of 1 ($\kappa(Q)=1$) and preserve the Euclidean norm. Thus, multiplying by $Q$ (or $Q^\top$) does not amplify errors.</p>
 
-      <h3>6.2 Definition and Existence</h3>
+      <h3>6.2 Definition and Existence: Geometry First</h3>
+      <p>QR is not an algorithm; it is a structural theorem about subspaces.
+      <br>Let $a_1, \dots, a_n$ be the columns of $A$. Define the nested subspaces (filtration):
+      $$ W_k = \operatorname{span}(a_1, \dots, a_k) $$
+      Since every subspace has an orthonormal basis, we can construct orthonormal vectors $q_1, \dots, q_n$ such that $\operatorname{span}(q_1, \dots, q_k) = W_k$ for all $k$.
+      <br>This <b>prefix span preservation</b> forces the triangular structure:
+      $$ a_k \in W_k = \operatorname{span}(q_1, \dots, q_k) \implies a_k = \sum_{j=1}^k r_{jk} q_j $$
+      The coordinate matrix $R = (r_{jk})$ is strictly upper triangular ($r_{jk}=0$ for $j>k$).</p>
+
       <div class="theorem-box">
         <h4>Theorem: QR Factorization</h4>
         <p>Any matrix $A \in \mathbb{R}^{m \times n}$ with $m \ge n$ and linearly independent columns can be factored as:</p>
-        $$ A = QR $$
-        <p>where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns ($Q^\top Q = I_n$) and $R \in \mathbb{R}^{n \times n}$ is upper triangular with positive diagonal entries.</p>
+        $$ \boxed{ A = QR } $$
+        <p>where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns ($Q^\top Q = I_n$) and $R \in \mathbb{R}^{n \times n}$ is upper triangular with positive diagonal entries.
+        <br><b>Uniqueness:</b> The factorization is unique if we insist $r_{ii} > 0$. This corresponds to fixing the orientation of the basis vectors.</p>
       </div>
 
-      <div class="proof-box">
-        <h4>Construction via Gram-Schmidt</h4>
-        <p>The QR decomposition is the matrix-algebraic equivalent of the Gram-Schmidt orthogonalization process. It takes a set of linearly independent vectors (columns of $A$) and produces an orthonormal set (columns of $Q$) that spans the same sequence of subspaces.</p>
-
-        <div class="proof-step">
-          <strong>Step 1: Initialization.</strong>
-          Let $a_1, \dots, a_n$ be the columns of $A$. We define the first basis vector $q_1$ by normalizing $a_1$:
-          $$ r_{11} = \|a_1\|_2, \quad q_1 = \frac{a_1}{r_{11}} $$
-          Thus, $a_1 = r_{11} q_1$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 2: Iteration ($k=2, \dots, n$).</strong>
-          For the $k$-th column $a_k$, we subtract its projection onto the subspace spanned by the previously constructed orthonormal vectors $\{q_1, \dots, q_{k-1}\}$.
-          <br>Calculate the coefficients (dot products):
-          $$ r_{jk} = q_j^\top a_k \quad \text{for } j=1, \dots, k-1 $$
-          Compute the orthogonal residual vector $v_k$:
-          $$ v_k = a_k - \sum_{j=1}^{k-1} r_{jk} q_j $$
-          Normalize to get the next basis vector:
-          $$ r_{kk} = \|v_k\|_2, \quad q_k = \frac{v_k}{r_{kk}} $$
-          Since the columns of $A$ are linearly independent, $v_k$ is never zero, so $r_{kk} > 0$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 3: Matrix Form.</strong>
-          Rewrite the equation for $a_k$:
-          $$ a_k = \sum_{j=1}^{k-1} r_{jk} q_j + r_{kk} q_k $$
-          This expresses the $k$-th column of $A$ as a linear combination of the first $k$ columns of $Q$. In matrix notation, $A = QR$, where $R$ is upper triangular because $a_k$ does not depend on future basis vectors $q_{k+1}, \dots, q_n$.
-        </div>
+      <div class="insight">
+        <h4>QR as Composition of Maps</h4>
+        <p>Interpret $A = QR$ as:
+        $$ x \xrightarrow{R} y \xrightarrow{Q} Ax $$
+        <ul>
+            <li><b>$R$:</b> Coordinate transformation (pure algebra/conditioning). Maps standard coordinates to orthonormal coordinates in the column space.</li>
+            <li><b>$Q$:</b> Isometric embedding (pure geometry). Maps the coordinates into the ambient space without distortion.</li>
+        </ul>
+        This clean separation is why QR is stable.</p>
       </div>
 
-      <h3>6.3 Solving Least Squares with QR</h3>
-      <p>Given $A = QR$, the least squares objective simplifies due to the orthogonal invariance of the Euclidean norm. The standard efficient approach uses the normal equations:</p>
-      $$ A^\top A \mathbf{x} = A^\top \mathbf{b} \iff (QR)^\top (QR) \mathbf{x} = (QR)^\top \mathbf{b} \iff R^\top Q^\top Q R \mathbf{x} = R^\top Q^\top \mathbf{b} $$
-      <p>Since $Q^\top Q = I$, this simplifies to $R^\top R \mathbf{x} = R^\top Q^\top \mathbf{b}$. Since $R$ is invertible (full rank assumption), we multiply by $R^{-\top}$:
-      $$ R \mathbf{x} = Q^\top \mathbf{b} $$
-      This is a triangular system, easily solvable by <b>back substitution</b> in $O(n^2)$ time.</p>
+      <h3>6.3 Solving Least Squares with QR (The Right Way)</h3>
+      <p>We solve $\min \|Ax - b\|_2^2$ by exploiting the geometry of $Q$.
+      $$ \|Ax - b\|^2 = \|QRx - b\|^2 = \|Q(Rx) - b\|^2 $$
+      Since $Q$ is an isometry on its range, we can project $b$ onto the range of $Q$ (which is the range of $A$).
+      Let $P = QQ^\top$ be the projection. The optimal error is the component of $b$ orthogonal to the range.
+      Algebraically, multiply by $Q^\top$:
+      $$ Q^\top (QRx - b) = 0 \implies Rx = Q^\top b $$
+      <b>Why this beats Normal Equations:</b>
+      <ul>
+        <li><b>Conditioning:</b> The condition number of the system is $\kappa(R) = \kappa(A)$, whereas Normal Equations use $A^\top A$ with condition number $\kappa(A)^2$.</li>
+        <li><b>Stability:</b> We solve a triangular system $Rx = Q^\top b$ directly.</li>
+      </ul>
+      </p>
     </section>
 
     <!-- SECTION 7: SVD -->
@@ -610,6 +600,20 @@
         <li><b>All maps $\to$ SVD (The true geometry)</b></li>
       </ul>
       <p>SVD is the <i>coordinate-free geometry</i> of linear algebra.</p>
+
+      <h3>7.12 Application: PCA as SVD of Data</h3>
+      <p>Principal Component Analysis (PCA) is often taught as "finding directions of maximum variance." Geometrically, it is simply the SVD of the centered data matrix.
+      <br>Let $X \in \mathbb{R}^{N \times d}$ be the data matrix (rows are points), centered so mean is zero.
+      <br>The <b>Covariance Matrix</b> is $C = \frac{1}{N} X^\top X$.
+      <br>Taking the SVD of the data: $X = U \Sigma V^\top$.
+      <br>Then $C = \frac{1}{N} V \Sigma U^\top U \Sigma V^\top = V \left( \frac{1}{N} \Sigma^2 \right) V^\top$.
+      <br><b>Conclusion:</b>
+      <ul>
+        <li><b>Principal Components:</b> The columns of $V$ (Right singular vectors of $X$).</li>
+        <li><b>Variances:</b> The squared singular values $\sigma_i^2/N$.</li>
+        <li><b>Projections:</b> The coordinates of data in the new basis are $XV = U\Sigma$.</li>
+      </ul>
+      PCA is simply the SVD "ellipse fitting" applied to a point cloud.</p>
     </section>
 
     <!-- SECTION 8: PSEUDOINVERSE -->

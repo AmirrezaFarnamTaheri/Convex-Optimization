@@ -150,11 +150,30 @@
       <p>Linear algebra is built on one atomic operation: the <b>finite linear combination</b>.
       $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
       Every concept in the course reduces to this:</p>
+
+      <h4>(A) The "Fundamental Identity" of Matrix-Vector Multiplication</h4>
+      <p>The most important formula for intuition is arguably the column-centric view of matrix multiplication. If $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$, then:
+      $$ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n $$
+      <b>Multiplying a matrix by a vector means forming a linear combination of the matrix’s columns, using the vector’s entries as coefficients.</b>
+      This perspective immediately reveals:</p>
       <ul>
-        <li><b>Span:</b> The set of all possible linear combinations. $\mathrm{span}(S)$ is the smallest subspace containing $S$.</li>
-        <li><b>Independence:</b> Uniqueness of the combination. If $\sum \alpha_i v_i = 0$ implies all $\alpha_i=0$, then no vector is redundant.</li>
-        <li><b>Matrix-Vector Product:</b> $Ax$ is literally a linear combination of the columns of $A$ with coefficients $x$.</li>
+        <li><b>Column Space:</b> $\operatorname{Col}(A)$ is simply the span of the columns.</li>
+        <li><b>Consistency:</b> $A\mathbf{x}=\mathbf{b}$ is solvable if and only if $\mathbf{b}$ can be built from the columns of $A$.</li>
+        <li><b>Nullspace:</b> $A\mathbf{x}=0$ describes a <i>dependency relation</i> among the columns. If $\mathbf{x} \neq 0$, the columns are linearly dependent.</li>
       </ul>
+
+      <h4>(B) Linear Independence as "No Redundancy"</h4>
+      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.”
+      <br><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
+      $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
+      If there exists a non-trivial combination (some $\alpha_i \neq 0$) summing to zero, the vectors are <b>dependent</b>.</p>
+
+      <p><b>The "Zero-Combination" Test:</b> Why check for 0? Because "two different ways to make the same vector $\mathbf{w}$" is equivalent to "a non-trivial way to make $\mathbf{0}$" (by subtracting the equations). Independence guarantees that <b>coordinates are unique</b>.</p>
+
+      <p><b>Geometric Intuition:</b>
+      <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear (not on the same line through the origin).
+      <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
+      <br><b>Redundancy:</b> If a set is dependent, at least one vector lies in the span of the others and can be removed without shrinking the span.</p>
 
       <h4>The Geometry of Linear Combinations</h4>
       <p>Algebraically, we sum vectors. Geometrically, we build shapes through the origin.
@@ -164,25 +183,29 @@
       <br><b>Convex vs Linear:</b> If we restrict $\alpha_i \ge 0$, we get cones. If we restrict $\sum \alpha_i = 1$, we get affine flats. If we do both, we get simplices (triangles, tetrahedrons).</p>
 
       <h3>1.6 Functions and Structure-Preserving Maps</h3>
-      <p>Linear algebra is not just about sets of vectors; it's about the functions that respect their structure. This is the core idea of a <b>homomorphism</b> or structure-preserving map.</p>
+      <p>Linear algebra is not just about sets of vectors; it's about the functions that respect their structure. This is the core idea of a <b>homomorphism</b> or structure-preserving map. Linear algebra studies the functions $T: V \to W$ that respect the "vector-ness" of the space.</p>
 
-      <p><b>The Definition of "Linear":</b> A function $T: V \to W$ is a linear map if it preserves the two vector space operations:</p>
+      <p><b>The Definition of "Linear":</b> A function $T: V \to W$ is a linear transformation if it satisfies <b>both</b>:</p>
       <ol>
-        <li><b>Preserves Addition:</b> $T(u+v) = T(u) + T(v)$ for all $u,v \in V$.</li>
-        <li><b>Preserves Scaling:</b> $T(\alpha u) = \alpha T(u)$ for all $u \in V, \alpha \in \mathbb{F}$.</li>
+        <li><b>Additivity:</b> $T(u+v) = T(u) + T(v)$ for all $u,v \in V$. (Vector addition means the same thing before and after the map).</li>
+        <li><b>Homogeneity:</b> $T(\alpha u) = \alpha T(u)$ for all $u \in V, \alpha \in \mathbb{F}$. (Scaling commutes with the map).</li>
       </ol>
-      <p>These two conditions can be compressed into the single requirement that $T$ preserves linear combinations:
+      <p>These two conditions combine to the single requirement that $T$ preserves linear combinations:
       $$ T\left(\sum_{i=1}^k \alpha_i v_i\right) = \sum_{i=1}^k \alpha_i T(v_i) $$
-      This is why matrices work: matrix multiplication is exactly the operation that distributes over linear combinations.</p>
+      Anything that fails one of these (e.g., $f(x)=x^2$ or affine maps $f(x)=Ax+b$ with $b \ne 0$) is <b>not</b> linear. Linearity requires $T(0)=0$.</p>
 
-      <h4>Derived Properties (Free Theorems)</h4>
+      <h4>The "Basis Determines Everything" Principle</h4>
+      <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
+      <br>For any $v = \sum c_i b_i$, we have $T(v) = \sum c_i T(b_i)$.
+      <br>This is why matrices exist: they are simply the bookkeeping tables recording the coordinates of $T(b_i)$.</p>
+
+      <h4>Derived Properties</h4>
       <p>From the definition alone, we get rigorous consequences:</p>
       <ul>
-        <li><b>Zero maps to Zero:</b> $T(0_V) = T(0 \cdot 0_V) = 0 \cdot T(0_V) = 0_W$.</li>
-        <li><b>Inverses map to Inverses:</b> $T(-v) = T((-1)v) = (-1)T(v) = -T(v)$.</li>
+        <li><b>Zero maps to Zero:</b> $T(0_V) = 0_W$. (Forced by homogeneity: $T(0v) = 0T(v)$).</li>
         <li><b>Subspaces map to Subspaces:</b> The image of a subspace is a subspace. The kernel (preimage of 0) is a subspace.</li>
+        <li><b>Linearity vs Affine:</b> A map $T(v)=Av+b$ is <b>affine</b>. It preserves straight lines but not the origin. It is linear only if $b=0$.</li>
       </ul>
-      <p><b>Trap to Avoid:</b> Most functions are not linear. $f(x)=x^2$ fails additivity. $f(x)=x+1$ fails $T(0)=0$. "Linear" is a very tight constraint.</p>
 
       <h3>1.7 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
@@ -195,19 +218,77 @@
     <section class="section-card" id="section-subspaces">
       <h2>2. Subspaces and the Four Fundamental Spaces</h2>
 
-      <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. Given a matrix $A \in \mathbb{R}^{m \times n}$, we can define four fundamental subspaces that characterize the behavior of the linear map $T(\mathbf{x}) = A\mathbf{x}$.</p>
+      <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
+
+      <h3>2.1 Kernel and Image: Where Information Dies and Survives</h3>
+      <p>For a matrix $A \in \mathbb{R}^{m \times n}$ (representing a map $T:\mathbb{R}^n \to \mathbb{R}^m$):</p>
       <ul>
-        <li><a href="#" class="definition-link" data-term="column space">Column Space (Range)</a>: $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\} \subseteq \mathbb{R}^m$. This is the set of all possible outputs of the linear map, i.e., the span of the columns of $A$.</li>
-        <li><a href="#" class="definition-link" data-term="nullspace">Nullspace (Kernel)</a>: $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$. This is the set of all input vectors that are mapped to the zero vector.</li>
-        <li><b>Row Space:</b> $\mathcal{R}(A^\top) \subseteq \mathbb{R}^n$. This is the span of the rows of $A$.</li>
-        <li><b>Left Nullspace:</b> $\mathcal{N}(A^\top) = \{\mathbf{y} \in \mathbb{R}^m \mid A^\top \mathbf{y} = 0\}$. This is the nullspace of the transpose of $A$.
-        <br><i>Why do we care?</i> The Left Nullspace defines the <b>constraints on solvability</b>. The system $A\mathbf{x}=\mathbf{b}$ has a solution if and only if $\mathbf{b}$ is orthogonal to every vector in the Left Nullspace ($\mathbf{b} \perp \mathcal{N}(A^\top)$). This is the <b>Fredholm Alternative</b>.</li>
+        <li><b>Kernel (Nullspace) $\mathcal{N}(A)$:</b> The set of inputs sent to zero. $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
+          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel ($\mathbf{u}-\mathbf{v} \in \mathcal{N}(A)$). A non-trivial kernel means the map is not injective (not invertible).</li>
+        <li><b>Image (Column Space) $\mathcal{R}(A)$:</b> The set of reachable outputs. $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
+          <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. If $\mathcal{R}(A) \neq \mathbb{R}^m$, the map is not surjective.</li>
       </ul>
 
-      <p>These subspaces are linked by the <b>Fundamental Theorem of Linear Algebra</b>. This theorem is not just an algebraic curiosity; it is the geometric foundation for understanding when linear systems are solvable (feasibility) and when they are unique.</p>
+      <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
+      <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily. Every input degree of freedom ($n$) must either be annihilated (go to Nullspace) or preserved (go to Rank).</p>
+      $$ \boxed{ n = \dim(\mathcal{N}(A)) + \dim(\mathcal{R}(A)) } $$
+      <p><i>Interpretation:</i>
+      <br><b>Rank ($r$):</b> Number of independent constraints the system <i>can</i> impose (or independent directions it can reach).
+      <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
+      <br>You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
+
+      <h3>2.3 The Four Fundamental Subspaces</h3>
+      <p>Every matrix $A$ induces four subspaces that completely characterize its action. It is critical to remember <b>where they live</b>:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Subspace</th>
+            <th>Notation</th>
+            <th>Lives In</th>
+            <th>Dimension</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Column Space</td>
+            <td>$\mathcal{R}(A)$</td>
+            <td>$\mathbb{R}^m$ (Output)</td>
+            <td>$r$</td>
+            <td>Achievable outputs; consistent $\mathbf{b}$ vectors.</td>
+          </tr>
+          <tr>
+            <td>Nullspace</td>
+            <td>$\mathcal{N}(A)$</td>
+            <td>$\mathbb{R}^n$ (Input)</td>
+            <td>$n-r$</td>
+            <td>Directions of non-uniqueness; killed inputs.</td>
+          </tr>
+          <tr>
+            <td>Row Space</td>
+            <td>$\mathcal{R}(A^\top)$</td>
+            <td>$\mathbb{R}^n$ (Input)</td>
+            <td>$r$</td>
+            <td>Active constraints on $\mathbf{x}$.</td>
+          </tr>
+          <tr>
+            <td>Left Nullspace</td>
+            <td>$\mathcal{N}(A^\top)$</td>
+            <td>$\mathbb{R}^m$ (Output)</td>
+            <td>$m-r$</td>
+            <td>Dependencies among equations; constraints on $\mathbf{b}$.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
+      <p>The geometry of these spaces is governed by orthogonality. This is the <b>Fundamental Theorem of Linear Algebra</b>:</p>
       <ul>
-        <li><b>Relationship 1:</b> $\mathcal{R}(A) \perp \mathcal{N}(A^\top)$ in $\mathbb{R}^m$. The range is the orthogonal complement of the left nullspace.</li>
-        <li><b>Relationship 2:</b> $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$ in $\mathbb{R}^n$. The row space is the orthogonal complement of the nullspace.</li>
+        <li><b>Relationship 1:</b> $\mathcal{N}(A) = \mathcal{R}(A^\top)^\perp$. (Nullspace $\perp$ Row Space).
+          <br><i>Why?</i> $A\mathbf{x}=0$ means $\mathbf{x}$ is orthogonal to every row of $A$. This partitions the input space: every vector $\mathbf{x}$ splits into a "row space part" (which dictates the output) and a "nullspace part" (which is ignored).</li>
+        <li><b>Relationship 2:</b> $\mathcal{N}(A^\top) = \mathcal{R}(A)^\perp$. (Left Nullspace $\perp$ Column Space).
+          <br><i>Why?</i> This leads to the <b>Fredholm Alternative</b>: $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \perp \mathcal{N}(A^\top)$. If the system is inconsistent, the "impossible" part of $\mathbf{b}$ lives in the Left Nullspace.</li>
       </ul>
 
       <figure style="text-align: center;">

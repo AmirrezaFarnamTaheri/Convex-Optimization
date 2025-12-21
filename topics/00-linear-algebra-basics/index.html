@@ -170,6 +170,14 @@
 
       <p><b>The "Zero-Combination" Test:</b> Why check for 0? Because "two different ways to make the same vector $\mathbf{w}$" is equivalent to "a non-trivial way to make $\mathbf{0}$" (by subtracting the equations). Independence guarantees that <b>coordinates are unique</b>.</p>
 
+      <div class="theorem-box">
+        <h4>Theorem: Independence $\iff$ No Redundancy</h4>
+        <p>A set of vectors is linearly independent if and only if <b>no vector in the set lies in the span of the others</b>.
+        <br><i>Proof:</i>
+        <br>($\Rightarrow$) Assume independent. Suppose $v_j = \sum_{i \neq j} c_i v_i$. Then $v_j - \sum c_i v_i = 0$ is a non-trivial dependence relation (coefficient of $v_j$ is 1), contradiction.
+        <br>($\Leftarrow$) Assume dependent. Then $\sum \alpha_i v_i = 0$ with some $\alpha_j \neq 0$. We can solve for $v_j$: $v_j = -\sum_{i \neq j} \frac{\alpha_i}{\alpha_j} v_i$. Thus $v_j$ is in the span of the others.</p>
+      </div>
+
       <p><b>Geometric Intuition:</b>
       <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear (not on the same line through the origin).
       <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
@@ -207,7 +215,21 @@
         <li><b>Linearity vs Affine:</b> A map $T(v)=Av+b$ is <b>affine</b>. It preserves straight lines but not the origin. It is linear only if $b=0$.</li>
       </ul>
 
-      <h3>1.7 Functions and Preimages</h3>
+      <h3>1.7 Matrix Algebra from Linear Maps</h3>
+      <p>Why do we multiply matrices using the "row-by-column" rule? It is not an arbitrary convention; it is forced by the geometry of linear maps.</p>
+
+      <h4>Composition corresponds to Matrix Multiplication</h4>
+      <p>If $S: U \to V$ and $T: V \to W$ are linear maps represented by matrices $A$ and $B$, then the composition $T \circ S$ is represented by the product $BA$.
+      $$ (BA)\mathbf{x} = B(A\mathbf{x}) $$
+      The entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ is simply the algebraic consequence of tracking coordinates through this composition.
+      <br><b>Consequences:</b>
+      <ul>
+        <li><b>Associativity:</b> Matrix multiplication is associative ($(AB)C = A(BC)$) because function composition is associative.</li>
+        <li><b>Non-Commutativity:</b> It is not commutative ($AB \neq BA$) because the order of operations matters (rotating then projecting is different from projecting then rotating).</li>
+      </ul>
+      </p>
+
+      <h3>1.8 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
       <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
       <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
@@ -228,6 +250,14 @@
         <li><b>Image (Column Space) $\mathcal{R}(A)$:</b> The set of reachable outputs. $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
           <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. If $\mathcal{R}(A) \neq \mathbb{R}^m$, the map is not surjective.</li>
       </ul>
+
+      <div class="theorem-box">
+        <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
+        <p>A linear map $T$ is <b>injective</b> (one-to-one) if and only if its kernel contains only the zero vector ($\mathcal{N}(T) = \{0\}$).</p>
+        <p><i>Proof:</i>
+        <br>($\Rightarrow$) If $T$ is injective, then $T(\mathbf{v}) = 0 = T(\mathbf{0})$ implies $\mathbf{v} = \mathbf{0}$.
+        <br>($\Leftarrow$) If $\mathcal{N}(T) = \{0\}$ and $T(\mathbf{u}) = T(\mathbf{v})$, then linearity implies $T(\mathbf{u} - \mathbf{v}) = 0$. Thus $\mathbf{u} - \mathbf{v} \in \mathcal{N}(T)$, so $\mathbf{u} - \mathbf{v} = 0$, implying $\mathbf{u} = \mathbf{v}$.</p>
+      </div>
 
       <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
       <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily. Every input degree of freedom ($n$) must either be annihilated (go to Nullspace) or preserved (go to Rank).</p>
@@ -281,6 +311,18 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="insight">
+        <h4>Gaussian Elimination: What it Really Computes</h4>
+        <p>Row reduction (Gaussian elimination) is not magic; it is a coordinate change that exposes these subspaces.
+        <ul>
+          <li><b>Row Space:</b> Unchanged by row operations. Non-zero rows in RREF form a basis.</li>
+          <li><b>Nullspace:</b> Unchanged. Free variables in RREF parametrize it.</li>
+          <li><b>Column Space:</b> Changed numerically, but <b>pivot columns</b> in the <i>original</i> matrix form a basis.</li>
+          <li><b>Rank:</b> Invariant. The number of pivots reveals the dimension of the row and column spaces.</li>
+        </ul>
+        </p>
+      </div>
 
       <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
       <p>The geometry of these spaces is governed by orthogonality. This is the <b>Fundamental Theorem of Linear Algebra</b>:</p>

@@ -229,7 +229,8 @@
       Thus:
       $$ A' = P^{-1} A P $$
       This relation is called <b>Similarity</b>.
-      <br><b>Key Insight:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems. Thus, they share all intrinsic properties (invariants):
+      <br><b>Geometric Meaning:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems (languages). Equality ($A=B$) is fragile (requires same coordinates); similarity is robust (structural).
+      <br><b>Invariant Properties:</b> Since the operator $T$ doesn't change, any property depending only on $T$ must be the same for $A$ and $A'$:
       <ul>
         <li><b>Rank:</b> Dimension of the image.</li>
         <li><b>Determinant & Trace:</b> Coefficients of characteristic polynomial.</li>
@@ -291,31 +292,39 @@
       <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
 
       <h3>4.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
-      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
-      <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
+      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal ($A = PDP^{-1}$).
+      <br><b>The Criterion:</b> Diagonalization is possible if and only if there are enough eigenvectors to span the space. Formally, for every eigenvalue $\lambda$, the geometric multiplicity must equal the algebraic multiplicity ($g_\lambda = m_\lambda$).
       <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
+        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$. (Number of "slots" allocated).</li>
+        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$. (Number of actual independent directions).</li>
       </ul>
-      <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
+      <p><b>Independence of Eigenspaces:</b> Eigenvectors corresponding to <i>distinct</i> eigenvalues are always linearly independent.
+      <br><b>Corollary:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, it is automatically diagonalizable.</p>
 
-      <h3>4.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
-      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. We must include <b>generalized eigenvectors</b>—vectors that are eventually killed by $(T-\lambda I)^k$.
+      <h3>4.3 Jordan Canonical Form: When Diagonalization Fails</h3>
+      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. We must include <b>generalized eigenvectors</b> to complete the basis.
+      <br><b>Generalized Eigenspaces:</b> The "missing" dimensions are found in the kernel of powers: $\mathcal{G}_\lambda = \ker((A-\lambda I)^k)$.
       <br><b>The Jordan Block:</b> The canonical structure for a defective eigenvalue is a Jordan block $J_k(\lambda)$:
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} = \lambda I + N $$
-      Here $N$ is <b>nilpotent</b> ($N^k = 0$). This nilpotent part represents the "drift" or coupling between dimensions that prevents clean separation.
-      <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
+      Here $N$ is <b>nilpotent</b> ($N^k = 0$, strictly upper triangular).
+      <br><b>Meaning:</b> Jordan form decomposes a linear map into two parts:
+      1. <b>Pure Scaling ($\lambda I$):</b> The diagonal behavior.
+      2. <b>Nilpotent Drift ($N$):</b> The superdiagonal 1s represent "coupling" or "drift" between dimensions that prevents clean separation.
+      <br><b>Dynamics:</b> In dynamical systems ($x_{k+1} = Ax_k$), these nilpotent terms lead to polynomial growth ($t^k e^{\lambda t}$) transiently, even if stability holds asymptotically.</p>
 
       <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
-      <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
+      <p>This is the most important theorem in applied linear algebra. It states that symmetric matrices are "perfectly behaved."
+      <br><b>Theorem (Real Spectral Theorem):</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>
         <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
-        <li>$V$ admits an <b>orthonormal basis of eigenvectors</b>.</li>
+        <li>$A$ admits an <b>orthonormal basis of eigenvectors</b>.</li>
       </ol>
-      This is the "perfect" case: no complex numbers, no defects, and the coordinate system is orthogonal.
-      <br><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$ with $Q$ orthogonal.
-      <br><b>Why this matters:</b> This theorem underpins the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), the analysis of Hessian curvature, and the convergence of optimization algorithms.</p>
+      <b>Orthogonal Diagonalization:</b> There exists an orthogonal matrix $Q$ ($Q^\top Q = I$) such that:
+      $$ \boxed{ A = Q \Lambda Q^\top } $$
+      where $\Lambda$ is a real diagonal matrix.
+      <br><b>Geometric Interpretation:</b> A symmetric linear transformation stretches space along perpendicular axes (the eigenvectors) by factors $\lambda_i$. There is no "shearing" or rotation mixing the axes.
+      <br><b>Why this matters:</b> This theorem allows us to define ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), analyze Hessian curvature (convexity), and decompose energy (Rayleigh quotient).</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:

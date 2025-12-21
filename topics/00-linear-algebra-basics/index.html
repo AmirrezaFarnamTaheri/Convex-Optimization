@@ -219,6 +219,19 @@
       <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
       <br><b>Redundancy:</b> If a set is dependent, at least one vector adds no new dimension to the span.</p>
 
+      <h4>(C) The Matrix Viewpoint: Independence as an Algorithm</h4>
+      <p>We can test independence computationally by placing the vectors as columns of a matrix $A = [\mathbf{v}_1 \dots \mathbf{v}_k]$.
+      <br>The linear combination becomes a matrix-vector product:
+      $$ \sum \alpha_i \mathbf{v}_i = A \mathbf{\alpha} $$
+      Thus, <b>Independence $\iff A\mathbf{\alpha}=0 \implies \mathbf{\alpha}=0$</b>.
+      <br>This means the nullspace of $A$ is trivial ($\mathcal{N}(A)=\{0\}$).
+      <br><b>Algorithm:</b> Row-reduce $A$.
+      <ul>
+        <li>If every column has a pivot, the vectors are <b>independent</b>.</li>
+        <li>If there are free variables, the vectors are <b>dependent</b>.</li>
+      </ul>
+      </p>
+
       <h3>1.6 Functions and Structure-Preserving Maps</h3>
       <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. A <b>linear transformation</b> is a map that preserves the "vector-ness" of the space.</p>
 
@@ -245,6 +258,11 @@
         <li><b>NOT Linear:</b> $T(x) = x+1$ (Affine, fails $T(0)=0$), $T(x) = |x|$ (fails additivity), $T(x) = x^2$ (fails homogeneity).</li>
       </ul>
 
+      <h4>Linear vs. Affine Maps (Critical Distinction)</h4>
+      <p>A function of the form $T(\mathbf{v}) = A\mathbf{v} + \mathbf{b}$ is <b>not linear</b> unless $\mathbf{b}=0$.
+      <br>Why? Because $T(0) = \mathbf{b} \neq 0$.
+      <br>Such maps are called <b>affine</b>. They preserve straight lines and parallelism, but they do not preserve the origin or linear combinations. This distinction is vital in optimization: minimizing a convex function over a linear subspace ($Ax=0$) is different from minimizing over an affine set ($Ax=b$).</p>
+
       <h3>1.7 Matrix Algebra from Linear Maps</h3>
       <p>Why do matrices exist? They are not primary objects; they are <b>coordinate representations</b> of linear maps.
       <br>Let $V$ be a vector space with basis $B = \{b_1,\dots,b_n\}$ and $W$ be a vector space with basis $C = \{c_1,\dots,c_m\}$.
@@ -262,6 +280,11 @@
         $$ [T(v)]_C = \sum x_j [T(b_j)]_C = \sum x_j (\text{Column } j) $$
         This is exactly the definition of matrix-vector multiplication: a linear combination of columns.</p>
       </div>
+
+      <h4>The "Column Rule": Matrix-Vector Product as Linear Combination</h4>
+      <p>The most important operational fact about matrices is this:
+      $$ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n $$
+      Multiplying a matrix by a vector is <b>forming a linear combination of its columns</b>. This explains why the column space $\mathcal{R}(A)$ is the set of all possible outputs $A\mathbf{x}$.</p>
 
       <h4>Composition = Matrix Multiplication</h4>
       <p>Why do we multiply matrices using the "row-by-column" rule? It is forced by the composition of linear maps.

@@ -87,17 +87,17 @@
             <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
             <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
             <li><b>Commutativity:</b> $a+b = b+a$.</li>
-            <li><b>Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$.</li>
-            <li><b>Inverses:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
+            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
+            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
           </ul>
         </li>
         <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
           <ul>
             <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
             <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
-            <li><b>Commutativity:</b> $ab = ba$.</li>
-            <li><b>Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$.</li>
-            <li><b>Inverses:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
+            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
+            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
+            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
           </ul>
         </li>
         <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
@@ -108,15 +108,16 @@
       <h4>Derived Laws (Proven Consequences)</h4>
       <p>From these axioms alone, we can prove facts you use constantly:</p>
       <ul>
-        <li><b>$0 \cdot a = 0$:</b> Proof: $0a = (0+0)a = 0a + 0a \implies 0 = 0a$ (by cancellation).</li>
+        <li><b>$0 \cdot a = 0$:</b> Proof: $0a = (0+0)a = 0a + 0a \implies 0 = 0a$ (by additive cancellation).</li>
         <li><b>$(-1)a = -a$:</b> Proof: $a + (-1)a = 1a + (-1)a = (1-1)a = 0a = 0$. So $(-1)a$ is the additive inverse of $a$.</li>
         <li><b>No Zero Divisors:</b> If $ab=0$ and $a \neq 0$, then $b=0$. (Multiply by $a^{-1}$). This is why we can solve by factoring.</li>
+        <li><b>Uniqueness:</b> The identities $0, 1$ and inverses $-a, a^{-1}$ are unique.</li>
       </ul>
 
       <h4>Concrete Examples & The Failure Museum</h4>
       <ul>
-        <li><b>Fields (Good Citizens):</b> $\mathbb{Q}, \mathbb{R}, \mathbb{C}$, and finite fields $\mathbb{F}_p$ (where $p$ is prime).</li>
-        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse. Linear algebra over $\mathbb{Z}$ becomes "Module Theory".</li>
+        <li><b>Fields (Good Citizens):</b> $\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex), and finite fields $\mathbb{F}_p$ (where $p$ is prime).</li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory".</li>
         <li><b>$\mathbb{Z}_n$ (Integers mod $n$):</b> A field if and only if $n$ is prime. If $n=6$, then $2 \cdot 3 = 0 \pmod 6$. This implies we have <b>zero divisors</b> (non-zero numbers multiply to zero), destroying the cancellation law ($ab=ac \implies b=c$). In a field, scaling by a non-zero scalar is always injective (preserves information).</li>
       </ul>
 
@@ -126,9 +127,9 @@
       <h4>The Axioms Verified (Why it works)</h4>
       <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
       <ul>
-        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed.</li>
+        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed by componentwise uniqueness.</li>
         <li><b>Derived Facts:</b> $0 \cdot \mathbf{x} = \mathbf{0}$, $(-1)\mathbf{x} = -\mathbf{x}$. These are not assumptions; they are theorems derived from the axioms.</li>
-        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients.</li>
+        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
       </ul>
 
       <h3>1.4 Geometry as a Representation (Points vs. Vectors)</h3>
@@ -472,23 +473,22 @@
       <h2>4. Inner Products, Norms, and Angles</h2>
 
       <h3>4.1 Dot Product as an Inner Product</h3>
-      <p>Up to this point, our vector spaces have been purely algebraic (affine). To measure lengths and angles, we must add an <b>Inner Product</b> structure. The dot product $\langle x,y \rangle = \sum x_i y_i$ is the canonical choice for $\mathbb{R}^n$, but it's just one example of a broader concept.</p>
+      <p>Up to this point, our vector spaces have been purely algebraic (affine). To measure lengths and angles, we must add an <b>Inner Product</b> structure. The dot product $\langle x,y \rangle = \sum x_i y_i$ is the canonical choice for $\mathbb{R}^n$, but it's just one example of a broader concept. The dot product is not an assumption; it is a bilinear form satisfying specific axioms.</p>
 
       <h4>The Inner Product Axioms</h4>
-      <p>An inner product is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ that is:</p>
+      <p>An inner product is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x,y,z \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
       <ul>
-        <li><b>Symmetric:</b> $\langle u, v \rangle = \langle v, u \rangle$. (This means "angle" is mutual).</li>
-        <li><b>Bilinear:</b> Linear in each argument separately. $\langle \alpha u + \beta w, v \rangle = \alpha\langle u, v \rangle + \beta\langle w, v \rangle$.</li>
-        <li><b>Positive Definite:</b> $\langle u, u \rangle \ge 0$, and $\langle u, u \rangle = 0 \iff u = 0$. (No non-zero vector has zero "length").</li>
+        <li><b>Symmetry:</b> $\langle u, v \rangle = \langle v, u \rangle$. (Geometry is undirected).</li>
+        <li><b>Bilinearity:</b> Linear in each argument. $\langle \alpha u + \beta w, v \rangle = \alpha\langle u, v \rangle + \beta\langle w, v \rangle$. (This links algebra to geometry).</li>
+        <li><b>Positive Definiteness:</b> $\langle u, u \rangle \ge 0$, and $\langle u, u \rangle = 0 \iff u = 0$. (Lengths are non-negative and zero only for the zero vector).</li>
       </ul>
-      <p><b>Why these axioms?</b> Linearity connects geometry to algebra. Symmetry ensures consistency. Positive definiteness allows us to define a norm.</p>
 
       <h4>Verification for the Dot Product</h4>
       <p>For $\langle x,y \rangle = x^\top y$:
       <br>1. <b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.
       <br>2. <b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.
       <br>3. <b>Positivity:</b> $\sum x_i^2 \ge 0$. Sum of squares is zero iff every $x_i=0$.
-      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>.</p>
+      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$.</p>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
@@ -498,26 +498,27 @@
       </figure>
 
       <h3>4.2 Norms: Induced by Inner Products</h3>
-      <p>A vector space does not automatically have a notion of "length". We <b>derive</b> it from the inner product.
+      <p>A vector space does not automatically have a notion of "length". We <b>derive</b> it from the inner product:
       $$ \|x\| := \sqrt{\langle x, x \rangle} $$
-      This is not a definition we assume; we must prove it satisfies the Norm Axioms.</p>
+      This is a rigorous construction. We must prove it satisfies the three Norm Axioms.</p>
 
       <h4>Proof of Norm Properties</h4>
       <ol>
-        <li><b>Definiteness:</b> $\|x\|=0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
-        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking roots gives $|\alpha| \|x\|$.</li>
-        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires a deep inequality.</li>
+        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
+        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
+        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
       </ol>
 
       <div class="proof-box">
         <h4>Theorem: Cauchy-Schwarz Inequality</h4>
         <p>For any inner product, $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x, y$ are dependent.
         <br><b>Proof from Scratch:</b>
-        Consider the quadratic function $f(t) = \|x + ty\|^2$. By positivity, $f(t) \ge 0$ for all $t$.
-        $$ f(t) = \langle x+ty, x+ty \rangle = \|x\|^2 + 2t\langle x, y \rangle + t^2 \|y\|^2 $$
-        This is a parabola opening upwards. For it to never be negative, its discriminant ($b^2 - 4ac$) must be non-positive:
-        $$ (2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies |\langle x, y \rangle| \le \|x\| \|y\| $$
+        If $y=0$, both sides are 0. Assume $y \neq 0$. Consider the quadratic function $f(t) = \|x - ty\|^2$. By positivity, $f(t) \ge 0$ for all $t$.
+        $$ f(t) = \langle x-ty, x-ty \rangle = \langle x,x \rangle - 2t\langle x, y \rangle + t^2 \langle y,y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2 \|y\|^2 $$
+        This is a quadratic $at^2 + bt + c$ with $a=\|y\|^2 > 0$. For it to be non-negative everywhere, its discriminant must be non-positive:
+        $$ b^2 - 4ac \le 0 \implies (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
+        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff discriminant is 0, which means there is a $t$ where $\|x-ty\|=0$, i.e., $x=ty$ (dependent).
         </p>
       </div>
 
@@ -526,7 +527,8 @@
         <p>Now we can prove the final norm axiom.
         $$ \begin{aligned}
         \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
-        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
         &= (\|x\| + \|y\|)^2
         \end{aligned} $$
         Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
@@ -743,8 +745,12 @@
       <h4>Orthogonal Complement ($W^\perp$)</h4>
       <p>For a subspace $W \subseteq V$, the set of all vectors orthogonal to every vector in $W$ is called the orthogonal complement:
       $$ W^\perp := \{v \in V \mid \langle v, w \rangle = 0 \ \forall w \in W\} $$
-      <b>Theorem:</b> $W^\perp$ is always a subspace.
-      <br><i>Proof:</i> It contains 0 ($\langle 0, w \rangle = 0$). It is closed under addition: if $v_1, v_2 \perp W$, then $\langle v_1+v_2, w \rangle = \langle v_1, w \rangle + \langle v_2, w \rangle = 0$. It is closed under scaling.</p>
+      <b>Theorem:</b> $W^\perp$ is always a subspace of $V$.
+      <br><i>Proof:</i>
+      1. <b>Zero:</b> $\langle 0, w \rangle = 0$ for all $w$, so $0 \in W^\perp$.
+      2. <b>Additivity:</b> If $v_1, v_2 \in W^\perp$, then $\langle v_1+v_2, w \rangle = \langle v_1, w \rangle + \langle v_2, w \rangle = 0+0=0$.
+      3. <b>Scaling:</b> If $v \in W^\perp$, $\langle \alpha v, w \rangle = \alpha \langle v, w \rangle = 0$.
+      </p>
 
       <h3>5.2 Orthogonal Projection: The Closest Point</h3>
       <p>This is the central problem of approximation theory: Given $x \in V$ and a subspace $W$, find the vector $p \in W$ that is closest to $x$.
@@ -755,13 +761,14 @@
       <div class="proof-box">
         <h4>Proof: Optimality of the Projection</h4>
         <p>Why is the projection the minimizer?
-        <br>Let $w' \in W$ be any candidate. We can write the error vector as:
+        <br>Suppose we have the decomposition $x = p + z$ with $p \in W, z \in W^\perp$. Let $w' \in W$ be any candidate.
+        <br>We can write the error vector as:
         $$ x - w' = (p + z) - w' = (p - w') + z $$
-        Since $p, w' \in W$, their difference $(p-w') \in W$. By definition, $z \in W^\perp$.
+        Since $p, w' \in W$, their difference $(p-w') \in W$. By definition, $z \in W^\perp$. Thus $(p-w') \perp z$.
         <br>Applying the Pythagorean Theorem:
         $$ \|x - w'\|^2 = \|(p-w') + z\|^2 = \|p-w'\|^2 + \|z\|^2 $$
-        The term $\|z\|^2$ is fixed. To minimize the error, we must minimize $\|p-w'\|^2$. Since norms are non-negative, the minimum occurs exactly when $p - w' = 0$, i.e., $w' = p$.
-        <br><b>Conclusion:</b> The unique closest point is the orthogonal projection.</p>
+        The term $\|z\|^2$ is fixed (depends only on $x$). To minimize the error, we must minimize $\|p-w'\|^2$. Since norms are non-negative, the minimum occurs exactly when $\|p - w'\| = 0$, i.e., $w' = p$.
+        <br><b>Conclusion:</b> The unique closest point is the orthogonal projection $p$.</p>
       </div>
 
       <p><b>Linearity:</b> The map $P: x \mapsto \operatorname{proj}_W(x)$ is a linear operator. It satisfies $P^2=P$ (idempotent) and $P^\top=P$ (self-adjoint).</p>

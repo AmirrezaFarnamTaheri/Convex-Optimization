@@ -75,30 +75,34 @@
       </ol>
 
       <h3>1.2 Scalars and Fields: The Rulebook</h3>
-      <p>Before defining vectors, we must specify the number system for our coefficients (scalars). A <b>field</b> $\mathbb{F}$ is a set equipped with addition and multiplication that satisfy the familiar rules of arithmetic (associativity, commutativity, distributivity, identities, and inverses).</p>
-      <p>Crucially, a field must allow <b>division by non-zero elements</b>. This is why we can solve linear equations.</p>
+      <p>Before defining "vectors", linear algebra assumes a set of numbers for coefficients: the <b>scalars</b>. A <b>field</b> $\mathbb{F}$ is the rulebook defining how these scalars behave. It is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying specific axioms:</p>
+
+      <h4>The Field Axioms</h4>
       <ul>
-        <li><b>$\mathbb{R}$ (Reals):</b> The standard field for optimization. Allows ordering ($a \le b$), which is essential for inequalities.</li>
-        <li><b>$\mathbb{C}$ (Complex):</b> Used in signal processing and spectral theory. Algebraically complete, but lacks a natural ordering compatible with field operations.</li>
-        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field (no multiplicative inverses). Linear algebra over $\mathbb{Z}$ (module theory) is far more complex and lacks concepts like "dimension" in the simple sense.</li>
+        <li><b>A) Addition behaves like an abelian group:</b> Closure, Associativity, Commutativity, Identity ($0$), and Inverses ($-a$). This guarantees subtraction works: $a-b := a+(-b)$.</li>
+        <li><b>B) Multiplication behaves like an abelian group on nonzero elements:</b> Closure, Associativity, Commutativity, Identity ($1 \ne 0$), and Inverses ($a^{-1}$ for $a \ne 0$). This guarantees division works: $a/b := a \cdot b^{-1}$.</li>
+        <li><b>C) Distributivity:</b> Multiplication distributes over addition: $a(b+c) = ab + ac$.</li>
       </ul>
-      <p><i>Why this matters:</i> When we perform Gaussian elimination or normalize a vector, we implicitly rely on the existence of multiplicative inverses ($a^{-1}$).</p>
+
+      <p><b>Why Fields Matter:</b> Linear algebra relies entirely on <b>linear combinations</b> ($\alpha v + \beta w$). To solve equations like $\alpha x = y$, we must be able to divide by $\alpha$ (when $\alpha \neq 0$). If a number system lacks inverses (like $\mathbb{Z}$), fundamental algorithms like Gaussian elimination break down because we cannot "normalize the pivot".</p>
+
+      <h4>Concrete Examples & The Failure Museum</h4>
+      <ul>
+        <li><b>$\mathbb{R}$ (Reals), $\mathbb{C}$ (Complex), $\mathbb{Q}$ (Rationals):</b> Fields. All linear algebra theorems apply.</li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field (no multiplicative inverses for $2$, etc.). Linear algebra over $\mathbb{Z}$ is "module theory", where vector spaces are replaced by modules and bases might not exist.</li>
+        <li><b>$\mathbb{Z}_p$ (Integers mod $p$):</b> A field if and only if $p$ is prime. If $n$ is composite (e.g., $\mathbb{Z}_6$), we have <b>zero divisors</b> ($2 \cdot 3 = 0 \pmod 6$), which destroys the cancellation law and makes singular matrices "sometimes invertible".</li>
+      </ul>
 
       <h3>1.3 The Concrete Vector Space $\mathbb{R}^n$</h3>
       <p>We define the space $\mathbb{R}^n$ rigorously as the set of functions from indices $\{1,\dots,n\}$ to $\mathbb{R}$. We denote elements as ordered $n$-tuples (column vectors): $\mathbf{x} = (x_1, \dots, x_n)$.</p>
-      <p>Operations are defined component-wise, inheriting properties directly from the field $\mathbb{R}$:</p>
+
+      <h4>Componentwise Anatomy</h4>
+      <p>Operations are defined component-wise, inheriting properties directly from the field $\mathbb{R}$. For vectors $\mathbf{x}, \mathbf{y}$ and scalar $\alpha$:</p>
       <ul>
         <li><b>Vector Addition:</b> $(\mathbf{x} + \mathbf{y})_i = x_i + y_i$.</li>
         <li><b>Scalar Multiplication:</b> $(\alpha \mathbf{x})_i = \alpha x_i$.</li>
       </ul>
-      <p>This structure satisfies the axioms of a <b>Vector Space</b> (closure, associativity, distributivity, etc.), making $\mathbb{R}^n$ the canonical playground for linear algebra.</p>
-
-      <figure style="text-align: center;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
-             alt="Matrix multiplication diagram showing how rows and columns combine"
-             style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 1:</i> Matrix multiplication visualized—how rows and columns combine.</figcaption>
-      </figure>
+      <p>This structure satisfies the 8 axioms of a <b>Vector Space</b> (closure, associativity, distributivity, identities, inverses) precisely because the underlying field $\mathbb{R}$ satisfies the field axioms. For example, distributivity $\alpha(\mathbf{x}+\mathbf{y}) = \alpha \mathbf{x} + \alpha \mathbf{y}$ holds because $\alpha(x_i + y_i) = \alpha x_i + \alpha y_i$ holds for each real component.</p>
 
       <h3>1.4 Points vs. Vectors: Affine vs. Linear</h3>
       <p>Although we often use coordinates for both, there is a fundamental conceptual distinction between "locations" and "displacements".</p>
@@ -113,34 +117,33 @@
         </thead>
         <tbody>
           <tr>
-            <td><b>Vector</b></td>
-            <td>Displacement</td>
-            <td>Add, Scale, Linear Combo</td>
+            <td><b>Vector Space $V$</b></td>
+            <td>Displacements</td>
+            <td>$v+w$, $\alpha v$, $\mathbf{0}$ exists</td>
             <td>Velocity, Force, $x_1 - x_2$</td>
           </tr>
           <tr>
-            <td><b>Point</b></td>
-            <td>Location</td>
-            <td>Affine Combo, Subtract (yields vector)</td>
+            <td><b>Affine Space $A$</b></td>
+            <td>Locations</td>
+            <td>$p-q \in V$, $p+v \in A$</td>
             <td>Position, Solution to $Ax=b$</td>
           </tr>
         </tbody>
       </table>
-      <p><b>The Origin Trap:</b> Treating points as vectors implicitly assumes a distinguished origin $\mathbf{0}$.
-      <br><i>Affine Space:</i> A set of points where subtraction yields a vector. We can add a vector to a point to get a point ($\mathbf{p} + \mathbf{v} = \mathbf{q}$), but adding two points ($\mathbf{p} + \mathbf{q}$) is not geometrically meaningful unless we fix an origin.</p>
+      <p><b>The Origin Trap:</b> In $\mathbb{R}^n$, we often conflate points and vectors by implicitly choosing the origin $\mathbf{0}$ as a reference. A "point" is identified with its displacement vector from the origin. However, intrinsic geometric properties (like convexity or collinearity) should not depend on the choice of origin.</p>
+      <p><b>Affine Combinations:</b> You cannot add points ($p+q$) meaningfully. But you <i>can</i> take an affine combination $\sum \alpha_i p_i$ if $\sum \alpha_i = 1$. This operation is origin-independent:
+      $$ \sum \alpha_i p_i = \text{origin} + \sum \alpha_i (p_i - \text{origin}) $$
+      The "origin" terms cancel out exactly when $\sum \alpha_i = 1$. This is why affine sets (lines, planes not through origin) are defined by affine combinations.</p>
 
-      <figure style="text-align: center;">
-        <img src="assets/line-vs-segment.png"
-             alt="Comparison of a line segment (affine/convex) versus the infinite line (affine) passing through two points"
-             style="max-width: 60%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 2:</i> The infinite line is an <b>affine set</b> (origin-independent). The segment is a <b>convex set</b>. The subspace spanned by the displacement is a <b>linear set</b> (through origin).</figcaption>
-      </figure>
-
-      <h3>1.5 Linear Combinations and Span</h3>
+      <h3>1.5 Linear Combinations: The Fundamental Constructor</h3>
       <p>The core operation of linear algebra is the <b>linear combination</b>:
       $$ \mathbf{y} = c_1 \mathbf{v}_1 + \dots + c_k \mathbf{v}_k $$
-      The set of <i>all</i> possible linear combinations of a set of vectors $S$ is their <b>Span</b>.
-      <br>$\mathrm{span}(S)$ is the smallest <b>subspace</b> containing $S$. It represents all "directions" accessible from the origin using the vectors in $S$.</p>
+      This is the only way to build new vectors from old ones using the vector space operations. The set of <i>all</i> possible linear combinations of a set of vectors $S$ is their <b>Span</b>.</p>
+
+      <h4>Span as a Closure Operator</h4>
+      <p>$\mathrm{span}(S)$ is the <b>smallest subspace</b> containing $S$. It represents the "closed world" reachable from $S$ using linear operations.
+      $$ \mathrm{span}(v_1, \dots, v_k) = \{ \alpha_1 v_1 + \dots + \alpha_k v_k \mid \alpha_i \in \mathbb{F} \} $$
+      Geometrically, the span of a single non-zero vector is a line through the origin. The span of two independent vectors is a plane through the origin. Dependent vectors add no new geometry (they lie in the span of the others).</p>
 
       <h4>Geometry of Combinations</h4>
       <p>Restricting the coefficients $c_i$ creates different geometric objects:</p>
@@ -175,7 +178,17 @@
         </tbody>
       </table>
 
-      <h3>1.6 Functions and Preimages</h3>
+      <h3>1.6 Structure-Preserving Maps (Linear Maps)</h3>
+      <p>0.1 gave us the scalar universe. 1.3 gave us the vector universe. Now we define the functions that respect this structure.
+      <br>A function $T: V \to W$ is a <b>Linear Map</b> (or vector space homomorphism) if it preserves the operations:</p>
+      <ul>
+        <li><b>Additivity:</b> $T(u+v) = T(u) + T(v)$</li>
+        <li><b>Homogeneity:</b> $T(\alpha v) = \alpha T(v)$</li>
+      </ul>
+      <p>Combined, these mean $T$ preserves linear combinations: $T(\sum \alpha_i v_i) = \sum \alpha_i T(v_i)$.
+      <br><b>Why this matters:</b> Most functions are not linear. "Linearity" is a severe constraint that forces the function to be completely determined by its action on a basis. In $\mathbb{R}^n$, every linear map is a matrix multiplication.</p>
+
+      <h3>1.7 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
       <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
       <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
@@ -464,15 +477,15 @@
       <h2>4. Inner Products, Norms, and Angles</h2>
 
       <h3>4.1 Inner Products: Geometry from Algebra</h3>
-      <p>A vector space by itself is purely algebraic. To do geometry (lengths, angles, projections), we need an <b>inner product</b>.
-      <br>An inner product on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
+      <p>A vector space by itself is purely algebraic. It has no intrinsic notion of length, angle, or distance. To add this metric structure, we define an <b>inner product</b>.
+      <br>An inner product on a real vector space $V$ is a map $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
       <ol>
-        <li><b>Linearity:</b> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \alpha\langle \mathbf{x}, \mathbf{y} \rangle + \beta\langle \mathbf{z}, \mathbf{y} \rangle$.</li>
-        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$. (This implies linearity in the second argument too).</li>
-        <li><b>Positive Definiteness:</b> $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$, and $\langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = 0$.</li>
+        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$.</li>
+        <li><b>Linearity in First Argument:</b> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \alpha\langle \mathbf{x}, \mathbf{y} \rangle + \beta\langle \mathbf{z}, \mathbf{y} \rangle$. (Combined with symmetry, this implies <b>Bilinearity</b>).</li>
+        <li><b>Positive Definiteness:</b> $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$, and $\langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = 0$. (This allows us to define length).</li>
       </ol>
-      <p><b>The Dot Product:</b> The standard inner product on $\mathbb{R}^n$ is $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$.
-      <br><b>Weighted Inner Products:</b> For any symmetric positive definite (PD) matrix $P \in \mathbb{S}^n_{++}$, $\langle \mathbf{x}, \mathbf{y} \rangle_P := \mathbf{x}^\top P \mathbf{y}$ is also a valid inner product. This corresponds to the geometry of ellipsoids.</p>
+      <p><b>The Dot Product:</b> The standard inner product on $\mathbb{R}^n$ is $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$. This is the unique inner product for which the standard basis $e_i$ is orthonormal.
+      <br><b>Orthogonality:</b> We define $\mathbf{x} \perp \mathbf{y}$ if and only if $\langle \mathbf{x}, \mathbf{y} \rangle = 0$. This is purely algebraic but corresponds to geometric perpendicularity.</p>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
@@ -482,16 +495,20 @@
       </figure>
 
       <h3>4.2 Norms: Measuring Length</h3>
-      <p>A <b>norm</b> is a function $\|\cdot\|: V \to \mathbb{R}$ satisfying:</p>
+      <p>A <b>norm</b> is a function $\|\cdot\|: V \to \mathbb{R}$ that assigns a length to every vector. It must satisfy:</p>
       <ol>
         <li><b>Definiteness:</b> $\|\mathbf{x}\| \ge 0$, and $\|\mathbf{x}\| = 0 \iff \mathbf{x}=0$.</li>
-        <li><b>Homogeneity:</b> $\|\alpha \mathbf{x}\| = |\alpha| \|\mathbf{x}\|$.</li>
-        <li><b>Triangle Inequality:</b> $\|\mathbf{x}+\mathbf{y}\| \le \|\mathbf{x}\| + \|\mathbf{y}\|$.</li>
+        <li><b>Absolute Homogeneity:</b> $\|\alpha \mathbf{x}\| = |\alpha| \|\mathbf{x}\|$. (Length scales linearly, direction doesn't matter).</li>
+        <li><b>Triangle Inequality:</b> $\|\mathbf{x}+\mathbf{y}\| \le \|\mathbf{x}\| + \|\mathbf{y}\|$. (Direct path is shortest).</li>
       </ol>
 
-      <h4>The Induced Norm (Euclidean Length)</h4>
-      <p>Every inner product <i>induces</i> a norm defined by $\|\mathbf{x}\| := \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}$.
-      <br>This definition is valid because $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$. The triangle inequality for this norm is <b>not</b> an axiom; it is a theorem derived from the inner product axioms via the Cauchy-Schwarz inequality.</p>
+      <h4>The Induced Norm (Derived, Not Assumed)</h4>
+      <p>Every inner product <i>induces</i> a canonical norm:
+      $$ \|\mathbf{x}\| := \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle} $$
+      This is well-defined by positive definiteness. Crucially, the norm properties are <b>theorems</b> derived from the inner product axioms:
+      <br>1. Definiteness follows from the inner product's definiteness.
+      <br>2. Homogeneity follows from bilinearity: $\langle \alpha \mathbf{x}, \alpha \mathbf{x} \rangle = \alpha^2 \langle \mathbf{x}, \mathbf{x} \rangle$.
+      <br>3. The Triangle Inequality follows from the <b>Cauchy-Schwarz Inequality</b>.</p>
 
       <div class="proof-box">
         <h4>Theorem: Cauchy-Schwarz Inequality</h4>
@@ -713,16 +730,27 @@
 
     <!-- SECTION 5: ORTHOGONALITY -->
     <section class="section-card" id="section-orthogonality">
-      <h2>5. Orthogonality and Orthonormal Bases</h2>
+      <h2>5. Orthogonality and Projections</h2>
 
-      <h3>Orthonormal Sets</h3>
-      <p>A set of vectors $q_1, \dots, q_k$ is <b>orthonormal</b> if its elements are mutually orthogonal and each has a norm of 1. Formally, $q_i^\top q_j = \delta_{ij}$, where $\delta_{ij}$ is the Kronecker delta (1 if $i=j$, 0 otherwise). A square matrix $Q$ with orthonormal columns is an <b>orthogonal matrix</b>, satisfying the important property $Q^\top Q = I$, which means $Q^{-1} = Q^\top$. Orthonormal bases are computationally desirable because they are numerically stable and simplify many calculations, such as projections.</p>
+      <h3>5.1 Orthogonality and Complements</h3>
+      <p>We defined $\mathbf{x} \perp \mathbf{y}$ iff $\langle \mathbf{x}, \mathbf{y} \rangle = 0$. This algebraic condition has immense structural power.
+      <br><b>Orthogonal Complement:</b> For any subspace $W$, the set $W^\perp = \{v \in V \mid \langle v, w \rangle = 0 \ \forall w \in W\}$ is also a subspace.
+      <br><b>Pythagorean Theorem:</b> If $\mathbf{u} \perp \mathbf{v}$, then $\|\mathbf{u}+\mathbf{v}\|^2 = \|\mathbf{u}\|^2 + \|\mathbf{v}\|^2$. This follows directly from bilinearity: $\langle u+v, u+v \rangle = \langle u,u \rangle + 2\langle u,v \rangle + \langle v,v \rangle$. The cross term vanishes.</p>
 
-      <h3>Angle Preservation and Orthogonal Matrices</h3>
-      <p>A linear map $A$ preserves angles if $\frac{\langle A\mathbf{x}, A\mathbf{y} \rangle}{\|A\mathbf{x}\|\|A\mathbf{y}\|} = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\|\|\mathbf{y}\|}$ for all $\mathbf{x}, \mathbf{y}$.
-      A stronger condition is that $A$ preserves inner products: $\langle A\mathbf{x}, A\mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{y} \rangle$.
-      <br>Using the adjoint property, $\langle \mathbf{x}, A^\top A \mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{y} \rangle$ for all $\mathbf{x}, \mathbf{y}$, which implies $A^\top A = I$.
-      Thus, <b>matrices that preserve geometry (lengths and angles) are exactly the orthogonal matrices</b> (possibly scaled).</p>
+      <h3>5.2 Orthogonal Decomposition and Projection</h3>
+      <p><b>The Problem:</b> Given a subspace $W$ and a vector $\mathbf{x}$, find the point in $W$ closest to $\mathbf{x}$.
+      <br><b>Theorem (Orthogonal Decomposition):</b> Every vector $\mathbf{x}$ can be uniquely written as $\mathbf{x} = \mathbf{w} + \mathbf{z}$ where $\mathbf{w} \in W$ and $\mathbf{z} \in W^\perp$.
+      <br><b>Proof of Optimality:</b> For any other $\mathbf{w}' \in W$, $\|\mathbf{x} - \mathbf{w}'\|^2 = \|(\mathbf{w} + \mathbf{z}) - \mathbf{w}'\|^2 = \|(\mathbf{w} - \mathbf{w}') + \mathbf{z}\|^2 = \|\mathbf{w} - \mathbf{w}'\|^2 + \|\mathbf{z}\|^2$ (by Pythagoras). This is minimized precisely when $\mathbf{w}' = \mathbf{w}$.
+      <br><b>Definition:</b> The vector $\mathbf{w}$ is the <b>orthogonal projection</b> of $\mathbf{x}$ onto $W$, denoted $\operatorname{proj}_W(\mathbf{x})$.</p>
+
+      <h3>5.3 Orthonormal Bases</h3>
+      <p>A basis $\{u_1, \dots, u_k\}$ is <b>orthonormal</b> if $\langle u_i, u_j \rangle = \delta_{ij}$.
+      <br><b>Projection Formula:</b> If we have an orthonormal basis for $W$, the projection is simply:
+      $$ \operatorname{proj}_W(\mathbf{x}) = \sum_{i=1}^k \langle \mathbf{x}, u_i \rangle u_i $$
+      This is computationally efficient and numerically stable.</p>
+
+      <h3>5.4 Angle Preservation and Orthogonal Matrices</h3>
+      <p>A square matrix $Q$ with orthonormal columns is an <b>orthogonal matrix</b> ($Q^\top Q = I$). Such matrices represent isometries (rotations/reflections). They preserve all geometric structure: lengths ($\|Qx\| = \|x\|$) and inner products ($\langle Qx, Qy \rangle = \langle x, y \rangle$).</p>
 
       <div class="insight">
         <h4>The Orthogonal Group $O_n$</h4>

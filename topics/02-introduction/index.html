@@ -166,7 +166,7 @@
         <ul>
           <li><b>Optimal value:</b> $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$ (can be $-\infty$ if unbounded, $+\infty$ if infeasible).</li>
           <li><b>Optimal point (solution):</b> $x^* \in \mathcal{F}$ is optimal if $f_0(x^*) = p^*$.</li>
-          <li><b>$\varepsilon$-suboptimal:</b> $x$ is $\varepsilon$-suboptimal if $f_0(x) \le p^* + \varepsilon$.</li>
+          <li><b>$\varepsilon$-suboptimal:</b> $\mathbf{x}$ is $\varepsilon$-suboptimal if $f_0(\mathbf{x}) \le p^* + \varepsilon$.</li>
         </ul>
 
         <div class="widget-container" style="margin: 24px 0;">
@@ -174,7 +174,7 @@
           <p><b>Understand the Building Block of Convexity:</b> A convex combination is the foundation of all convex geometry. This widget demonstrates how mixing points creates the convex hull:</p>
           <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
             <li><b>Drag the vertices ($v_1, v_2, v_3$):</b> Shape the triangle (convex hull).</li>
-            <li><b>Drag the target point ($x$):</b> See if it can be formed as a convex combination of vertices.</li>
+            <li><b>Drag the target point ($\mathbf{x}$):</b> See if it can be formed as a convex combination of vertices.</li>
             <li><b>Barycentric Coordinates:</b> Observe the weights $\theta_i$. Inside the hull, all $\theta_i \ge 0$. Outside, at least one is negative.</li>
           </ul>
           <p><i>Geometric intuition:</i> A set is convex if it contains all convex combinations of its points. This prevents "holes" or "dents" that could trap optimization algorithms.</p>
@@ -201,7 +201,7 @@
         <div class="theorem-box">
           <h4>Theorem (Fundamental Property of Convex Optimization)</h4>
           <p>For a convex optimization problem, any local minimum is also a global minimum.</p>
-          <p><b>Formally:</b> If $x^*$ is a local minimum (i.e., there exists $\delta > 0$ such that $f_0(x^*) \le f_0(x)$ for all feasible $x$ with $\|x - x^*\|_2 < \delta$), then $x^*$ is a global minimum.</p>
+          <p><b>Formally:</b> If $\mathbf{x}^*$ is a local minimum (i.e., there exists $\delta > 0$ such that $f_0(\mathbf{x}^*) \le f_0(\mathbf{x})$ for all feasible $\mathbf{x}$ with $\|\mathbf{x} - \mathbf{x}^*\|_2 < \delta$), then $\mathbf{x}^*$ is a global minimum.</p>
         </div>
 
         <div class="proof-box">
@@ -209,37 +209,37 @@
           <p>This proof uses a "straight line" argument. We show that if there were a better point anywhere else, the path leading to it would immediately drop in value, contradicting local optimality.</p>
 
           <div class="proof-step">
-            <strong>Hypothesis:</strong> Assume the problem is convex. Suppose $x^*$ is a <b>local minimum</b>. This means within some small radius $R$, no feasible point is better than $x^*$.
-            <br><strong>Contradiction Assumption:</strong> Suppose $x^*$ is <b>not</b> a global minimum. This implies there exists a "challenger" point $y$ (somewhere far away) such that $f_0(y) < f_0(x^*)$.
+            <strong>Hypothesis:</strong> Assume the problem is convex. Suppose $\mathbf{x}^*$ is a <b>local minimum</b>. This means within some small radius $R$, no feasible point is better than $\mathbf{x}^*$.
+            <br><strong>Contradiction Assumption:</strong> Suppose $\mathbf{x}^*$ is <b>not</b> a global minimum. This implies there exists a "challenger" point $\mathbf{y}$ (somewhere far away) such that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$.
           </div>
 
           <div class="proof-step">
             <strong>Step 1: The Path.</strong>
-            Imagine walking from $x^*$ towards $y$. The path is the line segment $z(\theta) = (1-\theta)x^* + \theta y$.
+            Imagine walking from $\mathbf{x}^*$ towards $\mathbf{y}$. The path is the line segment $\mathbf{z}(\theta) = (1-\theta)\mathbf{x}^* + \theta \mathbf{y}$.
             <br>Because the feasible set is convex, this entire path is safe (feasible). We never step outside the constraints.
           </div>
 
           <div class="proof-step">
             <strong>Step 2: The Slope.</strong>
-            What happens to the objective value as we walk? Since $f_0$ is convex, the value along the segment lies below the chord connecting $f_0(x^*)$ and $f_0(y)$.
-            $$ f_0(z(\theta)) \le (1-\theta)f_0(x^*) + \theta f_0(y) $$
-            Since the destination value $f_0(y)$ is strictly lower than the starting value $f_0(x^*)$, the chord slopes <b>downward</b>.
-            $$ f_0(z(\theta)) < (1-\theta)f_0(x^*) + \theta f_0(x^*) = f_0(x^*) $$
-            Mathematically, for any step size $\theta > 0$, the value $f_0(z(\theta))$ is strictly less than $f_0(x^*)$.
+            What happens to the objective value as we walk? Since $f_0$ is convex, the value along the segment lies below the chord connecting $f_0(\mathbf{x}^*)$ and $f_0(\mathbf{y})$.
+            $$ f_0(\mathbf{z}(\theta)) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
+            Since the destination value $f_0(\mathbf{y})$ is strictly lower than the starting value $f_0(\mathbf{x}^*)$, the chord slopes <b>downward</b>.
+            $$ f_0(\mathbf{z}(\theta)) < (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) = f_0(\mathbf{x}^*) $$
+            Mathematically, for any step size $\theta > 0$, the value $f_0(\mathbf{z}(\theta))$ is strictly less than $f_0(\mathbf{x}^*)$.
           </div>
 
           <div class="proof-step">
             <strong>Step 3: The Contradiction.</strong>
             Take a tiny baby step along this path (very small $\theta$).
-            This point $z(\theta)$ is:
+            This point $\mathbf{z}(\theta)$ is:
             1. Valid (feasible).
-            2. Very close to $x^*$ (inside the local radius $R$).
-            3. Strictly better than $x^*$ (lower objective).
-            This contradicts the fact that $x^*$ was a local minimum!
+            2. Very close to $\mathbf{x}^*$ (inside the local radius $R$).
+            3. Strictly better than $\mathbf{x}^*$ (lower objective).
+            This contradicts the fact that $\mathbf{x}^*$ was a local minimum!
           </div>
 
           <div class="proof-step">
-            <strong>Conclusion:</strong> The only way to resolve this contradiction is to reject the existence of the challenger $y$. Thus, no point better than $x^*$ exists anywhere. $x^*$ is global.
+            <strong>Conclusion:</strong> The only way to resolve this contradiction is to reject the existence of the challenger $\mathbf{y}$. Thus, no point better than $\mathbf{x}^*$ exists anywhere. $\mathbf{x}^*$ is global.
           </div>
         </div>
 
@@ -489,9 +489,9 @@
 
         <div class="example">
           <h4>Example 2: Least Squares with Constraints</h4>
-          <p>Fit a model $y \approx Ax$ minimizing squared error, subject to constraints on $x$:</p>
+          <p>Fit a model $\mathbf{y} \approx A\mathbf{x}$ minimizing squared error, subject to constraints on $\mathbf{x}$:</p>
           $$
-          \min_{x} \quad \|Ax - y\|_2^2 \quad \text{s.t.} \quad x \ge 0, \ \mathbf{1}^\top x = 1
+          \min_{\mathbf{x}} \quad \|A\mathbf{x} - \mathbf{y}\|_2^2 \quad \text{s.t.} \quad \mathbf{x} \ge 0, \ \mathbf{1}^\top \mathbf{x} = 1
           $$
           <p>This arises in nonnegative matrix factorization, constrained regression, and image denoising.</p>
         </div>
@@ -805,7 +805,7 @@
           $$
           \min \sum_{i=1}^n t_i \quad \text{s.t.} \quad -t_i \le x_i \le t_i
           $$
-          <p>Now it is a standard Linear Program (LP) with $2n$ variables ($x$ and $t$) and $2n$ linear inequality constraints.</p>
+          <p>Now it is a standard Linear Program (LP) with $2n$ variables ($\mathbf{x}$ and $\mathbf{t}$) and $2n$ linear inequality constraints.</p>
         </div>
 
         <div class="example">
@@ -880,15 +880,15 @@
             <div class="proof-step">
               <strong>Step 3: Prove the bound is achievable (Tightness).</strong>
               We need to construct a specific "worst-case" perturbation $\Delta$ that achieves the upper bound.
-              We want the vector $\Delta x$ to align perfectly with the residual $r$ (to maximize the vector sum) and for $\Delta$ to have the maximum allowed "gain" in the direction of $x$.
+              We want the vector $\Delta \mathbf{x}$ to align perfectly with the residual $\mathbf{r}$ (to maximize the vector sum) and for $\Delta$ to have the maximum allowed "gain" in the direction of $\mathbf{x}$.
               <br>We construct $\Delta$ as a rank-1 outer product:
-              $$ \Delta = \rho u v^\top $$
-              where $u = \frac{r}{\|r\|_2}$ is the direction of the residual, and $v = \frac{x}{\|x\|_2}$ is the direction of the input.
+              $$ \Delta = \rho \mathbf{u} \mathbf{v}^\top $$
+              where $\mathbf{u} = \frac{\mathbf{r}}{\|\mathbf{r}\|_2}$ is the direction of the residual, and $\mathbf{v} = \frac{\mathbf{x}}{\|\mathbf{x}\|_2}$ is the direction of the input.
               <br><b>Verification:</b>
               <ul>
-                <li><b>Norm Constraint:</b> The spectral norm of a rank-1 matrix $uv^\top$ is $\|u\|_2 \|v\|_2$. Thus $\|\Delta\|_2 = \rho(1)(1) = \rho$. The perturbation is feasible.</li>
-                <li><b>Worst-Case Alignment:</b> Apply $\Delta$ to $x$:
-                  $$ \Delta x = (\rho u v^\top) x = \rho u (v^\top x) = \rho u \left( \frac{x^\top x}{\|x\|_2} \right) = \rho u \|x\|_2 = \rho \|x\|_2 \frac{r}{\|r\|_2} $$
+                <li><b>Norm Constraint:</b> The spectral norm of a rank-1 matrix $\mathbf{u}\mathbf{v}^\top$ is $\|\mathbf{u}\|_2 \|\mathbf{v}\|_2$. Thus $\|\Delta\|_2 = \rho(1)(1) = \rho$. The perturbation is feasible.</li>
+                <li><b>Worst-Case Alignment:</b> Apply $\Delta$ to $\mathbf{x}$:
+                  $$ \Delta \mathbf{x} = (\rho \mathbf{u} \mathbf{v}^\top) \mathbf{x} = \rho \mathbf{u} (\mathbf{v}^\top \mathbf{x}) = \rho \mathbf{u} \left( \frac{\mathbf{x}^\top \mathbf{x}}{\|\mathbf{x}\|_2} \right) = \rho \mathbf{u} \|\mathbf{x}\|_2 = \rho \|\mathbf{x}\|_2 \frac{\mathbf{r}}{\|\mathbf{r}\|_2} $$
                   This vector points exactly in the direction of $r$ and has magnitude $\rho \|x\|_2$.
                 </li>
               </ul>
@@ -938,11 +938,11 @@
               $$ \max_{i=1,\dots,m} f_i(x) \le t $$
             </div>
             <div class="proof-step">
-              <strong>Step 2: Optimize over t.</strong> For a fixed $x$, the smallest possible value of $t$ that satisfies the constraints is $t^*(x) = \max_i f_i(x)$.
+              <strong>Step 2: Optimize over t.</strong> For a fixed $\mathbf{x}$, the smallest possible value of $t$ that satisfies the constraints is $t^*(\mathbf{x}) = \max_i f_i(\mathbf{x})$.
             </div>
             <div class="proof-step">
-              <strong>Step 3: Joint minimization.</strong> Minimizing $t$ jointly with $x$ subject to these constraints is therefore equivalent to minimizing $t^*(x)$ over $x$:
-              $$ \min_{x, t} \{ t \mid \max_i f_i(x) \le t \} = \min_x \left( \min_{t \ge \max_i f_i(x)} t \right) = \min_x \max_i f_i(x) $$
+              <strong>Step 3: Joint minimization.</strong> Minimizing $t$ jointly with $\mathbf{x}$ subject to these constraints is therefore equivalent to minimizing $t^*(\mathbf{x})$ over $\mathbf{x}$:
+              $$ \min_{\mathbf{x}, t} \{ t \mid \max_i f_i(\mathbf{x}) \le t \} = \min_{\mathbf{x}} \left( \min_{t \ge \max_i f_i(\mathbf{x})} t \right) = \min_{\mathbf{x}} \max_i f_i(\mathbf{x}) $$
             </div>
           </div>
         </div>
@@ -992,17 +992,17 @@
             <div class="proof-step">
               <strong>Step 2: Transform objective.</strong>
               The objective becomes:
-              $$ \frac{c^\top x + d}{e^\top x + f} = c^\top \left(\frac{x}{e^\top x + f}\right) + d \left(\frac{1}{e^\top x + f}\right) = c^\top y + d z $$
-              This is linear in $y$ and $z$.
+              $$ \frac{c^\top \mathbf{x} + d}{e^\top \mathbf{x} + f} = c^\top \left(\frac{\mathbf{x}}{e^\top \mathbf{x} + f}\right) + d \left(\frac{1}{e^\top \mathbf{x} + f}\right) = c^\top \mathbf{y} + d z $$
+              This is linear in $\mathbf{y}$ and $z$.
             </div>
 
             <div class="proof-step">
               <strong>Step 3: Transform constraints.</strong>
-              Substituting $x = y/z$ into $Ax \le b$:
-              $$ A(y/z) \le b \iff Ay \le bz \iff Ay - bz \le 0 $$
+              Substituting $\mathbf{x} = \mathbf{y}/z$ into $A\mathbf{x} \le \mathbf{b}$:
+              $$ A(\mathbf{y}/z) \le \mathbf{b} \iff A\mathbf{y} \le \mathbf{b}z \iff A\mathbf{y} - \mathbf{b}z \le 0 $$
               (Since $z > 0$, we can multiply through without flipping inequality).
               We also need the constraint that defines $z$:
-              $$ e^\top x + f = \frac{1}{z} \implies e^\top (y/z) + f = \frac{1}{z} \implies e^\top y + f z = 1 $$
+              $$ e^\top \mathbf{x} + f = \frac{1}{z} \implies e^\top (\mathbf{y}/z) + f = \frac{1}{z} \implies e^\top \mathbf{y} + f z = 1 $$
               And finally $z \ge 0$.
             </div>
 
@@ -1106,7 +1106,7 @@
           <li>
             <b>Feasibility Check:</b>
             <ul>
-              <li>Does there exist any $x$ satisfying all constraints?</li>
+              <li>Does there exist any $\mathbf{x}$ satisfying all constraints?</li>
               <li>Are equality constraints consistent? (check $\mathrm{rank}([A \ b]) = \mathrm{rank}(A)$).</li>
             </ul>
           </li>
@@ -1377,14 +1377,14 @@
 
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Setup:</strong> Take any $x, y \in \mathcal{F}$ and $\theta \in [0,1]$. We must show $z = \theta x + (1-\theta)y \in \mathcal{F}$.</div>
-    <div class="proof-step"><strong>Step 1: Verify inequality constraints.</strong> Since $x, y \in \mathcal{F}$, we have $f_i(x) \le 0$ and $f_i(y) \le 0$ for all $i$. By convexity of $f_i$:
-    $$ f_i(z) = f_i(\theta x + (1-\theta)y) \le \theta f_i(x) + (1-\theta)f_i(y) \le 0 $$
-    So $z$ satisfies all inequality constraints.</div>
-    <div class="proof-step"><strong>Step 2: Verify equality constraints.</strong> Since $Ax = b$ and $Ay = b$:
-    $$ Az = A(\theta x + (1-\theta)y) = \theta Ax + (1-\theta)Ay = \theta b + (1-\theta)b = b $$
-    So $z$ satisfies all equality constraints.</div>
-    <div class="proof-step"><strong>Conclusion:</strong> Since $z$ satisfies all constraints, $z \in \mathcal{F}$. Therefore, $\mathcal{F}$ is convex.</div>
+    <div class="proof-step"><strong>Setup:</strong> Take any $\mathbf{x}, \mathbf{y} \in \mathcal{F}$ and $\theta \in [0,1]$. We must show $\mathbf{z} = \theta \mathbf{x} + (1-\theta)\mathbf{y} \in \mathcal{F}$.</div>
+    <div class="proof-step"><strong>Step 1: Verify inequality constraints.</strong> Since $\mathbf{x}, \mathbf{y} \in \mathcal{F}$, we have $f_i(\mathbf{x}) \le 0$ and $f_i(\mathbf{y}) \le 0$ for all $i$. By convexity of $f_i$:
+    $$ f_i(\mathbf{z}) = f_i(\theta \mathbf{x} + (1-\theta)\mathbf{y}) \le \theta f_i(\mathbf{x}) + (1-\theta)f_i(\mathbf{y}) \le 0 $$
+    So $\mathbf{z}$ satisfies all inequality constraints.</div>
+    <div class="proof-step"><strong>Step 2: Verify equality constraints.</strong> Since $A\mathbf{x} = \mathbf{b}$ and $A\mathbf{y} = \mathbf{b}$:
+    $$ A\mathbf{z} = A(\theta \mathbf{x} + (1-\theta)\mathbf{y}) = \theta A\mathbf{x} + (1-\theta)A\mathbf{y} = \theta \mathbf{b} + (1-\theta)\mathbf{b} = \mathbf{b} $$
+    So $\mathbf{z}$ satisfies all equality constraints.</div>
+    <div class="proof-step"><strong>Conclusion:</strong> Since $\mathbf{z}$ satisfies all constraints, $\mathbf{z} \in \mathcal{F}$. Therefore, $\mathcal{F}$ is convex.</div>
   </div>
 </div>
 
@@ -1401,19 +1401,19 @@
 
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Setup (proof by contradiction):</strong> Assume there are two distinct global minimizers, $x$ and $y$, with $x \neq y$. Let the optimal value be $p^* = f_0(x) = f_0(y)$.</div>
-    <div class="proof-step"><strong>Step 1: Form a convex combination.</strong> Consider the point $z = \frac{1}{2}x + \frac{1}{2}y$. Since the feasible set is convex, $z$ is feasible.</div>
-    <div class="proof-step"><strong>Step 2: Apply strict convexity.</strong> Since $f_0$ is strictly convex and $x \neq y$:
-    $$ f_0(z) = f_0\left(\frac{1}{2}x + \frac{1}{2}y\right) < \frac{1}{2}f_0(x) + \frac{1}{2}f_0(y) $$</div>
+    <div class="proof-step"><strong>Setup (proof by contradiction):</strong> Assume there are two distinct global minimizers, $\mathbf{x}$ and $\mathbf{y}$, with $\mathbf{x} \neq \mathbf{y}$. Let the optimal value be $p^* = f_0(\mathbf{x}) = f_0(\mathbf{y})$.</div>
+    <div class="proof-step"><strong>Step 1: Form a convex combination.</strong> Consider the point $\mathbf{z} = \frac{1}{2}\mathbf{x} + \frac{1}{2}\mathbf{y}$. Since the feasible set is convex, $\mathbf{z}$ is feasible.</div>
+    <div class="proof-step"><strong>Step 2: Apply strict convexity.</strong> Since $f_0$ is strictly convex and $\mathbf{x} \neq \mathbf{y}$:
+    $$ f_0(\mathbf{z}) = f_0\left(\frac{1}{2}\mathbf{x} + \frac{1}{2}\mathbf{y}\right) < \frac{1}{2}f_0(\mathbf{x}) + \frac{1}{2}f_0(\mathbf{y}) $$</div>
     <div class="proof-step"><strong>Step 3: Substitute optimal values.</strong>
-    $$ f_0(z) < \frac{1}{2}p^* + \frac{1}{2}p^* = p^* $$</div>
-    <div class="proof-step"><strong>Conclusion:</strong> We found a feasible point $z$ with $f_0(z) < p^*$, which contradicts that $p^*$ is the global minimum. Thus, the assumption that there are two distinct minimizers must be false.</div>
+    $$ f_0(\mathbf{z}) < \frac{1}{2}p^* + \frac{1}{2}p^* = p^* $$</div>
+    <div class="proof-step"><strong>Conclusion:</strong> We found a feasible point $\mathbf{z}$ with $f_0(\mathbf{z}) < p^*$, which contradicts that $p^*$ is the global minimum. Thus, the assumption that there are two distinct minimizers must be false.</div>
   </div>
 </div>
 
 <div class="problem">
   <h3>P2.6 — Modeling: Maximum Likelihood Estimation</h3>
-  <p>Consider a logistic regression model for binary classification. We have data points $(x_i, y_i)$ where $x_i \in \mathbb{R}^n$ are feature vectors and $y_i \in \{-1, 1\}$ are labels. The probability that $y_i = 1$ is modeled as: $$ P(y_i=1 \mid x_i; w) = \frac{1}{1 + e^{-w^\top x_i}} $$ Formulate the problem of finding the weight vector $w$ that maximizes the log-likelihood of the data as a convex optimization problem. (Note: $P(y_i=-1 \mid x_i; w) = 1 - P(y_i=1) = \frac{1}{1 + e^{w^\top x_i}}$).</p>
+  <p>Consider a logistic regression model for binary classification. We have data points $(\mathbf{x}_i, y_i)$ where $\mathbf{x}_i \in \mathbb{R}^n$ are feature vectors and $y_i \in \{-1, 1\}$ are labels. The probability that $y_i = 1$ is modeled as: $$ P(y_i=1 \mid \mathbf{x}_i; \mathbf{w}) = \frac{1}{1 + e^{-\mathbf{w}^\top \mathbf{x}_i}} $$ Formulate the problem of finding the weight vector $\mathbf{w}$ that maximizes the log-likelihood of the data as a convex optimization problem. (Note: $P(y_i=-1 \mid \mathbf{x}_i; \mathbf{w}) = 1 - P(y_i=1) = \frac{1}{1 + e^{\mathbf{w}^\top \mathbf{x}_i}}$).</p>
 
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1437,7 +1437,7 @@
     We compute the gradient and Hessian to verify:
     $$ f'(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}} \quad (\text{sigmoid function}) $$
     $$ f''(z) = \frac{e^z(1+e^z) - e^z(e^z)}{(1+e^z)^2} = \frac{e^z}{(1+e^z)^2} > 0 $$
-    Our objective is a sum of terms $f(-y_i w^\top x_i)$. Since $f$ is convex and the argument $-y_i w^\top x_i$ is affine in $w$, the composition is convex.
+    Our objective is a sum of terms $f(-y_i \mathbf{w}^\top \mathbf{x}_i)$. Since $f$ is convex and the argument $-y_i \mathbf{w}^\top \mathbf{x}_i$ is affine in $\mathbf{w}$, the composition is convex.
     The sum of convex functions is convex.</div>
     <div class="proof-step"><strong>Conclusion:</strong> The optimization problem is:
     $$ \min_{w \in \mathbb{R}^n} \sum_{i=1}^m \log(1 + e^{-y_i w^\top x_i}) $$

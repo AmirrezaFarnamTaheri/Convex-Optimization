@@ -64,33 +64,33 @@
         <p style="margin: 0;">
           $
           \begin{aligned}
-          \text{minimize} \quad & f^\top x \\
-          \text{subject to} \quad & \|A_i x + b_i\|_2 \le c_i^\top x + d_i, \quad i = 1, \dots, m \\
-          & Fx = g
+          \text{minimize} \quad & \mathbf{f}^\top \mathbf{x} \\
+          \text{subject to} \quad & \|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{c}_i^\top \mathbf{x} + d_i, \quad i = 1, \dots, m \\
+          & F\mathbf{x} = \mathbf{g}
           \end{aligned}
           $
         </p>
       </div>
 
-      <p>where $x \in \mathbb{R}^n$ is the variable. Each constraint $\|A_i x + b_i\|_2 \le c_i^\top x + d_i$ is called a <strong>second-order cone constraint</strong>.</p>
+      <p>where $\mathbf{x} \in \mathbb{R}^n$ is the variable. Each constraint $\|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{c}_i^\top \mathbf{x} + d_i$ is called a <strong>second-order cone constraint</strong>.</p>
 
       <h3>1.2 The Second-Order Cone (Lorentz Cone)</h3>
       <p>The <strong>second-order cone</strong> (or <strong>Lorentz cone</strong>) in $\mathbb{R}^{n+1}$ is:</p>
       <p style="text-align: center;">
         $
-        \mathcal{L}^{n+1} = \{(x, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|x\|_2 \le t\}
+        \mathcal{L}^{n+1} = \{(\mathbf{x}, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|\mathbf{x}\|_2 \le t\}
         $
       </p>
 
       <div class="proof-box">
         <h4>Convexity of the Second-Order Cone</h4>
         <div class="proof-step">
-          <strong>Setup:</strong> Let $(x_1, t_1), (x_2, t_2) \in \mathcal{L}^{n+1}$ and $\theta \in [0, 1]$.
+          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{L}^{n+1}$ and $\theta \in [0, 1]$.
         </div>
         <div class="proof-step">
-          <strong>Convex combination:</strong> We have $\|x_1\|_2 \le t_1$ and $\|x_2\|_2 \le t_2$. Consider:
+          <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
           $
-          \|\theta x_1 + (1-\theta) x_2\|_2 \le \theta \|x_1\|_2 + (1-\theta) \|x_2\|_2 \quad \text{(triangle inequality)}
+          \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)}
           $
         </div>
         <div class="proof-step">
@@ -100,7 +100,7 @@
           $
         </div>
         <div class="proof-step">
-          <strong>Conclusion:</strong> Thus $(\theta x_1 + (1-\theta) x_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{L}^{n+1}$, so $\mathcal{L}^{n+1}$ is convex.
+          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{L}^{n+1}$, so $\mathcal{L}^{n+1}$ is convex.
         </div>
       </div>
 
@@ -141,10 +141,10 @@
         <div class="proof-step">
           <strong>Step 3: Construct Worst-Case Perturbation (Tightness Proof).</strong>
           Is this bound just a loose estimate, or can nature actually achieve it? We construct a specific $\Delta A$ that hits the bound exactly.
-          <br>Let $u = Ax - b$ be the nominal residual vector. We want the perturbation term $\Delta A x$ to point in the <i>exact same direction</i> as $u$ to maximize the sum.
+          <br>Let $\mathbf{u} = A\mathbf{x} - \mathbf{b}$ be the nominal residual vector. We want the perturbation term $\Delta A \mathbf{x}$ to point in the <i>exact same direction</i> as $\mathbf{u}$ to maximize the sum.
           <br><b>The Construction:</b> Define a rank-1 perturbation matrix:
           $$ \Delta A = \rho \frac{u}{\|u\|_2} \frac{x^\top}{\|x\|_2} $$
-          This matrix takes the input direction $x$ and maps it to the output direction $u$, scaled by $\rho$.
+          This matrix takes the input direction $\mathbf{x}$ and maps it to the output direction $\mathbf{u}$, scaled by $\rho$.
           <br><b>Verification:</b>
           1. <b>Norm Check:</b> $\|\Delta A\|_2 = \rho \cdot 1 \cdot 1 = \rho$. (Valid perturbation).
           2. <b>Alignment Check:</b> $\Delta A x = \rho \frac{u}{\|u\|} \frac{x^\top x}{\|x\|} = \rho \|x\|_2 \frac{u}{\|u\|}$.
@@ -155,13 +155,13 @@
 
         <div class="proof-step">
           <strong>Step 4: Formulate as SOCP.</strong>
-          The problem minimizes the sum of two Euclidean norms: $\|Ax - b\|_2 + \rho \|x\|_2$.
+          The problem minimizes the sum of two Euclidean norms: $\|A\mathbf{x} - \mathbf{b}\|_2 + \rho \|\mathbf{x}\|_2$.
           We introduce epigraph variables $t_1, t_2$ to move the norms to the constraints:
           $$
           \begin{aligned}
           \text{minimize} \quad & t_1 + \rho t_2 \\
-          \text{subject to} \quad & \|Ax - b\|_2 \le t_1 \\
-          & \|x\|_2 \le t_2
+          \text{subject to} \quad & \|A\mathbf{x} - \mathbf{b}\|_2 \le t_1 \\
+          & \|\mathbf{x}\|_2 \le t_2
           \end{aligned}
           $$
           These are standard Second-Order Cone (SOC) constraints. Thus, Robust Least Squares is an SOCP.
@@ -169,10 +169,10 @@
       </div>
 
       <h4>Example 4.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
-      <p>Consider the problem of finding a point $x$ that minimizes the sum of Euclidean distances to a set of fixed points $p_1, \dots, p_k$:</p>
+      <p>Consider the problem of finding a point $\mathbf{x}$ that minimizes the sum of Euclidean distances to a set of fixed points $\mathbf{p}_1, \dots, \mathbf{p}_k$:</p>
       <p style="text-align: center;">
         $
-        \text{minimize} \quad \sum_{i=1}^k \|x - p_i\|_2
+        \text{minimize} \quad \sum_{i=1}^k \|\mathbf{x} - \mathbf{p}_i\|_2
         $
       </p>
       <p>This arises in facility location (finding the optimal warehouse location). It is <strong>not</strong> an LP because the Euclidean norm is not polyhedral. We formulate it as an SOCP by introducing auxiliary variables $t_1, \dots, t_k$:</p>
@@ -180,12 +180,12 @@
         $
         \begin{aligned}
         \text{minimize} \quad & \sum_{i=1}^k t_i \\
-        \text{subject to} \quad & \|x - p_i\|_2 \le t_i, \quad i = 1, \dots, k
+        \text{subject to} \quad & \|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i, \quad i = 1, \dots, k
         \end{aligned}
         $
       </p>
       <p>Note: The inequality constraints must define a convex set, so we typically require $f_i$ to be convex, not merely quasiconvex (since sublevel sets of individual quasiconvex functions are convex, but their intersection might not have nice properties without stronger assumptions, though technically intersection of convex sets is convex. Standard form usually requires convex constraints).</p>
-      <p>The constraints $\|x - p_i\|_2 \le t_i$ are standard second-order cone constraints $(x - p_i, t_i) \in \mathcal{L}^{n+1}$.</p>
+      <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{L}^{n+1}$.</p>
 
     </section>
 
@@ -205,19 +205,19 @@
         <h4>Derivation: Robust to SOCP</h4>
         <div class="proof-step">
           <strong>Step 1: Expand the Term.</strong>
-          We want to maximize the LHS over the uncertainty set $u$:
-          $$ \sup_{\|u\|_2 \le 1} (\bar{a}_i + P_i u)^\top x = \bar{a}_i^\top x + \sup_{\|u\|_2 \le 1} (P_i u)^\top x = \bar{a}_i^\top x + \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) $$
+          We want to maximize the LHS over the uncertainty set $\mathbf{u}$:
+          $$ \sup_{\|\mathbf{u}\|_2 \le 1} (\bar{\mathbf{a}}_i + P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} (P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) $$
         </div>
         <div class="proof-step">
           <strong>Step 2: Dual Norm Representation.</strong>
-          The term $\sup_{\|u\|_2 \le 1} u^\top v$ is the definition of the dual norm $\|v\|_*$.
-          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) = \|P_i^\top x\|_2$.
+          The term $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top \mathbf{v}$ is the definition of the dual norm $\|\mathbf{v}\|_*$.
+          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) = \|P_i^\top \mathbf{x}\|_2$.
         </div>
         <div class="proof-step">
           <strong>Step 3: Resulting Constraint.</strong>
           Substituting back, the robust constraint is equivalent to:
-          $$ \bar{a}_i^\top x + \|P_i^\top x\|_2 \le b_i $$
-          This is a deterministic constraint on $x$ involving a linear term and a Euclidean norm term—exactly the form of a Second-Order Cone constraint.
+          $$ \bar{\mathbf{a}}_i^\top \mathbf{x} + \|P_i^\top \mathbf{x}\|_2 \le b_i $$
+          This is a deterministic constraint on $\mathbf{x}$ involving a linear term and a Euclidean norm term—exactly the form of a Second-Order Cone constraint.
         </div>
       </div>
       <p>Thus, Robust LP with ellipsoidal uncertainty is an SOCP.</p>
@@ -271,8 +271,8 @@
         <p style="margin: 0;">
           $
           \begin{aligned}
-          \text{minimize} \quad & c^\top x \\
-          \text{subject to} \quad & F(x) = F_0 + \sum_{i=1}^n x_i F_i \succeq 0 \\
+          \text{minimize} \quad & \mathbf{c}^\top \mathbf{x} \\
+          \text{subject to} \quad & F(\mathbf{x}) = F_0 + \sum_{i=1}^n x_i F_i \succeq 0 \\
           & Ax = b
           \end{aligned}
           $
@@ -281,7 +281,7 @@
 
       <p>where:</p>
       <ul>
-        <li>$x \in \mathbb{R}^n$ is the variable</li>
+        <li>$\mathbf{x} \in \mathbb{R}^n$ is the variable</li>
         <li>$F_i \in \mathbb{S}^m$ (symmetric matrices) for $i = 0, \dots, n$</li>
         <li>$F(x) \succeq 0$ means $F(x)$ is positive semidefinite</li>
         <li>$A \in \mathbb{R}^{p \times n}$, $b \in \mathbb{R}^p$ define additional affine constraints</li>
@@ -307,8 +307,8 @@
       <h3>3.4 Standard SDP Examples</h3>
 
             <h4>Example 3.1: Eigenvalue Minimization</h4>
-      <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $x$: $A(x) = A_0 + \sum x_i A_i$.</p>
-      $$ \min_x \lambda_{\max}(A(x)) $$
+      <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
+      $$ \min_{\mathbf{x}} \lambda_{\max}(A(\mathbf{x})) $$
 
       <div class="proof-box">
         <h4>Derivation via Loewner Order</h4>
@@ -421,14 +421,103 @@
       <p><b>Computational Trade-off:</b> While SDP is the most general, its solvers (typically $O(n^6)$ or $O(n^4)$ depending on structure) are significantly slower than dedicated SOCP ($O(n^3)$) or LP/QP solvers. <strong>Rule of Thumb:</strong> Always use the most specific problem class that fits your model.</p>
     </section>
 
-    <!-- Section 4: Quasiconvex Optimization -->
+    <!-- Section 4: Exponential Cone Programming -->
+
+    <section class="section-card" id="section-4">
+      <h2>4. Exponential Cone Programming</h2>
+
+      <h3>4.1 The Exponential Cone</h3>
+      <p>The <strong>exponential cone</strong> $K_{\text{exp}}$ is a three-dimensional cone defined as:</p>
+      <p style="text-align: center;">
+        $$
+        K_{\text{exp}} = \{(x, y, z) \in \mathbb{R}^3 \mid y > 0, \ y e^{x/y} \le z\} \cup \{(x, 0, z) \in \mathbb{R}^3 \mid x \le 0, \ z \ge 0\}
+        $$
+      </p>
+      <p>Equivalently, for $y > 0$, the constraint $(x, y, z) \in K_{\text{exp}}$ means $z \ge y e^{x/y}$, which can be rewritten as $x \le y \log(z/y)$.</p>
+
+      <div class="intuition-box">
+        <h4>Geometric Interpretation</h4>
+        <p>The exponential cone is a non-symmetric cone that allows us to express exponential and logarithmic constraints. Unlike the second-order cone or PSD cone, it is not self-dual, but it plays a crucial role in modeling problems involving entropy, logarithms, and exponentials.</p>
+      </div>
+
+      <h3>4.2 Exponential Cone Programs</h3>
+      <p>An <strong>Exponential Cone Program (ECP)</strong> is a convex optimization problem with constraints involving the exponential cone:</p>
+      <p style="text-align: center;">
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & \mathbf{c}^\top \mathbf{x} \\
+        \text{subject to} \quad & (A_i \mathbf{x} + \mathbf{b}_i, C_i \mathbf{x} + d_i, E_i \mathbf{x} + f_i) \in K_{\text{exp}}, \quad i = 1, \dots, m \\
+        & F\mathbf{x} = \mathbf{g}
+        \end{aligned}
+        $$
+      </p>
+      <p>where the constraints ensure that the affine combinations lie in the exponential cone.</p>
+
+      <h3>4.3 Key Applications</h3>
+
+      <div class="example">
+        <h4>Example 1: Entropy Maximization</h4>
+        <p>Consider the problem of maximizing entropy subject to linear constraints:</p>
+        <p style="text-align: center;">
+          $$
+          \begin{aligned}
+          \text{maximize} \quad & -\sum_{i=1}^n x_i \log x_i \\
+          \text{subject to} \quad & A\mathbf{x} = \mathbf{b} \\
+          & \mathbf{x} \ge 0
+          \end{aligned}
+          $$
+        </p>
+        <p>This can be reformulated as an exponential cone program. The key insight is that $-\sum x_i \log x_i = \sum x_i \log(1/x_i)$, and we can use the exponential cone constraint $t_i \ge x_i \log(1/x_i)$ for $x_i > 0$.</p>
+        <p><b>Reformulation:</b> Introduce auxiliary variables $t_i$ and constraints:</p>
+        <ul>
+          <li>For each $i$ with $x_i > 0$: $(1, x_i, e^{t_i/x_i}) \in K_{\text{exp}}$, which implies $t_i \ge x_i \log(1/x_i)$.</li>
+          <li>Maximize $\sum t_i$ subject to $A\mathbf{x} = \mathbf{b}$ and $\mathbf{x} \ge 0$.</li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <h4>Example 2: Log-Sum-Exp</h4>
+        <p>The log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ is convex and can be expressed using the exponential cone. To minimize $\log(\sum_{i=1}^n e^{x_i})$, we introduce a variable $t$ and constraints:</p>
+        <p style="text-align: center;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & t \\
+          \text{subject to} \quad & \sum_{i=1}^n u_i \le 1 \\
+          & (x_i, 1, u_i) \in K_{\text{exp}}, \quad i = 1, \dots, n
+          \end{aligned}
+          $$
+        </p>
+        <p>where each constraint $(x_i, 1, u_i) \in K_{\text{exp}}$ means $u_i \ge e^{x_i}$, so $\sum u_i \ge \sum e^{x_i}$, and minimizing $t$ such that $\sum u_i \le 1$ gives $t = \log(\sum e^{x_i})$.</p>
+      </div>
+
+      <div class="example">
+        <h4>Example 3: Geometric Programming (Conic Form)</h4>
+        <p>Geometric programs can be transformed into exponential cone programs. A geometric program in posynomial form:</p>
+        <p style="text-align: center;">
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & \sum_{k=1}^{K_0} c_k \prod_{i=1}^n x_i^{a_{ik}} \\
+          \text{subject to} \quad & \sum_{k=1}^{K_j} d_{jk} \prod_{i=1}^n x_i^{b_{ijk}} \le 1, \quad j = 1, \dots, m \\
+          & x_i > 0
+          \end{aligned}
+          $$
+        </p>
+        <p>After the standard log transformation $y_i = \log x_i$, this becomes a convex problem. The exponential terms $e^{a_{ik}^\top \mathbf{y}}$ can be expressed using exponential cone constraints, making it an exponential cone program.</p>
+      </div>
+
+      <h3>4.4 Relationship to Other Cones</h3>
+      <p>The exponential cone is a fundamental cone in conic programming, alongside the nonnegative orthant, second-order cone, and PSD cone. Modern solvers (e.g., MOSEK, ECOS) support exponential cone constraints, enabling efficient solution of problems involving exponentials and logarithms.</p>
+      <p><b>Note:</b> Unlike SOCP and SDP, the exponential cone cannot be embedded into the PSD cone in a simple way, making it a distinct and important problem class.</p>
+    </section>
+
+    <!-- Section 5: Quasiconvex Optimization -->
 
 
-      <section class="section-card" id="section-4">
-      <h2>4. Quasiconvex Optimization</h2>
+      <section class="section-card" id="section-5">
+      <h2>5. Quasiconvex Optimization</h2>
 
-       <h3>4.1 Quasiconvex Functions</h3>
-      <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{x \mid f(x) \le \alpha\}$ are convex.</p>
+       <h3>5.1 Quasiconvex Functions</h3>
+      <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{\mathbf{x} \mid f(\mathbf{x}) \le \alpha\}$ are convex.</p>
 
       <p><strong>Examples:</strong></p>
       <ul>
@@ -437,26 +526,26 @@
         <li>$x^3$ on $\mathbb{R}$ (not quasiconvex; sublevel sets are not convex)</li>
       </ul>
 
-      <h3>4.2 Quasiconvex Optimization Problems</h3>
+      <h3>5.2 Quasiconvex Optimization Problems</h3>
       <p>A problem is <strong>quasiconvex</strong> if the objective is quasiconvex and the feasible set is convex:</p>
       <p style="text-align: center;">
         $
         \begin{aligned}
-        \text{minimize} \quad & f_0(x) \quad \text{(quasiconvex)} \\
-        \text{subject to} \quad & f_i(x) \le 0 \quad \text{($f_i$ convex)} \\
-        & Ax = b
+        \text{minimize} \quad & f_0(\mathbf{x}) \quad \text{(quasiconvex)} \\
+        \text{subject to} \quad & f_i(\mathbf{x}) \le 0 \quad \text{($f_i$ convex)} \\
+        & A\mathbf{x} = \mathbf{b}
         \end{aligned}
         $
       </p>
 
-      <h3>4.3 Solution via Bisection (Convex Feasibility)</h3>
-      <p>Quasiconvex optimization can be solved by solving a sequence of convex feasibility problems. This algorithm relies on the fact that for a fixed $t$, the set of $x$ such that $f_0(x) \le t$ is a convex set (by definition of quasiconvexity).</p>
+      <h3>5.3 Solution via Bisection (Convex Feasibility)</h3>
+      <p>Quasiconvex optimization can be solved by solving a sequence of convex feasibility problems. This algorithm relies on the fact that for a fixed $t$, the set of $\mathbf{x}$ such that $f_0(\mathbf{x}) \le t$ is a convex set (by definition of quasiconvexity).</p>
       <p>The algorithm finds the optimal value $p^*$ by performing a binary search (bisection) on the range of possible values.</p>
       <ol>
         <li><b>Initialize:</b> Find an interval $[l, u]$ known to contain the optimal value $p^*$.</li>
         <li><b>Check Feasibility:</b> Let $t = (l+u)/2$. Solve the convex feasibility problem:
-          $$ \text{find } x \quad \text{subject to } \quad f_i(x) \le 0, \ Ax = b, \ f_0(x) \le t $$
-          Note that $f_0(x) \le t$ is a convex constraint.
+          $$ \text{find } \mathbf{x} \quad \text{subject to } \quad f_i(\mathbf{x}) \le 0, \ A\mathbf{x} = \mathbf{b}, \ f_0(\mathbf{x}) \le t $$
+          Note that $f_0(\mathbf{x}) \le t$ is a convex constraint.
         </li>
         <li><b>Update:</b>
           <ul>
@@ -469,18 +558,18 @@
       <p>This method allows us to solve any quasiconvex problem using a standard convex solver, at the cost of solving multiple (logarithmically many) instances.</p>
     </section>
 
-    <!-- Section 5: Disciplined Convex Programming (DCP) -->
-    <section class="section-card" id="section-5">
-      <h2>5. Disciplined Convex Programming (DCP)</h2>
+    <!-- Section 6: Disciplined Convex Programming (DCP) -->
+    <section class="section-card" id="section-6">
+      <h2>6. Disciplined Convex Programming (DCP)</h2>
 
-      <h3>5.1 Motivation</h3>
+      <h3>6.1 Motivation</h3>
       <p>While we can recognize many convex problems, it's often unclear whether a complex formulation is convex. <strong>Disciplined Convex Programming</strong> is a system of rules for constructing convex optimization problems from basic atoms.</p>
 
       <div class="intuition-box">
         <p><b>Intuition:</b> DCP is a “type system” for convexity. You build an expression tree; each atom (like $\|\cdot\|_2$, $\log$, $\max$) has known curvature and monotonicity rules. If the whole expression type-checks, the model is guaranteed convex (or concave/affine) and the solver can safely transform it into a standard conic form.</p>
       </div>
 
-      <h3>5.2 DCP Rules (a practical checklist)</h3>
+      <h3>6.2 DCP Rules (a practical checklist)</h3>
       <div class="theorem-box">
         <ul style="margin: 0 0 0 20px;">
           <li><b>Every atom has metadata:</b> curvature (convex/concave/affine), monotonicity in each argument, and domain/sign requirements.</li>
@@ -512,8 +601,8 @@
       </div>
     </section>
 
-<section class="section-card" id="section-6">
-      <h2>6. Review & Cheat Sheet</h2>
+<section class="section-card" id="section-8">
+      <h2>8. Review & Cheat Sheet</h2>
 
 
       <h3>Meta-Patterns: Convexification Recipes</h3>
@@ -999,7 +1088,7 @@
         <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
         <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
             <li><b>Charnes-Cooper Transformation:</b> This specific change of variables ($y = \frac{x}{e^\top x + f}, z = \frac{1}{e^\top x + f}$) is a powerful trick to convert a linear-fractional programming problem into a pure Linear Program (LP).</li>
-            <li><b>Constraint Linearity:</b> Under this projective transformation, linear constraints on $x$ become homogeneous linear constraints on $(y, z)$, preserving the LP structure.</li>
+            <li><b>Constraint Linearity:</b> Under this projective transformation, linear constraints on $\mathbf{x}$ become homogeneous linear constraints on $(\mathbf{y}, z)$, preserving the LP structure.</li>
         </ul>
       </div>
 
@@ -1007,14 +1096,14 @@
     <h4>Solution</h4>
     <div class="proof-step">
             <strong>Part (a): Variable Transformation.</strong>
-            Let $z = \frac{1}{e^\top x + f}$. Since $e^\top x + f > 0$, we have $z > 0$.
-            Let $y = zx$. Then $x = y/z$.
+            Let $z = \frac{1}{e^\top \mathbf{x} + f}$. Since $e^\top \mathbf{x} + f > 0$, we have $z > 0$.
+            Let $\mathbf{y} = z\mathbf{x}$. Then $\mathbf{x} = \mathbf{y}/z$.
             Substitute into the objective:
-            $$ \frac{c^\top x + d}{e^\top x + f} = \frac{c^\top (y/z) + d}{1/z} = c^\top y + d z $$
+            $$ \frac{c^\top \mathbf{x} + d}{e^\top \mathbf{x} + f} = \frac{c^\top (\mathbf{y}/z) + d}{1/z} = c^\top \mathbf{y} + d z $$
             Substitute into the definition of $z$:
-            $$ e^\top x + f = \frac{1}{z} \implies e^\top (y/z) + f = \frac{1}{z} \implies e^\top y + f z = 1 $$
-            Substitute into the constraints $Ax \le b$:
-            $$ A(y/z) \le b \implies Ay \le bz \implies Ay - bz \le 0 $$
+            $$ e^\top \mathbf{x} + f = \frac{1}{z} \implies e^\top (\mathbf{y}/z) + f = \frac{1}{z} \implies e^\top \mathbf{y} + f z = 1 $$
+            Substitute into the constraints $A\mathbf{x} \le \mathbf{b}$:
+            $$ A(\mathbf{y}/z) \le \mathbf{b} \implies A\mathbf{y} \le \mathbf{b}z \implies A\mathbf{y} - \mathbf{b}z \le 0 $$
           </div>
 
           <div class="proof-step">
@@ -1022,22 +1111,22 @@
             The transformed problem is:
             $$
             \begin{aligned}
-            \text{minimize} \quad & c^\top y + d z \\
-            \text{subject to} \quad & Ay - bz \le 0 \\
-            & e^\top y + f z = 1 \\
+            \text{minimize} \quad & c^\top \mathbf{y} + d z \\
+            \text{subject to} \quad & A\mathbf{y} - \mathbf{b}z \le 0 \\
+            & e^\top \mathbf{y} + f z = 1 \\
             & z \ge 0
             \end{aligned}
             $$
-            The constraint $z > 0$ is relaxed to $z \ge 0$ for standard LP form (usually handled by the fact that $z=0$ would imply unboundedness or infeasibility in the original problem context, or by $e^\top y = 1$ if $z=0$ which corresponds to "points at infinity").
-            This is a Linear Program in variables $(y, z) \in \mathbb{R}^{n+1}$.
+            The constraint $z > 0$ is relaxed to $z \ge 0$ for standard LP form (usually handled by the fact that $z=0$ would imply unboundedness or infeasibility in the original problem context, or by $e^\top \mathbf{y} = 1$ if $z=0$ which corresponds to "points at infinity").
+            This is a Linear Program in variables $(\mathbf{y}, z) \in \mathbb{R}^{n+1}$.
           </div>
   </div>
 </div>
 
 <div class="problem">
   <h3>P8.11 — Vector Optimization (Pareto Optimality)</h3>
-  <p>A point $x^\star$ is <b>Pareto optimal</b> for the vector objective $f(x) = (f_1(x), \dots, f_k(x))$ if there is no feasible $y$ such that $f_i(y) \le f_i(x^\star)$ for all $i$ and $f_j(y) < f_j(x^\star)$ for at least one $j$.
-        Prove that minimizing the weighted sum $\sum w_i f_i(x)$ with weights $w > 0$ yields a Pareto optimal point.</p>
+  <p>A point $\mathbf{x}^\star$ is <b>Pareto optimal</b> for the vector objective $f(\mathbf{x}) = (f_1(\mathbf{x}), \dots, f_k(\mathbf{x}))$ if there is no feasible $\mathbf{y}$ such that $f_i(\mathbf{y}) \le f_i(\mathbf{x}^\star)$ for all $i$ and $f_j(\mathbf{y}) < f_j(\mathbf{x}^\star)$ for at least one $j$.
+        Prove that minimizing the weighted sum $\sum w_i f_i(\mathbf{x})$ with weights $\mathbf{w} > 0$ yields a Pareto optimal point.</p>
 
 
       <div class="recap-box">
@@ -1051,40 +1140,40 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-            <strong>Setup:</strong> Let $x^\star$ minimize $S(x) = \sum_{i=1}^k w_i f_i(x)$ over the feasible set $\mathcal{F}$. Assume for contradiction that $x^\star$ is not Pareto optimal.
+            <strong>Setup:</strong> Let $\mathbf{x}^\star$ minimize $S(\mathbf{x}) = \sum_{i=1}^k w_i f_i(\mathbf{x})$ over the feasible set $\mathcal{F}$. Assume for contradiction that $\mathbf{x}^\star$ is not Pareto optimal.
           </div>
           <div class="proof-step">
-            <strong>Contradiction:</strong> If $x^\star$ is not Pareto optimal, there exists a $y \in \mathcal{F}$ such that $f_i(y) \le f_i(x^\star)$ for all $i$ and $f_j(y) < f_j(x^\star)$ for some $j$.
+            <strong>Contradiction:</strong> If $\mathbf{x}^\star$ is not Pareto optimal, there exists a $\mathbf{y} \in \mathcal{F}$ such that $f_i(\mathbf{y}) \le f_i(\mathbf{x}^\star)$ for all $i$ and $f_j(\mathbf{y}) < f_j(\mathbf{x}^\star)$ for some $j$.
           </div>
           <div class="proof-step">
             <strong>Weighted Sum:</strong> Since $w_i > 0$:
-            $$ \sum_{i=1}^k w_i f_i(y) < \sum_{i=1}^k w_i f_i(x^\star) $$
+            $$ \sum_{i=1}^k w_i f_i(\mathbf{y}) < \sum_{i=1}^k w_i f_i(\mathbf{x}^\star) $$
             (Strict inequality holds because at least one term is strictly smaller and none are larger).
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> This implies $S(y) < S(x^\star)$, contradicting the fact that $x^\star$ minimizes $S(x)$. Therefore, $x^\star$ must be Pareto optimal.
+            <strong>Conclusion:</strong> This implies $S(\mathbf{y}) < S(\mathbf{x}^\star)$, contradicting the fact that $\mathbf{x}^\star$ minimizes $S(\mathbf{x})$. Therefore, $\mathbf{x}^\star$ must be Pareto optimal.
           </div>
   </div>
 </div>
 
 <div class="problem">
   <h3>P8.12 — Matrix Fractional Minimization</h3>
-  <p>Consider the problem of minimizing the matrix fractional function $f(x, Y) = x^\top Y^{-1} x$ subject to linear constraints:</p>
+  <p>Consider the problem of minimizing the matrix fractional function $f(\mathbf{x}, Y) = \mathbf{x}^\top Y^{-1} \mathbf{x}$ subject to linear constraints:</p>
   <p style="text-align: center;">
     $
     \begin{aligned}
-    \text{minimize} \quad & x^\top Y^{-1} x \\
-    \text{subject to} \quad & Ax = b \\
+    \text{minimize} \quad & \mathbf{x}^\top Y^{-1} \mathbf{x} \\
+    \text{subject to} \quad & A\mathbf{x} = \mathbf{b} \\
     & L \preceq Y \preceq U
     \end{aligned}
     $
   </p>
-  <p>where $x \in \mathbb{R}^n$, $Y \in \mathbb{S}^n_{++}$, and $L, U \in \mathbb{S}^n$. Formulate this as a Semidefinite Program (SDP).</p>
+  <p>where $\mathbf{x} \in \mathbb{R}^n$, $Y \in \mathbb{S}^n_{++}$, and $L, U \in \mathbb{S}^n$. Formulate this as a Semidefinite Program (SDP).</p>
 
   <div class="recap-box" style="background: var(--surface-2); border: 1px dashed var(--primary-300); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
     <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Schur Complement Epigraph:</b> The condition $t \ge x^\top Y^{-1} x$ is equivalent to the LMI $\begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$. This is the standard "trick" for handling quadratic-over-linear terms in SDPs.</li>
+        <li><b>Schur Complement Epigraph:</b> The condition $t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$ is equivalent to the LMI $\begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix} \succeq 0$. This is the standard "trick" for handling quadratic-over-linear terms in SDPs.</li>
         <li><b>Triangle of Equivalence:</b> This transformation connects the scalar inequality (objective) to a block matrix inequality (SDP constraint), completing the "Triangle of Equivalence" introduced in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</li>
     </ul>
   </div>
@@ -1097,8 +1186,8 @@
       $$
       \begin{aligned}
       \text{minimize} \quad & t \\
-      \text{subject to} \quad & x^\top Y^{-1} x \le t \\
-      & Ax = b \\
+      \text{subject to} \quad & \mathbf{x}^\top Y^{-1} \mathbf{x} \le t \\
+      & A\mathbf{x} = \mathbf{b} \\
       & L \preceq Y \preceq U
       \end{aligned}
       $$
@@ -1106,20 +1195,20 @@
 
     <div class="proof-step">
       <strong>Step 2: Schur Complement.</strong>
-      The nonlinear constraint $x^\top Y^{-1} x \le t$ (where implicitly $Y \succ 0$) can be rewritten using the Schur complement as the Linear Matrix Inequality:
+      The nonlinear constraint $\mathbf{x}^\top Y^{-1} \mathbf{x} \le t$ (where implicitly $Y \succ 0$) can be rewritten using the Schur complement as the Linear Matrix Inequality:
       $$
-      \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0
+      \begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix} \succeq 0
       $$
     </div>
 
     <div class="proof-step">
       <strong>Step 3: SDP Formulation.</strong>
-      The final problem is an SDP in variables $x \in \mathbb{R}^n, Y \in \mathbb{S}^n, t \in \mathbb{R}$:
+      The final problem is an SDP in variables $\mathbf{x} \in \mathbb{R}^n, Y \in \mathbb{S}^n, t \in \mathbb{R}$:
       $$
       \begin{aligned}
       \text{minimize} \quad & t \\
-      \text{subject to} \quad & \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 \\
-      & Ax = b \\
+      \text{subject to} \quad & \begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix} \succeq 0 \\
+      & A\mathbf{x} = \mathbf{b} \\
       & Y - L \succeq 0 \\
       & U - Y \succeq 0
       \end{aligned}
@@ -1131,13 +1220,13 @@
 
 <div class="problem">
   <h3>P8.13 — SOCP Canonical Form (Primal)</h3>
-  <p>Formulate the general SOCP with constraints $\|A_i x + b_i\|_2 \le d_i^\top x + e_i$ as a conic program over the product of second-order cones. Specifically, write it as $\min c^\top x$ s.t. $\mathcal{A}x + \beta \in K$ where $K = Q^{m_1+1} \times \dots \times Q^{m_k+1}$.</p>
+  <p>Formulate the general SOCP with constraints $\|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{d}_i^\top \mathbf{x} + e_i$ as a conic program over the product of second-order cones. Specifically, write it as $\min \mathbf{c}^\top \mathbf{x}$ s.t. $\mathcal{A}\mathbf{x} + \boldsymbol{\beta} \in K$ where $K = Q^{m_1+1} \times \dots \times Q^{m_k+1}$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
     <p>Define the cone $K = Q^{m_1+1} \times \dots \times Q^{m_k+1}$.
-    The constraint $i$ is $(d_i^\top x + e_i, A_i x + b_i) \in Q^{m_i+1}$.
-    We can stack these conditions. Let the linear map $\mathcal{A}x + \beta$ produce the stacked vector:
-    $$ \begin{bmatrix} d_1^\top x + e_1 \\ A_1 x + b_1 \\ \vdots \\ d_k^\top x + e_k \\ A_k x + b_k \end{bmatrix} \in K $$
+    The constraint $i$ is $(\mathbf{d}_i^\top \mathbf{x} + e_i, A_i \mathbf{x} + \mathbf{b}_i) \in Q^{m_i+1}$.
+    We can stack these conditions. Let the linear map $\mathcal{A}\mathbf{x} + \boldsymbol{\beta}$ produce the stacked vector:
+    $$ \begin{bmatrix} \mathbf{d}_1^\top \mathbf{x} + e_1 \\ A_1 \mathbf{x} + \mathbf{b}_1 \\ \vdots \\ \mathbf{d}_k^\top \mathbf{x} + e_k \\ A_k \mathbf{x} + \mathbf{b}_k \end{bmatrix} \in K $$
     This is exactly the canonical conic form.</p>
   </div>
 </div>
@@ -1156,22 +1245,90 @@
       The equality constraints are $\text{tr}(A_i X) = b_i$ for $i=1,\dots,m$.
       We can define a linear operator $\mathcal{A}: \mathbb{S}^n \to \mathbb{R}^m$ that maps a matrix $X$ to the vector of these inner products:
       $$ \mathcal{A}(X) = \begin{bmatrix} \langle A_1, X \rangle \\ \vdots \\ \langle A_m, X \rangle \end{bmatrix} $$
-      Then the constraints become $\mathcal{A}(X) = b$.
+      Then the constraints become $\mathcal{A}(X) = \mathbf{b}$.
     </div>
     <div class="proof-step">
       <strong>Step 3: The Adjoint Operator (Bonus).</strong>
       The dual problem involves the adjoint operator $\mathcal{A}^*: \mathbb{R}^m \to \mathbb{S}^n$.
-      By definition, $\langle y, \mathcal{A}(X) \rangle_{\mathbb{R}^m} = \langle \mathcal{A}^*(y), X \rangle_{\mathbb{S}^n}$.
+      By definition, $\langle \mathbf{y}, \mathcal{A}(X) \rangle_{\mathbb{R}^m} = \langle \mathcal{A}^*(\mathbf{y}), X \rangle_{\mathbb{S}^n}$.
       $$ \sum_{i=1}^m y_i \langle A_i, X \rangle = \left\langle \sum_{i=1}^m y_i A_i, X \right\rangle $$
-      Thus, $\mathcal{A}^*(y) = \sum_{i=1}^m y_i A_i$. This operator constructs the LMI in the dual SDP.
+      Thus, $\mathcal{A}^*(\mathbf{y}) = \sum_{i=1}^m y_i A_i$. This operator constructs the LMI in the dual SDP.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.15 — Entropy Maximization as Exponential Cone Program</h3>
+  <p>Consider the entropy maximization problem:</p>
+  <p style="text-align: center;">
+    $$
+    \begin{aligned}
+    \text{maximize} \quad & -\sum_{i=1}^n x_i \log x_i \\
+    \text{subject to} \quad & A\mathbf{x} = \mathbf{b} \\
+    & \mathbf{x} \ge 0
+    \end{aligned}
+    $$
+  </p>
+  <p>where $\mathbf{x} \in \mathbb{R}^n$ and $A \in \mathbb{R}^{m \times n}$, $\mathbf{b} \in \mathbb{R}^m$. Reformulate this as an exponential cone program.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Change of Objective.</strong>
+      Since maximizing $-\sum x_i \log x_i$ is equivalent to minimizing $\sum x_i \log x_i$, we work with the minimization form.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Introduce Auxiliary Variables.</strong>
+      For each $i$ with $x_i > 0$, we need to express $x_i \log x_i$ using the exponential cone. The key insight is that $(1, x_i, e^{t_i/x_i}) \in K_{\text{exp}}$ implies $t_i \ge x_i \log(1/x_i) = -x_i \log x_i$.
+      <br>Introduce variables $t_i$ and constraints $(1, x_i, e^{-t_i/x_i}) \in K_{\text{exp}}$ for $i = 1, \dots, n$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Reformulation.</strong>
+      The problem becomes:
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & \sum_{i=1}^n t_i \\
+      \text{subject to} \quad & (1, x_i, e^{-t_i/x_i}) \in K_{\text{exp}}, \quad i = 1, \dots, n \\
+      & A\mathbf{x} = \mathbf{b} \\
+      & \mathbf{x} \ge 0
+      \end{aligned}
+      $$
+      This is an exponential cone program. Note that when $x_i = 0$, the entropy term is $0$ (by convention $0 \log 0 = 0$), so we can handle this as a special case or use a small regularization.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.16 — Log-Sum-Exp via Exponential Cone</h3>
+  <p>Show that minimizing the log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ can be formulated as an exponential cone program.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Epigraph Form.</strong>
+      Introduce variable $t$ and minimize $t$ subject to $\log(\sum_{i=1}^n e^{x_i}) \le t$, which is equivalent to $\sum_{i=1}^n e^{x_i} \le e^t$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Introduce Auxiliary Variables.</strong>
+      For each $i$, introduce $u_i$ such that $u_i \ge e^{x_i}$. Using the exponential cone, $(x_i, 1, u_i) \in K_{\text{exp}}$ means $u_i \ge e^{x_i}$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Final Formulation.</strong>
+      The problem becomes:
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & t \\
+      \text{subject to} \quad & \sum_{i=1}^n u_i \le e^t \\
+      & (x_i, 1, u_i) \in K_{\text{exp}}, \quad i = 1, \dots, n
+      \end{aligned}
+      $$
+      This is an exponential cone program. The constraint $\sum u_i \le e^t$ can be written as $(\sum u_i, 1, e^t) \in K_{\text{exp}}$ or handled directly as a linear constraint with an exponential term.
     </div>
   </div>
 </div>
 
     </section>
 
-<section class="section-card" id="section-10">
-      <h2>10. Readings & Resources</h2>
+<section class="section-card" id="section-9">
+      <h2>9. Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 4 — Convex Optimization Problems</li>
         <li><strong>Nesterov, Introductory Lectures on Convex Optimization:</strong> Chapter 1 — Linear and Conic Programming</li>
@@ -1180,8 +1337,8 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-11">
-      <h2>11. Recap &amp; What's Next</h2>
+    <section class="section-card" id="section-10">
+      <h2>10. Recap &amp; What's Next</h2>
       <div class="recap-box">
         <ul style="margin: 0 0 0 20px;">
           <li><b>Conic viewpoint:</b> many constraints can be written as “(expression) $\in K$” for a cone $K$ (SOC, PSD cone, etc.).</li>

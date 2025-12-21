@@ -101,45 +101,45 @@
 
         <div class="problem">
           <h3>P3.22 — Separation by Projection</h3>
-          <p>Let $C$ be a nonempty closed convex set and $y \notin C$. Prove that the vector $a = y - \Pi_C(y)$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $y$ and $C$.</p>
+          <p>Let $C$ be a nonempty closed convex set and $\mathbf{y} \notin C$. Prove that the vector $\mathbf{a} = \mathbf{y} - \Pi_C(\mathbf{y})$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $\mathbf{y}$ and $C$.</p>
 
               <div class="recap-box">
                 <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
                 <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-                    <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $y$ can be proven constructively using the projection theorem.</li>
-                    <li><b>Variational Inequality:</b> The projection $p$ is the unique point in $C$ such that the angle between $y-p$ and $x-p$ is obtuse ($\ge 90^\circ$) for all $x \in C$.</li>
+                    <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $\mathbf{y}$ can be proven constructively using the projection theorem.</li>
+                    <li><b>Variational Inequality:</b> The projection $\mathbf{p}$ is the unique point in $C$ such that the angle between $\mathbf{y}-\mathbf{p}$ and $\mathbf{x}-\mathbf{p}$ is obtuse ($\ge 90^\circ$) for all $\mathbf{x} \in C$.</li>
                 </ul>
               </div>
 
           <div class="solution-box">
             <h4>Solution</h4>
             <div class="proof-step">
-                      <strong>Step 1: Projection characterization.</strong> Let $p = \Pi_C(y)$. By the variational characterization of the projection onto a closed convex set, for all $x \in C$:
+                      <strong>Step 1: Projection characterization.</strong> Let $\mathbf{p} = \Pi_C(\mathbf{y})$. By the variational characterization of the projection onto a closed convex set, for all $\mathbf{x} \in C$:
                       $$
-                      (y - p)^\top (x - p) \le 0
+                      (\mathbf{y} - \mathbf{p})^\top (\mathbf{x} - \mathbf{p}) \le 0
                       $$
-                      Let $a = y - p$. The inequality becomes $a^\top (x - p) \le 0$, which implies $a^\top x \le a^\top p$.
+                      Let $\mathbf{a} = \mathbf{y} - \mathbf{p}$. The inequality becomes $\mathbf{a}^\top (\mathbf{x} - \mathbf{p}) \le 0$, which implies $\mathbf{a}^\top \mathbf{x} \le \mathbf{a}^\top \mathbf{p}$.
                     </div>
 
                     <div class="proof-step">
-                      <strong>Step 2: Strict inequality at $y$.</strong> Since $y \notin C$ and $p \in C$, we must have $y \neq p$. Thus $a = y - p$ is a non-zero vector, so $\|a\|_2^2 > 0$.
-                      Now consider the value of the linear functional at $y$:
+                      <strong>Step 2: Strict inequality at $\mathbf{y}$.</strong> Since $\mathbf{y} \notin C$ and $\mathbf{p} \in C$, we must have $\mathbf{y} \neq \mathbf{p}$. Thus $\mathbf{a} = \mathbf{y} - \mathbf{p}$ is a non-zero vector, so $\|\mathbf{a}\|_2^2 > 0$.
+                      Now consider the value of the linear functional at $\mathbf{y}$:
                       $$
-                      a^\top y = a^\top (p + a) = a^\top p + \|a\|_2^2
+                      \mathbf{a}^\top \mathbf{y} = \mathbf{a}^\top (\mathbf{p} + \mathbf{a}) = \mathbf{a}^\top \mathbf{p} + \|\mathbf{a}\|_2^2
                       $$
-                      Since $\|a\|_2^2 > 0$, we have $a^\top y > a^\top p$.
+                      Since $\|\mathbf{a}\|_2^2 > 0$, we have $\mathbf{a}^\top \mathbf{y} > \mathbf{a}^\top \mathbf{p}$.
                     </div>
 
                     <div class="proof-step">
-                      <strong>Conclusion:</strong> We have shown that for all $x \in C$, $a^\top x \le a^\top p$, while $a^\top y > a^\top p$.
-                      The hyperplane defined by $\{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $y$ from $C$.
+                      <strong>Conclusion:</strong> We have shown that for all $\mathbf{x} \in C$, $\mathbf{a}^\top \mathbf{x} \le \mathbf{a}^\top \mathbf{p}$, while $\mathbf{a}^\top \mathbf{y} > \mathbf{a}^\top \mathbf{p}$.
+                      The hyperplane defined by $\{\mathbf{z} \mid \mathbf{a}^\top \mathbf{z} = \mathbf{a}^\top \mathbf{p} + \frac{1}{2}\|\mathbf{a}\|^2\}$ strictly separates $\mathbf{y}$ from $C$.
                     </div>
           </div>
         </div>
 
         <div class="problem">
           <h3>P3.23 — Support Function Determines Set</h3>
-          <p>Prove that if $C, D$ are closed convex sets and $S_C(y) = S_D(y)$ for all $y$, then $C=D$.</p>
+          <p>Prove that if $C, D$ are closed convex sets and $S_C(\mathbf{y}) = S_D(\mathbf{y})$ for all $\mathbf{y}$, then $C=D$.</p>
 
           <div class="recap-box">
             <h4>Recap</h4>
@@ -252,14 +252,14 @@
           <h4>Proof of Carathéodory's Theorem</h4>
           <div class="proof-step">
             <strong>Step 1: Affine Dependence from Linear Dependence.</strong>
-            Let $x \in \mathrm{conv}(S)$. By definition, $x$ is a convex combination of $k$ points $x_1, \dots, x_k$ with strictly positive coefficients $\theta_i > 0$. Suppose $k > n+1$.
-            The $k$ points $x_1, \dots, x_k$ must be <b>affinely dependent</b> because there are more than $n+1$ of them in $\mathbb{R}^n$.
+            Let $\mathbf{x} \in \mathrm{conv}(S)$. By definition, $\mathbf{x}$ is a convex combination of $k$ points $\mathbf{x}_1, \dots, \mathbf{x}_k$ with strictly positive coefficients $\theta_i > 0$. Suppose $k > n+1$.
+            The $k$ points $\mathbf{x}_1, \dots, \mathbf{x}_k$ must be <b>affinely dependent</b> because there are more than $n+1$ of them in $\mathbb{R}^n$.
             (Recall: $k$ points are affinely dependent iff $k-1$ difference vectors are linearly dependent. Here $k-1 > n$, so dependence is guaranteed).
           </div>
           <div class="proof-step">
             <strong>Step 2: Constructing a Zero Sum.</strong>
             Affine dependence means there exist scalars $\alpha_1, \dots, \alpha_k$, not all zero, such that:
-            $$ \sum_{i=1}^k \alpha_i x_i = 0 \quad \text{and} \quad \sum_{i=1}^k \alpha_i = 0 $$
+            $$ \sum_{i=1}^k \alpha_i \mathbf{x}_i = 0 \quad \text{and} \quad \sum_{i=1}^k \alpha_i = 0 $$
             Since the $\alpha_i$ sum to 0 and are not all zero, at least one must be positive.
           </div>
           <div class="proof-step">
@@ -267,8 +267,8 @@
             We want to reduce the number of points in the combination. Consider new weights $\theta'_i = \theta_i - \lambda \alpha_i$.
             Note that for any $\lambda$:
             $$ \sum \theta'_i = \sum \theta_i - \lambda \sum \alpha_i = 1 - 0 = 1 $$
-            $$ \sum \theta'_i x_i = \sum \theta_i x_i - \lambda \sum \alpha_i x_i = x - 0 = x $$
-            So $x$ is still an affine combination. We need to choose $\lambda$ such that all $\theta'_i \ge 0$ and at least one $\theta'_j = 0$.
+            $$ \sum \theta'_i \mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - 0 = \mathbf{x} $$
+            So $\mathbf{x}$ is still an affine combination. We need to choose $\lambda$ such that all $\theta'_i \ge 0$ and at least one $\theta'_j = 0$.
           </div>
           <div class="proof-step">
             <strong>Step 4: Finding the Step Size.</strong>
@@ -280,7 +280,7 @@
             Let $j$ be an index achieving this minimum. Then $\theta'_j = 0$, and $\theta'_i \ge 0$ for all $i$.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> We have expressed $x$ as a convex combination of at most $k-1$ points (since the $j$-th coefficient is zero). We can repeat this reduction process as long as $k > n+1$. The recursion stops when we have at most $n+1$ points.
+            <strong>Conclusion:</strong> We have expressed $\mathbf{x}$ as a convex combination of at most $k-1$ points (since the $j$-th coefficient is zero). We can repeat this reduction process as long as $k > n+1$. The recursion stops when we have at most $n+1$ points.
           </div>
         </div>
 
@@ -302,7 +302,7 @@
               <img src="assets/caratheodory.png"
                    alt="Caratheodory's theorem visualization"
                    style="width: 100%; height: auto; border-radius: 8px;" />
-              <figcaption><i>Figure 5:</i> Carathéodory's Theorem: Any point $x$ in the hull of many points (black) can be formed by a convex combination of $n+1$ of them (red triangle in $\mathbb{R}^2$).</figcaption>
+              <figcaption><i>Figure 5:</i> Carathéodory's Theorem: Any point $\mathbf{x}$ in the hull of many points (black) can be formed by a convex combination of $n+1$ of them (red triangle in $\mathbb{R}^2$).</figcaption>
             </figure>
         </div>
 
@@ -397,9 +397,9 @@
         <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
 
         <h4>Normal Cones (Geometry at the Boundary)</h4>
-        <p>For a convex set $C$ and a point $x \in C$, the <b>normal cone</b> $N_C(x)$ describes the "outward" directions at $x$. It is defined as:</p>
-        $$ N_C(x) = \{g \in \mathbb{R}^n \mid g^\top (y - x) \le 0 \text{ for all } y \in C\} $$
-        <p>If $x$ is in the interior of $C$, then $N_C(x) = \{0\}$. If $x$ is on the boundary, $N_C(x)$ contains the normal vectors to all supporting hyperplanes at $x$. This geometric object is fundamental to optimality conditions: $x^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(x^*) \in N_C(x^*)$.</p>
+        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions at $\mathbf{x}$. It is defined as:</p>
+        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
+        <p>If $\mathbf{x}$ is in the interior of $C$, then $N_C(\mathbf{x}) = \{0\}$. If $\mathbf{x}$ is on the boundary, $N_C(\mathbf{x})$ contains the normal vectors to all supporting hyperplanes at $\mathbf{x}$. This geometric object is fundamental to optimality conditions: $\mathbf{x}^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(\mathbf{x}^*) \in N_C(\mathbf{x}^*)$.</p>
 
         <div class="proof-box">
           <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
@@ -558,16 +558,16 @@
           <h4>Proof: The PSD Cone is Convex</h4>
           <p>We need to show that if $A, B \in \mathbb{S}^n_+$ and $\theta \in [0,1]$, then $\theta A + (1-\theta)B \in \mathbb{S}^n_+$.</p>
           <div class="proof-step">
-            <strong>Definition Check:</strong> Let $z \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination:
+            <strong>Definition Check:</strong> Let $\mathbf{z} \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination:
             $$
-            z^\top (\theta A + (1-\theta)B) z = \theta (z^\top A z) + (1-\theta) (z^\top B z)
+            \mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} = \theta (\mathbf{z}^\top A \mathbf{z}) + (1-\theta) (\mathbf{z}^\top B \mathbf{z})
             $$
           </div>
           <div class="proof-step">
-            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know $z^\top A z \ge 0$ and $z^\top B z \ge 0$ for all $z$. Since $\theta \in [0,1]$, both coefficients $\theta$ and $1-\theta$ are non-negative.
+            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know $\mathbf{z}^\top A \mathbf{z} \ge 0$ and $\mathbf{z}^\top B \mathbf{z} \ge 0$ for all $\mathbf{z}$. Since $\theta \in [0,1]$, both coefficients $\theta$ and $1-\theta$ are non-negative.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> The sum of non-negative terms is non-negative, so $z^\top (\theta A + (1-\theta)B) z \ge 0$ for all $z$. Thus the combination is PSD.
+            <strong>Conclusion:</strong> The sum of non-negative terms is non-negative, so $\mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} \ge 0$ for all $\mathbf{z}$. Thus the combination is PSD.
           </div>
         </div>
 
@@ -778,24 +778,24 @@
 
           <div class="proof-step">
             <strong>Step 3: Construct the convex combination in the domain.</strong>
-            We need to find a point in $C$ that maps to $w$. This point will be a convex combination of $(y,t)$ and $(y',t')$.
+            We need to find a point in $C$ that maps to $\mathbf{w}$. This point will be a convex combination of $(\mathbf{y},t)$ and $(\mathbf{y}',t')$.
             The perspective map is non-linear, so the mixing weights in the domain ($\mu$) will be different from the mixing weights in the image ($\alpha$).
             We define the weights proportional to the denominators:
             $$ \mu = \frac{\alpha t'}{\alpha t' + (1-\alpha)t} $$
             Note that $\mu \in [0, 1]$ because $t, t' > 0$.
-            Consider the point $z = \mu (y, t) + (1-\mu) (y', t')$. Since $C$ is convex, $z \in C$.
+            Consider the point $\mathbf{z} = \mu (\mathbf{y}, t) + (1-\mu) (\mathbf{y}', t')$. Since $C$ is convex, $\mathbf{z} \in C$.
           </div>
 
           <div class="proof-step">
             <strong>Step 4: Verify mapping.</strong>
-            Let's calculate $P(z)$. The $t$-coordinate of $z$ is $D = \mu t + (1-\mu)t'$.
+            Let's calculate $P(\mathbf{z})$. The $t$-coordinate of $\mathbf{z}$ is $D = \mu t + (1-\mu)t'$.
             Substituting $\mu$:
             $$ D = \frac{\alpha t' t + (1-\alpha)t t'}{\alpha t' + (1-\alpha)t} = \frac{tt'}{\alpha t' + (1-\alpha)t} $$
-            The $y$-coordinate of $z$ is $Y_{num} = \mu y + (1-\mu) y'$.
-            $$ P(z) = \frac{Y_{num}}{D} = \frac{\mu}{D} y + \frac{1-\mu}{D} y' $$
+            The $\mathbf{y}$-coordinate of $\mathbf{z}$ is $Y_{num} = \mu \mathbf{y} + (1-\mu) \mathbf{y}'$.
+            $$ P(\mathbf{z}) = \frac{Y_{num}}{D} = \frac{\mu}{D} \mathbf{y} + \frac{1-\mu}{D} \mathbf{y}' $$
             Calculating the coefficients: $\frac{\mu}{D} = \frac{\alpha t' / (\dots)}{t t' / (\dots)} \cdot \frac{1}{t} ... $ wait, simpler algebra:
             $$ \mu = \frac{\alpha/t}{\alpha/t + (1-\alpha)/t'} \implies \frac{\mu}{\mu t + (1-\mu)t'} = \frac{\alpha}{t} $$
-            Thus $P(z) = \frac{\alpha}{t} y + \frac{1-\alpha}{t'} y' = \alpha u + (1-\alpha) v = w$.
+            Thus $P(\mathbf{z}) = \frac{\alpha}{t} \mathbf{y} + \frac{1-\alpha}{t'} \mathbf{y}' = \alpha \mathbf{u} + (1-\alpha) \mathbf{v} = \mathbf{w}$.
           </div>
 
           <div class="proof-step">
@@ -860,9 +860,9 @@
         <h4>3.4.1 Minkowski Difference (Erosion)</h4>
         <p>There is a related operation that “shrinks” a set. The <b>Minkowski difference</b> (also called <b>erosion</b>) of $C$ by $D$ is defined as:</p>
         $$
-        C \ominus D := \{x \in \mathbb{R}^n \mid x + D \subseteq C\}
+        C \ominus D := \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} + D \subseteq C\}
         $$
-        <p>In words: $x$ is in $C \ominus D$ if, when you place a translated copy of $D$ centered at $x$, it still fits entirely inside $C$. This makes “safety margins” precise.</p>
+        <p>In words: $\mathbf{x}$ is in $C \ominus D$ if, when you place a translated copy of $D$ centered at $\mathbf{x}$, it still fits entirely inside $C$. This makes "safety margins" precise.</p>
         <p>A useful equivalent form is an intersection of translations:</p>
         $$
         C \ominus D = \bigcap_{d \in D} (C - d)
@@ -1107,21 +1107,21 @@
           <h4>Theorem (Farkas' Lemma)</h4>
           <p>Let $A \in \mathbb{R}^{m \times n}$ and $b \in \mathbb{R}^m$. Exactly one of the following two systems has a solution:</p>
           <ol>
-            <li><b>System 1 (Primal):</b> $Ax = b, \ x \ge 0$.</li>
-            <li><b>System 2 (Alternative):</b> $A^\top y \ge 0, \ b^\top y < 0$.</li>
+            <li><b>System 1 (Primal):</b> $A\mathbf{x} = \mathbf{b}, \ \mathbf{x} \ge 0$.</li>
+            <li><b>System 2 (Alternative):</b> $A^\top \mathbf{y} \ge 0, \ \mathbf{b}^\top \mathbf{y} < 0$.</li>
           </ol>
-          <p><i>Interpretation:</i> System 1 asks if $b$ is in the cone generated by the columns of $A$. System 2 asks for a separating hyperplane between $b$ and that cone.</p>
+          <p><i>Interpretation:</i> System 1 asks if $\mathbf{b}$ is in the cone generated by the columns of $A$. System 2 asks for a separating hyperplane between $\mathbf{b}$ and that cone.</p>
         </div>
 
         <div class="proof-box">
           <h4>Proof via Separation</h4>
           <div class="proof-step">
-            <strong>Step 1: Define the Cone.</strong> Let $K = \{Ax \mid x \ge 0\}$ be the cone generated by the columns of $A$. This is a closed convex cone.
-            <br>System 1 is feasible if and only if $b \in K$.
+            <strong>Step 1: Define the Cone.</strong> Let $K = \{A\mathbf{x} \mid \mathbf{x} \ge 0\}$ be the cone generated by the columns of $A$. This is a closed convex cone.
+            <br>System 1 is feasible if and only if $\mathbf{b} \in K$.
           </div>
           <div class="proof-step">
-            <strong>Step 2: Apply Separation.</strong> If $b \notin K$, then by the Separating Hyperplane Theorem (Strict Separation, since $K$ is closed and $\{b\}$ is compact), there exists a hyperplane strictly separating $b$ from $K$.
-            <br>There exists a vector $y$ and scalar $\alpha$ such that:
+            <strong>Step 2: Apply Separation.</strong> If $\mathbf{b} \notin K$, then by the Separating Hyperplane Theorem (Strict Separation, since $K$ is closed and $\{\mathbf{b}\}$ is compact), there exists a hyperplane strictly separating $\mathbf{b}$ from $K$.
+            <br>There exists a vector $\mathbf{y}$ and scalar $\alpha$ such that:
             $$ y^\top b < \alpha \quad \text{and} \quad y^\top z \ge \alpha \ \forall z \in K $$
           </div>
           <div class="proof-step">

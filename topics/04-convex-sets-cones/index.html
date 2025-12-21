@@ -108,7 +108,7 @@
         </div>
 
         <div class="interpretation-box">
-          <p><b>Decision/economic view:</b> Think of $K$ as the set of “acceptable improvements” (e.g., more output, less cost, lower risk). Then $x \preceq_K y$ means “$y$ dominates $x$ up to an improvement in $K$.” Properness ensures this dominance relation is non-degenerate and supports optimization and “Pareto” style comparisons.</p>
+          <p><b>Decision/economic view:</b> Think of $K$ as the set of "acceptable improvements" (e.g., more output, less cost, lower risk). Then $\mathbf{x} \preceq_K \mathbf{y}$ means "$\mathbf{y}$ dominates $\mathbf{x}$ up to an improvement in $K$." Properness ensures this dominance relation is non-degenerate and supports optimization and "Pareto" style comparisons.</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -122,15 +122,15 @@
 
         <p>A proper cone $K$ defines a partial ordering $\preceq_K$ on $\mathbb{R}^n$:</p>
         $$
-        x \preceq_K y \iff y - x \in K
+        \mathbf{x} \preceq_K \mathbf{y} \iff \mathbf{y} - \mathbf{x} \in K
         $$
         <p>Strict inequality is defined using the interior of the cone:</p>
         $$
-        x \prec_K y \iff y - x \in \text{int}(K)
+        \mathbf{x} \prec_K \mathbf{y} \iff \mathbf{y} - \mathbf{x} \in \text{int}(K)
         $$
 
         <h4>Vector Optimization (Pareto Optimality)</h4>
-        <p>This partial order allows us to define optimization for vector-valued functions. A point $x^*$ is <b>Pareto optimal</b> (or efficient) with respect to a cone $K$ if there is no feasible $y$ such that $f(y) \preceq_K f(x^*)$ and $f(y) \neq f(x^*)$. In other words, you cannot improve any component of the objective (in the cone sense) without degrading another.
+        <p>This partial order allows us to define optimization for vector-valued functions. A point $\mathbf{x}^*$ is <b>Pareto optimal</b> (or efficient) with respect to a cone $K$ if there is no feasible $\mathbf{y}$ such that $f(\mathbf{y}) \preceq_K f(\mathbf{x}^*)$ and $f(\mathbf{y}) \neq f(\mathbf{x}^*)$. In other words, you cannot improve any component of the objective (in the cone sense) without degrading another.
         <br>For $K = \mathbb{R}^n_+$, this recovers standard multi-objective optimization.</p>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
@@ -138,7 +138,7 @@
                <img src="assets/generalized-inequality-cone.png"
                     alt="Visualizing generalized inequality"
                     style="width: 100%; height: auto; border-radius: 8px;" />
-               <figcaption><i>Figure 8:</i> Visualizing $x \preceq_K y$. The point $x$ must lie in the "shadow" of $y$ cast by the cone $-K$.</figcaption>
+               <figcaption><i>Figure 8:</i> Visualizing $\mathbf{x} \preceq_K \mathbf{y}$. The point $\mathbf{x}$ must lie in the "shadow" of $\mathbf{y}$ cast by the cone $-K$.</figcaption>
              </figure>
              <figure style="text-align: center; flex: 1;">
                <img src="assets/matrix-inequality-cone.png"
@@ -175,27 +175,27 @@
           <p>Consequently, if $K$ is a <b>closed convex cone</b>, then $K^{**} = K$. This is the "reflexive" property of cones, analogous to $(V^\perp)^\perp = V$ for subspaces.</p>
           <div class="proof-box">
             <h4>Proof Sketch</h4>
-            <p>1. $K \subseteq K^{**}$: If $x \in K$, then for all $y \in K^*$, $y^\top x \ge 0$. Thus $x$ makes a non-negative angle with everything in $K^*$, so $x \in K^{**}$.</p>
-            <p>2. $K^{**} \subseteq \mathrm{cl}(K)$: If $x \notin \mathrm{cl}(K)$, by the Separating Hyperplane Theorem, there exists $y$ strictly separating $x$ from $\mathrm{cl}(K)$. This $y$ can be shown to lie in $K^*$ while $y^\top x < 0$, proving $x \notin K^{**}$.</p>
+            <p>1. $K \subseteq K^{**}$: If $\mathbf{x} \in K$, then for all $\mathbf{y} \in K^*$, $\mathbf{y}^\top \mathbf{x} \ge 0$. Thus $\mathbf{x}$ makes a non-negative angle with everything in $K^*$, so $\mathbf{x} \in K^{**}$.</p>
+            <p>2. $K^{**} \subseteq \mathrm{cl}(K)$: If $\mathbf{x} \notin \mathrm{cl}(K)$, by the Separating Hyperplane Theorem, there exists $\mathbf{y}$ strictly separating $\mathbf{x}$ from $\mathrm{cl}(K)$. This $\mathbf{y}$ can be shown to lie in $K^*$ while $\mathbf{y}^\top \mathbf{x} < 0$, proving $\mathbf{x} \notin K^{**}$.</p>
           </div>
         </div>
 
       <h4>The Polar Cone</h4>
       <p>The <a href="#" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
-      $$ K^\circ = -K^* = \{y \in \mathbb{R}^n \mid y^\top x \le 0 \ \forall x \in K\} $$
+      $$ K^\circ = -K^* = \{\mathbf{y} \in \mathbb{R}^n \mid \mathbf{y}^\top \mathbf{x} \le 0 \ \forall \mathbf{x} \in K\} $$
       <p>It contains all vectors making an obtuse angle with $K$. It is related to the normal cone at the origin: $K^\circ = N_K(0)$ for a convex cone $K$.</p>
 
       <h4>Geometric Normal Cones</h4>
-      <p>For a general closed convex set $C$ and a point $x \in C$, the <b>normal cone</b> $N_C(x)$ is the set of outward directions:</p>
-      $$ N_C(x) = \{g \in \mathbb{R}^n \mid g^\top(y - x) \le 0 \ \forall y \in C\} $$
-      <p>This generalizes the gradient of constraints. If $C$ is defined by smooth inequalities $f_i(x) \le 0$, the normal cone is the cone generated by the gradients of the active constraints.</p>
+      <p>For a general closed convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ is the set of outward directions:</p>
+      $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top(\mathbf{y} - \mathbf{x}) \le 0 \ \forall \mathbf{y} \in C\} $$
+      <p>This generalizes the gradient of constraints. If $C$ is defined by smooth inequalities $f_i(\mathbf{x}) \le 0$, the normal cone is the cone generated by the gradients of the active constraints.</p>
 
         <div class="intuition-box">
-          <p><b>Geometric test:</b> A vector $y$ is in $K^*$ if it can serve as an “outward normal” at the origin: the halfspace $\{x \mid y^\top x \ge 0\}$ contains the cone $K$. In 2D, if $K$ is a wedge, then $K^*$ is the wedge of normals that still form an acute angle with every direction in $K$.</p>
+          <p><b>Geometric test:</b> A vector $\mathbf{y}$ is in $K^*$ if it can serve as an "outward normal" at the origin: the halfspace $\{\mathbf{x} \mid \mathbf{y}^\top \mathbf{x} \ge 0\}$ contains the cone $K$. In 2D, if $K$ is a wedge, then $K^*$ is the wedge of normals that still form an acute angle with every direction in $K$.</p>
         </div>
 
         <div class="interpretation-box">
-          <p><b>Prices/supporting weights:</b> If $K$ represents “nonnegative” directions (improvements), then $K^*$ is the set of linear functionals that assign <i>nonnegative value</i> to every improvement: $y^\top x \ge 0$ for all $x\in K$. A key consequence used later in duality is: if $x \preceq_K y$ then $w^\top x \le w^\top y$ for every $w \in K^*$ (dual cone weights turn vector dominance into scalar inequalities).</p>
+          <p><b>Prices/supporting weights:</b> If $K$ represents "nonnegative" directions (improvements), then $K^*$ is the set of linear functionals that assign <i>nonnegative value</i> to every improvement: $\mathbf{y}^\top \mathbf{x} \ge 0$ for all $\mathbf{x}\in K$. A key consequence used later in duality is: if $\mathbf{x} \preceq_K \mathbf{y}$ then $\mathbf{w}^\top \mathbf{x} \le \mathbf{w}^\top \mathbf{y}$ for every $\mathbf{w} \in K^*$ (dual cone weights turn vector dominance into scalar inequalities).</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -267,13 +267,13 @@
 
           <div class="proof-step">
             <strong>Part 2: $\mathcal{Q}^* \subseteq \mathcal{Q}$</strong>
-            <br>Let $(y,s) \in \mathcal{Q}^*$. By definition, $z^\top y + ts \ge 0$ for all $(z,t) \in \mathcal{Q}$.
-            <br>1. <b>Non-negativity of s:</b> Choose $(z,t) = (0,1) \in \mathcal{Q}$. The condition gives $0^\top y + 1\cdot s = s \ge 0$.
-            <br>2. <b>Norm bound:</b> If $y=0$, then $0 \le s$ implies $(0,s) \in \mathcal{Q}$ trivially.
-            <br>If $y \neq 0$, choose a specific test vector designed to "oppose" $y$. Let $z = -\frac{y}{\|y\|_2}$. Let $t=1$.
-            <br>Since $\|z\|_2 = 1 \le t$, this vector $(z,t)$ is in $\mathcal{Q}$.
+            <br>Let $(\mathbf{y},s) \in \mathcal{Q}^*$. By definition, $\mathbf{z}^\top \mathbf{y} + ts \ge 0$ for all $(\mathbf{z},t) \in \mathcal{Q}$.
+            <br>1. <b>Non-negativity of s:</b> Choose $(\mathbf{z},t) = (0,1) \in \mathcal{Q}$. The condition gives $0^\top \mathbf{y} + 1\cdot s = s \ge 0$.
+            <br>2. <b>Norm bound:</b> If $\mathbf{y}=0$, then $0 \le s$ implies $(0,s) \in \mathcal{Q}$ trivially.
+            <br>If $\mathbf{y} \neq 0$, choose a specific test vector designed to "oppose" $\mathbf{y}$. Let $\mathbf{z} = -\frac{\mathbf{y}}{\|\mathbf{y}\|_2}$. Let $t=1$.
+            <br>Since $\|\mathbf{z}\|_2 = 1 \le t$, this vector $(\mathbf{z},t)$ is in $\mathcal{Q}$.
             <br>The dual condition implies:
-            $$ z^\top y + ts = -\frac{y^\top y}{\|y\|_2} + s \ge 0 \implies -\frac{\|y\|_2^2}{\|y\|_2} + s \ge 0 \implies -\|y\|_2 + s \ge 0 \implies s \ge \|y\|_2 $$
+            $$ \mathbf{z}^\top \mathbf{y} + ts = -\frac{\mathbf{y}^\top \mathbf{y}}{\|\mathbf{y}\|_2} + s \ge 0 \implies -\frac{\|\mathbf{y}\|_2^2}{\|\mathbf{y}\|_2} + s \ge 0 \implies -\|\mathbf{y}\|_2 + s \ge 0 \implies s \ge \|\mathbf{y}\|_2 $$
             <br>Thus $\|y\|_2 \le s$, which means $(y,s) \in \mathcal{Q}$.
             <br>Since both inclusions hold, $\mathcal{Q}^* = \mathcal{Q}$.
           </div>
@@ -309,8 +309,8 @@
 
         <h4>(b) Cartesian Product (Direct Sum)</h4>
         <p>The Cartesian product of cones $K_1 \subseteq \mathbb{R}^n$ and $K_2 \subseteq \mathbb{R}^m$ is a cone in the product space $\mathbb{R}^{n+m}$:</p>
-        $$ K = K_1 \times K_2 = \{(x, y) \mid x \in K_1, y \in K_2\} $$
-        <p>This is the standard way to build complex problems from simple blocks. For example, a Semidefinite Program (SDP) might require variable $x$ to be non-negative ($x \in \mathbb{R}^n_+$) AND a matrix $S$ to be PSD ($S \in \mathbb{S}^k_+$). The solver treats this as a single variable $(x, \mathrm{vec}(S))$ living in the product cone $\mathbb{R}^n_+ \times \mathbb{S}^k_+$.</p>
+        $$ K = K_1 \times K_2 = \{(\mathbf{x}, \mathbf{y}) \mid \mathbf{x} \in K_1, \mathbf{y} \in K_2\} $$
+        <p>This is the standard way to build complex problems from simple blocks. For example, a Semidefinite Program (SDP) might require variable $\mathbf{x}$ to be non-negative ($\mathbf{x} \in \mathbb{R}^n_+$) AND a matrix $S$ to be PSD ($S \in \mathbb{S}^k_+$). The solver treats this as a single variable $(\mathbf{x}, \mathrm{vec}(S))$ living in the product cone $\mathbb{R}^n_+ \times \mathbb{S}^k_+$.</p>
         <p><b>Dual Property:</b> The dual of a product is simply the product of the duals:</p>
         $$ (K_1 \times K_2)^* = K_1^* \times K_2^* $$
         <p>This simplificity is why block-diagonal structure is so computationally efficient.</p>
@@ -418,15 +418,15 @@
       Thus $u^\top v \ge 0$ for all $u \in \mathcal{Q}$, so $v \in \mathcal{Q}^*$.
     </div>
     <div class="proof-step">
-      <strong>($\supseteq$):</strong> Let $v = (y,s) \in \mathcal{Q}^*$. We must show $v \in \mathcal{Q}$, i.e., $s \ge \|y\|$.
-      <br>First, test with the vector $u=(0,1)$. Since $\|0\| \le 1$, $u \in \mathcal{Q}$.
-      The dual condition implies $u^\top v = 0^\top y + 1 \cdot s = s \ge 0$. So $s$ must be non-negative.
-      <br>Now, consider the vector $y$.
-      <br><b>Case 1: $y = 0$.</b> Then $\|y\|=0$. Since we already showed $s \ge 0$, we have $s \ge \|y\|$. Thus $(0, s) \in \mathcal{Q}$.
-      <br><b>Case 2: $y \neq 0$.</b> Construct the test vector $u = (-\frac{y}{\|y\|}, 1)$.
-      Check primal feasibility: the spatial part has norm $\left\|-\frac{y}{\|y\|}\right\| = 1$, which is $\le$ the time part $1$. So $u \in \mathcal{Q}$.
-      <br>Apply the dual condition $u^\top v \ge 0$:
-      $$ -\frac{y}{\|y\|}^\top y + 1 \cdot s \ge 0 \implies -\frac{\|y\|^2}{\|y\|} + s \ge 0 \implies -\|y\| + s \ge 0 \implies s \ge \|y\| $$
+      <strong>($\supseteq$):</strong> Let $\mathbf{v} = (\mathbf{y},s) \in \mathcal{Q}^*$. We must show $\mathbf{v} \in \mathcal{Q}$, i.e., $s \ge \|\mathbf{y}\|$.
+      <br>First, test with the vector $\mathbf{u}=(0,1)$. Since $\|0\| \le 1$, $\mathbf{u} \in \mathcal{Q}$.
+      The dual condition implies $\mathbf{u}^\top \mathbf{v} = 0^\top \mathbf{y} + 1 \cdot s = s \ge 0$. So $s$ must be non-negative.
+      <br>Now, consider the vector $\mathbf{y}$.
+      <br><b>Case 1: $\mathbf{y} = 0$.</b> Then $\|\mathbf{y}\|=0$. Since we already showed $s \ge 0$, we have $s \ge \|\mathbf{y}\|$. Thus $(0, s) \in \mathcal{Q}$.
+      <br><b>Case 2: $\mathbf{y} \neq 0$.</b> Construct the test vector $\mathbf{u} = (-\frac{\mathbf{y}}{\|\mathbf{y}\|}, 1)$.
+      Check primal feasibility: the spatial part has norm $\left\|-\frac{\mathbf{y}}{\|\mathbf{y}\|}\right\| = 1$, which is $\le$ the time part $1$. So $\mathbf{u} \in \mathcal{Q}$.
+      <br>Apply the dual condition $\mathbf{u}^\top \mathbf{v} \ge 0$:
+      $$ -\frac{\mathbf{y}}{\|\mathbf{y}\|}^\top \mathbf{y} + 1 \cdot s \ge 0 \implies -\frac{\|\mathbf{y}\|^2}{\|\mathbf{y}\|} + s \ge 0 \implies -\|\mathbf{y}\| + s \ge 0 \implies s \ge \|\mathbf{y}\| $$
       Thus $v \in \mathcal{Q}$.
     </div>
   </div>
@@ -558,14 +558,14 @@
 
   <div class="recap-box">
     <h4>Recap</h4>
-    <p>This is the dual of the finitely generated cone (polyhedral cone). It corresponds to the Farkas Lemma: $y$ is in the dual cone if it makes a non-negative angle with all generators (columns of $A$).</p>
+    <p>This is the dual of the finitely generated cone (polyhedral cone). It corresponds to the Farkas Lemma: $\mathbf{y}$ is in the dual cone if it makes a non-negative angle with all generators (columns of $A$).</p>
   </div>
 
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      $y \in K^* \iff y^\top (Ax) \ge 0 \ \forall x \ge 0 \iff (A^\top y)^\top x \ge 0 \ \forall x \ge 0$.
-      This is true iff $A^\top y \ge 0$ (component-wise).
+      $\mathbf{y} \in K^* \iff \mathbf{y}^\top (A\mathbf{x}) \ge 0 \ \forall \mathbf{x} \ge 0 \iff (A^\top \mathbf{y})^\top \mathbf{x} \ge 0 \ \forall \mathbf{x} \ge 0$.
+      This is true iff $A^\top \mathbf{y} \ge 0$ (component-wise).
     </div>
   </div>
 </div>
@@ -601,8 +601,8 @@
     <h4>Solution</h4>
     <div class="proof-step">
       The cone is "almost" a halfspace but includes boundaries delicately.
-      Any vector $y$ with a non-zero component at index $k > 1$ can form a negative dot product with some $x \in K_{lex}$ (by dominating the first component with a large value at $k$).
-      Thus $y$ must be zero everywhere except index 1. $y_1$ must be non-negative.
+      Any vector $\mathbf{y}$ with a non-zero component at index $k > 1$ can form a negative dot product with some $\mathbf{x} \in K_{lex}$ (by dominating the first component with a large value at $k$).
+      Thus $\mathbf{y}$ must be zero everywhere except index 1. $y_1$ must be non-negative.
       $K_{lex}^* = \{ \alpha e_1 \mid \alpha \ge 0 \}$ (The ray along the first axis).
     </div>
   </div>

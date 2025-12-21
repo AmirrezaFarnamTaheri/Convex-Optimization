@@ -58,19 +58,19 @@
 
         <h3>1.1 The Fenchel Conjugate</h3>
         <p>For a function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, the conjugate $f^*$ is defined as:</p>
-        $$ f^*(y) = \sup_{x} (y^\top x - f(x)) $$
-        <p><b>Interpretation:</b> $f^*(y)$ measures the maximum gap between the linear function $y^\top x$ and $f(x)$. It encodes the family of all affine underestimators of $f$.
+        $$ f^*(\mathbf{y}) = \sup_{\mathbf{x}} (\mathbf{y}^\top \mathbf{x} - f(\mathbf{x})) $$
+        <p><b>Interpretation:</b> $f^*(\mathbf{y})$ measures the maximum gap between the linear function $\mathbf{y}^\top \mathbf{x}$ and $f(\mathbf{x})$. It encodes the family of all affine underestimators of $f$.
         <br><b>Key Property:</b> $f^*$ is always convex (pointwise supremum of affine functions).</p>
 
         <h3>1.2 The Fenchel-Young Inequality</h3>
         <p>Directly from the definition:</p>
-        $$ f(x) + f^*(y) \ge x^\top y $$
-        <p>Equality holds if and only if $y \in \partial f(x)$. This inequality is the source of all weak duality results.</p>
+        $$ f(\mathbf{x}) + f^*(\mathbf{y}) \ge \mathbf{x}^\top \mathbf{y} $$
+        <p>Equality holds if and only if $\mathbf{y} \in \partial f(\mathbf{x})$. This inequality is the source of all weak duality results.</p>
 
         <h3>1.3 Support Functions and Indicator Functions</h3>
-        <p>Constraints are modeled by indicator functions $I_C(x) = 0$ if $x \in C$, $+\infty$ else.
+        <p>Constraints are modeled by indicator functions $I_C(\mathbf{x}) = 0$ if $\mathbf{x} \in C$, $+\infty$ else.
         <br>The conjugate of an indicator is the <b>support function</b> of the set:</p>
-        $$ I_C^*(y) = \sup_x (y^\top x - I_C(x)) = \sup_{x \in C} y^\top x = \sigma_C(y) $$
+        $$ I_C^*(\mathbf{y}) = \sup_{\mathbf{x}} (\mathbf{y}^\top \mathbf{x} - I_C(\mathbf{x})) = \sup_{\mathbf{x} \in C} \mathbf{y}^\top \mathbf{x} = \sigma_C(\mathbf{y}) $$
         <p>This explains why dual problems involve maximizing linear functions over convex sets.</p>
       </section>
 
@@ -83,26 +83,26 @@
           <p style="margin: 0;">
             $
             \begin{aligned}
-            \text{minimize} \quad & f_0(x) \\
-            \text{subject to} \quad & f_i(x) \le 0, \quad i = 1, \dots, m \\
-            & h_j(x) = 0, \quad j = 1, \dots, p
+            \text{minimize} \quad & f_0(\mathbf{x}) \\
+            \text{subject to} \quad & f_i(\mathbf{x}) \le 0, \quad i = 1, \dots, m \\
+            & h_j(\mathbf{x}) = 0, \quad j = 1, \dots, p
             \end{aligned}
             $
           </p>
         </div>
-        <p>Variable $x \in \mathbb{R}^n$, domain $\mathcal{D} = \bigcap \mathrm{dom}\, f_i \cap \bigcap \mathrm{dom}\, h_j$. Optimal value $p^*$.</p>
+        <p>Variable $\mathbf{x} \in \mathbb{R}^n$, domain $\mathcal{D} = \bigcap \mathrm{dom}\, f_i \cap \bigcap \mathrm{dom}\, h_j$. Optimal value $p^*$.</p>
 
         <h3>2.2 The Lagrangian Function</h3>
         <p>The <a href="#" class="definition-link">Lagrangian</a> $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R}$ augments the objective with a weighted sum of constraints:</p>
         $$
-        L(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x)
+        L(\mathbf{x}, \lambda, \nu) = f_0(\mathbf{x}) + \sum_{i=1}^m \lambda_i f_i(\mathbf{x}) + \sum_{j=1}^p \nu_j h_j(\mathbf{x})
         $$
-        <p>where $\lambda_i$ is the Lagrange multiplier associated with $f_i(x) \le 0$, and $\nu_j$ with $h_j(x) = 0$.
+        <p>where $\lambda_i$ is the Lagrange multiplier associated with $f_i(\mathbf{x}) \le 0$, and $\nu_j$ with $h_j(\mathbf{x}) = 0$.
         <br>Domain: $\mathrm{dom}\, L = \mathcal{D} \times \mathbb{R}^m \times \mathbb{R}^p$.</p>
 
         <div class="insight">
           <h4>💡 Idea: Lower Bound Property</h4>
-          <p>For any feasible $x$ and any $\lambda \succeq 0, \nu$, we have:
+          <p>For any feasible $\mathbf{x}$ and any $\lambda \succeq 0, \nu$, we have:
           $$ \sum \lambda_i f_i(x) \le 0 \quad \text{and} \quad \sum \nu_j h_j(x) = 0 $$
           Thus, $L(x, \lambda, \nu) \le f_0(x)$. The Lagrangian is a <b>pointwise underestimator</b> of the objective function on the feasible set.</p>
         </div>
@@ -113,8 +113,8 @@
         \sup_{\lambda \succeq 0, \nu} L(x, \lambda, \nu) = \sup_{\lambda \succeq 0, \nu} \left( f_0(x) + \sum \lambda_i f_i(x) + \sum \nu_j h_j(x) \right)
         $$
         <ul>
-          <li><strong>If $x$ is feasible:</strong> $f_i(x) \le 0$ and $h_j(x)=0$. To maximize the sum, the best we can do is set $\lambda_i=0$ (since $\lambda_i \ge 0$ and $f_i(x) \le 0$, any positive $\lambda$ would make the term negative). The $\nu$ term is always 0. Thus, the supremum is $f_0(x)$.</li>
-          <li><strong>If $x$ is infeasible:</strong>
+          <li><strong>If $\mathbf{x}$ is feasible:</strong> $f_i(\mathbf{x}) \le 0$ and $h_j(\mathbf{x})=0$. To maximize the sum, the best we can do is set $\lambda_i=0$ (since $\lambda_i \ge 0$ and $f_i(\mathbf{x}) \le 0$, any positive $\lambda$ would make the term negative). The $\nu$ term is always 0. Thus, the supremum is $f_0(\mathbf{x})$.</li>
+          <li><strong>If $\mathbf{x}$ is infeasible:</strong>
             <ul>
               <li>If $f_i(x) > 0$, we can let $\lambda_i \to \infty$, making the sum $\infty$.</li>
               <li>If $h_j(x) \ne 0$, we can let $\nu_j \to \text{sign}(h_j(x)) \cdot \infty$, making the sum $\infty$.</li>
@@ -144,7 +144,7 @@
         <h2>3. The Lagrange Dual Function</h2>
 
         <h3>3.1 Definition</h3>
-        <p>The <a href="#" class="definition-link">Lagrange dual function</a> $g: \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R}$ is the minimum value of the Lagrangian over $x$:
+        <p>The <a href="#" class="definition-link">Lagrange dual function</a> $g: \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R}$ is the minimum value of the Lagrangian over $\mathbf{x}$:
         $$
         g(\lambda, \nu) = \inf_{x \in \mathcal{D}} L(x, \lambda, \nu) = \inf_{x \in \mathcal{D}} \left( f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x) \right)
         $$
@@ -155,7 +155,7 @@
           <p>The dual function $g(\lambda, \nu)$ is <b>concave</b>, even if the primal problem is not convex.</p>
           <div class="proof-box">
             <h4>Proof</h4>
-            <p>For each fixed $x$, the function $(\lambda, \nu) \mapsto L(x, \lambda, \nu)$ is affine in $(\lambda, \nu)$.
+            <p>For each fixed $\mathbf{x}$, the function $(\lambda, \nu) \mapsto L(\mathbf{x}, \lambda, \nu)$ is affine in $(\lambda, \nu)$.
             <br>The dual function $g$ is the pointwise infimum of a family of affine functions.
             <br>The infimum of concave (linear) functions is concave.</p>
           </div>
@@ -181,7 +181,7 @@
           <h4>1. Least Squares (Quadratic)</h4>
           <p>Primal: $\min x^\top x$ subject to $Ax = b$.
           <br>Lagrangian: $L(x, \nu) = x^\top x + \nu^\top (Ax - b)$.
-          <br>Minimize over $x$: $\nabla_x L = 2x + A^\top \nu = 0 \implies x = -A^\top \nu / 2$.
+          <br>Minimize over $\mathbf{x}$: $\nabla_{\mathbf{x}} L = 2\mathbf{x} + A^\top \nu = 0 \implies \mathbf{x} = -A^\top \nu / 2$.
           <br>Substitute back:
           $$ g(\nu) = L(-A^\top \nu / 2, \nu) = \frac{1}{4} \nu^\top A A^\top \nu + \nu^\top (A(-A^\top \nu / 2) - b) $$
           $$ = \frac{1}{4} \|\nu^\top A\|^2 - \frac{1}{2} \|\nu^\top A\|^2 - \nu^\top b = -\frac{1}{4} \nu^\top A A^\top \nu - b^\top \nu $$
@@ -270,7 +270,7 @@
           <p>This proof constructs the dual variables as the coefficients of a separating hyperplane in the space of (constraints, objective).</p>
           <div class="proof-step">
             <strong>Step 1: The Set of Achievable Values $\mathcal{A}$.</strong>
-            Consider the set of triplets $(u, v, t)$ that are "worse" than some feasible point $x$:
+            Consider the set of triplets $(u, v, t)$ that are "worse" than some feasible point $\mathbf{x}$:
             $$ \mathcal{A} = \{ (u, v, t) \mid \exists x \in \mathcal{D}, f_i(x) \le u_i, h_j(x) = v_j, f_0(x) \le t \} $$
             This set is convex (it's the projection of the epigraph of the problem).
           </div>
@@ -283,18 +283,18 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Slater's Condition implies Non-Verticality ($\mu > 0$).</strong>
-            Suppose $\mu = 0$. The inequality becomes $\sum \lambda_i f_i(x) + \sum \nu_j h_j(x) \ge 0$ for all $x$.
+            Suppose $\mu = 0$. The inequality becomes $\sum \lambda_i f_i(\mathbf{x}) + \sum \nu_j h_j(\mathbf{x}) \ge 0$ for all $\mathbf{x}$.
             Applying this to the Slater point $\tilde{x}$ (where $f_i(\tilde{x}) < 0$):
             $$ \sum \lambda_i \underbrace{f_i(\tilde{x})}_{< 0} + 0 \ge 0 $$
             Since $\lambda_i \ge 0$, this forces $\lambda = 0$.
-            If $\lambda=0, \mu=0$, then $\nu^\top (Ax-b) \ge 0$ for all $x$, which implies $A^\top \nu = 0$. If $A$ is full rank, $\nu=0$.
+            If $\lambda=0, \mu=0$, then $\nu^\top (A\mathbf{x}-\mathbf{b}) \ge 0$ for all $\mathbf{x}$, which implies $A^\top \nu = 0$. If $A$ is full rank, $\nu=0$.
             This contradicts $(\lambda, \nu, \mu) \ne 0$. Thus $\mu > 0$.
           </div>
           <div class="proof-step">
             <strong>Step 4: Recovering Strong Duality.</strong>
             Divide the separation inequality by $\mu$. Let $\tilde{\lambda} = \lambda/\mu, \tilde{\nu} = \nu/\mu$.
             $$ f_0(x) + \sum \tilde{\lambda}_i f_i(x) + \sum \tilde{\nu}_j h_j(x) \ge p^* \quad \forall x \in \mathcal{D} $$
-            Taking the infimum over $x$, we get $g(\tilde{\lambda}, \tilde{\nu}) \ge p^*$.
+            Taking the infimum over $\mathbf{x}$, we get $g(\tilde{\lambda}, \tilde{\nu}) \ge p^*$.
             Thus the dual optimal value $d^*$ is at least $p^*$. Since $d^* \le p^*$ always (weak duality), we conclude $d^* = p^*$.
           </div>
         </div>
@@ -345,7 +345,7 @@
           <div class="proof-step">
             <strong>Conclusion 1: Stationarity.</strong>
             The inequality $\inf_x L(x, \lambda^*, \nu^*) \le L(x^*, \lambda^*, \nu^*)$ becomes an equality.
-            This implies that $x^*$ is a global minimizer of the Lagrangian function $L(x, \lambda^*, \nu^*)$ with respect to $x$.
+            This implies that $\mathbf{x}^*$ is a global minimizer of the Lagrangian function $L(\mathbf{x}, \lambda^*, \nu^*)$ with respect to $\mathbf{x}$.
             If the functions are differentiable, the gradient at a global minimizer (of an unconstrained problem) must be zero:
             $$ \nabla_x L(x^*, \lambda^*, \nu^*) = 0 $$
           </div>
@@ -394,7 +394,7 @@
         <div class="proof-box">
           <h4>Proof: Epigraph as Projection</h4>
           <p>The epigraph of $p^*$ is defined as $\text{epi } p^* = \{(u, v, t) \mid p^*(u, v) \le t\}$.
-          <br>By definition of the infimum, $p^*(u, v) \le t$ if and only if there exists some $x$ such that:
+          <br>By definition of the infimum, $p^*(u, v) \le t$ if and only if there exists some $\mathbf{x}$ such that:
           $$ f_0(x) \le t, \quad f_i(x) \le u_i, \quad Ax - b = v $$
           Thus, the epigraph is the <b>projection</b> onto $(u, v, t)$ of the set:
           $$ \mathcal{S} = \{(x, u, v, t) \mid f_0(x) \le t, \ f_i(x) \le u_i, \ Ax - b = v\} $$
@@ -413,7 +413,7 @@
           </div>
           <div class="proof-step">
             <strong>Step 2: Perturbed Dual Function.</strong>
-            Taking the infimum over $x$:
+            Taking the infimum over $\mathbf{x}$:
             $$ g(\lambda, \nu; u, v) = g(\lambda, \nu) - \lambda^\top u - \nu^\top v $$
           </div>
           <div class="proof-step">
@@ -458,7 +458,7 @@
         <h3>7.2 Quadratic Programming</h3>
         <p>Primal: $\min \frac{1}{2}x^\top P x + q^\top x$ s.t. $Ax \le b$. ($P \succ 0$).
         <br>Lagrangian: $L(x, \lambda) = \frac{1}{2}x^\top P x + q^\top x + \lambda^\top (Ax - b)$.
-        <br>Minimize over $x$: $Px + q + A^\top \lambda = 0 \implies x = -P^{-1}(q + A^\top \lambda)$.
+        <br>Minimize over $\mathbf{x}$: $P\mathbf{x} + \mathbf{q} + A^\top \lambda = 0 \implies \mathbf{x} = -P^{-1}(\mathbf{q} + A^\top \lambda)$.
         <br>Dual Function (after algebra):
         $$ g(\lambda) = -\frac{1}{2} \lambda^\top (A P^{-1} A^\top) \lambda - (b + A P^{-1} q)^\top \lambda - \frac{1}{2} q^\top P^{-1} q $$
         This is a concave quadratic maximization (since $A P^{-1} A^\top \succeq 0$).</p>
@@ -531,8 +531,8 @@
         <p><b>Primal:</b> $\min \frac{1}{2} \|Ax - b\|_2^2$. Rewrite as $\min \frac{1}{2}\|y\|_2^2$ s.t. $y = Ax - b$.</p>
         <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \nu^\top (Ax - b - y) = (\frac{1}{2}\|y\|^2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu$.</p>
         <p><b>Dual Function:</b>
-        <br>1. Min over $x$: Requires $A^\top \nu = 0$ (Lemma A1).
-        <br>2. Min over $y$: $\inf (\frac{1}{2}\|y\|^2 - \nu^\top y) = -\frac{1}{2}\|\nu\|^2$ (Lemma A2 with $P=I$).
+        <br>1. Min over $\mathbf{x}$: Requires $A^\top \nu = 0$ (Lemma A1).
+        <br>2. Min over $\mathbf{y}$: $\inf (\frac{1}{2}\|\mathbf{y}\|^2 - \nu^\top \mathbf{y}) = -\frac{1}{2}\|\nu\|^2$ (Lemma A2 with $P=I$).
         <br><b>Dual Problem:</b> $\max -\frac{1}{2}\|\nu\|^2 - b^\top \nu$ s.t. $A^\top \nu = 0$.
         </p>
       </div>
@@ -542,8 +542,8 @@
         <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$. Rewrite with $y = Ax - b$.</p>
         <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \frac{\lambda}{2}\|x\|^2 + \nu^\top(Ax - b - y)$.</p>
         <p><b>Dual Function:</b>
-        <br>1. Min over $y$: same as above, $-\frac{1}{2}\|\nu\|^2$.
-        <br>2. Min over $x$: $\inf (\frac{\lambda}{2}\|x\|^2 + (A^\top \nu)^\top x) = -\frac{1}{2\lambda}\|A^\top \nu\|^2$.
+        <br>1. Min over $\mathbf{y}$: same as above, $-\frac{1}{2}\|\nu\|^2$.
+        <br>2. Min over $\mathbf{x}$: $\inf (\frac{\lambda}{2}\|\mathbf{x}\|^2 + (A^\top \nu)^\top \mathbf{x}) = -\frac{1}{2\lambda}\|A^\top \nu\|^2$.
         <br><b>Dual Problem:</b> $\max -b^\top \nu - \frac{1}{2}\|\nu\|^2 - \frac{1}{2\lambda}\|A^\top \nu\|^2$. (Unconstrained!)
         </p>
       </div>
@@ -553,8 +553,8 @@
         <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1$. Rewrite with $y = Ax - b$.</p>
         <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \lambda \|x\|_1 + \nu^\top(Ax - b - y)$.</p>
         <p><b>Dual Function:</b>
-        <br>1. Min over $y$: $-\frac{1}{2}\|\nu\|^2$.
-        <br>2. Min over $x$: $\inf_x (\lambda \|x\|_1 + (A^\top \nu)^\top x) = -\sup_x (-(A^\top \nu)^\top x - \lambda \|x\|_1)$.
+        <br>1. Min over $\mathbf{y}$: $-\frac{1}{2}\|\nu\|^2$.
+        <br>2. Min over $\mathbf{x}$: $\inf_{\mathbf{x}} (\lambda \|\mathbf{x}\|_1 + (A^\top \nu)^\top \mathbf{x}) = -\sup_{\mathbf{x}} (-(A^\top \nu)^\top \mathbf{x} - \lambda \|\mathbf{x}\|_1)$.
         This is finite (0) only if $\|A^\top \nu\|_\infty \le \lambda$ (Lemma A3 scaled).
         <br><b>Dual Problem:</b> $\max -b^\top \nu - \frac{1}{2}\|\nu\|^2$ s.t. $\|A^\top \nu\|_\infty \le \lambda$.
         </p>
@@ -577,7 +577,7 @@
         <p><b>Primal:</b> $\min \frac{1}{2}\|w\|^2 + C \sum \max(0, 1 - y_i w^\top x_i)$.
         <br>Rewrite: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $\xi_i \ge 1 - y_i w^\top x_i, \xi_i \ge 0$.</p>
         <p><b>Dual Derivation:</b>
-        <br>Lagrangian involves multipliers $\alpha_i, \mu_i$. Minimizing over $w$ gives $w = \sum \alpha_i y_i x_i$.
+        <br>Lagrangian involves multipliers $\alpha_i, \mu_i$. Minimizing over $\mathbf{w}$ gives $\mathbf{w} = \sum \alpha_i y_i \mathbf{x}_i$.
         <br>Minimizing over $\xi$ gives constraint $0 \le \alpha_i \le C$.
         <br><b>Dual Problem:</b> $\max \sum \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j$ s.t. $0 \le \alpha_i \le C, \sum \alpha_i y_i = 0$.
         </p>
@@ -588,7 +588,7 @@
         <p><b>Primal:</b> $\min \frac{1}{2}x^\top P x + q^\top x + r$ s.t. $x^\top x \le 1$. ($P \succ 0$).</p>
         <p><b>Lagrangian:</b> $L(x, \lambda) = \frac{1}{2}x^\top (P + 2\lambda I) x + q^\top x + r - \lambda$ ($\lambda \ge 0$).</p>
         <p><b>Dual Function:</b>
-        <br>Minimize quadratic in $x$: $x^* = -(P + 2\lambda I)^{-1}q$.
+        <br>Minimize quadratic in $\mathbf{x}$: $\mathbf{x}^* = -(P + 2\lambda I)^{-1}\mathbf{q}$.
         <br>Value: $r - \lambda - \frac{1}{2}q^\top (P + 2\lambda I)^{-1} q$.
         <br><b>Dual Problem:</b> $\max_{\lambda \ge 0} r - \lambda - \frac{1}{2}q^\top (P + 2\lambda I)^{-1} q$.
         <br>This is a 1D concave maximization, easily solvable (finding the root of the secular equation).
@@ -632,11 +632,11 @@
 
         <h5>1. Least Squares: $\min \frac{1}{2}\|Ax - b\|_2^2$</h5>
         <ul>
-          <li><b>Primal:</b> Any $x$.</li>
-          <li><b>Dual:</b> Any $y$ such that $A^\top y = 0$ (orthogonal to range).</li>
+          <li><b>Primal:</b> Any $\mathbf{x}$.</li>
+          <li><b>Dual:</b> Any $\mathbf{y}$ such that $A^\top \mathbf{y} = 0$ (orthogonal to range).</li>
           <li><b>Dual Objective:</b> $b^\top y - \frac{1}{2}\|y\|_2^2$.</li>
           <li><b>Gap:</b> $\frac{1}{2}\|Ax - b\|_2^2 - (b^\top y - \frac{1}{2}\|y\|_2^2)$.</li>
-          <li><b>Recipe:</b> Let $r = b - Ax$. Project $r$ onto $\mathcal{N}(A^\top)$ to get $y$.</li>
+          <li><b>Recipe:</b> Let $\mathbf{r} = \mathbf{b} - A\mathbf{x}$. Project $\mathbf{r}$ onto $\mathcal{N}(A^\top)$ to get $\mathbf{y}$.</li>
         </ul>
 
         <h5>2. LASSO: $\min \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1$</h5>
@@ -658,7 +658,7 @@
   <p>Consider the QP: $\min x^\top x$ subject to $Ax \preceq b$.
   <br>(a) Derive the Lagrange dual function $g(\lambda)$.
   <br>(b) State the dual problem explicitly.
-  <br>(c) Verify weak duality directly for any feasible $x$ and $\lambda$.</p>
+  <br>(c) Verify weak duality directly for any feasible $\mathbf{x}$ and $\lambda$.</p>
 
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -715,7 +715,7 @@
 <div class="problem">
   <h3>P9.3 — Sensitivity Analysis and Shadow Prices</h3>
   <p>Consider $\min x^2$ s.t. $x \le -1$. Optimal $x^*=-1, p^*=1$.
-  <br>Perturb to $x \le -1 + u$. New optimum $x^* = -1+u$ (for small $u$), $p^*(u) = (-1+u)^2 \approx 1 - 2u$.
+  <br>Perturb to $\mathbf{x} \le -1 + u$. New optimum $\mathbf{x}^* = -1+u$ (for small $u$), $p^*(u) = (-1+u)^2 \approx 1 - 2u$.
   <br>Find the dual optimal $\lambda^*$ of the original problem and verify $p^*(u) \approx p^*(0) - \lambda^* u$.</p>
 
   <div class="recap-box">

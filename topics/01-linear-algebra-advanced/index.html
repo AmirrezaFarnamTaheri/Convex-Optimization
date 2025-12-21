@@ -107,7 +107,7 @@
         <h4>Computing Coordinates</h4>
         <p>To find $\alpha = [\mathbf{v}]_B$, we solve $B\alpha = \mathbf{v}$.
         <br><b>Case 1: Full Space ($m=n$).</b> $B$ is square and invertible. $\alpha = B^{-1}\mathbf{v}$.
-        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $\mathbf{v} \in V$) using Gaussian elimination or $B^\dagger \mathbf{v}$.
+        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $\mathbf{v} \in V$) using least squares (see Section 7 for the pseudoinverse $B^\dagger$, or use the normal equations $B^\top B \alpha = B^\top \mathbf{v}$).
         </p>
       </div>
 

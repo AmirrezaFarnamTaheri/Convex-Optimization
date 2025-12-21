@@ -74,10 +74,10 @@
 
       <p>where:</p>
       <ul>
-        <li>The variable is $x \in \mathbb{R}^n$</li>
+        <li>The variable is $\mathbf{x} \in \mathbb{R}^n$</li>
         <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="#" class="definition-link" data-term="convex function">convex</a>)</li>
         <li>$f_i: \mathbb{R}^n \to \mathbb{R}$, $i = 1, \dots, m$ are <strong>inequality constraint functions</strong> (all convex)</li>
-        <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(x) = a_j^\top x - b_j$)</li>
+        <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(\mathbf{x}) = \mathbf{a}_j^\top \mathbf{x} - b_j$)</li>
       </ul>
 
       <p>The standard form explicitly requires equality constraints to be affine. This is because $\{x \mid h(x) = 0\}$ is convex only if $h$ is affine (or can be replaced by one). Non-affine equality constraints generally define curved surfaces (manifolds) that are not convex sets.</p>
@@ -86,7 +86,7 @@
       <p>The <strong>feasible set</strong> (or constraint set) is:</p>
       <p style="text-align: center;">
         $
-        \mathcal{F} = \{x \in \mathbb{R}^n \mid f_i(x) \le 0, \; i = 1, \dots, m; \; h_j(x) = 0, \; j = 1, \dots, p\}
+        \mathcal{F} = \{\mathbf{x} \in \mathbb{R}^n \mid f_i(\mathbf{x}) \le 0, \; i = 1, \dots, m; \; h_j(\mathbf{x}) = 0, \; j = 1, \dots, p\}
         $
       </p>
 
@@ -117,8 +117,8 @@
       <ul>
         <li>The <strong>optimal value</strong> is $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$</li>
         <li>$x^*$ is <strong>optimal</strong> (or a <strong>minimizer</strong>) if $x^* \in \mathcal{F}$ and $f_0(x^*) = p^*$</li>
-        <li>$x$ is <strong>$\epsilon$-suboptimal</strong> if $x \in \mathcal{F}$ and $f_0(x) \le p^* + \epsilon$</li>
-        <li>$x$ is <strong>locally optimal</strong> if there exists $R > 0$ such that $f_0(x) = \inf\{f_0(z) \mid z \in \mathcal{F}, \|z - x\|_2 \le R\}$</li>
+        <li>$\mathbf{x}$ is <strong>$\epsilon$-suboptimal</strong> if $\mathbf{x} \in \mathcal{F}$ and $f_0(\mathbf{x}) \le p^* + \epsilon$</li>
+        <li>$\mathbf{x}$ is <strong>locally optimal</strong> if there exists $R > 0$ such that $f_0(\mathbf{x}) = \inf\{f_0(\mathbf{z}) \mid \mathbf{z} \in \mathcal{F}, \|\mathbf{z} - \mathbf{x}\|_2 \le R\}$</li>
       </ul>
 
       <div class="proof-box">
@@ -126,12 +126,12 @@
         <p><strong>Statement:</strong> For convex optimization problems, any locally optimal point is globally optimal.</p>
 
         <div class="proof-step">
-            <strong>Proof:</strong> This is a consequence of the convexity of $f_0$ and $\mathcal{F}$, as established in <a href="../02-introduction/index.html">Lecture 02</a>. If $x$ is locally optimal but not globally optimal, there exists a better point $y$. By convexity, the entire line segment connecting $x$ to $y$ lies in the feasible set, and the objective decreases along this segment. This means points arbitrarily close to $x$ are better than $x$, contradicting local optimality.
+            <strong>Proof:</strong> This is a consequence of the convexity of $f_0$ and $\mathcal{F}$, as established in <a href="../02-introduction/index.html">Lecture 02</a>. If $\mathbf{x}$ is locally optimal but not globally optimal, there exists a better point $\mathbf{y}$. By convexity, the entire line segment connecting $\mathbf{x}$ to $\mathbf{y}$ lies in the feasible set, and the objective decreases along this segment. This means points arbitrarily close to $\mathbf{x}$ are better than $\mathbf{x}$, contradicting local optimality.
         </div>
       </div>
 
       <div class="intuition-box">
-        <p><b>Intuition:</b> In a convex problem, “going halfway” is always allowed and never worse. If there were a better point $y$ somewhere, then the line segment from your current point $x$ toward $y$ stays feasible, and the objective must drop immediately as you move away from $x$. So a point can’t be locally best unless it’s globally best.</p>
+        <p><b>Intuition:</b> In a convex problem, "going halfway" is always allowed and never worse. If there were a better point $\mathbf{y}$ somewhere, then the line segment from your current point $\mathbf{x}$ toward $\mathbf{y}$ stays feasible, and the objective must drop immediately as you move away from $\mathbf{x}$. So a point can't be locally best unless it's globally best.</p>
       </div>
     </section>
 
@@ -154,7 +154,7 @@
         </p>
       </div>
 
-      <p>where $x \in \mathbb{R}^n$ is the variable. The objective is an affine function, and the constraints are affine inequalities and equalities.</p>
+      <p>where $\mathbf{x} \in \mathbb{R}^n$ is the variable. The objective is an affine function, and the constraints are affine inequalities and equalities.</p>
 
       <h4>Geometric Interpretation</h4>
       <p>Geometrically, an LP is the minimization of a linear function over a <strong>polyhedron</strong>.
@@ -177,7 +177,7 @@
         <p>This property relies on the fact that the objective function is linear (and thus both convex and concave).</p>
         <div class="proof-step">
           <strong>Step 1: Representation.</strong>
-          A bounded polyhedron (polytope) is the convex hull of its vertices $\{v_1, \dots, v_k\}$. Any point $x$ in the feasible set can be written as a convex combination $x = \sum_{i=1}^k \theta_i v_i$, where $\theta_i \ge 0, \sum \theta_i = 1$.
+          A bounded polyhedron (polytope) is the convex hull of its vertices $\{\mathbf{v}_1, \dots, \mathbf{v}_k\}$. Any point $\mathbf{x}$ in the feasible set can be written as a convex combination $\mathbf{x} = \sum_{i=1}^k \theta_i \mathbf{v}_i$, where $\theta_i \ge 0, \sum \theta_i = 1$.
         </div>
         <div class="proof-step">
           <strong>Step 2: Linearity.</strong>
@@ -220,7 +220,7 @@
           <li>We need at least $b_i$ units of nutrient $i$.</li>
       </ul>
       Constraint for nutrient $i$: $\sum_{j=1}^n a_{ij} x_j \ge b_i$.
-      Stacking these into a matrix $A$ and vector $b$, we get $Ax \ge b$.
+      Stacking these into a matrix $A$ and vector $\mathbf{b}$, we get $A\mathbf{x} \ge \mathbf{b}$.
       To fit the standard form $Gx \le h$, we multiply by $-1$: $-Ax \le -b$.
       </p>
       <p><strong>The Diet LP:</strong></p>
@@ -236,7 +236,7 @@
       <p>Interpretation: We search over the polyhedron of healthy diets to find the one that the cost hyperplane hits first.</p>
 
       <h4>Example 2.2: L-infinity Minimization</h4>
-      <p>Find $x \in \mathbb{R}^n$ minimizing $\|Ax - b\|_\infty$. This can be reformulated as:</p>
+      <p>Find $\mathbf{x} \in \mathbb{R}^n$ minimizing $\|A\mathbf{x} - \mathbf{b}\|_\infty$. This can be reformulated as:</p>
       <p style="text-align: center;">
         $
         \begin{aligned}
@@ -270,9 +270,9 @@
         </div>
         <div class="proof-step">
             <strong>Step 2: Support Function of the Ball.</strong>
-            Substitute $x = x_c + u$ where $\|u\|_2 \le r$.
+            Substitute $\mathbf{x} = \mathbf{x}_c + \mathbf{u}$ where $\|\mathbf{u}\|_2 \le r$.
             $$ \sup_{\|u\|_2 \le r} a_i^\top (x_c + u) = a_i^\top x_c + \sup_{\|u\|_2 \le r} a_i^\top u $$
-            Recall the definition of the dual norm: $\|v\|_* = \sup \{v^\top u \mid \|u\| \le 1\}$. Scaling the variable $u$ by $r$, we get $\sup \{v^\top u \mid \|u\| \le r\} = r \|v\|_*$.
+            Recall the definition of the dual norm: $\|\mathbf{v}\|_* = \sup \{\mathbf{v}^\top \mathbf{u} \mid \|\mathbf{u}\| \le 1\}$. Scaling the variable $\mathbf{u}$ by $r$, we get $\sup \{\mathbf{v}^\top \mathbf{u} \mid \|\mathbf{u}\| \le r\} = r \|\mathbf{v}\|_*$.
             For the Euclidean norm, the dual is the Euclidean norm itself ($\|\cdot\|_2^* = \|\cdot\|_2$). Thus:
             $$ \sup_{\|u\| \le r} a_i^\top u = r \|a_i\|_2 $$
         </div>
@@ -314,7 +314,7 @@
         <div class="proof-step">
             <strong>Equivalence:</strong>
             <ul>
-                <li><strong>(1) Original to LP:</strong> For any $x$, let $t = \max_i(a_i^\top x + b_i)$. Then $(x, t)$ is feasible for the LP and has the same objective value.</li>
+                <li><strong>(1) Original to LP:</strong> For any $\mathbf{x}$, let $t = \max_i(a_i^\top \mathbf{x} + b_i)$. Then $(\mathbf{x}, t)$ is feasible for the LP and has the same objective value.</li>
                 <li><strong>(2) LP to Original:</strong> If $(x, t)$ is feasible, then $a_i^\top x + b_i \le t$ for all $i$, implying $f(x) \le t$. If we minimize $t$, we push it down until $t = f(x)$.</li>
             </ul>
         </div>
@@ -487,7 +487,7 @@
       \text{subject to} \quad & Gx \le h
       \end{aligned}
       $$
-      <p>This is a standard QP. Geometrically, we are projecting the vector $b$ onto the image of the feasible set under $A$. Unlike the unconstrained case, there is generally no closed-form solution.</p>
+      <p>This is a standard QP. Geometrically, we are projecting the vector $\mathbf{b}$ onto the image of the feasible set under $A$. Unlike the unconstrained case, there is generally no closed-form solution.</p>
 
       <h3>3.4 Application: Mean-Variance Analysis</h3>
       <p>In finance and stochastic control, we often face random costs.</p>
@@ -512,7 +512,7 @@
 
       <div class="insight">
         <h4>Block Matrix Formulation</h4>
-        <p>We can stack the variables into a single vector $z = (x, y)$. The objective becomes:</p>
+        <p>We can stack the variables into a single vector $\mathbf{z} = (\mathbf{x}, \mathbf{y})$. The objective becomes:</p>
         $$ \|x - y\|_2^2 = x^\top x - 2 x^\top y + y^\top y = \begin{bmatrix} x^\top & y^\top \end{bmatrix} \begin{bmatrix} I & -I \\ -I & I \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} $$
         <p>The matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ is PSD (it factorizes as $B^\top B$ where $B = [I, -I]$).
         <br>The constraints stack diagonally:
@@ -630,16 +630,16 @@
       <h4>4.1.1 The 1D Case</h4>
       <p>Consider $f(x) = \frac{x}{ax + b}$ with domain $ax+b > 0$. We can visualize this construction in three steps:</p>
       <ol>
-        <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$.</li>
+        <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$. (Note: $x$ is scalar here)</li>
         <li><strong>Project:</strong> Draw a ray from the origin through the point $(x, ax+b)$.</li>
         <li><strong>Intersect:</strong> Find where this ray hits the horizontal line $v=1$.</li>
       </ol>
       <p>The intersection point is $(\frac{x}{ax+b}, 1)$. The x-coordinate is exactly our function value! This geometric operation—projecting onto a plane through the origin—is the definition of the perspective map.</p>
 
       <h4>4.1.2 The General Case</h4>
-      <p>In higher dimensions ($x \in \mathbb{R}^n$), we do the same:</p>
+      <p>In higher dimensions ($\mathbf{x} \in \mathbb{R}^n$), we do the same:</p>
       <ul>
-          <li>Map $x \in \mathbb{R}^n$ to $(c^\top x + d, e^\top x + f)$ in $\mathbb{R}^2$.</li>
+          <li>Map $\mathbf{x} \in \mathbb{R}^n$ to $(\mathbf{c}^\top \mathbf{x} + d, \mathbf{e}^\top \mathbf{x} + f)$ in $\mathbb{R}^2$.</li>
           <li>Apply the perspective projection $P(u, v) = u/v$. This corresponds to drawing a ray from the origin through $(u, v)$ and seeing where it intersects the line $v=1$.</li>
       </ul>
       <p>This perspective viewpoint explains why these functions preserve certain convexity properties.</p>
@@ -1104,8 +1104,8 @@
         <h3>P7.6 — The Log-Barrier Problem</h3>
         <p>Consider $f_0(x) = -\sum_{i=1}^m \log(b_i - a_i^\top x)$ with domain $\{x \mid Ax \prec b\}$.
         Analyze the existence of minimizers (Exercise 4.2).</p>
-        <p><strong>(a)</strong> Show that the domain is unbounded if and only if there exists $v \ne 0$ such that $Av \preceq 0$.</p>
-        <p><strong>(b)</strong> Show that $f_0$ is unbounded below if and only if there exists $v$ such that $Av \preceq 0$ and $Av \ne 0$.</p>
+        <p><strong>(a)</strong> Show that the domain is unbounded if and only if there exists $\mathbf{v} \ne 0$ such that $A\mathbf{v} \preceq 0$.</p>
+        <p><strong>(b)</strong> Show that $f_0$ is unbounded below if and only if there exists $\mathbf{v}$ such that $A\mathbf{v} \preceq 0$ and $A\mathbf{v} \ne 0$.</p>
         <p><strong>(c)</strong> Show that if $f_0$ is bounded below, a minimizer exists and is unique (modulo the nullspace of $A$).</p>
 
         <div class="recap-box">

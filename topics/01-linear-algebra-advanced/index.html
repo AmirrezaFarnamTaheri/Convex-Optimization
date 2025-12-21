@@ -62,10 +62,10 @@
     <!-- SECTION 1: ABSTRACT VECTOR SPACES -->
     <section class="section-card" id="section-vector-spaces">
       <h2>1. Abstract Vector Spaces</h2>
-      <p>In Lecture 00, we worked with $\mathbb{R}^n$, where vectors were tuples. Here we abstract that away. A <b>Vector Space</b> is defined not by what vectors <i>are</i>, but by what you can <i>do</i> with them.</p>
+      <p>In Lecture 00, we worked with $\mathbb{R}^n$, where vectors were tuples. Here we abstract that away. A <b>Vector Space</b> is defined not by what vectors <i>are</i>, but by what you can <i>do</i> with them. This "conceptual compression" reveals that matrices, functions, and polynomials are all the same kind of object.</p>
 
       <h3>1.1 The Axiomatic Definition</h3>
-      <p>A vector space over a field $\mathbb{F}$ is a set $V$ equipped with two operations—addition ($+$) and scalar multiplication ($\cdot$)—that satisfy the following axioms for all $u,v,w \in V$ and $\alpha, \beta \in \mathbb{F}$:</p>
+      <p>A vector space over a field $\mathbb{F}$ is a set $V$ equipped with two operations—addition ($+$) and scalar multiplication ($\cdot$)—that satisfy the following 8 axioms for all $u,v,w \in V$ and $\alpha, \beta \in \mathbb{F}$. These axioms are exactly what is needed to make linear combinations behave predictably.</p>
 
       <ul>
         <li><b>Additivity ($V$ is an Abelian Group):</b>
@@ -90,7 +90,7 @@
         </li>
       </ul>
 
-      <p><b>Immediate Theorems:</b> From these 8 axioms, we rigorously prove everything else.
+      <p><b>Immediate Theorems:</b> From these axioms, we rigorously prove derived facts like:
       <br>1. $\mathbf{0}$ is unique.
       <br>2. $0 \cdot v = \mathbf{0}$. (Proof: $0v = (0+0)v = 0v + 0v \implies \mathbf{0} = 0v$).
       <br>3. $(-1)v = -v$. (Proof: $v + (-1)v = 1v + (-1)v = (1-1)v = 0v = \mathbf{0}$).</p>
@@ -99,13 +99,14 @@
       <p>The most important subsets in linear algebra are those that inherit the linear structure. A subset $W \subseteq V$ is a <b>subspace</b> if it is a self-contained linear universe.</p>
 
       <h4>The One-Line Subspace Test</h4>
-      <p>A nonempty subset $W$ is a subspace if and only if it is closed under linear combinations:
+      <p>A nonempty subset $W \subseteq V$ is a subspace if and only if it is closed under all linear combinations:
       $$ \forall u,v \in W, \alpha, \beta \in \mathbb{F} \implies \alpha u + \beta v \in W $$
-      This implies $W$ contains $\mathbf{0}$, is closed under addition, and is closed under scaling.</p>
+      This implies $W$ contains $\mathbf{0}$, is closed under addition, and is closed under scaling.
+      <br><b>Fast Check:</b> If a set does not contain $\mathbf{0}$, it is <b>not</b> a subspace.</p>
 
       <h4>Fundamental Subspaces</h4>
       <ul>
-        <li><b>Intersection:</b> $\bigcap W_i$ is always a subspace. (The "AND" of linear constraints).</li>
+        <li><b>Intersection:</b> $\bigcap W_i$ is always a subspace. (This is the "AND" of linear constraints).</li>
         <li><b>Sum:</b> $U + W = \{u+w \mid u \in U, w \in W\}$ is a subspace. It is the "smallest closed world" containing both.</li>
         <li><b>Direct Sum:</b> If $U \cap W = \{0\}$, then every element in $U+W$ has a <i>unique</i> representation. We write $U \oplus W$.</li>
       </ul>
@@ -114,14 +115,11 @@
       <p>The <b>span</b> of a set $S$, denoted $\mathrm{span}(S)$, is the set of all <i>finite</i> linear combinations of vectors in $S$.
       $$ \mathrm{span}(S) = \left\{ \sum_{i=1}^k \alpha_i v_i \;\middle|\; v_i \in S, \alpha_i \in \mathbb{F}, k \in \mathbb{N} \right\} $$
       <b>Theorem:</b> $\mathrm{span}(S)$ is the smallest subspace containing $S$.
-      <br><i>Proof:</i>
-      1. It is a subspace (closed under combinations).
-      2. Any subspace containing $S$ must containing all linear combinations of $S$.
-      </p>
+      <br><i>Proof (via Intersection):</i> Define $\mathrm{span}(S) = \bigcap \{W \le V : S \subseteq W\}$. Since the intersection of subspaces is a subspace, and every subspace containing $S$ must contain all linear combinations of $S$, the definitions match.</p>
 
       <p><b>Solvability:</b> Asking "Does $Ax=b$ have a solution?" is equivalent to "Is $b \in \mathrm{span}(\text{columns of } A)$?". Span translates existence problems into geometric containment problems.</p>
 
-      <h3>1.3 Linear Maps (Structure-Preserving Functions)</h3>
+      <h3>1.4 Linear Maps (Structure-Preserving Functions)</h3>
       <p>A function $T: V \to W$ is a <b>Linear Map</b> if it preserves the vector space operations:
       $$ T(\alpha \mathbf{u} + \beta \mathbf{v}) = \alpha T(\mathbf{u}) + \beta T(\mathbf{v}) $$
       This is the definition of a homomorphism in algebra. It implies $T(0)=0$ and $T(-u) = -T(u)$.
@@ -169,7 +167,29 @@
         <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is linearly independent in $V$, then:
         <br>1. <b>$k \le m$</b> (Independent sets cannot be larger than spanning sets).
         <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
-        <p><i>Proof Idea:</i> Iteratively inject $\ell_i$ into the set and eject a redundant $s_j$. Since $\ell_i$ is independent of previous $\ell$'s, it must depend on at least one remaining $s$, so we never run out of candidates to swap as long as $i \le m$. If $k > m$, we would run out of $s$'s while $\ell$'s remain, contradicting independence.</p>
+
+        <h4>Proof</h4>
+        <p>We prove this by iteratively replacing vectors in the spanning set. Let $S^{(0)} = S = \{s_1, \dots, s_m\}$. We will construct a sequence of spanning sets $S^{(1)}, \dots, S^{(k)}$.</p>
+
+        <div class="proof-step">
+          <strong>Inductive Step:</strong> Suppose $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$ along with $m-(j-1)$ vectors from the original set $S$. We want to insert $\ell_j$.
+          <br>Since $S^{(j-1)}$ spans $V$, we can write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$:
+          $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
+          Since $L$ is linearly independent, $\ell_j$ cannot be in the span of $\{\ell_1, \dots, \ell_{j-1}\}$. Thus, at least one vector $s^* \in S^{(j-1)}$ that is <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{s^*} \neq 0$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Exchange:</strong> We solve for $s^*$ in terms of $\ell_j$ and the other vectors:
+          $$ s^* = \frac{1}{c_{s^*}} \left( \ell_j - \sum_{u \neq s^*} c_u u \right) $$
+          This shows that $s^*$ is in the span of the new set $S^{(j)} := (S^{(j-1)} \setminus \{s^*\}) \cup \{\ell_j\}$.
+          Therefore, $\mathrm{span}(S^{(j)}) = \mathrm{span}(S^{(j-1)}) = V$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Conclusion:</strong> We can repeat this process $k$ times. At each step, we remove one of the original $s$ vectors and add an $\ell$ vector.
+          If $k > m$, at some step we would run out of $s$ vectors to remove, implying $\ell_j$ is in the span of the previous $\ell$'s, which contradicts independence.
+          Thus $k \le m$, and the final set $S^{(k)}$ (containing all of $L$) spans $V$.
+        </div>
       </div>
 
       <h4>The Dimension Theorem</h4>

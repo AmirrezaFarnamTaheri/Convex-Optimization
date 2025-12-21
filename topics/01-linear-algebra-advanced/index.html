@@ -485,36 +485,64 @@
       </ul>
       </p>
     </section>
-    </section>
 
     <!-- SECTION 8: PSEUDOINVERSE -->
     <section class="section-card" id="section-pseudoinverse">
       <h2>8. The Pseudoinverse and Condition Number</h2>
 
       <h3>8.1 The Unified Picture: Least Squares, Pseudoinverse, and Regularization</h3>
-      <p>SVD unifies the three core concepts of solving linear systems: least squares, pseudoinverse, and regularization.</p>
+      <p>SVD unifies the three core concepts of solving linear systems: least squares, pseudoinverse, and regularization. We begin with the most fundamental object.</p>
 
-      <h4>1. Least Squares via SVD</h4>
-      <p>Solve $\min \|A\mathbf{x} - \mathbf{b}\|_2^2$. Using $A=U\Sigma V^\top$, the problem decouples into independent scalar problems in the rotated coordinates:
-      $$ \min_{\mathbf{y}} \|\Sigma \mathbf{y} - U^\top \mathbf{b}\|_2^2 = \sum_{i=1}^r (\sigma_i y_i - c_i)^2 + \sum_{i=r+1}^m c_i^2 $$
-      where $\mathbf{y} = V^\top \mathbf{x}$ and $\mathbf{c} = U^\top \mathbf{b}$.
-      <br>Solution: $y_i = c_i / \sigma_i$ for $\sigma_i > 0$, and $y_i$ is arbitrary for $\sigma_i = 0$.
-      <br><b>Minimum Norm Solution:</b> Setting the arbitrary $y_i=0$ (for $i>r$) minimizes $\|\mathbf{x}\|_2 = \|\mathbf{y}\|_2$. This yields the Pseudoinverse solution.</p>
-
-      <h4>2. The Moore-Penrose Pseudoinverse ($A^+$)</h4>
-      <p>The matrix that performs this "invert where possible, zero otherwise" operation is $A^+ = V \Sigma^+ U^\top$, where $\Sigma^+_{ii} = 1/\sigma_i$ if $\sigma_i > 0$ and $0$ otherwise.
-      <br><b>Properties:</b>
-      <ul>
-        <li><b>Algebraic:</b> It is the unique matrix satisfying the four Moore-Penrose axioms ($AA^+A=A$, etc.).</li>
-        <li><b>Geometric:</b> $A^+$ inverts the map on $\mathcal{R}(A)$ and annihilates $\mathcal{R}(A)^\perp$.</li>
-      </ul>
+      <h4>The Moore-Penrose Pseudoinverse ($A^+$)</h4>
+      <p>When $A$ is not square or not invertible, we define a generalized inverse $A^+$ that "inverts" the action of $A$ on its range and sends the orthogonal complement to zero.
+      <br><b>Definition via SVD:</b> If $A = U \Sigma V^\top$, then $A^+ = V \Sigma^+ U^\top$, where $\Sigma^+_{ii} = 1/\sigma_i$ if $\sigma_i > 0$ and $0$ otherwise.
       </p>
 
-      <h4>3. Regularization as Spectral Filtering</h4>
-      <p>When $\sigma_i$ is small, $1/\sigma_i$ is huge, amplifying noise (ill-conditioning). Regularization fixes this by modifying the inversion spectrum.
-      <br><b>Tikhonov Regularization (Ridge):</b> $\min \|A\mathbf{x} - \mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_2^2$.
-      <br>Solution: $\mathbf{x}_\lambda = (A^\top A + \lambda I)^{-1} A^\top \mathbf{b}$.
-      <br><b>SVD View:</b> In singular coordinates, the filter factor becomes:
+      <div class="proof-box">
+        <h4>Theorem: Uniqueness via Axioms</h4>
+        <p>The pseudoinverse is the <b>unique</b> matrix $X$ satisfying the four Moore-Penrose conditions:
+        <ol>
+          <li>$AXA = A$ (Projector consistency)</li>
+          <li>$XAX = X$ (Inverse consistency)</li>
+          <li>$(AX)^\top = AX$ (Symmetric projector onto Range)</li>
+          <li>$(XA)^\top = XA$ (Symmetric projector onto Row Space)</li>
+        </ol>
+        <b>Proof of Uniqueness:</b> Suppose $X$ and $Y$ both satisfy the axioms.
+        <br>First, show $X = XAX = (XA)X = (XA)^\top X = A^\top X^\top X = (AYA)^\top X^\top X = A^\top Y^\top A^\top X^\top X = (YA)^\top (XA)^\top X = YAX$.
+        <br>Symmetrically, $Y = YAY = Y(AXA)Y = YAXAY = (YAX)AY$. Since $YAX=X$, this is $XAY$.
+        <br>Apply symmetry again: $X = YAX = Y(AX)^\top = Y X^\top A^\top = Y X^\top (AYA)^\top = Y X^\top A^\top Y^\top A^\top = Y (AX)^\top (AY)^\top = YAX AY = XAY$.
+        <br>Thus $X=Y$.
+        </p>
+      </div>
+
+      <h4>Least Squares via Pseudoinverse</h4>
+      <p>Solve $\min \|A\mathbf{x} - \mathbf{b}\|_2^2$. The set of solutions is the affine set $\mathbf{x}_{LS} + \mathcal{N}(A)$.
+      The vector $\mathbf{x}^\star = A^+ \mathbf{b}$ is the unique solution with <b>minimum Euclidean norm</b>.
+      </p>
+
+      <div class="proof-box">
+        <h4>Proof: $x^\star = A^+\mathbf{b}$ minimizes norm</h4>
+        <div class="proof-step">
+          <strong>Step 1: $A^+b$ is a solution.</strong>
+          $A(A^+b) = (AA^+)b = P_{\mathcal{R}(A)}b$. Since $AA^+$ projects onto the column space, the residual $b - AA^+b$ is orthogonal to $\mathcal{R}(A)$, satisfying the normal equations.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Orthogonality.</strong>
+          $x^\star = V \Sigma^+ U^\top b$ lies in the row space $\mathcal{R}(A^\top)$ (spanned by first $r$ cols of $V$).
+          Any other solution is $x = x^\star + z$ where $z \in \mathcal{N}(A)$.
+          Since $\mathcal{N}(A) \perp \mathcal{R}(A^\top)$, we have $x^\star \perp z$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Pythagoras.</strong>
+          $\|x\|^2 = \|x^\star + z\|^2 = \|x^\star\|^2 + \|z\|^2 \ge \|x^\star\|^2$.
+          Equality holds only if $z=0$.
+        </div>
+      </div>
+
+      <h4>Regularization as Spectral Filtering</h4>
+      <p>When $\sigma_i$ is small, $1/\sigma_i$ is huge, amplifying noise (ill-conditioning). Tikhonov Regularization fixes this by modifying the inversion spectrum.
+      <br><b>Problem:</b> $\min \|A\mathbf{x} - \mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_2^2$.
+      <br><b>SVD Solution:</b> In singular coordinates, the filter factor becomes:
       $$ y_i(\lambda) = \frac{\sigma_i}{\sigma_i^2 + \lambda} c_i $$
       <ul>
         <li>Large $\sigma_i (\gg \lambda)$: $y_i \approx c_i / \sigma_i$ (standard inversion).</li>

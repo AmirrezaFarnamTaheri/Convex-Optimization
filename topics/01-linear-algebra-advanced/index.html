@@ -221,11 +221,21 @@
       Associativity ($A(BC)=(AB)C$) is forced by associativity of function composition ($f \circ (g \circ h) = (f \circ g) \circ h$). Non-commutativity ($AB \ne BA$) is forced because order of operations matters.</p>
 
       <h4>Change of Basis and Similarity</h4>
-      <p>If we change the basis of $V$ from $B$ to $B'$, the vector $v$ doesn't change, but its coordinates do: $[v]_B = P [v]_{B'}$, where $P$ is the change-of-basis matrix (columns are new basis vectors written in old basis).
-      <br>The matrix $A$ representing $T$ transforms to $A'$ via:
+      <p>If we change the basis of $V$ from $B$ to $B'$, the vector $v$ doesn't change, but its coordinates do.
+      <br>Let $P = [\mathrm{Id}]_{B \leftarrow B'}$ be the change-of-basis matrix. It maps new coordinates to old: $[v]_B = P [v]_{B'}$.
+      <br>Suppose $A$ represents $T$ in basis $B$ (so $[T(v)]_B = A [v]_B$) and $A'$ represents $T$ in basis $B'$.
+      <br>We can derive $A'$ by tracking the coordinates:
+      $$ [T(v)]_{B'} = P^{-1} [T(v)]_B = P^{-1} (A [v]_B) = P^{-1} A (P [v]_{B'}) = (P^{-1} A P) [v]_{B'} $$
+      Thus:
       $$ A' = P^{-1} A P $$
       This relation is called <b>Similarity</b>.
-      <br><b>Key Insight:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems. Thus, they share all intrinsic properties: Rank, Determinant, Trace, and <b>Eigenvalues</b>.</p>
+      <br><b>Key Insight:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems. Thus, they share all intrinsic properties (invariants):
+      <ul>
+        <li><b>Rank:</b> Dimension of the image.</li>
+        <li><b>Determinant & Trace:</b> Coefficients of characteristic polynomial.</li>
+        <li><b>Eigenvalues:</b> Roots of $\det(A-\lambda I)=0$.</li>
+      </ul>
+      </p>
     </section>
 
     <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->
@@ -259,8 +269,15 @@
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b>
       <br>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$.
       <br>Equivalently, $\mathbf{v} \in \ker(A - \lambda I)$. Thus, eigenvalues are roots of $\det(A - \lambda I) = 0$.
-      <br><b>Diagonalization:</b> A matrix $A$ is diagonalizable ($A = PDP^{-1}$) if there exists a basis of eigenvectors. This happens if and only if for every eigenvalue $\lambda$, the geometric multiplicity ($g_\lambda = \dim \ker(A-\lambda I)$) equals the algebraic multiplicity ($m_\lambda$).
-      <br><i>Meaning:</i> If diagonalizable, the map decouples into 1D scalar actions. $A^k = PD^kP^{-1}$.</p>
+
+      <div class="theorem-box">
+        <h4>Diagonalization Criterion</h4>
+        <p>A matrix $A \in \mathbb{R}^{n \times n}$ is <b>diagonalizable</b> (similar to a diagonal matrix) if and only if there exists a basis of $V$ consisting of eigenvectors.
+        <br>This happens iff for every eigenvalue $\lambda$:
+        $$ \underbrace{\dim \ker(A-\lambda I)}_{\text{Geometric Multiplicity } g_\lambda} = \underbrace{\text{mult}_\lambda(p_A)}_{\text{Algebraic Multiplicity } m_\lambda} $$
+        and $\sum g_\lambda = n$.
+        <br><i>Meaning:</i> If diagonalizable, the map decouples into $n$ independent 1D scalar actions. $A = PDP^{-1} \implies A^k = PD^kP^{-1}$.</p>
+      </div>
 
       <h3>4.2 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
@@ -272,25 +289,34 @@
       </p>
 
       <div class="proof-box">
-        <h4>Proof: Why are eigenspaces orthogonal?</h4>
-        <p>Let $Av = \lambda v$ and $Aw = \mu w$ with $\lambda \ne \mu$.
-        <br>Compute inner product $\langle Av, w \rangle$.
-        <br>1. $\langle Av, w \rangle = \lambda \langle v, w \rangle$.
-        <br>2. $\langle Av, w \rangle = \langle v, A^\top w \rangle = \langle v, Aw \rangle = \mu \langle v, w \rangle$.
+        <h4>Proof: Why is the spectrum real and orthogonal?</h4>
+        <p><b>1. Reality of Eigenvalues:</b>
+        Let $\lambda$ be an eigenvalue and $v$ a corresponding eigenvector (possibly complex).
+        $$ \lambda \langle v,v \rangle = \langle \lambda v, v \rangle = \langle Av, v \rangle = v^* A v $$
+        Taking the conjugate transpose (Hermitian) of the scalar $v^* A v$:
+        $$ (v^* A v)^* = v^* A^* v = v^* A v \quad (\text{since } A \text{ is real symmetric}) $$
+        Thus $v^* A v$ is real. Since $\langle v, v \rangle > 0$ is real, $\lambda$ must be real.
+        <br><br>
+        <b>2. Orthogonality of Eigenspaces:</b>
+        Let $Av = \lambda v$ and $Aw = \mu w$ with $\lambda \ne \mu$.
+        Compute inner product $\langle Av, w \rangle$.
+        <br>• $\langle Av, w \rangle = \lambda \langle v, w \rangle$.
+        <br>• $\langle Av, w \rangle = \langle v, A^\top w \rangle = \langle v, Aw \rangle = \mu \langle v, w \rangle$.
         <br>Subtracting gives $(\lambda - \mu)\langle v, w \rangle = 0$. Since $\lambda \ne \mu$, we must have $\langle v, w \rangle = 0$.
         <br><b>Conclusion:</b> Symmetric matrices represent a pure stretch along perpendicular axes. No shearing. This makes them the "perfect" matrices for optimization (Hessians).</p>
       </div>
 
       <h3>4.3 Jordan Canonical Form: The Defective Reality</h3>
-      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It cannot be decoupled into scalar actions. Instead, it decomposes into <b>Jordan Blocks</b>:
-      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} $$
+      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It implies there are not enough eigenvectors to span the space.
+      <br>However, we can always complete the basis using <b>generalized eigenvectors</b>: vectors $\mathbf{v}$ such that $(A-\lambda I)^k \mathbf{v} = 0$.
+      <br>This leads to the <b>Jordan Canonical Form</b> $A = P J P^{-1}$, where $J$ contains <b>Jordan Blocks</b> on the diagonal:
+      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} = \lambda I + N $$
       <br><b>Structure:</b>
       <ul>
-        <li><b>Diagonal ($\lambda I$):</b> The scaling part.</li>
-        <li><b>Superdiagonal ($N$):</b> The "nilpotent drift" or coupling part.</li>
+        <li><b>Diagonal ($\lambda I$):</b> Pure scaling.</li>
+        <li><b>Superdiagonal ($N$):</b> Nilpotent "drift" ($N^k=0$). This represents the intrinsic coupling of dimensions that no basis change can remove.</li>
       </ul>
-      <b>Jordan Chains:</b> Missing eigenvectors are replaced by generalized eigenvectors where $(A-\lambda I)v_{k} = v_{k-1}$.
-      <br><b>Why it matters:</b> It classifies all matrices up to similarity. It shows that non-diagonalizability corresponds to "coupling" that cannot be removed by basis change.</p>
+      <b>Dynamics:</b> $J_k(\lambda)^t$ contains terms like $t \lambda^{t-1}$ (polynomial growth), which explains transient instability even in stable systems.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:

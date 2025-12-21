@@ -173,6 +173,16 @@
       $$ \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i \iff \sum (\alpha_i - \beta_i) \mathbf{v}_i = 0 $$
       Thus, <b>Independence $\iff$ Uniqueness of Representation</b>. Once you choose independent vectors as building blocks, every vector in their span has a unique recipe (coordinates).</p>
 
+      <div class="proof-box">
+        <h4>Proposition: Independence gives Uniqueness</h4>
+        <p>If vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ are linearly independent, then every vector $\mathbf{w}$ in their span has a <b>unique</b> representation.
+        <br><i>Proof:</i> Suppose $\mathbf{w} = \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i$.
+        Subtracting gives $\sum (\alpha_i - \beta_i)\mathbf{v}_i = 0$.
+        By independence, all coefficients must be zero: $\alpha_i - \beta_i = 0 \implies \alpha_i = \beta_i$.
+        <br>Conversely, if uniqueness holds, then $\mathbf{0}$ has only the trivial representation ($\sum 0\mathbf{v}_i$), which implies independence.
+        </p>
+      </div>
+
       <div class="theorem-box">
         <h4>Theorem: Independence $\iff$ No Redundancy</h4>
         <p>A set of vectors is linearly independent if and only if <b>no vector in the set lies in the span of the others</b>.
@@ -200,24 +210,41 @@
 
       <h4>The "Basis Determines Everything" Principle</h4>
       <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
-      <br>For any $v = \sum c_i b_i$, we have $T(v) = \sum c_i T(b_i)$.
-      <br>This is why matrices exist: they are simply the bookkeeping tables recording the coordinates of the images of basis vectors.</p>
+      <br>For any $v \in V$, there are unique coefficients $c_i$ such that $v = \sum c_i b_i$. Linearity forces:
+      $$ T(v) = T\left(\sum c_i b_i\right) = \sum c_i T(b_i) $$
+      This theorem explains why matrices exist: once a basis is chosen, the map is completely determined by the $n$ vectors $T(b_1), \dots, T(b_n)$.</p>
 
       <h4>Canonical Examples</h4>
       <ul>
         <li><b>Matrix Multiplication:</b> $T(\mathbf{x}) = A\mathbf{x}$. Linearity follows from distributivity of matrix algebra.</li>
-        <li><b>Differentiation:</b> $T(f) = f'$. Since $(f+g)' = f' + g'$ and $(cf)' = cf'$, differentiation is a linear map on the vector space of smooth functions.</li>
+        <li><b>Differentiation:</b> $T(f) = f'$. Since $(f+g)' = f' + g'$ and $(cf)' = cf'$, differentiation is a linear map.</li>
         <li><b>Integration:</b> $T(f) = \int_a^b f(x) dx$ is a linear functional.</li>
-        <li><b>NOT Linear:</b> $T(x) = x+1$ (fails $T(0)=0$), $T(x) = |x|$ (fails additivity), $T(x) = x^2$ (fails homogeneity).</li>
+        <li><b>NOT Linear:</b> $T(x) = x+1$ (Affine, fails $T(0)=0$), $T(x) = |x|$ (fails additivity), $T(x) = x^2$ (fails homogeneity).</li>
       </ul>
 
       <h3>1.7 Matrix Algebra from Linear Maps</h3>
-      <p>Why do we multiply matrices using the "row-by-column" rule? It is not an arbitrary convention; it is forced by the geometry of linear maps.</p>
+      <p>Why do matrices exist? They are not primary objects; they are <b>coordinate representations</b> of linear maps.
+      <br>Let $V$ be a vector space with basis $B = \{b_1,\dots,b_n\}$ and $W$ be a vector space with basis $C = \{c_1,\dots,c_m\}$.
+      <br>For a linear map $T: V \to W$, we want a matrix $A$ that transforms coordinates in $B$ to coordinates in $C$:
+      $$ [T(v)]_C = A [v]_B $$
+      This leads to the constructive definition of a matrix:</p>
 
-      <h4>Composition corresponds to Matrix Multiplication</h4>
-      <p>If $S: U \to V$ and $T: V \to W$ are linear maps represented by matrices $A$ and $B$, then the composition $T \circ S$ is represented by the product $BA$.
-      $$ (BA)\mathbf{x} = B(A\mathbf{x}) $$
-      The entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ is simply the algebraic consequence of tracking coordinates through this composition.
+      <div class="insight">
+        <h4>Construction of the Matrix</h4>
+        <p><b>The $j$-th column of the matrix $A$ is the coordinate vector of the image of the $j$-th basis vector.</b>
+        $$ \text{Column } j = [T(b_j)]_C $$
+        <br><i>Why this works:</i>
+        $$ T(v) = T\left(\sum x_j b_j\right) = \sum x_j T(b_j) $$
+        Taking coordinates in $C$:
+        $$ [T(v)]_C = \sum x_j [T(b_j)]_C = \sum x_j (\text{Column } j) $$
+        This is exactly the definition of matrix-vector multiplication: a linear combination of columns.</p>
+      </div>
+
+      <h4>Composition = Matrix Multiplication</h4>
+      <p>Why do we multiply matrices using the "row-by-column" rule? It is forced by the composition of linear maps.
+      <br>If $S: U \to V$ (Matrix $A$) and $T: V \to W$ (Matrix $B$), then $T \circ S$ corresponds to $BA$.
+      $$ [T(S(u))]_D = B [S(u)]_C = B (A [u]_B) = (BA) [u]_B $$
+      We derive the entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ not as a definition, but as the inevitable algebraic consequence of tracking these coordinates.
       <br><b>Consequences:</b>
       <ul>
         <li><b>Associativity:</b> Matrix multiplication is associative ($(AB)C = A(BC)$) because function composition is associative.</li>
@@ -246,10 +273,20 @@
       </div>
 
       <h4>(B) Dimension: The Invariant Number</h4>
-      <p>A vector space can have infinitely many different bases (e.g., standard axis vs. rotated axis). However, a deep structural theorem ensures they all share one property.</p>
-      <p><b>Dimension Theorem:</b> All bases of a finite-dimensional vector space have the <b>same number of elements</b>. This number is the <b>dimension</b> of $V$, denoted $\dim(V)$.</p>
+      <p>A vector space can have infinitely many different bases. However, a deep structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
 
-      <p><b>Why this matters:</b> Dimension is the intrinsic "number of degrees of freedom" of the space. It is robust to coordinate changes.
+      <div class="proof-box">
+        <h4>The Exchange Lemma (Steinitz)</h4>
+        <p>This is the engine behind dimension.
+        <br><b>Lemma:</b> If $L$ is a linearly independent set and $S$ is a spanning set of $V$, then $|L| \le |S|$.
+        <br><i>Intuition:</i> You cannot "squeeze" more independent degrees of freedom into a space than the number of generators available.
+        <br><i>Proof Sketch:</i> Start with the spanning set $S$. Take an element $v_1 \in L$. Since $S$ spans, $v_1$ uses some vector in $S$. Swap that vector out for $v_1$. Repeat for all vectors in $L$. Since they are independent, each step consumes a new vector from $S$. Thus, you must run out of $L$ before (or when) you run out of $S$.</p>
+      </div>
+
+      <p><b>Dimension Theorem:</b> All bases of a finite-dimensional vector space have the same number of elements.
+      <br><i>Proof:</i> If $B_1, B_2$ are bases, $B_1$ spans and $B_2$ is independent $\implies |B_2| \le |B_1|$. Swap roles $\implies |B_1| \le |B_2|$. Thus $|B_1|=|B_2|$.</p>
+
+      <p><b>Why this matters:</b> Dimension is the intrinsic "number of degrees of freedom".
       <ul>
         <li><b>Maximal Independence:</b> You cannot have more than $\dim(V)$ independent vectors.</li>
         <li><b>Minimal Spanning:</b> You cannot span $V$ with fewer than $\dim(V)$ vectors.</li>
@@ -282,9 +319,14 @@
       <div class="theorem-box">
         <h4>Fundamental Equivalence</h4>
         <p>$$ T(\mathbf{u}) = T(\mathbf{v}) \iff \mathbf{u} - \mathbf{v} \in \mathcal{N}(T) $$
-        <br><b>Injectivity:</b> A map is injective (one-to-one) if and only if $\mathcal{N}(T) = \{0\}$.
-        <br><b>Surjectivity:</b> A map is surjective (onto) if and only if $\mathcal{R}(A) = \mathbb{R}^m$.
         <br><b>Structure of Solutions:</b> If $A\mathbf{x}_p = \mathbf{b}$, then the set of <i>all</i> solutions is the affine set $\mathbf{x}_p + \mathcal{N}(A)$.</p>
+
+        <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
+        <p>A linear map is injective (one-to-one) if and only if its kernel contains only the zero vector.
+        <br><i>Proof:</i>
+        <br>($\Rightarrow$) Assume injective. Since $T(0)=0$, if $v \in \mathcal{N}(T)$ then $T(v)=0=T(0)$, so $v=0$.
+        <br>($\Leftarrow$) Assume $\mathcal{N}(T)=\{0\}$. If $T(u)=T(v)$, then $T(u-v)=0$, so $u-v \in \mathcal{N}(T)$. Thus $u-v=0 \implies u=v$.
+        </p>
       </div>
 
       <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>

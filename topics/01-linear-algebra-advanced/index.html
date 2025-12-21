@@ -62,56 +62,64 @@
     <!-- SECTION 1: ABSTRACT VECTOR SPACES -->
     <section class="section-card" id="section-vector-spaces">
       <h2>1. Abstract Vector Spaces</h2>
-      <p>In Lecture 00, we worked with $\mathbb{R}^n$. Here we strip away the coordinates to reveal the underlying structure.
-      <br><b>Definition:</b> A <b>Vector Space</b> over a field $\mathbb{F}$ is a set $V$ equipped with addition ($+$) and scalar multiplication ($\cdot$) satisfying the following axioms for all $u,v,w \in V$ and $\alpha, \beta \in \mathbb{F}$:</p>
+      <p>In Lecture 00, we worked with $\mathbb{R}^n$, where vectors were tuples. Here we abstract that away. A <b>Vector Space</b> is defined not by what vectors <i>are</i>, but by what you can <i>do</i> with them.</p>
 
-      <h4>The 8 Axioms</h4>
+      <h3>1.1 The Axiomatic Definition</h3>
+      <p>A vector space over a field $\mathbb{F}$ is a set $V$ equipped with two operations—addition ($+$) and scalar multiplication ($\cdot$)—that satisfy the following axioms for all $u,v,w \in V$ and $\alpha, \beta \in \mathbb{F}$:</p>
+
       <ul>
-        <li><b>Additivity (Abelian Group):</b>
+        <li><b>Additivity ($V$ is an Abelian Group):</b>
           <ul>
-            <li>Closure: $u+v \in V$.</li>
-            <li>Associativity: $(u+v)+w = u+(v+w)$.</li>
-            <li>Commutativity: $u+v = v+u$.</li>
-            <li>Identity: $\exists 0 \in V$ such that $v+0=v$.</li>
-            <li>Inverses: $\forall v, \exists -v$ such that $v+(-v)=0$.</li>
+            <li><b>Closure:</b> $u+v \in V$.</li>
+            <li><b>Associativity & Commutativity:</b> $(u+v)+w = u+(v+w)$ and $u+v = v+u$.</li>
+            <li><b>Identity:</b> There exists a unique $\mathbf{0} \in V$ such that $v+\mathbf{0}=v$.</li>
+            <li><b>Inverses:</b> For every $v$, there exists a unique $-v$ such that $v+(-v)=\mathbf{0}$.</li>
           </ul>
         </li>
-        <li><b>Scalar Multiplication:</b>
+        <li><b>Scalar Structure:</b>
           <ul>
-            <li>Closure: $\alpha v \in V$.</li>
-            <li>Compatibility: $\alpha(\beta v) = (\alpha\beta)v$.</li>
-            <li>Identity: $1v = v$.</li>
+            <li><b>Compatibility:</b> $\alpha(\beta v) = (\alpha\beta)v$. (Scaling twice matches multiplying scalars).</li>
+            <li><b>Identity:</b> $1 \cdot v = v$. (Scaling by 1 does nothing).</li>
           </ul>
         </li>
-        <li><b>Distributivity:</b> $\alpha(u+v) = \alpha u + \alpha v$ and $(\alpha+\beta)u = \alpha u + \beta u$.</li>
+        <li><b>Distributivity (Linearity):</b>
+          <ul>
+            <li>$\alpha(u+v) = \alpha u + \alpha v$ (Distributes over vector sum).</li>
+            <li>$(\alpha+\beta)u = \alpha u + \beta u$ (Distributes over scalar sum).</li>
+          </ul>
+        </li>
       </ul>
-      <p><b>Immediate Consequences:</b> $0v = \mathbf{0}$, $(-1)v = -v$, and the zero vector is unique.</p>
 
-      <h3>1.1 Subspaces: "Closed Worlds"</h3>
-      <p>A subset $W \subseteq V$ is a <b>subspace</b> if it is a vector space in its own right (under the same operations).
-      <br><b>The Subspace Test (Crucial):</b> A nonempty subset $W$ is a subspace if and only if it is closed under linear combinations:
+      <p><b>Immediate Theorems:</b> From these 8 axioms, we rigorously prove everything else.
+      <br>1. $\mathbf{0}$ is unique.
+      <br>2. $0 \cdot v = \mathbf{0}$. (Proof: $0v = (0+0)v = 0v + 0v \implies \mathbf{0} = 0v$).
+      <br>3. $(-1)v = -v$. (Proof: $v + (-1)v = 1v + (-1)v = (1-1)v = 0v = \mathbf{0}$).</p>
+
+      <h3>1.2 Subspaces: "Closed Worlds"</h3>
+      <p>The most important subsets in linear algebra are those that inherit the linear structure. A subset $W \subseteq V$ is a <b>subspace</b> if it is a self-contained linear universe.</p>
+
+      <h4>The One-Line Subspace Test</h4>
+      <p>A nonempty subset $W$ is a subspace if and only if it is closed under linear combinations:
       $$ \forall u,v \in W, \alpha, \beta \in \mathbb{F} \implies \alpha u + \beta v \in W $$
-      This condenses to checking:
-      1. $0 \in W$.
-      2. Closed under addition.
-      3. Closed under scaling.
+      This implies $W$ contains $\mathbf{0}$, is closed under addition, and is closed under scaling.</p>
+
+      <h4>Fundamental Subspaces</h4>
+      <ul>
+        <li><b>Intersection:</b> $\bigcap W_i$ is always a subspace. (The "AND" of linear constraints).</li>
+        <li><b>Sum:</b> $U + W = \{u+w \mid u \in U, w \in W\}$ is a subspace. It is the "smallest closed world" containing both.</li>
+        <li><b>Direct Sum:</b> If $U \cap W = \{0\}$, then every element in $U+W$ has a <i>unique</i> representation. We write $U \oplus W$.</li>
+      </ul>
+
+      <h3>1.3 Span: The Closure Operator</h3>
+      <p>The <b>span</b> of a set $S$, denoted $\mathrm{span}(S)$, is the set of all <i>finite</i> linear combinations of vectors in $S$.
+      $$ \mathrm{span}(S) = \left\{ \sum_{i=1}^k \alpha_i v_i \;\middle|\; v_i \in S, \alpha_i \in \mathbb{F}, k \in \mathbb{N} \right\} $$
+      <b>Theorem:</b> $\mathrm{span}(S)$ is the smallest subspace containing $S$.
+      <br><i>Proof:</i>
+      1. It is a subspace (closed under combinations).
+      2. Any subspace containing $S$ must containing all linear combinations of $S$.
       </p>
 
-      <h4>Algebra of Subspaces</h4>
-      <p><b>Intersection:</b> If $U, W$ are subspaces, then $U \cap W$ is a subspace. (Proof: Limits of closed sets are closed).
-      <br><b>Sum:</b> $U + W = \{u+w \mid u \in U, w \in W\}$ is the smallest subspace containing both.
-      <br><b>Affine Subspaces:</b> Sets of the form $x_0 + W$ (solutions to $Ax=b$). They do not contain 0 (unless $x_0 \in W$) and are not subspaces.</p>
-
-      <h3>1.2 Span and Generating Sets</h3>
-      <p>The <b>span</b> of a set $S$, denoted $\mathrm{span}(S)$, is the set of all <i>finite</i> linear combinations of vectors in $S$.
-      <br><b>Span as Intersection:</b> $\mathrm{span}(S) = \bigcap \{W \le V \mid S \subseteq W\}$. It is the "smallest closed world" containing $S$.
-      <br><b>Closure Operator Properties:</b>
-      <ul>
-        <li>Extensive: $S \subseteq \mathrm{span}(S)$.</li>
-        <li>Monotone: $S \subseteq T \implies \mathrm{span}(S) \subseteq \mathrm{span}(T)$.</li>
-        <li>Idempotent: $\mathrm{span}(\mathrm{span}(S)) = \mathrm{span}(S)$.</li>
-      </ul>
-      <p><b>Redundancy:</b> A vector $v \in S$ is redundant if $v \in \mathrm{span}(S \setminus \{v\})$. Removing it does not change the span.</p>
+      <p><b>Solvability:</b> Asking "Does $Ax=b$ have a solution?" is equivalent to "Is $b \in \mathrm{span}(\text{columns of } A)$?". Span translates existence problems into geometric containment problems.</p>
 
       <h3>1.3 Linear Maps (Structure-Preserving Functions)</h3>
       <p>A function $T: V \to W$ is a <b>Linear Map</b> if it preserves the vector space operations:
@@ -124,35 +132,59 @@
     <section class="section-card" id="section-bases">
       <h2>2. Bases, Coordinates, and Dimension</h2>
 
-      <h3>2.1 Linear Independence</h3>
-      <p><b>Definition:</b> A finite set of vectors $\{v_1, \dots, v_k\}$ is <b>linearly independent</b> if the only solution to $\sum \alpha_i v_i = 0$ is the trivial solution $\alpha_1 = \dots = \alpha_k = 0$.
-      <br><b>The Redundancy Theorem:</b> A set is dependent if and only if one vector is in the span of the others.
-      $$ \text{Dependent} \iff \exists j \text{ s.t. } v_j \in \mathrm{span}(\{v_i\}_{i \neq j}) $$
-      This connects algebra (coefficients) to geometry (span inclusion).</p>
+      <p>Up to now, we have "generated" subspaces via Span. However, spans are wasteful: they can contain redundant vectors. This section is about <b>minimal</b> representations.
+      <br>The key questions are:
+      1. When does a set have <i>no redundancy</i>? (Independence)
+      2. When does a set provide <i>unique coordinates</i>? (Basis)
+      3. Is the "number of degrees of freedom" well-defined? (Dimension)</p>
 
-      <h3>2.2 Basis and the Coordinate Theorem</h3>
-      <p><b>Definition:</b> A set $B$ is a <b>basis</b> if it 1) Spans $V$ and 2) Is Linearly Independent.
-      <br><b>Theorem (Coordinates):</b> If $B$ is a basis, every $v \in V$ has a <b>unique</b> representation $v = \sum c_i b_i$.
-      <br><i>Proof:</i> Existence comes from Spanning. Uniqueness comes from Independence (difference of two representations would be a non-trivial zero sum).</p>
+      <h3>2.1 Linear Independence: The "No Redundancy" Condition</h3>
+      <p><b>Definition:</b> A finite set of vectors $\{v_1, \dots, v_k\}$ is <b>linearly independent</b> if the only linear combination that sums to zero is the trivial one:
+      $$ \sum_{i=1}^k \alpha_i v_i = 0 \implies \alpha_1 = \dots = \alpha_k = 0 $$
+
+      <h4>The Redundancy Theorem</h4>
+      <p>Linear independence is equivalent to saying "no vector is redundant".
+      <br><b>Theorem:</b> A set is linearly dependent if and only if there exists some index $j$ such that $v_j \in \mathrm{span}(\{v_i\}_{i \neq j})$.
+      <br><i>Proof:</i>
+      <br>($\Rightarrow$) If $\sum \alpha_i v_i = 0$ with $\alpha_j \neq 0$, then $v_j = -\sum_{i \ne j} (\alpha_i/\alpha_j) v_i$.
+      <br>($\Leftarrow$) If $v_j = \sum_{i \ne j} c_i v_i$, then $1v_j - \sum c_i v_i = 0$ is a non-trivial relation.</p>
+
+      <h3>2.2 Basis: Existence and Uniqueness of Coordinates</h3>
+      <p>A <b>Basis</b> is a set $\mathcal{B}$ that is both:
+      1. <b>Spanning:</b> $\mathrm{span}(\mathcal{B}) = V$ (Existence of representation).
+      2. <b>Independent:</b> No redundancy (Uniqueness of representation).
+      </p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Unique Coordinates</h4>
+        <p>A set $\mathcal{B} = \{b_1, \dots, b_n\}$ is a basis for $V$ if and only if every vector $v \in V$ can be written <b>uniquely</b> as a linear combination of $\mathcal{B}$.
+        <br><i>Why?</i> Spanning guarantees existence. Independence guarantees uniqueness (if $v$ had two representations, their difference would be a non-trivial zero sum).</p>
+      </div>
 
       <h3>2.3 Dimension and the Steinitz Exchange Lemma</h3>
-      <p><b>Dimension:</b> $\dim(V)$ is the size of any basis. But is this well-defined?
-      <br><b>Theorem:</b> All bases of a finite-dimensional vector space have the same number of elements.
-      <br>This relies on the <b>Steinitz Exchange Lemma</b> (The "replacement principle"):</p>
+      <p>We define $\dim(V)$ as the number of vectors in a basis. But how do we know all bases have the same size? This is a deep theorem relying on the <b>Exchange Lemma</b>.</p>
 
       <div class="proof-box">
         <h4>Lemma: Steinitz Exchange</h4>
-        <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is independent, then $k \le m$. Furthermore, we can replace $k$ vectors of $S$ with $L$ to form a new spanning set.</p>
-        <p><i>Proof Sketch:</i>
-        Start with $S$. Inject $\ell_1$. Since $S$ spans, $\ell_1$ is a combo of $S$. Since $\ell_1 \neq 0$, some coefficient is non-zero. Swap that $s_i$ out.
-        Repeat $k$ times. If we run out of $s$ vectors ($m < k$), then $\ell_{m+1}$ would be in the span of $\ell_1 \dots \ell_m$, contradicting independence.
-        Thus $k \le m$.</p>
+        <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is linearly independent in $V$, then:
+        <br>1. <b>$k \le m$</b> (Independent sets cannot be larger than spanning sets).
+        <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
+        <p><i>Proof Idea:</i> Iteratively inject $\ell_i$ into the set and eject a redundant $s_j$. Since $\ell_i$ is independent of previous $\ell$'s, it must depend on at least one remaining $s$, so we never run out of candidates to swap as long as $i \le m$. If $k > m$, we would run out of $s$'s while $\ell$'s remain, contradicting independence.</p>
       </div>
 
-      <p><b>Consequences:</b>
-      1. Any independent set can be extended to a basis.
-      2. Any spanning set can be shrunk to a basis.
-      3. $\dim(W) \le \dim(V)$ for subspaces.</p>
+      <h4>The Dimension Theorem</h4>
+      <p>All bases of a finite-dimensional vector space have the same cardinality.
+      <br><i>Proof:</i> Let $B_1$ (size $n$) and $B_2$ (size $m$) be bases.
+      <br>Since $B_1$ spans and $B_2$ is independent, $m \le n$.
+      <br>Since $B_2$ spans and $B_1$ is independent, $n \le m$.
+      <br>Thus $n=m$. This common number is the <b>Dimension</b>.</p>
+
+      <h4>Fundamental Algorithm Theorems</h4>
+      <ul>
+        <li><b>Basis Extension:</b> Any independent set can be extended to a basis.</li>
+        <li><b>Basis Reduction:</b> Any spanning set can be reduced to a basis.</li>
+        <li><b>Subspace Dimension:</b> If $W \le V$, then $\dim(W) \le \dim(V)$, with equality iff $W=V$.</li>
+      </ul>
 
       <h3>2.4 Change of Basis</h3>
       <p>Let $B$ and $C$ be two bases. The coordinates change via a matrix $P$: $[\mathbf{v}]_C = P [\mathbf{v}]_B$.

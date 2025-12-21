@@ -61,56 +61,37 @@
 
     <!-- SECTION 1: NOTATION -->
     <section class="section-card" id="section-notation">
-      <h2>1. Mathematical Atoms: Sets, Functions, and Combinations</h2>
+      <h2>1. Mathematical Atoms: From Fields to Functions</h2>
 
       <h3>1.1 The Geometric "Atoms" of Optimization</h3>
-      <p>In convex optimization, we view algebraic problems through a geometric lens. Throughout this course, you will repeatedly perform three fundamental operations. Recognizing these "atoms" allows you to parse complex problems into simple, manageable geometric components:</p>
+      <p>In convex optimization, we view algebraic problems through a geometric lens. Throughout this course, you will repeatedly perform three fundamental operations:</p>
       <ol>
-        <li><b>Mixing (Convex Combinations):</b> Optimization often involves "averaging" or interpolating between candidate solutions.
-          <br><i>Example:</i> In a portfolio optimization problem, if you have two valid asset allocations, any weighted average of them is also a valid allocation. This operation of "mixing" defines the geometry of <b>convex sets</b>.</li>
+        <li><b>Mixing (Combinations):</b> Optimization often involves "averaging" or interpolating between candidate solutions.
+          <br><i>Example:</i> A portfolio is a weighted mix of assets. The rules for these weights (sum to 1? non-negative?) determine whether we are working with <b>subspaces</b>, <b>affine sets</b>, or <b>convex sets</b>.</li>
         <li><b>Measuring (Norms & Inner Products):</b> We need precise tools to quantify "error" and "similarity".
-          <br><i>Example:</i> The objective function often measures the size of the residual vector (how far is our prediction from the data?). <b>Norms</b> act as rulers to measure these lengths, while <b>inner products</b> act as protractors to measure angles (e.g., is the gradient pointing towards the optimum?).</li>
-        <li><b>Pullback (Preimages):</b> Constraints are typically defined by functions, such as $g(\mathbf{x}) \le 0$. This defines a set implicitly: the set of all $\mathbf{x}$ that map to non-positive values.
-          <br><i>Example:</i> Understanding constraints as <b>preimages</b> ($\mathbf{g}^{-1}((-\infty, 0])$) allows us to deduce the shape of the feasible region directly from the properties of the function $\mathbf{g}$.</li>
+          <br><i>Example:</i> The objective function minimizes a residual vector. <b>Norms</b> measure lengths (error size), while <b>inner products</b> measure angles (alignment).</li>
+        <li><b>Pullback (Preimages):</b> Constraints $g(\mathbf{x}) \le 0$ define sets implicitly.
+          <br><i>Example:</i> Understanding constraints as <b>preimages</b> allows us to deduce the shape of the feasible region directly from the properties of the function $\mathbf{g}$.</li>
       </ol>
-      <p>Understanding these three operations transforms optimization from abstract symbol manipulation into concrete geometric reasoning.</p>
 
-      <h3>1.2 Preliminaries: Lines and Line Segments</h3>
-      <p>We work in the vector space $\mathbb{R}^n$ equipped with the standard inner product $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$ and the induced Euclidean norm $\|\mathbf{x}\|_2 = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}$. Geometric objects like lines and segments are the building blocks of convexity.</p>
-
-      <h4>Line through two points</h4>
-      <p>Given two distinct points $\mathbf{x}_1, \mathbf{x}_2 \in \mathbb{R}^n$, the <b>line</b> passing through them is the set of all affine combinations of these points:</p>
-      $$
-      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2 = \mathbf{x}_2 + \theta(\mathbf{x}_1 - \mathbf{x}_2), \quad \theta \in \mathbb{R}
-      $$
-      <p>As $\theta$ varies over $\mathbb{R}$, $\mathbf{y}$ traces out the infinite line passing through $\mathbf{x}_2$ in the direction of $\mathbf{x}_1 - \mathbf{x}_2$. The value $\theta=0$ corresponds to $\mathbf{x}_2$, and $\theta=1$ corresponds to $\mathbf{x}_1$.</p>
-
-      <h4>Line segment between two points</h4>
-      <p>The <b>line segment</b> connecting $\mathbf{x}_1$ and $\mathbf{x}_2$, denoted $[\mathbf{x}_1, \mathbf{x}_2]$, corresponds to restricting the parameter $\theta$ to the unit interval $[0, 1]$:</p>
-      $$
-      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \quad 0 \le \theta \le 1
-      $$
-      <p>This parametrization is the definition of a <b>convex combination</b> of two points. Intuitively, a convex combination is a "weighted average" that lies physically between the points. If you imagine a mass at $\mathbf{x}_1$ and a mass at $\mathbf{x}_2$, the point $\mathbf{y}$ is the center of mass when the weights are $\theta$ and $1-\theta$. A set is defined to be <b>convex</b> if and only if it contains the entire line segment between any pair of its points.</p>
-
-      <figure style="text-align: center;">
-        <img src="assets/line-vs-segment.png"
-             alt="Comparison of a line segment (blue) versus the infinite line (grey) passing through two points"
-             style="max-width: 60%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 2:</i> The line segment (solid blue, $0 \le \theta \le 1$) is a subset of the infinite affine line (dashed grey, $\theta \in \mathbb{R}$).</figcaption>
-      </figure>
-
-      <h3>1.3 Scalars, Vectors, and Matrices</h3>
+      <h3>1.2 Scalars and Fields: The Rulebook</h3>
+      <p>Before defining vectors, we must specify the number system for our coefficients (scalars). A <b>field</b> $\mathbb{F}$ is a set equipped with addition and multiplication that satisfy the familiar rules of arithmetic (associativity, commutativity, distributivity, identities, and inverses).</p>
+      <p>Crucially, a field must allow <b>division by non-zero elements</b>. This is why we can solve linear equations.</p>
       <ul>
-        <li><b>Scalars:</b> Real numbers $a \in \mathbb{R}$.</li>
-        <li><b>Vectors:</b> A vector $\mathbf{x} \in \mathbb{R}^n$ is formally a function $\{1,\dots,n\} \to \mathbb{R}$. We represent it as an ordered $n$-tuple (column vector).
-          <br><i>Equality:</i> $\mathbf{x} = \mathbf{y} \iff x_i = y_i$ for all $i$.
-        </li>
-        <li><b>Matrices:</b> $A \in \mathbb{R}^{m \times n}$.
-          <br><i>Matrix-Vector Product:</i> The definition $(A\mathbf{x})_i = \sum_{j=1}^n A_{ij} x_j$ is chosen specifically to enforce <b>linearity</b>: $A(\alpha \mathbf{x} + \beta \mathbf{y}) = \alpha A\mathbf{x} + \beta A\mathbf{y}$.
-          <br><i>Column View:</i> $A\mathbf{x} = \sum_{j=1}^n x_j A_{:j}$. $A\mathbf{x}$ is a linear combination of the columns of $A$. This is the "synthesis" view: $A$ builds a new vector from its columns.
-          <br><i>Row View:</i> $(A\mathbf{x})_i = A_{i:}^\top \mathbf{x}$. The $i$-th entry is the dot product of the $i$-th row with $\mathbf{x}$. This is the "analysis" view: each row "measures" the input vector $\mathbf{x}$.
-        </li>
+        <li><b>$\mathbb{R}$ (Reals):</b> The standard field for optimization. Allows ordering ($a \le b$), which is essential for inequalities.</li>
+        <li><b>$\mathbb{C}$ (Complex):</b> Used in signal processing and spectral theory. Algebraically complete, but lacks a natural ordering compatible with field operations.</li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field (no multiplicative inverses). Linear algebra over $\mathbb{Z}$ (module theory) is far more complex and lacks concepts like "dimension" in the simple sense.</li>
       </ul>
+      <p><i>Why this matters:</i> When we perform Gaussian elimination or normalize a vector, we implicitly rely on the existence of multiplicative inverses ($a^{-1}$).</p>
+
+      <h3>1.3 The Concrete Vector Space $\mathbb{R}^n$</h3>
+      <p>We define the space $\mathbb{R}^n$ rigorously as the set of functions from indices $\{1,\dots,n\}$ to $\mathbb{R}$. We denote elements as ordered $n$-tuples (column vectors): $\mathbf{x} = (x_1, \dots, x_n)$.</p>
+      <p>Operations are defined component-wise, inheriting properties directly from the field $\mathbb{R}$:</p>
+      <ul>
+        <li><b>Vector Addition:</b> $(\mathbf{x} + \mathbf{y})_i = x_i + y_i$.</li>
+        <li><b>Scalar Multiplication:</b> $(\alpha \mathbf{x})_i = \alpha x_i$.</li>
+      </ul>
+      <p>This structure satisfies the axioms of a <b>Vector Space</b> (closure, associativity, distributivity, etc.), making $\mathbb{R}^n$ the canonical playground for linear algebra.</p>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
@@ -119,71 +100,85 @@
         <figcaption><i>Figure 1:</i> Matrix multiplication visualized—how rows and columns combine.</figcaption>
       </figure>
 
-      <h3>1.4 Functions and Preimages</h3>
-      <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps domain $\mathcal{X}$ to codomain $\mathcal{Y}$. The <b>range</b> (or image) is the set of actual outputs: $\mathrm{range}(f) = \{f(\mathbf{x}) : \mathbf{x} \in \mathcal{X}\} \subseteq \mathcal{Y}$.</p>
-
-      <h4>The Preimage Laws</h4>
-      <p>For a set $B \subseteq \mathcal{Y}$, the <b>preimage</b> is $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$. This exists even if $f$ is not invertible. Preimages respect all set operations perfectly:</p>
-      <div class="proof-box">
-        <h4>Proof: Preimage Laws</h4>
-        <div class="proof-step">
-          <strong>1. Union:</strong> $\mathbf{x} \in f^{-1}(A \cup B) \iff f(\mathbf{x}) \in A \cup B \iff f(\mathbf{x}) \in A \text{ or } f(\mathbf{x}) \in B \iff \mathbf{x} \in f^{-1}(A) \cup f^{-1}(B)$.
-        </div>
-        <div class="proof-step">
-          <strong>2. Intersection:</strong> Similarly, $f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B)$.
-        </div>
-        <div class="proof-step">
-          <strong>3. Complement:</strong> $f^{-1}(B^c) = (f^{-1}(B))^c$.
-          <br><i>Proof:</i> $\mathbf{x} \in f^{-1}(B^c) \iff f(\mathbf{x}) \notin B \iff \mathbf{x} \notin f^{-1}(B) \iff \mathbf{x} \in (f^{-1}(B))^c$.
-        </div>
-      </div>
-      <p><i>Why this matters:</i> Constraints like $g(\mathbf{x}) \le 0$ define the set $\mathbf{g}^{-1}((-\infty, 0])$. If $\mathbf{g}$ is convex, the preimage of the convex set $(-\infty, 0]$ is convex.</p>
+      <h3>1.4 Points vs. Vectors: Affine vs. Linear</h3>
+      <p>Although we often use coordinates for both, there is a fundamental conceptual distinction between "locations" and "displacements".</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Concept</th>
+            <th>Type</th>
+            <th>Operations Allowed</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Vector</b></td>
+            <td>Displacement</td>
+            <td>Add, Scale, Linear Combo</td>
+            <td>Velocity, Force, $x_1 - x_2$</td>
+          </tr>
+          <tr>
+            <td><b>Point</b></td>
+            <td>Location</td>
+            <td>Affine Combo, Subtract (yields vector)</td>
+            <td>Position, Solution to $Ax=b$</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><b>The Origin Trap:</b> Treating points as vectors implicitly assumes a distinguished origin $\mathbf{0}$.
+      <br><i>Affine Space:</i> A set of points where subtraction yields a vector. We can add a vector to a point to get a point ($\mathbf{p} + \mathbf{v} = \mathbf{q}$), but adding two points ($\mathbf{p} + \mathbf{q}$) is not geometrically meaningful unless we fix an origin.</p>
 
       <figure style="text-align: center;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
-             alt="Parallelogram law for vector addition"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
-        <figcaption><i>Figure 3:</i> The parallelogram law of vector addition, a geometric reflection of the algebraic properties of inner products.</figcaption>
+        <img src="assets/line-vs-segment.png"
+             alt="Comparison of a line segment (affine/convex) versus the infinite line (affine) passing through two points"
+             style="max-width: 60%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+        <figcaption><i>Figure 2:</i> The infinite line is an <b>affine set</b> (origin-independent). The segment is a <b>convex set</b>. The subspace spanned by the displacement is a <b>linear set</b> (through origin).</figcaption>
       </figure>
 
-      <h3>1.5 Combinations and Hulls</h3>
-      <p>Different rules for "mixing" vectors generate different geometric objects.</p>
+      <h3>1.5 Linear Combinations and Span</h3>
+      <p>The core operation of linear algebra is the <b>linear combination</b>:
+      $$ \mathbf{y} = c_1 \mathbf{v}_1 + \dots + c_k \mathbf{v}_k $$
+      The set of <i>all</i> possible linear combinations of a set of vectors $S$ is their <b>Span</b>.
+      <br>$\mathrm{span}(S)$ is the smallest <b>subspace</b> containing $S$. It represents all "directions" accessible from the origin using the vectors in $S$.</p>
+
+      <h4>Geometry of Combinations</h4>
+      <p>Restricting the coefficients $c_i$ creates different geometric objects:</p>
       <table class="data-table">
         <thead>
           <tr>
             <th>Type</th>
-            <th>Coefficients $\theta_i$</th>
-            <th>Generated Object</th>
+            <th>Constraint on $c_i$</th>
+            <th>Geometric Object</th>
+            <th>Invariant Under</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><b>Linear</b></td>
-            <td>Arbitrary</td>
-            <td><b>Subspace</b> (Span)</td>
+            <td>None</td>
+            <td><b>Subspace</b> (Line/Plane through $\mathbf{0}$)</td>
+            <td>Linear Maps</td>
           </tr>
           <tr>
             <td><b>Affine</b></td>
-            <td>$\sum \theta_i = 1$</td>
-            <td><b>Affine Set</b> (Line, Plane)</td>
+            <td>$\sum c_i = 1$</td>
+            <td><b>Affine Set</b> (Line/Plane, shifted)</td>
+            <td>Translation</td>
           </tr>
           <tr>
             <td><b>Convex</b></td>
-            <td>$\sum \theta_i = 1, \theta_i \ge 0$</td>
-            <td><b>Convex Set</b> (Polygon, Solid)</td>
+            <td>$\sum c_i = 1, c_i \ge 0$</td>
+            <td><b>Convex Hull</b> (Segment, Polygon)</td>
+            <td>Perspective</td>
           </tr>
         </tbody>
       </table>
 
-      <h4>Translation Invariance of Affine Combinations</h4>
-      <p>Affine combinations are "origin-independent". If $\mathbf{y} = \sum \theta_i x_i$ with $\sum \theta_i = 1$, then shifting all points by $\mathbf{v}$ shifts the result by $\mathbf{v}$:</p>
-      $$ \sum \theta_i (x_i + \mathbf{v}) = \sum \theta_i x_i + \left(\sum \theta_i\right) \mathbf{v} = \mathbf{y} + \mathbf{v} $$
-
-      <h4>The 2-Point Convex Hull is a Segment</h4>
-      <p>The set of convex combinations of $\mathbf{x}$ and $\mathbf{y}$ is $S = \{\theta \mathbf{x} + (1-\theta)\mathbf{y} : \theta \in [0, 1]\}$.
-      <br>This matches the geometric definition of the segment $[\mathbf{x}, \mathbf{y}]$: start at $\mathbf{y}$, move towards $\mathbf{x}$ by fraction $\theta$.
-      $$ \theta \mathbf{x} + (1-\theta)\mathbf{y} = \mathbf{y} + \theta(\mathbf{x}-\mathbf{y}) $$
-      A set is <b>convex</b> if it contains the line segment between any pair of its points.</p>
+      <h3>1.6 Functions and Preimages</h3>
+      <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
+      <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
+      <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
 
     </section>
 
@@ -468,124 +463,77 @@
     <section class="section-card" id="section-norms">
       <h2>4. Inner Products, Norms, and Angles</h2>
 
-      <h3>Inner Products</h3>
-      <p>An <a href="#" class="definition-link">inner product</a> on $\mathbb{R}^n$ is a function $\langle \cdot, \cdot \rangle: \mathbb{R}^n \times \mathbb{R}^n \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z}$ and scalars $\alpha, \beta$:</p>
+      <h3>4.1 Inner Products: Geometry from Algebra</h3>
+      <p>A vector space by itself is purely algebraic. To do geometry (lengths, angles, projections), we need an <b>inner product</b>.
+      <br>An inner product on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
       <ol>
         <li><b>Linearity:</b> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \alpha\langle \mathbf{x}, \mathbf{y} \rangle + \beta\langle \mathbf{z}, \mathbf{y} \rangle$.</li>
-        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$.</li>
+        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$. (This implies linearity in the second argument too).</li>
         <li><b>Positive Definiteness:</b> $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$, and $\langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = 0$.</li>
       </ol>
-      <p>These axioms ensure that "lengths" and "angles" behave as expected. The <b>standard (Euclidean) inner product</b> is defined as $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$.</p>
+      <p><b>The Dot Product:</b> The standard inner product on $\mathbb{R}^n$ is $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$.
+      <br><b>Weighted Inner Products:</b> For any symmetric positive definite (PD) matrix $P \in \mathbb{S}^n_{++}$, $\langle \mathbf{x}, \mathbf{y} \rangle_P := \mathbf{x}^\top P \mathbf{y}$ is also a valid inner product. This corresponds to the geometry of ellipsoids.</p>
 
-      <div class="proof-box">
-        <h4>Proof: Dot Product is an Inner Product</h4>
-        <div class="proof-step">
-          <strong>1. Linearity:</strong> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \sum_i (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i = \alpha \langle \mathbf{x}, \mathbf{y} \rangle + \beta \langle \mathbf{z}, \mathbf{y} \rangle$.
-        </div>
-        <div class="proof-step">
-          <strong>2. Symmetry:</strong> $\sum x_i y_i = \sum y_i x_i$.
-        </div>
-        <div class="proof-step">
-          <strong>3. Positive Definiteness:</strong> $\langle \mathbf{x}, \mathbf{x} \rangle = \sum x_i^2 \ge 0$. If $\sum x_i^2 = 0$, then each $x_i^2=0$ (nonnegative sum is zero $\implies$ terms are zero), so $\mathbf{x}=0$.
-        </div>
-      </div>
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
+             alt="Parallelogram law for vector addition"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
+        <figcaption><i>Figure 3:</i> The parallelogram law of vector addition, a geometric reflection of the algebraic properties of inner products.</figcaption>
+      </figure>
 
-      <h4>Weighted Inner Products</h4>
-      <p>For any symmetric positive definite matrix $P \in \mathbb{S}^n_{++}$, we can define a weighted inner product:
-      $$ \langle \mathbf{x}, \mathbf{y} \rangle_P := \mathbf{x}^\top P \mathbf{y} $$
-      This induces the <b>P-norm</b> $\|\mathbf{x}\|_P = \sqrt{\mathbf{x}^\top P \mathbf{x}}$, which measures distance in a skewed coordinate system (related to ellipsoids).</p>
-
-      <h3>Norms and Convexity</h3>
-      <p>A <a href="#" class="definition-link">norm</a> is a function $\|\cdot\|: \mathbb{R}^n \to \mathbb{R}$ assigning a length to each vector. Axioms:</p>
+      <h3>4.2 Norms: Measuring Length</h3>
+      <p>A <b>norm</b> is a function $\|\cdot\|: V \to \mathbb{R}$ satisfying:</p>
       <ol>
         <li><b>Definiteness:</b> $\|\mathbf{x}\| \ge 0$, and $\|\mathbf{x}\| = 0 \iff \mathbf{x}=0$.</li>
         <li><b>Homogeneity:</b> $\|\alpha \mathbf{x}\| = |\alpha| \|\mathbf{x}\|$.</li>
         <li><b>Triangle Inequality:</b> $\|\mathbf{x}+\mathbf{y}\| \le \|\mathbf{x}\| + \|\mathbf{y}\|$.</li>
       </ol>
 
-      <h4>The $\ell_1$ and $\ell_\infty$ Norms (Rigorous Proofs)</h4>
+      <h4>The Induced Norm (Euclidean Length)</h4>
+      <p>Every inner product <i>induces</i> a norm defined by $\|\mathbf{x}\| := \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}$.
+      <br>This definition is valid because $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$. The triangle inequality for this norm is <b>not</b> an axiom; it is a theorem derived from the inner product axioms via the Cauchy-Schwarz inequality.</p>
+
+      <div class="proof-box">
+        <h4>Theorem: Cauchy-Schwarz Inequality</h4>
+        <p>For any inner product, $|\langle \mathbf{x}, \mathbf{y} \rangle| \le \|\mathbf{x}\| \|\mathbf{y}\|$.</p>
+        <div class="proof-step">
+          <strong>Proof:</strong> Consider the quadratic function $p(t) = \|\mathbf{x} + t\mathbf{y}\|^2 = \langle \mathbf{x}+t\mathbf{y}, \mathbf{x}+t\mathbf{y} \rangle$.
+          $$ p(t) = \|\mathbf{y}\|^2 t^2 + 2\langle \mathbf{x}, \mathbf{y} \rangle t + \|\mathbf{x}\|^2 $$
+          Since $p(t) \ge 0$ for all $t$, the quadratic has no real roots (or one double root). Thus, its discriminant must be non-positive:
+          $$ (2\langle \mathbf{x}, \mathbf{y} \rangle)^2 - 4\|\mathbf{y}\|^2 \|\mathbf{x}\|^2 \le 0 \implies \langle \mathbf{x}, \mathbf{y} \rangle^2 \le \|\mathbf{x}\|^2 \|\mathbf{y}\|^2 $$
+          Taking square roots yields the result. Equality holds iff $\mathbf{x}$ and $\mathbf{y}$ are collinear.
+        </div>
+      </div>
+
+      <div class="proof-box">
+        <h4>Theorem: Triangle Inequality (Derived)</h4>
+        <p>Using Cauchy-Schwarz, we prove $\|\mathbf{x}+\mathbf{y}\| \le \|\mathbf{x}\| + \|\mathbf{y}\|$.</p>
+        $$ \begin{aligned}
+        \|\mathbf{x}+\mathbf{y}\|^2 &= \langle \mathbf{x}+\mathbf{y}, \mathbf{x}+\mathbf{y} \rangle = \|\mathbf{x}\|^2 + 2\langle \mathbf{x}, \mathbf{y} \rangle + \|\mathbf{y}\|^2 \\
+        &\le \|\mathbf{x}\|^2 + 2\|\mathbf{x}\|\|\mathbf{y}\| + \|\mathbf{y}\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+        &= (\|\mathbf{x}\| + \|\mathbf{y}\|)^2
+        \end{aligned} $$
+        Taking square roots gives the result.
+      </div>
+
+      <h3>4.3 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
+      <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law, so they have no associated inner product.</p>
       <ul>
-        <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$.</li>
-        <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$.</li>
+        <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
+        <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>
       </ul>
-
-      <div class="proof-box">
-        <h4>Proof: Triangle Inequalities for $\ell_1$ and $\ell_\infty$</h4>
-        <div class="proof-step">
-          <strong>For $\ell_1$:</strong> Using scalar triangle inequality $|a+\mathbf{b}|\le |a|+|\mathbf{b}|$:
-          $$ \|\mathbf{x}+\mathbf{y}\|_1 = \sum_i |x_i+y_i| \le \sum_i (|x_i|+|y_i|) = \sum_i |x_i| + \sum_i |y_i| = \|\mathbf{x}\|_1 + \|\mathbf{y}\|_1. $$
-        </div>
-        <div class="proof-step">
-          <strong>For $\ell_\infty$:</strong> For any index $k$:
-          $$ |x_k+y_k| \le |x_k|+|y_k| \le \|\mathbf{x}\|_\infty + \|\mathbf{y}\|_\infty $$
-          Taking the maximum over $k$ on the LHS gives $\|\mathbf{x}+\mathbf{y}\|_\infty \le \|\mathbf{x}\|_\infty + \|\mathbf{y}\|_\infty$.
-        </div>
-      </div>
-
-      <h4>Unit Balls are Convex</h4>
-      <p>A crucial geometric property: <b>The unit ball $B = \{\mathbf{x} : \|\mathbf{x}\| \le 1\}$ of any norm is a convex set.</b></p>
-      <div class="proof-box">
-        <h4>Proof: Unit Ball Convexity</h4>
-        <p>Let $\mathbf{x}, \mathbf{y} \in B$, so $\|\mathbf{x}\| \le 1, \|\mathbf{y}\| \le 1$. For any $\theta \in [0, 1]$:</p>
-        $$ \|\theta \mathbf{x} + (1-\theta)\mathbf{y}\| \le \|\theta \mathbf{x}\| + \|(1-\theta)\mathbf{y}\| = \theta\|\mathbf{x}\| + (1-\theta)\|\mathbf{y}\| \le \theta(1) + (1-\theta)(1) = 1 $$
-        <p>Thus $\theta \mathbf{x} + (1-\theta)\mathbf{y} \in B$. This means norm constraints $f(\mathbf{x}) = \|A\mathbf{x}-\mathbf{b}\| \le t$ define convex feasible sets.</p>
-      </div>
 
       <figure style="text-align: center;">
         <img src="assets/norm-balls.png"
              alt="Comparison of L1, L2, and Infinity norm unit balls"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 6:</i> The "unit ball" $\{\mathbf{x} \mid \|\mathbf{x}\| \le 1\}$ for the $\ell_1$ (diamond), $\ell_2$ (circle), and $\ell_\infty$ (square) norms.</figcaption>
+        <figcaption><i>Figure 6:</i> The "unit ball" $\{\mathbf{x} \mid \|\mathbf{x}\| \le 1\}$ for the $\ell_1$ (diamond), $\ell_2$ (circle), and $\ell_\infty$ (square) norms. All are convex sets.</figcaption>
       </figure>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: The Geometry of Norms</h3>
-        <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls (sets of vectors with norm ≤ 1) for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms in 2D. Each norm defines a different notion of "distance" and produces a distinctly shaped unit ball:</p>
-        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-          <li><b>$\ell_2$ (Euclidean):</b> Forms a perfect circle—the most "natural" geometric distance</li>
-          <li><b>$\ell_1$ (Manhattan):</b> Forms a diamond with "pointy" corners at the axes—this geometry is why $\ell_1$ regularization promotes sparse solutions in machine learning</li>
-          <li><b>$\ell_\infty$ (Chebyshev):</b> Forms a square—measures the maximum component</li>
-        </ul>
-        <p><i>Connection to optimization:</i> The shape of these unit balls directly affects the solutions to optimization problems. The corners of the $\ell_1$ ball are what make LASSO regression find sparse solutions!</p>
+        <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms. Note that the $\ell_1$ ball has "corners" on the axes (promoting sparsity), while $\ell_2$ is isotropic.</p>
         <div id="widget-norm-geometry" style="width: 100%; height: 400px; position: relative;"></div>
-      </div>
-
-      <h3>The Euclidean Geometry ($\ell_2$)</h3>
-      <p>The Euclidean norm $\|\mathbf{x}\|_2 = \sqrt{\mathbf{x}^\top \mathbf{x}}$ is special because it arises from an inner product.</p>
-
-      <h4>Foundational Scalar Lemmas</h4>
-      <ol>
-        <li><b>1D Triangle Inequality:</b> $|a+\mathbf{b}| \le |a| + |\mathbf{b}|$.
-          <br><i>Proof:</i> Squaring both sides (non-negative) gives $(a+\mathbf{b})^2 \le (|a|+|\mathbf{b}|)^2 \iff a^2+2ab+\mathbf{b}^2 \le a^2+2|a||\mathbf{b}|+\mathbf{b}^2 \iff ab \le |ab|$, which is always true.
-        </li>
-        <li><b>Quadratic Non-negativity:</b> If $q(t) = at^2 + bt + c \ge 0$ for all $t$ (with $a > 0$), then the discriminant $\mathbf{b}^2 - 4ac \le 0$.
-          <br><i>Reason:</i> If the discriminant were positive, the quadratic would have two real roots and dip below zero between them.
-        </li>
-      </ol>
-
-      <div class="proof-box">
-        <h4>Proof: Cauchy-Schwarz Inequality ($|\mathbf{x}^\top \mathbf{y}| \le \|\mathbf{x}\|_2 \|\mathbf{y}\|_2$)</h4>
-        <div class="proof-step">
-          <strong>Step 1: Construct a quadratic.</strong> For any $t \in \mathbb{R}$, $\|\mathbf{x} - t\mathbf{y}\|_2^2 \ge 0$.
-          $$ 0 \le \langle \mathbf{x} - t\mathbf{y}, \mathbf{x} - t\mathbf{y} \rangle = \|\mathbf{x}\|_2^2 - 2t\langle \mathbf{x}, \mathbf{y} \rangle + t^2 \|\mathbf{y}\|_2^2. $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Discriminant condition.</strong> This is a quadratic $At^2 + Bt + C \ge 0$ with $A=\|\mathbf{y}\|_2^2$.
-          Assuming $\mathbf{y} \neq 0$ (otherwise trivial), we must have $B^2 - 4AC \le 0$:
-          $$ (-2\langle \mathbf{x}, \mathbf{y} \rangle)^2 - 4(\|\mathbf{y}\|_2^2)(\|\mathbf{x}\|_2^2) \le 0 $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Conclusion.</strong>
-          $$ 4\langle \mathbf{x}, \mathbf{y} \rangle^2 \le 4\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2 \implies |\langle \mathbf{x}, \mathbf{y} \rangle| \le \|\mathbf{x}\|_2 \|\mathbf{y}\|_2. $$
-          <i>Equality holds</i> iff the quadratic touches zero, i.e., $\mathbf{x} = ty$ (collinear).
-        </div>
-      </div>
-
-      <div class="proof-box">
-        <h4>Proof: Triangle Inequality for $\ell_2$</h4>
-        <p>Using Cauchy-Schwarz:</p>
-        $$ \|\mathbf{x}+\mathbf{y}\|_2^2 = \|\mathbf{x}\|_2^2 + 2\langle \mathbf{x}, \mathbf{y} \rangle + \|\mathbf{y}\|_2^2 \le \|\mathbf{x}\|_2^2 + 2\|\mathbf{x}\|_2\|\mathbf{y}\|_2 + \|\mathbf{y}\|_2^2 = (\|\mathbf{x}\|_2 + \|\mathbf{y}\|_2)^2 $$
-        <p>Taking square roots gives $\|\mathbf{x}+\mathbf{y}\|_2 \le \|\mathbf{x}\|_2 + \|\mathbf{y}\|_2$.</p>
       </div>
 
       <h3>Dual Norms and Polar Sets</h3>

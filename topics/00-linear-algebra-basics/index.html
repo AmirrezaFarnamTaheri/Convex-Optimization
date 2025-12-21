@@ -151,16 +151,19 @@
       $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
       Every concept in the course reduces to this.</p>
 
-      <h4>(A) The "Fundamental Identity" of Matrix-Vector Multiplication</h4>
-      <p>The most important formula for intuition is arguably the column-centric view of matrix multiplication. If $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$, then:
+      <h4>(A) Systems of Linear Equations as Linear Maps</h4>
+      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." While correct, this view is shallow. The deeper, geometric interpretation is:
+      <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b></p>
+
+      <p><b>1. Matrix as a Function:</b> A matrix $A \in \mathbb{R}^{m \times n}$ defines a function $T_A: \mathbb{R}^n \to \mathbb{R}^m$ by $T_A(\mathbf{x}) = A\mathbf{x}$. This function is linear: it preserves addition and scaling. Its entire behavior is determined by what it does to the standard basis vectors, which are mapped to the <b>columns of $A$</b>.</p>
+
+      <p><b>2. The "Fundamental Identity":</b> If we write $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$, then for any $\mathbf{x} = (x_1, \dots, x_n)$:
       $$ \boxed{ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n } $$
-      <b>Multiplying a matrix by a vector means forming a linear combination of the matrix’s columns, using the vector’s entries as coefficients.</b>
-      This perspective immediately reveals:</p>
-      <ul>
-        <li><b>Column Space:</b> $\operatorname{Col}(A)$ is simply the span of the columns.</li>
-        <li><b>Consistency:</b> $A\mathbf{x}=\mathbf{b}$ is solvable if and only if $\mathbf{b}$ lies in the span of the columns.</li>
-        <li><b>Nullspace:</b> $A\mathbf{x}=0$ describes a <i>dependency relation</i> among the columns. If $\mathbf{x} \neq 0$, the columns are linearly dependent.</li>
-      </ul>
+      This identity is not a trick; it is the definition of matrix-vector multiplication. It says that <b>multiplying a matrix by a vector means forming a linear combination of the columns</b>.</p>
+
+      <p><b>3. Consistency = Membership in Span:</b> The system $A\mathbf{x}=\mathbf{b}$ is solvable if and only if there exist scalars $x_1, \dots, x_n$ such that $\sum x_i \mathbf{a}_i = \mathbf{b}$.
+      $$ A\mathbf{x} = \mathbf{b} \text{ is consistent} \iff \mathbf{b} \in \operatorname{span}(\mathbf{a}_1, \dots, \mathbf{a}_n) \iff \mathbf{b} \in \operatorname{Col}(A) $$
+      This explains why "most" systems with $m > n$ (more equations than unknowns) are inconsistent: the column space is a "thin" subspace inside $\mathbb{R}^m$, and a random $\mathbf{b}$ will likely fall outside it.</p>
 
       <h4>(B) Linear Independence as "No Redundancy"</h4>
       <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it rigorously to ensure coordinates are unique.</p>
@@ -317,9 +320,16 @@
       </ul>
 
       <div class="theorem-box">
-        <h4>Fundamental Equivalence</h4>
+        <h4>Fundamental Equivalence: The Structure of Solution Sets</h4>
         <p>$$ T(\mathbf{u}) = T(\mathbf{v}) \iff \mathbf{u} - \mathbf{v} \in \mathcal{N}(T) $$
-        <br><b>Structure of Solutions:</b> If $A\mathbf{x}_p = \mathbf{b}$, then the set of <i>all</i> solutions is the affine set $\mathbf{x}_p + \mathcal{N}(A)$.</p>
+        <br><b>Structure of Solutions:</b> If a system $A\mathbf{x} = \mathbf{b}$ has at least one particular solution $\mathbf{x}_p$, then the set of <i>all</i> solutions is the affine set:
+        $$ S = \mathbf{x}_p + \mathcal{N}(A) = \{ \mathbf{x}_p + \mathbf{x}_h \mid \mathbf{x}_h \in \mathcal{N}(A) \} $$
+        <b>Proof from First Principles:</b>
+        <ul>
+            <li><b>Closure:</b> If $\mathbf{x}_h \in \mathcal{N}(A)$, then $A(\mathbf{x}_p + \mathbf{x}_h) = A\mathbf{x}_p + A\mathbf{x}_h = \mathbf{b} + 0 = \mathbf{b}$. So $\mathbf{x}_p + \mathbf{x}_h$ is a solution.</li>
+            <li><b>Exhaustion:</b> If $\mathbf{x}$ is any solution ($A\mathbf{x}=\mathbf{b}$), then $A(\mathbf{x} - \mathbf{x}_p) = A\mathbf{x} - A\mathbf{x}_p = \mathbf{b} - \mathbf{b} = 0$. Thus $\mathbf{x} - \mathbf{x}_p \in \mathcal{N}(A)$, so $\mathbf{x} = \mathbf{x}_p + (\mathbf{x} - \mathbf{x}_p)$.</li>
+        </ul>
+        This explains why solution sets are <b>affine subspaces</b> (points) rather than vector subspaces (vectors) unless $\mathbf{b}=0$. The nullspace $\mathcal{N}(A)$ represents the "internal degrees of freedom" of the system.</p>
 
         <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
         <p>A linear map is injective (one-to-one) if and only if its kernel contains only the zero vector.
@@ -337,47 +347,47 @@
       <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
       <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
 
-      <h3>2.3 The Four Fundamental Subspaces</h3>
-      <p>Every matrix $A$ induces four subspaces that completely characterize its action. It is critical to remember <b>where they live</b>:</p>
+      <h3>2.3 The Four Fundamental Subspaces: Invariant Anatomy</h3>
+      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces. These are not artifacts of calculation; they are the <b>invariant anatomy</b> of the map. They live in two different spaces and are paired by orthogonality.</p>
 
       <table class="data-table">
         <thead>
           <tr>
             <th>Subspace</th>
             <th>Notation</th>
+            <th>Definition</th>
             <th>Lives In</th>
-            <th>Dimension</th>
-            <th>Meaning</th>
+            <th>Structural Meaning</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Column Space</td>
+            <td><b>Column Space</b><br>(Image)</td>
             <td>$\mathcal{R}(A)$</td>
-            <td>$\mathbb{R}^m$ (Output)</td>
-            <td>$r$</td>
-            <td>Achievable outputs; consistent $\mathbf{b}$ vectors.</td>
+            <td>$\mathrm{Im}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$</td>
+            <td>$\mathbb{R}^m$</td>
+            <td><b>Reachable Outputs:</b> The set of all possible vectors the system can produce. Controls existence of solutions.</td>
           </tr>
           <tr>
-            <td>Nullspace</td>
+            <td><b>Nullspace</b><br>(Kernel)</td>
             <td>$\mathcal{N}(A)$</td>
-            <td>$\mathbb{R}^n$ (Input)</td>
-            <td>$n-r$</td>
-            <td>Inputs annihilated by the map; degrees of freedom.</td>
+            <td>$\ker(A) = \{\mathbf{x} \mid A\mathbf{x} = 0\}$</td>
+            <td>$\mathbb{R}^n$</td>
+            <td><b>Invisible Inputs:</b> Directions that map to zero. Controls uniqueness of solutions (degrees of freedom).</td>
           </tr>
           <tr>
-            <td>Row Space</td>
+            <td><b>Row Space</b><br>(Co-image)</td>
             <td>$\mathcal{R}(A^\top)$</td>
-            <td>$\mathbb{R}^n$ (Input)</td>
-            <td>$r$</td>
-            <td>Constraint space; all linear constraints enforced on $\mathbf{x}$.</td>
+            <td>$\mathrm{Im}(A^\top) = \mathrm{span}(\text{rows})$</td>
+            <td>$\mathbb{R}^n$</td>
+            <td><b>Active Constraints:</b> The subspace of $\mathbb{R}^n$ where the map actually "measures" the input.</td>
           </tr>
           <tr>
-            <td>Left Nullspace</td>
+            <td><b>Left Nullspace</b><br>(Cokernel)</td>
             <td>$\mathcal{N}(A^\top)$</td>
-            <td>$\mathbb{R}^m$ (Output)</td>
-            <td>$m-r$</td>
-            <td>Dependencies among equations; impossible directions for $\mathbf{b}$.</td>
+            <td>$\ker(A^\top) = \{\mathbf{y} \mid A^\top\mathbf{y} = 0\}$</td>
+            <td>$\mathbb{R}^m$</td>
+            <td><b>Equation Redundancy:</b> Linear combinations of equations that sum to $0=0$. Controls consistency for specific $\mathbf{b}$.</td>
           </tr>
         </tbody>
       </table>

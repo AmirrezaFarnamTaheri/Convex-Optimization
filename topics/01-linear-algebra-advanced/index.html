@@ -140,6 +140,11 @@
       <p><b>Definition:</b> A finite set of vectors $\{v_1, \dots, v_k\}$ is <b>linearly independent</b> if the only linear combination that sums to zero is the trivial one:
       $$ \sum_{i=1}^k \alpha_i v_i = 0 \implies \alpha_1 = \dots = \alpha_k = 0 $$
 
+      <h4>Independence as "Uniqueness of Representation"</h4>
+      <p>This is the deep meaning of independence.
+      <br><b>Proposition:</b> $v_1, \dots, v_k$ are independent if and only if every vector $w \in \mathrm{span}(v_1, \dots, v_k)$ has a <b>unique</b> representation as a linear combination.
+      <br><i>Proof:</i> If there were two representations $\sum \alpha_i v_i = \sum \beta_i v_i$, then subtracting them gives $\sum (\alpha_i - \beta_i) v_i = 0$. If independent, $\alpha_i - \beta_i = 0$, so $\alpha_i = \beta_i$. Uniqueness holds.</p>
+
       <h4>The Redundancy Theorem</h4>
       <p>Linear independence is equivalent to saying "no vector is redundant".
       <br><b>Theorem:</b> A set is linearly dependent if and only if there exists some index $j$ such that $v_j \in \mathrm{span}(\{v_i\}_{i \neq j})$.
@@ -147,96 +152,62 @@
       <br>($\Rightarrow$) If $\sum \alpha_i v_i = 0$ with $\alpha_j \neq 0$, then $v_j = -\sum_{i \ne j} (\alpha_i/\alpha_j) v_i$.
       <br>($\Leftarrow$) If $v_j = \sum_{i \ne j} c_i v_i$, then $1v_j - \sum c_i v_i = 0$ is a non-trivial relation.</p>
 
-      <h3>2.2 Basis: Existence and Uniqueness of Coordinates</h3>
-      <p>A <b>Basis</b> is a set $\mathcal{B}$ that is both:
-      1. <b>Spanning:</b> $\mathrm{span}(\mathcal{B}) = V$ (Existence of representation).
-      2. <b>Independent:</b> No redundancy (Uniqueness of representation).
+      <h3>2.2 Basis: Existence + Uniqueness = Coordinate System</h3>
+      <p>A <b>Basis</b> is a set $\mathcal{B} = \{b_1, \dots, b_n\}$ that is both:
+      1. <b>Spanning:</b> $\mathrm{span}(\mathcal{B}) = V$ (Every vector can be represented).
+      2. <b>Independent:</b> No redundancy (Representation is unique).
       </p>
 
       <div class="theorem-box">
-        <h4>Theorem: Unique Coordinates</h4>
-        <p>A set $\mathcal{B} = \{b_1, \dots, b_n\}$ is a basis for $V$ if and only if every vector $v \in V$ can be written <b>uniquely</b> as a linear combination of $\mathcal{B}$.
-        <br><i>Why?</i> Spanning guarantees existence. Independence guarantees uniqueness (if $v$ had two representations, their difference would be a non-trivial zero sum).</p>
+        <h4>Theorem: The Basis Theorem</h4>
+        <p>If $\mathcal{B}$ is a basis of $V$, then every vector $v \in V$ can be written in <b>exactly one way</b> as:
+        $$ v = \sum_{i=1}^n c_i b_i $$
+        The scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $v$ in basis $\mathcal{B}$, denoted $[v]_\mathcal{B}$.
+        <br>This creates a bijection (isomorphism) between the abstract space $V$ and the coordinate space $\mathbb{F}^n$.
+        $$ v \longleftrightarrow [v]_\mathcal{B} $$
+        Once a basis is chosen, abstract vector algebra becomes concrete matrix algebra.</p>
       </div>
 
-      <h3>2.3 Dimension and the Steinitz Exchange Lemma</h3>
-      <p>We define $\dim(V)$ as the number of vectors in a basis. But how do we know all bases have the same size? This is a deep theorem relying on the <b>Exchange Lemma</b>.</p>
+      <h3>2.3 Dimension: Degrees of Freedom</h3>
+      <p>We define $\dim(V)$ as the number of vectors in a basis. But how do we know all bases have the same size? This is the central structural theorem of linear algebra, relying on the <b>Exchange Lemma</b>.</p>
 
       <div class="proof-box">
-        <h4>Lemma: Steinitz Exchange</h4>
+        <h4>Lemma: Steinitz Exchange Lemma</h4>
         <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is linearly independent in $V$, then:
-        <br>1. <b>$k \le m$</b> (Independent sets cannot be larger than spanning sets).
+        <br>1. <b>$k \le m$</b> (You cannot have more independent vectors than the size of a spanning set).
         <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
 
-        <h4>Proof</h4>
-        <p>We prove this by iteratively replacing vectors in the spanning set. Let $S^{(0)} = S = \{s_1, \dots, s_m\}$. We will construct a sequence of spanning sets $S^{(1)}, \dots, S^{(k)}$.</p>
-
-        <div class="proof-step">
-          <strong>Inductive Step:</strong> Suppose $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$ along with $m-(j-1)$ vectors from the original set $S$. We want to insert $\ell_j$.
-          <br>Since $S^{(j-1)}$ spans $V$, we can write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$:
-          $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
-          Since $L$ is linearly independent, $\ell_j$ cannot be in the span of $\{\ell_1, \dots, \ell_{j-1}\}$. Thus, at least one vector $s^* \in S^{(j-1)}$ that is <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{s^*} \neq 0$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Exchange:</strong> We solve for $s^*$ in terms of $\ell_j$ and the other vectors:
-          $$ s^* = \frac{1}{c_{s^*}} \left( \ell_j - \sum_{u \neq s^*} c_u u \right) $$
-          This shows that $s^*$ is in the span of the new set $S^{(j)} := (S^{(j-1)} \setminus \{s^*\}) \cup \{\ell_j\}$.
-          Therefore, $\mathrm{span}(S^{(j)}) = \mathrm{span}(S^{(j-1)}) = V$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Conclusion:</strong> We can repeat this process $k$ times. At each step, we remove one of the original $s$ vectors and add an $\ell$ vector.
-          If $k > m$, at some step we would run out of $s$ vectors to remove, implying $\ell_j$ is in the span of the previous $\ell$'s, which contradicts independence.
-          Thus $k \le m$, and the final set $S^{(k)}$ (containing all of $L$) spans $V$.
-        </div>
+        <h4>Proof Strategy</h4>
+        <p>We prove this by iteratively replacing vectors. At each step, we insert an independent vector $\ell_j$. Because the current set spans, $\ell_j$ is a linear combination of the current set. Because of independence, at least one vector from the original set $S$ must appear with a non-zero coefficient and can be swapped out.
+        <br>If $k > m$, we would run out of vectors to swap, implying a dependence in $L$, a contradiction.</p>
       </div>
 
       <h4>The Dimension Theorem</h4>
-      <p>All bases of a finite-dimensional vector space have the same cardinality.
+      <p>All bases of a finite-dimensional vector space have the same number of elements.
       <br><i>Proof:</i> Let $B_1$ (size $n$) and $B_2$ (size $m$) be bases.
-      <br>Since $B_1$ spans and $B_2$ is independent, $m \le n$.
+      <br>Since $B_1$ spans and $B_2$ is independent, $m \le n$ (by Exchange Lemma).
       <br>Since $B_2$ spans and $B_1$ is independent, $n \le m$.
-      <br>Thus $n=m$. This common number is the <b>Dimension</b>.</p>
+      <br>Thus $n=m$. This invariant number is the <b>Dimension</b>.</p>
 
-      <h4>Fundamental Algorithm Theorems</h4>
-      <ul>
-        <li><b>Basis Extension:</b> Any independent set can be extended to a basis.</li>
-        <li><b>Basis Reduction:</b> Any spanning set can be reduced to a basis.</li>
-        <li><b>Subspace Dimension:</b> If $W \le V$, then $\dim(W) \le \dim(V)$, with equality iff $W=V$.</li>
-      </ul>
+      <h3>2.4 Matrices as Representations of Linear Maps</h3>
+      <p>A matrix is not just a table of numbers; it is the coordinate representation of a linear map <i>after</i> bases have been chosen for the domain and codomain.</p>
 
-      <h3>2.4 Change of Basis</h3>
-      <p>Let $B$ and $C$ be two bases. The coordinates change via a matrix $P$: $[\mathbf{v}]_C = P [\mathbf{v}]_B$.
-      <br>A linear map $T$ represented by matrix $A$ in basis $B$ is represented by $\tilde{A} = P A P^{-1}$ in basis $C$.
-      <br><b>Diagonalization:</b> Finding a basis $C$ of eigenvectors such that $\tilde{A}$ is diagonal. This decouples the variables.</p>
+      <p>Let $T: V \to W$ be linear. Let $B=\{b_1, \dots, b_n\}$ be a basis for $V$ and $C=\{c_1, \dots, c_m\}$ be a basis for $W$.
+      <br>We construct the matrix $A = [T]_{C \leftarrow B}$ column by column.
+      <br><b>Rule:</b> The $j$-th column of $A$ is the coordinate vector of the image of the $j$-th basis vector $b_j$, expressed in the basis $C$.
+      $$ T(b_j) = \sum_{i=1}^m a_{ij} c_i \implies \text{Column } j = [T(b_j)]_C $$
+      This definition ensures the fundamental commutative diagram holds:
+      $$ [T(v)]_C = A [v]_B $$
+      Matrix-vector multiplication is simply the coordinate version of applying the linear map.</p>
 
-      <h4>Transformation of the Matrix Map</h4>
-      <p>Suppose we have a linear map $T(\mathbf{x}) = A\mathbf{x}$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
-      <p><b>The Mechanism:</b> Think of the operation in three stages: $x_{in} \to x_{out}$.</p>
-      <ol>
-        <li><b>Input Change ($V \to \text{Standard}$):</b> We are given input coordinates $y_{in}$ in the basis $V$. The actual vector is $x_{in} = V y_{in}$.</li>
-        <li><b>The Action ($A$):</b> Apply the linear map in the standard basis: $x_{out} = A x_{in} = A V y_{in}$.</li>
-        <li><b>Output Change ($\text{Standard} \to V$):</b> We want the output coordinates $y_{out}$ in the basis $V$. So we invert the basis matrix: $y_{out} = V^{-1} x_{out}$.</li>
-      </ol>
-      <p>Chaining these together gives the formula for the matrix $\tilde{A}$ in the new basis:</p>
-      $$ y_{out} = (V^{-1} A V) y_{in} \implies \boxed{\tilde{A} = V^{-1} A V} $$
-
-      <div class="insight">
-        <h4>💡 "Same Vectors, Same Map, Different Coordinates"</h4>
-        <p>This formula $\tilde{A} = V^{-1} A V$ (similarity) is the algebraic expression of a geometric truth: we are performing the <b>same linear transformation</b> on the <b>same vectors</b>, but describing inputs and outputs using a <b>different coordinate system</b>.</p>
-      </div>
-
-      <div class="example">
-        <h4>A Tiny 2D Concrete Picture</h4>
-        <p>Suppose $A$ has eigenvectors $v_1=(1,1)^\top$ and $v_2=(1,-1)^\top$ with eigenvalues $3$ and $1$.
-        <br>Let $V = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Then $\Lambda = V^{-1}AV = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}$.
-        <br>Consider a vector with new coordinates $\mathbf{y} = (2, 3)^\top$.
-        <br><b>Physical Vector:</b> $\mathbf{x} = 2v_1 + 3v_2 = (5, -1)^\top$.
-        <br><b>Action in Eigen-coords:</b> The map scales the first component by 3 and the second by 1.
-        $$ y_{out} = \Lambda \mathbf{y} = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
-        <br><b>Result:</b> The output vector is $6v_1 + 3v_2$. The mixing is gone; the axes act independently.</p>
-      </div>
+      <h4>Change of Basis (Similarity)</h4>
+      <p>What if we change the basis of $V$ from $B$ to $B'$? The linear map $T$ stays the same, but its matrix representation changes.
+      <br>Let $P$ be the <b>change-of-basis matrix</b> from $B'$ to $B$ (columns are $B'$ vectors written in $B$).
+      <br>Then $[v]_B = P [v]_{B'}$.
+      <br>The new matrix representation $A'$ satisfies:
+      $$ A' = P^{-1} A P $$
+      This is <b>Similarity</b>. Similar matrices represent the same linear operator in different coordinate systems.
+      <br><b>Invariants:</b> Since the map is unchanged, intrinsic properties like Rank, Determinant, Trace, and Eigenvalues are preserved under similarity.</p>
     </section>
 
     <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->
@@ -263,24 +234,37 @@
 
     <!-- SECTION 4: EIGENVALUES -->
     <section class="section-card" id="section-eigenvalues">
-      <h2>4. Eigenvalues and the Rayleigh Quotient</h2>
-      <p>Eigenvectors are the "invariant directions" of a square matrix $A$. Along these directions, the matrix acts as a simple scalar multiplication.</p>
+      <h2>4. The Spectral Layer: Eigenvalues and Diagonalization</h2>
+      <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It decomposes the space into invariant 1D subspaces.</p>
 
-      <h3>4.1 Eigenvalues and Eigenvectors</h3>
+      <h3>4.1 Eigenvalues and Eigenvectors: The Basics</h3>
       <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> of $A \in \mathbb{R}^{n \times n}$ with <b>eigenvalue</b> $\lambda$ if:
       $$ A\mathbf{v} = \lambda \mathbf{v} $$
-      Equivalently, $(A - \lambda I)\mathbf{v} = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.</p>
+      Equivalently, $(A - \lambda I)\mathbf{v} = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.
+      <br><b>Multiplicities:</b>
+      <ul>
+        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> The multiplicity of $\lambda$ as a root of $p(\lambda)$.</li>
+        <li><b>Geometric Multiplicity ($g_\lambda$):</b> The dimension of the eigenspace $\dim(\ker(A-\lambda I))$.</li>
+      </ul>
+      Always $1 \le g_\lambda \le m_\lambda$. Diagonalization requires $g_\lambda = m_\lambda$ for all $\lambda$.</p>
 
-      <h3>4.2 Spectral Theorem for Symmetric Matrices</h3>
-      <p>If $A$ is symmetric ($A = A^\top$), then:</p>
+      <h3>4.2 The Spectral Theorem (Symmetric Matrices)</h3>
+      <p>This is the cleanest, most rigid case in linear algebra.
+      <br><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
       <ol>
-        <li>All eigenvalues are real.</li>
-        <li>Eigenvectors corresponding to distinct eigenvalues are orthogonal.</li>
-        <li>$A$ is diagonalized by an orthogonal matrix $Q$: $A = Q \Lambda Q^\top = \sum_{i=1}^n \lambda_i q_i q_i^\top$.</li>
+        <li>All eigenvalues are <b>real</b>.</li>
+        <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
+        <li>$A$ admits an <b>orthonormal eigenbasis</b>. There exists an orthogonal matrix $Q$ ($Q^\top Q = I$) such that:
+        $$ \boxed{A = Q \Lambda Q^\top} $$</li>
       </ol>
-      <p>This decomposition expresses $A$ as a sum of rank-1 projections scaled by $\lambda_i$.</p>
+      Geometrically, a symmetric matrix represents a stretch along perpendicular axes. This structure is fundamental to quadratic optimization ($\frac{1}{2}x^\top Q x$).</p>
 
-      <h3>4.3 The Rayleigh Quotient</h3>
+      <h3>4.3 Jordan Canonical Form (When Diagonalization Fails)</h3>
+      <p>Diagonalization fails when $g_\lambda < m_\lambda$ (defective matrix). The <b>Jordan Canonical Form</b> provides the best possible replacement. It decomposes the space into invariant subspaces called Jordan Blocks.
+      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} $$
+      Each block represents a mix of pure scaling ($\lambda$) and "nilpotent drift" (superdiagonal 1s). While numerically unstable, it classifies matrices up to similarity.</p>
+
+      <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
       $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} $$
       This scalar measures the "gain" of the matrix in the direction $\mathbf{x}$. Its critical points are the eigenvectors.</p>
@@ -399,73 +383,36 @@
 
     <!-- SECTION 7: SVD -->
     <section class="section-card" id="section-svd">
-      <h2>7. The Singular Value Decomposition (SVD)</h2>
+      <h2>7. Singular Value Decomposition: The Geometry of ANY Matrix</h2>
+      <p>SVD is the final boss. It works for <b>every</b> matrix (square or rectangular, real or complex). It provides the canonical coordinate system for any linear map.</p>
 
-      <h3>7.1 Geometric Intuition</h3>
-      <p>The Singular Value Decomposition (SVD) generalizes the concept of diagonalization to all matrices, including non-square ones. It expresses any linear transformation $A$ as a composition of three simple operations: a rotation, a scaling, and another rotation.</p>
-      $$ A = U \Sigma V^\top $$
-      <p>Let's unpack this operation step-by-step for an input vector $\mathbf{x}$:</p>
+      <h3>7.1 Theorem: Existence of SVD</h3>
+      <div class="theorem-box">
+        <p>Every matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:</p>
+        $$ \boxed{ A = U \Sigma V^\top } $$
+        <ul>
+          <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal ($U^\top U = I$). (Left singular vectors, Output basis).</li>
+          <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal ($V^\top V = I$). (Right singular vectors, Input basis).</li>
+          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$. (Singular values).</li>
+        </ul>
+      </div>
+
+      <h3>7.2 Geometric Meaning: Rotate-Stretch-Rotate</h3>
+      <p>SVD says that <b>every linear map</b> is a composition of:
       <ol>
-        <li><b>Rotate/Reflect (Analysis via $V^\top$):</b> The matrix $V^\top$ is orthogonal. It takes the vector $\mathbf{x}$ and expresses it in a new coordinate system defined by the columns of $V$ (the "right singular vectors"). Essentially, it rotates space so the "principal input axes" align with the standard axes.</li>
-        <li><b>Scale (Gain via $\Sigma$):</b> The matrix $\Sigma$ is diagonal with non-negative entries $\sigma_i$. It independently stretches or shrinks each coordinate $i$ by the factor $\sigma_i$. This is where the magnitude change happens.</li>
-        <li><b>Rotate/Reflect (Synthesis via $U$):</b> The matrix $U$ is orthogonal. It takes the scaled coordinates and rotates them to the final orientation in the output space, defined by the columns of $U$ (the "left singular vectors").</li>
+        <li><b>Rotation ($V^\top$):</b> Align input basis with standard axes.</li>
+        <li><b>Scaling ($\Sigma$):</b> Independent scaling along axes. No shear.</li>
+        <li><b>Rotation ($U$):</b> Rotate to final output orientation.</li>
       </ol>
+      <br><b>Input Basis ($V$):</b> Directions in the domain where the map acts independently.
+      <br><b>Output Basis ($U$):</b> Directions in the codomain where the outputs land.
+      <br><b>Gains ($\sigma_i$):</b> The stretch factors.
+      <br>This proves that the image of the unit sphere is a hyperellipse.</p>
 
       <div class="insight">
-        <h4>Mapping SVD to the Four Fundamental Subspaces</h4>
-        <p>The SVD provides an explicit orthonormal basis for the four fundamental subspaces of $A$. Let $r = \mathrm{rank}(A)$.
-        <ul>
-            <li><b>Column Space $\mathcal{R}(A)$:</b> Spanned by the first $r$ columns of $U$ (left singular vectors $u_1, \dots, u_r$).</li>
-            <li><b>Nullspace $\mathcal{N}(A)$:</b> Spanned by the last $n-r$ columns of $V$ (right singular vectors $v_{r+1}, \dots, v_n$).</li>
-            <li><b>Row Space $\mathcal{R}(A^\top)$:</b> Spanned by the first $r$ columns of $V$ (right singular vectors $v_1, \dots, v_r$).</li>
-            <li><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> Spanned by the last $m-r$ columns of $U$ (left singular vectors $u_{r+1}, \dots, u_m$).</li>
-        </ul>
-        This geometric alignment is why SVD is the "gold standard" for rank-deficient problems.</p>
-      </div>
-
-      <p>This decomposition reveals that the image of the unit sphere under any linear map is a hyperellipse. The singular values are the lengths of the hyperellipse's semi-axes, and the columns of $U$ are the directions of these axes.</p>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/svd-ellipsoid-2d.png"
-             alt="A unit circle mapped to an ellipse with singular vectors showing axis directions and singular values showing axis lengths"
-             style="max-width: 90%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 1:</i> Geometric meaning of SVD: the unit circle maps to an ellipse; singular values are semi-axis lengths and singular vectors give the axis directions.</figcaption>
-      </figure>
-
-      <div class="example">
-        <h4>Numerical Example: SVD in 2D</h4>
-        <p>Consider the matrix $A = \begin{bmatrix} 3 & 0 \\ 0 & -2 \end{bmatrix}$. It stretches the x-axis by 3 and the y-axis by 2, while reflecting the y-axis.</p>
-        <p>Its SVD is $A = U \Sigma V^\top$:</p>
-        $$ A = \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}}_{U} \underbrace{\begin{bmatrix} 3 & 0 \\ 0 & 2 \end{bmatrix}}_{\Sigma} \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}}_{V^\top} $$
-        <ul>
-          <li><b>$V^\top = I$:</b> The input basis aligns with the standard axes (no rotation needed).</li>
-          <li><b>$\Sigma$:</b> The singular values are $3$ and $2$. The map stretches $e_1$ by 3 and $e_2$ by 2.</li>
-          <li><b>$U$:</b> The reflection $\begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$ flips the y-component, accounting for the negative entry in $A$. Note that singular values must be non-negative, so the negative sign is absorbed into $U$ (or $V$).</li>
-        </ul>
-      </div>
-
-      <figure style="text-align: center;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
-             alt="SVD Geometric Interpretation"
-             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 2:</i> SVD decomposes a transformation into Rotation ($V^\top$) $\to$ Stretch ($\Sigma$) $\to$ Rotation ($U$).</figcaption>
-      </figure>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/svd-transformation-sequence.png"
-             alt="Step-by-step visualization of the SVD transformation sequence V^T then Sigma then U"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 3:</i> SVD as a transformation pipeline: rotate/reflect ($V^\top$), stretch along orthogonal axes ($\Sigma$), then rotate/reflect again ($U$).</figcaption>
-      </figure>
-
-      <h3>7.2 Theorem: Existence of SVD</h3>
-      <div class="theorem-box">
-        <p>Every matrix $A \in \mathbb{R}^{m \times n}$ can be factored as $A = U \Sigma V^\top$, where:</p>
-        <ul>
-          <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal ($U^\top U = I$).</li>
-          <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal ($V^\top V = I$).</li>
-          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
-        </ul>
+        <h4>SVD vs. Eigendecomposition</h4>
+        <p><b>Eigen (Square only):</b> Invariant directions ($Av = \lambda v$). Basis may be non-orthogonal. Eigenvalues may be complex.
+        <br><b>SVD (Any Matrix):</b> Mapping one orthonormal frame to another ($Av_i = \sigma_i u_i$). Bases are always orthogonal. Singular values always real $\ge 0$. SVD separates input space ($V$) from output space ($U$).</p>
       </div>
 
       <div class="proof-box">
@@ -513,19 +460,15 @@
         </div>
       </div>
 
-      <h3>7.3 SVD vs. Eigendecomposition (Conceptual Contrast)</h3>
-      <p>Eigendecomposition asks for <i>invariant directions</i> ($A\mathbf{v}=\lambda \mathbf{v}$) and is tied to square matrices; for non-symmetric matrices it may require complex eigenvalues/eigenvectors and the eigenvectors need not be orthogonal. The SVD always exists (for any rectangular matrix) and instead describes how $A$ maps one <i>orthonormal</i> basis to another:</p>
+      <h3>7.3 The Four Fundamental Subspaces (Revisited via SVD)</h3>
+      <p>SVD explicitly computes bases for the four spaces using the columns of $U$ and $V$ and the rank $r$ (number of non-zero $\sigma_i$).
       <ul>
-        <li><b>Input frame:</b> right singular vectors $\{v_i\}$ are orthonormal directions in the domain.</li>
-        <li><b>Output frame:</b> left singular vectors $\{u_i\}$ are orthonormal directions in the range.</li>
-        <li><b>Gains:</b> singular values $\sigma_i$ are nonnegative stretch factors linking them: $Av_i = \sigma_i u_i$.</li>
+        <li><b>Range $\mathcal{R}(A)$:</b> Span of $\{u_1, \dots, u_r\}$. (First $r$ columns of $U$).</li>
+        <li><b>Nullspace $\mathcal{N}(A)$:</b> Span of $\{v_{r+1}, \dots, v_n\}$. (Last $n-r$ columns of $V$).</li>
+        <li><b>Row Space $\mathcal{R}(A^\top)$:</b> Span of $\{v_1, \dots, v_r\}$. (First $r$ columns of $V$).</li>
+        <li><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> Span of $\{u_{r+1}, \dots, u_m\}$. (Last $m-r$ columns of $U$).</li>
       </ul>
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/svd-vs-eigendecomposition.png"
-             alt="Comparison of eigendecomposition and SVD showing invariant directions versus orthonormal input/output frames"
-             style="max-width: 90%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 4:</i> SVD maps one orthonormal frame to another ($Av_i=\sigma_i u_i$), while eigendecomposition looks for directions that stay parallel under $A$.</figcaption>
-      </figure>
+      This provides the most numerically stable way to determine rank and bases.</p>
 
       <h3>7.4 Matrix Norms via SVD</h3>
       <p>The SVD provides the most natural characterization of matrix norms:</p>

@@ -243,39 +243,35 @@
       <h2>3. Scalar Invariants: Determinant and Trace</h2>
       <p>A scalar invariant is a function of a matrix that does not change under similarity transformations ($A \mapsto P^{-1}AP$). Geometrically, these are properties of the linear operator itself, not its specific matrix representation. There are exactly two fundamental independent polynomial invariants: the Determinant and the Trace.</p>
 
-      <h3>3.1 Determinant: The Unique Volume Form</h3>
-      <p>The determinant is often taught as a recursive formula. It is better understood as a characterized object. It is the <b>unique</b> function $\det: \mathbb{F}^{n \times n} \to \mathbb{F}$ satisfying three axioms:</p>
+      <h3>3.1 Determinant: The Unique Multilinear Alternating Form</h3>
+      <p>The determinant is not fundamentally a recursive formula or a cofactor expansion. It is a <b>characterized object</b>. It is the unique function $\det: \mathbb{F}^{n \times n} \to \mathbb{F}$ satisfying three unavoidable axioms:</p>
       <ol>
-        <li><b>Multilinearity:</b> Linear in each column separately.</li>
-        <li><b>Alternating:</b> If two columns are equal, the value is zero. (Implies swapping columns flips the sign).</li>
+        <li><b>Multilinearity (in columns):</b> The function is linear in each column separately.</li>
+        <li><b>Alternating:</b> If two columns are equal, the determinant is zero. (This forces sign flips on column swaps).</li>
         <li><b>Normalization:</b> $\det(I) = 1$.</li>
       </ol>
-      <p>These axioms force the Leibniz formula: $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{i=1}^n A_{i, \sigma(i)}$.</p>
-
-      <h4>Geometric Interpretation: Volume and Orientation</h4>
-      <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ is the volume of the parallelepiped spanned by the columns of $A$.
-      <br><b>Properties forced by geometry:</b>
+      <p><b>Why this definition is powerful:</b>
       <ul>
-        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are linearly independent $\iff$ volume is non-zero.</li>
-        <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. The volume scaling of a composite map is the product of the individual scalings.</li>
-        <li><b>Orientation:</b> The sign of $\det(A)$ indicates whether the map preserves or reverses orientation (e.g., reflection has det -1).</li>
+        <li><b>Uniqueness:</b> There is only one such function (the Leibniz formula). We don't assume a formula; we derive it from the requirements of geometry.</li>
+        <li><b>Singularity:</b> If columns are linearly dependent, one column is a combination of others. By multilinearity and alternation, $\det(A) = 0$. Thus, $\det(A) \neq 0$ is the exact algebraic test for invertibility.</li>
+        <li><b>Volume:</b> Axioms 1-3 are exactly the properties of signed volume for a parallelepiped. $\det(A)$ measures how $A$ scales volume.</li>
       </ul>
       </p>
+
+      <h4>Multiplicativity ($\det(AB) = \det(A)\det(B)$)</h4>
+      <p>This is not an accident of algebra. It is a consequence of uniqueness. Define $f(A) = \det(AB)/\det(B)$. One can show $f$ satisfies the three axioms, so $f(A)$ must be $\det(A)$.
+      <br><b>Geometric Meaning:</b> The volume scaling of a composition is the product of the individual scalings.</p>
 
       <h3>3.2 Trace: The Unique Linear Invariant</h3>
-      <p>The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
+      <p>The trace is often defined as the sum of diagonal elements. Its deep characterization is complementary to the determinant.</p>
+      <p><b>Theorem:</b> The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
       $$ \mathrm{tr}(AB) = \mathrm{tr}(BA) $$
-      This property implies similarity invariance: $\mathrm{tr}(P^{-1}AP) = \mathrm{tr}(APP^{-1}) = \mathrm{tr}(A)$. Thus, the trace is defined for linear operators, not just matrices.</p>
+      This property forces similarity invariance: $\mathrm{tr}(P^{-1}AP) = \mathrm{tr}(A)$. Thus, trace is a property of the linear map, not the matrix.</p>
 
-      <h4>Geometric Interpretation: Infinitesimal Volume Change</h4>
-      <p>While determinant is global volume scaling, trace is the <b>derivative</b> of volume.
+      <h4>Trace as Infinitesimal Determinant</h4>
+      <p>While determinant measures global volume scaling, trace measures <b>infinitesimal</b> volume change.
       $$ \det(I + \epsilon A) = 1 + \epsilon \mathrm{tr}(A) + O(\epsilon^2) $$
-      This connects linear algebra to calculus:
-      <ul>
-        <li><b>Divergence:</b> For a vector field $f(x) = Ax$, the divergence is $\nabla \cdot f = \mathrm{tr}(A)$. It measures the rate of flow expansion.</li>
-        <li><b>Derivative of Det:</b> $\frac{d}{dt} \det(A(t)) = \det(A(t)) \mathrm{tr}(A(t)^{-1} A'(t))$.</li>
-      </ul>
-      </p>
+      This links linear algebra to vector calculus: $\mathrm{div}(Ax) = \mathrm{tr}(A)$. The trace measures the rate of flow expansion/contraction.</p>
     </section>
 
     <!-- SECTION 4: EIGENVALUES -->
@@ -284,38 +280,34 @@
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
       <h3>4.1 Eigenvalues: The Invariant Directions</h3>
-      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
+      <p>A linear map $T$ is complicated because it mixes directions. An <b>eigenvector</b> is a non-zero vector $\mathbf{v}$ whose direction is preserved by $T$, scaled only by the <b>eigenvalue</b> $\lambda$: $T(\mathbf{v}) = \lambda \mathbf{v}$.
       <br><b>The Logic of Detection:</b>
       $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
-      Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ is singular (not invertible). This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
-      <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
+      Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ loses rank. This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
+      <br><b>Basis Invariance:</b> Eigenvalues are intrinsic to the map. Since $\det(P(A-\lambda I)P^{-1}) = \det(A-\lambda I)$, the spectrum is independent of coordinates.</p>
 
-      <h3>4.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
-      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
-      <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
-      <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
-      </ul>
-      <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
+      <h3>4.2 Diagonalization: Basis of Eigenvectors</h3>
+      <p>An operator $T$ is <b>diagonalizable</b> if and only if there exists a basis of $V$ consisting entirely of eigenvectors. In this basis, the matrix of $T$ is diagonal, meaning the map acts as independent scaling along $n$ axes.
+      <br><b>Failure Mode:</b> Diagonalization fails when there are "missing" eigenvectors. This happens if the <b>geometric multiplicity</b> (dimension of eigenspace $E_\lambda$) is strictly less than the <b>algebraic multiplicity</b> (root multiplicity of $p_T$).
+      <br><b>Sufficient Condition:</b> If an $n \times n$ matrix has $n$ <b>distinct</b> eigenvalues, the corresponding eigenvectors are linearly independent, so the matrix is guaranteed to be diagonalizable.</p>
 
-      <h3>4.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
-      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. We must include <b>generalized eigenvectors</b>—vectors that are eventually killed by $(T-\lambda I)^k$.
-      <br><b>The Jordan Block:</b> The canonical structure for a defective eigenvalue is a Jordan block $J_k(\lambda)$:
-      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} = \lambda I + N $$
-      Here $N$ is <b>nilpotent</b> ($N^k = 0$). This nilpotent part represents the "drift" or coupling between dimensions that prevents clean separation.
-      <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
+      <h3>4.3 Jordan Canonical Form: The Nilpotent Core</h3>
+      <p>When diagonalization fails ($g_\lambda < m_\lambda$), what structure replaces it? We must include <b>generalized eigenvectors</b>—vectors that are not invariant but are "eventually" killed by $(T-\lambda I)^k$.
+      <br><b>The Structure:</b> Every linear operator over $\mathbb{C}$ decomposes into a direct sum of <b>Jordan blocks</b>. A Jordan block looks like $J = \lambda I + N$, where $N$ is <b>nilpotent</b> ($N^k = 0$).
+      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} $$
+      The nilpotent part $N$ represents the "drift" or coupling between dimensions that prevents clean separation. Diagonalization is simply the special case where all Jordan blocks are $1 \times 1$.</p>
 
       <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
+      <p>The Spectral Theorem is the pinnacle of linear algebra. It states that for the right class of operators, none of the pathologies of Jordan form occur, and geometry aligns perfectly with algebra.</p>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
-        <li>All eigenvalues are <b>real</b>.</li>
-        <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
-        <li>$V$ admits an <b>orthonormal basis of eigenvectors</b>.</li>
+        <li>All eigenvalues are <b>real</b>. (Complex rotations are impossible).</li>
+        <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>. (Invariant directions are perpendicular).</li>
+        <li>$V$ admits an <b>orthonormal basis</b> of eigenvectors.</li>
       </ol>
-      This is the "perfect" case: no complex numbers, no defects, and the coordinate system is orthogonal.
-      <br><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$ with $Q$ orthogonal.
-      <br><b>Why this matters:</b> This theorem underpins the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), the analysis of Hessian curvature, and the convergence of optimization algorithms.</p>
+      </p>
+      <p><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$, where $Q$ is an orthogonal matrix ($Q^\top Q = I$).
+      <br><b>Why this is definitive:</b> It allows us to decompose any symmetric matrix into a sum of rank-1 orthogonal projections: $A = \sum \lambda_i q_i q_i^\top$. This explains the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$) and is the foundation for Principal Component Analysis.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
@@ -393,19 +385,23 @@
         <li>$Q \in \mathbb{R}^{m \times n}$ has <b>orthonormal columns</b> ($Q^\top Q = I_n$). This represents an isometric embedding.</li>
         <li>$R \in \mathbb{R}^{n \times n}$ is <b>upper triangular</b> with positive diagonal entries. This represents coordinates in the orthonormal basis.</li>
       </ul>
-      <p><b>Proof by Geometry:</b> Let $a_1, \dots, a_n$ be the columns of $A$. Apply Gram-Schmidt to produce orthonormal vectors $q_1, \dots, q_n$ such that $\mathrm{span}(q_1, \dots, q_k) = \mathrm{span}(a_1, \dots, a_k)$ for all $k$.
-      Since $a_k \in \mathrm{span}(q_1, \dots, q_k)$, we can write $a_k = \sum_{j=1}^k r_{jk} q_j$.
-      This triangular dependency is exactly the matrix equation $A = QR$. Uniqueness follows from the uniqueness of Gram-Schmidt (once signs are fixed).</p>
+      <p><b>Geometry-First Proof:</b> Consider the nested subspaces $W_j = \operatorname{span}(a_1, \dots, a_j)$. By Gram-Schmidt, there exists a unique orthonormal basis $\{q_1, \dots, q_n\}$ such that $\operatorname{span}(q_1, \dots, q_j) = W_j$.
+      Since $a_j \in W_j$, it can be written as a linear combination of only the first $j$ basis vectors: $a_j = \sum_{i=1}^j r_{ij} q_i$.
+      This triangular dependency is exactly the matrix equation $A = QR$.
+      <br><b>Uniqueness:</b> The positivity of the diagonal entries $r_{jj} = \langle q_j, a_j \rangle$ fixes the sign of the basis vectors, making the decomposition unique.</p>
 
       <h3>6.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
-      <p>Consider $\min \|A\mathbf{x} - \mathbf{b}\|_2$.
-      Using Normal Equations: $A^\top A \mathbf{x} = A^\top \mathbf{b}$. The condition number is $\kappa(A^\top A) = \kappa(A)^2$. This squaring doubles the number of digits of precision lost.
-      <br>Using QR:
-      $$ \|A\mathbf{x} - \mathbf{b}\|_2 = \|QR\mathbf{x} - \mathbf{b}\|_2 $$
-      Since $Q$ preserves norms (on its range), we multiply the residual by $Q^\top$ (projecting onto the geometry):
-      $$ R\mathbf{x} = Q^\top \mathbf{b} $$
-      This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
-      <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
+      <p>Interpret $A=QR$ as composition: $x \xrightarrow{R} y \xrightarrow{Q} Ax$.
+      <ul>
+        <li>$R$ maps coordinates in $\mathbb{R}^n$ to coordinates in an <b>orthonormal basis</b> of the column space. (Handles conditioning).</li>
+        <li>$Q$ embeds those coordinates isometrically into $\mathbb{R}^m$. (Handles geometry).</li>
+      </ul>
+      </p>
+      <p><b>Solving Least Squares:</b> Minimize $\|A\mathbf{x} - \mathbf{b}\|_2$.
+      Using Normal Equations ($A^\top A \mathbf{x} = A^\top \mathbf{b}$) squares the condition number ($\kappa(A^TA) = \kappa(A)^2$), doubling precision loss.
+      Using QR:
+      $$ \|QR\mathbf{x} - \mathbf{b}\|_2 = \|R\mathbf{x} - Q^\top \mathbf{b}\|_2 \quad \text{(since } Q \text{ preserves norms on its range)} $$
+      This reduces the problem to solving the triangular system $R\mathbf{x} = Q^\top \mathbf{b}$ via back-substitution. The condition number is $\kappa(R) = \kappa(A)$. QR is stable because it separates geometry from conditioning.</p>
 
       <h3>6.3 Full vs. Thin QR</h3>
       <p>
@@ -424,25 +420,20 @@
       <h3>7.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
       <p><b>Theorem (SVD):</b> Any matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:
       $$ \boxed{ A = U \Sigma V^\top } $$
-      where:
-      <ul>
-        <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal (Left singular vectors, basis for codomain).</li>
-        <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal (Right singular vectors, basis for domain).</li>
-        <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with non-negative entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
-      </ul>
-      <p><b>Interpretation:</b>
-      $$ x \xrightarrow{V^\top} \text{rotate coordinates} \xrightarrow{\Sigma} \text{independent scaling} \xrightarrow{U} \text{rotate to output basis} $$
-      This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse.</p>
+      where $U$ and $V$ are orthogonal matrices and $\Sigma$ is diagonal with non-negative entries.
+      <br><b>Interpretation:</b> Every linear map decomposes into:
+      $$ x \xrightarrow{V^\top} \text{Rotate (Input Basis)} \xrightarrow{\Sigma} \text{Scale (Stretch/Shrink)} \xrightarrow{U} \text{Rotate (Output Basis)} $$
+      </p>
 
       <div class="insight">
-        <h4>Construction via Spectral Theorem</h4>
-        <p>SVD is forced by the spectral theorem applied to $A^\top A$.
-        <br>1. $A^\top A$ is symmetric positive semidefinite.
-        <br>2. It has an eigendecomposition $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
-        <br>3. Define $\sigma_i = \sqrt{\lambda_i}$.
-        <br>4. Define $u_i = \frac{1}{\sigma_i} A v_i$ for $\sigma_i > 0$.
-        <br>5. Check orthogonality: $\langle u_i, u_j \rangle = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \delta_{ij}$.
-        <br>6. Extend $U$ to a full basis. $A V = U \Sigma \implies A = U \Sigma V^\top$.
+        <h4>Why SVD must exist (The "Spectral" Proof)</h4>
+        <p>We do not diagonalize $A$; we diagonalize $A^\top A$.
+        <br>1. $A^\top A$ is symmetric positive semidefinite. By the Spectral Theorem, $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
+        <br>2. Define singular values $\sigma_i = \sqrt{\lambda_i}$.
+        <br>3. Define right singular vectors $v_i$ as the columns of $V$. These are directions in the input space.
+        <br>4. <b>Crucial Geometry:</b> $\|A v_i\|^2 = v_i^\top A^\top A v_i = \lambda_i \|v_i\|^2 = \sigma_i^2$. So $A$ stretches $v_i$ by exactly $\sigma_i$.
+        <br>5. Define left singular vectors $u_i = \frac{1}{\sigma_i} A v_i$ (for $\sigma_i > 0$). These are orthonormal in the output space.
+        <br>6. Thus $A v_i = \sigma_i u_i$, which in matrix form is $AV = U\Sigma$, or $A = U\Sigma V^\top$.
         </p>
       </div>
 
@@ -479,18 +470,20 @@
       </div>
 
       <h3>7.4 Application: PCA as SVD of Data</h3>
-      <p>Principal Component Analysis (PCA) is simply SVD applied to a data matrix.
-      <br>Let $X \in \mathbb{R}^{N \times d}$ be the <b>centered</b> data matrix (rows are points).
-      <br>We want to find the direction of maximum variance (max $\mathbf{v}^\top X^\top X \mathbf{v}$).
-      <br>Taking the SVD: $X = U \Sigma V^\top$.
-      <br>The Covariance Matrix is proportional to $X^\top X = V \Sigma^2 V^\top$.
-      <br><b>Conclusion:</b>
+      <p>Principal Component Analysis (PCA) is often taught as "statistics." It is actually <b>pure geometry</b>—specifically, the SVD of the centered data matrix.
+      <br>Let $X \in \mathbb{R}^{N \times d}$ be the data matrix (rows are points), <b>centered</b> so column means are zero.
+      <br><b>The Problem:</b> Find the direction $\mathbf{v}$ ($\|\mathbf{v}\|=1$) maximizing variance $\frac{1}{N}\|X\mathbf{v}\|^2$.
+      <br><b>The Solution via SVD:</b> Let $X = U \Sigma V^\top$.
+      $$ \|X\mathbf{v}\|^2 = \mathbf{v}^\top (V \Sigma^2 V^\top) \mathbf{v} $$
+      This quadratic form is maximized when $\mathbf{v}$ is the first column of $V$ (the first right singular vector).
+      <br><b>Key Identity:</b>
+      $$ \boxed{ \text{PCA} = \text{SVD of centered data} } $$
       <ul>
-        <li><b>Principal Components:</b> The columns of $V$ (Right singular vectors of $X$).</li>
-        <li><b>Variances:</b> The squared singular values $\sigma_i^2/N$.</li>
-        <li><b>Projections:</b> The coordinates of data in the new basis are $XV = U\Sigma$.</li>
+        <li><b>Principal Directions:</b> Columns of $V$ (axes of the data ellipsoid).</li>
+        <li><b>Variances:</b> $\sigma_i^2 / N$.</li>
+        <li><b>Principal Scores:</b> $XV = U\Sigma$ (coordinates in the principal basis).</li>
       </ul>
-      This unifies statistics and geometry.</p>
+      </p>
     </section>
     </section>
 
@@ -498,93 +491,36 @@
     <section class="section-card" id="section-pseudoinverse">
       <h2>8. The Pseudoinverse and Condition Number</h2>
 
-      <h3>8.1 The Moore-Penrose Pseudoinverse ($A^+$)</h3>
-      <p>When $A$ is not square or not invertible, we cannot define $A^{-1}$. However, we can define a generalized inverse $A^+$ that "inverts" the action of $A$ on its range and sends the orthogonal complement to zero.</p>
+      <h3>8.1 The Unified Picture: Least Squares, Pseudoinverse, and Regularization</h3>
+      <p>SVD unifies the three core concepts of solving linear systems: least squares, pseudoinverse, and regularization.</p>
 
-      <h4>The Moore-Penrose Axioms</h4>
-      <p>The pseudoinverse $A^+$ is the unique matrix satisfying these four algebraic conditions:
-      <ol>
-        <li>$A A^+ A = A$ ( $A A^+$ is a projection on the range).</li>
-        <li>$A^+ A A^+ = A^+$ ( $A^+$ acts like an inverse on the range of $A$).</li>
-        <li>$(A A^+)^\top = A A^+$ (Symmetry of projector).</li>
-        <li>$(A^+ A)^\top = A^+ A$ (Symmetry of projector).</li>
-      </ol>
+      <h4>1. Least Squares via SVD</h4>
+      <p>Solve $\min \|A\mathbf{x} - \mathbf{b}\|_2^2$. Using $A=U\Sigma V^\top$, the problem decouples into independent scalar problems in the rotated coordinates:
+      $$ \min_{\mathbf{y}} \|\Sigma \mathbf{y} - U^\top \mathbf{b}\|_2^2 = \sum_{i=1}^r (\sigma_i y_i - c_i)^2 + \sum_{i=r+1}^m c_i^2 $$
+      where $\mathbf{y} = V^\top \mathbf{x}$ and $\mathbf{c} = U^\top \mathbf{b}$.
+      <br>Solution: $y_i = c_i / \sigma_i$ for $\sigma_i > 0$, and $y_i$ is arbitrary for $\sigma_i = 0$.
+      <br><b>Minimum Norm Solution:</b> Setting the arbitrary $y_i=0$ (for $i>r$) minimizes $\|\mathbf{x}\|_2 = \|\mathbf{y}\|_2$. This yields the Pseudoinverse solution.</p>
+
+      <h4>2. The Moore-Penrose Pseudoinverse ($A^+$)</h4>
+      <p>The matrix that performs this "invert where possible, zero otherwise" operation is $A^+ = V \Sigma^+ U^\top$, where $\Sigma^+_{ii} = 1/\sigma_i$ if $\sigma_i > 0$ and $0$ otherwise.
+      <br><b>Properties:</b>
+      <ul>
+        <li><b>Algebraic:</b> It is the unique matrix satisfying the four Moore-Penrose axioms ($AA^+A=A$, etc.).</li>
+        <li><b>Geometric:</b> $A^+$ inverts the map on $\mathcal{R}(A)$ and annihilates $\mathcal{R}(A)^\perp$.</li>
+      </ul>
       </p>
 
-      <div class="proof-box">
-        <h4>Proof: Uniqueness of the Pseudoinverse</h4>
-        <p>Suppose $X$ and $Y$ both satisfy the four Moore-Penrose axioms. We show $X=Y$.
-        <br>1. Start with $X = X A X$.
-        <br>2. Use $A = A Y A$: $X = X (A Y A) X$.
-        <br>3. Group terms: $X = (X A) Y (A X)$.
-        <br>4. Use Axiom 3/4 to introduce symmetry: $X A = (X A)^\top = A^\top X^\top$ and $A X = (A X)^\top = X^\top A^\top$. (Wait, this direction is harder).
-        <br><b>Alternative Clean Derivation:</b>
-        $$ X = X A X = (X A) X = (X A)^\top X = A^\top X^\top X = (A Y A)^\top X^\top X = A^\top Y^\top A^\top X^\top X $$
-        $$ = (Y A)^\top (X A)^\top X = Y A X A X = Y A X $$
-        Symmetrically, $Y = Y A Y = Y A (X A Y) = Y A X A Y = (Y A X) A Y$.
-        From above, $Y A X = X$, so $Y = X A Y$.
-        <br>Now apply symmetry again:
-        $X = Y A X = Y (A X) = Y (A X)^\top = Y X^\top A^\top = Y X^\top (A Y A)^\top = Y X^\top A^\top Y^\top A^\top$.
-        This algebraic manipulation confirms that the geometric definition (via SVD) produces the <i>unique</i> matrix satisfying the algebraic axioms.
-        </p>
-      </div>
-
-      <p><b>Definition via SVD:</b> If $A = U \Sigma V^\top$, then:
-      $$ A^+ = V \Sigma^+ U^\top $$
-      where $\Sigma^+$ is the $n \times m$ matrix obtained by transposing $\Sigma$ and inverting the non-zero singular values:
-      $$
-      \Sigma^+ = \begin{bmatrix}
-      1/\sigma_1 & & & 0 & \dots \\
-      & \ddots & & \vdots & \\
-      & & 1/\sigma_r & 0 & \dots \\
-      0 & \dots & 0 & 0 & \dots \\
-      \vdots & & \vdots & \vdots & \ddots
-      \end{bmatrix}
-      $$
-      (The non-zero block is diagonal with entries $1/\sigma_i$; all other entries are zero).</p>
-
-      <h4>Properties and Applications</h4>
+      <h4>3. Regularization as Spectral Filtering</h4>
+      <p>When $\sigma_i$ is small, $1/\sigma_i$ is huge, amplifying noise (ill-conditioning). Regularization fixes this by modifying the inversion spectrum.
+      <br><b>Tikhonov Regularization (Ridge):</b> $\min \|A\mathbf{x} - \mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_2^2$.
+      <br>Solution: $\mathbf{x}_\lambda = (A^\top A + \lambda I)^{-1} A^\top \mathbf{b}$.
+      <br><b>SVD View:</b> In singular coordinates, the filter factor becomes:
+      $$ y_i(\lambda) = \frac{\sigma_i}{\sigma_i^2 + \lambda} c_i $$
       <ul>
-        <li><b>Minimum Norm Solution:</b> For any system $A\mathbf{x}=\mathbf{b}$ (or the least squares problem), the vector $\mathbf{x}^\star = A^+ \mathbf{b}$ is the solution that has the <b>minimum Euclidean norm</b>.
-        <br>
-        <div class="proof-box">
-          <h4>Proof: $x_{LS} = A^+\mathbf{b}$ minimizes norm</h4>
-        <p>The set of all least-squares solutions is given by $S_{LS} = \{\mathbf{x} \mid A^\top A \mathbf{x} = A^\top \mathbf{b}\}$. Since this is an affine set $x_p + \mathcal{N}(A)$, there is a unique element with minimum Euclidean norm. We show $\mathbf{x}^+ = A^+\mathbf{b}$ is that element.</p>
-
-          <div class="proof-step">
-          <strong>Step 1: Verification of Solution.</strong>
-          First, we check that $\mathbf{x}^+$ actually solves the least squares problem (satisfies Normal Equations).
-          Recall $A = U \Sigma V^\top$ and $A^+ = V \Sigma^+ U^\top$.
-          $$ A \mathbf{x}^+ = U \Sigma V^\top V \Sigma^+ U^\top \mathbf{b} = U (\Sigma \Sigma^+) U^\top \mathbf{b} $$
-          The product $\Sigma \Sigma^+$ is a diagonal projection matrix (1s for indices $1 \dots r$, 0s otherwise). It projects onto the range of $A$.
-          Thus $A\mathbf{x}^+$ is the orthogonal projection of $\mathbf{b}$ onto $\mathcal{R}(A)$, which defines the least squares solution.
-          </div>
-
-          <div class="proof-step">
-          <strong>Step 2: Orthogonality of $\mathbf{x}^+$.</strong>
-          We check where $\mathbf{x}^+$ lies.
-          $\mathbf{x}^+ = V (\Sigma^+ U^\top \mathbf{b})$. This vector is a linear combination of the columns of $V$ corresponding to non-zero singular values (indices $1 \dots r$).
-          These columns span the <b>row space</b> $\mathcal{R}(A^\top)$.
-          Thus, $\mathbf{x}^+ \in \mathcal{R}(A^\top)$.
-          Recall the fundamental orthogonality: $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
-          </div>
-
-          <div class="proof-step">
-          <strong>Step 3: Pythagorean Minimization.</strong>
-          Let $\mathbf{x}$ be any solution to the least squares problem. The set of all solutions is the affine set $S = \mathbf{x}^+ + \mathcal{N}(A)$.
-          Any solution $\mathbf{x}$ can be written as $\mathbf{x} = \mathbf{x}^+ + \mathbf{z}$, where $\mathbf{z} \in \mathcal{N}(A)$.
-          <br>We established in Step 2 that $\mathbf{x}^+ \in \mathcal{R}(A^\top)$.
-          The Fundamental Theorem of Linear Algebra states that $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
-          Therefore, $\mathbf{x}^+ \perp \mathbf{z}$.
-          <br>By the Pythagorean Theorem:
-          $$ \|\mathbf{x}\|_2^2 = \|\mathbf{x}^+ + \mathbf{z}\|_2^2 = \|\mathbf{x}^+\|_2^2 + \|\mathbf{z}\|_2^2 $$
-          Since $\|z\|_2^2 \ge 0$, the minimum possible value for $\|x\|_2^2$ occurs when $\|z\|_2^2 = 0$, i.e., $\mathbf{z}=0$.
-          Thus, $\mathbf{x} = \mathbf{x}^+$ is the unique solution with minimum norm.
-          </div>
-        </div>
-        </li>
-        <li><b>Projectors:</b> $AA^+$ is the orthogonal projector onto the column space $\mathcal{R}(A)$. $A^+A$ is the orthogonal projector onto the row space $\mathcal{R}(A^\top)$.</li>
+        <li>Large $\sigma_i (\gg \lambda)$: $y_i \approx c_i / \sigma_i$ (standard inversion).</li>
+        <li>Small $\sigma_i (\ll \lambda)$: $y_i \approx \sigma_i c_i / \lambda \to 0$ (noise suppression).</li>
       </ul>
+      This smoothly "turns off" the inversion for unstable directions.</p>
 
       <h3>8.2 Condition Number</h3>
       <p>The condition number $\kappa(A)$ measures the sensitivity of the solution of a linear system to perturbations in the data. Formally, it is defined as:</p>

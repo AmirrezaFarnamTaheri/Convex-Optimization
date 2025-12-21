@@ -149,49 +149,45 @@
       <h3>1.5 Linear Combinations: The Fundamental Constructor</h3>
       <p>Linear algebra is built on one atomic operation: the <b>finite linear combination</b>.
       $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
-      Every concept in the course reduces to this:</p>
+      Every concept in the course reduces to this.</p>
 
       <h4>(A) The "Fundamental Identity" of Matrix-Vector Multiplication</h4>
       <p>The most important formula for intuition is arguably the column-centric view of matrix multiplication. If $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$, then:
-      $$ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n $$
+      $$ \boxed{ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n } $$
       <b>Multiplying a matrix by a vector means forming a linear combination of the matrix’s columns, using the vector’s entries as coefficients.</b>
       This perspective immediately reveals:</p>
       <ul>
         <li><b>Column Space:</b> $\operatorname{Col}(A)$ is simply the span of the columns.</li>
-        <li><b>Consistency:</b> $A\mathbf{x}=\mathbf{b}$ is solvable if and only if $\mathbf{b}$ can be built from the columns of $A$.</li>
+        <li><b>Consistency:</b> $A\mathbf{x}=\mathbf{b}$ is solvable if and only if $\mathbf{b}$ lies in the span of the columns.</li>
         <li><b>Nullspace:</b> $A\mathbf{x}=0$ describes a <i>dependency relation</i> among the columns. If $\mathbf{x} \neq 0$, the columns are linearly dependent.</li>
       </ul>
 
       <h4>(B) Linear Independence as "No Redundancy"</h4>
-      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.”
-      <br><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
-      $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
-      If there exists a non-trivial combination (some $\alpha_i \neq 0$) summing to zero, the vectors are <b>dependent</b>.</p>
+      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it rigorously to ensure coordinates are unique.</p>
 
-      <p><b>The "Zero-Combination" Test:</b> Why check for 0? Because "two different ways to make the same vector $\mathbf{w}$" is equivalent to "a non-trivial way to make $\mathbf{0}$" (by subtracting the equations). Independence guarantees that <b>coordinates are unique</b>.</p>
+      <p><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
+      $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
+      If there exists a non-trivial combination (some $\alpha_i \neq 0$) summing to zero, the vectors are <b>linearly dependent</b>.</p>
+
+      <p><b>Why check for zero?</b> You might wonder: why not check if two combinations produce the same vector? Because those are the same question.
+      $$ \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i \iff \sum (\alpha_i - \beta_i) \mathbf{v}_i = 0 $$
+      Thus, <b>Independence $\iff$ Uniqueness of Representation</b>. Once you choose independent vectors as building blocks, every vector in their span has a unique recipe (coordinates).</p>
 
       <div class="theorem-box">
         <h4>Theorem: Independence $\iff$ No Redundancy</h4>
         <p>A set of vectors is linearly independent if and only if <b>no vector in the set lies in the span of the others</b>.
         <br><i>Proof:</i>
         <br>($\Rightarrow$) Assume independent. Suppose $v_j = \sum_{i \neq j} c_i v_i$. Then $v_j - \sum c_i v_i = 0$ is a non-trivial dependence relation (coefficient of $v_j$ is 1), contradiction.
-        <br>($\Leftarrow$) Assume dependent. Then $\sum \alpha_i v_i = 0$ with some $\alpha_j \neq 0$. We can solve for $v_j$: $v_j = -\sum_{i \neq j} \frac{\alpha_i}{\alpha_j} v_i$. Thus $v_j$ is in the span of the others.</p>
+        <br>($\Leftarrow$) Assume dependent. Then $\sum \alpha_i v_i = 0$ with some $\alpha_j \neq 0$. We can solve for $v_j$ (since we are in a field): $v_j = -\sum_{i \neq j} \frac{\alpha_i}{\alpha_j} v_i$. Thus $v_j$ is in the span of the others.</p>
       </div>
 
       <p><b>Geometric Intuition:</b>
-      <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear (not on the same line through the origin).
+      <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear.
       <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
-      <br><b>Redundancy:</b> If a set is dependent, at least one vector lies in the span of the others and can be removed without shrinking the span.</p>
-
-      <h4>The Geometry of Linear Combinations</h4>
-      <p>Algebraically, we sum vectors. Geometrically, we build shapes through the origin.
-      <br><b>1 Vector ($v \ne 0$):</b> A line through the origin. One degree of freedom.
-      <br><b>2 Independent Vectors:</b> A plane through the origin. Two degrees of freedom.
-      <br><b>Dependence = No New Dimension:</b> If $v_2$ is a multiple of $v_1$, the span is still just a line. Dependence means "geometric redundancy".
-      <br><b>Convex vs Linear:</b> If we restrict $\alpha_i \ge 0$, we get cones. If we restrict $\sum \alpha_i = 1$, we get affine flats. If we do both, we get simplices (triangles, tetrahedrons).</p>
+      <br><b>Redundancy:</b> If a set is dependent, at least one vector adds no new dimension to the span.</p>
 
       <h3>1.6 Functions and Structure-Preserving Maps</h3>
-      <p>Linear algebra is not just about sets of vectors; it's about the functions that respect their structure. This is the core idea of a <b>homomorphism</b> or structure-preserving map. Linear algebra studies the functions $T: V \to W$ that respect the "vector-ness" of the space.</p>
+      <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. A <b>linear transformation</b> is a map that preserves the "vector-ness" of the space.</p>
 
       <p><b>The Definition of "Linear":</b> A function $T: V \to W$ is a linear transformation if it satisfies <b>both</b>:</p>
       <ol>
@@ -200,19 +196,19 @@
       </ol>
       <p>These two conditions combine to the single requirement that $T$ preserves linear combinations:
       $$ T\left(\sum_{i=1}^k \alpha_i v_i\right) = \sum_{i=1}^k \alpha_i T(v_i) $$
-      Anything that fails one of these (e.g., $f(x)=x^2$ or affine maps $f(x)=Ax+b$ with $b \ne 0$) is <b>not</b> linear. Linearity requires $T(0)=0$.</p>
+      </p>
 
       <h4>The "Basis Determines Everything" Principle</h4>
       <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
       <br>For any $v = \sum c_i b_i$, we have $T(v) = \sum c_i T(b_i)$.
-      <br>This is why matrices exist: they are simply the bookkeeping tables recording the coordinates of $T(b_i)$.</p>
+      <br>This is why matrices exist: they are simply the bookkeeping tables recording the coordinates of the images of basis vectors.</p>
 
-      <h4>Derived Properties</h4>
-      <p>From the definition alone, we get rigorous consequences:</p>
+      <h4>Canonical Examples</h4>
       <ul>
-        <li><b>Zero maps to Zero:</b> $T(0_V) = 0_W$. (Forced by homogeneity: $T(0v) = 0T(v)$).</li>
-        <li><b>Subspaces map to Subspaces:</b> The image of a subspace is a subspace. The kernel (preimage of 0) is a subspace.</li>
-        <li><b>Linearity vs Affine:</b> A map $T(v)=Av+b$ is <b>affine</b>. It preserves straight lines but not the origin. It is linear only if $b=0$.</li>
+        <li><b>Matrix Multiplication:</b> $T(\mathbf{x}) = A\mathbf{x}$. Linearity follows from distributivity of matrix algebra.</li>
+        <li><b>Differentiation:</b> $T(f) = f'$. Since $(f+g)' = f' + g'$ and $(cf)' = cf'$, differentiation is a linear map on the vector space of smooth functions.</li>
+        <li><b>Integration:</b> $T(f) = \int_a^b f(x) dx$ is a linear functional.</li>
+        <li><b>NOT Linear:</b> $T(x) = x+1$ (fails $T(0)=0$), $T(x) = |x|$ (fails additivity), $T(x) = x^2$ (fails homogeneity).</li>
       </ul>
 
       <h3>1.7 Matrix Algebra from Linear Maps</h3>
@@ -229,7 +225,39 @@
       </ul>
       </p>
 
-      <h3>1.8 Functions and Preimages</h3>
+      <h3>1.8 Basis and Dimension: Coordinates and Degrees of Freedom</h3>
+      <p>A <b>basis</b> is where linear algebra stops being about abstract sets and becomes a working coordinate system. It combines the two key properties we've studied: existence (spanning) and uniqueness (independence).</p>
+
+      <h4>(A) Basis: A Coordinate System that Actually Works</h4>
+      <p>A set of vectors $\mathcal{B} = \{b_1, \dots, b_n\}$ is a <b>basis</b> for $V$ if:
+      <ol>
+        <li><b>Spanning:</b> $\mathcal{B}$ generates $V$. Every vector can be built from $\mathcal{B}$.</li>
+        <li><b>Independence:</b> $\mathcal{B}$ has no redundancy. Every vector is built in a <i>unique</i> way.</li>
+      </ol>
+      </p>
+
+      <div class="theorem-box">
+        <h4>The Basis Theorem</h4>
+        <p>If $\mathcal{B}$ is a basis, then every vector $\mathbf{v} \in V$ can be written in <b>exactly one way</b> as a linear combination:
+        $$ \mathbf{v} = c_1 b_1 + \dots + c_n b_n $$
+        The unique scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $\mathbf{v}$ in basis $\mathcal{B}$, denoted $[\mathbf{v}]_\mathcal{B}$.
+        <br>This creates a perfect dictionary (bijection) between the abstract space $V$ and the concrete space $\mathbb{F}^n$.
+        </p>
+      </div>
+
+      <h4>(B) Dimension: The Invariant Number</h4>
+      <p>A vector space can have infinitely many different bases (e.g., standard axis vs. rotated axis). However, a deep structural theorem ensures they all share one property.</p>
+      <p><b>Dimension Theorem:</b> All bases of a finite-dimensional vector space have the <b>same number of elements</b>. This number is the <b>dimension</b> of $V$, denoted $\dim(V)$.</p>
+
+      <p><b>Why this matters:</b> Dimension is the intrinsic "number of degrees of freedom" of the space. It is robust to coordinate changes.
+      <ul>
+        <li><b>Maximal Independence:</b> You cannot have more than $\dim(V)$ independent vectors.</li>
+        <li><b>Minimal Spanning:</b> You cannot span $V$ with fewer than $\dim(V)$ vectors.</li>
+        <li><b>Basis:</b> Any independent set of size $\dim(V)$ is automatically a basis. Any spanning set of size $\dim(V)$ is automatically a basis.</li>
+      </ul>
+      </p>
+
+      <h3>1.9 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
       <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
       <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
@@ -243,20 +271,20 @@
       <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
 
       <h3>2.1 Kernel and Image: Where Information Dies and Survives</h3>
-      <p>For a matrix $A \in \mathbb{R}^{m \times n}$ (representing a map $T:\mathbb{R}^n \to \mathbb{R}^m$):</p>
+      <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
-        <li><b>Kernel (Nullspace) $\mathcal{N}(A)$:</b> The set of inputs sent to zero. $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
-          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel ($\mathbf{u}-\mathbf{v} \in \mathcal{N}(A)$). A non-trivial kernel means the map is not injective (not invertible).</li>
-        <li><b>Image (Column Space) $\mathcal{R}(A)$:</b> The set of reachable outputs. $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
-          <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. If $\mathcal{R}(A) \neq \mathbb{R}^m$, the map is not surjective.</li>
+        <li><b>Kernel (Nullspace):</b> $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
+          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel ($\mathbf{u}-\mathbf{v} \in \mathcal{N}(A)$). It measures the <b>indistinguishable</b> inputs.</li>
+        <li><b>Image (Column Space):</b> $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
+          <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. The equation $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \in \mathcal{R}(A)$.</li>
       </ul>
 
       <div class="theorem-box">
-        <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
-        <p>A linear map $T$ is <b>injective</b> (one-to-one) if and only if its kernel contains only the zero vector ($\mathcal{N}(T) = \{0\}$).</p>
-        <p><i>Proof:</i>
-        <br>($\Rightarrow$) If $T$ is injective, then $T(\mathbf{v}) = 0 = T(\mathbf{0})$ implies $\mathbf{v} = \mathbf{0}$.
-        <br>($\Leftarrow$) If $\mathcal{N}(T) = \{0\}$ and $T(\mathbf{u}) = T(\mathbf{v})$, then linearity implies $T(\mathbf{u} - \mathbf{v}) = 0$. Thus $\mathbf{u} - \mathbf{v} \in \mathcal{N}(T)$, so $\mathbf{u} - \mathbf{v} = 0$, implying $\mathbf{u} = \mathbf{v}$.</p>
+        <h4>Fundamental Equivalence</h4>
+        <p>$$ T(\mathbf{u}) = T(\mathbf{v}) \iff \mathbf{u} - \mathbf{v} \in \mathcal{N}(T) $$
+        <br><b>Injectivity:</b> A map is injective (one-to-one) if and only if $\mathcal{N}(T) = \{0\}$.
+        <br><b>Surjectivity:</b> A map is surjective (onto) if and only if $\mathcal{R}(A) = \mathbb{R}^m$.
+        <br><b>Structure of Solutions:</b> If $A\mathbf{x}_p = \mathbf{b}$, then the set of <i>all</i> solutions is the affine set $\mathbf{x}_p + \mathcal{N}(A)$.</p>
       </div>
 
       <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
@@ -265,7 +293,7 @@
       <p><i>Interpretation:</i>
       <br><b>Rank ($r$):</b> Number of independent constraints the system <i>can</i> impose (or independent directions it can reach).
       <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
-      <br>You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
+      <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
 
       <h3>2.3 The Four Fundamental Subspaces</h3>
       <p>Every matrix $A$ induces four subspaces that completely characterize its action. It is critical to remember <b>where they live</b>:</p>
@@ -293,21 +321,21 @@
             <td>$\mathcal{N}(A)$</td>
             <td>$\mathbb{R}^n$ (Input)</td>
             <td>$n-r$</td>
-            <td>Directions of non-uniqueness; killed inputs.</td>
+            <td>Inputs annihilated by the map; degrees of freedom.</td>
           </tr>
           <tr>
             <td>Row Space</td>
             <td>$\mathcal{R}(A^\top)$</td>
             <td>$\mathbb{R}^n$ (Input)</td>
             <td>$r$</td>
-            <td>Active constraints on $\mathbf{x}$.</td>
+            <td>Constraint space; all linear constraints enforced on $\mathbf{x}$.</td>
           </tr>
           <tr>
             <td>Left Nullspace</td>
             <td>$\mathcal{N}(A^\top)$</td>
             <td>$\mathbb{R}^m$ (Output)</td>
             <td>$m-r$</td>
-            <td>Dependencies among equations; constraints on $\mathbf{b}$.</td>
+            <td>Dependencies among equations; impossible directions for $\mathbf{b}$.</td>
           </tr>
         </tbody>
       </table>

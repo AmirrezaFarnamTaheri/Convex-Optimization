@@ -204,26 +204,28 @@
       <br>Thus $n=m$. This invariant number is the <b>Dimension</b>.</p>
 
       <h3>2.4 Matrices as Representations of Linear Maps</h3>
-      <p>A matrix is not just a table of numbers; it is the coordinate representation of a linear map <i>after</i> bases have been chosen for the domain and codomain.</p>
+      <p>Up to now, we’ve treated matrices as arrays. But why do they exist?
+      <br><b>A matrix is a linear map written in coordinates after you choose bases.</b></p>
 
-      <p>Let $T: V \to W$ be linear. Let $B=\{b_1, \dots, b_n\}$ be a basis for $V$ and $C=\{c_1, \dots, c_m\}$ be a basis for $W$.
-      <br>We construct the matrix $A = [T]_{C \leftarrow B}$ column by column.
-      <br><b>Rule:</b> The $j$-th column of $A$ is the coordinate vector of the image of the $j$-th basis vector $b_j$, expressed in the basis $C$.
-      $$ T(b_j) = \sum_{i=1}^m a_{ij} c_i \implies \text{Column } j = [T(b_j)]_C $$
-      This definition guarantees the commutative diagram:
-      $$ [T(v)]_C = A [v]_B $$
-      <br><b>Why this matters:</b> This construction proves that matrix multiplication isn't arbitrary—it is the only operation that tracks coordinates correctly through linear maps.</p>
+      <h4>Constructing the Matrix (Column by Column)</h4>
+      <p>Let $V$ have basis $B=\{b_1, \dots, b_n\}$ and $W$ have basis $C=\{c_1, \dots, c_m\}$.
+      <br>For a map $T: V \to W$, the matrix $A = [T]_{C \leftarrow B}$ is constructed by the rule:
+      <br><b>The $j$-th column of $A$ is the coordinate vector of $T(b_j)$ in basis $C$.</b>
+      $$ T(b_j) = \sum_{i=1}^m A_{ij} c_i \quad \iff \quad \text{Column } j = [T(b_j)]_C $$
+      This guarantees that $[T(v)]_C = A [v]_B$. The diagram commutes.</p>
 
-      <h4>Change of Basis (Similarity)</h4>
-      <p>What if we change the basis of $V$ from $B$ to $B'$? The linear map $T$ stays the same, but its matrix representation changes.
-      <br>Let $P$ be the <b>change-of-basis matrix</b> from $B'$ to $B$ (columns are $B'$ vectors written in $B$). This means $[v]_B = P [v]_{B'}$.
-      <br>We want $A'$ such that $[T(v)]_{B'} = A' [v]_{B'}$.
-      <br>Using the old matrix $A$ (where $[T(v)]_B = A [v]_B$):
-      $$ [T(v)]_{B'} = P^{-1} [T(v)]_B = P^{-1} A [v]_B = P^{-1} A P [v]_{B'} $$
-      Thus:
+      <h4>Composition = Multiplication</h4>
+      <p>Why is matrix multiplication "row-by-column"? Because it simulates function composition.
+      <br>If $S: U \to V$ and $T: V \to W$, then the matrix for $T \circ S$ must satisfy:
+      $$ [T(S(u))]_C = [T]_{C \leftarrow B} [S(u)]_B = [T]_{C \leftarrow B} ([S]_{B \leftarrow A} [u]_A) $$
+      Associativity ($A(BC)=(AB)C$) is forced by associativity of function composition ($f \circ (g \circ h) = (f \circ g) \circ h$). Non-commutativity ($AB \ne BA$) is forced because order of operations matters.</p>
+
+      <h4>Change of Basis and Similarity</h4>
+      <p>If we change the basis of $V$ from $B$ to $B'$, the vector $v$ doesn't change, but its coordinates do: $[v]_B = P [v]_{B'}$, where $P$ is the change-of-basis matrix (columns are new basis vectors written in old basis).
+      <br>The matrix $A$ representing $T$ transforms to $A'$ via:
       $$ A' = P^{-1} A P $$
-      This is <b>Similarity</b>. Similar matrices represent the same linear operator in different coordinate systems.
-      <br><b>Invariants:</b> Since the map is unchanged, intrinsic properties like Rank, Determinant, Trace, and Eigenvalues are preserved under similarity.</p>
+      This relation is called <b>Similarity</b>.
+      <br><b>Key Insight:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems. Thus, they share all intrinsic properties: Rank, Determinant, Trace, and <b>Eigenvalues</b>.</p>
     </section>
 
     <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->
@@ -253,46 +255,42 @@
       <h2>4. The Spectral Layer: Eigenvalues and Diagonalization</h2>
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It decomposes the space into invariant 1D subspaces.</p>
 
-      <h3>4.1 Eigenvalues and Eigenvectors: The Basics</h3>
-      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> of $A \in \mathbb{R}^{n \times n}$ with <b>eigenvalue</b> $\lambda$ if:
-      $$ A\mathbf{v} = \lambda \mathbf{v} $$
-      Equivalently, $(A - \lambda I)\mathbf{v} = 0$, which requires $\det(A - \lambda I) = 0$. The polynomial $p(\lambda) = \det(A - \lambda I)$ is the <b>characteristic polynomial</b>.
-      <br><b>Multiplicities:</b>
-      <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> The multiplicity of $\lambda$ as a root of $p(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> The dimension of the eigenspace $\dim(\ker(A-\lambda I))$.</li>
-      </ul>
-      Always $1 \le g_\lambda \le m_\lambda$. Diagonalization requires $g_\lambda = m_\lambda$ for all $\lambda$.
-      <br><b>Diagonalization Criterion:</b> A matrix is diagonalizable if and only if the sum of geometric multiplicities equals the dimension of the space:
-      $$ \sum_{\lambda} \dim(\ker(A-\lambda I)) = n $$
-      </p>
+      <h3>4.1 Eigenvalues and Diagonalization: Decoupling Dynamics</h3>
+      <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b>
+      <br>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$.
+      <br>Equivalently, $\mathbf{v} \in \ker(A - \lambda I)$. Thus, eigenvalues are roots of $\det(A - \lambda I) = 0$.
+      <br><b>Diagonalization:</b> A matrix $A$ is diagonalizable ($A = PDP^{-1}$) if there exists a basis of eigenvectors. This happens if and only if for every eigenvalue $\lambda$, the geometric multiplicity ($g_\lambda = \dim \ker(A-\lambda I)$) equals the algebraic multiplicity ($m_\lambda$).
+      <br><i>Meaning:</i> If diagonalizable, the map decouples into 1D scalar actions. $A^k = PD^kP^{-1}$.</p>
 
-      <h3>4.2 The Spectral Theorem (Symmetric Matrices)</h3>
-      <p>This is the cleanest, most rigid case in linear algebra.
-      <br><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
+      <h3>4.2 The Spectral Theorem: Perfect Geometry</h3>
+      <p><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>
         <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
-        <li>$A$ admits an <b>orthonormal eigenbasis</b>. There exists an orthogonal matrix $Q$ ($Q^\top Q = I$) such that:
-        $$ \boxed{A = Q \Lambda Q^\top} $$</li>
+        <li>$A$ admits an <b>orthonormal eigenbasis</b> ($A = Q \Lambda Q^\top$ with $Q^\top Q = I$).</li>
       </ol>
+      </p>
 
       <div class="proof-box">
-        <h4>Proof Sketch: Why are eigenvalues real?</h4>
-        <p>Let $Av = \lambda v$ with $v \neq 0$. Compute the quadratic form $v^* A v$.
-        <br>Since $A=A^\top$ (real symmetric), $v^* A v = v^* \lambda v = \lambda \|v\|^2$.
-        <br>Taking conjugate transpose: $(v^* A v)^* = v^* A^* v = v^* A v$.
-        <br>Thus $\lambda \|v\|^2 = \bar{\lambda} \|v\|^2$. Since $\|v\|^2 > 0$, $\lambda = \bar{\lambda}$, so $\lambda \in \mathbb{R}$.</p>
+        <h4>Proof: Why are eigenspaces orthogonal?</h4>
+        <p>Let $Av = \lambda v$ and $Aw = \mu w$ with $\lambda \ne \mu$.
+        <br>Compute inner product $\langle Av, w \rangle$.
+        <br>1. $\langle Av, w \rangle = \lambda \langle v, w \rangle$.
+        <br>2. $\langle Av, w \rangle = \langle v, A^\top w \rangle = \langle v, Aw \rangle = \mu \langle v, w \rangle$.
+        <br>Subtracting gives $(\lambda - \mu)\langle v, w \rangle = 0$. Since $\lambda \ne \mu$, we must have $\langle v, w \rangle = 0$.
+        <br><b>Conclusion:</b> Symmetric matrices represent a pure stretch along perpendicular axes. No shearing. This makes them the "perfect" matrices for optimization (Hessians).</p>
       </div>
 
-      Geometrically, a symmetric matrix represents a stretch along perpendicular axes. This structure is fundamental to quadratic optimization ($\frac{1}{2}x^\top Q x$).</p>
-
-      <h3>4.3 Jordan Canonical Form (When Diagonalization Fails)</h3>
-      <p>Diagonalization fails when $g_\lambda < m_\lambda$ (defective matrix). The <b>Jordan Canonical Form</b> provides the best possible replacement. It decomposes the space into invariant subspaces called Jordan Blocks.
+      <h3>4.3 Jordan Canonical Form: The Defective Reality</h3>
+      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It cannot be decoupled into scalar actions. Instead, it decomposes into <b>Jordan Blocks</b>:
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} $$
-      Each block represents a mix of pure scaling ($\lambda$) and "nilpotent drift" (superdiagonal 1s).
-      <br><b>Generalized Eigenvectors:</b> When there aren't enough eigenvectors, we look for vectors $v$ such that $(A-\lambda I)^k v = 0$. These form <b>Jordan Chains</b>: $(A-\lambda I)v_2 = v_1$ (where $v_1$ is an eigenvector).
-      <br>While numerically unstable, Jordan form completely classifies matrices up to similarity.</p>
+      <br><b>Structure:</b>
+      <ul>
+        <li><b>Diagonal ($\lambda I$):</b> The scaling part.</li>
+        <li><b>Superdiagonal ($N$):</b> The "nilpotent drift" or coupling part.</li>
+      </ul>
+      <b>Jordan Chains:</b> Missing eigenvectors are replaced by generalized eigenvectors where $(A-\lambda I)v_{k} = v_{k-1}$.
+      <br><b>Why it matters:</b> It classifies all matrices up to similarity. It shows that non-diagonalizability corresponds to "coupling" that cannot be removed by basis change.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
@@ -423,11 +421,12 @@
         <ul>
           <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal ($U^\top U = I$). (Left singular vectors, Output basis).</li>
           <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal ($V^\top V = I$). (Right singular vectors, Input basis).</li>
-          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$. (Singular values).</li>
+          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$. (Singular values $\sigma_i = \sqrt{\lambda_i(A^\top A)}$).</li>
         </ul>
+        <p>This works for square, rectangular, symmetric, or non-symmetric matrices. It is the <b>canonical coordinate system</b> for any linear map.</p>
       </div>
 
-      <h3>7.2 Geometric Meaning: Rotate-Stretch-Rotate</h3>
+      <h3>7.2 Geometric Meaning: Input and Output Bases</h3>
       <p>SVD says that <b>every linear map</b> is a composition of:
       <ol>
         <li><b>Rotation ($V^\top$):</b> Align input basis with standard axes.</li>

@@ -62,7 +62,7 @@
     <!-- SECTION 1: ABSTRACT VECTOR SPACES -->
     <section class="section-card" id="section-vector-spaces">
       <h2>1. Abstract Vector Spaces</h2>
-      <p>Up to now, we worked with $\mathbb{R}^n$. However, linear algebra is much broader. A <b>Vector Space</b> is any set $V$ equipped with addition and scalar multiplication satisfying specific axioms (closure, associativity, distributivity, etc.).</p>
+      <p>Up to now, we worked with $\mathbb{R}^n$. However, linear algebra is much broader. A <b>Vector Space</b> is any set $V$ equipped with addition and scalar multiplication satisfying the <b>axioms</b> defined in Lecture 00 (Closure, Associativity, Identity, Inverses, Distributivity).</p>
       <p>This abstraction is powerful because it applies to:
       <ul>
         <li><b>Function Spaces:</b> $V = \{f : [0,1] \to \mathbb{R}\}$. Vectors are functions.</li>
@@ -72,20 +72,29 @@
       </p>
 
       <h3>1.1 Subspaces: "Closed Worlds"</h3>
-      <p>A subset $W \subseteq V$ is a <b>subspace</b> if it is a vector space in its own right.
-      <br><b>The Subspace Test:</b> $W$ is a subspace iff it is non-empty and closed under linear combinations:
-      $$ \mathbf{u}, \mathbf{v} \in W, \alpha, \beta \in \mathbb{F} \implies \alpha \mathbf{u} + \beta \mathbf{v} \in W $$
-      This "closure" property is the defining feature of linear structures.</p>
+      <p>A subset $W \subseteq V$ is a <b>subspace</b> if it inherits the vector space structure. Practically, this means it is a "closed world" under linear operations.
+      <br><b>The Subspace Criteria:</b> A nonempty subset $W$ is a subspace iff it satisfies:
+      <ul>
+        <li><b>Closure under Addition:</b> $u, v \in W \implies u+v \in W$.</li>
+        <li><b>Closure under Scaling:</b> $u \in W, \alpha \in \mathbb{F} \implies \alpha u \in W$.</li>
+      </ul>
+      Combined, this means $W$ is closed under all linear combinations.
+      <br><b>Examples:</b> Kernels and Images of linear maps are subspaces. Solution sets to homogeneous equations $Ax=0$ are subspaces. (Solution sets to $Ax=b$ are <i>affine</i> subspaces, translates of a subspace).</p>
 
       <h3>1.2 Span and Generating Sets</h3>
-      <p>The <b>Span</b> of a set $S \subseteq V$ is the set of all <i>finite</i> linear combinations of elements in $S$.
+      <p>The <b>Span</b> of a set $S \subseteq V$ is the set of all <i>finite</i> linear combinations of elements in $S$:
       $$ \mathrm{span}(S) = \{ \sum_{i=1}^k \alpha_i v_i \mid v_i \in S, \alpha_i \in \mathbb{F} \} $$
-      <b>Theorem:</b> $\mathrm{span}(S)$ is the smallest subspace containing $S$. It is the intersection of all subspaces that contain $S$.</p>
+      <b>Span as Intersection:</b> $\mathrm{span}(S)$ is the smallest subspace containing $S$. It can be defined as the intersection of all subspaces that contain $S$.
+      <br><b>Closure Properties:</b>
+      <ul>
+        <li><b>Monotonicity:</b> $S \subseteq T \implies \mathrm{span}(S) \subseteq \mathrm{span}(T)$.</li>
+        <li><b>Idempotence:</b> $\mathrm{span}(\mathrm{span}(S)) = \mathrm{span}(S)$.</li>
+      </ul></p>
 
       <h3>1.3 Linear Maps (Structure-Preserving Functions)</h3>
       <p>A function $T: V \to W$ is a <b>Linear Map</b> if it preserves the vector space operations:
       $$ T(\alpha \mathbf{u} + \beta \mathbf{v}) = \alpha T(\mathbf{u}) + \beta T(\mathbf{v}) $$
-      This is the definition of a homomorphism in algebra.
+      This is the definition of a homomorphism in algebra. It implies $T(0)=0$ and $T(-u) = -T(u)$.
       <br><b>Kernel and Image:</b> The kernel $\ker(T) = \{\mathbf{v} \mid T(\mathbf{v}) = 0\}$ is a subspace of the domain. The image $\mathrm{im}(T) = \{T(\mathbf{v}) \mid \mathbf{v} \in V\}$ is a subspace of the codomain.</p>
     </section>
 
@@ -94,18 +103,18 @@
       <h2>2. Bases, Coordinates, and Dimension</h2>
 
       <h3>2.1 Linear Independence and Basis</h3>
-      <p>A set of vectors is <b>linearly independent</b> if no vector in the set is in the span of the others (no redundancy).
-      <br>A <b>Basis</b> is a set that is both:
+      <p><b>Linear Independence:</b> A set of vectors is independent if no vector in the set is in the span of the others (no redundancy). Algebraically, $\sum \alpha_i v_i = 0 \implies \alpha_i = 0$.
+      <br><b>Basis:</b> A set $B$ is a basis if it is both:
       <ol>
-        <li><b>Spanning:</b> Generates the entire space.</li>
-        <li><b>Independent:</b> Minimal (no redundancy).</li>
+        <li><b>Spanning:</b> $\mathrm{span}(B) = V$ (Existence of representation).</li>
+        <li><b>Independent:</b> Minimal (Uniqueness of representation).</li>
       </ol>
       </p>
 
       <h3>2.2 The Coordinate Theorem</h3>
       <p>If $B = \{b_1, \dots, b_n\}$ is a basis for $V$, then every vector $\mathbf{v} \in V$ has a <b>unique</b> representation:
       $$ \mathbf{v} = c_1 b_1 + \dots + c_n b_n $$
-      The coefficients $c_i$ are the <b>coordinates</b> of $\mathbf{v}$ with respect to $B$. This theorem allows us to translate abstract vector problems into concrete $\mathbb{R}^n$ problems (using coordinate vectors).</p>
+      The coefficients $c_i$ are the <b>coordinates</b> of $\mathbf{v}$ with respect to $B$. This theorem allows us to translate abstract vector problems into concrete $\mathbb{R}^n$ problems (using coordinate vectors). The map $\mathbf{v} \mapsto [c_1, \dots, c_n]^\top$ is an isomorphism.</p>
 
       <h3>2.3 Dimension and the Steinitz Exchange Lemma</h3>
       <p><b>Theorem:</b> All bases of a finite-dimensional vector space have the same number of elements. This number is the <b>Dimension</b>, $\dim(V)$.
@@ -118,10 +127,8 @@
             <li>We can replace $k$ vectors from $S$ with the vectors in $L$ to form a new spanning set.</li>
         </ol>
         </p>
-        <p><i>Consequence:</i> If bases $B_1$ and $B_2$ have sizes $n$ and $m$:
-        <br>1. $B_1$ spans, $B_2$ indep $\implies m \le n$.
-        <br>2. $B_2$ spans, $B_1$ indep $\implies n \le m$.
-        <br>Thus $n=m$. Dimension is well-defined.</p>
+        <p><i>Proof Sketch:</i> We inject vectors from $L$ one by one into $S$. Since $S$ spans, $\ell_1$ is a combination of $S$. A nonzero coefficient allows us to swap a vector from $S$ with $\ell_1$ while maintaining the span. Repeating this $k$ times proves the result.
+        <br><i>Consequence:</i> Any two bases must have the same size. Thus dimension is well-defined.</p>
       </div>
 
       <h3>2.4 Change of Basis</h3>

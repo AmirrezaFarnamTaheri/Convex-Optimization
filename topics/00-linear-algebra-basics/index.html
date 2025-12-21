@@ -171,6 +171,15 @@
       $$ \boxed{ A\mathbf{x} = \mathbf{b} \text{ is solvable } \iff \mathbf{b} \in \mathcal{R}(A). } $$
       Nothing more, nothing less. If $\mathbf{b}$ lies in the column space, the system is <b>consistent</b>. If $\mathbf{b}$ lies outside it, the system is <b>inconsistent</b>, and no amount of algebra will fix that.</p>
 
+      <h4>(B) Row Reduction as Invertible Transformation</h4>
+      <p>Gaussian elimination is often taught as a sequence of mechanical steps. However, it has a precise algebraic meaning: <b>Row operations are left-multiplications by invertible matrices.</b></p>
+      <p>If we perform a row operation on the augmented matrix $[A \mid \mathbf{b}]$, we are effectively multiplying the system $A\mathbf{x} = \mathbf{b}$ by an elementary matrix $E$:
+      $$ E A \mathbf{x} = E \mathbf{b} $$
+      Since every elementary row operation (swap, scale, add) is reversible, the matrix $E$ is <b>invertible</b>.
+      <br><b>Theorem:</b> If $E$ is invertible, the solution sets of $A\mathbf{x}=\mathbf{b}$ and $(EA)\mathbf{x} = E\mathbf{b}$ are identical.
+      <br><i>Proof:</i> If $A\mathbf{x}=\mathbf{b}$, then $EA\mathbf{x}=E\mathbf{b}$. Conversely, if $EA\mathbf{x}=E\mathbf{b}$, multiplying by $E^{-1}$ yields $A\mathbf{x}=\mathbf{b}$.
+      <br>Thus, row reduction transforms the system into a "simpler" linear map (RREF) without changing the solution set. It changes the <i>coordinate representation</i> of the constraints, not the geometry of the solution space.</p>
+
       <div class="insight">
         <h4>Immediate Consequences (Geometry vs. Algebra)</h4>
         <ol>

@@ -252,6 +252,18 @@
       </ol>
       <p>These axioms force the Leibniz formula: $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{i=1}^n A_{i, \sigma(i)}$.</p>
 
+      <div class="proof-box">
+        <h4>Sketch: Why Axioms Force the Formula</h4>
+        <p>This derivation shows that the determinant is not an arbitrary definition, but a necessary consequence of geometry.
+        <br>1. <b>Expand columns:</b> Write each column $a_j$ as a linear combination of standard basis vectors $e_i$: $a_j = \sum_i A_{ij} e_i$.
+        <br>2. <b>Apply Multilinearity:</b> Expanding $\det(a_1, \dots, a_n)$ involves $n$ sums.
+        $$ \det(A) = \sum_{i_1, \dots, i_n} A_{i_1, 1} \dots A_{i_n, n} \det(e_{i_1}, \dots, e_{i_n}) $$
+        <br>3. <b>Apply Alternation:</b> If any two indices $i_j, i_k$ are the same, $\det(e_{i_1}, \dots, e_{i_n}) = 0$. Thus, we only sum over <b>permutations</b> $\sigma$ where all indices are distinct.
+        <br>4. <b>Apply Normalization:</b> Swapping columns to order the basis vectors $(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ into $(e_1, \dots, e_n)$ requires sign flips.
+        $$ \det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = \mathrm{sgn}(\sigma) \det(I) = \mathrm{sgn}(\sigma) $$
+        <br><b>Result:</b> $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{j=1}^n A_{\sigma(j), j}$.</p>
+      </div>
+
       <h4>Geometric Interpretation: Volume and Orientation</h4>
       <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ is the volume of the parallelepiped spanned by the columns of $A$.
       <br><b>Properties forced by geometry:</b>
@@ -266,6 +278,17 @@
       <p>The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
       $$ \mathrm{tr}(AB) = \mathrm{tr}(BA) $$
       This property implies similarity invariance: $\mathrm{tr}(P^{-1}AP) = \mathrm{tr}(APP^{-1}) = \mathrm{tr}(A)$. Thus, the trace is defined for linear operators, not just matrices.</p>
+
+      <div class="proof-box">
+        <h4>Proof: Uniqueness of Trace</h4>
+        <p>Why is the sum of diagonal elements the <i>only</i> invariant?
+        <br>Let $f: \mathbb{F}^{n \times n} \to \mathbb{F}$ be a linear functional satisfying $f(AB) = f(BA)$ and $f(I) = n$.
+        <br>1. <b>Similarity Invariance:</b> $f(P A P^{-1}) = f(P^{-1} P A) = f(A)$.
+        <br>2. <b>Reduction to Diagonal:</b> Over $\mathbb{C}$, any matrix is similar to an upper triangular matrix (Schur Form) with eigenvalues on the diagonal. By invariance, $f(A)$ depends only on these diagonal entries $\lambda_i$.
+        <br>3. <b>Symmetry:</b> Permutation matrices are orthogonal, so $f$ is invariant under reordering $\lambda_i$. Linearity implies $f(\operatorname{diag}(\lambda_1, \dots, \lambda_n)) = c \sum \lambda_i$.
+        <br>4. <b>Normalization:</b> $f(I) = c \sum 1 = cn = n \implies c=1$.
+        <br>Thus, $f(A) = \sum \lambda_i = \sum A_{ii} = \mathrm{tr}(A)$.</p>
+      </div>
 
       <h4>Geometric Interpretation: Infinitesimal Volume Change</h4>
       <p>While determinant is global volume scaling, trace is the <b>derivative</b> of volume.
@@ -300,10 +323,18 @@
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
       <h3>4.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
-      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. We must include <b>generalized eigenvectors</b>—vectors that are eventually killed by $(T-\lambda I)^k$.
-      <br><b>The Jordan Block:</b> The canonical structure for a defective eigenvalue is a Jordan block $J_k(\lambda)$:
+      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. The missing directions are supplied by <b>generalized eigenvectors</b>.</p>
+
+      <h4>Generalized Eigenvectors and Jordan Chains</h4>
+      <p>A vector $\mathbf{v} \ne 0$ is a generalized eigenvector of rank $k$ if $(A-\lambda I)^k \mathbf{v} = 0$ but $(A-\lambda I)^{k-1} \mathbf{v} \ne 0$.
+      <br>These vectors form a <b>Jordan Chain</b>:
+      $$ (A-\lambda I)\mathbf{v}_k = \mathbf{v}_{k-1}, \quad \dots, \quad (A-\lambda I)\mathbf{v}_2 = \mathbf{v}_1, \quad (A-\lambda I)\mathbf{v}_1 = 0 $$
+      Here, $\mathbf{v}_1$ is a true eigenvector. The others are "almost" invariant—they map into the subspace below them.</p>
+
+      <h4>The Jordan Block</h4>
+      <p>In the basis of a Jordan chain, the operator acts as a <b>Jordan block</b> $J_k(\lambda)$:
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} = \lambda I + N $$
-      Here $N$ is <b>nilpotent</b> ($N^k = 0$). This nilpotent part represents the "drift" or coupling between dimensions that prevents clean separation.
+      Here $N$ is <b>nilpotent</b> ($N^k = 0$). The term $N$ represents "drift": the operator not only scales but also shifts vectors along the chain. This drift prevents diagonalization.
       <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
 
       <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
@@ -627,6 +658,26 @@
         <p><b>Visualize Ill-Conditioning:</b> Compare solving $A\mathbf{x}=\mathbf{b}$ for a well-conditioned matrix versus an ill-conditioned one. In the ill-conditioned case, the "ellipse" of the matrix is very skinny. A small change in the target vector $\mathbf{b}$ (moving the target slightly off the major axis) requires a massive change in $\mathbf{x}$ to compensate.</p>
         <div id="widget-condition-number" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
+
+      <h3>8.3 Regularization: Controlled Bias for Stability</h3>
+      <p>When a matrix is ill-conditioned, the pseudoinverse solution $x_{LS} = \sum \frac{\mathbf{u}_i^\top \mathbf{b}}{\sigma_i} \mathbf{v}_i$ becomes unstable because division by small $\sigma_i$ amplifies noise.
+      <br><b>Regularization</b> stabilizes the inversion by filtering out these small singular values. The classic method is <b>Tikhonov Regularization</b> (Ridge Regression):</p>
+      $$ \min_{\mathbf{x}} \|A\mathbf{x} - \mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_2^2 $$
+      <p>The solution is $\mathbf{x}_{\text{ridge}} = (A^\top A + \lambda I)^{-1} A^\top \mathbf{b}$.</p>
+
+      <h4>SVD Interpretation: Spectral Filtering</h4>
+      <p>In terms of the SVD, Tikhonov regularization replaces the inversion $1/\sigma_i$ with a filter factor:
+      $$ \mathbf{x}_{\text{ridge}} = \sum_{i=1}^r \left( \frac{\sigma_i}{\sigma_i^2 + \lambda} \right) (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
+      <ul>
+        <li><b>Large $\sigma_i$ ($\sigma_i^2 \gg \lambda$):</b> The factor $\approx 1/\sigma_i$. The signal is preserved.</li>
+        <li><b>Small $\sigma_i$ ($\sigma_i^2 \ll \lambda$):</b> The factor $\approx \sigma_i/\lambda \approx 0$. The noise direction is suppressed.</li>
+      </ul>
+      This smooth transition prevents the explosion of errors caused by near-zero singular values.</p>
+
+      <h4>Truncated SVD (Hard Thresholding)</h4>
+      <p>Another approach is to simply discard singular values below a threshold. This is the optimal low-rank approximation applied to the inversion process.
+      $$ \mathbf{x}_{\text{trunc}} = \sum_{\sigma_i > \epsilon} \frac{1}{\sigma_i} (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
+      Both methods trade a small amount of bias (exactness) for a large reduction in variance (stability).</p>
     </section>
 
     <!-- SECTION 9: REVIEW -->

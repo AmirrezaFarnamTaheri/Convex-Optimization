@@ -152,18 +152,34 @@
       Every concept in the course reduces to this.</p>
 
       <h4>(A) Systems of Linear Equations as Linear Maps</h4>
-      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." While correct, this view is shallow. The deeper, geometric interpretation is:
-      <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b></p>
+      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." That description is correct but shallow. The deeper and far more powerful interpretation is this:
+      <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b>
+      <br>Everything else—Gaussian elimination, pivots, ranks—is machinery for answering that one question.</p>
 
-      <p><b>1. Matrix as a Function:</b> A matrix $A \in \mathbb{R}^{m \times n}$ defines a function $T_A: \mathbb{R}^n \to \mathbb{R}^m$ by $T_A(\mathbf{x}) = A\mathbf{x}$. This function is linear: it preserves addition and scaling. Its entire behavior is determined by what it does to the standard basis vectors, which are mapped to the <b>columns of $A$</b>.</p>
+      <p><b>1. Interpret $A$ as a function, not a table of numbers:</b> A matrix $A \in \mathbb{R}^{m\times n}$ defines a linear transformation $T_A : \mathbb{R}^n \to \mathbb{R}^m, \ T_A(\mathbf{x}) = A\mathbf{x}$. This is literally a function with two defining properties:
+      <ul>
+        <li>$T_A(\mathbf{x}+\mathbf{y}) = T_A(\mathbf{x}) + T_A(\mathbf{y})$</li>
+        <li>$T_A(\alpha \mathbf{x}) = \alpha T_A(\mathbf{x})$</li>
+      </ul>
+      Those properties mean the entire behavior of $T_A$ is determined by what it does to basis vectors, and concretely, to the <b>columns of $A$</b>.</p>
 
-      <p><b>2. The "Fundamental Identity":</b> If we write $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$, then for any $\mathbf{x} = (x_1, \dots, x_n)$:
+      <p><b>2. The "Fundamental Identity" (Column-space interpretation):</b> Write the columns of $A$ as $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$. Then for any $\mathbf{x} = (x_1,\dots,x_n)$,
       $$ \boxed{ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n } $$
-      This identity is not a trick; it is the definition of matrix-vector multiplication. It says that <b>multiplying a matrix by a vector means forming a linear combination of the columns</b>.</p>
+      This identity is not a trick. It <i>is</i> matrix–vector multiplication. So now the equation $A\mathbf{x}=\mathbf{b}$ becomes: <i>Does there exist a choice of scalars $x_1,\dots,x_n$ such that $\mathbf{b} = x_1 \mathbf{a}_1 + \cdots + x_n \mathbf{a}_n$?</i> That is exactly the definition of <b>membership in a span</b>.</p>
 
-      <p><b>3. Consistency = Membership in Span:</b> The system $A\mathbf{x}=\mathbf{b}$ is solvable if and only if there exist scalars $x_1, \dots, x_n$ such that $\sum x_i \mathbf{a}_i = \mathbf{b}$.
-      $$ A\mathbf{x} = \mathbf{b} \text{ is consistent} \iff \mathbf{b} \in \operatorname{span}(\mathbf{a}_1, \dots, \mathbf{a}_n) \iff \mathbf{b} \in \operatorname{Col}(A) $$
-      This explains why "most" systems with $m > n$ (more equations than unknowns) are inconsistent: the column space is a "thin" subspace inside $\mathbb{R}^m$, and a random $\mathbf{b}$ will likely fall outside it.</p>
+      <p><b>3. The Column Space Answers Consistency:</b> Define the <b>column space</b> of $A$: $\mathcal{R}(A) = \operatorname{span}\{\mathbf{a}_1,\dots,\mathbf{a}_n\} \subseteq \mathbb{R}^m$. Now the fundamental equivalence:
+      $$ \boxed{ A\mathbf{x} = \mathbf{b} \text{ is solvable } \iff \mathbf{b} \in \mathcal{R}(A). } $$
+      Nothing more, nothing less. If $\mathbf{b}$ lies in the column space, the system is <b>consistent</b>. If $\mathbf{b}$ lies outside it, the system is <b>inconsistent</b>, and no amount of algebra will fix that.</p>
+
+      <div class="insight">
+        <h4>Immediate Consequences</h4>
+        <ol>
+            <li><b>Why inconsistent systems exist:</b> If $\mathcal{R}(A)$ is a proper subspace of $\mathbb{R}^m$, then "most" vectors $\mathbf{b}$ are outside it. Inconsistency is the generic case, not a pathology.</li>
+            <li><b>Why adding columns can make systems solvable:</b> Adding a column to $A$ enlarges $\mathcal{R}(A)$. You are adding a new direction you can combine.</li>
+            <li><b>Why rank matters:</b> The rank of $A$ is $\operatorname{rank}(A) = \dim(\mathcal{R}(A))$. Rank measures how "big" the image of the linear map is.</li>
+            <li><b>Mental Model:</b> Do not think "I have equations and unknowns." Think "I have a linear map. What outputs can it produce?" Solving $A\mathbf{x}=\mathbf{b}$ is not algebra first and geometry later. It is geometry first, algebra as a tool.</li>
+        </ol>
+      </div>
 
       <h4>(B) Linear Independence as "No Redundancy"</h4>
       <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it rigorously to ensure coordinates are unique.</p>
@@ -320,16 +336,18 @@
       </ul>
 
       <div class="theorem-box">
-        <h4>Fundamental Equivalence: The Structure of Solution Sets</h4>
-        <p>$$ T(\mathbf{u}) = T(\mathbf{v}) \iff \mathbf{u} - \mathbf{v} \in \mathcal{N}(T) $$
-        <br><b>Structure of Solutions:</b> If a system $A\mathbf{x} = \mathbf{b}$ has at least one particular solution $\mathbf{x}_p$, then the set of <i>all</i> solutions is the affine set:
-        $$ S = \mathbf{x}_p + \mathcal{N}(A) = \{ \mathbf{x}_p + \mathbf{x}_h \mid \mathbf{x}_h \in \mathcal{N}(A) \} $$
-        <b>Proof from First Principles:</b>
+        <h4>Structure of Solution Sets: Affine Geometry</h4>
+        <p>$$ \boxed{ \{\text{solutions of } A\mathbf{x}=\mathbf{b}\} = \mathbf{x}_p + \mathcal{N}(A) } $$
+        <br><b>Why every consistent linear system produces an affine space:</b>
+        <br>Assume the system is consistent and fix <b>one</b> particular solution $\mathbf{x}_p$ such that $A\mathbf{x}_p = \mathbf{b}$.
+        <br><b>1. Closure (Translating by Kernel):</b> Take any $\mathbf{x}_h \in \mathcal{N}(A)$. Then $A(\mathbf{x}_p + \mathbf{x}_h) = A\mathbf{x}_p + A\mathbf{x}_h = \mathbf{b} + 0 = \mathbf{b}$. Every vector of the form $\mathbf{x}_p + \mathbf{x}_h$ is a solution.
+        <br><b>2. Exhaustion (No other solutions):</b> Let $\mathbf{x}$ be <i>any</i> solution ($A\mathbf{x}=\mathbf{b}$). Then $A(\mathbf{x} - \mathbf{x}_p) = A\mathbf{x} - A\mathbf{x}_p = \mathbf{b} - \mathbf{b} = 0$. So $\mathbf{x} - \mathbf{x}_p \in \mathcal{N}(A)$, which means $\mathbf{x} = \mathbf{x}_p + \mathbf{x}_h$ for some null-space vector.
+        <br><b>Conclusion:</b> The solution set is a translation of the subspace $\mathcal{N}(A)$.
         <ul>
-            <li><b>Closure:</b> If $\mathbf{x}_h \in \mathcal{N}(A)$, then $A(\mathbf{x}_p + \mathbf{x}_h) = A\mathbf{x}_p + A\mathbf{x}_h = \mathbf{b} + 0 = \mathbf{b}$. So $\mathbf{x}_p + \mathbf{x}_h$ is a solution.</li>
-            <li><b>Exhaustion:</b> If $\mathbf{x}$ is any solution ($A\mathbf{x}=\mathbf{b}$), then $A(\mathbf{x} - \mathbf{x}_p) = A\mathbf{x} - A\mathbf{x}_p = \mathbf{b} - \mathbf{b} = 0$. Thus $\mathbf{x} - \mathbf{x}_p \in \mathcal{N}(A)$, so $\mathbf{x} = \mathbf{x}_p + (\mathbf{x} - \mathbf{x}_p)$.</li>
+            <li>If $\mathbf{b}=0$, the set is a subspace (contains 0).</li>
+            <li>If $\mathbf{b} \ne 0$, the set is an <b>affine subspace</b> (does not contain 0).</li>
         </ul>
-        This explains why solution sets are <b>affine subspaces</b> (points) rather than vector subspaces (vectors) unless $\mathbf{b}=0$. The nullspace $\mathcal{N}(A)$ represents the "internal degrees of freedom" of the system.</p>
+        This implies that $\dim(\text{solution set}) = \dim(\mathcal{N}(A))$. The nullspace controls the <b>multiplicity</b> (degrees of freedom), while the column space controls the <b>existence</b>.</p>
 
         <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
         <p>A linear map is injective (one-to-one) if and only if its kernel contains only the zero vector.
@@ -348,99 +366,109 @@
       <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
 
       <h3>2.3 The Four Fundamental Subspaces: Invariant Anatomy</h3>
-      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces. These are not artifacts of calculation; they are the <b>invariant anatomy</b> of the map. They live in two different spaces and are paired by orthogonality.</p>
+      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces. These are not artifacts of calculation; they are the <b>invariant anatomy</b> of the map. They live in two different ambient spaces ($\mathbb{R}^n$ and $\mathbb{R}^m$) and are paired by orthogonality.</p>
+
+      <h4>The Map Spaces (Primal)</h4>
+      <ul>
+        <li><b>Column Space ($\mathcal{R}(A)$):</b> The image of the map $T_A$.
+          $$ \mathcal{R}(A) = \{A\mathbf{x} : \mathbf{x} \in \mathbb{R}^n\} \subseteq \mathbb{R}^m $$
+          It answers: <i>Which vectors in the output space are reachable?</i>
+        </li>
+        <li><b>Nullspace ($\mathcal{N}(A)$):</b> The kernel of the map $T_A$.
+          $$ \mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n : A\mathbf{x} = 0\} \subseteq \mathbb{R}^n $$
+          It answers: <i>Which input directions are annihilated by the map?</i>
+        </li>
+      </ul>
+
+      <h4>The Dual Spaces (Transpose)</h4>
+      <ul>
+        <li><b>Row Space ($\mathcal{R}(A^\top)$):</b> The image of the dual map $A^\top$.
+          $$ \mathcal{R}(A^\top) = \{A^\top \mathbf{y} : \mathbf{y} \in \mathbb{R}^m\} \subseteq \mathbb{R}^n $$
+          It answers: <i>Which linear constraints are actually active?</i> Each row represents a measurement direction; dependencies among rows mean redundant measurements.
+        </li>
+        <li><b>Left Nullspace ($\mathcal{N}(A^\top)$):</b> The kernel of the dual map.
+          $$ \mathcal{N}(A^\top) = \{\mathbf{y} \in \mathbb{R}^m : A^\top \mathbf{y} = 0\} \subseteq \mathbb{R}^m $$
+          It answers: <i>Which combinations of equations sum to $0=0$?</i> A non-zero vector here represents a dependency among the constraints.
+        </li>
+      </ul>
 
       <table class="data-table">
         <thead>
           <tr>
-            <th>Subspace</th>
-            <th>Notation</th>
+            <th>Space</th>
             <th>Definition</th>
-            <th>Lives In</th>
-            <th>Structural Meaning</th>
+            <th>Lives in</th>
+            <th>Geometric Meaning</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><b>Column Space</b><br>(Image)</td>
-            <td>$\mathcal{R}(A)$</td>
-            <td>$\mathrm{Im}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$</td>
+            <td>Column Space</td>
+            <td>$\mathrm{Im}(A)$</td>
             <td>$\mathbb{R}^m$</td>
-            <td><b>Reachable Outputs:</b> The set of all possible vectors the system can produce. Controls existence of solutions.</td>
+            <td>Reachable outputs (Consistency)</td>
           </tr>
           <tr>
-            <td><b>Nullspace</b><br>(Kernel)</td>
-            <td>$\mathcal{N}(A)$</td>
-            <td>$\ker(A) = \{\mathbf{x} \mid A\mathbf{x} = 0\}$</td>
+            <td>Null Space</td>
+            <td>$\mathrm{Ker}(A)$</td>
             <td>$\mathbb{R}^n$</td>
-            <td><b>Invisible Inputs:</b> Directions that map to zero. Controls uniqueness of solutions (degrees of freedom).</td>
+            <td>Invisible inputs (Non-uniqueness)</td>
           </tr>
           <tr>
-            <td><b>Row Space</b><br>(Co-image)</td>
-            <td>$\mathcal{R}(A^\top)$</td>
-            <td>$\mathrm{Im}(A^\top) = \mathrm{span}(\text{rows})$</td>
+            <td>Row Space</td>
+            <td>$\mathrm{Im}(A^\top)$</td>
             <td>$\mathbb{R}^n$</td>
-            <td><b>Active Constraints:</b> The subspace of $\mathbb{R}^n$ where the map actually "measures" the input.</td>
+            <td>Active measurement directions</td>
           </tr>
           <tr>
-            <td><b>Left Nullspace</b><br>(Cokernel)</td>
-            <td>$\mathcal{N}(A^\top)$</td>
-            <td>$\ker(A^\top) = \{\mathbf{y} \mid A^\top\mathbf{y} = 0\}$</td>
+            <td>Left Null Space</td>
+            <td>$\mathrm{Ker}(A^\top)$</td>
             <td>$\mathbb{R}^m$</td>
-            <td><b>Equation Redundancy:</b> Linear combinations of equations that sum to $0=0$. Controls consistency for specific $\mathbf{b}$.</td>
+            <td>Redundant constraints</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="insight">
-        <h4>Gaussian Elimination: What it Really Computes</h4>
-        <p>Row reduction (Gaussian elimination) is not magic; it is a coordinate change that exposes these subspaces.
-        <ul>
-          <li><b>Row Space:</b> Unchanged by row operations. Non-zero rows in RREF form a basis.</li>
-          <li><b>Nullspace:</b> Unchanged. Free variables in RREF parametrize it.</li>
-          <li><b>Column Space:</b> Changed numerically, but <b>pivot columns</b> in the <i>original</i> matrix form a basis.</li>
-          <li><b>Rank:</b> Invariant. The number of pivots reveals the dimension of the row and column spaces.</li>
-        </ul>
+      <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
+      <p>The four subspaces are not independent. They are locked together by orthogonality. This is the geometric core of the Fundamental Theorem of Linear Algebra.</p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Orthogonal Complements</h4>
+        <p>
+        1. <b>In the Domain $\mathbb{R}^n$:</b> The nullspace is the orthogonal complement of the row space.
+        $$ \mathcal{N}(A) = \mathcal{R}(A^\top)^\perp $$
+        2. <b>In the Codomain $\mathbb{R}^m$:</b> The left nullspace is the orthogonal complement of the column space.
+        $$ \mathcal{N}(A^\top) = \mathcal{R}(A)^\perp $$
         </p>
       </div>
 
-      <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
-      <p>The geometry of these spaces is governed by orthogonality. This is the <b>Fundamental Theorem of Linear Algebra</b>:</p>
-      <ul>
-        <li><b>Relationship 1:</b> $\mathcal{N}(A) = \mathcal{R}(A^\top)^\perp$. (Nullspace $\perp$ Row Space).
-          <br><i>Why?</i> $A\mathbf{x}=0$ means $\mathbf{x}$ is orthogonal to every row of $A$. This partitions the input space: every vector $\mathbf{x}$ splits into a "row space part" (which dictates the output) and a "nullspace part" (which is ignored).</li>
-        <li><b>Relationship 2:</b> $\mathcal{N}(A^\top) = \mathcal{R}(A)^\perp$. (Left Nullspace $\perp$ Column Space).
-          <br><i>Why?</i> This leads to the <b>Fredholm Alternative</b>: $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \perp \mathcal{N}(A^\top)$. If the system is inconsistent, the "impossible" part of $\mathbf{b}$ lives in the Left Nullspace.</li>
-      </ul>
+      <div class="proof-box">
+        <h4>Proof: $\mathcal{N}(A) = \mathcal{R}(A^\top)^\perp$</h4>
+        <p>We prove this by showing double inclusion.</p>
+        <div class="proof-step">
+          <strong>Step 1: $\mathcal{N}(A) \subseteq \mathcal{R}(A^\top)^\perp$.</strong>
+          Let $\mathbf{x} \in \mathcal{N}(A)$. Then $A\mathbf{x} = 0$.
+          Write the rows of $A$ as $r_1^\top, \dots, r_m^\top$. Then $A\mathbf{x}=0$ means $r_i^\top \mathbf{x} = 0$ for all $i$.
+          Since $\mathbf{x}$ is orthogonal to every row, it is orthogonal to any linear combination of rows.
+          Thus $\mathbf{x} \perp \mathcal{R}(A^\top)$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: $\mathcal{R}(A^\top)^\perp \subseteq \mathcal{N}(A)$.</strong>
+          Let $\mathbf{x} \in \mathcal{R}(A^\top)^\perp$. By definition, $\mathbf{x}$ is orthogonal to every vector in the row space, including each row $r_i$.
+          So $r_i^\top \mathbf{x} = 0$ for all $i$.
+          Stacking these equations gives $A\mathbf{x} = 0$, so $\mathbf{x} \in \mathcal{N}(A)$.
+        </div>
+        <div class="proof-step">
+          <strong>Conclusion:</strong> The sets are identical. This geometric fact ($\perp$) implies the algebraic fact that constraints kill degrees of freedom.
+        </div>
+      </div>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/linear-subspaces.svg"
              alt="Visual representation of intersecting planes showing linear subspaces"
              style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 4:</i> Three planes in 3D space—the intersection represents solution sets of linear equations.</figcaption>
+        <figcaption><i>Figure 4:</i> The orthogonal decomposition of the domain and codomain.</figcaption>
       </figure>
-
-      <div class="proof-box">
-        <h4>Proof: $\mathcal{R}(A) \perp \mathcal{N}(A^\top)$</h4>
-
-        <div class="proof-step">
-          <strong>Setup:</strong> Let $\mathbf{v} \in \mathcal{R}(A)$ and $\mathbf{y} \in \mathcal{N}(A^\top)$. By definition, $\mathbf{v} = A\mathbf{x}$ for some $\mathbf{x} \in \mathbb{R}^n$, and $A^\top \mathbf{y} = 0$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Compute inner product:</strong> We compute the dot product $\langle \mathbf{v}, \mathbf{y} \rangle$:
-          $$ \mathbf{v}^\top \mathbf{y} = (A\mathbf{x})^\top \mathbf{y} = \mathbf{x}^\top A^\top \mathbf{y} = \mathbf{x}^\top (A^\top \mathbf{y}) $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Substitute Nullspace Condition:</strong> Since $\mathbf{y} \in \mathcal{N}(A^\top)$, we have $A^\top \mathbf{y} = 0$.
-          $$ \mathbf{x}^\top (0) = 0 $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Conclusion:</strong> The inner product is zero for any $\mathbf{v} \in \mathcal{R}(A)$ and $\mathbf{y} \in \mathcal{N}(A^\top)$. Thus, every vector in the column space is orthogonal to every vector in the left nullspace.
-        </div>
-      </div>
 
       <h4>The Fredholm Alternative (Theorem of Alternatives)</h4>
       <p>A crucial consequence of the orthogonality $\mathcal{R}(A) = \mathcal{N}(A^\top)^\perp$ is a solvability criterion for linear systems, known as the <b>Fredholm Alternative</b>. For any $A \in \mathbb{R}^{m \times n}$ and $\mathbf{b} \in \mathbb{R}^m$, exactly one of the following two statements is true:</p>
@@ -976,46 +1004,58 @@
 
       <p><b>Linearity:</b> The map $P: x \mapsto \operatorname{proj}_W(x)$ is a linear operator. It satisfies $P^2=P$ (idempotent) and $P^\top=P$ (self-adjoint).</p>
 
-      <h3>5.3 Orthonormal Bases</h3>
-      <p>A basis $\{u_1, \dots, u_k\}$ is <b>orthonormal</b> if $\langle u_i, u_j \rangle = \delta_{ij}$.
-      <br><b>Projection Formula:</b> If we have an orthonormal basis for $W$, the projection is simply:
-      $$ \operatorname{proj}_W(\mathbf{x}) = \sum_{i=1}^k \langle \mathbf{x}, u_i \rangle u_i $$
-      This is computationally efficient and numerically stable.</p>
+      <h3>5.3 Orthonormal Bases: Geometry-Compatible Coordinates</h3>
+      <p>An <b>orthonormal basis</b> is a coordinate system that preserves lengths, angles, and inner products exactly.
+      <br><b>Definition:</b> A basis $\{q_1, \dots, q_n\}$ is orthonormal if $\langle q_i, q_j \rangle = \delta_{ij}$.
+      <br><b>Why this is special:</b> In an arbitrary basis, calculating lengths requires a metric tensor ($\mathbf{x}^\top G \mathbf{x}$). In an orthonormal basis, geometry simplifies to the Pythagorean sum of squares.</p>
 
-      <h3>5.4 Angle Preservation and Orthogonal Matrices</h3>
-      <p>A square matrix $Q$ with orthonormal columns is an <b>orthogonal matrix</b> ($Q^\top Q = I$). Such matrices represent isometries (rotations/reflections). They preserve all geometric structure: lengths ($\|Qx\| = \|x\|$) and inner products ($\langle Qx, Qy \rangle = \langle x, y \rangle$).</p>
+      <h4>The Expansion Formula (No Solving Required)</h4>
+      <p>If $\{q_1, \dots, q_n\}$ is an orthonormal basis for $V$, then for every $\mathbf{v} \in V$:
+      $$ \boxed{ \mathbf{v} = \sum_{i=1}^n \langle q_i, \mathbf{v} \rangle q_i } $$
+      <b>Proof:</b> Let $\mathbf{v} = \sum c_j q_j$. Take the inner product with $q_k$:
+      $$ \langle q_k, \mathbf{v} \rangle = \sum c_j \langle q_k, q_j \rangle = \sum c_j \delta_{kj} = c_k $$
+      Thus, coordinates are simply inner products. No linear system needs to be solved.</p>
 
-      <div class="insight">
-        <h4>The Orthogonal Group $O_n$</h4>
-        <p>The set of all $n \times n$ orthogonal matrices forms a group, denoted $O_n$.</p>
-        <ul>
-          <li><b>Closure:</b> If $Q_1, Q_2 \in O_n$, then $(Q_1 Q_2)^\top (Q_1 Q_2) = Q_2^\top Q_1^\top Q_1 Q_2 = Q_2^\top I Q_2 = I$.</li>
-          <li><b>Inverse:</b> $Q^{-1} = Q^\top$, which is also orthogonal.</li>
-          <li><b>Compactness:</b> $O_n$ is a compact set in $\mathbb{R}^{n \times n}$. It is closed (preimage of $I$ under continuous map $f(A)=A^\top A$) and bounded (columns have unit norm).</li>
-        </ul>
-      </div>
+      <h4>Parseval's Identity</h4>
+      <p>$$ \|\mathbf{v}\|^2 = \sum_{i=1}^n |\langle q_i, \mathbf{v} \rangle|^2 $$
+      The norm of a vector equals the Euclidean norm of its coordinate vector. This is why orthonormal coordinate changes are <b>isometries</b>.</p>
 
-      <h3>The Gram-Schmidt Process</h3>
-      <p>The Gram-Schmidt process is an algorithm for constructing an orthonormal basis from a set of linearly independent vectors. Starting with a vector, it iteratively subtracts the components that lie in the direction of the previously processed vectors, leaving a new, orthogonal vector that is then normalized.
-      $$
-      \tilde{\mathbf{q}}_k = \mathbf{a}_k - \sum_{i=1}^{k-1} (\mathbf{q}_i^\top \mathbf{a}_k) \mathbf{q}_i, \quad \mathbf{q}_k = \frac{\tilde{\mathbf{q}}_k}{\|\tilde{\mathbf{q}}_k\|_2}
-      $$
+      <h3>5.4 The Gram-Schmidt Process</h3>
+      <p>Gram-Schmidt is not just an algorithm; it is the <b>constructive proof</b> that every finite-dimensional subspace admits an orthonormal basis. It systematically manufactures geometry from algebra.</p>
+
+      <p><b>The Idea:</b> Given linearly independent vectors $a_1, \dots, a_k$, we construct orthonormal vectors $q_1, \dots, q_k$ such that for each $j$, $\operatorname{span}(q_1, \dots, q_j) = \operatorname{span}(a_1, \dots, a_j)$.
+      <br><b>Step-by-step Construction:</b>
+      1. <b>First Vector:</b> $q_1 = a_1 / \|a_1\|$.
+      2. <b>Subsequent Vectors:</b> To find $q_j$, take $a_j$ and subtract its projection onto the subspace spanned by the previous vectors $W_{j-1} = \operatorname{span}(q_1, \dots, q_{j-1})$.
+      $$ u_j = a_j - \operatorname{proj}_{W_{j-1}}(a_j) = a_j - \sum_{i=1}^{j-1} \langle q_i, a_j \rangle q_i $$
+      3. <b>Normalize:</b> $q_j = u_j / \|u_j\|$.
       </p>
+      <p>The vector $u_j$ is guaranteed to be non-zero because $a_j$ is linearly independent of the previous vectors. It is orthogonal to all previous $q_i$ by construction.</p>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/gram-schmidt-orthogonalization.png"
              alt="Step-by-step geometric illustration of the Gram-Schmidt orthogonalization process"
              style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 8:</i> Gram-Schmidt orthogonalization: subtract projections to remove components in previously constructed directions, then normalize to get an orthonormal basis.</figcaption>
+        <figcaption><i>Figure 8:</i> Gram-Schmidt orthogonalization: subtract projections to remove components in previously constructed directions.</figcaption>
       </figure>
 
-      <h3>The QR Decomposition</h3>
-      <p>The QR decomposition expresses a matrix $A$ as the product of an orthonormal matrix $Q$ and an upper triangular matrix $R$. This decomposition is a direct outcome of the Gram-Schmidt process and is fundamental to numerical linear algebra. For a matrix $A \in \mathbb{R}^{m \times n}$ with full column rank, we can write $A = QR$, where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns and $R \in \mathbb{R}^{n \times n}$ is upper-triangular.
-      <br><b>Applications:</b></p>
+      <h3>5.5 Orthogonal Matrices and Isometries</h3>
+      <p>A square matrix $Q$ is <b>orthogonal</b> if its columns form an orthonormal basis. This is algebraically equivalent to $Q^\top Q = I$.
+      <br><b>Properties of Orthogonal Matrices:</b>
       <ul>
-        <li><b>Solving Linear Systems:</b> The system $A\mathbf{x}=\mathbf{b}$ becomes $QR\mathbf{x}=\mathbf{b}$, which simplifies to $R\mathbf{x} = Q^\top \mathbf{b}$. This is easily solved using back substitution and is far more numerically stable than forming the normal equations.</li>
-        <li><b>Projections:</b> The projection onto the column space of $A$ is given by $P = QQ^\top$.</li>
+        <li><b>Isometry:</b> $\|Q\mathbf{x}\| = \|\mathbf{x}\|$ and $\langle Q\mathbf{x}, Q\mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{y} \rangle$. They represent rigid motions (rotations and reflections).</li>
+        <li><b>Inverse:</b> $Q^{-1} = Q^\top$. This makes solving linear systems trivial: $Q\mathbf{x}=\mathbf{b} \implies \mathbf{x} = Q^\top \mathbf{b}$.</li>
+        <li><b>Stability:</b> Multiplication by orthogonal matrices does not amplify numerical errors ($\kappa(Q)=1$).</li>
       </ul>
+      </p>
+
+      <h4>The QR Decomposition (Preview)</h4>
+      <p>The Gram-Schmidt process can be written in matrix form as $A = QR$.
+      <ul>
+        <li>$Q$ has orthonormal columns (the geometry).</li>
+        <li>$R$ is upper triangular (the coordinates).</li>
+      </ul>
+      This factorization is the foundation of stable least squares algorithms, covered in depth in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</p>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Orthogonality & Projections</h3>

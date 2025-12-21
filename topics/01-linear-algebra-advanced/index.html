@@ -59,118 +59,78 @@
       </ul>
     </section>
 
-    <!-- SECTION 1: QR DECOMPOSITION -->
-    <!-- SECTION 1: BASES AND COORDINATES -->
-    <section class="section-card" id="section-bases">
-      <h2>1. Bases, Coordinates, and Change of Basis</h2>
+    <!-- SECTION 1: ABSTRACT VECTOR SPACES -->
+    <section class="section-card" id="section-vector-spaces">
+      <h2>1. Abstract Vector Spaces: The Axiomatic View</h2>
 
-      <h3>0. The Core Strategy: Change of Coordinates</h3>
-      <p>Advanced linear algebra for optimization often relies on a single strategy: <b>simplify the operator by changing the coordinate system</b>. Instead of solving a problem in the standard basis (where variables are coupled), we transform to a basis that decouples the interactions.</p>
-      <ul>
-        <li><b>Eigendecomposition:</b> Finds a basis where the operator acts as simple scaling along independent axes ($Av_i = \lambda_i v_i$). This transforms the matrix into a diagonal one.</li>
-        <li><b>SVD:</b> Generalizes this to rectangular matrices by allowing different bases for the input and output spaces. It reveals the fundamental geometry of the map: rotation $\to$ scaling $\to$ rotation.</li>
-      </ul>
-      <p>This section formalizes the machinery of basis changes, which connects the matrix algebra you know to the geometric intuition you need.</p>
+      <h3>1.1 Why Abstract?</h3>
+      <p>Up to this point, we have treated vectors as lists of numbers in $\mathbb{R}^n$. However, linear algebra is much broader. By defining a vector space axiomatically, we can treat functions, polynomials, matrices, and even random variables as "vectors." This allows us to apply geometric intuitions (length, angle, projection) to abstract objects.</p>
 
-      <h3>1. Span and Independence</h3>
-      <p>Given vectors $v_1, \dots, v_k \in \mathbb{R}^n$:</p>
-      <ul>
-        <li><b>Span:</b> The set of all linear combinations $\sum \alpha_i v_i$. It is always a subspace.</li>
-        <li><b>Independence:</b> $\sum \alpha_i v_i = 0 \implies \alpha_i = 0$ for all $i$.</li>
-      </ul>
-      <p><i>Key Equivalence:</i> Vectors are dependent if and only if one of them is in the span of the others (redundancy).</p>
-
-      <h3>2. Basis and Dimension</h3>
-      <p>A <b>basis</b> for a subspace $V$ is a list of vectors $B = (b_1, \dots, b_m)$ that is:</p>
+      <h3>1.2 The Definition</h3>
+      <p>A <b>vector space</b> $V$ over a field $\mathbb{F}$ (usually $\mathbb{R}$ or $\mathbb{C}$) is a set equipped with two operations: vector addition ($+$) and scalar multiplication ($\cdot$), satisfying the following axioms for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in V$ and $\alpha, \beta \in \mathbb{F}$:</p>
       <ol>
-        <li><b>Spanning:</b> $\mathrm{span}(B) = V$.</li>
-        <li><b>Independent:</b> No redundancy.</li>
+        <li><b>Closure:</b> $\mathbf{u} + \mathbf{v} \in V$ and $\alpha \mathbf{u} \in V$.</li>
+        <li><b>Associativity/Commutativity:</b> Addition is associative and commutative.</li>
+        <li><b>Identity/Inverse:</b> There exists a zero vector $\mathbf{0}$ such that $\mathbf{u} + \mathbf{0} = \mathbf{u}$. Every $\mathbf{u}$ has an additive inverse $-\mathbf{u}$.</li>
+        <li><b>Distributivity:</b> Scalar multiplication distributes over vector and scalar addition: $\alpha(\mathbf{u} + \mathbf{v}) = \alpha\mathbf{u} + \alpha\mathbf{v}$ and $(\alpha + \beta)\mathbf{u} = \alpha\mathbf{u} + \beta\mathbf{u}$.</li>
       </ol>
-
-      <h4>Theorem: Dimension is Well-Defined</h4>
-      <p>All bases for $V$ have the same number of elements. This number is $\dim(V)$.
-      <br>This relies on the <b>Steinitz Exchange Lemma</b>:</p>
-      <div class="proof-box">
-        <h4>Steinitz Exchange Lemma</h4>
-        <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is independent in $V$, then $k \le m$.
-        <br>Moreover, we can replace $k$ vectors from $S$ with the vectors in $L$ to form a new spanning set.</p>
-        <p><i>Logic:</i> We swap in $\ell_1$ for some $s_i$ (essential for spanning $\ell_1$). We repeat $k$ times. If $k > m$, we would run out of $s$'s to swap, forcing a linear dependence among the $\ell$'s.</p>
-      </div>
-
-      <h3>3. Coordinates: The Dictionary</h3>
-      <p>A basis $B = (b_1, \dots, b_m)$ provides a bijection between abstract vectors $\mathbf{v} \in V$ and coordinate lists $\alpha \in \mathbb{R}^m$.</p>
-      <p><b>Coordinate Theorem:</b> For every $\mathbf{v} \in V$, there exists a <b>unique</b> $\alpha$ such that $\mathbf{v} = \sum_{i=1}^m \alpha_i b_i$.
-      <br>We write $[\mathbf{v}]_B = \alpha$.
-      <br>If we form the matrix $B = [b_1 \dots b_m] \in \mathbb{R}^{n \times m}$, then $\mathbf{v} = B [\mathbf{v}]_B$.</p>
-
-      <div class="insight">
-        <h4>Computing Coordinates</h4>
-        <p>To find $\alpha = [\mathbf{v}]_B$, we solve $B\alpha = \mathbf{v}$.
-        <br><b>Case 1: Full Space ($m=n$).</b> $B$ is square and invertible. $\alpha = B^{-1}\mathbf{v}$.
-        <br><b>Case 2: Subspace ($m < n$).</b> $B$ is tall with independent columns. $B^{-1}$ does not exist. We solve the overdetermined system (guaranteed to have a solution since $\mathbf{v} \in V$) using least squares (see Section 7 for the pseudoinverse $B^\dagger$, or use the normal equations $B^\top B \alpha = B^\top \mathbf{v}$).
-        </p>
-      </div>
-
-      <h3>4. Change of Basis: The Deep Dive</h3>
-      <p>How do coordinates change when we swap basis $B$ for basis $C$? And more importantly, how does the <i>matrix of a linear map</i> change? This is the core mechanic behind Diagonalization and SVD.</p>
-
-      <h4>4.1 Coordinate Transformation (The Dictionary)</h4>
-      <p>Let $B$ and $C$ be two bases for $\mathbb{R}^n$. A vector $\mathbf{x}$ has different coordinate representations in each:</p>
-      <ul>
-        <li>$\mathbf{x} = B [\mathbf{x}]_B$ (coords in $B$)</li>
-        <li>$\mathbf{x} = C [\mathbf{x}]_C$ (coords in $C$)</li>
-      </ul>
-      <p>Since it's the <b>same vector</b>, we have $B [\mathbf{x}]_B = C [\mathbf{x}]_C$.
-      <br>To convert from $B$-coordinates to $C$-coordinates, we solve for $[\mathbf{x}]_C$:
-      $$ [\mathbf{x}]_C = \underbrace{C^{-1}B}_{P} [\mathbf{x}]_B $$
-      The matrix $P = C^{-1}B$ is the <b>change-of-basis matrix</b>.</p>
-
-      <h4>4.2 Transformation of the Matrix Map</h4>
-      <p>Suppose we have a linear map $T(\mathbf{x}) = A\mathbf{x}$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
-      <p><b>The Mechanism:</b> Think of the operation in three stages: $x_{in} \to x_{out}$.</p>
-      <ol>
-        <li><b>Input Change ($V \to \text{Standard}$):</b> We are given input coordinates $y_{in}$ in the basis $V$. The actual vector is $x_{in} = V y_{in}$.</li>
-        <li><b>The Action ($A$):</b> Apply the linear map in the standard basis: $x_{out} = A x_{in} = A V y_{in}$.</li>
-        <li><b>Output Change ($\text{Standard} \to V$):</b> We want the output coordinates $y_{out}$ in the basis $V$. So we invert the basis matrix: $y_{out} = V^{-1} x_{out}$.</li>
-      </ol>
-      <p>Chaining these together gives the formula for the matrix $\tilde{A}$ in the new basis:</p>
-      $$ y_{out} = (V^{-1} A V) y_{in} \implies \boxed{\tilde{A} = V^{-1} A V} $$
-
-      <div class="insight">
-        <h4>💡 "Same Vectors, Same Map, Different Coordinates"</h4>
-        <p>This formula $\tilde{A} = V^{-1} A V$ (similarity) is the algebraic expression of a geometric truth: we are performing the <b>same linear transformation</b> on the <b>same vectors</b>, but describing inputs and outputs using a <b>different coordinate system</b>.</p>
-      </div>
-
-      <h4>4.3 Diagonalization as the Ultimate Simplification</h4>
-        <p>Diagonalization is simply finding a basis $V$ such that the new matrix $\Lambda = V^{-1} A V$ is diagonal. This corresponds to finding a coordinate system where the axes are decoupled.</p>
-        <p><b>Algebraic Mechanism:</b>
-        <br>Rearrange the similarity equation to $AV = V\Lambda$. Let $V = [v_1, \dots, v_n]$ be the basis vectors.
-        <br>On the RHS, matrix multiplication $V\Lambda$ scales each column of $V$: the $i$-th column is $\lambda_i v_i$.
-        <br>On the LHS, matrix multiplication $AV$ applies the map to each basis vector: the $i$-th column is $A v_i$.
-        <br>Equating columns: $A v_i = \lambda_i v_i$.
-        <br>Thus, the basis vectors $v_i$ must be <b>eigenvectors</b> and the diagonal entries $\lambda_i$ must be <b>eigenvalues</b>.</p>
-
-      <div class="example">
-        <h4>A Tiny 2D Concrete Picture</h4>
-        <p>Suppose $A$ has eigenvectors $v_1=(1,1)^\top$ and $v_2=(1,-1)^\top$ with eigenvalues $3$ and $1$.
-        <br>Let $V = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Then $\Lambda = V^{-1}AV = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}$.
-        <br>Consider a vector with new coordinates $\mathbf{y} = (2, 3)^\top$.
-        <br><b>Physical Vector:</b> $\mathbf{x} = 2v_1 + 3v_2 = (5, -1)^\top$.
-        <br><b>Action in Eigen-coords:</b> The map scales the first component by 3 and the second by 1.
-        $$ y_{out} = \Lambda \mathbf{y} = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
-        <br><b>Result:</b> The output vector is $6v_1 + 3v_2$. The mixing is gone; the axes act independently.</p>
-      </div>
-
-      <h3>5. Orthonormal Bases</h3>
-      <p>If basis $Q$ has orthonormal columns ($Q^\top Q = I_m$), geometry becomes algebra.
-      <br><b>Coordinates:</b> $\alpha_i = q_i^\top \mathbf{v}$. So $[\mathbf{v}]_Q = Q^\top \mathbf{v}$.
-      <br><b>Norms:</b> $\|v\|_2 = \|Q\alpha\|_2 = \|\alpha\|_2$. (Parseval's Identity).
-      <br>This is why we love SVD: it diagonalizes matrices using only orthonormal bases, preserving geometry.</p>
+      <p><b>Consequences:</b> From these axioms, we can prove $0\mathbf{v} = \mathbf{0}$, $(-1)\mathbf{v} = -\mathbf{v}$, and that the zero vector is unique.</p>
     </section>
 
-    <!-- SECTION 2: LINEAR MAPS AND RANK-NULLITY -->
+    <!-- SECTION 2: SUBSPACES -->
+    <section class="section-card" id="section-subspaces">
+      <h2>2. The Theory of Subspaces</h2>
+
+      <h3>2.1 Definition and The Subspace Test</h3>
+      <p>A subset $W \subseteq V$ is a <b>subspace</b> if it is a vector space in its own right (using the same operations). To check this, we only need to verify closure:
+      <br><b>The Subspace Test:</b> A non-empty subset $W$ is a subspace if and only if for all $\mathbf{u}, \mathbf{v} \in W$ and $\alpha, \beta \in \mathbb{F}$, the linear combination $\alpha \mathbf{u} + \beta \mathbf{v}$ is in $W$.
+      <br><i>Crucial check:</i> Every subspace must contain the zero vector $\mathbf{0}$.</p>
+
+      <h3>2.2 Operations on Subspaces</h3>
+      <ul>
+        <li><b>Intersection:</b> If $U$ and $W$ are subspaces, $U \cap W$ is a subspace. (It is the largest subspace contained in both).</li>
+        <li><b>Sum:</b> $U + W = \{ \mathbf{u} + \mathbf{w} \mid \mathbf{u} \in U, \mathbf{w} \in W \}$ is a subspace. (It is the smallest subspace containing both).</li>
+        <li><b>Direct Sum:</b> If $U \cap W = \{\mathbf{0}\}$, the sum is a <b>direct sum</b>, denoted $U \oplus W$. Every vector in $U \oplus W$ can be uniquely written as $\mathbf{u} + \mathbf{w}$.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 3: BASIS AND DIMENSION -->
+    <section class="section-card" id="section-basis-dimension">
+      <h2>3. Basis, Dimension, and Coordinates</h2>
+
+      <h3>3.1 Span and Generating Sets</h3>
+      <p>The <b>span</b> of a set of vectors $S = \{\mathbf{v}_1, \dots, \mathbf{v}_k\}$ is the set of all finite linear combinations of vectors in $S$.
+      $$ \mathrm{span}(S) = \{ \sum_{i=1}^k c_i \mathbf{v}_i \mid c_i \in \mathbb{F} \} $$
+      The span is always a subspace—specifically, the smallest subspace containing $S$. If $\mathrm{span}(S) = V$, we say $S$ is a <b>generating set</b> for $V$.</p>
+
+      <h3>3.2 Linear Independence</h3>
+      <p>A set of vectors is <b>linearly independent</b> if the only way to form the zero vector is using all zero coefficients:
+      $$ \sum c_i \mathbf{v}_i = \mathbf{0} \implies c_i = 0 \text{ for all } i $$
+      Equivalently, no vector in the set can be written as a linear combination of the others (no redundancy).</p>
+
+      <h3>3.3 Basis and Dimension</h3>
+      <p>A <b>basis</b> is a linearly independent generating set. It is a "minimal spanning set" and a "maximal independent set."
+      <br><b>Theorem (Basis Invariance):</b> Any two bases for a vector space $V$ have the same number of elements. This number is called the <b>dimension</b> of $V$, denoted $\dim(V)$.</p>
+
+      <div class="proof-box">
+        <h4>Proof: Steinitz Exchange Lemma</h4>
+        <p>This fundamental lemma ensures dimension is well-defined. If $\{u_1, \dots, u_m\}$ is a linearly independent set and $\{w_1, \dots, w_n\}$ spans $V$, then:</p>
+        <ol>
+          <li>$m \le n$.</li>
+          <li>We can replace $m$ vectors in the spanning set with the independent vectors to form a new basis.</li>
+        </ol>
+        <p>This implies that any basis (which is both independent and spanning) must have the same size.</p>
+      </div>
+
+      <h3>3.4 Coordinates</h3>
+      <p>If $B = \{\mathbf{b}_1, \dots, \mathbf{b}_n\}$ is a basis, then every vector $\mathbf{v} \in V$ has a <b>unique</b> representation:
+      $$ \mathbf{v} = c_1 \mathbf{b}_1 + \dots + c_n \mathbf{b}_n $$
+      The coefficients $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $\mathbf{v}$ relative to $B$. This gives us an isomorphism between any $n$-dimensional vector space over $\mathbb{R}$ and $\mathbb{R}^n$.</p>
+    </section>
+
+    <!-- SECTION 4: LINEAR MAPS AND RANK-NULLITY -->
     <section class="section-card" id="section-linear-maps">
-      <h2>2. Geometric Review of Linear Maps</h2>
+      <h2>4. Geometric Review of Linear Maps</h2>
       <p><i>Note: The basic definitions of subspace, nullspace, and rank are covered in <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>. Here, we revisit them briefly to emphasize their role in understanding linear maps as geometric transformations.</i></p>
 
       <h3>1. The Geometry of Linear Maps</h3>
@@ -190,9 +150,9 @@
       </ul>
     </section>
 
-    <!-- SECTION 3: EIGENVALUES -->
+    <!-- SECTION 5: EIGENVALUES -->
     <section class="section-card" id="section-eigenvalues">
-      <h2>3. Eigenvalues and the Rayleigh Quotient</h2>
+      <h2>5. Eigenvalues and the Rayleigh Quotient</h2>
       <p>Eigenvectors are the "invariant directions" of a square matrix $A$. Along these directions, the matrix acts as a simple scalar multiplication.</p>
 
       <h3>3.1 Eigenvalues and Eigenvectors</h3>
@@ -222,9 +182,9 @@
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
     </section>
 
-    <!-- SECTION 4: INDUCED NORMS -->
+    <!-- SECTION 6: INDUCED NORMS -->
     <section class="section-card" id="section-induced-norms">
-      <h2>4. Induced Matrix Norms</h2>
+      <h2>6. Induced Matrix Norms</h2>
       <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
       $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
 
@@ -271,9 +231,9 @@
       </div>
     </section>
 
-    <!-- SECTION 5: QR DECOMPOSITION -->
+    <!-- SECTION 7: QR DECOMPOSITION -->
     <section class="section-card" id="section-qr">
-      <h2>5. The QR Decomposition</h2>
+      <h2>7. The QR Decomposition</h2>
 
       <h3>5.1 Motivation: Numerical Stability</h3>
       <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|A\mathbf{x} - \mathbf{b}\|_2$ using the normal equations $A^\top A \mathbf{x} = A^\top \mathbf{b}$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
@@ -326,9 +286,9 @@
       This is a triangular system, easily solvable by <b>back substitution</b> in $O(n^2)$ time.</p>
     </section>
 
-    <!-- SECTION 6: SVD -->
+    <!-- SECTION 8: SVD -->
     <section class="section-card" id="section-svd">
-      <h2>6. The Singular Value Decomposition (SVD)</h2>
+      <h2>8. The Singular Value Decomposition (SVD)</h2>
 
       <h3>6.1 Geometric Intuition</h3>
       <p>The Singular Value Decomposition (SVD) generalizes the concept of diagonalization to all matrices, including non-square ones. It expresses any linear transformation $A$ as a composition of three simple operations: a rotation, a scaling, and another rotation.</p>
@@ -530,9 +490,9 @@
       </div>
     </section>
 
-    <!-- SECTION 7: PSEUDOINVERSE -->
+    <!-- SECTION 9: PSEUDOINVERSE -->
     <section class="section-card" id="section-pseudoinverse">
-      <h2>7. The Pseudoinverse and Condition Number</h2>
+      <h2>9. The Pseudoinverse and Condition Number</h2>
 
       <h3>7.1 The Moore-Penrose Pseudoinverse ($A^+$)</h3>
       <p>When $A$ is not square or not invertible, we cannot define $A^{-1}$. However, we can define a generalized inverse $A^+$ that "inverts" the action of $A$ on its range and sends the orthogonal complement to zero.</p>
@@ -665,9 +625,9 @@
       </div>
     </section>
 
-    <!-- SECTION 8: REVIEW -->
+    <!-- SECTION 10: REVIEW -->
     <section class="section-card" id="section-review">
-      <h2>8. Review & Cheat Sheet</h2>
+      <h2>10. Review & Cheat Sheet</h2>
 
       <table class="data-table">
         <thead>
@@ -709,8 +669,8 @@
       </ul>
     </section>
 
-    <!-- SECTION 9: EXERCISES -->
-    <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 9. Exercises</h2>
+    <!-- SECTION 11: EXERCISES -->
+    <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 11. Exercises</h2>
       <div class="insight">
         <h4>Recap & Key Concepts</h4>
         <p>These exercises explore the theoretical depths of matrix norms, the geometry of projections, and the algebraic properties of the trace. P1.1 links norms to duality (Lecture 02). P1.12 links SVD to the operator norm.</p>

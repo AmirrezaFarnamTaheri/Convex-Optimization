@@ -59,139 +59,134 @@
       </ul>
     </section>
 
-    <!-- SECTION 1: NOTATION -->
-    <section class="section-card" id="section-notation">
-      <h2>1. Mathematical Atoms: Sets, Functions, and Combinations</h2>
+    <!-- SECTION 1: FOUNDATIONS -->
+    <section class="section-card" id="section-foundations">
+      <h2>1. Foundations: Scalars, Fields, and Space</h2>
 
-      <h3>1.1 The Geometric "Atoms" of Optimization</h3>
-      <p>In convex optimization, we view algebraic problems through a geometric lens. Throughout this course, you will repeatedly perform three fundamental operations. Recognizing these "atoms" allows you to parse complex problems into simple, manageable geometric components:</p>
-      <ol>
-        <li><b>Mixing (Convex Combinations):</b> Optimization often involves "averaging" or interpolating between candidate solutions.
-          <br><i>Example:</i> In a portfolio optimization problem, if you have two valid asset allocations, any weighted average of them is also a valid allocation. This operation of "mixing" defines the geometry of <b>convex sets</b>.</li>
-        <li><b>Measuring (Norms & Inner Products):</b> We need precise tools to quantify "error" and "similarity".
-          <br><i>Example:</i> The objective function often measures the size of the residual vector (how far is our prediction from the data?). <b>Norms</b> act as rulers to measure these lengths, while <b>inner products</b> act as protractors to measure angles (e.g., is the gradient pointing towards the optimum?).</li>
-        <li><b>Pullback (Preimages):</b> Constraints are typically defined by functions, such as $g(\mathbf{x}) \le 0$. This defines a set implicitly: the set of all $\mathbf{x}$ that map to non-positive values.
-          <br><i>Example:</i> Understanding constraints as <b>preimages</b> ($\mathbf{g}^{-1}((-\infty, 0])$) allows us to deduce the shape of the feasible region directly from the properties of the function $\mathbf{g}$.</li>
-      </ol>
-      <p>Understanding these three operations transforms optimization from abstract symbol manipulation into concrete geometric reasoning.</p>
-
-      <h3>1.2 Preliminaries: Lines and Line Segments</h3>
-      <p>We work in the vector space $\mathbb{R}^n$ equipped with the standard inner product $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$ and the induced Euclidean norm $\|\mathbf{x}\|_2 = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}$. Geometric objects like lines and segments are the building blocks of convexity.</p>
-
-      <h4>Line through two points</h4>
-      <p>Given two distinct points $\mathbf{x}_1, \mathbf{x}_2 \in \mathbb{R}^n$, the <b>line</b> passing through them is the set of all affine combinations of these points:</p>
-      $$
-      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2 = \mathbf{x}_2 + \theta(\mathbf{x}_1 - \mathbf{x}_2), \quad \theta \in \mathbb{R}
-      $$
-      <p>As $\theta$ varies over $\mathbb{R}$, $\mathbf{y}$ traces out the infinite line passing through $\mathbf{x}_2$ in the direction of $\mathbf{x}_1 - \mathbf{x}_2$. The value $\theta=0$ corresponds to $\mathbf{x}_2$, and $\theta=1$ corresponds to $\mathbf{x}_1$.</p>
-
-      <h4>Line segment between two points</h4>
-      <p>The <b>line segment</b> connecting $\mathbf{x}_1$ and $\mathbf{x}_2$, denoted $[\mathbf{x}_1, \mathbf{x}_2]$, corresponds to restricting the parameter $\theta$ to the unit interval $[0, 1]$:</p>
-      $$
-      \mathbf{y} = \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \quad 0 \le \theta \le 1
-      $$
-      <p>This parametrization is the definition of a <b>convex combination</b> of two points. Intuitively, a convex combination is a "weighted average" that lies physically between the points. If you imagine a mass at $\mathbf{x}_1$ and a mass at $\mathbf{x}_2$, the point $\mathbf{y}$ is the center of mass when the weights are $\theta$ and $1-\theta$. A set is defined to be <b>convex</b> if and only if it contains the entire line segment between any pair of its points.</p>
-
-      <figure style="text-align: center;">
-        <img src="assets/line-vs-segment.png"
-             alt="Comparison of a line segment (blue) versus the infinite line (grey) passing through two points"
-             style="max-width: 60%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 2:</i> The line segment (solid blue, $0 \le \theta \le 1$) is a subset of the infinite affine line (dashed grey, $\theta \in \mathbb{R}$).</figcaption>
-      </figure>
-
-      <h3>1.3 Scalars, Vectors, and Matrices</h3>
+      <h3>1.1 The Coefficient Universe (Fields)</h3>
+      <p>Before defining "vectors," we must define the "scalars" that scale them. In linear algebra, scalars are elements of a <a href="#" class="definition-link">field</a> $\mathbb{F}$. A field is a set equipped with addition and multiplication that behaves like rational or real arithmetic.</p>
+      <p>Formally, a field $(\mathbb{F}, +, \cdot)$ satisfies:</p>
       <ul>
-        <li><b>Scalars:</b> Real numbers $a \in \mathbb{R}$.</li>
-        <li><b>Vectors:</b> A vector $\mathbf{x} \in \mathbb{R}^n$ is formally a function $\{1,\dots,n\} \to \mathbb{R}$. We represent it as an ordered $n$-tuple (column vector).
-          <br><i>Equality:</i> $\mathbf{x} = \mathbf{y} \iff x_i = y_i$ for all $i$.
-        </li>
-        <li><b>Matrices:</b> $A \in \mathbb{R}^{m \times n}$.
-          <br><i>Matrix-Vector Product:</i> The definition $(A\mathbf{x})_i = \sum_{j=1}^n A_{ij} x_j$ is chosen specifically to enforce <b>linearity</b>: $A(\alpha \mathbf{x} + \beta \mathbf{y}) = \alpha A\mathbf{x} + \beta A\mathbf{y}$.
-          <br><i>Column View:</i> $A\mathbf{x} = \sum_{j=1}^n x_j A_{:j}$. $A\mathbf{x}$ is a linear combination of the columns of $A$. This is the "synthesis" view: $A$ builds a new vector from its columns.
-          <br><i>Row View:</i> $(A\mathbf{x})_i = A_{i:}^\top \mathbf{x}$. The $i$-th entry is the dot product of the $i$-th row with $\mathbf{x}$. This is the "analysis" view: each row "measures" the input vector $\mathbf{x}$.
-        </li>
+        <li><b>Add/Subtract:</b> $( \mathbb{F}, + )$ is an abelian group with identity $0$. Every element $a$ has an inverse $-a$.</li>
+        <li><b>Multiply/Divide:</b> $( \mathbb{F} \setminus \{0\}, \cdot )$ is an abelian group with identity $1$. Every non-zero element $a$ has an inverse $a^{-1}$.</li>
+        <li><b>Distributivity:</b> $a(b+c) = ab + ac$. This links the two operations.</li>
       </ul>
+      <p><b>Key Examples:</b>
+        <br>$\mathbb{R}$ (Reals): The default for optimization. Ordered and complete.
+        <br>$\mathbb{C}$ (Complex): Essential for spectral theory (eigenvalues).
+        <br>$\mathbb{Q}$ (Rationals): A field, but incomplete.
+        <br><b>Non-Example:</b> $\mathbb{Z}$ (Integers) is <i>not</i> a field because $2$ has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). This means we cannot always divide, which breaks algorithms like Gaussian elimination.</p>
+
+      <h3>1.2 The Concrete Space $\mathbb{R}^n$</h3>
+      <p>For a positive integer $n$, the set $\mathbb{R}^n$ is the collection of all functions $\{1, \dots, n\} \to \mathbb{R}$. We denote elements (vectors) as column arrays: $\mathbf{x} = (x_1, \dots, x_n)^\top$.</p>
+      <p>Operations are defined <b>componentwise</b>:</p>
+      <ul>
+        <li><b>Addition:</b> $(\mathbf{x} + \mathbf{y})_i = x_i + y_i$.</li>
+        <li><b>Scalar Multiplication:</b> $(\alpha \mathbf{x})_i = \alpha x_i$.</li>
+      </ul>
+      <p>These operations inherit the field properties of $\mathbb{R}$, making $\mathbb{R}^n$ a <b>vector space</b>. The zero vector is $\mathbf{0} = (0, \dots, 0)^\top$.</p>
+
+      <div class="proof-box">
+        <h4>Why "Componentwise"?</h4>
+        <p>This definition is not arbitrary. It is the unique structure that makes the projection maps $\pi_i(\mathbf{x}) = x_i$ linear. It ensures that operations in the high-dimensional space $\mathbb{R}^n$ faithfully mirror the operations in the scalar field $\mathbb{R}$.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: GEOMETRY -->
+    <section class="section-card" id="section-geometry">
+      <h2>2. Geometry: Points, Vectors, and Affine Spaces</h2>
+
+      <h3>2.1 Points vs. Vectors (The "Affine" Distinction)</h3>
+      <p>In standard coordinate geometry, we often blur the distinction between a location (point) and a displacement (vector). Rigorous optimization requires we separate them.</p>
+      <ul>
+        <li><b>Vector ($\mathbf{v} \in V$):</b> Represents a <i>displacement</i> or <i>direction</i>. Vectors can be added and scaled. The zero vector $\mathbf{0}$ represents "no displacement."</li>
+        <li><b>Point ($p \in \mathcal{A}$):</b> Represents a <i>location</i>. Points cannot be added (what is "Paris + London"?). However, we can subtract points to get a vector: $p - q = \mathbf{v}$.</li>
+      </ul>
+      <p>An <b>Affine Space</b> is a set of points $\mathcal{A}$ acted upon by a vector space $V$. The operation is $p + \mathbf{v} = q$ (Translation).
+      <br><b>Key Operation:</b>
+      $$ q - p = \text{The unique vector } \mathbf{v} \text{ such that } p + \mathbf{v} = q. $$
+      </p>
+
+      <h3>2.2 Affine Combinations</h3>
+      <p>While $p+q$ is undefined, the weighted sum $\sum \alpha_i p_i$ is well-defined <b>if and only if</b> $\sum \alpha_i = 1$. This is an <b>affine combination</b>.
+      <br><i>Why?</i> Let $o$ be an arbitrary origin. Then $\sum \alpha_i p_i$ is interpreted as $o + \sum \alpha_i (p_i - o)$. If $\sum \alpha_i = 1$, the result is independent of the choice of $o$.
+      <br><b>Example:</b> Midpoint $\frac{1}{2}p + \frac{1}{2}q$. This is valid. $p + q$ (coefficients sum to 2) is origin-dependent (invalid).</p>
+
+      <h3>2.3 Linear vs. Affine Geometry</h3>
+      <p>This distinction explains the structure of solution sets:</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Equation</th>
+            <th>Type</th>
+            <th>Solution Set Geometry</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$A\mathbf{x} = \mathbf{0}$</td>
+            <td>Homogeneous</td>
+            <td><b>Linear Subspace:</b> Contains $\mathbf{0}$. Closed under addition/scaling.</td>
+          </tr>
+          <tr>
+            <td>$A\mathbf{x} = \mathbf{b}$</td>
+            <td>Inhomogeneous</td>
+            <td><b>Affine Subspace:</b> Does not contain $\mathbf{0}$ (if $\mathbf{b} \ne 0$). It is a translated subspace: $\mathbf{x}_p + \mathcal{N}(A)$.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: LINEAR COMBINATIONS -->
+    <section class="section-card" id="section-linear-combinations">
+      <h2>3. Linear Combinations and Matrices</h2>
+
+      <h3>3.1 The Atomic Operation</h3>
+      <p>The fundamental operation in a vector space is the <b>linear combination</b>. For vectors $\mathbf{v}_1, \dots, \mathbf{v}_k$ and scalars $\alpha_1, \dots, \alpha_k$, it is:
+      $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i = \alpha_1 \mathbf{v}_1 + \dots + \alpha_k \mathbf{v}_k $$
+      Almost every concept in linear algebra is a statement about linear combinations:
+      <ul>
+        <li><b>Span:</b> The set of all possible linear combinations.</li>
+        <li><b>Independence:</b> The trivial combination is the only way to get zero.</li>
+        <li><b>Matrix-Vector Product:</b> A compact way to write a linear combination.</li>
+      </ul>
+      </p>
+
+      <h3>3.2 Matrix-Vector Product as Synthesis</h3>
+      <p>Let $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$ be a matrix with columns $\mathbf{a}_j \in \mathbb{R}^m$. For $\mathbf{x} \in \mathbb{R}^n$:
+      $$ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n $$
+      This is the <b>column view</b>: $A$ acts as a machine that synthesizes a new vector from its columns, using the entries of $\mathbf{x}$ as coefficients.
+      <br><i>Result:</i> The range (image) of the map $\mathbf{x} \mapsto A\mathbf{x}$ is exactly the span of the columns of $A$.</p>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
-             alt="Matrix multiplication diagram showing how rows and columns combine"
+             alt="Matrix multiplication diagram showing how columns combine"
              style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 1:</i> Matrix multiplication visualized—how rows and columns combine.</figcaption>
+        <figcaption><i>Figure 1:</i> Matrix-vector multiplication $A\mathbf{x}$ is a linear combination of the columns of $A$.</figcaption>
       </figure>
 
-      <h3>1.4 Functions and Preimages</h3>
-      <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps domain $\mathcal{X}$ to codomain $\mathcal{Y}$. The <b>range</b> (or image) is the set of actual outputs: $\mathrm{range}(f) = \{f(\mathbf{x}) : \mathbf{x} \in \mathcal{X}\} \subseteq \mathcal{Y}$.</p>
-
-      <h4>The Preimage Laws</h4>
-      <p>For a set $B \subseteq \mathcal{Y}$, the <b>preimage</b> is $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$. This exists even if $f$ is not invertible. Preimages respect all set operations perfectly:</p>
-      <div class="proof-box">
-        <h4>Proof: Preimage Laws</h4>
-        <div class="proof-step">
-          <strong>1. Union:</strong> $\mathbf{x} \in f^{-1}(A \cup B) \iff f(\mathbf{x}) \in A \cup B \iff f(\mathbf{x}) \in A \text{ or } f(\mathbf{x}) \in B \iff \mathbf{x} \in f^{-1}(A) \cup f^{-1}(B)$.
-        </div>
-        <div class="proof-step">
-          <strong>2. Intersection:</strong> Similarly, $f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B)$.
-        </div>
-        <div class="proof-step">
-          <strong>3. Complement:</strong> $f^{-1}(B^c) = (f^{-1}(B))^c$.
-          <br><i>Proof:</i> $\mathbf{x} \in f^{-1}(B^c) \iff f(\mathbf{x}) \notin B \iff \mathbf{x} \notin f^{-1}(B) \iff \mathbf{x} \in (f^{-1}(B))^c$.
-        </div>
-      </div>
-      <p><i>Why this matters:</i> Constraints like $g(\mathbf{x}) \le 0$ define the set $\mathbf{g}^{-1}((-\infty, 0])$. If $\mathbf{g}$ is convex, the preimage of the convex set $(-\infty, 0]$ is convex.</p>
+      <h3>3.3 The Geometry of Linear Combinations</h3>
+      <p>What shapes do linear combinations create?
+      <ul>
+        <li><b>1 Vector ($\mathbf{v} \ne 0$):</b> A line through the origin.</li>
+        <li><b>2 Vectors ($\mathbf{u}, \mathbf{v}$ independent):</b> A plane through the origin.</li>
+        <li><b>$k$ Vectors:</b> A $k$-dimensional subspace (flat) passing through the origin.</li>
+      </ul>
+      <p><b>Affine Combinations</b> generate flats that need not pass through the origin (lines, planes, hyperplanes). <b>Convex Combinations</b> generate segments, triangles, and polytopes.</p>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
              alt="Parallelogram law for vector addition"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
-        <figcaption><i>Figure 3:</i> The parallelogram law of vector addition, a geometric reflection of the algebraic properties of inner products.</figcaption>
+        <figcaption><i>Figure 2:</i> The Parallelogram Law: geometric addition of vectors corresponds to algebraic addition of components.</figcaption>
       </figure>
-
-      <h3>1.5 Combinations and Hulls</h3>
-      <p>Different rules for "mixing" vectors generate different geometric objects.</p>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Coefficients $\theta_i$</th>
-            <th>Generated Object</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>Linear</b></td>
-            <td>Arbitrary</td>
-            <td><b>Subspace</b> (Span)</td>
-          </tr>
-          <tr>
-            <td><b>Affine</b></td>
-            <td>$\sum \theta_i = 1$</td>
-            <td><b>Affine Set</b> (Line, Plane)</td>
-          </tr>
-          <tr>
-            <td><b>Convex</b></td>
-            <td>$\sum \theta_i = 1, \theta_i \ge 0$</td>
-            <td><b>Convex Set</b> (Polygon, Solid)</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4>Translation Invariance of Affine Combinations</h4>
-      <p>Affine combinations are "origin-independent". If $\mathbf{y} = \sum \theta_i x_i$ with $\sum \theta_i = 1$, then shifting all points by $\mathbf{v}$ shifts the result by $\mathbf{v}$:</p>
-      $$ \sum \theta_i (x_i + \mathbf{v}) = \sum \theta_i x_i + \left(\sum \theta_i\right) \mathbf{v} = \mathbf{y} + \mathbf{v} $$
-
-      <h4>The 2-Point Convex Hull is a Segment</h4>
-      <p>The set of convex combinations of $\mathbf{x}$ and $\mathbf{y}$ is $S = \{\theta \mathbf{x} + (1-\theta)\mathbf{y} : \theta \in [0, 1]\}$.
-      <br>This matches the geometric definition of the segment $[\mathbf{x}, \mathbf{y}]$: start at $\mathbf{y}$, move towards $\mathbf{x}$ by fraction $\theta$.
-      $$ \theta \mathbf{x} + (1-\theta)\mathbf{y} = \mathbf{y} + \theta(\mathbf{x}-\mathbf{y}) $$
-      A set is <b>convex</b> if it contains the line segment between any pair of its points.</p>
-
     </section>
 
-    <!-- SECTION 2: SUBSPACES -->
+    <!-- SECTION 4: SUBSPACES -->
     <section class="section-card" id="section-subspaces">
-      <h2>2. Subspaces and the Four Fundamental Spaces</h2>
+      <h2>4. Subspaces and the Four Fundamental Spaces</h2>
 
-      <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. Given a matrix $A \in \mathbb{R}^{m \times n}$, we can define four fundamental subspaces that characterize the behavior of the linear map $T(\mathbf{x}) = A\mathbf{x}$.</p>
+      <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. It represents a "flat" passing through the origin (line, plane, hyperplane). Given a matrix $A \in \mathbb{R}^{m \times n}$, four fundamental subspaces characterize the linear map $T(\mathbf{x}) = A\mathbf{x}$.</p>
       <ul>
         <li><a href="#" class="definition-link" data-term="column space">Column Space (Range)</a>: $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\} \subseteq \mathbb{R}^m$. This is the set of all possible outputs of the linear map, i.e., the span of the columns of $A$.</li>
         <li><a href="#" class="definition-link" data-term="nullspace">Nullspace (Kernel)</a>: $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$. This is the set of all input vectors that are mapped to the zero vector.</li>
@@ -309,9 +304,9 @@
       </div>
     </section>
 
-    <!-- SECTION 3: ALGEBRAIC INVARIANTS -->
+    <!-- SECTION 7: ALGEBRAIC INVARIANTS -->
     <section class="section-card" id="section-invariants">
-      <h2>3. Algebraic Invariants: Determinant, Trace, and Eigenvalues</h2>
+      <h2>7. Algebraic Invariants: Determinant, Trace, and Eigenvalues</h2>
 
       <p>While a matrix $A$ represents a linear map in a specific basis, we are often interested in properties that are intrinsic to the map itself, independent of the basis. These are called <b>invariants</b>.</p>
 
@@ -466,36 +461,23 @@
 
 
     <section class="section-card" id="section-norms">
-      <h2>4. Inner Products, Norms, and Angles</h2>
+      <h2>5. Inner Products and Vector Norms</h2>
 
-      <h3>Inner Products</h3>
-      <p>An <a href="#" class="definition-link">inner product</a> on $\mathbb{R}^n$ is a function $\langle \cdot, \cdot \rangle: \mathbb{R}^n \times \mathbb{R}^n \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z}$ and scalars $\alpha, \beta$:</p>
+      <h3>5.1 Abstract Definition: Inner Product</h3>
+      <p>An <a href="#" class="definition-link">inner product</a> on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $\mathbf{x}, \mathbf{y}, \mathbf{z} \in V$ and scalars $a, b$:</p>
       <ol>
-        <li><b>Linearity:</b> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \alpha\langle \mathbf{x}, \mathbf{y} \rangle + \beta\langle \mathbf{z}, \mathbf{y} \rangle$.</li>
-        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$.</li>
+        <li><b>Bilinearity (Linearity in first argument):</b> $\langle a\mathbf{x} + b\mathbf{y}, \mathbf{z} \rangle = a\langle \mathbf{x}, \mathbf{z} \rangle + b\langle \mathbf{y}, \mathbf{z} \rangle$.</li>
+        <li><b>Symmetry:</b> $\langle \mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{y}, \mathbf{x} \rangle$. (This implies linearity in the second argument).</li>
         <li><b>Positive Definiteness:</b> $\langle \mathbf{x}, \mathbf{x} \rangle \ge 0$, and $\langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = 0$.</li>
       </ol>
-      <p>These axioms ensure that "lengths" and "angles" behave as expected. The <b>standard (Euclidean) inner product</b> is defined as $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$.</p>
+      <p><b>The Canonical Inner Product:</b> The dot product $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum x_i y_i$ satisfies these axioms. It corresponds to the geometry where coordinates are orthonormal.</p>
 
-      <div class="proof-box">
-        <h4>Proof: Dot Product is an Inner Product</h4>
-        <div class="proof-step">
-          <strong>1. Linearity:</strong> $\langle \alpha \mathbf{x} + \beta \mathbf{z}, \mathbf{y} \rangle = \sum_i (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i = \alpha \langle \mathbf{x}, \mathbf{y} \rangle + \beta \langle \mathbf{z}, \mathbf{y} \rangle$.
-        </div>
-        <div class="proof-step">
-          <strong>2. Symmetry:</strong> $\sum x_i y_i = \sum y_i x_i$.
-        </div>
-        <div class="proof-step">
-          <strong>3. Positive Definiteness:</strong> $\langle \mathbf{x}, \mathbf{x} \rangle = \sum x_i^2 \ge 0$. If $\sum x_i^2 = 0$, then each $x_i^2=0$ (nonnegative sum is zero $\implies$ terms are zero), so $\mathbf{x}=0$.
-        </div>
-      </div>
+      <h3>5.2 Induced Norm (Length)</h3>
+      <p>Any inner product induces a norm via $\|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}$. The Euclidean norm $\|\mathbf{x}\|_2 = \sqrt{\mathbf{x}^\top \mathbf{x}}$ is the most famous example.
+      <br><b>Cauchy-Schwarz Inequality:</b> $|\langle \mathbf{x}, \mathbf{y} \rangle| \le \|\mathbf{x}\| \|\mathbf{y}\|$.
+      <br>This inequality allows us to define angles: $\cos \theta = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\| \|\mathbf{y}\|}$.</p>
 
-      <h4>Weighted Inner Products</h4>
-      <p>For any symmetric positive definite matrix $P \in \mathbb{S}^n_{++}$, we can define a weighted inner product:
-      $$ \langle \mathbf{x}, \mathbf{y} \rangle_P := \mathbf{x}^\top P \mathbf{y} $$
-      This induces the <b>P-norm</b> $\|\mathbf{x}\|_P = \sqrt{\mathbf{x}^\top P \mathbf{x}}$, which measures distance in a skewed coordinate system (related to ellipsoids).</p>
-
-      <h3>Norms and Convexity</h3>
+      <h3>5.3 Common Vector Norms</h3>
       <p>A <a href="#" class="definition-link">norm</a> is a function $\|\cdot\|: \mathbb{R}^n \to \mathbb{R}$ assigning a length to each vector. Axioms:</p>
       <ol>
         <li><b>Definiteness:</b> $\|\mathbf{x}\| \ge 0$, and $\|\mathbf{x}\| = 0 \iff \mathbf{x}=0$.</li>
@@ -503,33 +485,15 @@
         <li><b>Triangle Inequality:</b> $\|\mathbf{x}+\mathbf{y}\| \le \|\mathbf{x}\| + \|\mathbf{y}\|$.</li>
       </ol>
 
-      <h4>The $\ell_1$ and $\ell_\infty$ Norms (Rigorous Proofs)</h4>
+      <h4>The $\ell_1$, $\ell_2$, and $\ell_\infty$ Norms</h4>
       <ul>
-        <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$.</li>
-        <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$.</li>
+        <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. (Sum of magnitudes).</li>
+        <li><b>$\ell_2$ (Euclidean):</b> $\|\mathbf{x}\|_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$. (Straight line distance).</li>
+        <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. (Max component).</li>
       </ul>
-
-      <div class="proof-box">
-        <h4>Proof: Triangle Inequalities for $\ell_1$ and $\ell_\infty$</h4>
-        <div class="proof-step">
-          <strong>For $\ell_1$:</strong> Using scalar triangle inequality $|a+\mathbf{b}|\le |a|+|\mathbf{b}|$:
-          $$ \|\mathbf{x}+\mathbf{y}\|_1 = \sum_i |x_i+y_i| \le \sum_i (|x_i|+|y_i|) = \sum_i |x_i| + \sum_i |y_i| = \|\mathbf{x}\|_1 + \|\mathbf{y}\|_1. $$
-        </div>
-        <div class="proof-step">
-          <strong>For $\ell_\infty$:</strong> For any index $k$:
-          $$ |x_k+y_k| \le |x_k|+|y_k| \le \|\mathbf{x}\|_\infty + \|\mathbf{y}\|_\infty $$
-          Taking the maximum over $k$ on the LHS gives $\|\mathbf{x}+\mathbf{y}\|_\infty \le \|\mathbf{x}\|_\infty + \|\mathbf{y}\|_\infty$.
-        </div>
-      </div>
 
       <h4>Unit Balls are Convex</h4>
       <p>A crucial geometric property: <b>The unit ball $B = \{\mathbf{x} : \|\mathbf{x}\| \le 1\}$ of any norm is a convex set.</b></p>
-      <div class="proof-box">
-        <h4>Proof: Unit Ball Convexity</h4>
-        <p>Let $\mathbf{x}, \mathbf{y} \in B$, so $\|\mathbf{x}\| \le 1, \|\mathbf{y}\| \le 1$. For any $\theta \in [0, 1]$:</p>
-        $$ \|\theta \mathbf{x} + (1-\theta)\mathbf{y}\| \le \|\theta \mathbf{x}\| + \|(1-\theta)\mathbf{y}\| = \theta\|\mathbf{x}\| + (1-\theta)\|\mathbf{y}\| \le \theta(1) + (1-\theta)(1) = 1 $$
-        <p>Thus $\theta \mathbf{x} + (1-\theta)\mathbf{y} \in B$. This means norm constraints $f(\mathbf{x}) = \|A\mathbf{x}-\mathbf{b}\| \le t$ define convex feasible sets.</p>
-      </div>
 
       <figure style="text-align: center;">
         <img src="assets/norm-balls.png"
@@ -540,273 +504,45 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: The Geometry of Norms</h3>
-        <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls (sets of vectors with norm ≤ 1) for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms in 2D. Each norm defines a different notion of "distance" and produces a distinctly shaped unit ball:</p>
-        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-          <li><b>$\ell_2$ (Euclidean):</b> Forms a perfect circle—the most "natural" geometric distance</li>
-          <li><b>$\ell_1$ (Manhattan):</b> Forms a diamond with "pointy" corners at the axes—this geometry is why $\ell_1$ regularization promotes sparse solutions in machine learning</li>
-          <li><b>$\ell_\infty$ (Chebyshev):</b> Forms a square—measures the maximum component</li>
-        </ul>
-        <p><i>Connection to optimization:</i> The shape of these unit balls directly affects the solutions to optimization problems. The corners of the $\ell_1$ ball are what make LASSO regression find sparse solutions!</p>
+        <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls (sets of vectors with norm ≤ 1) for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms in 2D.</p>
         <div id="widget-norm-geometry" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>The Euclidean Geometry ($\ell_2$)</h3>
-      <p>The Euclidean norm $\|\mathbf{x}\|_2 = \sqrt{\mathbf{x}^\top \mathbf{x}}$ is special because it arises from an inner product.</p>
-
-      <h4>Foundational Scalar Lemmas</h4>
-      <ol>
-        <li><b>1D Triangle Inequality:</b> $|a+\mathbf{b}| \le |a| + |\mathbf{b}|$.
-          <br><i>Proof:</i> Squaring both sides (non-negative) gives $(a+\mathbf{b})^2 \le (|a|+|\mathbf{b}|)^2 \iff a^2+2ab+\mathbf{b}^2 \le a^2+2|a||\mathbf{b}|+\mathbf{b}^2 \iff ab \le |ab|$, which is always true.
-        </li>
-        <li><b>Quadratic Non-negativity:</b> If $q(t) = at^2 + bt + c \ge 0$ for all $t$ (with $a > 0$), then the discriminant $\mathbf{b}^2 - 4ac \le 0$.
-          <br><i>Reason:</i> If the discriminant were positive, the quadratic would have two real roots and dip below zero between them.
-        </li>
-      </ol>
-
-      <div class="proof-box">
-        <h4>Proof: Cauchy-Schwarz Inequality ($|\mathbf{x}^\top \mathbf{y}| \le \|\mathbf{x}\|_2 \|\mathbf{y}\|_2$)</h4>
-        <div class="proof-step">
-          <strong>Step 1: Construct a quadratic.</strong> For any $t \in \mathbb{R}$, $\|\mathbf{x} - t\mathbf{y}\|_2^2 \ge 0$.
-          $$ 0 \le \langle \mathbf{x} - t\mathbf{y}, \mathbf{x} - t\mathbf{y} \rangle = \|\mathbf{x}\|_2^2 - 2t\langle \mathbf{x}, \mathbf{y} \rangle + t^2 \|\mathbf{y}\|_2^2. $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Discriminant condition.</strong> This is a quadratic $At^2 + Bt + C \ge 0$ with $A=\|\mathbf{y}\|_2^2$.
-          Assuming $\mathbf{y} \neq 0$ (otherwise trivial), we must have $B^2 - 4AC \le 0$:
-          $$ (-2\langle \mathbf{x}, \mathbf{y} \rangle)^2 - 4(\|\mathbf{y}\|_2^2)(\|\mathbf{x}\|_2^2) \le 0 $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Conclusion.</strong>
-          $$ 4\langle \mathbf{x}, \mathbf{y} \rangle^2 \le 4\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2 \implies |\langle \mathbf{x}, \mathbf{y} \rangle| \le \|\mathbf{x}\|_2 \|\mathbf{y}\|_2. $$
-          <i>Equality holds</i> iff the quadratic touches zero, i.e., $\mathbf{x} = ty$ (collinear).
-        </div>
-      </div>
-
-      <div class="proof-box">
-        <h4>Proof: Triangle Inequality for $\ell_2$</h4>
-        <p>Using Cauchy-Schwarz:</p>
-        $$ \|\mathbf{x}+\mathbf{y}\|_2^2 = \|\mathbf{x}\|_2^2 + 2\langle \mathbf{x}, \mathbf{y} \rangle + \|\mathbf{y}\|_2^2 \le \|\mathbf{x}\|_2^2 + 2\|\mathbf{x}\|_2\|\mathbf{y}\|_2 + \|\mathbf{y}\|_2^2 = (\|\mathbf{x}\|_2 + \|\mathbf{y}\|_2)^2 $$
-        <p>Taking square roots gives $\|\mathbf{x}+\mathbf{y}\|_2 \le \|\mathbf{x}\|_2 + \|\mathbf{y}\|_2$.</p>
-      </div>
-
-      <h3>Dual Norms and Polar Sets</h3>
+      <h3>5.4 Dual Norms</h3>
       <p>The <b>dual norm</b> provides a variational definition of size. For any norm $\|\cdot\|$, its dual $\|\cdot\|_*$ is:
       $$ \|\mathbf{y}\|_* = \sup_{\|\mathbf{x}\| \le 1} \mathbf{x}^\top \mathbf{y} $$
-      This measures the maximum "correlation" $\mathbf{y}$ can have with any unit vector.</p>
-
-      <div class="proof-box">
-        <h4>Theorem: The Dual Norm is a Norm</h4>
-        <div class="proof-step">
-          <strong>1. Positive Definiteness:</strong> $\|\mathbf{y}\|_* \ge \mathbf{y}^\top 0 = 0$. If $\|\mathbf{y}\|_*=0$, then $\sup \mathbf{x}^\top \mathbf{y} = 0$. By taking $\mathbf{x} = \mathbf{y}/\|\mathbf{y}\|$ (if norm exists) or coordinate vectors, we see $\mathbf{y}$ must be 0.
-        </div>
-        <div class="proof-step">
-          <strong>2. Homogeneity:</strong> $\|\alpha \mathbf{y}\|_* = \sup_{\|\mathbf{x}\|\le 1} \mathbf{x}^\top (\alpha \mathbf{y}) = \alpha \sup \mathbf{x}^\top \mathbf{y}$ (if $\alpha \ge 0$). Symmetry of the unit ball handles $\alpha < 0$.
-        </div>
-        <div class="proof-step">
-          <strong>3. Triangle Inequality:</strong>
-          $$ \|\mathbf{y}+\mathbf{z}\|_* = \sup_{\|\mathbf{x}\|\le 1} (\mathbf{y}+\mathbf{z})^\top \mathbf{x} \le \sup_{\|\mathbf{x}\|\le 1} \mathbf{y}^\top \mathbf{x} + \sup_{\|\mathbf{x}\|\le 1} \mathbf{z}^\top \mathbf{x} = \|\mathbf{y}\|_* + \|\mathbf{z}\|_*. $$
-        </div>
-      </div>
-
-      <h4>Generalized Hölder's Inequality</h4>
-      <p>From the definition, we immediately get the fundamental inequality:
-      $$ \mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_* $$
-      <i>Proof:</i> If $\mathbf{x}=0$, trivial. If $\mathbf{x} \neq 0$, let $\mathbf{u} = \mathbf{x}/\|\mathbf{x}\|$. Then $\|\mathbf{u}\|=1$, so $\mathbf{u}^\top \mathbf{y} \le \|\mathbf{y}\|_* \implies (\mathbf{x}/\|\mathbf{x}\|)^\top \mathbf{y} \le \|\mathbf{y}\|_* \implies \mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_*$.</p>
+      This measures the maximum "correlation" $\mathbf{y}$ can have with any unit vector.
+      <br><b>Generalized Hölder's Inequality:</b> $\mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_*$.
+      </p>
 
       <h4>Canonical Dual Pairs</h4>
       <ul>
-        <li><b>$\ell_2$ is self-dual:</b> $\|\mathbf{y}\|_{2,*} = \|\mathbf{y}\|_2$. (Aligned by $\mathbf{x} = \mathbf{y}/\|\mathbf{y}\|_2$).</li>
-        <li><b>$\ell_1$ dual is $\ell_\infty$:</b> $\|\mathbf{y}\|_{1,*} = \|\mathbf{y}\|_\infty$. (Maximize $\mathbf{x}^\top \mathbf{y}$ on diamond $\to$ pick corner).</li>
-        <li><b>$\ell_\infty$ dual is $\ell_1$:</b> $\|y\|_{\infty,*} = \|\mathbf{y}\|_1$. (Maximize $\mathbf{x}^\top \mathbf{y}$ on box $\to$ match signs).</li>
+        <li><b>$\ell_2$ is self-dual:</b> $\|\mathbf{y}\|_{2,*} = \|\mathbf{y}\|_2$.</li>
+        <li><b>$\ell_1$ dual is $\ell_\infty$:</b> $\|\mathbf{y}\|_{1,*} = \|\mathbf{y}\|_\infty$.</li>
+        <li><b>$\ell_\infty$ dual is $\ell_1$:</b> $\|y\|_{\infty,*} = \|\mathbf{y}\|_1$.</li>
       </ul>
-
-      <div class="theorem-box">
-        <h4>Lemma: Conjugate of a Norm</h4>
-        <p>This lemma is crucial for dual derivations. Let $\|\cdot\|$ be any norm and $\|\cdot\|_*$ its dual norm. The conjugate of the scaled norm $f(\mathbf{x}) = \rho \|\mathbf{x}\|$ is the indicator function of the dual ball:
-        $$ (\rho\|\mathbf{x}\|)^*(\mathbf{z}) = I_{\{\|\mathbf{z}\|_* \le \rho\}}(\mathbf{z}) = \begin{cases} 0 & \|\mathbf{z}\|_* \le \rho \\ \infty & \text{otherwise} \end{cases} $$
-        <i>Proof sketch:</i> If $\|\mathbf{z}\|_* \le \rho$, then $\mathbf{z}^\top \mathbf{x} - \rho\|\mathbf{x}\| \le \|\mathbf{z}\|_*\|\mathbf{x}\| - \rho\|\mathbf{x}\| \le 0$ (max is 0 at $\mathbf{x}=0$). If $\|\mathbf{z}\|_* > \rho$, we can align $\mathbf{x}$ with $\mathbf{z}$ to make the expression go to $+\infty$.
-        </p>
-      </div>
-
-      <h4>Polar Sets</h4>
-      <p>The <b>polar</b> of a convex set $C$ is $C^\circ = \{\mathbf{y} : \mathbf{y}^\top \mathbf{x} \le 1 \ \forall \mathbf{x} \in C\}$.
-      <br>For a unit ball $B = \{\mathbf{x} : \|\mathbf{x}\| \le 1\}$, the polar is exactly the dual unit ball:
-      $$ B^\circ = \{\mathbf{y} : \|\mathbf{y}\|_* \le 1\} $$
-      This geometric duality underpins the duality of optimization problems.</p>
-
-      <h3>Spectral Norm and Convexity</h3>
-
-      <h4>Induced Matrix Norms</h4>
-      <p>The spectral norm is a specific instance of an <b>induced norm</b> (or operator norm). For any vector norms $\|\cdot\|_a$ on the domain and $\|\cdot\|_b$ on the codomain, the induced norm of a matrix $X$ is:
-      $$ \|X\|_{a,\mathbf{b}} = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_b}{\|\mathbf{v}\|_a} = \sup_{\|\mathbf{v}\|_a = 1} \|X\mathbf{v}\|_b $$
-      This measures the maximum amplification of the $\mathbf{b}$-norm of the output relative to the $a$-norm of the input.</p>
-
-      <h4>Common Operator Norms</h4>
-      <p>When the domain and codomain are equipped with the same $\ell_p$ norm ($a=\mathbf{b}=\mathbf{p}$), we write $\|X\|_p$.</p>
-      <ul>
-        <li><b>Spectral Norm ($\mathbf{p}=2$):</b> $\|X\|_2 = \sigma_{\max}(X)$. (Max stretch of Euclidean length).</li>
-        <li><b>Max Column Sum Norm ($\mathbf{p}=1$):</b> The operator norm induced by the $\ell_1$ norm is the maximum absolute column sum.
-        $$ \|X\|_1 = \max_{j} \sum_{i} |X_{ij}| $$
-        <i>Intuition:</i> The unit ball of $\ell_1$ is a diamond with vertices at $e_j$. The maximum stretch occurs at one of these vertices $X e_j$ (the $j$-th column).
-        </li>
-        <li><b>Max Row Sum Norm ($\mathbf{p}=\infty$):</b> The operator norm induced by the $\ell_\infty$ norm is the maximum absolute row sum.
-        $$ \|X\|_\infty = \max_{i} \sum_{j} |X_{ij}| $$
-        <i>Intuition:</i> This is the dual of the 1-norm case.
-        </li>
-      </ul>
-
-      <p><b>Convexity:</b> All induced norms are convex functions of the matrix $X$. This follows because $\|X\|_{a,b} = \sup_{\|\mathbf{u}\|_{\mathbf{b}^*} \le 1, \|\mathbf{v}\|_a \le 1} \mathbf{u}^\top X \mathbf{v}$, which is a pointwise supremum of linear functions.</p>
-
-      <h4>Spectral Norm Details</h4>
-      <p>The <b>spectral norm</b> (or operator norm) of a matrix $X \in \mathbb{R}^{m \times n}$ is induced by the Euclidean vector norm:
-      $$ \|X\|_2 = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_2}{\|\mathbf{v}\|_2} = \sup_{\|\mathbf{v}\|_2=1} \|X\mathbf{v}\|_2 $$
-      <p><b>Intuition: Worst-Case Stretch.</b> The operator norm measures the maximum factor by which the matrix $X$ can "stretch" a vector. It corresponds to the "Lipschitz constant" of the linear map. Geometrically, it is the length of the longest semi-axis of the ellipsoid formed by mapping the unit sphere.</p>
-      It turns out this equals the maximum singular value:
-      $$ \|X\|_2 = \sigma_{\max}(X) = \sqrt{\lambda_{\max}(X^\top X)} $$
-      Since $X^\top X$ is always Positive Semidefinite ($\mathbf{v}^\top X^\top X \mathbf{v} = \|X\mathbf{v}\|_2^2 \ge 0$), its eigenvalues are non-negative.</p>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/operator-norm-geometry.png"
-             alt="A unit circle mapped to an ellipse illustrating the spectral norm as maximum stretch"
-             style="max-width: 90%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 7:</i> Operator-norm geometry: $\|A\|_2$ is the maximum stretch of the unit circle under $A$, equal to the longest semi-axis length (the largest singular value).</figcaption>
-      </figure>
-
-      <div class="proof-box">
-        <h4>Proof: $\|X\|_2 = \sqrt{\lambda_{\max}(X^\top X)}$</h4>
-        <div class="proof-step">
-          <strong>Step 1: Squared Norm.</strong>
-          $$ \|X\|_2^2 = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_2^2}{\|\mathbf{v}\|_2^2} = \sup_{\mathbf{v} \neq 0} \frac{\mathbf{v}^\top X^\top X \mathbf{v}}{\mathbf{v}^\top \mathbf{v}} $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Rayleigh Quotient.</strong> The expression $\frac{\mathbf{v}^\top M \mathbf{v}}{\mathbf{v}^\top \mathbf{v}}$ for a symmetric matrix $M$ is the Rayleigh Quotient. By the Spectral Theorem, we can diagonalize $M$ in an orthonormal basis of eigenvectors. The maximum value of the quotient is achieved when $\mathbf{v}$ is the eigenvector corresponding to the largest eigenvalue. Thus, the maximum is exactly $\lambda_{\max}(M)$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Conclusion.</strong>
-          $$ \|X\|_2^2 = \lambda_{\max}(X^\top X) \implies \|X\|_2 = \sqrt{\lambda_{\max}(X^\top X)} $$
-        </div>
-      </div>
-
-      <p><b>Dual Representation (Crucial for Convexity Proofs):</b> Similar to the max eigenvalue, the spectral norm can be written as a supremum:
-      $$ \|X\|_2 = \sup_{\|\mathbf{u}\|_2=1, \|\mathbf{v}\|_2=1} \mathbf{u}^\top X \mathbf{v} $$
-      Since $f(X) = \mathbf{u}^\top X \mathbf{v}$ is a <b>linear function</b> of $X$, and $\|X\|_2$ is the supremum of these linear functions, $\|X\|_2$ is a <b>convex function</b>.</p>
-
-      <h3>Matrix Inner Product and Frobenius Norm</h3>
-      <p>For matrices $X, Y \in \mathbb{R}^{m \times n}$, the <b>trace inner product</b> (also called the Hilbert-Schmidt inner product) is:
-      $$ \langle X, Y \rangle = \mathrm{tr}(X^\top Y) = \sum_{i=1}^m \sum_{j=1}^n X_{ij} Y_{ij} $$
-      The <b>Frobenius norm</b> (or Hilbert-Schmidt norm) is $\|X\|_F = \sqrt{\langle X, X \rangle}$.</p>
-
-      <div class="proof-box">
-        <h4>Derivation: Trace and Frobenius Norm</h4>
-        <p>We rigorously show that the Frobenius norm $\|A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$ is induced by the trace inner product $\langle A, B \rangle = \mathrm{tr}(A^\top B)$.</p>
-        <div class="proof-step">
-            <strong>Step 1: Compute Diagonal Elements of $A^\top A$.</strong>
-            Let $P = A^\top A$. By definition of matrix multiplication, the $(j, j)$ entry is the dot product of the $j$-th row of $A^\top$ and the $j$-th column of $A$.
-            Since the $j$-th row of $A^\top$ is the transpose of the $j$-th column of $A$:
-            $$ P_{jj} = \sum_{k=1}^m (A^\top)_{jk} A_{kj} = \sum_{k=1}^m A_{kj} A_{kj} = \sum_{k=1}^m A_{kj}^2 $$
-            This represents the squared Euclidean norm of the $j$-th column of $A$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Sum the Diagonal (Trace).</strong>
-            The trace is the sum of diagonal elements:
-            $$ \mathrm{tr}(A^\top A) = \sum_{j=1}^n P_{jj} = \sum_{j=1}^n \left( \sum_{k=1}^m A_{kj}^2 \right) $$
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Relate to Element-wise Sum.</strong>
-            The double sum $\sum_{j=1}^n \sum_{k=1}^m A_{kj}^2$ simply iterates over every entry in the matrix, squaring it and adding it up.
-            This is exactly the definition of the squared Frobenius norm:
-            $$ \sum_{j=1}^n \sum_{k=1}^m A_{kj}^2 = \sum_{i,j} A_{ij}^2 = \|A\|_F^2 $$
-            Thus, $\|A\|_F = \sqrt{\mathrm{tr}(A^\top A)}$.
-        </div>
-      </div>
-
-      <h4>Submultiplicativity of the Frobenius Norm</h4>
-      <p>For compatible matrices $A, B$, we have the inequality $\|AB\|_F \le \|A\|_F \|B\|_F$. This property is crucial for analyzing the convergence of matrix iterations.</p>
-
-      <div class="proof-box">
-        <h4>Proof via Column/Row Factorization</h4>
-        <p>We prove this inequality by decomposing the matrix multiplication into vector inner products and applying Cauchy-Schwarz.</p>
-
-        <div class="proof-step">
-          <strong>Step 1: Setup.</strong>
-          Let $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times \mathbf{p}}$. Let $C = AB$.
-          <br>Denote the $i$-th <b>column</b> of $A^\top$ (which is the $i$-th row of $A$) as $A_i \in \mathbb{R}^n$.
-          <br>Denote the $j$-th <b>column</b> of $B$ as $B^j \in \mathbb{R}^n$.
-          <br>The $(i,j)$ entry of $C$ is the inner product: $C_{ij} = \langle A_i, B^j \rangle$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 2: Expand Squared Norm.</strong>
-          $$ \|C\|_F^2 = \sum_{i=1}^m \sum_{j=1}^p C_{ij}^2 = \sum_{i=1}^m \sum_{j=1}^p \langle A_i, B^j \rangle^2 $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 3: Apply Cauchy-Schwarz.</strong>
-          For each term, $\langle A_i, B^j \rangle^2 \le \|A_i\|_2^2 \|B^j\|_2^2$.
-          $$ \|C\|_F^2 \le \sum_{i=1}^m \sum_{j=1}^p \|A_i\|_2^2 \|B^j\|_2^2 $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 4: Factorization Trick.</strong>
-          Define $\alpha_i = \|A_i\|_2^2$ and $\beta_j = \|B^j\|_2^2$. The double sum splits because the terms are independent:
-          $$ \sum_{i,j} \alpha_i \beta_j = \sum_i \alpha_i \left(\sum_j \beta_j\right) = \left(\sum_i \alpha_i\right) \left(\sum_j \beta_j\right) $$
-          Substituting back:
-          $$ \sum_{i,j} \|A_i\|_2^2 \|B^j\|_2^2 = \left(\sum_{i=1}^m \|A_i\|_2^2\right) \left(\sum_{j=1}^p \|B^j\|_2^2\right) $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 5: Identify Norms.</strong>
-          The sum of squared norms of rows of $A$ is exactly $\|A\|_F^2$.
-          The sum of squared norms of columns of $B$ is exactly $\|B\|_F^2$.
-          $$ \|AB\|_F^2 \le \|A\|_F^2 \|B\|_F^2 $$
-          Taking square roots gives the result: $\boxed{\|AB\|_F \le \|A\|_F \|B\|_F}$.
-        </div>
-      </div>
     </section>
 
-    <!-- SECTION 5: ORTHOGONALITY -->
+    <!-- SECTION 6: ORTHOGONALITY -->
     <section class="section-card" id="section-orthogonality">
-      <h2>5. Orthogonality and Orthonormal Bases</h2>
+      <h2>6. Orthogonality and Projections</h2>
 
-      <h3>Orthonormal Sets</h3>
-      <p>A set of vectors $q_1, \dots, q_k$ is <b>orthonormal</b> if its elements are mutually orthogonal and each has a norm of 1. Formally, $q_i^\top q_j = \delta_{ij}$, where $\delta_{ij}$ is the Kronecker delta (1 if $i=j$, 0 otherwise). A square matrix $Q$ with orthonormal columns is an <b>orthogonal matrix</b>, satisfying the important property $Q^\top Q = I$, which means $Q^{-1} = Q^\top$. Orthonormal bases are computationally desirable because they are numerically stable and simplify many calculations, such as projections.</p>
-
-      <h3>Angle Preservation and Orthogonal Matrices</h3>
-      <p>A linear map $A$ preserves angles if $\frac{\langle A\mathbf{x}, A\mathbf{y} \rangle}{\|A\mathbf{x}\|\|A\mathbf{y}\|} = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\|\|\mathbf{y}\|}$ for all $\mathbf{x}, \mathbf{y}$.
-      A stronger condition is that $A$ preserves inner products: $\langle A\mathbf{x}, A\mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{y} \rangle$.
-      <br>Using the adjoint property, $\langle \mathbf{x}, A^\top A \mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{y} \rangle$ for all $\mathbf{x}, \mathbf{y}$, which implies $A^\top A = I$.
-      Thus, <b>matrices that preserve geometry (lengths and angles) are exactly the orthogonal matrices</b> (possibly scaled).</p>
-
-      <div class="insight">
-        <h4>The Orthogonal Group $O_n$</h4>
-        <p>The set of all $n \times n$ orthogonal matrices forms a group, denoted $O_n$.</p>
-        <ul>
-          <li><b>Closure:</b> If $Q_1, Q_2 \in O_n$, then $(Q_1 Q_2)^\top (Q_1 Q_2) = Q_2^\top Q_1^\top Q_1 Q_2 = Q_2^\top I Q_2 = I$.</li>
-          <li><b>Inverse:</b> $Q^{-1} = Q^\top$, which is also orthogonal.</li>
-          <li><b>Compactness:</b> $O_n$ is a compact set in $\mathbb{R}^{n \times n}$. It is closed (preimage of $I$ under continuous map $f(A)=A^\top A$) and bounded (columns have unit norm).</li>
-        </ul>
-      </div>
-
-      <h3>The Gram-Schmidt Process</h3>
-      <p>The Gram-Schmidt process is an algorithm for constructing an orthonormal basis from a set of linearly independent vectors. Starting with a vector, it iteratively subtracts the components that lie in the direction of the previously processed vectors, leaving a new, orthogonal vector that is then normalized.
-      $$
-      \tilde{\mathbf{q}}_k = \mathbf{a}_k - \sum_{i=1}^{k-1} (\mathbf{q}_i^\top \mathbf{a}_k) \mathbf{q}_i, \quad \mathbf{q}_k = \frac{\tilde{\mathbf{q}}_k}{\|\tilde{\mathbf{q}}_k\|_2}
-      $$
+      <h3>6.1 Orthogonality (Algebraic Geometry)</h3>
+      <p>Two vectors $\mathbf{u}, \mathbf{v}$ are <b>orthogonal</b> ($\mathbf{u} \perp \mathbf{v}$) if $\langle \mathbf{u}, \mathbf{v} \rangle = 0$.
+      <br><b>Pythagorean Theorem:</b> If $\mathbf{u} \perp \mathbf{v}$, then $\|\mathbf{u} + \mathbf{v}\|^2 = \|\mathbf{u}\|^2 + \|\mathbf{v}\|^2$.
+      <br><i>Proof:</i> $\|\mathbf{u}+\mathbf{v}\|^2 = \langle \mathbf{u}+\mathbf{v}, \mathbf{u}+\mathbf{v} \rangle = \|\mathbf{u}\|^2 + 2\langle \mathbf{u}, \mathbf{v} \rangle + \|\mathbf{v}\|^2 = \|\mathbf{u}\|^2 + \|\mathbf{v}\|^2$.
       </p>
 
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/gram-schmidt-orthogonalization.png"
-             alt="Step-by-step geometric illustration of the Gram-Schmidt orthogonalization process"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 8:</i> Gram-Schmidt orthogonalization: subtract projections to remove components in previously constructed directions, then normalize to get an orthonormal basis.</figcaption>
-      </figure>
+      <h3>6.2 Orthogonal Complement ($W^\perp$)</h3>
+      <p>For a subspace $W \subseteq V$, the orthogonal complement is $W^\perp = \{ \mathbf{v} \in V : \mathbf{v} \perp \mathbf{w} \ \forall \mathbf{w} \in W \}$.
+      <br><b>Decomposition Theorem:</b> Any vector $\mathbf{x} \in \mathbb{R}^n$ can be uniquely written as $\mathbf{x} = \mathbf{w} + \mathbf{z}$ where $\mathbf{w} \in W$ and $\mathbf{z} \in W^\perp$.
+      </p>
 
-      <h3>The QR Decomposition</h3>
-      <p>The QR decomposition expresses a matrix $A$ as the product of an orthonormal matrix $Q$ and an upper triangular matrix $R$. This decomposition is a direct outcome of the Gram-Schmidt process and is fundamental to numerical linear algebra. For a matrix $A \in \mathbb{R}^{m \times n}$ with full column rank, we can write $A = QR$, where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns and $R \in \mathbb{R}^{n \times n}$ is upper-triangular.
-      <br><b>Applications:</b></p>
-      <ul>
-        <li><b>Solving Linear Systems:</b> The system $A\mathbf{x}=\mathbf{b}$ becomes $QR\mathbf{x}=\mathbf{b}$, which simplifies to $R\mathbf{x} = Q^\top \mathbf{b}$. This is easily solved using back substitution and is far more numerically stable than forming the normal equations.</li>
-        <li><b>Projections:</b> The projection onto the column space of $A$ is given by $P = QQ^\top$.</li>
-      </ul>
+      <h3>6.3 Orthogonal Projection</h3>
+      <p>The <b>orthogonal projection</b> of $\mathbf{x}$ onto a subspace $W$, denoted $\Pi_W(\mathbf{x})$, is the unique vector $\mathbf{w} \in W$ such that the error $\mathbf{x} - \mathbf{w}$ is orthogonal to $W$.
+      <br><b>Minimization Property:</b> $\Pi_W(\mathbf{x}) = \mathrm{argmin}_{\mathbf{w} \in W} \|\mathbf{x} - \mathbf{w}\|$.
+      <br><i>Proof:</i> For any $\mathbf{y} \in W$, $\|\mathbf{x} - \mathbf{y}\|^2 = \|(\mathbf{x} - \mathbf{w}) + (\mathbf{w} - \mathbf{y})\|^2 = \|\mathbf{x} - \mathbf{w}\|^2 + \|\mathbf{w} - \mathbf{y}\|^2 \ge \|\mathbf{x} - \mathbf{w}\|^2$.
+      </p>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Orthogonality & Projections</h3>
@@ -821,9 +557,9 @@
       </div>
     </section>
 
-    <!-- SECTION 6: MATRIX CALCULUS -->
+    <!-- SECTION 9: MATRIX CALCULUS -->
     <section class="section-card" id="section-matrix-calculus">
-      <h2>6. Matrix Calculus Basics</h2>
+      <h2>9. Matrix Calculus Basics</h2>
       <p>Gradient-based optimization relies heavily on the computation of gradients and Hessians. Computing derivatives with respect to vectors and matrices is therefore a core skill. Unlike scalar calculus, where order doesn't matter, in matrix calculus we must carefully preserve non-commutativity and track dimensions. The "master key" to matrix calculus is the <b>differential</b>.</p>
 
       <p>For a function $f: \mathbb{R}^{n \times m} \to \mathbb{R}$, the gradient $\nabla f(X)$ is defined as the unique matrix satisfying the first-order approximation:
@@ -1022,9 +758,9 @@
       </div>
     </section>
 
-    <!-- SECTION 7: PSD MATRICES -->
+    <!-- SECTION 10: PSD MATRICES -->
     <section class="section-card" id="section-psd">
-      <h2>7. Positive Semidefinite Matrices</h2>
+      <h2>10. Positive Semidefinite Matrices</h2>
 
       <h3>7.1 The Space of Symmetric Matrices ($\mathbb{S}^n$)</h3>
       <p>In convex optimization, a central object is the Hessian matrix $\nabla^2 f(\mathbf{x})$. By Schwarz's Theorem, if a function is twice continuously differentiable, its Hessian is symmetric. A matrix $A \in \mathbb{R}^{n \times n}$ is symmetric if $A = A^\top$. The set of such matrices is denoted $\mathbb{S}^n$.</p>
@@ -1353,141 +1089,11 @@
       </ul>
     </section>
 
-    <!-- SECTION 8: PROJECTIONS -->
-    <section class="section-card" id="section-projections">
-      <h2>8. Projections onto Subspaces and Affine Sets</h2>
+    <!-- This section is now merged into Section 6 -->
 
-      <p>The concept of "finding the closest point" is the geometric heart of optimization. Whether solving least squares, applying constraints, or analyzing duality, we are often just computing an orthogonal projection.</p>
-
-      <h3>8.1 Projection onto a Line (1D Case)</h3>
-      <p>Before tackling general subspaces, let's rigorously derive the projection of a vector $\mathbf{x}$ onto the line spanned by a single non-zero vector $a \in \mathbb{R}^n$. This simple case contains all the intuition needed for the general theory.</p>
-      <p>We seek the scalar $\alpha$ that minimizes the squared distance $\|x - \alpha a\|_2^2$.
-      $$ f(\alpha) = \|\mathbf{x} - \alpha a\|_2^2 = (\mathbf{x} - \alpha a)^\top (\mathbf{x} - \alpha a) = \|\mathbf{x}\|_2^2 - 2\alpha (a^\top \mathbf{x}) + \alpha^2 \|a\|_2^2 $$
-      This is a simple convex quadratic in $\alpha$. Setting the derivative to zero:
-      $$ f'(\alpha) = -2(a^\top \mathbf{x}) + 2\alpha \|a\|_2^2 = 0 \implies \alpha^\star = \frac{a^\top \mathbf{x}}{\|a\|_2^2} $$
-      The projection is the vector $\mathbf{p} = \alpha^\star a$:
-      $$ \mathbf{p} = \frac{a^\top \mathbf{x}}{a^\top a} a = \left( \frac{a a^\top}{a^\top a} \right) \mathbf{x} $$
-      </p>
-      <div class="insight">
-        <h4>Geometric Insight: Orthogonality of the Residual</h4>
-        <p>Let $\mathbf{r} = \mathbf{x} - \mathbf{p}$ be the error (residual) vector. Check its inner product with $a$:
-        $$ a^\top \mathbf{r} = a^\top \left( \mathbf{x} - \frac{a^\top \mathbf{x}}{a^\top a} a \right) = a^\top \mathbf{x} - \frac{a^\top \mathbf{x}}{a^\top a} (a^\top a) = a^\top \mathbf{x} - a^\top \mathbf{x} = 0 $$
-        The error is orthogonal to the subspace (line). This <b>Orthogonality Principle</b> is universal: the optimal error is always perpendicular to the feasible set (for subspaces and affine sets).</p>
-      </div>
-
-      <h3>8.2 Orthogonal Projection onto a General Subspace</h3>
-      <p>Let $\mathcal{S} \subseteq \mathbb{R}^m$ be a subspace and $\mathbf{b} \in \mathbb{R}^m$. The <b>orthogonal projection</b> $\mathbf{p} \in \mathcal{S}$ of $\mathbf{b}$ is the unique vector in $\mathcal{S}$ minimizing $\|b - p\|_2$. It is characterized by the condition that the residual is orthogonal to the entire subspace:
-      $$ \mathbf{b} - \mathbf{p} \perp \mathcal{S} \quad \iff \quad \mathbf{v}^\top(\mathbf{b} - \mathbf{p}) = 0 \ \ \forall \mathbf{v} \in \mathcal{S} $$</p>
-
-      <h3>Projection via a Basis</h3>
-      <p>If $Q \in \mathbb{R}^{m \times k}$ has orthonormal columns spanning $\mathcal{S}$, the projector is:
-      $$ P = QQ^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} = QQ^\top \mathbf{b} $$
-      Check: $P^2 = P$ (idempotent) and $P^\top = P$ (symmetric)—that's what makes it an <b>orthogonal</b> projector.</p>
-
-      <h3>Projection onto $\mathcal{R}(A)$ using $A$</h3>
-      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank:
-      $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
-      </p>
-
-      <h3>Projection onto an Affine Set</h3>
-      <p>Consider an affine set defined by $\mathcal{A} = \{ \mathbf{x} \in \mathbb{R}^n \mid F\mathbf{x} = \mathbf{g} \}$, where $F \in \mathbb{R}^{\mathbf{p} \times n}$ has full row rank and $\mathbf{g} \in \mathbb{R}^p$. Projecting onto this set reduces to subspace projection by translating. This concept is generalized in <a href="../03-convex-sets-geometry/index.html">Lecture 01</a> to <b>projection onto convex sets</b> (POCS).</p>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/projection-onto-affine-set.png"
-             alt="Projection onto an affine set visualized as translation to a subspace, projection, then translation back"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 12:</i> Projection onto an affine set: translate to a parallel subspace, project orthogonally, then shift back by a particular solution.</figcaption>
-      </figure>
-
-      <h4>Explicit Formula via Least Norm</h4>
-      <p>We solve the problem $\min \|\mathbf{x} - \mathbf{y}\|_2^2$ s.t. $F\mathbf{x} = \mathbf{g}$. The KKT conditions yield the linear system:
-      $$ \begin{bmatrix} I & F^\top \\ F & 0 \end{bmatrix} \begin{bmatrix} \mathbf{x} \\ \nu \end{bmatrix} = \begin{bmatrix} \mathbf{y} \\ \mathbf{g} \end{bmatrix} $$
-      Solving for $\mathbf{x}$ gives the explicit projection formula:
-      $$ \Pi_{\mathcal{A}}(\mathbf{y}) = \mathbf{y} - F^\top (F F^\top)^{-1} (F \mathbf{y} - \mathbf{g}) $$
-      This is often more practical than constructing a nullspace basis $Z$.</p>
-
-      <h4>Parametric Representation</h4>
-      <p>Every point in $\mathcal{A}$ can be written as $\mathbf{x} = x_0 + Zt$, where:</p>
-      <ul>
-        <li>$x_0$ is any particular solution satisfying $Fx_0 = \mathbf{g}$.</li>
-        <li>$Z$ is a matrix whose columns form a basis for $\mathcal{N}(F)$ (the nullspace of $F$).</li>
-        <li>$t \in \mathbb{R}^k$ where $k = n - \mathbf{p}$ (dimension of the nullspace).</li>
-      </ul>
-
-      <h4>Euclidean Projection Formula (Explicit via KKT)</h4>
-      <p>Alternatively, using Lagrange multipliers (a technique we will explore deeply in Lecture 09), we can derive the projection without forming a nullspace basis.</p>
-      $$
-      \Pi_{\mathcal{A}}(\mathbf{y}) = \mathbf{y} - F^\top (F F^\top)^{-1} (F \mathbf{y} - \mathbf{g})
-      $$
-
-      <div class="proof-box">
-        <h4>Derivation via Lagrange Multipliers</h4>
-        <div class="proof-step">
-          <strong>Step 1: Formulation.</strong> Minimize $\frac{1}{2}\|\mathbf{x} - \mathbf{y}\|^2$ subject to $F\mathbf{x} = \mathbf{g}$.
-          The Lagrangian is $L(\mathbf{x}, \nu) = \frac{1}{2}\|\mathbf{x} - \mathbf{y}\|^2 + \nu^\top (F\mathbf{x} - \mathbf{g})$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Optimality Conditions.</strong>
-          Gradient w.r.t $\mathbf{x}$: $\mathbf{x} - \mathbf{y} + F^\top \nu = 0 \implies \mathbf{x} = \mathbf{y} - F^\top \nu$.
-          Primal feasibility: $F\mathbf{x} = \mathbf{g}$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Solve for Dual Variable $\nu$.</strong>
-          Substitute $\mathbf{x}$ into the constraint:
-          $$ F(\mathbf{y} - F^\top \nu) = \mathbf{g} \implies F\mathbf{y} - F F^\top \nu = \mathbf{g} \implies F F^\top \nu = F\mathbf{y} - \mathbf{g} $$
-          Assuming $F$ has full row rank, $F F^\top$ is invertible:
-          $$ \nu = (F F^\top)^{-1} (F\mathbf{y} - \mathbf{g}) $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 4: Substitute back.</strong>
-          $$ \mathbf{x} = \mathbf{y} - F^\top (F F^\top)^{-1} (F\mathbf{y} - \mathbf{g}) $$
-        </div>
-      </div>
-
-      <h4>Euclidean Projection Formula (Nullspace)</h4>
-      <p>The <b>Euclidean projection</b> of any point $\mathbf{y} \in \mathbb{R}^n$ onto $\mathcal{A}$ can also be computed via the nullspace basis:</p>
-      $$
-      \Pi_{\mathcal{A}}(\mathbf{y}) = \mathbf{x}_0 + Z(Z^\top Z)^{-1} Z^\top (\mathbf{y} - \mathbf{x}_0)
-      $$
-
-      <div class="proof-box">
-        <h4>Geometric Interpretation and Derivation</h4>
-        <p>This formula says: "Project $(\mathbf{y} - x_0)$ onto the nullspace $\mathcal{N}(F)$, then shift back by $x_0$."</p>
-
-        <div class="proof-step">
-          <strong>Step 1: Translate to subspace problem.</strong>
-          We want to find $\mathbf{x} \in \mathcal{A}$ minimizing $\|x - y\|_2$. Let $\mathbf{x} = x_0 + \mathbf{w}$, where $\mathbf{w} \in \mathcal{N}(F)$.
-          The problem becomes minimizing $\|(x_0 + w) - y\|_2 = \|w - (y - x_0)\|_2$ subject to $\mathbf{w} \in \mathcal{N}(F)$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 2: Project onto nullspace.</strong>
-          This is now a projection of the vector $(\mathbf{y} - x_0)$ onto the subspace $\mathcal{N}(F)$.
-          Since the columns of $Z$ form a basis for $\mathcal{N}(F)$, the projection matrix onto this subspace is $P_{\mathcal{N}(F)} = Z(Z^\top Z)^{-1} Z^\top$.
-          Thus, the optimal $\mathbf{w}^*$ is:
-          $$ \mathbf{w}^* = \Pi_{\mathcal{N}(F)}(\mathbf{y} - x_0) = Z(Z^\top Z)^{-1} Z^\top (\mathbf{y} - x_0) $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 3: Shift back.</strong>
-          The projection onto the affine set is $\mathbf{x}^* = x_0 + \mathbf{w}^*$.
-          $$ \Pi_{\mathcal{A}}(\mathbf{y}) = x_0 + Z(Z^\top Z)^{-1} Z^\top (\mathbf{y} - x_0) $$
-        </div>
-      </div>
-
-      <div class="proof-box">
-        <h3>Example 1: Projection onto a Line</h3>
-        <p>We compute the projection of the vector $\mathbf{b} = (2, 3)^\top$ onto the line spanned by the vector $\mathbf{u} = (1, 1)^\top$. The projection $\mathbf{p}$ is given by the formula:
-        $$ \mathbf{p} = \frac{\mathbf{u}^\top \mathbf{b}}{\mathbf{u}^\top \mathbf{u}} \mathbf{u} = \frac{(1)(2) + (1)(3)}{(1)(1) + (1)(1)} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{5}{2} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2.5 \\ 2.5 \end{pmatrix} $$
-        The residual vector is $\mathbf{r} = \mathbf{b} - \mathbf{p} = (2 - 2.5, 3 - 2.5)^\top = (-0.5, 0.5)^\top$. We verify that the residual is orthogonal to the line: $\mathbf{u}^\top \mathbf{r} = (1)(-0.5) + (1)(0.5) = 0$.
-        </p>
-      </div>
-
-    </section>
-
-    <!-- SECTION 9: LEAST SQUARES -->
+    <!-- SECTION 8: LEAST SQUARES -->
     <section class="section-card" id="section-least-squares">
-      <h2>9. The Method of Least Squares</h2>
+      <h2>8. The Method of Least Squares</h2>
 
       <h3>The Problem: Overdetermined Systems</h3>
       <p>In practice, we often encounter linear systems $A\mathbf{x}=\mathbf{b}$ with no exact solution. This typically occurs when $m > n$ (more equations than unknowns) and $\mathbf{b} \notin \mathcal{R}(A)$. The "least squares" approach finds the best approximate solution by minimizing the sum of squared errors—the squared Euclidean norm of the residual $r = A\mathbf{x}-\mathbf{b}$. This formulates the canonical <b>unconstrained optimization problem</b>:</p>

@@ -241,76 +241,81 @@
     <!-- SECTION 3: SCALAR INVARIANTS -->
     <section class="section-card" id="section-invariants">
       <h2>3. Scalar Invariants: Determinant and Trace</h2>
-      <p>Beyond the "Big Three" definitions from Lecture 00, we now explore <i>why</i> these scalars exist. They are not arbitrary formulas; they are the unique solutions to specific geometric problems.</p>
+      <p>A scalar invariant is a function of a matrix that does not change under similarity transformations ($A \mapsto P^{-1}AP$). Geometrically, these are properties of the linear operator itself, not its specific matrix representation. There are exactly two fundamental independent polynomial invariants: the Determinant and the Trace.</p>
 
-      <h3>3.1 Determinant: The Signed Volume</h3>
-      <p>The determinant is the <b>unique</b> function $\det: \mathbb{R}^{n \times n} \to \mathbb{R}$ satisfying three axioms that define "signed volume":</p>
+      <h3>3.1 Determinant: The Unique Volume Form</h3>
+      <p>The determinant is often taught as a recursive formula. It is better understood as a characterized object. It is the <b>unique</b> function $\det: \mathbb{F}^{n \times n} \to \mathbb{F}$ satisfying three axioms:</p>
       <ol>
         <li><b>Multilinearity:</b> Linear in each column separately.</li>
-        <li><b>Alternating:</b> Swapping two columns flips the sign (or $\det(A)=0$ if two columns are equal). This captures <b>orientation</b>.</li>
-        <li><b>Normalization:</b> $\det(I) = 1$ (The unit cube has volume 1).</li>
+        <li><b>Alternating:</b> If two columns are equal, the value is zero. (Implies swapping columns flips the sign).</li>
+        <li><b>Normalization:</b> $\det(I) = 1$.</li>
       </ol>
-      <p><b>Consequences:</b>
+      <p>These axioms force the Leibniz formula: $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{i=1}^n A_{i, \sigma(i)}$.</p>
+
+      <h4>Geometric Interpretation: Volume and Orientation</h4>
+      <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ is the volume of the parallelepiped spanned by the columns of $A$.
+      <br><b>Properties forced by geometry:</b>
       <ul>
-        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are independent $\iff$ volume is not collapsed to zero.</li>
-        <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. This means the volume scaling of a composition is the product of the scalings.</li>
+        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are linearly independent $\iff$ volume is non-zero.</li>
+        <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. The volume scaling of a composite map is the product of the individual scalings.</li>
+        <li><b>Orientation:</b> The sign of $\det(A)$ indicates whether the map preserves or reverses orientation (e.g., reflection has det -1).</li>
       </ul>
       </p>
 
-      <h3>3.2 Trace: The Infinitesimal Volume</h3>
-      <p>While determinant measures global volume scaling, the <b>trace</b> measures <b>infinitesimal</b> volume expansion. It is the unique linear, cyclic-invariant functional.
-      <br><b>Linearization of Determinant:</b>
+      <h3>3.2 Trace: The Unique Linear Invariant</h3>
+      <p>The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
+      $$ \mathrm{tr}(AB) = \mathrm{tr}(BA) $$
+      This property implies similarity invariance: $\mathrm{tr}(P^{-1}AP) = \mathrm{tr}(APP^{-1}) = \mathrm{tr}(A)$. Thus, the trace is defined for linear operators, not just matrices.</p>
+
+      <h4>Geometric Interpretation: Infinitesimal Volume Change</h4>
+      <p>While determinant is global volume scaling, trace is the <b>derivative</b> of volume.
       $$ \det(I + \epsilon A) = 1 + \epsilon \mathrm{tr}(A) + O(\epsilon^2) $$
-      This explains why the trace appears in the divergence of vector fields ($\nabla \cdot \mathbf{v} = \mathrm{tr}(J)$) and in the derivative of the determinant ($\nabla \log \det X = X^{-\top}$).</p>
+      This connects linear algebra to calculus:
+      <ul>
+        <li><b>Divergence:</b> For a vector field $f(x) = Ax$, the divergence is $\nabla \cdot f = \mathrm{tr}(A)$. It measures the rate of flow expansion.</li>
+        <li><b>Derivative of Det:</b> $\frac{d}{dt} \det(A(t)) = \det(A(t)) \mathrm{tr}(A(t)^{-1} A'(t))$.</li>
+      </ul>
+      </p>
     </section>
 
     <!-- SECTION 4: EIGENVALUES -->
     <section class="section-card" id="section-eigenvalues">
       <h2>4. The Spectral Layer: Eigenvalues and Diagonalization</h2>
-      <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It decomposes the space into invariant 1D subspaces.</p>
+      <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
-      <h3>4.1 Eigenvalues and Invariant Directions</h3>
-      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$. This equation forces $(A - \lambda I)\mathbf{v} = 0$, which implies that the matrix $A - \lambda I$ is singular. Thus, eigenvalues are the roots of the characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$.</p>
+      <h3>4.1 Eigenvalues: The Invariant Directions</h3>
+      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
+      <br><b>The Logic of Detection:</b>
+      $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
+      Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ is singular (not invertible). This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
+      <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
 
-      <h4>Algebraic vs. Geometric Multiplicity</h4>
-      <p>For an eigenvalue $\lambda$, there are two ways to count its "presence":</p>
+      <h3>4.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
+      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
+      <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
       <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity as a root of $p_A(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $\ker(A - \lambda I)$. This counts the number of independent invariant directions.</li>
+        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
+        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
       </ul>
-      <p><b>Always:</b> $1 \le g_\lambda \le m_\lambda$. The failure $g_\lambda < m_\lambda$ is what prevents diagonalization.</p>
+      <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
-      <h3>4.2 The Spectral Theorem: Perfect Geometry</h3>
-      <p><b>Theorem:</b> If $A \in \mathbb{R}^{n \times n}$ is <b>symmetric</b> ($A = A^\top$), then:
+      <h3>4.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
+      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. We must include <b>generalized eigenvectors</b>—vectors that are eventually killed by $(T-\lambda I)^k$.
+      <br><b>The Jordan Block:</b> The canonical structure for a defective eigenvalue is a Jordan block $J_k(\lambda)$:
+      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} = \lambda I + N $$
+      Here $N$ is <b>nilpotent</b> ($N^k = 0$). This nilpotent part represents the "drift" or coupling between dimensions that prevents clean separation.
+      <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
+
+      <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
+      <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>
         <li>Eigenvectors corresponding to distinct eigenvalues are <b>orthogonal</b>.</li>
-        <li>$A$ admits an <b>orthonormal eigenbasis</b> ($A = Q \Lambda Q^\top$ with $Q^\top Q = I$).</li>
+        <li>$V$ admits an <b>orthonormal basis of eigenvectors</b>.</li>
       </ol>
-      This means symmetric matrices represent pure stretching along perpendicular axes—the "perfect" matrices for optimization (Hessians).</p>
-
-      <div class="proof-box">
-        <h4>Proof: Why is the spectrum real and orthogonal?</h4>
-        <p><b>1. Reality of Eigenvalues:</b>
-        Let $\lambda$ be an eigenvalue and $v$ a corresponding eigenvector (possibly complex).
-        $$ \lambda \langle v,v \rangle = \langle \lambda v, v \rangle = \langle Av, v \rangle = v^* A v $$
-        Taking the conjugate transpose (Hermitian) of the scalar $v^* A v$:
-        $$ (v^* A v)^* = v^* A^* v = v^* A v \quad (\text{since } A \text{ is real symmetric}) $$
-        Thus $v^* A v$ is real. Since $\langle v, v \rangle > 0$ is real, $\lambda$ must be real.
-        <br><br>
-        <b>2. Orthogonality of Eigenspaces:</b>
-        Let $Av = \lambda v$ and $Aw = \mu w$ with $\lambda \ne \mu$.
-        Compute inner product $\langle Av, w \rangle$.
-        <br>• $\langle Av, w \rangle = \lambda \langle v, w \rangle$.
-        <br>• $\langle Av, w \rangle = \langle v, A^\top w \rangle = \langle v, Aw \rangle = \mu \langle v, w \rangle$.
-        <br>Subtracting gives $(\lambda - \mu)\langle v, w \rangle = 0$. Since $\lambda \ne \mu$, we must have $\langle v, w \rangle = 0$.</p>
-      </div>
-
-      <h3>4.3 Jordan Canonical Form: The Defective Reality</h3>
-      <p>When diagonalization fails (because $g_\lambda < m_\lambda$), the matrix is "defective". It implies there are not enough eigenvectors to span the space. However, the space can still be decomposed into <b>generalized eigenspaces</b> $\ker((A-\lambda I)^k)$.
-      <br>This leads to the <b>Jordan Canonical Form</b> $A = P J P^{-1}$, where $J$ consists of <b>Jordan Blocks</b>:
-      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} = \lambda I + N $$
-      Here $N$ is <b>nilpotent</b> ($N^k=0$). This nilpotent core represents the "coupling" or "drift" between dimensions that cannot be decoupled by any coordinate change.</p>
+      This is the "perfect" case: no complex numbers, no defects, and the coordinate system is orthogonal.
+      <br><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$ with $Q$ orthogonal.
+      <br><b>Why this matters:</b> This theorem underpins the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), the analysis of Hessian curvature, and the convergence of optimization algorithms.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
@@ -376,104 +381,70 @@
 
     <!-- SECTION 6: QR DECOMPOSITION -->
     <section class="section-card" id="section-qr">
-      <h2>6. The QR Decomposition</h2>
+      <h2>6. The QR Decomposition: Geometry First</h2>
 
-      <h3>6.1 Motivation: Numerical Stability</h3>
-      <p>In <a href="../00-linear-algebra-basics/index.html">Lecture 00</a>, we solved the least squares problem $\min \|A\mathbf{x} - \mathbf{b}\|_2$ using the normal equations $A^\top A \mathbf{x} = A^\top \mathbf{b}$. While theoretically correct, this approach can be numerically unstable. If $A$ has condition number $\kappa(A)$, then $A^\top A$ has condition number $\kappa(A)^2$. For ill-conditioned matrices, this squaring can result in a loss of precision that exceeds machine limits (floating-point errors dominate).</p>
-      <p>The <b>QR decomposition</b> offers a solution that depends on $\kappa(A)$ rather than $\kappa(A)^2$, providing significantly better stability. The key property is that orthogonal matrices $Q$ have a condition number of 1 ($\kappa(Q)=1$) and preserve the Euclidean norm. Thus, multiplying by $Q$ (or $Q^\top$) does not amplify errors.</p>
+      <p>QR is not just an algorithm. It is the <b>algebraic shadow</b> of the Gram-Schmidt process. It formalizes the fact that every matrix can be split into "perfect geometry" ($Q$) and "coordinates" ($R$).</p>
 
-      <h3>6.2 Definition and Existence: Geometry First</h3>
-      <p>QR is not an algorithm; it is a structural theorem about subspaces.
-      <br>Let $a_1, \dots, a_n$ be the columns of $A$. Define the nested subspaces (filtration):
-      $$ W_k = \operatorname{span}(a_1, \dots, a_k) $$
-      Since every subspace has an orthonormal basis, we can construct orthonormal vectors $q_1, \dots, q_n$ such that $\operatorname{span}(q_1, \dots, q_k) = W_k$ for all $k$.
-      <br>This <b>prefix span preservation</b> forces the triangular structure:
-      $$ a_k \in W_k = \operatorname{span}(q_1, \dots, q_k) \implies a_k = \sum_{j=1}^k r_{jk} q_j $$
-      The coordinate matrix $R = (r_{jk})$ is strictly upper triangular ($r_{jk}=0$ for $j>k$).</p>
-
-      <div class="theorem-box">
-        <h4>Theorem: QR Factorization</h4>
-        <p>Any matrix $A \in \mathbb{R}^{m \times n}$ with $m \ge n$ and linearly independent columns can be factored as:</p>
-        $$ \boxed{ A = QR } $$
-        <p>where $Q \in \mathbb{R}^{m \times n}$ has orthonormal columns ($Q^\top Q = I_n$) and $R \in \mathbb{R}^{n \times n}$ is upper triangular with positive diagonal entries.
-        <br><b>Uniqueness:</b> The factorization is unique if we insist $r_{ii} > 0$. This corresponds to fixing the orientation of the basis vectors.</p>
-      </div>
-
-      <div class="insight">
-        <h4>QR as Composition of Maps</h4>
-        <p>Interpret $A = QR$ as:
-        $$ x \xrightarrow{R} y \xrightarrow{Q} Ax $$
-        <ul>
-            <li><b>$R$:</b> Coordinate transformation (pure algebra/conditioning). Maps standard coordinates to orthonormal coordinates in the column space.</li>
-            <li><b>$Q$:</b> Isometric embedding (pure geometry). Maps the coordinates into the ambient space without distortion.</li>
-        </ul>
-        This clean separation is why QR is stable.</p>
-      </div>
-
-      <h3>6.3 Solving Least Squares with QR (The Right Way)</h3>
-      <p>We solve $\min \|Ax - b\|_2^2$ by exploiting the geometry of $Q$.
-      $$ \|Ax - b\|^2 = \|QRx - b\|^2 = \|Q(Rx) - b\|^2 $$
-      Since $Q$ is an isometry on its range, we can project $b$ onto the range of $Q$ (which is the range of $A$).
-      Let $P = QQ^\top$ be the projection. The optimal error is the component of $b$ orthogonal to the range.
-      Algebraically, multiply by $Q^\top$:
-      $$ Q^\top (QRx - b) = 0 \implies Rx = Q^\top b $$
-      <b>Why this beats Normal Equations:</b>
+      <h3>6.1 Definition and Existence</h3>
+      <p>Let $A \in \mathbb{R}^{m \times n}$ with $m \ge n$ (Full column rank). There exists a unique factorization:
+      $$ \boxed{ A = Q R } $$
+      where:
       <ul>
-        <li><b>Conditioning:</b> The condition number of the system is $\kappa(R) = \kappa(A)$, whereas Normal Equations use $A^\top A$ with condition number $\kappa(A)^2$.</li>
-        <li><b>Stability:</b> We solve a triangular system $Rx = Q^\top b$ directly.</li>
+        <li>$Q \in \mathbb{R}^{m \times n}$ has <b>orthonormal columns</b> ($Q^\top Q = I_n$). This represents an isometric embedding.</li>
+        <li>$R \in \mathbb{R}^{n \times n}$ is <b>upper triangular</b> with positive diagonal entries. This represents coordinates in the orthonormal basis.</li>
+      </ul>
+      <p><b>Proof by Geometry:</b> Let $a_1, \dots, a_n$ be the columns of $A$. Apply Gram-Schmidt to produce orthonormal vectors $q_1, \dots, q_n$ such that $\mathrm{span}(q_1, \dots, q_k) = \mathrm{span}(a_1, \dots, a_k)$ for all $k$.
+      Since $a_k \in \mathrm{span}(q_1, \dots, q_k)$, we can write $a_k = \sum_{j=1}^k r_{jk} q_j$.
+      This triangular dependency is exactly the matrix equation $A = QR$. Uniqueness follows from the uniqueness of Gram-Schmidt (once signs are fixed).</p>
+
+      <h3>6.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
+      <p>Consider $\min \|A\mathbf{x} - \mathbf{b}\|_2$.
+      Using Normal Equations: $A^\top A \mathbf{x} = A^\top \mathbf{b}$. The condition number is $\kappa(A^\top A) = \kappa(A)^2$. This squaring doubles the number of digits of precision lost.
+      <br>Using QR:
+      $$ \|A\mathbf{x} - \mathbf{b}\|_2 = \|QR\mathbf{x} - \mathbf{b}\|_2 $$
+      Since $Q$ preserves norms (on its range), we multiply the residual by $Q^\top$ (projecting onto the geometry):
+      $$ R\mathbf{x} = Q^\top \mathbf{b} $$
+      This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
+      <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
+
+      <h3>6.3 Full vs. Thin QR</h3>
+      <p>
+      <ul>
+        <li><b>Thin QR ($Q \in \mathbb{R}^{m \times n}$):</b> Only computes an orthonormal basis for the column space. Sufficient for least squares.</li>
+        <li><b>Full QR ($Q \in \mathbb{R}^{m \times m}$):</b> Extends $Q$ to a basis for the entire space $\mathbb{R}^m$. $A = [Q_1 \ Q_2] \begin{bmatrix} R \\ 0 \end{bmatrix}$. $Q_2$ forms a basis for the left nullspace $\mathcal{N}(A^\top)$.</li>
       </ul>
       </p>
     </section>
 
     <!-- SECTION 7: SVD -->
     <section class="section-card" id="section-svd">
-      <h2>7. Singular Value Decomposition (SVD): The Final Boss</h2>
-      <p>If the spectral theorem was "perfect behavior under symmetry," and Jordan form was "perfect algebra under similarity," then <b>SVD is the final boss</b>.</p>
-      <blockquote><b>Every matrix, square or rectangular, symmetric or not, real or complex, admits an orthogonal (unitary) geometric decomposition.</b></blockquote>
-      <p>No exceptions. No pathologies. No defects. SVD is not a trick. It is the <b>canonical coordinate system of linear maps</b>.</p>
+      <h2>7. Singular Value Decomposition (SVD): The True Geometry</h2>
+      <p>If the spectral theorem was "perfect geometry under symmetry," and QR was "geometry separated from coordinates," then <b>SVD is the fundamental theorem of linear algebra</b>. It applies to every matrix, square or rectangular, symmetric or not.</p>
 
-      <h3>7.1 The Problem SVD Solves</h3>
-      <p>Given a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$, we want to understand:</p>
+      <h3>7.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
+      <p><b>Theorem (SVD):</b> Any matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:
+      $$ \boxed{ A = U \Sigma V^\top } $$
+      where:
       <ul>
-        <li>How it stretches space.</li>
-        <li>In which directions stretching happens.</li>
-        <li>How many independent directions survive.</li>
-        <li>How information is lost.</li>
+        <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal (Left singular vectors, basis for codomain).</li>
+        <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal (Right singular vectors, basis for domain).</li>
+        <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with non-negative entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
       </ul>
-      <p><b>Why Eigenvalues Fail:</b> Eigenanalysis is fragile because $T$ may not map a space to itself (rectangular matrices), may not preserve angles (non-normal matrices), or eigenvectors may not exist or be unstable (defective matrices). SVD fixes this by moving eigen-analysis to the right objects.</p>
+      <p><b>Interpretation:</b>
+      $$ x \xrightarrow{V^\top} \text{rotate coordinates} \xrightarrow{\Sigma} \text{independent scaling} \xrightarrow{U} \text{rotate to output basis} $$
+      This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse.</p>
 
-      <h3>7.2 The Core Idea: Self-Adjoint Operators</h3>
-      <p>Instead of studying $T$ directly, we study the two <i>self-adjoint</i> operators associated with it:</p>
-      <ul>
-        <li>$T^\top T : \mathbb{R}^n \to \mathbb{R}^n$ (Input/Domain geometry)</li>
-        <li>$T T^\top : \mathbb{R}^m \to \mathbb{R}^m$ (Output/Codomain geometry)</li>
-      </ul>
-      <p>These operators are always symmetric, positive semidefinite, and orthogonally diagonalizable. SVD is what you get when you <b>diagonalize both at once in a compatible way</b>.</p>
-
-      <h3>7.3 Theorem: The SVD Statement</h3>
-      <div class="theorem-box">
-        <h4>Singular Value Decomposition</h4>
-        <p>For any matrix $A \in \mathbb{R}^{m \times n}$, there exist:</p>
-        <ul>
-          <li>An orthogonal matrix $U \in \mathbb{R}^{m \times m}$ (Left Singular Vectors).</li>
-          <li>An orthogonal matrix $V \in \mathbb{R}^{n \times n}$ (Right Singular Vectors).</li>
-          <li>A diagonal matrix $\Sigma \in \mathbb{R}^{m \times n}$ with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
-        </ul>
-        <p>Such that:</p>
-        $$ \boxed{ A = U \Sigma V^\top } $$
-        <p>where $\sigma_i = \sqrt{\lambda_i(A^\top A)}$ are the <b>singular values</b>. The number of non-zero singular values equals $\operatorname{rank}(A)$.</p>
+      <div class="insight">
+        <h4>Construction via Spectral Theorem</h4>
+        <p>SVD is forced by the spectral theorem applied to $A^\top A$.
+        <br>1. $A^\top A$ is symmetric positive semidefinite.
+        <br>2. It has an eigendecomposition $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
+        <br>3. Define $\sigma_i = \sqrt{\lambda_i}$.
+        <br>4. Define $u_i = \frac{1}{\sigma_i} A v_i$ for $\sigma_i > 0$.
+        <br>5. Check orthogonality: $\langle u_i, u_j \rangle = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \delta_{ij}$.
+        <br>6. Extend $U$ to a full basis. $A V = U \Sigma \implies A = U \Sigma V^\top$.
+        </p>
       </div>
-
-      <h3>7.4 Geometric Meaning: Rotate → Scale → Rotate</h3>
-      <p>The matrices have precise geometric interpretations:</p>
-      <ul>
-        <li><b>$V$ (Right Singular Vectors):</b> Columns $v_1, \dots, v_n$ form an orthonormal basis of the <b>input space</b> $\mathbb{R}^n$. Along each $v_i$, the map acts independently.</li>
-        <li><b>$\Sigma$ (Pure Scaling):</b> Diagonal entries $\sigma_i$ represent the stretch factor along each direction. $\sigma_i = 0$ means the direction is killed.</li>
-        <li><b>$U$ (Left Singular Vectors):</b> Columns $u_1, \dots, u_m$ form an orthonormal basis of the <b>output space</b> $\mathbb{R}^m$. They define the axes where the transformed vectors land.</li>
-      </ul>
-      <p>So the action of $A$ is:</p>
-      <blockquote style="text-align: center; font-size: 1.1em; margin: 20px 0;"><b>Rotate ($V^\top$) $\to$ Scale along orthogonal axes ($\Sigma$) $\to$ Rotate ($U$)</b></blockquote>
-      <p>No shear. No coupling. Ever. This proves that the image of the unit sphere is always a hyperellipse.</p>
 
       <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
@@ -485,48 +456,21 @@
           <figcaption><i>Figure 5b:</i> Unit circle to ellipse transformation.</figcaption>
         </figure>
       </div>
-      <figure style="text-align: center; margin: 24px 0;">
-         <img src="assets/svd-sas.png" alt="SVD SAS Visualization" style="max-width: 80%; border-radius: 8px;">
-         <figcaption><i>Figure 5c:</i> The geometry of $U \Sigma V^\top$.</figcaption>
-      </figure>
 
-      <h3>7.5 Construction: We Are Forced Into It</h3>
-      <p>We do not guess SVD. We are <i>forced</i> into it by the spectral theorem.</p>
-      <div class="proof-box">
-        <h4>Conceptual Construction</h4>
-        <div class="proof-step">
-          <strong>Step 1: Diagonalize $A^\top A$.</strong>
-          Since $A^\top A$ is symmetric and PSD, we have $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
-          Define $\sigma_i = \sqrt{\lambda_i}$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Define Left Singular Vectors.</strong>
-          For $\sigma_i > 0$, define $u_i = \frac{1}{\sigma_i} A v_i$.
-          These $u_i$ are automatically orthonormal (check: $u_i^\top u_j = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{\lambda_j}{\sigma_i \sigma_j} \delta_{ij} = \delta_{ij}$) and are eigenvectors of $AA^\top$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Assemble.</strong>
-          Extend $\{u_i\}$ to a full orthonormal basis $U$. Place $\sigma_i$ in $\Sigma$.
-          Then $A = U \Sigma V^\top$ holds by construction. Nothing arbitrary happened.
-        </div>
-      </div>
-
-      <h3>7.6 Rank-Nullity Revisited</h3>
-      <p>SVD makes the fundamental theorem of linear algebra visual:</p>
+      <h3>7.2 Rank, Nullspace, and Range (Geometric View)</h3>
+      <p>SVD reveals the intrinsic dimensions of the map.</p>
       <ul>
-        <li>$\sigma_i > 0 \iff$ dimension survives.</li>
-        <li>$\sigma_i = 0 \iff$ direction annihilated.</li>
+        <li><b>Rank:</b> $r = \text{number of } \sigma_i > 0$.</li>
+        <li><b>Range (Column Space):</b> Spanned by the first $r$ columns of $U$.</li>
+        <li><b>Nullspace:</b> Spanned by the last $n-r$ columns of $V$ (corresponding to $\sigma_i=0$).</li>
       </ul>
-      $$ \operatorname{rank}(A) = \#\{\sigma_i > 0\}, \quad \operatorname{Null}(A) = \operatorname{span}\{v_i : \sigma_i = 0\} $$
-      <p>This is Rank-Nullity <b>with geometry attached</b>.</p>
+      <p>This provides a numerically stable way to compute rank and bases for fundamental subspaces.</p>
 
-      <h3>7.7 Best Low-Rank Approximation (Eckart-Young Theorem)</h3>
-      <p>This is where SVD becomes <i>unavoidable</i>. It gives the best possible approximation of a matrix by one of lower rank.</p>
-      <div class="theorem-box">
-        <h4>Theorem: Eckart-Young-Mirsky</h4>
-        <p>Among all matrices of rank $k$, the truncated SVD $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$ is the closest to $A$ in both Frobenius and Spectral norms.</p>
-        <p>This is the mathematical foundation of PCA, data compression, latent factor models, and recommendation systems.</p>
-      </div>
+      <h3>7.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
+      <p>SVD solves the problem of finding the best approximation of a matrix by one of lower rank.
+      $$ A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top $$
+      This matrix $A_k$ minimizes $\|A - X\|$ in both Spectral and Frobenius norms among all matrices of rank $k$.
+      <br><b>Applications:</b> Image compression, PCA, Denoising.</p>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: SVD for Image Compression</h3>
@@ -534,86 +478,20 @@
         <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>7.8 Least Squares Solved Geometrically</h3>
-      <p>For overdetermined systems $Ax=b$, the best approximation is the orthogonal projection onto the column space. Using SVD, we get an explicit, stable formula:</p>
-      $$ x^* = \sum_{i:\sigma_i > 0} \frac{u_i^\top b}{\sigma_i} v_i $$
-      <p>No normal equations. No numerical instability. This is <i>the</i> stable solution (equivalent to the Pseudoinverse approach).</p>
-
-      <h3>7.9 Conditioning and Stability</h3>
-      <p>Define the condition number:</p>
-      $$ \kappa(A) = \frac{\sigma_{\max}}{\sigma_{\min}} $$
-      <ul>
-        <li>Large $\kappa$: problem is ill-conditioned.</li>
-        <li>Small $\kappa$: stable.</li>
-      </ul>
-      <p>SVD does not just solve problems — it tells you <b>how much you should trust the answer</b>.</p>
-
-      <h3>7.10 Comparison: The "Big Three" Decompositions</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Decomposition</th>
-            <th>Always Exists?</th>
-            <th>Orthogonal Basis?</th>
-            <th>Rectangular?</th>
-            <th>Numerically Stable?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>Eigen</b> ($P \Lambda P^{-1}$)</td>
-            <td>❌ (Defective)</td>
-            <td>❌</td>
-            <td>❌</td>
-            <td>⚠️</td>
-          </tr>
-          <tr>
-            <td><b>Jordan</b> ($P J P^{-1}$)</td>
-            <td>❌ (Real) / ✔️ (Complex)</td>
-            <td>❌</td>
-            <td>❌</td>
-            <td>❌ (Unstable)</td>
-          </tr>
-          <tr>
-            <td><b>SVD</b> ($U \Sigma V^\top$)</td>
-            <td>✔️ (Always)</td>
-            <td>✔️</td>
-            <td>✔️</td>
-            <td>✔️ (Perfect)</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>SVD is the <b>end of the road</b> for linear maps.</p>
-
-      <div class="insight">
-        <h4>One-Sentence Mastery Test</h4>
-        <p>If you truly understand SVD, you can say:</p>
-        <blockquote>"Any linear map transforms the unit sphere into an ellipsoid, and SVD finds its principal axes and axis lengths."</blockquote>
-        <p>That sentence is not metaphorical. It is literally the theorem.</p>
-      </div>
-
-      <h3>7.11 Where SVD sits in the Grand Structure</h3>
-      <ul>
-        <li>Linear maps $\to$ matrices (Coordinates)</li>
-        <li>Symmetric maps $\to$ Spectral Theorem (Perfect Geometry)</li>
-        <li>General square maps $\to$ Jordan Form (Algebraic completion)</li>
-        <li><b>All maps $\to$ SVD (The true geometry)</b></li>
-      </ul>
-      <p>SVD is the <i>coordinate-free geometry</i> of linear algebra.</p>
-
-      <h3>7.12 Application: PCA as SVD of Data</h3>
-      <p>Principal Component Analysis (PCA) is often taught as "finding directions of maximum variance." Geometrically, it is simply the SVD of the centered data matrix.
-      <br>Let $X \in \mathbb{R}^{N \times d}$ be the data matrix (rows are points), centered so mean is zero.
-      <br>The <b>Covariance Matrix</b> is $C = \frac{1}{N} X^\top X$.
-      <br>Taking the SVD of the data: $X = U \Sigma V^\top$.
-      <br>Then $C = \frac{1}{N} V \Sigma U^\top U \Sigma V^\top = V \left( \frac{1}{N} \Sigma^2 \right) V^\top$.
+      <h3>7.4 Application: PCA as SVD of Data</h3>
+      <p>Principal Component Analysis (PCA) is simply SVD applied to a data matrix.
+      <br>Let $X \in \mathbb{R}^{N \times d}$ be the <b>centered</b> data matrix (rows are points).
+      <br>We want to find the direction of maximum variance (max $\mathbf{v}^\top X^\top X \mathbf{v}$).
+      <br>Taking the SVD: $X = U \Sigma V^\top$.
+      <br>The Covariance Matrix is proportional to $X^\top X = V \Sigma^2 V^\top$.
       <br><b>Conclusion:</b>
       <ul>
         <li><b>Principal Components:</b> The columns of $V$ (Right singular vectors of $X$).</li>
         <li><b>Variances:</b> The squared singular values $\sigma_i^2/N$.</li>
         <li><b>Projections:</b> The coordinates of data in the new basis are $XV = U\Sigma$.</li>
       </ul>
-      PCA is simply the SVD "ellipse fitting" applied to a point cloud.</p>
+      This unifies statistics and geometry.</p>
+    </section>
     </section>
 
     <!-- SECTION 8: PSEUDOINVERSE -->

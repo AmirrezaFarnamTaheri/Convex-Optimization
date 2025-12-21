@@ -601,72 +601,6 @@
       </div>
     </section>
 
-<section class="section-card" id="section-8">
-      <h2>8. Review & Cheat Sheet</h2>
-
-
-      <h3>Meta-Patterns: Convexification Recipes</h3>
-      <div class="proof-box">
-        <h4>Recipe 1: Robustness $\to$ Norms $\to$ SOCP</h4>
-        <p>Uncertainty in data (worst-case or Gaussian) converts linear constraints into norms of affine functions.
-        <br>$\sup a^\top x$ or $\mathbb{P}(a^\top x \le b)$ $\implies$ $\|P^\top x\|_2 \le b - \bar{a}^\top x$.</p>
-      </div>
-      <div class="proof-box">
-        <h4>Recipe 2: Eigenvalues $\to$ LMIs $\to$ SDP</h4>
-        <p>Minimizing maximal eigenvalues or singular values converts to Linear Matrix Inequalities.
-        <br>$\lambda_{\max}(A) \le t \iff A \preceq tI$.
-        <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
-      </div>
-
-<h3>Problem Classes Reference</h3>
-      <table class="data-table" style="width: 100%; margin-bottom: 24px;">
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th>Objective</th>
-            <th>Constraints</th>
-            <th>Key Property</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>LP</b></td>
-            <td>Linear</td>
-            <td>Linear inequalities ($Ax \le b$)</td>
-            <td>Solution at vertex; simplex method.</td>
-          </tr>
-          <tr>
-            <td><b>QP</b></td>
-            <td>Convex Quadratic</td>
-            <td>Linear inequalities</td>
-            <td>Unique solution if $P \succ 0$.</td>
-          </tr>
-          <tr>
-            <td><b>SOCP</b></td>
-            <td>Linear</td>
-            <td>Norm constraints ($\|Ax+b\|_2 \le c^\top x + d$)</td>
-            <td>Robust optimization; Euclidean geometry.</td>
-          </tr>
-          <tr>
-            <td><b>SDP</b></td>
-            <td>Linear</td>
-            <td>LMI ($F_0 + \sum x_i F_i \succeq 0$)</td>
-            <td>Optimizes over matrices; relaxation power.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Hierarchy</h3>
-      <p style="text-align: center; font-size: 1.2em;">
-        <strong>LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</strong>
-      </p>
-      <ul>
-        <li>Every LP is a QP (with $P=0$).</li>
-        <li>Every QP is an SOCP (via Cholesky factorization of constraints).</li>
-        <li>Every SOCP is an SDP (via Schur complement).</li>
-      </ul>
-    </section>
-
 <section class="section-card" id="section-7">
       <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
       <p>These problems consolidate the lecture material and provide practice in problem classification, formulation, and reformulation.</p>
@@ -1325,6 +1259,97 @@
   </div>
 </div>
 
+    </section>
+
+<section class="section-card" id="section-9">
+      <h2>9. Readings & Resources</h2>
+      <ul class="link-list">
+        <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 4 — Convex Optimization Problems</li>
+        <li><strong>Nesterov, Introductory Lectures on Convex Optimization:</strong> Chapter 1 — Linear and Conic Programming</li>
+        <li><strong>Ben-Tal & Nemirovski, Lectures on Modern Convex Optimization:</strong> Part I — Conic Programming</li>
+        <li><strong>CVXPY Documentation:</strong> <a href="https://www.cvxpy.org/" target="_blank">https://www.cvxpy.org/</a> — DCP rules and examples</li>
+      </ul>
+    </section>
+
+    <section class="section-card" id="section-10">
+      <h2>10. Recap &amp; What's Next</h2>
+      <div class="recap-box">
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Conic viewpoint:</b> many constraints can be written as “(expression) $\in K$” for a cone $K$ (SOC, PSD cone, etc.).</li>
+          <li><b>SOCP/SDP are modeling languages:</b> they capture norms, quadratic forms, and matrix inequalities while remaining convex.</li>
+          <li><b>Robustness via geometry:</b> uncertainty sets turn into conic constraints that enforce worst-case feasibility.</li>
+          <li><b>DCP is a proof system:</b> composition rules guarantee convexity so you can model safely at scale.</li>
+        </ul>
+      </div>
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> In <a href="../09-duality/index.html">Lecture 09</a>, these conic forms gain optimality certificates: dual cones appear as dual constraints, and strong duality explains when the primal and dual solutions match.</p>
+      </div>
+    </section>
+
+<section class="section-card" id="section-8">
+      <h2>8. Review & Cheat Sheet</h2>
+
+
+      <h3>Meta-Patterns: Convexification Recipes</h3>
+      <div class="proof-box">
+        <h4>Recipe 1: Robustness $\to$ Norms $\to$ SOCP</h4>
+        <p>Uncertainty in data (worst-case or Gaussian) converts linear constraints into norms of affine functions.
+        <br>$\sup a^\top x$ or $\mathbb{P}(a^\top x \le b)$ $\implies$ $\|P^\top x\|_2 \le b - \bar{a}^\top x$.</p>
+      </div>
+      <div class="proof-box">
+        <h4>Recipe 2: Eigenvalues $\to$ LMIs $\to$ SDP</h4>
+        <p>Minimizing maximal eigenvalues or singular values converts to Linear Matrix Inequalities.
+        <br>$\lambda_{\max}(A) \le t \iff A \preceq tI$.
+        <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
+      </div>
+
+<h3>Problem Classes Reference</h3>
+      <table class="data-table" style="width: 100%; margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Objective</th>
+            <th>Constraints</th>
+            <th>Key Property</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>LP</b></td>
+            <td>Linear</td>
+            <td>Linear inequalities ($Ax \le b$)</td>
+            <td>Solution at vertex; simplex method.</td>
+          </tr>
+          <tr>
+            <td><b>QP</b></td>
+            <td>Convex Quadratic</td>
+            <td>Linear inequalities</td>
+            <td>Unique solution if $P \succ 0$.</td>
+          </tr>
+          <tr>
+            <td><b>SOCP</b></td>
+            <td>Linear</td>
+            <td>Norm constraints ($\|Ax+b\|_2 \le c^\top x + d$)</td>
+            <td>Robust optimization; Euclidean geometry.</td>
+          </tr>
+          <tr>
+            <td><b>SDP</b></td>
+            <td>Linear</td>
+            <td>LMI ($F_0 + \sum x_i F_i \succeq 0$)</td>
+            <td>Optimizes over matrices; relaxation power.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Hierarchy</h3>
+      <p style="text-align: center; font-size: 1.2em;">
+        <strong>LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</strong>
+      </p>
+      <ul>
+        <li>Every LP is a QP (with $P=0$).</li>
+        <li>Every QP is an SOCP (via Cholesky factorization of constraints).</li>
+        <li>Every SOCP is an SDP (via Schur complement).</li>
+      </ul>
     </section>
 
 <section class="section-card" id="section-9">

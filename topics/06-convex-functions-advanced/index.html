@@ -198,7 +198,7 @@
       <section class="section-card" id="section-1">
       <h2>3. The Convex Conjugate (Fenchel Conjugate)</h2>
 
-      <h3>1.1 Definition and Geometric Meaning</h3>
+      <h3>3.1 Definition and Geometric Meaning</h3>
       <p>Start with a function $f : \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. Allowing $+\infty$ is a standard way of encoding hard constraints ("$\mathbf{x}$ not allowed"). The <a href="#" class="definition-link" data-term="convex conjugate">Fenchel conjugate</a> is defined as:</p>
       $$
       \boxed{f^*(\mathbf{y}) := \sup_{\mathbf{x}\in\mathrm{dom} f} \big( \mathbf{y}^\top \mathbf{x} - f(\mathbf{x}) \big), \quad \mathbf{y}\in\mathbb{R}^n}
@@ -228,7 +228,7 @@
       </div>
 
 
-      <h3>1.2 Why $f^*$ is Always Convex</h3>
+      <h3>3.2 Why $f^*$ is Always Convex</h3>
       <p>A crucial property is that $f^*$ is convex <b>regardless</b> of whether $f$ is convex.</p>
       <div class="proof-box">
         <h4>Proof</h4>
@@ -256,7 +256,7 @@
             <br><b>Consequence:</b> $f^{**} = f$ if and only if $f$ is closed and convex. This is the <b>Fenchel-Moreau Theorem</b>.</p>
         </div>
 
-      <h3>1.3 1D Examples in Detail</h3>
+      <h3>3.3 1D Examples in Detail</h3>
 
       <div class="example">
         <h4>(a) Affine function $f(x) = ax + b$</h4>
@@ -319,7 +319,7 @@
         <p><b>Result:</b> $f^*(y) = -2\sqrt{-y}$ for $y \le 0$ (with value 0 at $y=0$), else $\infty$. Domain $(-\infty, 0]$.</p>
       </div>
 
-      <h3>1.4 Quadratic and Matrix Examples</h3>
+      <h3>3.4 Quadratic and Matrix Examples</h3>
 
       <div class="example">
         <h4>(a) Quadratic: $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$</h4>
@@ -397,7 +397,7 @@
         <br><b>Result:</b> $f^*(y) = \delta_D(y)$. Since $D$ is a convex set (superlevel set of a concave geometric mean), $f$ is convex.
       </div>
 
-      <h3>1.5 Algebra Rules for Conjugates</h3>
+      <h3>3.5 Algebra Rules for Conjugates</h3>
 
       <h4>(a) Scaling and Vertical Shift</h4>
       <p>Let $g(x) = a f(x) + b$ with $a > 0, b \in \mathbb{R}$.
@@ -438,7 +438,7 @@
       $$
       So $\boxed{(f_1 \oplus f_2)^* = f_1^* \oplus f_2^*}$. This separation is key in duality.</p>
 
-      <h3>1.6 Fenchel Inequality and Biconjugate</h3>
+      <h3>3.6 Fenchel Inequality and Biconjugate</h3>
       <p>From the definition $f^*(y) \ge y^\top x - f(x)$, we immediately get <b>Fenchel's Inequality</b>:</p>
       $$ \boxed{ f(x) + f^*(y) \ge x^\top y } $$
       <p>Equality holds exactly when $y \in \partial f(x)$ (for convex $f$).</p>
@@ -448,7 +448,7 @@
       <br><b>Theorem:</b> $f^{**} \le f$ always. If $f$ is closed and convex, then $f^{**} = f$.
       <br><i>Geometric Intuition:</i> $\mathrm{epi}(f^{**})$ is the closed convex hull of $\mathrm{epi}(f)$. Conjugation encodes all supporting hyperplanes; taking it again reconstructs the convex envelope from these planes.</p>
 
-      <h3>1.7 Legendre Transform: Smooth Case</h3>
+      <h3>3.7 Legendre Transform: Smooth Case</h3>
       <p>Assume $f$ is strictly convex and differentiable everywhere. The optimizer $x^*$ in the definition of $f^*(y)$ is characterized by:
       $$ \nabla_x (y^\top x - f(x)) = y - \nabla f(x) = 0 \implies y = \nabla f(x^*) $$
       Thus $x^* = (\nabla f)^{-1}(y)$. We can write:
@@ -466,7 +466,7 @@
     <section class="section-card" id="section-2">
         <h2>4. Quasiconvex Functions</h2>
 
-        <h3>2.1 Definition: Sublevel Sets</h3>
+        <h3>4.1 Definition: Sublevel Sets</h3>
         <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <a href="#" class="definition-link">quasiconvex</a> if its domain is convex and all its <b>sublevel sets</b> are convex:</p>
         $$
         S_\alpha := \{x \in \mathrm{dom}\, f \mid f(x) \le \alpha\}
@@ -474,7 +474,7 @@
         <p>is a convex set for every $\alpha \in \mathbb{R}$.
         <br><i>Note:</i> Convex $\implies$ Quasiconvex, but not conversely. Quasiconvexity allows "bendy" graphs, as long as the "valley" shape is maintained.</p>
 
-        <h3>2.2 Simple 1D Examples</h3>
+        <h3>4.2 Simple 1D Examples</h3>
         <div class="example">
             <h4>(a) Logarithm: $f(x) = \log x$</h4>
             <p>Sublevel set $\{x > 0 \mid \log x \le \alpha\} = \{x \mid x \le e^\alpha\} = (0, e^\alpha]$. This is a convex interval.
@@ -486,7 +486,7 @@
             <br>So $\lceil x \rceil$ is quasiconvex. (It is step-like and definitely not convex).</p>
         </div>
 
-        <h3>2.3 Vector Examples</h3>
+        <h3>4.3 Vector Examples</h3>
         <div class="example">
             <h4>1. Length of a Vector</h4>
             <p>Define len$(x) = \max\{i \mid x_i \ne 0\}$ (index of last nonzero element).
@@ -538,7 +538,7 @@
             <br>So $\mathrm{IRR}(x)$ is a <b>quasiconcave</b> function of the cash flows.</p>
         </div>
 
-        <h3>2.4 Second-Order Condition</h3>
+        <h3>4.4 Second-Order Condition</h3>
         <p>Assume $f$ is twice differentiable.</p>
 
         <h4>Necessary Condition</h4>
@@ -556,14 +556,14 @@
         $$ y^\top \nabla f(x) = 0, \ y \ne 0 \implies y^\top \nabla^2 f(x) y > 0 $$
         then $f$ is <b>strictly quasiconvex</b>. This ensures no "flat" regions along the contours that could hide non-convexity.</p>
 
-        <h3>2.5 Operations Preserving Quasiconvexity</h3>
+        <h3>4.5 Operations Preserving Quasiconvexity</h3>
         <ul>
             <li><b>Max:</b> $f(x) = \max_i f_i(x)$ is quasiconvex (Intersection of convex sublevel sets).</li>
             <li><b>Composition:</b> $g(h(x))$ is quasiconvex if $h$ is quasiconvex and $g$ is <b>non-decreasing</b>.</li>
             <li><b>Warning:</b> Sums of quasiconvex functions are generally <b>not</b> quasiconvex.</li>
         </ul>
 
-        <h3>2.6 Worked Example: Classification Challenge</h3>
+        <h3>4.6 Worked Example: Classification Challenge</h3>
         <p>Determine the convexity properties of the following functions.</p>
 
         <div class="example">
@@ -611,7 +611,7 @@
     <section class="section-card" id="section-3">
         <h2>5. Log-Concave and Log-Convex Functions</h2>
 
-        <h3>3.1 Definitions</h3>
+        <h3>5.1 Definitions</h3>
         <p>Let $f: \mathbb{R}^n \to \mathbb{R}_{++}$.
         <ul>
             <li>$f$ is <b>log-concave</b> if $\log f(x)$ is concave.</li>
@@ -684,7 +684,7 @@
           <br>Conclusion: Subtracting a non-negative constant from a positive log-concave function preserves log-concavity.</p>
         </div>
 
-        <h3>3.2 Examples</h3>
+        <h3>5.2 Examples</h3>
         <div class="example">
             <h4>1. Uniform Distribution on Convex Set</h4>
             <p>Let $C$ be convex. $f(x) = 1/\alpha$ if $x \in C$, else 0.
@@ -699,7 +699,7 @@
             <br>Thus Wishart is log-concave.</p>
         </div>
 
-        <h3>3.3 Integration Rules</h3>
+        <h3>5.3 Integration Rules</h3>
         <p>Log-convexity and log-concavity behave nicely under integration, though the conditions differ.</p>
         <div class="theorem-box">
             <h4>(a) Integrals of Log-Convex Functions</h4>
@@ -727,7 +727,7 @@
             <p><b>Consequence:</b> Convolution of log-concave functions is log-concave. If $f, g$ are log-concave, so is $(f*g)(x) = \int f(x-y)g(y) dy$. This theorem is a functional generalization of the Brunn-Minkowski inequality for volumes of convex bodies.</p>
         </div>
 
-        <h3>3.4 Probability Examples</h3>
+        <h3>5.4 Probability Examples</h3>
         <div class="example">
             <h4>(a) Hitting a Convex Set with Log-Concave Noise</h4>
             <p>Let $w$ be a random vector with log-concave density $p(w)$. Let $C$ be a convex set. Define:
@@ -758,7 +758,7 @@
         </div>
     </section>
 
-    <section class="section-card" id="section-4">
+    <section class="section-card" id="section-6">
       <h2>6. Review & Cheat Sheet</h2>
       <h3>Conjugate Transformations</h3>
       <table class="data-table">
@@ -780,7 +780,7 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-5">
+    <section class="section-card" id="section-7">
       <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
 
 <div class="problem">
@@ -1701,8 +1701,8 @@
 
 </section>
 
-    <section class="section-card" id="section-6">
-      <h2>6. Recap &amp; What's Next</h2>
+    <section class="section-card" id="section-8">
+      <h2>8. Recap &amp; What's Next</h2>
       <div class="recap-box">
         <ul style="margin: 0 0 0 20px;">
           <li><b>Conjugates:</b> $f^*(y)=\sup_x (y^\top x - f(x))$ packages all supporting hyperplanes of $f$ into a single convex function.</li>

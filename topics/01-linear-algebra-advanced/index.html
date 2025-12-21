@@ -437,168 +437,179 @@
 
     <!-- SECTION 7: SVD -->
     <section class="section-card" id="section-svd">
-      <h2>7. Singular Value Decomposition: The Geometry of ANY Matrix</h2>
-      <p>SVD is the final boss. It works for <b>every</b> matrix (square or rectangular, real or complex). It provides the canonical coordinate system for any linear map.</p>
+      <h2>7. Singular Value Decomposition (SVD): The Final Boss</h2>
+      <p>If the spectral theorem was "perfect behavior under symmetry," and Jordan form was "perfect algebra under similarity," then <b>SVD is the final boss</b>.</p>
+      <blockquote><b>Every matrix, square or rectangular, symmetric or not, real or complex, admits an orthogonal (unitary) geometric decomposition.</b></blockquote>
+      <p>No exceptions. No pathologies. No defects. SVD is not a trick. It is the <b>canonical coordinate system of linear maps</b>.</p>
 
-      <h3>7.1 Theorem: Existence of SVD</h3>
+      <h3>7.1 The Problem SVD Solves</h3>
+      <p>Given a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$, we want to understand:</p>
+      <ul>
+        <li>How it stretches space.</li>
+        <li>In which directions stretching happens.</li>
+        <li>How many independent directions survive.</li>
+        <li>How information is lost.</li>
+      </ul>
+      <p><b>Why Eigenvalues Fail:</b> Eigenanalysis is fragile because $T$ may not map a space to itself (rectangular matrices), may not preserve angles (non-normal matrices), or eigenvectors may not exist or be unstable (defective matrices). SVD fixes this by moving eigen-analysis to the right objects.</p>
+
+      <h3>7.2 The Core Idea: Self-Adjoint Operators</h3>
+      <p>Instead of studying $T$ directly, we study the two <i>self-adjoint</i> operators associated with it:</p>
+      <ul>
+        <li>$T^\top T : \mathbb{R}^n \to \mathbb{R}^n$ (Input/Domain geometry)</li>
+        <li>$T T^\top : \mathbb{R}^m \to \mathbb{R}^m$ (Output/Codomain geometry)</li>
+      </ul>
+      <p>These operators are always symmetric, positive semidefinite, and orthogonally diagonalizable. SVD is what you get when you <b>diagonalize both at once in a compatible way</b>.</p>
+
+      <h3>7.3 Theorem: The SVD Statement</h3>
       <div class="theorem-box">
-        <p>Every matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:</p>
+        <h4>Singular Value Decomposition</h4>
+        <p>For any matrix $A \in \mathbb{R}^{m \times n}$, there exist:</p>
+        <ul>
+          <li>An orthogonal matrix $U \in \mathbb{R}^{m \times m}$ (Left Singular Vectors).</li>
+          <li>An orthogonal matrix $V \in \mathbb{R}^{n \times n}$ (Right Singular Vectors).</li>
+          <li>A diagonal matrix $\Sigma \in \mathbb{R}^{m \times n}$ with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
+        </ul>
+        <p>Such that:</p>
         $$ \boxed{ A = U \Sigma V^\top } $$
-        <ul>
-          <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal ($U^\top U = I$). (Left singular vectors, Output basis).</li>
-          <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal ($V^\top V = I$). (Right singular vectors, Input basis).</li>
-          <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$. (Singular values $\sigma_i = \sqrt{\lambda_i(A^\top A)}$).</li>
-        </ul>
-        <p>This works for square, rectangular, symmetric, or non-symmetric matrices. It is the <b>canonical coordinate system</b> for any linear map.</p>
+        <p>where $\sigma_i = \sqrt{\lambda_i(A^\top A)}$ are the <b>singular values</b>. The number of non-zero singular values equals $\operatorname{rank}(A)$.</p>
       </div>
 
-      <h3>7.2 Geometric Meaning: Input and Output Bases</h3>
-      <p>SVD says that <b>every linear map</b> is a composition of:
-      <ol>
-        <li><b>Rotation ($V^\top$):</b> Align input basis with standard axes.</li>
-        <li><b>Scaling ($\Sigma$):</b> Independent scaling along axes. No shear.</li>
-        <li><b>Rotation ($U$):</b> Rotate to final output orientation.</li>
-      </ol>
-      <br><b>Input Basis ($V$):</b> Directions in the domain where the map acts independently.
-      <br><b>Output Basis ($U$):</b> Directions in the codomain where the outputs land.
-      <br><b>Gains ($\sigma_i$):</b> The stretch factors.
-      <br>This proves that the image of the unit sphere is a hyperellipse.</p>
-
-      <div class="insight">
-        <h4>SVD vs. Eigendecomposition</h4>
-        <p><b>Eigen (Square only):</b> Invariant directions ($Av = \lambda v$). Basis may be non-orthogonal. Eigenvalues may be complex.
-        <br><b>SVD (Any Matrix):</b> Mapping one orthonormal frame to another ($Av_i = \sigma_i u_i$). Bases are always orthogonal. Singular values always real $\ge 0$. SVD separates input space ($V$) from output space ($U$).</p>
-      </div>
-
-      <div class="proof-box">
-        <h4>Constructive Proof via Spectral Theorem (Detailed)</h4>
-        <p>This proof demonstrates that the SVD is not magic, but a direct consequence of the eigendecomposition of the symmetric PSD matrix $A^\top A$. We construct $V$ from the eigenvectors of $A^\top A$ and $U$ by mapping them through $A$.</p>
-
-        <div class="proof-step">
-          <strong>Step 1: Eigendecomposition of the Gram Matrix.</strong>
-          Let $G = A^\top A \in \mathbb{R}^{n \times n}$.
-          <br>1. <b>Symmetry:</b> $G^\top = (A^\top A)^\top = A^\top A = G$.
-          <br>2. <b>PSD:</b> For any $\mathbf{x}$, $\mathbf{x}^\top G \mathbf{x} = \mathbf{x}^\top A^\top A \mathbf{x} = \|A\mathbf{x}\|_2^2 \ge 0$.
-          <br>By the Spectral Theorem, there exists an orthonormal basis of eigenvectors $\{v_1, \dots, v_n\}$ with real eigenvalues $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n \ge 0$.
-          <br>Let $r$ be the number of non-zero eigenvalues ($\lambda_r > 0, \lambda_{r+1}=0$).
-          <br>Define the singular values $\sigma_i = \sqrt{\lambda_i}$.
-          <br>Construct the matrix $V = [v_1 \dots v_n]$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 2: Constructing the Image Basis ($u_i$).</strong>
-          For the $r$ indices where $\sigma_i > 0$, we define vectors $u_i \in \mathbb{R}^m$ by mapping the $v_i$ through $A$ and normalizing:
-          $$ u_i = \frac{1}{\sigma_i} A v_i, \quad i=1,\dots,r $$
-          Why are these valid orthonormal basis vectors?
-          <br><b>Normality:</b> $\|u_i\|^2 = u_i^\top u_i = \frac{1}{\sigma_i^2} v_i^\top A^\top A v_i = \frac{1}{\lambda_i} v_i^\top (\lambda_i v_i) = v_i^\top v_i = 1$.
-          <br><b>Orthogonality:</b> For $i \ne j$, $\langle u_i, u_j \rangle = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{1}{\sigma_i \sigma_j} v_i^\top (\lambda_j v_j) = \frac{\lambda_j}{\sigma_i \sigma_j} \delta_{ij} = 0$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 3: Completing the Basis ($U$).</strong>
-          We have found $r$ orthonormal vectors $\{u_1, \dots, u_r\}$ in $\mathbb{R}^m$.
-          If $r < m$, the set is not a complete basis. We can extend it to a full orthonormal basis $\{u_1, \dots, u_m\}$ using the Gram-Schmidt process or simply by picking vectors from the orthogonal complement.
-          <br>Define $U = [u_1 \dots u_m]$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 4: Matrix Verification ($AV = U\Sigma$).</strong>
-          We check that the action of $A$ on the basis $V$ matches the action of $U\Sigma$.
-          <br><b>Case 1 ($i \le r$):</b>
-          LHS: $A v_i$.
-          RHS: The $i$-th column of $U\Sigma$ is $\sum_{k=1}^m u_k \Sigma_{ki} = u_i \sigma_i$.
-          Since we defined $u_i = \frac{1}{\sigma_i} A v_i$, we have $A v_i = \sigma_i u_i$. Match.
-          <br><b>Case 2 ($i > r$):</b>
-          LHS: $A v_i$. Since $\lambda_i = 0$, we have $\|A v_i\|^2 = v_i^\top A^\top A v_i = v_i^\top (0 v_i) = 0$. So $A v_i = 0$.
-          RHS: The $i$-th column of $U\Sigma$ is $u_i \cdot 0 = 0$. Match.
-          <br><b>Conclusion:</b> Since $AV = U\Sigma$ and $V$ is invertible (orthogonal), $A = U \Sigma V^\top$.
-        </div>
-      </div>
-
-      <h3>7.3 The Four Fundamental Subspaces (Revisited via SVD)</h3>
-      <p>SVD provides the most numerically stable way to determine rank and bases. It explicitly visualizes the Rank-Nullity Theorem:
-      $$ \operatorname{rank}(A) = \#\{\sigma_i > 0\}, \quad \dim(\mathcal{N}(A)) = \#\{\sigma_i = 0\} $$
-      bases for the four spaces are given by the columns of $U$ and $V$:
+      <h3>7.4 Geometric Meaning: Rotate → Scale → Rotate</h3>
+      <p>The matrices have precise geometric interpretations:</p>
       <ul>
-        <li><b>Range $\mathcal{R}(A)$:</b> Span of $\{u_1, \dots, u_r\}$. (First $r$ columns of $U$).</li>
-        <li><b>Nullspace $\mathcal{N}(A)$:</b> Span of $\{v_{r+1}, \dots, v_n\}$. (Last $n-r$ columns of $V$).</li>
-        <li><b>Row Space $\mathcal{R}(A^\top)$:</b> Span of $\{v_1, \dots, v_r\}$. (First $r$ columns of $V$).</li>
-        <li><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> Span of $\{u_{r+1}, \dots, u_m\}$. (Last $m-r$ columns of $U$).</li>
+        <li><b>$V$ (Right Singular Vectors):</b> Columns $v_1, \dots, v_n$ form an orthonormal basis of the <b>input space</b> $\mathbb{R}^n$. Along each $v_i$, the map acts independently.</li>
+        <li><b>$\Sigma$ (Pure Scaling):</b> Diagonal entries $\sigma_i$ represent the stretch factor along each direction. $\sigma_i = 0$ means the direction is killed.</li>
+        <li><b>$U$ (Left Singular Vectors):</b> Columns $u_1, \dots, u_m$ form an orthonormal basis of the <b>output space</b> $\mathbb{R}^m$. They define the axes where the transformed vectors land.</li>
       </ul>
-      </p>
+      <p>So the action of $A$ is:</p>
+      <blockquote style="text-align: center; font-size: 1.1em; margin: 20px 0;"><b>Rotate ($V^\top$) $\to$ Scale along orthogonal axes ($\Sigma$) $\to$ Rotate ($U$)</b></blockquote>
+      <p>No shear. No coupling. Ever. This proves that the image of the unit sphere is always a hyperellipse.</p>
 
-      <h3>7.4 Matrix Norms via SVD</h3>
-      <p>The SVD provides the most natural characterization of matrix norms:</p>
-      <ul>
-        <li><b>Spectral Norm (Operator Norm):</b> $\|A\|_2 = \sigma_{\max}(A) = \sigma_1$. It measures the maximum gain.</li>
-        <li><b>Frobenius Norm (Energy):</b> $\|A\|_F = \sqrt{\sum \sigma_i^2}$. It measures the total energy.</li>
-        <li><b>Nuclear Norm (Trace Norm):</b> $\|A\|_* = \sum \sigma_i$. This is the convex envelope of the rank function on the unit ball, playing the same role for matrices that the $\ell_1$ norm plays for vectors (sparsity promotion).</li>
-      </ul>
-
-      <div class="insight">
-        <h4>Analogy: Vectors vs. Matrices</h4>
-        <p>There is a direct correspondence between vector norms on the singular values and matrix norms:</p>
-        <ul>
-          <li>$\ell_\infty$ norm on $\sigma \implies$ Spectral norm on $A$. ($\max |\sigma_i|$)</li>
-          <li>$\ell_2$ norm on $\sigma \implies$ Frobenius norm on $A$. ($\sqrt{\sum \sigma_i^2}$)</li>
-          <li>$\ell_1$ norm on $\sigma \implies$ Nuclear norm on $A$. ($\sum |\sigma_i|$)</li>
-        </ul>
-        <p>This explains why the Nuclear Norm promotes low-rank solutions (sparsity in singular values) just as the $\ell_1$ norm promotes sparse vectors.</p>
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/svd-wiki.png" alt="SVD Decomposition Wiki" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 5a:</i> Standard SVD visualization (Wikimedia).</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/svd-ellipse.png" alt="SVD Ellipse" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 5b:</i> Unit circle to ellipse transformation.</figcaption>
+        </figure>
       </div>
-
-      <h3>7.5 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
-      <p>The SVD allows us to find the best approximation of a matrix $A$ by a matrix of lower rank $k$. This is crucial for compression (keeping signal) and denoising (discarding noise).</p>
-      <div class="theorem-box">
-        <h4>Theorem: Eckart-Young-Mirsky</h4>
-        <p>Let $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$ be the truncated SVD. Then $A_k$ is the solution to:</p>
-        $$ \min_{\text{rank}(B) \le k} \|A - B\| $$
-        <p>Intuitively, by keeping the largest singular values, we capture the directions where the matrix has the most energy (action), minimizing the residual energy.</p>
-        <p>The truncated SVD $A_k$ is the optimal approximation for both the spectral norm ($\|\cdot\|_2$) and the Frobenius norm ($\|\cdot\|_F$). The errors are:</p>
-        <ul>
-          <li>Spectral Error: $\|A - A_k\|_2 = \sigma_{k+1}$</li>
-          <li>Frobenius Error: $\|A - A_k\|_F = \sqrt{\sum_{i=k+1}^r \sigma_i^2}$</li>
-        </ul>
-      </div>
-
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/low-rank-image-approximation.png"
-             alt="Image reconstructed at different ranks using truncated SVD"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 5:</i> Low-rank approximation via truncated SVD: keeping more singular values preserves more visual detail, while very small ranks keep only coarse structure.</figcaption>
+         <img src="assets/svd-sas.png" alt="SVD SAS Visualization" style="max-width: 80%; border-radius: 8px;">
+         <figcaption><i>Figure 5c:</i> The geometry of $U \Sigma V^\top$.</figcaption>
       </figure>
 
+      <h3>7.5 Construction: We Are Forced Into It</h3>
+      <p>We do not guess SVD. We are <i>forced</i> into it by the spectral theorem.</p>
       <div class="proof-box">
-        <h4>Sketch of Proof (Spectral Norm)</h4>
+        <h4>Conceptual Construction</h4>
         <div class="proof-step">
-          <strong>Step 1: Upper Bound.</strong>
-          Since $A - A_k = \sum_{i=k+1}^r \sigma_i u_i v_i^\top$, the error is $\|A - A_k\|_2 = \sigma_{k+1}$.
-          Thus, $\min_{\text{rank}(B) \le k} \|A - B\|_2 \le \sigma_{k+1}$.
+          <strong>Step 1: Diagonalize $A^\top A$.</strong>
+          Since $A^\top A$ is symmetric and PSD, we have $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
+          Define $\sigma_i = \sqrt{\lambda_i}$.
         </div>
         <div class="proof-step">
-          <strong>Step 2: Lower Bound.</strong>
-          Let $B$ be any matrix with rank $k$. By Rank-Nullity, its nullspace has dimension $n-k$.
-          Consider the subspace $S$ spanned by the first $k+1$ right singular vectors $\{v_1, \dots, v_{k+1}\}$. $\dim(S) = k+1$.
-          Since $\dim(S) + \dim(\mathcal{N}(B)) = (k+1) + (n-k) = n+1 > n$, the intersection $S \cap \mathcal{N}(B)$ must be non-trivial.
-          Let $\mathbf{w} \in S \cap \mathcal{N}(B)$ with $\|w\|_2=1$.
+          <strong>Step 2: Define Left Singular Vectors.</strong>
+          For $\sigma_i > 0$, define $u_i = \frac{1}{\sigma_i} A v_i$.
+          These $u_i$ are automatically orthonormal (check: $u_i^\top u_j = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{\lambda_j}{\sigma_i \sigma_j} \delta_{ij} = \delta_{ij}$) and are eigenvectors of $AA^\top$.
         </div>
         <div class="proof-step">
-          <strong>Step 3: Energy Estimate.</strong>
-          Since $\mathbf{w} \in \mathcal{N}(B)$, we have $B\mathbf{w} = 0$, so $\|(A-B)w\| = \|Aw\|$.
-          Since $\mathbf{w} \in \text{span}(v_1, \dots, v_{k+1})$, we have $\|Aw\| \ge \sigma_{k+1}$.
-          (The smallest gain in the first $k+1$ directions is $\sigma_{k+1}$).
-          Thus $\|A-B\|_2 = \sup_{\|\mathbf{x}\|=1} \|(A-B)\mathbf{x}\| \ge \|(A-B)\mathbf{w}\| \ge \sigma_{k+1}$.
+          <strong>Step 3: Assemble.</strong>
+          Extend $\{u_i\}$ to a full orthonormal basis $U$. Place $\sigma_i$ in $\Sigma$.
+          Then $A = U \Sigma V^\top$ holds by construction. Nothing arbitrary happened.
         </div>
+      </div>
+
+      <h3>7.6 Rank-Nullity Revisited</h3>
+      <p>SVD makes the fundamental theorem of linear algebra visual:</p>
+      <ul>
+        <li>$\sigma_i > 0 \iff$ dimension survives.</li>
+        <li>$\sigma_i = 0 \iff$ direction annihilated.</li>
+      </ul>
+      $$ \operatorname{rank}(A) = \#\{\sigma_i > 0\}, \quad \operatorname{Null}(A) = \operatorname{span}\{v_i : \sigma_i = 0\} $$
+      <p>This is Rank-Nullity <b>with geometry attached</b>.</p>
+
+      <h3>7.7 Best Low-Rank Approximation (Eckart-Young Theorem)</h3>
+      <p>This is where SVD becomes <i>unavoidable</i>. It gives the best possible approximation of a matrix by one of lower rank.</p>
+      <div class="theorem-box">
+        <h4>Theorem: Eckart-Young-Mirsky</h4>
+        <p>Among all matrices of rank $k$, the truncated SVD $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$ is the closest to $A$ in both Frobenius and Spectral norms.</p>
+        <p>This is the mathematical foundation of PCA, data compression, latent factor models, and recommendation systems.</p>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: SVD for Image Compression</h3>
         <p><b>The Power of Low-Rank Approximation:</b> An image can be viewed as a matrix of pixel intensities. By computing its SVD and keeping only the largest singular values, we can reconstruct the image with far less data.</p>
-        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-          <li><b>Concept:</b> $A \approx \sum_{i=1}^k \sigma_i u_i v_i^\top$.</li>
-          <li><b>Observation:</b> Notice how the structure (large features) is captured by the first few modes, while details (and noise) reside in the smaller singular values.</li>
-        </ul>
         <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
+
+      <h3>7.8 Least Squares Solved Geometrically</h3>
+      <p>For overdetermined systems $Ax=b$, the best approximation is the orthogonal projection onto the column space. Using SVD, we get an explicit, stable formula:</p>
+      $$ x^* = \sum_{i:\sigma_i > 0} \frac{u_i^\top b}{\sigma_i} v_i $$
+      <p>No normal equations. No numerical instability. This is <i>the</i> stable solution (equivalent to the Pseudoinverse approach).</p>
+
+      <h3>7.9 Conditioning and Stability</h3>
+      <p>Define the condition number:</p>
+      $$ \kappa(A) = \frac{\sigma_{\max}}{\sigma_{\min}} $$
+      <ul>
+        <li>Large $\kappa$: problem is ill-conditioned.</li>
+        <li>Small $\kappa$: stable.</li>
+      </ul>
+      <p>SVD does not just solve problems — it tells you <b>how much you should trust the answer</b>.</p>
+
+      <h3>7.10 Comparison: The "Big Three" Decompositions</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Decomposition</th>
+            <th>Always Exists?</th>
+            <th>Orthogonal Basis?</th>
+            <th>Rectangular?</th>
+            <th>Numerically Stable?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Eigen</b> ($P \Lambda P^{-1}$)</td>
+            <td>❌ (Defective)</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>⚠️</td>
+          </tr>
+          <tr>
+            <td><b>Jordan</b> ($P J P^{-1}$)</td>
+            <td>❌ (Real) / ✔️ (Complex)</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌ (Unstable)</td>
+          </tr>
+          <tr>
+            <td><b>SVD</b> ($U \Sigma V^\top$)</td>
+            <td>✔️ (Always)</td>
+            <td>✔️</td>
+            <td>✔️</td>
+            <td>✔️ (Perfect)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>SVD is the <b>end of the road</b> for linear maps.</p>
+
+      <div class="insight">
+        <h4>One-Sentence Mastery Test</h4>
+        <p>If you truly understand SVD, you can say:</p>
+        <blockquote>"Any linear map transforms the unit sphere into an ellipsoid, and SVD finds its principal axes and axis lengths."</blockquote>
+        <p>That sentence is not metaphorical. It is literally the theorem.</p>
+      </div>
+
+      <h3>7.11 Where SVD sits in the Grand Structure</h3>
+      <ul>
+        <li>Linear maps $\to$ matrices (Coordinates)</li>
+        <li>Symmetric maps $\to$ Spectral Theorem (Perfect Geometry)</li>
+        <li>General square maps $\to$ Jordan Form (Algebraic completion)</li>
+        <li><b>All maps $\to$ SVD (The true geometry)</b></li>
+      </ul>
+      <p>SVD is the <i>coordinate-free geometry</i> of linear algebra.</p>
     </section>
 
     <!-- SECTION 8: PSEUDOINVERSE -->

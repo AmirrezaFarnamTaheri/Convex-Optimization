@@ -172,13 +172,17 @@
       Nothing more, nothing less. If $\mathbf{b}$ lies in the column space, the system is <b>consistent</b>. If $\mathbf{b}$ lies outside it, the system is <b>inconsistent</b>, and no amount of algebra will fix that.</p>
 
       <div class="insight">
-        <h4>Immediate Consequences</h4>
+        <h4>Immediate Consequences (Geometry vs. Algebra)</h4>
         <ol>
-            <li><b>Why inconsistent systems exist:</b> If $\mathcal{R}(A)$ is a proper subspace of $\mathbb{R}^m$, then "most" vectors $\mathbf{b}$ are outside it. Inconsistency is the generic case, not a pathology.</li>
-            <li><b>Why adding columns can make systems solvable:</b> Adding a column to $A$ enlarges $\mathcal{R}(A)$. You are adding a new direction you can combine.</li>
+            <li><b>Why inconsistent systems exist:</b> If $\mathcal{R}(A)$ is a proper subspace of $\mathbb{R}^m$ (rank < m), then "most" vectors $\mathbf{b}$ are outside it. Inconsistency is the generic case, not a pathology.</li>
+            <li><b>Why adding columns can make systems solvable:</b> Adding a column to $A$ enlarges $\mathcal{R}(A)$. You are literally adding a new direction you can combine.</li>
             <li><b>Why rank matters:</b> The rank of $A$ is $\operatorname{rank}(A) = \dim(\mathcal{R}(A))$. Rank measures how "big" the image of the linear map is.</li>
-            <li><b>Mental Model:</b> Do not think "I have equations and unknowns." Think "I have a linear map. What outputs can it produce?" Solving $A\mathbf{x}=\mathbf{b}$ is not algebra first and geometry later. It is geometry first, algebra as a tool.</li>
+            <li><b>Why overdetermined systems often fail:</b> If $m > n$, the column space lives in $\mathbb{R}^m$ but has dimension at most $n$. It cannot fill the space. Many $\mathbf{b}$’s are unreachable.</li>
         </ol>
+        <h4>The Mental Model to Keep Forever</h4>
+        <p>Do not think: <i>"I have equations and unknowns."</i></p>
+        <p>Think instead: <i>"I have a linear map. What outputs can it produce?"</i></p>
+        <p>Solving $A\mathbf{x}=\mathbf{b}$ is not algebra first and geometry later. It is <b>geometry first, algebra as a tool</b>.</p>
       </div>
 
       <h4>(B) Linear Independence as "No Redundancy"</h4>
@@ -1022,6 +1026,17 @@
 
       <h3>5.4 The Gram-Schmidt Process</h3>
       <p>Gram-Schmidt is not just an algorithm; it is the <b>constructive proof</b> that every finite-dimensional subspace admits an orthonormal basis. It systematically manufactures geometry from algebra.</p>
+
+      <div class="insight">
+        <h4>Gram-Schmidt is "Projection Theorem in Disguise"</h4>
+        <p>At step $j$, we want a vector in $\operatorname{span}(a_1, \dots, a_j)$ that is orthogonal to $\operatorname{span}(a_1, \dots, a_{j-1})$.
+        <br>There is exactly <b>one</b> way to do this:
+        <ul>
+            <li>Take $a_j$.</li>
+            <li>Subtract its <b>orthogonal projection</b> onto the subspace spanned by the previous vectors.</li>
+        </ul>
+        This residual $u_j = a_j - \operatorname{proj}_{W_{j-1}}(a_j)$ captures exactly the "new information" in $a_j$ orthogonal to what we already know. Normalizing it gives the basis vector.</p>
+      </div>
 
       <p><b>The Idea:</b> Given linearly independent vectors $a_1, \dots, a_k$, we construct orthonormal vectors $q_1, \dots, q_k$ such that for each $j$, $\operatorname{span}(q_1, \dots, q_j) = \operatorname{span}(a_1, \dots, a_j)$.
       <br><b>Step-by-step Construction:</b>

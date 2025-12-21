@@ -158,6 +158,8 @@
       2. <b>Independent:</b> No redundancy (Representation is unique).
       </p>
 
+      <p><b>Crucial Distinction:</b> Vectors $v$ live in the abstract space $V$. Coordinates $[v]_\mathcal{B}$ live in $\mathbb{F}^n$. They are not the same object, though a basis creates a perfect dictionary between them.</p>
+
       <div class="theorem-box">
         <h4>Theorem: The Basis Theorem</h4>
         <p>If $\mathcal{B}$ is a basis of $V$, then every vector $v \in V$ can be written in <b>exactly one way</b> as:
@@ -177,9 +179,19 @@
         <br>1. <b>$k \le m$</b> (You cannot have more independent vectors than the size of a spanning set).
         <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
 
-        <h4>Proof Strategy</h4>
-        <p>We prove this by iteratively replacing vectors. At each step, we insert an independent vector $\ell_j$. Because the current set spans, $\ell_j$ is a linear combination of the current set. Because of independence, at least one vector from the original set $S$ must appear with a non-zero coefficient and can be swapped out.
-        <br>If $k > m$, we would run out of vectors to swap, implying a dependence in $L$, a contradiction.</p>
+        <h4>Proof (Step-by-Step)</h4>
+        <div class="proof-step">
+          <strong>Step 1: The First Swap.</strong> Since $S$ spans, $\ell_1 = \sum c_i s_i$. Since $\ell_1 \ne 0$, some $c_j \ne 0$. Solve for $s_j$. We can replace $s_j$ with $\ell_1$ and still span.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Iteration.</strong> Suppose we have replaced $r$ vectors of $S$ with $\ell_1, \dots, \ell_r$. To insert $\ell_{r+1}$: express it as a sum of the current set.
+          $$ \ell_{r+1} = \sum_{i=1}^r a_i \ell_i + \sum_{j=r+1}^m b_j s_{\text{old}, j} $$
+          If all $b_j = 0$, then $\ell_{r+1}$ depends on $\ell_1, \dots, \ell_r$, contradicting independence.
+          Thus some $b_j \ne 0$. We can swap that $s_{\text{old}, j}$ for $\ell_{r+1}$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Conclusion.</strong> We can continue this process for all $k$ vectors in $L$. This requires that we don't "run out" of vectors in $S$ to swap. Thus, the number of available slots $m$ must be at least $k$. So $k \le m$.
+        </div>
       </div>
 
       <h4>The Dimension Theorem</h4>
@@ -200,14 +212,19 @@
       $$ [T(v)]_C = A [v]_B $$
       Matrix-vector multiplication is simply the coordinate version of applying the linear map.</p>
 
-      <h4>Change of Basis (Similarity)</h4>
-      <p>What if we change the basis of $V$ from $B$ to $B'$? The linear map $T$ stays the same, but its matrix representation changes.
-      <br>Let $P$ be the <b>change-of-basis matrix</b> from $B'$ to $B$ (columns are $B'$ vectors written in $B$).
-      <br>Then $[v]_B = P [v]_{B'}$.
-      <br>The new matrix representation $A'$ satisfies:
-      $$ A' = P^{-1} A P $$
-      This is <b>Similarity</b>. Similar matrices represent the same linear operator in different coordinate systems.
-      <br><b>Invariants:</b> Since the map is unchanged, intrinsic properties like Rank, Determinant, Trace, and Eigenvalues are preserved under similarity.</p>
+      <h4>Change of Basis: Deriving Similarity</h4>
+      <p>What if we change the basis of $V$ from $B$ to $B'$?
+      <br>Let $P = [\text{Id}]_{B \leftarrow B'}$ be the change-of-basis matrix. Its columns are the new basis vectors $[b'_j]_B$ written in the old coordinates.
+      <br><b>Coordinate Rule:</b> $[v]_B = P [v]_{B'}$. (Multiplication by $P$ converts New to Old).
+      <br>Now consider the map $T: V \to V$ represented by $A$ in basis $B$ and $A'$ in basis $B'$.
+      $$ [T(v)]_B = A [v]_B \quad \text{and} \quad [T(v)]_{B'} = A' [v]_{B'} $$
+      Substitute the coordinate change into the first equation:
+      $$ P [T(v)]_{B'} = A (P [v]_{B'}) $$
+      Multiply by $P^{-1}$:
+      $$ [T(v)]_{B'} = (P^{-1} A P) [v]_{B'} $$
+      Comparing with the definition of $A'$, we derive the similarity formula:
+      $$ \boxed{ A' = P^{-1} A P } $$
+      This proves that similarity transformations correspond exactly to changing the coordinate system.</p>
     </section>
 
     <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->
@@ -246,7 +263,10 @@
         <li><b>Algebraic Multiplicity ($m_\lambda$):</b> The multiplicity of $\lambda$ as a root of $p(\lambda)$.</li>
         <li><b>Geometric Multiplicity ($g_\lambda$):</b> The dimension of the eigenspace $\dim(\ker(A-\lambda I))$.</li>
       </ul>
-      Always $1 \le g_\lambda \le m_\lambda$. Diagonalization requires $g_\lambda = m_\lambda$ for all $\lambda$.</p>
+      Always $1 \le g_\lambda \le m_\lambda$.
+      <br><b>Diagonalization Criterion:</b> A matrix is diagonalizable if and only if there are enough eigenvectors to form a basis. This happens iff:
+      $$ \sum_{\lambda} g_\lambda = n $$
+      Equivalently, for every eigenvalue, the geometric multiplicity must equal the algebraic multiplicity ($g_\lambda = m_\lambda$).</p>
 
       <h3>4.2 The Spectral Theorem (Symmetric Matrices)</h3>
       <p>This is the cleanest, most rigid case in linear algebra.
@@ -259,10 +279,29 @@
       </ol>
       Geometrically, a symmetric matrix represents a stretch along perpendicular axes. This structure is fundamental to quadratic optimization ($\frac{1}{2}x^\top Q x$).</p>
 
+      <div class="proof-box">
+        <h4>Proof Sketch: Reality and Orthogonality</h4>
+        <p><b>1. Eigenvalues are Real:</b> Let $A\mathbf{x} = \lambda \mathbf{x}$. Take the complex inner product $\mathbf{x}^* A \mathbf{x}$.
+        $$ \mathbf{x}^* (A\mathbf{x}) = \mathbf{x}^* (\lambda \mathbf{x}) = \lambda \|\mathbf{x}\|^2 $$
+        $$ (A\mathbf{x})^* \mathbf{x} = \mathbf{x}^* A^* \mathbf{x} = \mathbf{x}^* A \mathbf{x} \quad (\text{since } A \text{ is real symmetric}) $$
+        Also $(A\mathbf{x})^* \mathbf{x} = (\lambda \mathbf{x})^* \mathbf{x} = \bar{\lambda} \|\mathbf{x}\|^2$.
+        Thus $\lambda = \bar{\lambda}$, so $\lambda \in \mathbb{R}$.
+        <br><b>2. Orthogonality:</b> Let $A\mathbf{x}=\lambda \mathbf{x}$ and $A\mathbf{y}=\mu \mathbf{y}$ with $\lambda \ne \mu$.
+        Compute $\mathbf{x}^\top A \mathbf{y}$ two ways:
+        $$ \mathbf{x}^\top (A\mathbf{y}) = \mathbf{x}^\top (\mu \mathbf{y}) = \mu (\mathbf{x}^\top \mathbf{y}) $$
+        $$ (A\mathbf{x})^\top \mathbf{y} = (\lambda \mathbf{x})^\top \mathbf{y} = \lambda (\mathbf{x}^\top \mathbf{y}) $$
+        Subtracting gives $(\lambda - \mu)(\mathbf{x}^\top \mathbf{y}) = 0$. Since $\lambda \ne \mu$, we must have $\mathbf{x}^\top \mathbf{y} = 0$.</p>
+      </div>
+
       <h3>4.3 Jordan Canonical Form (When Diagonalization Fails)</h3>
       <p>Diagonalization fails when $g_\lambda < m_\lambda$ (defective matrix). The <b>Jordan Canonical Form</b> provides the best possible replacement. It decomposes the space into invariant subspaces called Jordan Blocks.
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} $$
-      Each block represents a mix of pure scaling ($\lambda$) and "nilpotent drift" (superdiagonal 1s). While numerically unstable, it classifies matrices up to similarity.</p>
+      Each block corresponds to a <b>Jordan Chain</b> of generalized eigenvectors $v_1, \dots, v_k$ such that:
+      $$ (A-\lambda I)v_1 = 0 \quad (\text{eigenvector}) $$
+      $$ (A-\lambda I)v_2 = v_1 $$
+      $$ \dots $$
+      $$ (A-\lambda I)v_k = v_{k-1} $$
+      The matrix acts as $A = \lambda I + N$, where $N$ is nilpotent. This "nilpotent drift" is the algebraic obstruction to diagonalization.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:

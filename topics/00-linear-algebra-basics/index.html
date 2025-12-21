@@ -170,6 +170,16 @@
 
       <p><b>The "Zero-Combination" Test:</b> Why check for 0? Because "two different ways to make the same vector $\mathbf{w}$" is equivalent to "a non-trivial way to make $\mathbf{0}$" (by subtracting the equations). Independence guarantees that <b>coordinates are unique</b>.</p>
 
+      <div class="theorem-box">
+        <h4>Theorem: Independence $\iff$ No Redundancy</h4>
+        <p>A set of vectors is linearly independent if and only if <b>no vector lies in the span of the others</b>.
+        <br><i>Proof:</i>
+        <br>($\Rightarrow$) Assume independent. Suppose $v_j = \sum_{i \ne j} c_i v_i$. Then $1v_j - \sum c_i v_i = 0$ is a non-trivial dependence relation (coefficient of $v_j$ is 1). Contradiction.
+        <br>($\Leftarrow$) Assume no vector is in the span of others. If $\sum \alpha_i v_i = 0$ with some $\alpha_j \ne 0$, we can solve for $v_j$:
+        $$ v_j = -\sum_{i \ne j} \frac{\alpha_i}{\alpha_j} v_i $$
+        This places $v_j$ in the span of the others. Contradiction. Thus all $\alpha_i$ must be zero.</p>
+      </div>
+
       <p><b>Geometric Intuition:</b>
       <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear (not on the same line through the origin).
       <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
@@ -198,6 +208,20 @@
       <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
       <br>For any $v = \sum c_i b_i$, we have $T(v) = \sum c_i T(b_i)$.
       <br>This is why matrices exist: they are simply the bookkeeping tables recording the coordinates of $T(b_i)$.</p>
+
+      <h3>1.7 Matrices from Maps: The Hidden Structure</h3>
+      <p>We usually teach matrices first, then maps. But structurally, <b>matrices are just representations of linear maps</b> once bases are chosen. This perspective explains two "arbitrary" rules of matrix algebra:</p>
+
+      <h4>(A) Why Matrix-Vector Multiplication is a Linear Combination</h4>
+      <p>If $T$ is represented by matrix $A$ (where columns are images of basis vectors), then applying $T$ to vector $\mathbf{x}$ corresponds to:
+      $$ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n $$
+      This isn't a definition; it's a consequence of linearity. $T(\sum x_i e_i) = \sum x_i T(e_i)$. Since $T(e_i) = \mathbf{a}_i$, the formula follows.</p>
+
+      <h4>(B) Why Composition = Matrix Multiplication</h4>
+      <p>Why do we multiply matrices using the "row-by-column" rule? It is forced by the composition of functions.
+      <br>If $S: U \to V$ and $T: V \to W$ are linear maps represented by matrices $A$ and $B$, then the composition $T \circ S$ is represented by the product $BA$.
+      $$ (BA)\mathbf{x} = B(A\mathbf{x}) $$
+      The entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ is simply the algebraic consequence of tracking coordinates through this composition. This explains why matrix multiplication is <b>associative</b> (function composition is associative) but <b>not commutative</b> (order of maps matters).</p>
 
       <h4>Derived Properties</h4>
       <p>From the definition alone, we get rigorous consequences:</p>
@@ -228,6 +252,15 @@
         <li><b>Image (Column Space) $\mathcal{R}(A)$:</b> The set of reachable outputs. $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
           <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. If $\mathcal{R}(A) \neq \mathbb{R}^m$, the map is not surjective.</li>
       </ul>
+
+      <div class="theorem-box">
+        <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
+        <p>A linear map $T$ is <b>injective</b> (one-to-one) if and only if its kernel contains only the zero vector ($\mathcal{N}(T) = \{0\}$).
+        <br><i>Proof:</i>
+        <br>($\Rightarrow$) If $T$ is injective, $T(\mathbf{v}) = 0 = T(\mathbf{0}) \implies \mathbf{v} = \mathbf{0}$.
+        <br>($\Leftarrow$) If $\mathcal{N}(T) = \{0\}$ and $T(\mathbf{u}) = T(\mathbf{v})$, then $T(\mathbf{u}-\mathbf{v}) = 0$. Thus $\mathbf{u}-\mathbf{v} \in \mathcal{N}(T) \implies \mathbf{u} = \mathbf{v}$.
+        </p>
+      </div>
 
       <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
       <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily. Every input degree of freedom ($n$) must either be annihilated (go to Nullspace) or preserved (go to Rank).</p>
@@ -281,6 +314,18 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="insight">
+        <h4>Gaussian Elimination: What it Really Computes</h4>
+        <p>Row reduction (Gaussian elimination) is not magic; it is a coordinate change that exposes these subspaces.
+        <ul>
+          <li><b>Row Space:</b> Unchanged by row operations. Non-zero rows in RREF form a basis.</li>
+          <li><b>Nullspace:</b> Unchanged. Free variables in RREF parametrize it.</li>
+          <li><b>Column Space:</b> Changed numerically, but <b>pivot columns</b> in the <i>original</i> matrix form a basis.</li>
+          <li><b>Rank:</b> Invariant. The number of pivots reveals the dimension of the row and column spaces.</li>
+        </ul>
+        </p>
+      </div>
 
       <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
       <p>The geometry of these spaces is governed by orthogonality. This is the <b>Fundamental Theorem of Linear Algebra</b>:</p>

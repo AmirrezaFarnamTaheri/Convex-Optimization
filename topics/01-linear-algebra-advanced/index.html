@@ -163,9 +163,12 @@
         <p>If $\mathcal{B}$ is a basis of $V$, then every vector $v \in V$ can be written in <b>exactly one way</b> as:
         $$ v = \sum_{i=1}^n c_i b_i $$
         The scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $v$ in basis $\mathcal{B}$, denoted $[v]_\mathcal{B}$.
-        <br>This creates a bijection (isomorphism) between the abstract space $V$ and the coordinate space $\mathbb{F}^n$.
-        $$ v \longleftrightarrow [v]_\mathcal{B} $$
-        Once a basis is chosen, abstract vector algebra becomes concrete matrix algebra.</p>
+        <br><b>Crucial Distinction:</b> Coordinates are not vectors.
+        <ul>
+            <li>$v$ lives in the abstract vector space $V$.</li>
+            <li>$[v]_\mathcal{B}$ lives in the coordinate space $\mathbb{F}^n$.</li>
+        </ul>
+        This isomorphism $v \leftrightarrow [v]_\mathcal{B}$ justifies treating vectors as column arrays <i>after</i> a basis is fixed.</p>
       </div>
 
       <h3>2.3 Dimension: Degrees of Freedom</h3>
@@ -177,9 +180,20 @@
         <br>1. <b>$k \le m$</b> (You cannot have more independent vectors than the size of a spanning set).
         <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
 
-        <h4>Proof Strategy</h4>
-        <p>We prove this by iteratively replacing vectors. At each step, we insert an independent vector $\ell_j$. Because the current set spans, $\ell_j$ is a linear combination of the current set. Because of independence, at least one vector from the original set $S$ must appear with a non-zero coefficient and can be swapped out.
-        <br>If $k > m$, we would run out of vectors to swap, implying a dependence in $L$, a contradiction.</p>
+        <h4>Proof (Step-by-Step)</h4>
+        <p>We proceed by induction.</p>
+        <div class="proof-step">
+            <strong>Step 1: Express $\ell_1$.</strong> Since $S$ spans, $\ell_1 = \sum a_i s_i$. Since $\ell_1 \neq 0$, some coefficient $a_j \neq 0$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Swap.</strong> We can solve for $s_j$ in terms of $\ell_1$ and the other $s$'s. Thus, we can replace $s_j$ with $\ell_1$ and still span $V$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Iterate.</strong> Suppose we have replaced $r$ vectors. To insert $\ell_{r+1}$, we express it in the current basis. Because $L$ is independent, $\ell_{r+1}$ cannot depend only on the $\ell$'s already inserted; it must use at least one of the remaining $s$'s. This allows us to swap that $s$ out.
+        </div>
+        <div class="proof-step">
+            <strong>Step 4: Count.</strong> Each independent vector consumes one spanning vector. Thus, we must have enough spanning vectors to accommodate all independent ones: $k \le m$.
+        </div>
       </div>
 
       <h4>The Dimension Theorem</h4>
@@ -196,15 +210,17 @@
       <br>We construct the matrix $A = [T]_{C \leftarrow B}$ column by column.
       <br><b>Rule:</b> The $j$-th column of $A$ is the coordinate vector of the image of the $j$-th basis vector $b_j$, expressed in the basis $C$.
       $$ T(b_j) = \sum_{i=1}^m a_{ij} c_i \implies \text{Column } j = [T(b_j)]_C $$
-      This definition ensures the fundamental commutative diagram holds:
+      This definition guarantees the commutative diagram:
       $$ [T(v)]_C = A [v]_B $$
-      Matrix-vector multiplication is simply the coordinate version of applying the linear map.</p>
+      <br><b>Why this matters:</b> This construction proves that matrix multiplication isn't arbitrary—it is the only operation that tracks coordinates correctly through linear maps.</p>
 
       <h4>Change of Basis (Similarity)</h4>
       <p>What if we change the basis of $V$ from $B$ to $B'$? The linear map $T$ stays the same, but its matrix representation changes.
-      <br>Let $P$ be the <b>change-of-basis matrix</b> from $B'$ to $B$ (columns are $B'$ vectors written in $B$).
-      <br>Then $[v]_B = P [v]_{B'}$.
-      <br>The new matrix representation $A'$ satisfies:
+      <br>Let $P$ be the <b>change-of-basis matrix</b> from $B'$ to $B$ (columns are $B'$ vectors written in $B$). This means $[v]_B = P [v]_{B'}$.
+      <br>We want $A'$ such that $[T(v)]_{B'} = A' [v]_{B'}$.
+      <br>Using the old matrix $A$ (where $[T(v)]_B = A [v]_B$):
+      $$ [T(v)]_{B'} = P^{-1} [T(v)]_B = P^{-1} A [v]_B = P^{-1} A P [v]_{B'} $$
+      Thus:
       $$ A' = P^{-1} A P $$
       This is <b>Similarity</b>. Similar matrices represent the same linear operator in different coordinate systems.
       <br><b>Invariants:</b> Since the map is unchanged, intrinsic properties like Rank, Determinant, Trace, and Eigenvalues are preserved under similarity.</p>
@@ -246,7 +262,10 @@
         <li><b>Algebraic Multiplicity ($m_\lambda$):</b> The multiplicity of $\lambda$ as a root of $p(\lambda)$.</li>
         <li><b>Geometric Multiplicity ($g_\lambda$):</b> The dimension of the eigenspace $\dim(\ker(A-\lambda I))$.</li>
       </ul>
-      Always $1 \le g_\lambda \le m_\lambda$. Diagonalization requires $g_\lambda = m_\lambda$ for all $\lambda$.</p>
+      Always $1 \le g_\lambda \le m_\lambda$. Diagonalization requires $g_\lambda = m_\lambda$ for all $\lambda$.
+      <br><b>Diagonalization Criterion:</b> A matrix is diagonalizable if and only if the sum of geometric multiplicities equals the dimension of the space:
+      $$ \sum_{\lambda} \dim(\ker(A-\lambda I)) = n $$
+      </p>
 
       <h3>4.2 The Spectral Theorem (Symmetric Matrices)</h3>
       <p>This is the cleanest, most rigid case in linear algebra.
@@ -257,12 +276,23 @@
         <li>$A$ admits an <b>orthonormal eigenbasis</b>. There exists an orthogonal matrix $Q$ ($Q^\top Q = I$) such that:
         $$ \boxed{A = Q \Lambda Q^\top} $$</li>
       </ol>
+
+      <div class="proof-box">
+        <h4>Proof Sketch: Why are eigenvalues real?</h4>
+        <p>Let $Av = \lambda v$ with $v \neq 0$. Compute the quadratic form $v^* A v$.
+        <br>Since $A=A^\top$ (real symmetric), $v^* A v = v^* \lambda v = \lambda \|v\|^2$.
+        <br>Taking conjugate transpose: $(v^* A v)^* = v^* A^* v = v^* A v$.
+        <br>Thus $\lambda \|v\|^2 = \bar{\lambda} \|v\|^2$. Since $\|v\|^2 > 0$, $\lambda = \bar{\lambda}$, so $\lambda \in \mathbb{R}$.</p>
+      </div>
+
       Geometrically, a symmetric matrix represents a stretch along perpendicular axes. This structure is fundamental to quadratic optimization ($\frac{1}{2}x^\top Q x$).</p>
 
       <h3>4.3 Jordan Canonical Form (When Diagonalization Fails)</h3>
       <p>Diagonalization fails when $g_\lambda < m_\lambda$ (defective matrix). The <b>Jordan Canonical Form</b> provides the best possible replacement. It decomposes the space into invariant subspaces called Jordan Blocks.
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix} $$
-      Each block represents a mix of pure scaling ($\lambda$) and "nilpotent drift" (superdiagonal 1s). While numerically unstable, it classifies matrices up to similarity.</p>
+      Each block represents a mix of pure scaling ($\lambda$) and "nilpotent drift" (superdiagonal 1s).
+      <br><b>Generalized Eigenvectors:</b> When there aren't enough eigenvectors, we look for vectors $v$ such that $(A-\lambda I)^k v = 0$. These form <b>Jordan Chains</b>: $(A-\lambda I)v_2 = v_1$ (where $v_1$ is an eigenvector).
+      <br>While numerically unstable, Jordan form completely classifies matrices up to similarity.</p>
 
       <h3>4.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
@@ -461,14 +491,16 @@
       </div>
 
       <h3>7.3 The Four Fundamental Subspaces (Revisited via SVD)</h3>
-      <p>SVD explicitly computes bases for the four spaces using the columns of $U$ and $V$ and the rank $r$ (number of non-zero $\sigma_i$).
+      <p>SVD provides the most numerically stable way to determine rank and bases. It explicitly visualizes the Rank-Nullity Theorem:
+      $$ \operatorname{rank}(A) = \#\{\sigma_i > 0\}, \quad \dim(\mathcal{N}(A)) = \#\{\sigma_i = 0\} $$
+      bases for the four spaces are given by the columns of $U$ and $V$:
       <ul>
         <li><b>Range $\mathcal{R}(A)$:</b> Span of $\{u_1, \dots, u_r\}$. (First $r$ columns of $U$).</li>
         <li><b>Nullspace $\mathcal{N}(A)$:</b> Span of $\{v_{r+1}, \dots, v_n\}$. (Last $n-r$ columns of $V$).</li>
         <li><b>Row Space $\mathcal{R}(A^\top)$:</b> Span of $\{v_1, \dots, v_r\}$. (First $r$ columns of $V$).</li>
         <li><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> Span of $\{u_{r+1}, \dots, u_m\}$. (Last $m-r$ columns of $U$).</li>
       </ul>
-      This provides the most numerically stable way to determine rank and bases.</p>
+      </p>
 
       <h3>7.4 Matrix Norms via SVD</h3>
       <p>The SVD provides the most natural characterization of matrix norms:</p>

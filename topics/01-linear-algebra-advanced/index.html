@@ -128,6 +128,33 @@
       <p>Let $B$ and $C$ be two bases. The coordinates change via a matrix $P$: $[\mathbf{v}]_C = P [\mathbf{v}]_B$.
       <br>A linear map $T$ represented by matrix $A$ in basis $B$ is represented by $\tilde{A} = P A P^{-1}$ in basis $C$.
       <br><b>Diagonalization:</b> Finding a basis $C$ of eigenvectors such that $\tilde{A}$ is diagonal. This decouples the variables.</p>
+
+      <h4>Transformation of the Matrix Map</h4>
+      <p>Suppose we have a linear map $T(\mathbf{x}) = A\mathbf{x}$ (where $A$ is the matrix in the standard basis). How do we represent this same map in a new basis $V$?</p>
+      <p><b>The Mechanism:</b> Think of the operation in three stages: $x_{in} \to x_{out}$.</p>
+      <ol>
+        <li><b>Input Change ($V \to \text{Standard}$):</b> We are given input coordinates $y_{in}$ in the basis $V$. The actual vector is $x_{in} = V y_{in}$.</li>
+        <li><b>The Action ($A$):</b> Apply the linear map in the standard basis: $x_{out} = A x_{in} = A V y_{in}$.</li>
+        <li><b>Output Change ($\text{Standard} \to V$):</b> We want the output coordinates $y_{out}$ in the basis $V$. So we invert the basis matrix: $y_{out} = V^{-1} x_{out}$.</li>
+      </ol>
+      <p>Chaining these together gives the formula for the matrix $\tilde{A}$ in the new basis:</p>
+      $$ y_{out} = (V^{-1} A V) y_{in} \implies \boxed{\tilde{A} = V^{-1} A V} $$
+
+      <div class="insight">
+        <h4>💡 "Same Vectors, Same Map, Different Coordinates"</h4>
+        <p>This formula $\tilde{A} = V^{-1} A V$ (similarity) is the algebraic expression of a geometric truth: we are performing the <b>same linear transformation</b> on the <b>same vectors</b>, but describing inputs and outputs using a <b>different coordinate system</b>.</p>
+      </div>
+
+      <div class="example">
+        <h4>A Tiny 2D Concrete Picture</h4>
+        <p>Suppose $A$ has eigenvectors $v_1=(1,1)^\top$ and $v_2=(1,-1)^\top$ with eigenvalues $3$ and $1$.
+        <br>Let $V = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Then $\Lambda = V^{-1}AV = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}$.
+        <br>Consider a vector with new coordinates $\mathbf{y} = (2, 3)^\top$.
+        <br><b>Physical Vector:</b> $\mathbf{x} = 2v_1 + 3v_2 = (5, -1)^\top$.
+        <br><b>Action in Eigen-coords:</b> The map scales the first component by 3 and the second by 1.
+        $$ y_{out} = \Lambda \mathbf{y} = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
+        <br><b>Result:</b> The output vector is $6v_1 + 3v_2$. The mixing is gone; the axes act independently.</p>
+      </div>
     </section>
 
     <!-- SECTION 3: LINEAR MAPS AND RANK-NULLITY -->

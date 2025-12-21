@@ -93,6 +93,13 @@
       </ul>
       <p>This structure satisfies the axioms of a <b>Vector Space</b> (closure, associativity, distributivity, etc.), making $\mathbb{R}^n$ the canonical playground for linear algebra.</p>
 
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/matrix-multiplication.svg"
+             alt="Matrix multiplication diagram showing how rows and columns combine"
+             style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+        <figcaption><i>Figure 1:</i> Matrix multiplication visualized—how rows and columns combine.</figcaption>
+      </figure>
+
       <h3>1.4 Points vs. Vectors: Affine vs. Linear</h3>
       <p>Although we often use coordinates for both, there is a fundamental conceptual distinction between "locations" and "displacements".</p>
       <table class="data-table">
@@ -466,6 +473,13 @@
       </ol>
       <p><b>The Dot Product:</b> The standard inner product on $\mathbb{R}^n$ is $\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i$.
       <br><b>Weighted Inner Products:</b> For any symmetric positive definite (PD) matrix $P \in \mathbb{S}^n_{++}$, $\langle \mathbf{x}, \mathbf{y} \rangle_P := \mathbf{x}^\top P \mathbf{y}$ is also a valid inner product. This corresponds to the geometry of ellipsoids.</p>
+
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
+             alt="Parallelogram law for vector addition"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
+        <figcaption><i>Figure 3:</i> The parallelogram law of vector addition, a geometric reflection of the algebraic properties of inner products.</figcaption>
+      </figure>
 
       <h3>4.2 Norms: Measuring Length</h3>
       <p>A <b>norm</b> is a function $\|\cdot\|: V \to \mathbb{R}$ satisfying:</p>

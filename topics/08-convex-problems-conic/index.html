@@ -1283,6 +1283,85 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P8.17 — Generalized Eigenvalues</h3>
+  <p>Let $A, B \in \mathbb{S}^n$ with $B$ nonsingular. The generalized eigenvalues of the pair $(A, B)$ are the roots of $\det(\lambda B - A) = 0$.
+  <br><b>(a)</b> Show that if there exists a nonsingular $R$ such that $R^\top A R = \mathrm{diag}(a)$ and $R^\top B R = \mathrm{diag}(b)$, then the generalized eigenvalues are real and given by $\lambda_i = a_i/b_i$.
+  <br><b>(b)</b> Formulate the problem $\min ct$ subject to $tB \succeq A$ as an SDP and derive its optimal value in terms of these generalized eigenvalues.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Generalized Eigenvalues.</strong>
+      <br>Compute the determinant:
+      $$ \det(\lambda B - A) = \det(\lambda R^{-\top} \mathrm{diag}(b) R^{-1} - R^{-\top} \mathrm{diag}(a) R^{-1}) $$
+      Factor out the congruence matrices:
+      $$ = \det(R^{-\top} (\lambda \mathrm{diag}(b) - \mathrm{diag}(a)) R^{-1}) $$
+      $$ = \det(R)^{-2} \det(\mathrm{diag}(\lambda b_i - a_i)) = \det(R)^{-2} \prod_{i=1}^n (\lambda b_i - a_i) $$
+      The roots are $\lambda_i = a_i/b_i$. Since $A, B$ are symmetric and simultaneously diagonalizable (implied by the existence of $R$), $a_i, b_i$ are real, so $\lambda_i$ are real.
+    </div>
+    <div class="proof-step">
+      <strong>(b) SDP Formulation.</strong>
+      The problem is:
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & ct \\
+      \text{subject to} \quad & tB - A \succeq 0
+      \end{aligned}
+      $$
+      Apply the congruence transformation by $R$:
+      $$ tB - A \succeq 0 \iff R^\top (tB - A) R \succeq 0 \iff t \mathrm{diag}(b) - \mathrm{diag}(a) \succeq 0 $$
+      This is equivalent to the system of scalar inequalities:
+      $$ t b_i - a_i \ge 0 \quad \forall i = 1, \dots, n $$
+      <ul>
+        <li>If $b_i > 0$, then $t \ge a_i/b_i$.</li>
+        <li>If $b_i < 0$, then $t \le a_i/b_i$.</li>
+      </ul>
+      For feasibility, we need the intersection of these intervals to be non-empty.
+      $$ t \ge \max_{i: b_i > 0} \frac{a_i}{b_i}, \quad t \le \min_{i: b_i < 0} \frac{a_i}{b_i} $$
+      Assuming $c > 0$ and the feasible set is bounded below, the optimal value is $t^\star = \max_{i: b_i > 0} \lambda_i$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.18 — SDP Encodings of Other Problems</h3>
+  <p>Show how to formulate the following as SDP constraints using Linear Matrix Inequalities (LMIs) and Schur Complements.</p>
+  <ol type="a">
+    <li><b>QCQP Constraint:</b> $x^\top P x + q^\top x + r \le 0$ with $P \succeq 0$.</li>
+    <li><b>SOCP Constraint:</b> $\|u\|_2 \le v$.</li>
+    <li><b>Matrix Fractional:</b> $(Ax+b)^\top F(x)^{-1} (Ax+b) \le t$, where $F(x) = F_0 + \sum x_i F_i \succ 0$.</li>
+  </ol>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) QCQP.</strong>
+      Factor $P = R^\top R$. The constraint is $\|Rx\|_2^2 + q^\top x + r \le 0$, or $\|Rx\|_2^2 \le -(q^\top x + r)$.
+      Let $s = -(q^\top x + r)$. We need $\|Rx\|_2^2 \le s$, which is equivalent to the LMI:
+      $$ \begin{bmatrix} s & (Rx)^\top \\ Rx & I \end{bmatrix} \succeq 0 $$
+      Substituting $s$, we get an LMI in $x$:
+      $$ \begin{bmatrix} -(q^\top x + r) & x^\top R^\top \\ Rx & I \end{bmatrix} \succeq 0 $$
+    </div>
+    <div class="proof-step">
+      <strong>(b) SOCP.</strong>
+      Using the Schur complement on the block matrix $\begin{bmatrix} v & u^\top \\ u & vI \end{bmatrix}$:
+      $$ \begin{bmatrix} v & u^\top \\ u & vI \end{bmatrix} \succeq 0 \iff v \ge 0 \text{ and } vI - \frac{1}{v} uu^\top \succeq 0 $$
+      The condition $vI - \frac{1}{v} uu^\top \succeq 0$ means $v^2 I \succeq uu^\top$.
+      Multiplying by any vector $z$: $v^2 \|z\|^2 \ge (u^\top z)^2$. Choosing $z=u$, we get $v^2 \|u\|^2 \ge \|u\|^4 \implies v^2 \ge \|u\|^2$, i.e., $v \ge \|u\|_2$.
+      Thus, the LMI encodes the SOC constraint.
+    </div>
+    <div class="proof-step">
+      <strong>(c) Matrix Fractional.</strong>
+      Using the Schur complement with $A = F(x)$, $B = Ax+b$, $C = (Ax+b)^\top$, $D = t$:
+      $$
+      \begin{bmatrix} F(x) & Ax+b \\ (Ax+b)^\top & t \end{bmatrix} \succeq 0 \iff t - (Ax+b)^\top F(x)^{-1} (Ax+b) \ge 0
+      $$
+      This assumes $F(x) \succ 0$, which is enforced by the LMI (since diagonal blocks must be PSD).
+    </div>
+  </div>
+</div>
+
     </section>
 
 <section class="section-card" id="section-9">

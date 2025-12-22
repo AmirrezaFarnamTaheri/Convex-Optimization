@@ -1935,20 +1935,50 @@
   <br><b>(b)</b> Use this to show that if $f$ is log-concave, then $f$ satisfies the condition $f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
+    <p>We provide an <b>ultra-granular derivation</b> from first principles to ensure every step is clear.</p>
+
     <div class="proof-step">
-      <strong>(a) Derivation.</strong> Let $h(x) = \log f(x)$.
-      <br>Gradient: $\nabla h(x) = \frac{1}{f(x)} \nabla f(x)$.
-      <br>Hessian: We differentiate $\frac{\partial h}{\partial x_i} = \frac{f_i}{f}$ using the quotient rule.
-      $$ \frac{\partial^2 h}{\partial x_j \partial x_i} = \frac{f \cdot f_{ij} - f_i \cdot f_j}{f^2} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
-      In matrix form:
+      <strong>Step 1: Compute the Gradient $\nabla h(x)$.</strong>
+      Write $h(x)$ as a composition: $h(x) = \psi(f(x))$ where $\psi(s) = \log s$.
+      <br>By the chain rule for a scalar-to-scalar map:
+      $$ \frac{\partial h}{\partial x_i} = \psi'(f(x)) \cdot \frac{\partial f}{\partial x_i} = \frac{1}{f(x)} f_i(x) $$
+      Stacking these into a vector gives the gradient:
+      $$ \nabla h(x) = \frac{1}{f(x)} \nabla f(x) $$
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 2: Compute the Hessian Entry-by-Entry.</strong>
+      We need $h_{ij}(x) = \frac{\partial}{\partial x_j} \left( \frac{f_i(x)}{f(x)} \right)$.
+      Using the product rule on $f_i(x) \cdot (f(x))^{-1}$:
+      $$ h_{ij} = \frac{\partial f_i}{\partial x_j} \cdot \frac{1}{f} + f_i \cdot \frac{\partial}{\partial x_j} (f^{-1}) $$
+      The first term uses the second partial derivative $f_{ij}$:
+      $$ \frac{\partial f_i}{\partial x_j} \frac{1}{f} = \frac{f_{ij}}{f} $$
+      The second term uses the chain rule on the inverse:
+      $$ \frac{\partial}{\partial x_j} (f(x)^{-1}) = -f(x)^{-2} f_j(x) = -\frac{f_j}{f^2} $$
+      Combining these:
+      $$ h_{ij} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 3: Convert to Matrix Form.</strong>
+      The term $f_{ij}$ corresponds to the matrix $\nabla^2 f(x)$.
+      The term $f_i f_j$ corresponds to the rank-1 matrix $\nabla f(x) \nabla f(x)^\top$.
+      Thus:
       $$ \nabla^2 h(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
     </div>
+
     <div class="proof-step">
       <strong>(b) Log-Concavity Condition.</strong>
-      $f$ is log-concave if $h(x) = \log f(x)$ is concave, i.e., $\nabla^2 h(x) \preceq 0$.
-      $$ \frac{1}{f}\nabla^2 f - \frac{1}{f^2}\nabla f \nabla f^\top \preceq 0 $$
-      Multiplying by $f^2 > 0$:
-      $$ f \nabla^2 f - \nabla f \nabla f^\top \preceq 0 \implies f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top $$
+      $f$ is log-concave if and only if $h(x)$ is concave, which means $\nabla^2 h(x) \preceq 0$ (Negative Semidefinite).
+      <br>Test with an arbitrary direction vector $v \in \mathbb{R}^n$:
+      $$ v^\top \nabla^2 h(x) v \le 0 $$
+      Substitute the formula:
+      $$ \frac{1}{f} v^\top \nabla^2 f v - \frac{1}{f^2} v^\top (\nabla f \nabla f^\top) v \le 0 $$
+      Note that $v^\top (\nabla f \nabla f^\top) v = (v^\top \nabla f)^2$. Multiplying by $f^2$ (which is positive):
+      $$ f(x) (v^\top \nabla^2 f(x) v) - (v^\top \nabla f(x))^2 \le 0 $$
+      This is equivalent to the matrix inequality:
+      $$ f(x) \nabla^2 f(x) \preceq \nabla f(x) \nabla f(x)^\top $$
+      <i>Geometric Interpretation:</i> The "curvature" of $f$ ($f \nabla^2 f$) must be bounded above by the "squared slope" ($\nabla f \nabla f^\top$). Logarithms flatten functions; for the result to be concave, the original function can't curve up too fast relative to its slope.
     </div>
   </div>
 </div>

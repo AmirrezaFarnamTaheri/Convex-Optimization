@@ -747,6 +747,14 @@
 
         <p>One of the most powerful aspects of convex analysis is that complex convex functions can be built from simpler ones using operations that preserve convexity. This enables sophisticated modeling without sacrificing tractability.</p>
 
+        <h3>5.0 The Meta-Rule: How to Think About Preservation</h3>
+        <p>Convexity preservation always stems from one of two geometric principles:</p>
+        <ol>
+            <li><b>Epigraph Geometry:</b> If an operation transforms epigraphs via intersection, affine mapping, projection, or Minkowski sum, convexity is preserved.</li>
+            <li><b>Line Restriction:</b> If the function restricted to every line is convex (1D convexity), the original function is convex.</li>
+        </ol>
+        <p>Every rule below can be justified by one of these two principles. Nothing is magic.</p>
+
         <h3>5.1 Nonnegative Weighted Sum</h3>
         <div class="theorem-box">
           <h4>Theorem</h4>
@@ -1453,7 +1461,18 @@
         </div>
         <p>Similarly, minimizing over a <b>nonconvex</b> set usually breaks convexity. For example, the distance to a nonconvex set is generally nonconvex.</p>
 
-        <h3>5.10 Summary: Mental Checklist</h3>
+        <h3>5.10 Summary: A Complete "Legal Moves Checklist"</h3>
+        <p>When you build or analyze a function, ask:</p>
+        <ul>
+            <li>Is it a <b>nonnegative sum</b> of convex atoms?</li>
+            <li>Is it a <b>max/sup</b> of convex functions?</li>
+            <li>Is it a convex function of an <b>affine expression</b>?</li>
+            <li>Is it obtained by <b>partial minimization</b> of a convex function?</li>
+            <li>Is it a <b>monotone convex composition</b>?</li>
+            <li>Is it a <b>perspective</b> of a convex function?</li>
+        </ul>
+        <p>If <b>yes</b> $\to$ convex.<br>If <b>no</b> $\to$ stop and re-analyze (check for difference of convex functions or products, which destroy convexity).</p>
+
         <div class="recap-box" style="background: var(--surface-2); border: 1px dashed var(--primary-300); padding: 16px; border-radius: 8px;">
           <h4 style="margin-top: 0;">Quick Recognition Guide</h4>
           <ul style="margin-top: 0.5rem;">
@@ -1906,6 +1925,51 @@
         <li><b>Conclusion:</b> The composition of a convex function $g$ with an affine map is convex.</li>
       </ul>
     </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P5.11 — Hessian of $\log f(x)$ and Log-Concavity</h3>
+  <p>Let $f: \mathbb{R}^n \to \mathbb{R}_{++}$ be twice continuously differentiable.
+  <br><b>(a)</b> Show that $\nabla^2 \log f(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top$.
+  <br><b>(b)</b> Use this to show that if $f$ is log-concave, then $f$ satisfies the condition $f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Derivation.</strong> Let $h(x) = \log f(x)$.
+      <br>Gradient: $\nabla h(x) = \frac{1}{f(x)} \nabla f(x)$.
+      <br>Hessian: We differentiate $\frac{\partial h}{\partial x_i} = \frac{f_i}{f}$ using the quotient rule.
+      $$ \frac{\partial^2 h}{\partial x_j \partial x_i} = \frac{f \cdot f_{ij} - f_i \cdot f_j}{f^2} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
+      In matrix form:
+      $$ \nabla^2 h(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
+    </div>
+    <div class="proof-step">
+      <strong>(b) Log-Concavity Condition.</strong>
+      $f$ is log-concave if $h(x) = \log f(x)$ is concave, i.e., $\nabla^2 h(x) \preceq 0$.
+      $$ \frac{1}{f}\nabla^2 f - \frac{1}{f^2}\nabla f \nabla f^\top \preceq 0 $$
+      Multiplying by $f^2 > 0$:
+      $$ f \nabla^2 f - \nabla f \nabla f^\top \preceq 0 \implies f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top $$
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P5.12 — Log-Concavity of Shifted Function</h3>
+  <p>Suppose $f: \mathbb{R}^n \to \mathbb{R}$ is log-concave and $f(x) > a \ge 0$. Show that the function $g(x) = f(x) - a$ is log-concave.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>We need to show $H(x) = \log(f(x) - a)$ is concave.
+    <br>Let $h(x) = \log f(x)$. Since $f$ is log-concave, $h$ is concave.
+    <br>We can write $g(x) = e^{h(x)} - a$, so $H(x) = \log(e^{h(x)} - a)$.
+    <br>Let $\phi(t) = \log(e^t - a)$. Then $H(x) = \phi(h(x))$.
+    <br>This is a composition of a concave function $h(x)$ with $\phi(t)$.
+    <br>For the composition to be concave, we need $\phi$ to be <b>concave</b> and <b>non-decreasing</b>.</p>
+    <ul>
+      <li><b>Monotonicity:</b> $\phi'(t) = \frac{e^t}{e^t - a}$. Since $e^t = f(x) > a$, denominator is positive. $\phi'(t) > 0$. Non-decreasing.</li>
+      <li><b>Concavity:</b> $\phi''(t) = \frac{(e^t - a)e^t - e^t(e^t)}{(e^t - a)^2} = \frac{e^{2t} - a e^t - e^{2t}}{(e^t - a)^2} = \frac{-a e^t}{(e^t - a)^2}$.
+      Since $a \ge 0$, $\phi''(t) \le 0$. Thus $\phi$ is concave.</li>
+    </ul>
+    <p><b>Conclusion:</b> Since $\phi$ is concave and increasing, and $h$ is concave, the composition $H(x) = \phi(h(x))$ is concave. Thus $g(x)$ is log-concave.</p>
   </div>
 </div>
 

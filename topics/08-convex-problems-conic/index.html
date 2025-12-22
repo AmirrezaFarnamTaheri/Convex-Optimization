@@ -658,6 +658,30 @@
 </div>
 
 <div class="problem">
+  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
+  <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
+  <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      The condition is $\sup_{a \in \mathcal{E}} a^\top x \le b$.
+      Substitute the parametrization of $a$:
+      $$ \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top P^\top x $$
+    </div>
+    <div class="proof-step">
+      The supremum of a linear function $v^\top u$ over the unit ball $\|u\|_2 \le 1$ is the dual norm, which is $\|v\|_2$.
+      Here $v = P^\top x$.
+      $$ \sup_{\|u\|_2 \le 1} u^\top (P^\top x) = \|P^\top x\|_2 $$
+    </div>
+    <div class="proof-step">
+      Thus the robust constraint is:
+      $$ \bar{a}^\top x + \|P^\top x\|_2 \le b $$
+      This is exactly an SOC constraint $\|P^\top x\|_2 \le b - \bar{a}^\top x$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
   <h3>P8.2 — QP Formulation: Constrained Least Squares</h3>
   <p>Consider the problem of finding $x \in \mathbb{R}^n$ that minimizes $\|Ax - b\|_2^2$ subject to $l \preceq x \preceq u$ (box constraints).</p>
         <p><strong>(a)</strong> Write this problem in standard QP form.</p>
@@ -1301,6 +1325,17 @@
         <p>Minimizing maximal eigenvalues or singular values converts to Linear Matrix Inequalities.
         <br>$\lambda_{\max}(A) \le t \iff A \preceq tI$.
         <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Recipe 3: SDP Modeling Templates (Pattern Cards)</h4>
+        <p>These equivalences allow you to "lift" difficult constraints into the PSD cone using Schur Complements.</p>
+        <ul>
+            <li><b>Quadratic Bound:</b> $x^\top P x \le t \ (P \succ 0) \iff \begin{bmatrix} t & x^\top \\ x & P^{-1} \end{bmatrix} \succeq 0$.</li>
+            <li><b>Norm Bound:</b> $\|x\|_2 \le t \iff \begin{bmatrix} tI & x \\ x^\top & t \end{bmatrix} \succeq 0$. (SDP generalizes SOCP).</li>
+            <li><b>Eigenvalues:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.</li>
+            <li><b>Matrix Fractional:</b> $x^\top Y^{-1} x \le t \ (Y \succ 0) \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
+        </ul>
       </div>
 
 <h3>Problem Classes Reference</h3>

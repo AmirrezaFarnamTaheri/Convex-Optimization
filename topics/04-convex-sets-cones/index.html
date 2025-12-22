@@ -73,8 +73,18 @@
             <ul>
                 <li><b>Non-negative orthant:</b> $\mathbb{R}^n_+ = \{x \in \mathbb{R}^n \mid x_i \ge 0\}$</li>
                 <li><b>Second-order cone (Lorentz cone):</b> $\mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$</li>
+                <li><b>Rotated Second-order cone:</b> $\mathcal{Q}_r^{n+2} = \{(x, y, z) \in \mathbb{R}^n \times \mathbb{R} \times \mathbb{R} \mid \|x\|_2^2 \le yz, y \ge 0, z \ge 0\}$</li>
                 <li><b>PSD Cone:</b> $\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}$</li>
             </ul>
+        </div>
+
+        <div class="insight">
+          <h4>Rotation: Connecting SOC and RSOC</h4>
+          <p>The Rotated SOC is just a linear transformation of the standard SOC.
+          Let $u = (y+z)/2$ and $v = (y-z)/2$. Then $y = u+v, z = u-v$.
+          The inequality $\|x\|^2 \le yz$ becomes $\|x\|^2 \le u^2 - v^2$, or $\|x\|^2 + v^2 \le u^2$.
+          This is exactly $\|(x, v)\|_2 \le u$, which is the standard SOC in coordinates $(x, v, u)$.
+          <br>This cone is fundamental for modeling quadratic constraints like $x^T x \le yz$ (geometric mean bounds).</p>
         </div>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">

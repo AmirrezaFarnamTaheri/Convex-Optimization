@@ -337,6 +337,14 @@
       Here $N$ is <b>nilpotent</b> ($N^k = 0$). The term $N$ represents "drift": the operator not only scales but also shifts vectors along the chain. This drift prevents diagonalization.
       <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
 
+      <div class="insight">
+        <h4>Physical Interpretation: Scaling + Drift</h4>
+        <p>The decomposition $J = \lambda I + N$ splits the dynamics into two parts:
+        <br>1. <b>Pure Scaling ($\lambda I$):</b> Uniform expansion/contraction/rotation.
+        <br>2. <b>Nilpotent Drift ($N$):</b> A transient coupling term.
+        <br>For discrete dynamics $x_{k+1} = J x_k$, powers $J^t$ contain terms like $\binom{t}{k} \lambda^{t-k}$. Even if $|\lambda| < 1$ (stability), the polynomial factor from the nilpotent drift can cause transient growth before asymptotic decay. This "hump" phenomenon is critical in non-normal stability analysis.</p>
+      </div>
+
       <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
@@ -666,13 +674,14 @@
       <p>The solution is $\mathbf{x}_{\text{ridge}} = (A^\top A + \lambda I)^{-1} A^\top \mathbf{b}$.</p>
 
       <h4>SVD Interpretation: Spectral Filtering</h4>
-      <p>In terms of the SVD, Tikhonov regularization replaces the inversion $1/\sigma_i$ with a filter factor:
-      $$ \mathbf{x}_{\text{ridge}} = \sum_{i=1}^r \left( \frac{\sigma_i}{\sigma_i^2 + \lambda} \right) (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
+      <p>In terms of the SVD, Tikhonov regularization replaces the inversion $1/\sigma_i$ with a <b>filter factor</b> $f_i(\lambda)$:
+      $$ \mathbf{x}_{\text{ridge}} = \sum_{i=1}^r \underbrace{\left( \frac{\sigma_i^2}{\sigma_i^2 + \lambda} \right)}_{\text{Filter } f_i} \frac{1}{\sigma_i} (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
+      Let's analyze the filter factor $f_i(\lambda) = \frac{\sigma_i^2}{\sigma_i^2+\lambda}$:
       <ul>
-        <li><b>Large $\sigma_i$ ($\sigma_i^2 \gg \lambda$):</b> The factor $\approx 1/\sigma_i$. The signal is preserved.</li>
-        <li><b>Small $\sigma_i$ ($\sigma_i^2 \ll \lambda$):</b> The factor $\approx \sigma_i/\lambda \approx 0$. The noise direction is suppressed.</li>
+        <li><b>Signal Regime ($\sigma_i \gg \sqrt{\lambda}$):</b> $f_i \approx 1$. We keep the component (pseudoinverse behavior).</li>
+        <li><b>Noise Regime ($\sigma_i \ll \sqrt{\lambda}$):</b> $f_i \approx \sigma_i^2/\lambda \to 0$. We suppress the component.</li>
       </ul>
-      This smooth transition prevents the explosion of errors caused by near-zero singular values.</p>
+      This acts as a "smooth low-pass filter" on the spectrum of the matrix, damping out high-frequency noise (small singular values) while preserving the dominant structure.</p>
 
       <h4>Truncated SVD (Hard Thresholding)</h4>
       <p>Another approach is to simply discard singular values below a threshold. This is the optimal low-rank approximation applied to the inversion process.
@@ -722,6 +731,38 @@
         <li>$A^+ = V \Sigma^+ U^\top$</li>
         <li>$\kappa(A) = \sigma_1 / \sigma_r$</li>
       </ul>
+
+      <h3>The Unified Picture</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Concept</th>
+            <th>SVD Interpretation ($A=U\Sigma V^\top$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PCA</td>
+            <td>SVD of centered data matrix</td>
+          </tr>
+          <tr>
+            <td>Variance</td>
+            <td>Squared singular values ($\sigma_i^2/N$)</td>
+          </tr>
+          <tr>
+            <td>Least Squares</td>
+            <td>Invert $\Sigma$ on range, zero on nullspace</td>
+          </tr>
+          <tr>
+            <td>Ill-conditioning</td>
+            <td>Decay of $\sigma_i$ to zero</td>
+          </tr>
+          <tr>
+            <td>Regularization</td>
+            <td>Smooth filtering of small $\sigma_i$</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <!-- SECTION 10: EXERCISES -->

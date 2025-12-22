@@ -1303,6 +1303,17 @@
         <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
       </div>
 
+      <div class="proof-box">
+        <h4>Recipe 3: SDP Modeling Templates (Pattern Cards)</h4>
+        <p>These equivalences allow you to "lift" difficult constraints into the PSD cone using Schur Complements.</p>
+        <ul>
+            <li><b>Quadratic Bound:</b> $x^\top P x \le t \ (P \succ 0) \iff \begin{bmatrix} t & x^\top \\ x & P^{-1} \end{bmatrix} \succeq 0$.</li>
+            <li><b>Norm Bound:</b> $\|x\|_2 \le t \iff \begin{bmatrix} tI & x \\ x^\top & t \end{bmatrix} \succeq 0$. (SDP generalizes SOCP).</li>
+            <li><b>Eigenvalues:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.</li>
+            <li><b>Matrix Fractional:</b> $x^\top Y^{-1} x \le t \ (Y \succ 0) \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
+        </ul>
+      </div>
+
 <h3>Problem Classes Reference</h3>
       <table class="data-table" style="width: 100%; margin-bottom: 24px;">
         <thead>

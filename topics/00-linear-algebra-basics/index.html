@@ -228,17 +228,26 @@
       <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
       <br><b>Redundancy:</b> If a set is dependent, at least one vector adds no new dimension to the span.</p>
 
+      <h4>(C) Algorithmic Check: The Pivot Column Method</h4>
+      <p>How do we practically check for independence or finding a basis? We use the <b>Pivot Column Algorithm</b> (Gaussian Elimination).</p>
+      <ol>
+        <li><b>Form a Matrix:</b> Stack the vectors as columns of a matrix $A = [\mathbf{v}_1 \dots \mathbf{v}_k]$.</li>
+        <li><b>Row Reduce:</b> Compute the Row Reduced Echelon Form (RREF) of $A$.</li>
+        <li><b>Identify Pivots:</b> A column with a pivot (leading 1) corresponds to a vector that adds a new dimension. A column <i>without</i> a pivot is linearly dependent on the previous pivot columns.</li>
+      </ol>
+      <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
+
       <h3>1.6 Functions and Structure-Preserving Maps</h3>
       <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. A <b>linear transformation</b> is a map that preserves the "vector-ness" of the space.</p>
 
-      <p><b>The Definition of "Linear":</b> A function $T: V \to W$ is a linear transformation if it satisfies <b>both</b>:</p>
+      <p><b>The Definition of "Linear" (Superposition):</b> A function $T: V \to W$ is a linear transformation if it satisfies the <b>Superposition Principle</b>:</p>
       <ol>
         <li><b>Additivity:</b> $T(u+v) = T(u) + T(v)$ for all $u,v \in V$. (Vector addition means the same thing before and after the map).</li>
         <li><b>Homogeneity:</b> $T(\alpha u) = \alpha T(u)$ for all $u \in V, \alpha \in \mathbb{F}$. (Scaling commutes with the map).</li>
       </ol>
       <p>These two conditions combine to the single requirement that $T$ preserves linear combinations:
       $$ T\left(\sum_{i=1}^k \alpha_i v_i\right) = \sum_{i=1}^k \alpha_i T(v_i) $$
-      </p>
+      This principle—that the response to a sum of inputs is the sum of the individual responses—is the bedrock of linear systems theory.</p>
 
       <h4>The "Basis Determines Everything" Principle</h4>
       <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
@@ -308,23 +317,51 @@
       <p>A vector space can have infinitely many different bases. However, a deep structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
 
       <div class="proof-box">
-        <h4>The Exchange Lemma (Steinitz)</h4>
-        <p>This is the engine behind dimension.
-        <br><b>Lemma:</b> If $L$ is a linearly independent set and $S$ is a spanning set of $V$, then $|L| \le |S|$.
-        <br><i>Intuition:</i> You cannot "squeeze" more independent degrees of freedom into a space than the number of generators available.
-        <br><i>Proof Sketch:</i> Start with the spanning set $S$. Take an element $v_1 \in L$. Since $S$ spans, $v_1$ uses some vector in $S$. Swap that vector out for $v_1$. Repeat for all vectors in $L$. Since they are independent, each step consumes a new vector from $S$. Thus, you must run out of $L$ before (or when) you run out of $S$.</p>
+        <h4>Lemma: Steinitz Exchange Lemma (Rigorous Proof)</h4>
+        <p>Let $V$ be a vector space. Suppose:
+        <ul>
+            <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
+            <li>$L = \{\ell_1,\dots,\ell_k\}$ is linearly independent in $V$.</li>
+        </ul>
+        Then <b>$k \le m$</b>, and we can replace $k$ vectors in $S$ with $L$ to form a new spanning set.</p>
+
+        <h4>Proof by Step-by-Step Replacement</h4>
+        <p>We proceed by induction to inject elements of $L$ into $S$ one by one.</p>
+        <div class="proof-step">
+            <strong>Step 0:</strong> Start with $S^{(0)} = S$, which spans $V$.
+        </div>
+        <div class="proof-step">
+            <strong>Inductive Step:</strong> Assume $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$. We want to insert $\ell_j$.
+            <br>Since $S^{(j-1)}$ spans, write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$.
+            $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
+            Rearranging: $0 = \ell_j - \sum c_u u$.
+            <br>Crucially, at least one vector $u^* \in S^{(j-1)}$ <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{u^*} \neq 0$.
+            <br><i>Why?</i> If only $\ell$'s had non-zero coefficients, then $\ell_j$ would be in the span of previous $\ell$'s, contradicting independence of $L$.
+        </div>
+        <div class="proof-step">
+            <strong>Replacement:</strong> Solve for $u^*$:
+            $$ u^* = \frac{1}{c_{u^*}} \ell_j - \sum \dots $$
+            This shows $u^*$ is in the span of the new set $S^{(j)} = (S^{(j-1)} \setminus \{u^*\}) \cup \{\ell_j\}$.
+            Thus, the new set still spans $V$.
+        </div>
+        <div class="proof-step">
+            <strong>Conclusion:</strong> We can continue this for all $k$ elements of $L$. Since each step consumes a distinct vector from the original $S$ (and never one of the inserted $\ell$'s), we must have enough capacity in $S$. Thus $k \le m$.
+        </div>
       </div>
 
-      <p><b>Dimension Theorem:</b> All bases of a finite-dimensional vector space have the same number of elements.
-      <br><i>Proof:</i> If $B_1, B_2$ are bases, $B_1$ spans and $B_2$ is independent $\implies |B_2| \le |B_1|$. Swap roles $\implies |B_1| \le |B_2|$. Thus $|B_1|=|B_2|$.</p>
-
-      <p><b>Why this matters:</b> Dimension is the intrinsic "number of degrees of freedom".
-      <ul>
-        <li><b>Maximal Independence:</b> You cannot have more than $\dim(V)$ independent vectors.</li>
-        <li><b>Minimal Spanning:</b> You cannot span $V$ with fewer than $\dim(V)$ vectors.</li>
-        <li><b>Basis:</b> Any independent set of size $\dim(V)$ is automatically a basis. Any spanning set of size $\dim(V)$ is automatically a basis.</li>
-      </ul>
-      </p>
+      <div class="theorem-box">
+        <h4>Theorem: Characterizations of Dimension</h4>
+        <p>Let $V$ be finite-dimensional with dimension $n$. The following are equivalent:</p>
+        <ol>
+            <li>Every basis has exactly $n$ vectors.</li>
+            <li>The largest possible size of a linearly independent set is $n$.</li>
+            <li>The smallest possible size of a spanning set is $n$.</li>
+        </ol>
+        <p><i>Proof:</i>
+        <br>If $B$ is a basis ($|B|=n$), then any independent set $L$ satisfies $|L| \le |B|=n$ (Steinitz).
+        <br>Any spanning set $S$ satisfies $|S| \ge |B|=n$ (Steinitz with $L=B, S=S$).
+        <br>Thus $n$ is the unique crossover point where max-independence meets min-spanning.</p>
+      </div>
 
       <h3>1.9 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.

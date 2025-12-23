@@ -99,81 +99,6 @@
           </div>
         </div>
 
-        <div class="problem">
-          <h3>P3.22 — Separation by Projection</h3>
-          <p>Let $C$ be a nonempty closed convex set and $\mathbf{y} \notin C$. Prove that the vector $\mathbf{a} = \mathbf{y} - \Pi_C(\mathbf{y})$ (where $\Pi_C$ denotes projection onto $C$) defines a strictly separating hyperplane between $\mathbf{y}$ and $C$.</p>
-
-              <div class="recap-box">
-                <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-                <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-                    <li><b>Constructive Separation Proof:</b> The Separating Hyperplane Theorem for a closed convex set $C$ and an external point $\mathbf{y}$ can be proven constructively using the projection theorem.</li>
-                    <li><b>Variational Inequality:</b> The projection $\mathbf{p}$ is the unique point in $C$ such that the angle between $\mathbf{y}-\mathbf{p}$ and $\mathbf{x}-\mathbf{p}$ is obtuse ($\ge 90^\circ$) for all $\mathbf{x} \in C$.</li>
-                </ul>
-              </div>
-
-          <div class="solution-box">
-            <h4>Solution</h4>
-            <div class="proof-step">
-                      <strong>Step 1: Projection characterization.</strong> Let $\mathbf{p} = \Pi_C(\mathbf{y})$. By the variational characterization of the projection onto a closed convex set, for all $\mathbf{x} \in C$:
-                      $$
-                      (\mathbf{y} - \mathbf{p})^\top (\mathbf{x} - \mathbf{p}) \le 0
-                      $$
-                      Let $\mathbf{a} = \mathbf{y} - \mathbf{p}$. The inequality becomes $\mathbf{a}^\top (\mathbf{x} - \mathbf{p}) \le 0$, which implies $\mathbf{a}^\top \mathbf{x} \le \mathbf{a}^\top \mathbf{p}$.
-                    </div>
-
-                    <div class="proof-step">
-                      <strong>Step 2: Strict inequality at $\mathbf{y}$.</strong> Since $\mathbf{y} \notin C$ and $\mathbf{p} \in C$, we must have $\mathbf{y} \neq \mathbf{p}$. Thus $\mathbf{a} = \mathbf{y} - \mathbf{p}$ is a non-zero vector, so $\|\mathbf{a}\|_2^2 > 0$.
-                      Now consider the value of the linear functional at $\mathbf{y}$:
-                      $$
-                      \mathbf{a}^\top \mathbf{y} = \mathbf{a}^\top (\mathbf{p} + \mathbf{a}) = \mathbf{a}^\top \mathbf{p} + \|\mathbf{a}\|_2^2
-                      $$
-                      Since $\|\mathbf{a}\|_2^2 > 0$, we have $\mathbf{a}^\top \mathbf{y} > \mathbf{a}^\top \mathbf{p}$.
-                    </div>
-
-                    <div class="proof-step">
-                      <strong>Conclusion:</strong> We have shown that for all $\mathbf{x} \in C$, $\mathbf{a}^\top \mathbf{x} \le \mathbf{a}^\top \mathbf{p}$, while $\mathbf{a}^\top \mathbf{y} > \mathbf{a}^\top \mathbf{p}$.
-                      The hyperplane defined by $\{\mathbf{z} \mid \mathbf{a}^\top \mathbf{z} = \mathbf{a}^\top \mathbf{p} + \frac{1}{2}\|\mathbf{a}\|^2\}$ strictly separates $\mathbf{y}$ from $C$.
-                    </div>
-          </div>
-        </div>
-
-        <div class="problem">
-          <h3>P3.23 — Support Function Determines Set</h3>
-          <p>Prove that if $C, D$ are closed convex sets and $S_C(\mathbf{y}) = S_D(\mathbf{y})$ for all $\mathbf{y}$, then $C=D$.</p>
-
-          <div class="recap-box">
-            <h4>Recap</h4>
-            <p>A closed convex set is uniquely determined by its support function because it is the intersection of all its supporting halfspaces.</p>
-          </div>
-
-          <div class="solution-box">
-            <h4>Solution</h4>
-            <div class="proof-step">
-              A closed convex set is the intersection of its supporting halfspaces: $C = \bigcap_y \{x \mid y^\top x \le S_C(y)\}$.
-              If $S_C = S_D$, the intersections are identical, so $C=D$.
-            </div>
-          </div>
-        </div>
-
-        <div class="problem">
-          <h3>P3.24 — Converse Supporting Hyperplane Theorem</h3>
-          <p>Prove that if a closed set $C$ with nonempty interior has a supporting hyperplane at every boundary point, $C$ is convex.</p>
-
-          <div class="recap-box">
-            <h4>Recap</h4>
-            <p>This theorem (Tietze-Nakajima) shows that "local convexity" at every boundary point (existence of support) implies global convexity for connected sets with interior.</p>
-          </div>
-
-          <div class="solution-box">
-            <h4>Solution</h4>
-            <div class="proof-step">
-              Assume $C$ is not convex. Then there exists a point in the convex hull $D = \mathrm{conv}(C)$ that is not in $C$.
-              Consider a line segment connecting an interior point of $C$ to this point. It must cross the boundary of $C$ at some $x^*$.
-              The supporting hyperplane at $x^*$ must separate $C$ from the rest of the segment.
-              However, the endpoints of the segment are in $D$ (convex hull). Separation implies $D$ lies on one side, which contradicts the segment crossing the plane.
-            </div>
-          </div>
-        </div>
 
         <!-- Moved P3.20 to Section 6 -->
 
@@ -208,6 +133,15 @@
           \theta x + (1-\theta)y \in C
           $$
           <p><b>Geometric meaning:</b> The line segment connecting any two points in the set lies entirely within the set-no "dents" or "holes."</p>
+
+          <h4 style="margin-top: 15px;">Theorem (Pairwise Closure implies Finite Closure)</h4>
+          <p>If a set $C$ is closed under convex combinations of <b>pairs</b> of points, then it is closed under convex combinations of <b>any finite number</b> of points.
+          <br><i>Proof:</i> We prove by induction on $k$.
+          <br><b>Base case $k=2$:</b> True by definition.
+          <br><b>Inductive step:</b> Assume true for $k-1$. Let $z = \sum_{i=1}^k \theta_i x_i$ with $\theta_i \ge 0, \sum \theta_i = 1$.
+          If $\theta_k = 1$, then $z=x_k \in C$. If $\theta_k < 1$, define $\bar{\theta}_i = \theta_i / (1-\theta_k)$ for $i < k$. Note $\sum \bar{\theta}_i = 1$.
+          Let $y = \sum_{i=1}^{k-1} \bar{\theta}_i x_i$. By hypothesis, $y \in C$.
+          Now observe $z = (1-\theta_k)y + \theta_k x_k$. This is a convex combination of two points in $C$. Thus $z \in C$.</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -596,6 +530,7 @@
           <h4>Theorem (Intersection Preserves Convexity)</h4>
           <p>The intersection of any collection (finite or infinite) of convex sets is convex.</p>
           $$ C = \bigcap_{i \in I} C_i $$
+          <p><i>Modeling Meaning:</i> Every time you write multiple constraints ($f_1(x) \le 0, f_2(x) \le 0, Ax=b$), you are taking an intersection. Convex feasibility is stable under "adding more convex constraints."</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -667,8 +602,10 @@
         <div class="theorem-box">
           <h4>Theorem (Affine Image and Preimage)</h4>
           <ul>
-            <li><b>Image:</b> If $C \subseteq \mathbb{R}^n$ is convex, then $f(C) = \{Ax + b \mid x \in C\} \subseteq \mathbb{R}^m$ is convex.</li>
-            <li><b>Preimage (Inverse Image):</b> If $D \subseteq \mathbb{R}^m$ is convex, then $f^{-1}(D) = \{x \in \mathbb{R}^n \mid Ax + b \in D\}$ is convex.</li>
+            <li><b>Image:</b> If $C \subseteq \mathbb{R}^n$ is convex, then $f(C) = \{Ax + b \mid x \in C\} \subseteq \mathbb{R}^m$ is convex.
+            <br><i>Modeling Meaning:</i> Taking linear measurements preserves convexity. Projections are affine images.</li>
+            <li><b>Preimage (Inverse Image):</b> If $D \subseteq \mathbb{R}^m$ is convex, then $f^{-1}(D) = \{x \in \mathbb{R}^n \mid Ax + b \in D\}$ is convex.
+            <br><i>Modeling Meaning:</i> This is the workhorse of convex modeling. Constraints like $Ax \le b$, $\|Ax-b\| \le t$, and LMIs are all affine preimages of simple convex sets (orthants, norm balls, PSD cones).</li>
           </ul>
         </div>
 
@@ -982,172 +919,6 @@
         </ul>
       </section>
 
-      <!-- SECTION 5: SEPARATION THEOREMS -->
-      <section class="section-card" id="section-separation">
-        <h2>5. Separating and Supporting Hyperplane Theorems</h2>
-
-        <p>These theorems form the geometric backbone of duality theory, optimality conditions, and many algorithms in convex optimization. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
-
-        <h3>5.1 The Separating Hyperplane Theorem</h3>
-
-        <div class="theorem-box">
-          <h4>Theorem (Separating Hyperplane)</h4>
-          <p>Let $C, D \subseteq \mathbb{R}^n$ be nonempty, disjoint, convex sets. Then there exists a hyperplane that separates them: there exist $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$ such that:</p>
-          $$
-          a^\top x \le b \quad \forall x \in C, \qquad a^\top y \ge b \quad \forall y \in D
-          $$
-          <p>If additionally one of $C$ or $D$ is closed and the other is compact, then we can achieve <b>strict separation</b> (where $a^\top x < b < a^\top y$).</p>
-        </div>
-
-        <figure style="text-align: center; margin: 24px 0;">
-          <img src="../04-convex-sets-cones/assets/separating-hyperplane-strict.png"
-               alt="Illustration of the Separating Hyperplane Theorem"
-               style="max-width: 80%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 5:</i> A hyperplane separating two disjoint convex sets $C$ and $D$. For closed sets, we can construct the separator using the projection of 0 onto their difference set $C-D$.</figcaption>
-        </figure>
-
-        <figure style="text-align: center; margin: 24px 0;">
-          <img src="../04-convex-sets-cones/assets/projection-onto-convex-set.png"
-               alt="Projection of a point outside a convex set onto the closest point in the set"
-               style="max-width: 70%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 6:</i> Nearest-point projection onto a convex set. The closest point $x_0=\Pi_C(y)$ is unique, and the residual $y-x_0$ defines a normal direction for a supporting/separating hyperplane at $x_0$.</figcaption>
-        </figure>
-
-        <div class="proof-box">
-          <h4>Proof (Constructive via Projection)</h4>
-          <p>This proof is the "heavy lifting" of convex geometry. We prove the strict separation case where $C$ is closed and $D$ is compact.</p>
-
-          <div class="proof-step">
-            <strong>Step 1: Construct the Difference Set $S$.</strong>
-            Define the Minkowski difference $S = C - D = \{c - d \mid c \in C, d \in D\}$.
-            <br>Since $C$ and $D$ are convex, their difference $S$ is also convex.
-            <br>Since $C$ is closed and $D$ is compact, $S$ is <b>closed</b> (this relies on compactness; the sum of two closed sets is not necessarily closed).
-            <br>Because $C \cap D = \emptyset$, the origin $0$ is <b>not</b> in $S$. (If $0 = c-d$, then $c=d \in C \cap D$).
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Project Zero onto $S$.</strong>
-            We want to find the point in $S$ closest to the origin.
-            Since $S$ is a non-empty, closed, convex set, there exists a unique point $p = \Pi_S(0)$ that minimizes the Euclidean norm $\|z\|_2$ for $z \in S$.
-            <br>Since $0 \notin S$, we must have $p \neq 0$, so $\|p\|_2 > 0$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Variational Characterization.</strong>
-            By the projection theorem, for any $z \in S$:
-            $$ (z - p)^\top (0 - p) \le 0 \implies (z - p)^\top (-p) \le 0 \implies z^\top p \ge p^\top p = \|p\|_2^2 $$
-            This inequality $z^\top p \ge \|p\|_2^2$ holds for all $z \in S$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: Translating back to $C$ and $D$.</strong>
-            Any point $z \in S$ is of the form $c - d$. Thus for all $c \in C, d \in D$:
-            $$ (c - d)^\top p \ge \|p\|_2^2 \implies p^\top c \ge p^\top d + \|p\|_2^2 $$
-            Let the normal vector be $a = -p$. (Note: We can choose $a=p$ or $a=-p$ depending on which side we want greater). Let's stick to the theorem statement form $a^\top x \le b$ for $C$.
-            <br>Let $a = -p$. Then $(-p)^\top c \ge (-p)^\top d + \|p\|_2^2 \implies -a^\top c \ge -a^\top d + \|a\|_2^2 \implies a^\top c \le a^\top d - \|a\|_2^2$.
-            <br>Define $b = \sup_{c \in C} a^\top c$. Then $b \le a^\top d - \|a\|_2^2$.
-            <br>We have $a^\top c \le b$ for all $c \in C$.
-            <br>For $d \in D$, $a^\top d \ge b + \|a\|_2^2 > b$ (since $\|a\|_2 > 0$).
-            <br>Thus, the hyperplane defined by $(a, b)$ strictly separates $C$ and $D$.
-          </div>
-        </div>
-
-        <h3>5.2 The Supporting Hyperplane Theorem</h3>
-
-        <div class="theorem-box">
-          <h4>Theorem (Supporting Hyperplane)</h4>
-          <p>Let $C \subseteq \mathbb{R}^n$ be a nonempty convex set, and let $x_0 \in \partial C$ (the boundary of $C$). Then there exists a <b>supporting hyperplane</b> to $C$ at $x_0$: there exists $a \in \mathbb{R}^n \setminus \{0\}$ such that:</p>
-          $$
-          a^\top x \le a^\top x_0 \quad \forall x \in C
-          $$
-          <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ "supports" $C$ at $x_0$—it touches $C$ at $x_0$ and $C$ lies entirely on one side.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Proof (Limit Argument)</h4>
-          <p>This proof handles the subtle case where separation isn't strictly possible (touching at the boundary) by taking a limit.</p>
-          <div class="proof-step">
-            <strong>Step 1: Sequence of External Points.</strong>
-            Since $x_0$ is on the boundary $\partial C$, it is in the closure of the complement $\mathbb{R}^n \setminus \text{cl}(C)$.
-            Therefore, there exists a sequence of points $\{y_k\}$ such that $y_k \notin \text{cl}(C)$ and $y_k \to x_0$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Projection and Separation.</strong>
-            Since $\text{cl}(C)$ is closed and convex, for each $y_k$, there is a unique projection $p_k = \Pi_{\text{cl}(C)}(y_k)$.
-            By the separation theorem (constructive version), the vector $a_k = y_k - p_k$ defines a separating hyperplane:
-            $$ a_k^\top x \le a_k^\top p_k \quad \forall x \in C $$
-            Also note that $a_k \neq 0$ since $y_k \notin \text{cl}(C)$.
-            We normalize the normal vectors: let $u_k = a_k / \|a_k\|_2$. Then $\|u_k\|_2 = 1$.
-            $$ u_k^\top x \le u_k^\top p_k \quad \forall x \in C $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Convergence.</strong>
-            The sequence $\{u_k\}$ lies on the unit sphere (a compact set). By the Bolzano-Weierstrass theorem, there exists a convergent subsequence $u_{k_j} \to a$, where $\|a\|_2 = 1$ (so $a \neq 0$).
-            Also, since $y_k \to x_0$ and $p_k$ is the projection of $y_k$, by continuity of projection, $p_k \to \Pi_{\text{cl}(C)}(x_0) = x_0$ (since $x_0 \in \text{cl}(C)$).
-          </div>
-          <div class="proof-step">
-            <strong>Step 4: Limit Inequality.</strong>
-            Taking the limit as $k \to \infty$ in the inequality $u_k^\top x \le u_k^\top p_k$:
-            $$ a^\top x \le a^\top x_0 \quad \forall x \in C $$
-            This $a$ is the normal vector of the supporting hyperplane at $x_0$.
-          </div>
-        </div>
-
-        <figure style="text-align: center; margin: 24px 0;">
-          <img src="../04-convex-sets-cones/assets/supporting-hyperplane-tangent.png"
-               alt="Illustration of the Supporting Hyperplane Theorem"
-               style="max-width: 80%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 7:</i> A supporting hyperplane to a convex set at a boundary point. It "kisses" the set without cutting into it.</figcaption>
-        </figure>
-
-        <h3>5.3 Theorems of the Alternative (Farkas' Lemma)</h3>
-        <p>Theorems of the alternative provide a rigorous way to determine solvability: either a system of linear inequalities has a solution, or there exists a "certificate" proving it does not. These results are algebraic translations of the Separating Hyperplane Theorem.</p>
-
-        <div class="theorem-box">
-          <h4>Theorem (Farkas' Lemma)</h4>
-          <p>Let $A \in \mathbb{R}^{m \times n}$ and $b \in \mathbb{R}^m$. Exactly one of the following two systems has a solution:</p>
-          <ol>
-            <li><b>System 1 (Primal):</b> $A\mathbf{x} = \mathbf{b}, \ \mathbf{x} \ge 0$.</li>
-            <li><b>System 2 (Alternative):</b> $A^\top \mathbf{y} \ge 0, \ \mathbf{b}^\top \mathbf{y} < 0$.</li>
-          </ol>
-          <p><i>Interpretation:</i> System 1 asks if $\mathbf{b}$ is in the cone generated by the columns of $A$. System 2 asks for a separating hyperplane between $\mathbf{b}$ and that cone.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Proof via Separation</h4>
-          <div class="proof-step">
-            <strong>Step 1: Define the Cone.</strong> Let $K = \{A\mathbf{x} \mid \mathbf{x} \ge 0\}$ be the cone generated by the columns of $A$. This is a closed convex cone.
-            <br>System 1 is feasible if and only if $\mathbf{b} \in K$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Apply Separation.</strong> If $\mathbf{b} \notin K$, then by the Separating Hyperplane Theorem (Strict Separation, since $K$ is closed and $\{\mathbf{b}\}$ is compact), there exists a hyperplane strictly separating $\mathbf{b}$ from $K$.
-            <br>There exists a vector $\mathbf{y}$ and scalar $\alpha$ such that:
-            $$ y^\top b < \alpha \quad \text{and} \quad y^\top z \ge \alpha \ \forall z \in K $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Analyze the Cone Condition.</strong> Since $0 \in K$, we must have $y^\top 0 \ge \alpha \implies \alpha \le 0$.
-            Also, $K$ is a cone. If $y^\top z < 0$ for some $z \in K$, then for large $\lambda$, $\lambda z \in K$ would make $y^\top (\lambda z) \to -\infty$, violating the lower bound $\alpha$.
-            Thus, we must have $y^\top z \ge 0$ for all $z \in K$.
-            This implies $\alpha$ can be taken as $0$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 4: Translate back.</strong>
-            The condition $y^\top z \ge 0$ for all $z = Ax$ (with $x \ge 0$) means $y^\top A x = (A^\top y)^\top x \ge 0$ for all $x \ge 0$.
-            This implies $A^\top y \ge 0$.
-            The separation condition $y^\top b < \alpha \le 0$ implies $b^\top y < 0$.
-            Thus, if System 1 is infeasible ($b \notin K$), System 2 has a solution ($y$).
-          </div>
-        </div>
-
-        <div class="insight">
-          <h4>🔑 Why These Theorems Matter</h4>
-          <ul>
-            <li><b>Duality:</b> The separating hyperplane theorem is the geometric foundation of <b>Lagrangian duality</b> (<a href="../09-duality/index.html">Lecture 09</a>). Specifically, Strong Duality holds because we can separate the set of achievable values from the "better-than-optimal" region.</li>
-            <li><b>Optimality:</b> The supporting hyperplane theorem leads to first-order optimality conditions (KKT conditions).</li>
-            <li><b>Algorithms:</b> Cutting-plane methods and support vector machines (SVMs) rely explicitly on finding these separators.</li>
-          </ul>
-        </div>
-      </section>
 
       <!-- SECTION 6: REVIEW -->
       <section class="section-card" id="section-review">

@@ -40,7 +40,7 @@
         <span>Tags: prerequisites, review, linear-algebra, foundational</a>
       </div>
       <div class="lecture-summary">
-        <p>This lecture establishes the rigorous linear algebra foundations required for convex optimization. We begin by defining the core objects—vectors, matrices, and their operations—and progress to the geometry of high-dimensional spaces through inner products, norms, and orthogonality. We then explore the crucial concept of Positive Semidefinite (PSD) matrices, which generalize non-negative numbers to the matrix setting and underpin convexity. Finally, we derive the method of least squares from a geometric perspective via orthogonal projections. This material provides the necessary language to describe convex sets, functions, and optimization problems with precision.</p>
+        <p>This lecture establishes the linear algebra foundations required for convex optimization. We begin by defining the core objects—vectors, matrices, and their operations—and progress to the geometry of high-dimensional spaces through inner products, norms, and orthogonality. We then explore the crucial concept of Positive Semidefinite (PSD) matrices, which generalize non-negative numbers to the matrix setting and underpin convexity. Finally, we derive the method of least squares from a geometric perspective via orthogonal projections. This material provides the necessary language to describe convex sets, functions, and optimization problems with precision.</p>
         <p><strong>Prerequisites:</strong> Basic multivariable calculus and familiarity with standard matrix notation.</p>
         <p><strong>Forward Connections:</strong> The projection techniques introduced here are essential for the geometric interpretation of constrained optimization. PSD matrices are the cornerstone of convex quadratic programs (QP) and Semidefinite Programming (SDP) covered in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>. The four fundamental subspaces provide the geometric intuition for duality theory (<a href="../09-duality/index.html">Lecture 09</a>). Advanced topics such as QR factorization, SVD, and pseudoinverses are covered in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</p>
       </div>
@@ -122,7 +122,7 @@
       </ul>
 
       <h3>1.3 Start with $\mathbb{R}^n$ as a Concrete Model</h3>
-      <p>We define $\mathbb{R}^n$ rigorously not just as "tuples" but as functions $x: \{1,\dots,n\} \to \mathbb{R}$. This makes it clear that operations are defined <b>componentwise</b>, inheriting properties directly from the field $\mathbb{R}$.</p>
+      <p>We define $\mathbb{R}^n$ not just as "tuples" but as functions $x: \{1,\dots,n\} \to \mathbb{R}$. This makes it clear that operations are defined <b>componentwise</b>, inheriting properties directly from the field $\mathbb{R}$.</p>
 
       <h4>The Axioms Verified (Why it works)</h4>
       <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
@@ -133,7 +133,7 @@
       </ul>
 
       <h3>1.4 Geometry as a Representation (Points vs. Vectors)</h3>
-      <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In rigorous optimization, the distinction is critical.
+      <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In optimization, the distinction is critical.
       <br><b>Vectors</b> are displacements (elements of a vector space $V$). You can add them and scale them.
       <br><b>Points</b> are locations (elements of an affine space $A$). You cannot add points intrinsically. Adding locations depends on where you put the origin.</p>
 
@@ -152,7 +152,7 @@
       Every concept in the course reduces to this.</p>
 
       <h4>(A) Systems of Linear Equations as Linear Maps</h4>
-      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." That description is correct but shallow. The deeper and far more powerful interpretation is this:
+      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." That description is correct but shallow. The more powerful interpretation is this:
       <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b>
       <br>Everything else—Gaussian elimination, pivots, ranks—is machinery for answering that one question.</p>
 
@@ -195,7 +195,7 @@
       </div>
 
       <h4>(B) Linear Independence as "No Redundancy"</h4>
-      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it rigorously to ensure coordinates are unique.</p>
+      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it precisely to ensure coordinates are unique.</p>
 
       <p><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
       $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
@@ -206,21 +206,25 @@
       Thus, <b>Independence $\iff$ Uniqueness of Representation</b>. Once you choose independent vectors as building blocks, every vector in their span has a unique recipe (coordinates).</p>
 
       <div class="proof-box">
-        <h4>Proposition: Independence gives Uniqueness</h4>
-        <p>If vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ are linearly independent, then every vector $\mathbf{w}$ in their span has a <b>unique</b> representation.
-        <br><i>Proof:</i> Suppose $\mathbf{w} = \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i$.
-        Subtracting gives $\sum (\alpha_i - \beta_i)\mathbf{v}_i = 0$.
-        By independence, all coefficients must be zero: $\alpha_i - \beta_i = 0 \implies \alpha_i = \beta_i$.
-        <br>Conversely, if uniqueness holds, then $\mathbf{0}$ has only the trivial representation ($\sum 0\mathbf{v}_i$), which implies independence.
-        </p>
+        <h4>Proposition: Independence $\iff$ Uniqueness of Representation</h4>
+        <p>Independence is the "secret meaning" of coordinate uniqueness.
+        <br><b>1. Independence $\implies$ Uniqueness:</b>
+        <br>Suppose $\mathbf{v}_1,\dots,\mathbf{v}_k$ are linearly independent. If a vector $\mathbf{w}$ has two representations:
+        $$ \mathbf{w} = \sum_{i=1}^k \alpha_i \mathbf{v}_i = \sum_{i=1}^k \beta_i \mathbf{v}_i $$
+        Subtracting the equations gives $\sum (\alpha_i - \beta_i)\mathbf{v}_i = \mathbf{0}$.
+        By independence, the only linear combination that yields $\mathbf{0}$ is the trivial one, so $\alpha_i - \beta_i = 0$ for all $i$. Thus $\alpha_i = \beta_i$. The coordinates are unique.
+        <br><b>2. Uniqueness $\implies$ Independence:</b>
+        <br>Assume every vector in the span has a unique representation. The zero vector $\mathbf{0}$ is in the span and has the trivial representation $\mathbf{0} = \sum 0\mathbf{v}_i$. If there were <i>any</i> other representation $\sum c_i \mathbf{v}_i = \mathbf{0}$ with non-zero $c_i$, uniqueness would be violated. Thus, the only representation of $\mathbf{0}$ is the trivial one, which is the definition of independence.</p>
       </div>
 
       <div class="theorem-box">
-        <h4>Theorem: Independence $\iff$ No Redundancy</h4>
-        <p>A set of vectors is linearly independent if and only if <b>no vector in the set lies in the span of the others</b>.
+        <h4>Theorem: The Redundancy Test</h4>
+        <p>A set of vectors is linearly independent if and only if <b>no vector in the set is redundant</b> (i.e., lies in the span of the others).
         <br><i>Proof:</i>
-        <br>($\Rightarrow$) Assume independent. Suppose $v_j = \sum_{i \neq j} c_i v_i$. Then $v_j - \sum c_i v_i = 0$ is a non-trivial dependence relation (coefficient of $v_j$ is 1), contradiction.
-        <br>($\Leftarrow$) Assume dependent. Then $\sum \alpha_i v_i = 0$ with some $\alpha_j \neq 0$. We can solve for $v_j$ (since we are in a field): $v_j = -\sum_{i \neq j} \frac{\alpha_i}{\alpha_j} v_i$. Thus $v_j$ is in the span of the others.</p>
+        <br>($\Rightarrow$) <b>Independence implies No Redundancy:</b> Assume the set is independent. Suppose, for contradiction, that $v_j$ is redundant: $v_j = \sum_{i \neq j} c_i v_i$. Then $1 \cdot v_j - \sum_{i \neq j} c_i v_i = 0$. This is a non-trivial linear combination summing to zero (the coefficient of $v_j$ is 1), which contradicts independence.
+        <br>($\Leftarrow$) <b>No Redundancy implies Independence:</b> Assume no vector is in the span of the others. Suppose the set is dependent: $\sum_{i=1}^k \alpha_i v_i = 0$ with some coefficients not zero. Pick an index $j$ where $\alpha_j \neq 0$. We can isolate $v_j$:
+        $$ \alpha_j v_j = -\sum_{i \neq j} \alpha_i v_i \implies v_j = \sum_{i \neq j} \left( -\frac{\alpha_i}{\alpha_j} \right) v_i $$
+        This expresses $v_j$ as a linear combination of the other vectors, meaning $v_j$ is redundant. This contradicts the assumption. Thus, the set must be independent.</p>
       </div>
 
       <p><b>Geometric Intuition:</b>
@@ -249,11 +253,14 @@
       $$ T\left(\sum_{i=1}^k \alpha_i v_i\right) = \sum_{i=1}^k \alpha_i T(v_i) $$
       This principle—that the response to a sum of inputs is the sum of the individual responses—is the bedrock of linear systems theory.</p>
 
-      <h4>The "Basis Determines Everything" Principle</h4>
-      <p>Because $T$ respects linear combinations, if we know how $T$ acts on a <b>basis</b> $\{b_1, \dots, b_n\}$ of $V$, we know how it acts on <i>every</i> vector in $V$.
-      <br>For any $v \in V$, there are unique coefficients $c_i$ such that $v = \sum c_i b_i$. Linearity forces:
-      $$ T(v) = T\left(\sum c_i b_i\right) = \sum c_i T(b_i) $$
-      This theorem explains why matrices exist: once a basis is chosen, the map is completely determined by the $n$ vectors $T(b_1), \dots, T(b_n)$.</p>
+      <div class="theorem-box">
+        <h4>Theorem: Basis Determines Everything</h4>
+        <p>Let $\mathcal{B} = \{b_1, \dots, b_n\}$ be a basis of $V$. A linear transformation $T: V \to W$ is <b>completely determined</b> by its values on the basis vectors $T(b_1), \dots, T(b_n)$.
+        <br><i>Proof:</i> Take any vector $v \in V$. Since $\mathcal{B}$ is a basis, there exist <b>unique</b> scalars $c_i$ such that $v = \sum_{i=1}^n c_i b_i$.
+        Applying $T$:
+        $$ T(v) = T\left(\sum_{i=1}^n c_i b_i\right) = \sum_{i=1}^n c_i T(b_i) $$
+        There is no freedom left. Once the images of the basis vectors are chosen, the image of every other vector is forced by linearity. This explains why an infinite number of input-output pairs can be encoded by a finite matrix.</p>
+      </div>
 
       <h4>Canonical Examples</h4>
       <ul>
@@ -314,10 +321,10 @@
       </div>
 
       <h4>(B) Dimension: The Invariant Number</h4>
-      <p>A vector space can have infinitely many different bases. However, a deep structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
+      <p>A vector space can have infinitely many different bases. However, a structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
 
       <div class="proof-box">
-        <h4>Lemma: Steinitz Exchange Lemma (Rigorous Proof)</h4>
+        <h4>Lemma: Steinitz Exchange Lemma (Proof)</h4>
         <p>Let $V$ be a vector space. Suppose:
         <ul>
             <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
@@ -727,7 +734,7 @@
       </div>
 
       <h3>3.4 Similarity and Basis Independence</h3>
-      <p>Two matrices $A$ and $B$ are <b>similar</b> if $B = P A P^{-1}$ for some invertible $P$. This represents the same linear operator in a different basis. The detailed mechanics of this coordinate transformation and its connection to diagonalization are covered in depth in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</p>
+      <p>Two matrices $A$ and $B$ are <b>similar</b> if $B = P A P^{-1}$ for some invertible $P$. This represents the same linear operator in a different basis. The mechanics of this coordinate transformation and its connection to diagonalization are covered in depth in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</p>
 
       <div class="theorem-box">
         <h4>Theorem: Invariance under Similarity</h4>
@@ -781,7 +788,7 @@
       <h3>4.2 Norms: Induced by Inner Products</h3>
       <p>A vector space does not automatically have a notion of "length". We <b>derive</b> it from the inner product:
       $$ \|x\| := \sqrt{\langle x, x \rangle} $$
-      This is a rigorous construction. We must prove it satisfies the three Norm Axioms.</p>
+      This is a construction. We must prove it satisfies the three Norm Axioms.</p>
 
       <h4>Proof of Norm Properties</h4>
       <ol>
@@ -872,7 +879,15 @@
         <h4>Lemma: Conjugate of a Norm</h4>
         <p>This lemma is crucial for dual derivations. Let $\|\cdot\|$ be any norm and $\|\cdot\|_*$ its dual norm. The conjugate of the scaled norm $f(\mathbf{x}) = \rho \|\mathbf{x}\|$ is the indicator function of the dual ball:
         $$ (\rho\|\mathbf{x}\|)^*(\mathbf{z}) = I_{\{\|\mathbf{z}\|_* \le \rho\}}(\mathbf{z}) = \begin{cases} 0 & \|\mathbf{z}\|_* \le \rho \\ \infty & \text{otherwise} \end{cases} $$
-        <i>Proof sketch:</i> If $\|\mathbf{z}\|_* \le \rho$, then $\mathbf{z}^\top \mathbf{x} - \rho\|\mathbf{x}\| \le \|\mathbf{z}\|_*\|\mathbf{x}\| - \rho\|\mathbf{x}\| \le 0$ (max is 0 at $\mathbf{x}=0$). If $\|\mathbf{z}\|_* > \rho$, we can align $\mathbf{x}$ with $\mathbf{z}$ to make the expression go to $+\infty$.
+        <i>Proof:</i> We need to calculate the conjugate of $f(\mathbf{x}) = \rho \|\mathbf{x}\|$, which is $f^*(\mathbf{z}) = \sup_{\mathbf{x}} (\mathbf{z}^\top \mathbf{x} - \rho \|\mathbf{x}\|)$.
+        <br><b>Case 1: $\|\mathbf{z}\|_* \le \rho$.</b> By definition of dual norm, $\mathbf{z}^\top \mathbf{x} \le \|\mathbf{z}\|_* \|\mathbf{x}\|$.
+        $$ \mathbf{z}^\top \mathbf{x} - \rho \|\mathbf{x}\| \le (\|\mathbf{z}\|_* - \rho) \|\mathbf{x}\| $$
+        Since $\|\mathbf{z}\|_* \le \rho$, the coefficient $(\|\mathbf{z}\|_* - \rho)$ is non-positive. Since $\|\mathbf{x}\| \ge 0$, the maximum value is 0 (achieved at $\mathbf{x}=0$).
+        <br><b>Case 2: $\|\mathbf{z}\|_* > \rho$.</b> There exists a vector $\mathbf{x}_0$ such that $\|\mathbf{x}_0\| \le 1$ and $\mathbf{z}^\top \mathbf{x}_0 = \|\mathbf{z}\|_*$ (or arbitrarily close).
+        Let $\mathbf{x} = t \mathbf{x}_0$ for $t > 0$.
+        $$ \mathbf{z}^\top (t \mathbf{x}_0) - \rho \|t \mathbf{x}_0\| = t (\mathbf{z}^\top \mathbf{x}_0 - \rho \|\mathbf{x}_0\|) = t (\|\mathbf{z}\|_* - \rho) $$
+        Since $\|\mathbf{z}\|_* > \rho$, this expression goes to $+\infty$ as $t \to \infty$.
+        <br>Thus, the conjugate is the indicator of the dual ball.
         </p>
       </div>
 
@@ -946,7 +961,7 @@
 
       <div class="proof-box">
         <h4>Derivation: Trace and Frobenius Norm</h4>
-        <p>We rigorously show that the Frobenius norm $\|A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$ is induced by the trace inner product $\langle A, B \rangle = \mathrm{tr}(A^\top B)$.</p>
+        <p>We show that the Frobenius norm $\|A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$ is induced by the trace inner product $\langle A, B \rangle = \mathrm{tr}(A^\top B)$.</p>
         <div class="proof-step">
             <strong>Step 1: Compute Diagonal Elements of $A^\top A$.</strong>
             Let $P = A^\top A$. By definition of matrix multiplication, the $(j, j)$ entry is the dot product of the $j$-th row of $A^\top$ and the $j$-th column of $A$.
@@ -1186,7 +1201,7 @@
       </table>
 
       <div class="proof-box">
-        <h4>Detailed Derivation: Gradient of Quadratic Form</h4>
+        <h4>Derivation: Gradient of Quadratic Form</h4>
         <p>Let $f(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$. We apply the perturbation method.</p>
         <div class="proof-step">
           <strong>Step 1: Perturb.</strong> Let $\mathbf{x} \to \mathbf{x} + h$.
@@ -1417,7 +1432,7 @@
         <li><b>Axes alignment:</b> The axes of the ellipsoid are aligned with the eigenvectors of $P$.</li>
         <li><b>Axis lengths:</b> The semi-axis lengths are $1/\sqrt{\lambda_i}$, where $\lambda_i$ are the eigenvalues of $P$. Note the inverse relationship: a <i>large</i> eigenvalue means steep curvature in the quadratic bowl, which corresponds to a <i>short</i> axis in the level set ellipsoid (the function rises quickly).</li>
       </ul>
-      <p>This geometric link explains why "conditioning" matters. If the ratio $\lambda_{\max}/\lambda_{\min}$ is large, the ellipsoid is very long and thin (a deep valley in one direction, flat in another), making optimization difficult.</p>
+      <p>This geometric link explains why "conditioning" matters. If the ratio $\lambda_{\max}/\lambda_{\min}$ is large, the ellipsoid is very long and thin (a narrow valley in one direction, flat in another), making optimization difficult.</p>
 
       <h3>7.4 The Rayleigh Quotient and Eigenvalues</h3>
       <p>The <b>maximum eigenvalue</b> $\lambda_{\max}(A)$ can be defined as an optimization problem:</p>
@@ -1562,7 +1577,7 @@
             <li><b>Rank-1 Update:</b> Useful for algebraic manipulation ($tY \succeq xx^\top$).</li>
           </ul>
           <div class="proof-box">
-            <h4>Detailed Derivation: From Rank-1 to Scalar</h4>
+            <h4>Derivation: From Rank-1 to Scalar</h4>
             <p>We want to show $tY - xx^\top \succeq 0 \iff t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$.</p>
             <div class="proof-step">
                 <strong>Step 1: Variational Definition.</strong>
@@ -1670,7 +1685,7 @@
       <p>The concept of "finding the closest point" is the geometric heart of optimization. Whether solving least squares, applying constraints, or analyzing duality, we are often just computing an orthogonal projection.</p>
 
       <h3>8.1 Projection onto a Line (1D Case)</h3>
-      <p>Before tackling general subspaces, let's rigorously derive the projection of a vector $\mathbf{x}$ onto the line spanned by a single non-zero vector $a \in \mathbb{R}^n$. This simple case contains all the intuition needed for the general theory.</p>
+      <p>Before tackling general subspaces, let's derive the projection of a vector $\mathbf{x}$ onto the line spanned by a single non-zero vector $a \in \mathbb{R}^n$. This simple case contains all the intuition needed for the general theory.</p>
       <p>We seek the scalar $\alpha$ that minimizes the squared distance $\|x - \alpha a\|_2^2$.
       $$ f(\alpha) = \|\mathbf{x} - \alpha a\|_2^2 = (\mathbf{x} - \alpha a)^\top (\mathbf{x} - \alpha a) = \|\mathbf{x}\|_2^2 - 2\alpha (a^\top \mathbf{x}) + \alpha^2 \|a\|_2^2 $$
       This is a simple convex quadratic in $\alpha$. Setting the derivative to zero:
@@ -1725,7 +1740,7 @@
       </ul>
 
       <h4>Euclidean Projection Formula (Explicit via KKT)</h4>
-      <p>Alternatively, using Lagrange multipliers (a technique we will explore deeply in Lecture 09), we can derive the projection without forming a nullspace basis.</p>
+      <p>Alternatively, using Lagrange multipliers (a technique we will explore in Lecture 09), we can derive the projection without forming a nullspace basis.</p>
       $$
       \Pi_{\mathcal{A}}(\mathbf{y}) = \mathbf{y} - F^\top (F F^\top)^{-1} (F \mathbf{y} - \mathbf{g})
       $$

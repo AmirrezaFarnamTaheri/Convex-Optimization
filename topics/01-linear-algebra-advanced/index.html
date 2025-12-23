@@ -90,7 +90,7 @@
         </li>
       </ul>
 
-      <p><b>Immediate Theorems:</b> From these axioms, we rigorously prove derived facts like:
+      <p><b>Immediate Theorems:</b> From these axioms, we prove derived facts like:
       <br>1. $\mathbf{0}$ is unique.
       <br>2. $0 \cdot v = \mathbf{0}$. (Proof: $0v = (0+0)v = 0v + 0v \implies \mathbf{0} = 0v$).
       <br>3. $(-1)v = -v$. (Proof: $v + (-1)v = 1v + (-1)v = (1-1)v = 0v = \mathbf{0}$).</p>
@@ -141,7 +141,7 @@
       $$ \sum_{i=1}^k \alpha_i v_i = 0 \implies \alpha_1 = \dots = \alpha_k = 0 $$
 
       <h4>Independence as "Uniqueness of Representation"</h4>
-      <p>This is the deep meaning of independence.
+      <p>This is the meaning of independence.
       <br><b>Proposition:</b> $v_1, \dots, v_k$ are independent if and only if every vector $w \in \mathrm{span}(v_1, \dots, v_k)$ has a <b>unique</b> representation as a linear combination.
       <br><i>Proof:</i> If there were two representations $\sum \alpha_i v_i = \sum \beta_i v_i$, then subtracting them gives $\sum (\alpha_i - \beta_i) v_i = 0$. If independent, $\alpha_i - \beta_i = 0$, so $\alpha_i = \beta_i$. Uniqueness holds.</p>
 
@@ -253,7 +253,7 @@
       <p>These axioms force the Leibniz formula: $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{i=1}^n A_{i, \sigma(i)}$.</p>
 
       <div class="proof-box">
-        <h4>Sketch: Why Axioms Force the Formula</h4>
+        <h4>Derivation: Why Axioms Force the Formula</h4>
         <p>This derivation shows that the determinant is not an arbitrary definition, but a necessary consequence of geometry.
         <br>1. <b>Expand columns:</b> Write each column $a_j$ as a linear combination of standard basis vectors $e_i$: $a_j = \sum_i A_{ij} e_i$.
         <br>2. <b>Apply Multilinearity:</b> Expanding $\det(a_1, \dots, a_n)$ involves $n$ sums.
@@ -392,7 +392,7 @@
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
 
-      <h3>5.4 Convexity of Induced Norms (Deep Dive)</h3>
+      <h3>5.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>
       <div class="proof-box">
         <h4>Proof: Convexity via Dual Norms</h4>
@@ -432,9 +432,13 @@
         <li>$Q \in \mathbb{R}^{m \times n}$ has <b>orthonormal columns</b> ($Q^\top Q = I_n$). This represents an isometric embedding.</li>
         <li>$R \in \mathbb{R}^{n \times n}$ is <b>upper triangular</b> with positive diagonal entries. This represents coordinates in the orthonormal basis.</li>
       </ul>
-      <p><b>Proof by Geometry:</b> Let $a_1, \dots, a_n$ be the columns of $A$. Apply Gram-Schmidt to produce orthonormal vectors $q_1, \dots, q_n$ such that $\mathrm{span}(q_1, \dots, q_k) = \mathrm{span}(a_1, \dots, a_k)$ for all $k$.
-      Since $a_k \in \mathrm{span}(q_1, \dots, q_k)$, we can write $a_k = \sum_{j=1}^k r_{jk} q_j$.
-      This triangular dependency is exactly the matrix equation $A = QR$. Uniqueness follows from the uniqueness of Gram-Schmidt (once signs are fixed).</p>
+      <p><b>Proof by Geometry (Gram-Schmidt as Projection):</b> Let $a_1, \dots, a_n$ be the columns of $A$. At each step $k$, we seek a vector $q_k$ that captures the "new direction" of $a_k$ orthogonal to the previous subspace $W_{k-1} = \mathrm{span}(a_1, \dots, a_{k-1})$.
+      <br>There is exactly one way to do this:
+      $$ u_k = a_k - \operatorname{proj}_{W_{k-1}}(a_k) $$
+      This residual $u_k$ is orthogonal to $W_{k-1}$ by the projection theorem. Normalizing it gives $q_k = u_k / \|u_k\|$.
+      <br>Since $a_k$ is a linear combination of $q_k$ and the previous basis vectors ($q_1, \dots, q_{k-1}$), we have a triangular relation:
+      $$ a_k = \sum_{j=1}^k r_{jk} q_j $$
+      where $r_{jk} = \langle q_j, a_k \rangle$. This forces the matrix form $A=QR$, where $R$ is upper triangular. The diagonal entries $r_{kk} = \|u_k\|$ are positive, ensuring uniqueness.</p>
 
       <h3>6.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
       <p>Consider $\min \|A\mathbf{x} - \mathbf{b}\|_2$.
@@ -496,14 +500,19 @@
         </figure>
       </div>
 
-      <h3>7.2 Rank, Nullspace, and Range (Geometric View)</h3>
-      <p>SVD reveals the intrinsic dimensions of the map.</p>
+      <h3>7.2 Rank and the Four Fundamental Subspaces</h3>
+      <p>SVD provides the optimal basis for all four fundamental subspaces of the matrix $A$. Let $r$ be the number of non-zero singular values.</p>
       <ul>
-        <li><b>Rank:</b> $r = \text{number of } \sigma_i > 0$.</li>
-        <li><b>Range (Column Space):</b> Spanned by the first $r$ columns of $U$.</li>
-        <li><b>Nullspace:</b> Spanned by the last $n-r$ columns of $V$ (corresponding to $\sigma_i=0$).</li>
+        <li><b>Range (Column Space):</b> Spanned by the first $r$ columns of $U$ (Left singular vectors).
+        $$ \mathcal{R}(A) = \operatorname{span}\{u_1, \dots, u_r\} $$</li>
+        <li><b>Nullspace (Kernel):</b> Spanned by the last $n-r$ columns of $V$ (Right singular vectors corresponding to $\sigma_i=0$).
+        $$ \mathcal{N}(A) = \operatorname{span}\{v_{r+1}, \dots, v_n\} $$</li>
+        <li><b>Row Space:</b> Spanned by the first $r$ columns of $V$ (Right singular vectors corresponding to $\sigma_i>0$).
+        $$ \mathcal{R}(A^\top) = \operatorname{span}\{v_1, \dots, v_r\} $$</li>
+        <li><b>Left Nullspace:</b> Spanned by the last $m-r$ columns of $U$.
+        $$ \mathcal{N}(A^\top) = \operatorname{span}\{u_{r+1}, \dots, u_m\} $$</li>
       </ul>
-      <p>This provides a numerically stable way to compute rank and bases for fundamental subspaces.</p>
+      <p>This explicitly diagonalizes the geometry: $A$ maps the row space basis $\{v_1, \dots, v_r\}$ to the column space basis $\{u_1, \dots, u_r\}$ with scaling factors $\sigma_i$, and kills everything else.</p>
 
       <h3>7.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
       <p>SVD solves the problem of finding the best approximation of a matrix by one of lower rank.

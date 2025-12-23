@@ -100,7 +100,7 @@
         & A x = b && \text{(Equality constraints)}
         \end{aligned}
         $$
-        <p>where three rigorous conditions must be satisfied:</p>
+        <p>where three conditions must be satisfied:</p>
         <ol>
           <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. (i.e., its domain is convex and $f_0(\theta x + (1-\theta)y) \le \theta f_0(x) + (1-\theta)f_0(y)$).</li>
           <li><b>Convex Inequality Constraints:</b> The functions $f_i$ defining the sublevel sets must be convex. This ensures the set $\{x \mid f_i(x) \le 0\}$ is convex.</li>
@@ -109,7 +109,7 @@
         <p><i>Note:</i> Minimizing a concave function is generally non-convex. Equality constraints $h(x)=0$ where $h$ is convex (but not affine) are generally non-convex (see "Counter-Example Corner" below).</p>
 
         <div class="insight">
-          <h4>Deep Dive: Why Inequality $\le 0$ and Equality $Ax=b$?</h4>
+          <h4>Why Inequality $\le 0$ and Equality $Ax=b$?</h4>
           <p>The standard form is not arbitrary; it is designed to ensure the <b>feasible set</b> is convex.</p>
           <ul>
             <li><b>Inequalities ($f_i(x) \le 0$):</b> This defines the 0-sublevel set of a convex function. Geometrically, this region is "bowl-shaped" (convex). If we used $\ge 0$, we would get the superlevel set (outside the bowl), which is typically non-convex (has a hole).</li>

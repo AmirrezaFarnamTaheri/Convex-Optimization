@@ -361,7 +361,90 @@
 
       </section>
 
-      <section class="section-card" id="section-3">
+          <section class="section-card" id="section-2">
+      <h2>2. Separation and Supporting Hyperplanes</h2>
+      <p>These theorems form the geometric backbone of duality theory. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
+
+      <h3>2.1 The Separating Hyperplane Theorem</h3>
+
+      <div class="theorem-box">
+        <h4>Theorem (Separating Hyperplane)</h4>
+        <p>Let $C, D \subseteq \mathbb{R}^n$ be nonempty, disjoint, convex sets. Then there exists a hyperplane that separates them: there exist $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$ such that:</p>
+        $$
+        a^\top x \le b \quad \forall x \in C, \qquad a^\top y \ge b \quad \forall y \in D
+        $$
+        <p>If additionally $C$ is closed and $D$ is compact, then there exists <b>strict separation</b> ($a^\top x < b < a^\top y$).</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Proof Sketch (Constructive via Projection)</h4>
+        <p>For the strict separation case (closed $C$, compact $D$):</p>
+        <div class="proof-step">
+          <strong>1. Difference Set:</strong> Define $S = C - D$. Since $C, D$ are disjoint, $0 \notin S$. Since $C$ is closed and $D$ compact, $S$ is closed.
+        </div>
+        <div class="proof-step">
+          <strong>2. Projection:</strong> Let $p = \Pi_S(0)$ be the projection of the origin onto $S$. Since $0 \notin S$, $p \neq 0$.
+        </div>
+        <div class="proof-step">
+          <strong>3. Normal Vector:</strong> Set $a = -p$. By the projection theorem, $p$ is the unique point in $S$ minimizing norm, implying $a^\top z \le -\|p\|^2 < 0$ for all $z \in S$.
+        </div>
+        <div class="proof-step">
+          <strong>4. Separation:</strong> This implies $a^\top (c-d) < 0 \implies a^\top c < a^\top d$ for all $c \in C, d \in D$.
+        </div>
+      </div>
+
+      <h3>2.2 The Supporting Hyperplane Theorem</h3>
+
+      <div class="theorem-box">
+        <h4>Theorem (Supporting Hyperplane)</h4>
+        <p>Let $C \subseteq \mathbb{R}^n$ be a nonempty convex set, and let $x_0 \in \partial C$ (boundary). Then there exists a nonzero vector $a$ such that:</p>
+        $$
+        a^\top x \le a^\top x_0 \quad \forall x \in C
+        $$
+        <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$.</p>
+      </div>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/supporting-hyperplane-tangent.png"
+             alt="Illustration of the Supporting Hyperplane Theorem"
+             style="max-width: 80%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary.</figcaption>
+      </figure>
+
+      <h3>2.3 Normal Cones and Optimality</h3>
+      <p>The set of all valid supporting normal vectors at a point $x_0$ forms a cone.</p>
+
+      <div class="definition-box">
+        <h4>Definition: Normal Cone</h4>
+        <p>The <b>normal cone</b> of $C$ at $x_0 \in C$ is the set of vectors that make a non-acute angle with every feasible direction:</p>
+        $$ N_C(x_0) = \{g \in \mathbb{R}^n \mid g^\top (x - x_0) \le 0 \quad \forall x \in C\} $$
+        <ul>
+            <li>If $x_0 \in \mathrm{int}(C)$, then $N_C(x_0) = \{0\}$.</li>
+            <li>If $x_0 \in \partial C$, $N_C(x_0)$ contains the outward normals of all supporting hyperplanes.</li>
+        </ul>
+      </div>
+
+      <div class="insight">
+        <h4>Optimality Condition</h4>
+        <p>A point $x^* \in C$ maximizes the linear function $f(x) = c^\top x$ if and only if $c$ points in the direction of the normal cone:</p>
+        $$ c \in N_C(x^*) $$
+        <p>This geometric condition ($c$ is an outward normal) is the basis of KKT conditions in constrained optimization.</p>
+      </div>
+
+      <h3>2.4 Theorems of the Alternative (Farkas' Lemma)</h3>
+      <p>Farkas' Lemma is the algebraic certificate of infeasibility for linear inequalities, derived directly from the Separating Hyperplane Theorem.</p>
+
+      <div class="theorem-box">
+        <h4>Farkas' Lemma</h4>
+        <p>For $A \in \mathbb{R}^{m \times n}$ and $b \in \mathbb{R}^m$, exactly one of the following systems has a solution:</p>
+        <ol>
+          <li><b>Primal:</b> $Ax = b, \ x \ge 0$ (b is in the conic hull of columns of A)</li>
+          <li><b>Dual (Alternative):</b> $A^\top y \ge 0, \ b^\top y < 0$ (separating hyperplane exists)</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section-card" id="section-3">
         <h2>3. Review & Cheat Sheet</h2>
         <h3>Separation Theorems</h3>
         <ul>
@@ -645,6 +728,46 @@
       <strong>Step 4: Take Dual again.</strong> Taking the dual of both sides: $(K_1^* + K_2^*)^{**} = (K_1 \cap K_2)^*$.
       The biconjugate of a cone is its closure (if it's convex). Thus $\mathrm{cl}(K_1^* + K_2^*) = (K_1 \cap K_2)^*$.
     </div>
+  </div>
+</div>
+
+
+
+<div class="problem">
+  <h3>P4.22 — Separation by Projection</h3>
+  <p>Let $C \subseteq \mathbb{R}^n$ be a closed convex set and $x \notin C$. Prove that there exists a hyperplane strictly separating $x$ from $C$. Specifically, show that with $p = \Pi_C(x)$, the hyperplane through $p$ with normal $x-p$ separates them.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      Let $p = \Pi_C(x)$. Since $C$ is convex, the projection is unique.
+      The variational characterization of projection states: $(z - p)^\top (x - p) \le 0$ for all $z \in C$.
+    </div>
+    <div class="proof-step">
+      Let $a = x - p$. Then $a^\top (z - p) \le 0 \implies a^\top z \le a^\top p$ for all $z \in C$.
+      For the point $x$ itself: $a^\top x = (x-p)^\top x = (x-p)^\top (x-p + p) = \|x-p\|^2 + a^\top p$.
+      Since $x \notin C$, $\|x-p\| > 0$, so $a^\top x > a^\top p$.
+      Thus the hyperplane $H = \{z \mid a^\top z = a^\top p\}$ separates $C$ (where $a^\top z \le a^\top p$) from $x$ (where $a^\top x > a^\top p$).
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.23 — Support Function Determines Set</h3>
+  <p>Let $C, D$ be closed convex sets. Show that if their support functions are equal, $\sigma_C(a) = \sigma_D(a)$ for all $a$, then $C = D$.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>A closed convex set is the intersection of its supporting halfspaces:
+    $$ C = \bigcap_{a \in \mathbb{R}^n} \{x \mid a^\top x \le \sigma_C(a)\} $$
+    If $\sigma_C = \sigma_D$, the intersections are identical, so $C = D$.</p>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P4.24 — Converse Supporting Hyperplane Theorem</h3>
+  <p>Let $C$ be a closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <p>This is the Tietze-Nakajima Theorem. The local existence of supporting hyperplanes everywhere on the boundary implies global convexity for connected closed sets with interior.</p>
   </div>
 </div>
 

@@ -54,6 +54,12 @@
     <article>
       <section class="section-card" id="section-1">
         <h2>1. Definition and Basic Properties</h2>
+        <div class="insight">
+          <h4>Why "Domain Convexity" is Mandatory</h4>
+          <p>A common mistake is to check the inequality $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$ without verifying that the domain is convex. If the domain is not convex, the inequality is meaningless because the convex combination might not even be in the domain.</p>
+          <p><b>Example:</b> Let $f(x) = 0$ if $x \in \{0, 1\}$ and $\infty$ otherwise. The domain $\{0, 1\}$ is not convex. The inequality holds wherever defined, but $f$ is clearly not convex (its epigraph is not a convex set).</p>
+        </div>
+
 
         <h3>1.1 Convex Functions: The Core Definition</h3>
         <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <a href="#" class="definition-link" data-term="convex function">convex</a> if its domain $\mathrm{dom}\, f$ is a convex set, and for all $x, y \in \mathrm{dom}\, f$ and all $\theta \in [0, 1]$:</p>
@@ -410,6 +416,18 @@
       </section>
 
       <section class="section-card" id="section-3">
+
+        <div class="insight">
+          <h4>Standard Epigraph Modeling Patterns</h4>
+          <p>These are the "reflexes" for converting objectives to constraints:</p>
+          <ul>
+            <li><b>Maximum:</b> $\min \max_i f_i(x) \iff \min t \text{ s.t. } f_i(x) \le t \ \forall i$.</li>
+            <li><b>Absolute Value:</b> $|u| \le t \iff -t \le u \le t$.</li>
+            <li><b>Norms:</b> $\|Ax+b\| \le t$. For $\ell_2$, this is SOCP. For $\ell_1/\ell_\infty$, this is LP.</li>
+            <li><b>Piecewise:</b> $f(x) = \max(f_1(x), f_2(x))$ becomes intersection of epigraphs.</li>
+          </ul>
+        </div>
+
         <h2>3. First-Order Conditions (Tangent Line Property)</h2>
 
         <h3>3.1 The First-Order Characterization</h3>
@@ -743,6 +761,15 @@
       </section>
 
       <section class="section-card" id="section-5">
+
+        <div class="example-box">
+          <h4>Example: Log Barrier Hessian</h4>
+          <p>Consider $f(x) = -\sum \log(b_i - a_i^\top x)$. The domain is the open polyhedron $\{x \mid Ax < b\}$.</p>
+          <p>Gradient: $\nabla f(x) = \sum \frac{a_i}{b_i - a_i^\top x}$.</p>
+          <p>Hessian: $\nabla^2 f(x) = \sum \frac{a_i a_i^\top}{(b_i - a_i^\top x)^2}$.</p>
+          <p>Since each term $a_i a_i^\top$ is a rank-1 PSD matrix and coefficients are positive, the sum is PSD. Thus $f$ is convex.</p>
+        </div>
+
         <h2>5. Operations Preserving Convexity</h2>
 
         <p>One of the most powerful aspects of convex analysis is that complex convex functions can be built from simpler ones using operations that preserve convexity. This enables sophisticated modeling without sacrificing tractability.</p>

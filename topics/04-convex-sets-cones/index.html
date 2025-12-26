@@ -323,7 +323,35 @@
              </figure>
         </div>
 
-        <h3>1.5 Cone Operations</h3>
+        <h3>1.5 Dual Norms: The Shadow Ruler</h3>
+        <p>A specific and crucial application of duality is the concept of a <b>dual norm</b>. Just as dual cones define allowable gradients, dual norms define the "worst-case" alignment of a vector with the unit ball.</p>
+
+        <p>For any norm $\|\cdot\|$ on $\mathbb{R}^n$, its dual norm $\|\cdot\|_*$ is defined by:</p>
+        $$ \|u\|_* = \sup_{\|x\| \le 1} u^\top x $$
+        <p>This is exactly the support function of the primal unit ball evaluated at $u$.</p>
+
+        <div class="theorem-box">
+          <h4>Properties of Dual Norms</h4>
+          <ol>
+            <li><b>It is a Norm:</b> $\|\cdot\|_*$ satisfies the axioms of a norm (Definiteness, Homogeneity, Triangle Inequality).</li>
+            <li><b>Generalized Hölder Inequality:</b> For any $u, x$:
+              $$ u^\top x \le \|u\|_* \|x\| $$
+              This generalizes Cauchy-Schwarz ($u^\top x \le \|u\|_2 \|x\|_2$).
+            </li>
+            <li><b>Dual of Dual:</b> The dual of the dual norm is the primal norm: $(\|\cdot\|_* )_* = \|\cdot\|$.</li>
+          </ol>
+        </div>
+
+        <h4>Calculated Dual Pairs</h4>
+        <ul>
+          <li><b>Euclidean ($\ell_2$):</b> The dual of $\|\cdot\|_2$ is $\|\cdot\|_2$. (Self-dual).</li>
+          <li><b>$\ell_1$ and $\ell_\infty$:</b> The dual of $\|\cdot\|_1$ is $\|\cdot\|_\infty$, and vice-versa.
+            $$ \sup_{\|x\|_1 \le 1} u^\top x = \|u\|_\infty $$
+            <i>Geometric Reason:</i> The maximum of a linear function over a diamond (vertices $\pm e_i$) occurs at the vertex aligned with the largest component of $u$.
+          </li>
+        </ul>
+
+        <h3>1.6 Cone Operations</h3>
         <p>Just as with convex sets, we can construct new cones from existing ones. This is particularly useful for modeling complex constraints in conic programming. Below we detail the primary operations and, crucially, how to compute their duals.</p>
 
         <h4>(a) Intersection</h4>

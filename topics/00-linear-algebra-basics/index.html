@@ -788,10 +788,10 @@
 
 
     <section class="section-card" id="section-norms">
-      <h2>4. Inner Products: Geometry from Algebra</h2>
-      <p>Inner products bridge the gap between abstract vector spaces and geometry. They allow us to talk about <b>angles</b>, <b>lengths</b>, and <b>projections</b>. Without an inner product, a vector space is just a "floppy" elastic sheet; with an inner product, it becomes a rigid structure.</p>
+      <h2>4. Inner Products & Norms: Geometry from Algebra</h2>
+      <p>Inner products and norms bridge the gap between abstract vector spaces and geometry. They allow us to talk about <b>angles</b>, <b>lengths</b>, <b>distances</b>, and <b>projections</b>. Without these, a vector space is just a "floppy" elastic sheet; with them, it becomes a rigid structure capable of supporting optimization.</p>
 
-      <h3>4.1 Definition: Axioms, Not Vibes</h3>
+      <h3>4.1 Inner Products: The Source of Angles</h3>
       <p>An <b>inner product</b> on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x, y, z \in V$ and $\alpha \in \mathbb{R}$:</p>
       <ol>
         <li><b>Symmetry:</b> $\langle x, y \rangle = \langle y, x \rangle$.</li>
@@ -800,62 +800,130 @@
       </ol>
 
       <h4>Verification for the Dot Product</h4>
-      <p>For $\langle x,y \rangle = x^\top y$:
-      <br>1. <b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.
-      <br>2. <b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.
-      <br>3. <b>Positivity:</b> $\sum x_i^2 \ge 0$. Sum of squares is zero iff every $x_i=0$.
-      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$.</p>
+      <p>For the standard Euclidean inner product $\langle x,y \rangle = x^\top y$:</p>
+      <ul>
+        <li><b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.</li>
+        <li><b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.</li>
+        <li><b>Positivity:</b> $\sum x_i^2 \ge 0$. The sum of squares is zero if and only if every $x_i=0$.</li>
+      </ul>
+      <p>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$, which distorts the geometry (ellipsoidal inner products).</p>
+
+      <h3>4.2 Norms: The Mental Model and Axioms</h3>
+      <p>A <b>norm</b> is a rule that measures the "size" of vectors in a way that is compatible with the two primitive operations of linear algebra: <b>scaling</b> and <b>addition</b>. If "size" is to behave sanely, it must obey these rules:</p>
+      <ul>
+        <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> Scaling the vector scales its size proportionally.</li>
+        <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> The size of a sum is not bigger than the sum of sizes (no shortcuts via detours).</li>
+        <li><b>Non-degeneracy sanity $\Rightarrow$ Definiteness:</b> Only the zero vector has zero size.</li>
+      </ul>
+
+      <p>These requirements are formalized in the definition of a norm $\|\cdot\|:\mathbb{R}^n\to\mathbb{R}$:</p>
+
+      <div class="definition-box">
+        <h4>(N1) Nonnegativity + Definiteness</h4>
+        <p>1. $\|x\| \ge 0$.</p>
+        <p>2. $\|x\| = 0 \iff x = 0$.</p>
+        <p><i>What it enforces:</i> "Non-negative length" prevents physical nonsense. Definiteness forbids "invisible nonzero vectors"—if a nonzero vector had zero cost, optimization would break.</p>
+      </div>
+
+      <div class="definition-box">
+        <h4>(N2) Positive Homogeneity</h4>
+        <p>$$ \|\alpha x\| = |\alpha| \, \|x\| $$</p>
+        <p><i>What it enforces:</i> If you double the vector, you double its size. Direction reversal ($\alpha = -1$) does not change size (symmetry).</p>
+      </div>
+
+      <div class="definition-box">
+        <h4>(N3) Triangle Inequality</h4>
+        <p>$$ \|x+y\| \le \|x\| + \|y\| $$</p>
+        <p><i>What it enforces:</i> The "no cheating by zig-zagging" law. The straight path is always the shortest. This axiom is the main engine behind convexity.</p>
+      </div>
+
+      <h3>4.3 Core Lemmas: Reusable Proof Templates</h3>
+      <p>From these three axioms, we can derive powerful properties that you will use constantly in proofs.</p>
+
+      <h4>Lemma A: $\|0\|=0$</h4>
+      <p>Take any $x$. Then $0 = 0 \cdot x$. By (N2), $\|0\| = \|0 \cdot x\| = |0| \, \|x\| = 0$. This doesn't need to be an axiom; it's a consequence.</p>
+
+      <h4>Lemma 1: Symmetry $\|x\| = \|-x\|$</h4>
+      <p>By (N2) with $\alpha = -1$: $\|-x\| = \|(-1)x\| = |-1| \, \|x\| = \|x\|$. Norms are centrally symmetric functions.</p>
+
+      <h4>Lemma 2: Reverse Triangle Inequality</h4>
+      <p>$$ \big| \|x\| - \|y\| \big| \le \|x - y\| $$</p>
+      <p>This says that the norm function is <b>1-Lipschitz</b> with respect to itself. Norms cannot change faster than the distance they induce.</p>
+      <div class="proof-box">
+        <h4>Proof of Reverse Triangle Inequality</h4>
+        <div class="proof-step">
+          <strong>Step 1:</strong> Write $x = (x-y) + y$. Apply Triangle Inequality:
+          $$ \|x\| = \|(x-y) + y\| \le \|x-y\| + \|y\| \implies \|x\| - \|y\| \le \|x-y\| $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2:</strong> Swap $x$ and $y$.
+          $$ \|y\| - \|x\| \le \|y-x\| = \|x-y\| $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3:</strong> Combine.
+          $$ -\|x-y\| \le \|x\| - \|y\| \le \|x-y\| \iff \big| \|x\| - \|y\| \big| \le \|x-y\| $$
+        </div>
+      </div>
+
+      <h4>Lemma 3: "Two-point Jensen" (Convexity Inequality)</h4>
+      <p>For $\theta \in [0, 1]$:</p>
+      $$ \|\theta x + (1-\theta)y\| \le \theta \|x\| + (1-\theta) \|y\| $$
+      <p>This proves that <b>all norms are convex functions</b>. The proof is purely algebraic:</p>
+      <div class="proof-box">
+        <h4>Proof</h4>
+        <p>$$ \|\theta x + (1-\theta)y\| \le \|\theta x\| + \|(1-\theta)y\| \quad \text{(Triangle Inequality)} $$</p>
+        <p>$$ = |\theta| \|x\| + |1-\theta| \|y\| \quad \text{(Homogeneity)} $$</p>
+        <p>Since $\theta \in [0, 1]$, $|\theta|=\theta$ and $|1-\theta|=1-\theta$. Thus:</p>
+        <p>$$ = \theta \|x\| + (1-\theta) \|y\| $$</p>
+      </div>
+
+      <h3>4.4 Norms Induce Metrics</h3>
+      <p>Given any norm $\|\cdot\|$, we can define a distance function (metric) $d(x, y) := \|x - y\|$. This metric inherits all required properties:</p>
+      <ol>
+        <li><b>Non-negativity:</b> $d(x,y) \ge 0$, and $0$ iff $x=y$ (from N1).</li>
+        <li><b>Symmetry:</b> $d(x,y) = \|x-y\| = \|-(y-x)\| = \|y-x\| = d(y,x)$ (from N2).</li>
+        <li><b>Triangle Inequality:</b> $d(x,z) = \|x-z\| = \|(x-y)+(y-z)\| \le \|x-y\| + \|y-z\| = d(x,y) + d(y,z)$ (from N3).</li>
+      </ol>
+      <p>So norms are not just "sizes"; they generate "distances." This is why we can talk about convergence, limits, and continuity in vector spaces.</p>
+
+      <h3>4.5 Standard Norms ($\ell_2, \ell_1, \ell_\infty$)</h3>
+      <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law.</p>
+
+      <div class="example">
+        <h4>Example 1: Euclidean Norm ($\ell_2$)</h4>
+        <p>$$ \|x\|_2 = \sqrt{\sum x_i^2} $$</p>
+        <ul>
+          <li><b>N1 & N2:</b> Trivial from square root properties.</li>
+          <li><b>N3 (Triangle Inequality):</b> Follows from the Cauchy-Schwarz inequality ($\mathbf{x}^\top \mathbf{y} \le \|x\|_2 \|y\|_2$).</li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <h4>Example 2: Manhattan Norm ($\ell_1$)</h4>
+        <p>$$ \|x\|_1 = \sum |x_i| $$</p>
+        <ul>
+          <li><b>N1 & N2:</b> Trivial.</li>
+          <li><b>N3:</b> Follows from the scalar triangle inequality $|a+b| \le |a| + |b|$ applied coordinate-wise.</li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <h4>Example 3: Chebyshev Norm ($\ell_\infty$)</h4>
+        <p>$$ \|x\|_\infty = \max_i |x_i| $$</p>
+        <ul>
+          <li><b>N1 & N2:</b> Trivial.</li>
+          <li><b>N3:</b> $|x_i + y_i| \le |x_i| + |y_i| \le \|x\|_\infty + \|y\|_\infty$. Taking the max over $i$ proves it.</li>
+        </ul>
+      </div>
 
       <figure style="text-align: center;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
              alt="Parallelogram law for vector addition"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
-        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
+        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products (like $\ell_2$).</figcaption>
       </figure>
 
-      <h3>4.2 Geometry Extracted from Axioms</h3>
-      <p>Once you have an inner product, you get geometry for free:</p>
-      <ul>
-        <li><b>Induced Norm:</b> $\|x\| := \sqrt{\langle x, x \rangle}$. (Length).</li>
-        <li><b>Orthogonality:</b> $x \perp y \iff \langle x, y \rangle = 0$.</li>
-        <li><b>Angles:</b> For non-zero vectors, $\cos \theta = \frac{\langle x, y \rangle}{\|x\| \|y\|}$.</li>
-      </ul>
-
-      <h4>Proof of Norm Properties</h4>
-      <ol>
-        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
-        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
-        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
-      </ol>
-
-      <div class="proof-box">
-        <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
-        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
-        <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t$.
-        Expanding using bilinearity:
-        $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $at^2 + bt + c$ with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
-        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies |\langle x, y \rangle| \le \|x\| \|y\| $$
-        If the discriminant is 0, the parabola touches 0, meaning $\phi(t)=0$ for some $t$, implying $x=ty$ (collinear).</p>
-      </div>
-
-      <div class="proof-box">
-        <h4>Derivation: Triangle Inequality</h4>
-        <p>Now we can prove the final norm axiom.
-        $$ \begin{aligned}
-        \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
-        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
-        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
-        &= (\|x\| + \|y\|)^2
-        \end{aligned} $$
-        Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
-        <br><b>Conclusion:</b> Every inner product space is a normed space. The converse is false (only norms satisfying the Parallelogram Law come from inner products).
-        </p>
-      </div>
-
-      <h3>4.3 Linear Functionals and Riesz Representation</h3>
+      <h3>4.6 Linear Functionals and Riesz Representation</h3>
       <p>A <b>linear functional</b> is a linear map from vector space $V$ to scalars $\mathbb{R}$.
       $$ f: \mathbb{R}^n \to \mathbb{R} $$
       Example: $f(x) = 3x_1 - 5x_2$.
@@ -863,8 +931,7 @@
       $$ f(x) = \langle a, x \rangle $$
       <b>Why this matters:</b> This is why gradients are vectors. The derivative $Df(x)$ is technically a linear functional (it eats a direction and spits out a rate of change). The <b>gradient</b> $\nabla f(x)$ is the unique vector that represents this functional: $Df(x)[v] = \langle \nabla f(x), v \rangle$.</p>
 
-      <h3>4.4 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
-      <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law, so they have no associated inner product.</p>
+      <h3>4.7 Dual Norms and Polar Sets</h3>
       <ul>
         <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
         <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>

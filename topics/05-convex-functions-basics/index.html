@@ -131,14 +131,14 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof: Norms are Convex</h4>
-          <p>We verify the convexity condition for any norm $f(x) = \|x\|$.</p>
+          <h4>Proof: Norms are Convex (The Sublinear Template)</h4>
+          <p>Norms are a special case of <b>sublinear functions</b>—functions that are positively homogeneous and subadditive. Any sublinear function is convex.</p>
           <div class="proof-step">
             <strong>Step 1: Convex Combination.</strong> Let $x, y \in \mathbb{R}^n$ and $\theta \in [0, 1]$.
             $$ f(\theta x + (1-\theta)y) = \|\theta x + (1-\theta)y\| $$
           </div>
           <div class="proof-step">
-            <strong>Step 2: Triangle Inequality.</strong> Using $\|a+b\| \le \|a\| + \|b\|$:
+            <strong>Step 2: Subadditivity (Triangle Inequality).</strong> Using $\|a+b\| \le \|a\| + \|b\|$:
             $$ \|\theta x + (1-\theta)y\| \le \|\theta x\| + \|(1-\theta)y\| $$
           </div>
           <div class="proof-step">
@@ -148,7 +148,7 @@
             $$ \|\theta x + (1-\theta)y\| \le \theta \|x\| + (1-\theta)\|y\| = \theta f(x) + (1-\theta)f(y) $$
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> All norms are convex functions.
+            <strong>Conclusion:</strong> All norms (and all sublinear functions like support functions) are convex.
           </div>
         </div>
 
@@ -1705,15 +1705,23 @@
           <div id="widget-operations-preserving" style="width: 100%; height: 500px; position: relative;"></div>
         </div>
 
-        <h3>5.12 Standard Epigraph Modeling Patterns</h3>
+        <h3>5.12 Standard Epigraph Modeling Patterns (The Compiler)</h3>
         <p>These are the "reflexes" for converting complex objectives into standard constraints. They are literally epigraph geometry written algebraically:</p>
         <div class="example-box">
+            <h4>General Patterns</h4>
             <ul>
                 <li><b>Sum:</b> $f(x) = f_1(x) + f_2(x) \iff \exists t_1, t_2: f_1(x) \le t_1, f_2(x) \le t_2, t_1 + t_2 \le t$.</li>
                 <li><b>Maximum:</b> $f(x) = \max_i f_i(x) \iff f_i(x) \le t \ \forall i$.</li>
-                <li><b>Affine Precomposition:</b> $g(x) = f(Ax+b) \iff f(Ax+b) \le t$ (then apply atom's pattern).</li>
                 <li><b>Partial Minimization:</b> $g(x) = \inf_y f(x,y) \iff \exists y: f(x,y) \le t$.</li>
-                <li><b>Perspective:</b> $g(x,t) = t f(x/t) \iff f(x/t) \le s/t$ (often becomes rotated SOC).</li>
+            </ul>
+            <h4>Specific Norm Templates</h4>
+            <ul>
+                <li><b>Objective $\min \|Ax+b\|$:</b> Rewrite as $\min t$ s.t. $\|Ax+b\| \le t$.</li>
+                <li><b>Norm Constraint $\|Ax+b\| \le c$:</b> Convex if $c$ is constant. Just check $c \ge 0$.</li>
+                <li><b>Norm-Affine $\|Ax+b\| \le c^\top x + d$:</b> Rewrite as $\|Ax+b\| \le t, \ t = c^\top x + d, \ t \ge 0$. This is crucial for SOCP compatibility.</li>
+                <li><b>$\ell_\infty$ Ball:</b> $\|Ax+b\|_\infty \le t \iff -t\mathbf{1} \le Ax+b \le t\mathbf{1}$ (Linear).</li>
+                <li><b>$\ell_1$ Ball:</b> $\|Ax+b\|_1 \le t \iff \exists s \ge 0: -s \le Ax+b \le s, \mathbf{1}^\top s \le t$ (Linear).</li>
+                <li><b>$\ell_2$ Ball:</b> $\|Ax+b\|_2 \le t \iff (t, Ax+b) \in \mathcal{Q}$ (Second-Order Cone).</li>
             </ul>
         </div>
       </section>

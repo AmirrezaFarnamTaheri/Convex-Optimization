@@ -106,25 +106,6 @@
           <p>Let $K$ be any convex set containing $S$. By the finite closure theorem, $K$ must contain all convex combinations of points in $S$. Thus $\operatorname{conv}(S) \subseteq K$.</p>
         </div>
 
-        <h3>1.4 Canonical Affine Sets: Hyperplanes, Halfspaces, and Polyhedra</h3>
-        <p>These are the basic building blocks of constrained optimization.</p>
-
-        <h4>Hyperplanes (Equality Constraints)</h4>
-        <p>A <b>hyperplane</b> is a set of the form $\{x \mid a^\top x = b\}$ with $a \neq 0$.
-        <br><b>Geometry:</b> It is an affine set of dimension $n-1$. It divides space into two halfspaces.
-        <br><b>Structure:</b> It is the translation of the subspace $a^\perp$ by any solution $x_0$ ($a^\top x_0=b$).</p>
-
-        <h4>Halfspaces (Inequality Constraints)</h4>
-        <p>A <b>closed halfspace</b> is $\{x \mid a^\top x \le b\}$.
-        <br><b>Convexity:</b> Halfspaces are convex (by definition of convexity on lines). They are <i>not</i> affine (extrapolation leaves the set).
-        <br><b>Boundary:</b> The boundary is the hyperplane $a^\top x = b$. The vector $a$ is the <b>outward normal</b>.</p>
-
-        <h4>Polyhedra (Systems of Inequalities)</h4>
-        <p>A <b>polyhedron</b> is the intersection of finitely many halfspaces and hyperplanes.
-        $$ \mathcal{P} = \{x \mid Ax \le b, Cx = d\} $$
-        Since it is an intersection of convex sets, a polyhedron is convex.
-        <br><b>Polytope:</b> A bounded polyhedron.</p>
-
         <h4>Recession Cone (Asymptotic Directions)</h4>
         <p>For unbounded convex sets, it is useful to characterize directions in which the set extends infinitely. The <b>recession cone</b> of a convex set $C$ is defined as:</p>
         $$ R_C = \{v \in \mathbb{R}^n \mid x + tv \in C \text{ for all } x \in C, t \ge 0\} $$
@@ -282,24 +263,11 @@
           </ul>
         </div>
 
-        <h4>Supporting Hyperplanes</h4>
-        <p>A hyperplane $H = \{x \mid a^\top x = b\}$ supports a set $C$ at a point $x_0$ if:
-        <ol>
-            <li>$x_0$ lies on the hyperplane ($a^\top x_0 = b$).</li>
-            <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le b$ for all $x \in C$).</li>
-        </ol>
-        Supporting hyperplanes are the geometric realization of <b>subgradients</b> (which we will meet in Lecture 05). For a convex set, every boundary point has at least one supporting hyperplane.</p>
-
         <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
         $$
         H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
         $$
         <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
-
-        <h4>Normal Cones (Geometry at the Boundary)</h4>
-        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions at $\mathbf{x}$. It is defined as:</p>
-        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
-        <p>If $\mathbf{x}$ is in the interior of $C$, then $N_C(\mathbf{x}) = \{0\}$. If $\mathbf{x}$ is on the boundary, $N_C(\mathbf{x})$ contains the normal vectors to all supporting hyperplanes at $\mathbf{x}$. This geometric object is fundamental to optimality conditions: $\mathbf{x}^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(\mathbf{x}^*) \in N_C(\mathbf{x}^*)$.</p>
 
         <div class="proof-box">
           <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>

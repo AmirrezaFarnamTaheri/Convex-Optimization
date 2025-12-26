@@ -159,6 +159,15 @@
         <br><i>Steinitz Exchange Lemma:</i> If you have a basis of size $n$, any set with more than $n$ vectors must be linearly dependent.</p>
       </div>
 
+      <h4>(D) The Pivot Column Method (Algorithm)</h4>
+      <p>How do we practically check for independence or finding a basis? We use the <b>Pivot Column Algorithm</b> (Gaussian Elimination).</p>
+      <ol>
+        <li><b>Form a Matrix:</b> Stack the vectors as columns of a matrix $A = [\mathbf{v}_1 \dots \mathbf{v}_k]$.</li>
+        <li><b>Row Reduce:</b> Compute the Row Reduced Echelon Form (RREF) of $A$.</li>
+        <li><b>Identify Pivots:</b> A column with a pivot (leading 1) corresponds to a vector that adds a new dimension. A column <i>without</i> a pivot is linearly dependent on the previous pivot columns.</li>
+      </ol>
+      <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
+
     </section>
 
     <!-- SECTION 2: SUBSPACES -->
@@ -579,12 +588,214 @@
         Using Cauchy-Schwarz.</li>
       </ul>
 
-      <h3>4.3 Weighted Inner Products</h3>
+      <h3>4.3 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
+      <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law, so they have no associated inner product.</p>
+      <ul>
+        <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
+        <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>
+      </ul>
+
+      <figure style="text-align: center;">
+        <img src="assets/norm-balls.png"
+             alt="Comparison of L1, L2, and Infinity norm unit balls"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+        <figcaption><i>Figure 6:</i> The "unit ball" $\{\mathbf{x} \mid \|\mathbf{x}\| \le 1\}$ for the $\ell_1$ (diamond), $\ell_2$ (circle), and $\ell_\infty$ (square) norms. All are convex sets.</figcaption>
+      </figure>
+
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Visualizer: The Geometry of Norms</h3>
+        <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms. Note that the $\ell_1$ ball has "corners" on the axes (promoting sparsity), while $\ell_2$ is isotropic.</p>
+        <div id="widget-norm-geometry" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+
+      <h3>4.4 Dual Norms and Polar Sets</h3>
+      <p>The <b>dual norm</b> provides a variational definition of size. For any norm $\|\cdot\|$, its dual $\|\cdot\|_*$ is:
+      $$ \|\mathbf{y}\|_* = \sup_{\|\mathbf{x}\| \le 1} \mathbf{x}^\top \mathbf{y} $$
+      This measures the maximum "correlation" $\mathbf{y}$ can have with any unit vector.</p>
+
+      <div class="proof-box">
+        <h4>Theorem: The Dual Norm is a Norm</h4>
+        <div class="proof-step">
+          <strong>1. Positive Definiteness:</strong> $\|\mathbf{y}\|_* \ge \mathbf{y}^\top 0 = 0$. If $\|\mathbf{y}\|_*=0$, then $\sup \mathbf{x}^\top \mathbf{y} = 0$. By taking $\mathbf{x} = \mathbf{y}/\|\mathbf{y}\|$ (if norm exists) or coordinate vectors, we see $\mathbf{y}$ must be 0.
+        </div>
+        <div class="proof-step">
+          <strong>2. Homogeneity:</strong> $\|\alpha \mathbf{y}\|_* = \sup_{\|\mathbf{x}\|\le 1} \mathbf{x}^\top (\alpha \mathbf{y}) = \alpha \sup \mathbf{x}^\top \mathbf{y}$ (if $\alpha \ge 0$). Symmetry of the unit ball handles $\alpha < 0$.
+        </div>
+        <div class="proof-step">
+          <strong>3. Triangle Inequality:</strong>
+          $$ \|\mathbf{y}+\mathbf{z}\|_* = \sup_{\|\mathbf{x}\|\le 1} (\mathbf{y}+\mathbf{z})^\top \mathbf{x} \le \sup_{\|\mathbf{x}\|\le 1} \mathbf{y}^\top \mathbf{x} + \sup_{\|\mathbf{x}\|\le 1} \mathbf{z}^\top \mathbf{x} = \|\mathbf{y}\|_* + \|\mathbf{z}\|_*. $$
+        </div>
+      </div>
+
+      <h4>Generalized Hölder's Inequality</h4>
+      <p>From the definition, we immediately get the fundamental inequality:
+      $$ \mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_* $$
+      <i>Proof:</i> If $\mathbf{x}=0$, trivial. If $\mathbf{x} \neq 0$, let $\mathbf{u} = \mathbf{x}/\|\mathbf{x}\|$. Then $\|\mathbf{u}\|=1$, so $\mathbf{u}^\top \mathbf{y} \le \|\mathbf{y}\|_* \implies (\mathbf{x}/\|\mathbf{x}\|)^\top \mathbf{y} \le \|\mathbf{y}\|_* \implies \mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_*$.</p>
+
+      <h4>Canonical Dual Pairs</h4>
+      <ul>
+        <li><b>$\ell_2$ is self-dual:</b> $\|\mathbf{y}\|_{2,*} = \|\mathbf{y}\|_2$. (Aligned by $\mathbf{x} = \mathbf{y}/\|\mathbf{y}\|_2$).</li>
+        <li><b>$\ell_1$ dual is $\ell_\infty$:</b> $\|\mathbf{y}\|_{1,*} = \|\mathbf{y}\|_\infty$. (Maximize $\mathbf{x}^\top \mathbf{y}$ on diamond $\to$ pick corner).</li>
+        <li><b>$\ell_\infty$ dual is $\ell_1$:</b> $\|y\|_{\infty,*} = \|\mathbf{y}\|_1$. (Maximize $\mathbf{x}^\top \mathbf{y}$ on box $\to$ match signs).</li>
+      </ul>
+
+      <div class="theorem-box">
+        <h4>Lemma: Conjugate of a Norm</h4>
+        <p>This lemma is crucial for dual derivations. Let $\|\cdot\|$ be any norm and $\|\cdot\|_*$ its dual norm. The conjugate of the scaled norm $f(\mathbf{x}) = \rho \|\mathbf{x}\|$ is the indicator function of the dual ball:
+        $$ (\rho\|\mathbf{x}\|)^*(\mathbf{z}) = I_{\{\|\mathbf{z}\|_* \le \rho\}}(\mathbf{z}) = \begin{cases} 0 & \|\mathbf{z}\|_* \le \rho \\ \infty & \text{otherwise} \end{cases} $$
+        <i>Proof:</i> We need to calculate the conjugate of $f(\mathbf{x}) = \rho \|\mathbf{x}\|$, which is $f^*(\mathbf{z}) = \sup_{\mathbf{x}} (\mathbf{z}^\top \mathbf{x} - \rho \|\mathbf{x}\|)$.
+        <br><b>Case 1: $\|\mathbf{z}\|_* \le \rho$.</b> By definition of dual norm, $\mathbf{z}^\top \mathbf{x} \le \|\mathbf{z}\|_* \|\mathbf{x}\|$.
+        $$ \mathbf{z}^\top \mathbf{x} - \rho \|\mathbf{x}\| \le (\|\mathbf{z}\|_* - \rho) \|\mathbf{x}\| $$
+        Since $\|\mathbf{z}\|_* \le \rho$, the coefficient $(\|\mathbf{z}\|_* - \rho)$ is non-positive. Since $\|\mathbf{x}\| \ge 0$, the maximum value is 0 (achieved at $\mathbf{x}=0$).
+        <br><b>Case 2: $\|\mathbf{z}\|_* > \rho$.</b> There exists a vector $\mathbf{x}_0$ such that $\|\mathbf{x}_0\| \le 1$ and $\mathbf{z}^\top \mathbf{x}_0 = \|\mathbf{z}\|_*$ (or arbitrarily close).
+        Let $\mathbf{x} = t \mathbf{x}_0$ for $t > 0$.
+        $$ \mathbf{z}^\top (t \mathbf{x}_0) - \rho \|t \mathbf{x}_0\| = t (\mathbf{z}^\top \mathbf{x}_0 - \rho \|\mathbf{x}_0\|) = t (\|\mathbf{z}\|_* - \rho) $$
+        Since $\|\mathbf{z}\|_* > \rho$, this expression goes to $+\infty$ as $t \to \infty$.
+        <br>Thus, the conjugate is the indicator of the dual ball.
+        </p>
+      </div>
+
+      <h4>Polar Sets</h4>
+      <p>The <b>polar</b> of a convex set $C$ is $C^\circ = \{\mathbf{y} : \mathbf{y}^\top \mathbf{x} \le 1 \ \forall \mathbf{x} \in C\}$.
+      <br>For a unit ball $B = \{\mathbf{x} : \|\mathbf{x}\| \le 1\}$, the polar is exactly the dual unit ball:
+      $$ B^\circ = \{\mathbf{y} : \|\mathbf{y}\|_* \le 1\} $$
+      This geometric duality underpins the duality of optimization problems.</p>
+
+      <h3>4.5 Spectral Norm and Convexity</h3>
+
+      <h4>Induced Matrix Norms</h4>
+      <p>The spectral norm is a specific instance of an <b>induced norm</b> (or operator norm). For any vector norms $\|\cdot\|_a$ on the domain and $\|\cdot\|_b$ on the codomain, the induced norm of a matrix $X$ is:
+      $$ \|X\|_{a,\mathbf{b}} = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_b}{\|\mathbf{v}\|_a} = \sup_{\|\mathbf{v}\|_a = 1} \|X\mathbf{v}\|_b $$
+      This measures the maximum amplification of the $\mathbf{b}$-norm of the output relative to the $a$-norm of the input.</p>
+
+      <h4>Common Operator Norms</h4>
+      <p>When the domain and codomain are equipped with the same $\ell_p$ norm ($a=\mathbf{b}=\mathbf{p}$), we write $\|X\|_p$.</p>
+      <ul>
+        <li><b>Spectral Norm ($\mathbf{p}=2$):</b> $\|X\|_2 = \sigma_{\max}(X)$. (Max stretch of Euclidean length).</li>
+        <li><b>Max Column Sum Norm ($\mathbf{p}=1$):</b> The operator norm induced by the $\ell_1$ norm is the maximum absolute column sum.
+        $$ \|X\|_1 = \max_{j} \sum_{i} |X_{ij}| $$
+        <i>Intuition:</i> The unit ball of $\ell_1$ is a diamond with vertices at $e_j$. The maximum stretch occurs at one of these vertices $X e_j$ (the $j$-th column).
+        </li>
+        <li><b>Max Row Sum Norm ($\mathbf{p}=\infty$):</b> The operator norm induced by the $\ell_\infty$ norm is the maximum absolute row sum.
+        $$ \|X\|_\infty = \max_{i} \sum_{j} |X_{ij}| $$
+        <i>Intuition:</i> This is the dual of the 1-norm case.
+        </li>
+      </ul>
+
+      <p><b>Convexity:</b> All induced norms are convex functions of the matrix $X$. This follows because $\|X\|_{a,b} = \sup_{\|\mathbf{u}\|_{\mathbf{b}^*} \le 1, \|\mathbf{v}\|_a \le 1} \mathbf{u}^\top X \mathbf{v}$, which is a pointwise supremum of linear functions.</p>
+
+      <h4>Spectral Norm Details</h4>
+      <p>The <b>spectral norm</b> (or operator norm) of a matrix $X \in \mathbb{R}^{m \times n}$ is induced by the Euclidean vector norm:
+      $$ \|X\|_2 = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_2}{\|\mathbf{v}\|_2} = \sup_{\|\mathbf{v}\|_2=1} \|X\mathbf{v}\|_2 $$
+      <p><b>Intuition: Worst-Case Stretch.</b> The operator norm measures the maximum factor by which the matrix $X$ can "stretch" a vector. It corresponds to the "Lipschitz constant" of the linear map. Geometrically, it is the length of the longest semi-axis of the ellipsoid formed by mapping the unit sphere.</p>
+      It turns out this equals the maximum singular value:
+      $$ \|X\|_2 = \sigma_{\max}(X) = \sqrt{\lambda_{\max}(X^\top X)} $$
+      Since $X^\top X$ is always Positive Semidefinite ($\mathbf{v}^\top X^\top X \mathbf{v} = \|X\mathbf{v}\|_2^2 \ge 0$), its eigenvalues are non-negative.</p>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/operator-norm-geometry.png"
+             alt="A unit circle mapped to an ellipse illustrating the spectral norm as maximum stretch"
+             style="max-width: 90%; height: auto; border-radius: 8px;" />
+        <figcaption><i>Figure 7:</i> Operator-norm geometry: $\|A\|_2$ is the maximum stretch of the unit circle under $A$, equal to the longest semi-axis length (the largest singular value).</figcaption>
+      </figure>
+
+      <div class="proof-box">
+        <h4>Proof: $\|X\|_2 = \sqrt{\lambda_{\max}(X^\top X)}$</h4>
+        <div class="proof-step">
+          <strong>Step 1: Squared Norm.</strong>
+          $$ \|X\|_2^2 = \sup_{\mathbf{v} \neq 0} \frac{\|X\mathbf{v}\|_2^2}{\|\mathbf{v}\|_2^2} = \sup_{\mathbf{v} \neq 0} \frac{\mathbf{v}^\top X^\top X \mathbf{v}}{\mathbf{v}^\top \mathbf{v}} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Rayleigh Quotient.</strong> The expression $\frac{\mathbf{v}^\top M \mathbf{v}}{\mathbf{v}^\top \mathbf{v}}$ for a symmetric matrix $M$ is the Rayleigh Quotient. By the Spectral Theorem, we can diagonalize $M$ in an orthonormal basis of eigenvectors. The maximum value of the quotient is achieved when $\mathbf{v}$ is the eigenvector corresponding to the largest eigenvalue. Thus, the maximum is exactly $\lambda_{\max}(M)$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Conclusion.</strong>
+          $$ \|X\|_2^2 = \lambda_{\max}(X^\top X) \implies \|X\|_2 = \sqrt{\lambda_{\max}(X^\top X)} $$
+        </div>
+      </div>
+
+      <p><b>Dual Representation (Crucial for Convexity Proofs):</b> Similar to the max eigenvalue, the spectral norm can be written as a supremum:
+      $$ \|X\|_2 = \sup_{\|\mathbf{u}\|_2=1, \|\mathbf{v}\|_2=1} \mathbf{u}^\top X \mathbf{v} $$
+      Since $f(X) = \mathbf{u}^\top X \mathbf{v}$ is a <b>linear function</b> of $X$, and $\|X\|_2$ is the supremum of these linear functions, $\|X\|_2$ is a <b>convex function</b>.</p>
+
+      <h3>4.6 Matrix Inner Product and Frobenius Norm</h3>
+      <p>For matrices $X, Y \in \mathbb{R}^{m \times n}$, the <b>trace inner product</b> (also called the Hilbert-Schmidt inner product) is:
+      $$ \langle X, Y \rangle = \mathrm{tr}(X^\top Y) = \sum_{i=1}^m \sum_{j=1}^n X_{ij} Y_{ij} $$
+      The <b>Frobenius norm</b> (or Hilbert-Schmidt norm) is $\|X\|_F = \sqrt{\langle X, X \rangle}$.</p>
+
+      <div class="proof-box">
+        <h4>Derivation: Trace and Frobenius Norm</h4>
+        <p>We show that the Frobenius norm $\|A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$ is induced by the trace inner product $\langle A, B \rangle = \mathrm{tr}(A^\top B)$.</p>
+        <div class="proof-step">
+            <strong>Step 1: Compute Diagonal Elements of $A^\top A$.</strong>
+            Let $P = A^\top A$. By definition of matrix multiplication, the $(j, j)$ entry is the dot product of the $j$-th row of $A^\top$ and the $j$-th column of $A$.
+            Since the $j$-th row of $A^\top$ is the transpose of the $j$-th column of $A$:
+            $$ P_{jj} = \sum_{k=1}^m (A^\top)_{jk} A_{kj} = \sum_{k=1}^m A_{kj} A_{kj} = \sum_{k=1}^m A_{kj}^2 $$
+            This represents the squared Euclidean norm of the $j$-th column of $A$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Sum the Diagonal (Trace).</strong>
+            The trace is the sum of diagonal elements:
+            $$ \mathrm{tr}(A^\top A) = \sum_{j=1}^n P_{jj} = \sum_{j=1}^n \left( \sum_{k=1}^m A_{kj}^2 \right) $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Relate to Element-wise Sum.</strong>
+            The double sum $\sum_{j=1}^n \sum_{k=1}^m A_{kj}^2$ simply iterates over every entry in the matrix, squaring it and adding it up.
+            This is exactly the definition of the squared Frobenius norm:
+            $$ \sum_{j=1}^n \sum_{k=1}^m A_{kj}^2 = \sum_{i,j} A_{ij}^2 = \|A\|_F^2 $$
+            Thus, $\|A\|_F = \sqrt{\mathrm{tr}(A^\top A)}$.
+        </div>
+      </div>
+
+      <h4>Submultiplicativity of the Frobenius Norm</h4>
+      <p>For compatible matrices $A, B$, we have the inequality $\|AB\|_F \le \|A\|_F \|B\|_F$. This property is crucial for analyzing the convergence of matrix iterations.</p>
+
+      <div class="proof-box">
+        <h4>Proof via Column/Row Factorization</h4>
+        <p>We prove this inequality by decomposing the matrix multiplication into vector inner products and applying Cauchy-Schwarz.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Setup.</strong>
+          Let $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times \mathbf{p}}$. Let $C = AB$.
+          <br>Denote the $i$-th <b>column</b> of $A^\top$ (which is the $i$-th row of $A$) as $A_i \in \mathbb{R}^n$.
+          <br>Denote the $j$-th <b>column</b> of $B$ as $B^j \in \mathbb{R}^n$.
+          <br>The $(i,j)$ entry of $C$ is the inner product: $C_{ij} = \langle A_i, B^j \rangle$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 2: Expand Squared Norm.</strong>
+          $$ \|C\|_F^2 = \sum_{i=1}^m \sum_{j=1}^p C_{ij}^2 = \sum_{i=1}^m \sum_{j=1}^p \langle A_i, B^j \rangle^2 $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 3: Apply Cauchy-Schwarz.</strong>
+          For each term, $\langle A_i, B^j \rangle^2 \le \|A_i\|_2^2 \|B^j\|_2^2$.
+          $$ \|C\|_F^2 \le \sum_{i=1}^m \sum_{j=1}^p \|A_i\|_2^2 \|B^j\|_2^2 $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 4: Factorization Trick.</strong>
+          Define $\alpha_i = \|A_i\|_2^2$ and $\beta_j = \|B^j\|_2^2$. The double sum splits because the terms are independent:
+          $$ \sum_{i,j} \alpha_i \beta_j = \sum_i \alpha_i \left(\sum_j \beta_j\right) = \left(\sum_i \alpha_i\right) \left(\sum_j \beta_j\right) $$
+          Substituting back:
+          $$ \sum_{i,j} \|A_i\|_2^2 \|B^j\|_2^2 = \left(\sum_{i=1}^m \|A_i\|_2^2\right) \left(\sum_{j=1}^p \|B^j\|_2^2\right) $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 5: Identify Norms.</strong>
+          The sum of squared norms of rows of $A$ is exactly $\|A\|_F^2$.
+          The sum of squared norms of columns of $B$ is exactly $\|B\|_F^2$.
+          $$ \|AB\|_F^2 \le \|A\|_F^2 \|B\|_F^2 $$
+          Taking square roots gives the result: $\boxed{\|AB\|_F \le \|A\|_F \|B\|_F}$.
+        </div>
+      </div>
+
+      <h3>4.7 Weighted Inner Products</h3>
       <p>For any symmetric positive definite matrix $P \succ 0$, we can define:
       $$ \langle x, y \rangle_P = x^\top P y $$
       This defines a valid inner product. The induced norm $\|x\|_P = \sqrt{x^\top P x} = \|L^\top x\|_2$ (where $P=LL^\top$) represents Euclidean length in a warped coordinate system. This geometry underpins ellipsoids and Newton's method.</p>
 
-      <h3>4.4 Projections onto Convex Sets</h3>
+      <h3>4.8 Projections onto Convex Sets</h3>
       <p>Given a closed convex set $C$ and a point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.
       $$ x^* = \arg\min_{x \in C} \|x - y\|_2 $$
       <b>The Projection Theorem:</b> $x^*$ is the projection if and only if:

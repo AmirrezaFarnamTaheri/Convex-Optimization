@@ -368,32 +368,37 @@
       <p>These theorems form the geometric backbone of duality theory. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
 
       <h3>2.1 Separating Hyperplane Theorem</h3>
-      <p>Let $C, D$ be disjoint convex sets. There exists a hyperplane $a^\top x = b$ separating them:
-      $$ a^\top x \le b \quad \forall x \in C, \qquad a^\top x \ge b \quad \forall y \in D $$
-      <b>Constructive Proof (Projection):</b> If $C$ is closed and $y \notin C$, let $x^* = \Pi_C(y)$. The separating hyperplane is the perpendicular bisector of the segment $[y, x^*]$, shifted to pass through $x^*$ (supporting) or the midpoint (strict separation).</p>
+      <div class="theorem-box">
+        <h4>Theorem: Separation of Convex Sets</h4>
+        <p>Let $C, D$ be disjoint convex sets. There exists a hyperplane $a^\top x = b$ ($a \neq 0$) separating them:
+        $$ a^\top x \le b \quad \forall x \in C, \qquad a^\top y \ge b \quad \forall y \in D $$
+        <b>Strict Separation:</b> If $C$ is closed and $D$ is compact (closed & bounded), then strict separation is possible ($a^\top x < b < a^\top y$).</p>
+      </div>
+      <div class="proof-box">
+        <h4>Constructive Proof via Projection (Closed Set vs Point)</h4>
+        <p>Let $C$ be closed convex and $y \notin C$. Let $x^* = \Pi_C(y)$ be the projection.
+        <br>Define $a = y - x^*$. Then for all $x \in C$:
+        $$ a^\top (x - x^*) \le 0 \implies a^\top x \le a^\top x^* $$
+        For the point $y$:
+        $$ a^\top y = a^\top (x^* + a) = a^\top x^* + \|a\|^2 > a^\top x^* $$
+        Thus the hyperplane through $x^*$ with normal $a$ strictly separates $y$ from $C$.</p>
+      </div>
 
       <h3>2.2 Supporting Hyperplane Theorem</h3>
-      <p>If $C$ is a convex set and $x_0$ is on its boundary $\partial C$, there exists a hyperplane supporting $C$ at $x_0$.
-      $$ a^\top x \le a^\top x_0 \quad \forall x \in C $$
-      This means $C$ lies entirely in one halfspace, and the hyperplane "touches" $C$ at $x_0$.
-      <br><b>Proof Idea:</b> Take a sequence of points $y_k \notin C$ approaching $x_0$. The projection $x_k = \Pi_C(y_k)$ gives a separating normal $a_k = y_k - x_k$. In the limit, $a_k / \|a_k\|$ converges to a supporting normal.</p>
+      <p>A <b>supporting hyperplane</b> at a boundary point $x_0 \in \partial C$ is a hyperplane containing $x_0$ such that $C$ lies entirely on one side.</p>
+      <div class="theorem-box">
+        <h4>Theorem: Existence of Support</h4>
+        <p>If $C$ is a convex set and $x_0 \in \partial C$, there exists $a \neq 0$ such that:
+        $$ a^\top x \le a^\top x_0 \quad \forall x \in C $$
+        </p>
+      </div>
+      <p><b>Limit Argument:</b> Take a sequence $y_k \notin C$ such that $y_k \to x_0$. Let $x_k = \Pi_C(y_k)$. The unit normals $a_k = \frac{y_k - x_k}{\|y_k - x_k\|}$ lie on the unit sphere (compact). A convergent subsequence converges to a supporting normal $a$.</p>
 
       <h3>2.3 The Normal Cone</h3>
-      <p>The set of all supporting normals at $x_0$ is the <b>normal cone</b> $N_C(x_0)$:
+      <p>The set of all valid supporting normals at $x_0$ forms the <b>normal cone</b> $N_C(x_0)$.
       $$ N_C(x_0) = \{g \in \mathbb{R}^n \mid g^\top(x - x_0) \le 0 \quad \forall x \in C\} $$
-      <b>Optimality:</b> $x^*$ maximizes $c^\top x$ over $C$ if and only if $c \in N_C(x^*)$. This is the geometric version of "gradient equals normal".</p>
-
-      <h3>2.4 Theorems of the Alternative (Farkas' Lemma)</h3>
-      <p>Farkas' Lemma is the algebraic certificate of infeasibility for linear inequalities, derived directly from the Separating Hyperplane Theorem.</p>
-
-      <div class="theorem-box">
-        <h4>Farkas' Lemma</h4>
-        <p>For $A \in \mathbb{R}^{m \times n}$ and $b \in \mathbb{R}^m$, exactly one of the following systems has a solution:</p>
-        <ol>
-          <li><b>Primal:</b> $Ax = b, \ x \ge 0$ (b is in the conic hull of columns of A)</li>
-          <li><b>Dual (Alternative):</b> $A^\top y \ge 0, \ b^\top y < 0$ (separating hyperplane exists)</li>
-        </ol>
-      </div>
+      <b>Optimality Condition:</b> $x^*$ maximizes the linear function $c^\top x$ over $C$ if and only if $c \in N_C(x^*)$.
+      <br><i>Interpretation:</i> You are at the "peak" if the gradient points "outward" into the region where no feasible points exist.</p>
 
       <h3>2.4 Theorems of the Alternative (Farkas' Lemma)</h3>
       <p>Farkas' Lemma is the algebraic certificate of infeasibility for linear inequalities, derived directly from the Separating Hyperplane Theorem.</p>

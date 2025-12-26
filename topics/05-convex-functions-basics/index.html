@@ -54,36 +54,80 @@
     <article>
       <section class="section-card" id="section-1">
         <h2>1. Definition and Basic Properties</h2>
+        <h3>1.1 What kind of "function" are we using, really?</h3>
+
+        <p>In convex optimization we almost never work with a plain function $f:\mathbb{R}^n\to\mathbb{R}$. We work with an <b>extended-real-valued function</b>:</p>
+        $$ f:\mathbb{R}^n\to \mathbb{R}\cup\{+\infty\} $$
+        <p>That "$+\infty$" is not cosmetic. It’s a <i>modeling device</i> that lets you fold constraints into the objective.</p>
+
+        <h4>Effective domain (a.k.a. where the function is finite / legal)</h4>
+        $$ \operatorname{dom} f := \{x\in\mathbb{R}^n : f(x) < +\infty\} $$
+        <p>Interpretation:</p>
+        <ul>
+            <li>If $x\notin\operatorname{dom} f$, the model declares $x$ <b>illegal</b> by setting $f(x)=+\infty$.</li>
+            <li>Minimizing $f$ automatically avoids illegal points because any finite value beats $+\infty$.</li>
+        </ul>
+
+        <h4>The key modeling trick: Indicator Functions</h4>
+        <p>Given a constraint set $C\subseteq\mathbb{R}^n$, define its <b>indicator</b>:</p>
+        $$ \delta_C(x)= \begin{cases} 0,& x\in C\\ +\infty,& x\notin C. \end{cases} $$
+        <p>Then the constrained problem $\min_{x\in C} g(x)$ is exactly the unconstrained extended-real problem $\min_x \; g(x)+\delta_C(x)$. This is one of the deepest "why convex analysis is a language" facts: constraints become terms in the objective.</p>
+
+        <h4>"Proper" Functions</h4>
+        <p>A convex analysis convention: we usually want $f$ to be <b>proper</b>, meaning:</p>
+        <ol>
+            <li>$f(x)>-\infty$ for all $x$ (no $-\infty$ values), and</li>
+            <li>$\operatorname{dom} f\neq \emptyset$ (not identically $+\infty$).</li>
+        </ol>
+        <p>Otherwise optimization becomes degenerate: $-\infty$ destroys minimization, and identically $+\infty$ means no feasible point exists.</p>
+
+        <h3>1.2 Convexity: The Core Definition</h3>
+
+        <p>A function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ is <a href="#" class="definition-link" data-term="convex function">convex</a> if:</p>
+        <ol>
+            <li>its effective domain $\mathrm{dom}\, f$ is a <b>convex set</b>, and</li>
+            <li>for every $x,y\in\operatorname{dom} f$ and every $\theta\in[0,1]$:
+                $$ \boxed{ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) } \tag{1} $$
+            </li>
+        </ol>
+        <p>Read it as a machine: pick two legal points $x,y$, mix them into $z=\theta x+(1-\theta)y$, then "cost at the mix" is at most "mix of the costs". This is the "no surprises when averaging" rule.</p>
+
         <div class="insight">
-          <h4>Why "Domain Convexity" is Mandatory</h4>
-          <p>A common mistake is to check the inequality $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$ without verifying that the domain is convex. If the domain is not convex, the inequality is meaningless because the convex combination might not even be in the domain.</p>
-          <p><b>Example:</b> Let $f(x) = 0$ if $x \in \{0, 1\}$ and $\infty$ otherwise. The domain $\{0, 1\}$ is not convex. The inequality holds wherever defined, but $f$ is clearly not convex (its epigraph is not a convex set).</p>
+          <h4>Why "Domain Convexity" is Not a Nitpick</h4>
+          <p>A classic trap is: "I only checked the inequality wherever it’s defined, so it must be convex." That’s wrong, because if the domain is weird, you may never be able to test the inequality on interior mixtures.</p>
+          <p><b>Example (Fake Convexity Check):</b> Let $f(x) = 0$ if $x \in \{0, 1\}$ and $+\infty$ otherwise. $\operatorname{dom} f=\{0,1\}$ (not convex).
+          <br>If someone naively says "pick $x,y\in\{0,1\}$, done," they ignore the segment between them. For $x=0, y=1, \theta=0.5$:
+          <br>LHS: $f(0.5) = +\infty$. RHS: $0.5 f(0) + 0.5 f(1) = 0$.
+          <br>The inequality fails. <b>Moral:</b> convexity is fundamentally a statement about <b>behavior under mixing</b>, and mixing leaves the domain only if the domain is nonconvex.</p>
         </div>
 
+        <h3>1.3 Strict Convexity and Uniqueness</h3>
+        <p>$f$ is <b>strictly convex</b> if for all distinct $x \neq y$ in $\operatorname{dom} f$ and all $\theta \in (0,1)$:</p>
+        $$ f(\theta x + (1-\theta)y) < \theta f(x) + (1-\theta)f(y) $$
 
-        <h3>1.1 Convex Functions: The Core Definition</h3>
+        <div class="theorem-box">
+            <h4>Theorem: Uniqueness of Minimizers</h4>
+            <p>If $f$ is strictly convex on a convex set $C$, then the minimizer of $f$ over $C$, if it exists, is <b>unique</b>.</p>
+            <p><b>Proof:</b> Suppose $x_1 \ne x_2$ are both global minimizers with value $m$. Since $C$ is convex, the midpoint $\bar{x} = 0.5(x_1+x_2)$ is in $C$. Strict convexity gives:
+            $$ f(\bar{x}) < 0.5 f(x_1) + 0.5 f(x_2) = 0.5 m + 0.5 m = m $$
+            Contradiction. Thus, no two distinct minimizers can exist.</p>
+        </div>
 
-        <h4>Extended-Real-Valued Functions</h4>
-        <p>In convex optimization, we work with <b>extended-real-valued functions</b> $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. This modeling device allows us to fold constraints into the objective function. If a point $x$ violates a constraint, we set $f(x) = +\infty$, effectively declaring it "illegal" for minimization.</p>
-
-        <p>The <b>effective domain</b> is the set of points where the function is finite:</p>
-        $$ \mathrm{dom}\, f := \{x \in \mathbb{R}^n \mid f(x) < +\infty\} $$
-
-        <p>A function is called <b>proper</b> if $f(x) > -\infty$ for all $x$ and $\mathrm{dom}\, f \ne \emptyset$. This prevents degenerate cases where the minimum is $-\infty$ or the problem is infeasible everywhere.</p>
-
-        <h4>Convexity Definition</h4>
-        <p>A function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ is <a href="#" class="definition-link" data-term="convex function">convex</a> if its effective domain $\mathrm{dom}\, f$ is a convex set, and for all $x, y \in \mathrm{dom}\, f$ and all $\theta \in [0, 1]$:</p>
-        $$
-        \boxed{ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) }
-        \tag{1}
-        $$
-        <p>This fundamental inequality states that the function value at a convex combination of points is at most the corresponding convex combination of function values. Geometrically, the <b>chord</b> connecting any two points $(x, f(x))$ and $(y, f(y))$ on the graph lies <b>above</b> (or on) the graph.</p>
-
-        <div class="insight">
-          <h4>The Indicator Function: Constraints as Objectives</h4>
-          <p>Given a constraint set $C \subseteq \mathbb{R}^n$, we define its <b>indicator function</b>:
-          $$ \delta_C(x) = \begin{cases} 0 & x \in C \\ +\infty & x \notin C \end{cases} $$
-          Then the constrained problem $\min_{x \in C} g(x)$ is exactly equivalent to the unconstrained problem $\min_x (g(x) + \delta_C(x))$. This unifies constraints and objectives into a single functional language.</p>
+        <h3>1.4 The "Safety Theorem": Local Min is Global Min</h3>
+        <div class="theorem-box">
+            <h4>Theorem</h4>
+            <p>If $f$ is convex on a convex domain, then every local minimizer is a global minimizer.</p>
+        </div>
+        <div class="proof-box">
+            <h4>Proof (Fully Explicit)</h4>
+            <p>Let $x^\star$ be a local minimizer. By definition, there exists $r>0$ such that $f(x^\star) \le f(z)$ for all $z \in \operatorname{dom}f \cap B(x^\star,r)$.
+            <br>Now take an arbitrary $x \in \operatorname{dom}f$. If $x=x^\star$, trivial. Assume $x \ne x^\star$.
+            <br>Because $\operatorname{dom}f$ is convex, the segment connects them. For small $\theta > 0$, define $x_\theta = (1-\theta)x^\star + \theta x$.
+            <br>Choose $\theta$ small enough so $x_\theta \in B(x^\star,r)$. By local minimality: $f(x^\star) \le f(x_\theta)$.
+            <br>By convexity: $f(x_\theta) \le (1-\theta)f(x^\star) + \theta f(x)$.
+            <br>Combine: $f(x^\star) \le (1-\theta)f(x^\star) + \theta f(x) \implies \theta f(x^\star) \le \theta f(x)$.
+            <br>Divide by $\theta > 0$: $f(x^\star) \le f(x)$.
+            <br>Since $x$ was arbitrary, $x^\star$ is a global minimizer.</p>
         </div>
 
         <div class="proof-box">
@@ -108,7 +152,7 @@
           </div>
         </div>
 
-        <h3>1.2 Jensen's Inequality: The General Form</h3>
+        <h3>1.5 Jensen's Inequality: The General Form</h3>
         <p>The basic definition involving two points generalizes to any number of points and even to integrals (expectations).</p>
 
         <h4>Finite Form</h4>
@@ -117,59 +161,53 @@
         f\left(\sum_{i=1}^k \theta_i x_i\right) \le \sum_{i=1}^k \theta_i f(x_i)
         $$
         <div class="proof-box">
-          <h4>Proof of Jensen's Inequality</h4>
-          <p>We prove this by induction on the number of points $k$.</p>
+          <h4>Proof of Finite Jensen by Induction</h4>
           <div class="proof-step">
             <strong>Base Case ($k=2$):</strong> The inequality $f(\theta_1 x_1 + \theta_2 x_2) \le \theta_1 f(x_1) + \theta_2 f(x_2)$ holds by the definition of convexity.
           </div>
           <div class="proof-step">
-            <strong>Inductive Step:</strong> Assume the inequality holds for any convex combination of $k$ points. Consider a combination of $k+1$ points: $x = \sum_{i=1}^{k+1} \theta_i x_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$.
-            <br>We can "peel off" the last point $x_{k+1}$ and treat the rest as a sub-combination.
-            Let $\tilde{\theta} = \sum_{i=1}^{k} \theta_i = 1 - \theta_{k+1}$. Since $\theta_{k+1} < 1$, $\tilde{\theta} > 0$.
-            $$ x = \theta_{k+1} x_{k+1} + \tilde{\theta} \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} x_i = \theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x} $$
-            where $\bar{x} = \sum_{i=1}^{k} (\theta_i/\tilde{\theta}) x_i$ is a valid convex combination of $k$ points (weights sum to 1).
-          </div>
-          <div class="proof-step">
-            <strong>Apply Convexity Twice:</strong>
-            <br>1. Apply the 2-point definition to $x_{k+1}$ and $\bar{x}$:
-            $$ f(x) = f(\theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x}) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} f(\bar{x}) $$
-            2. Apply the inductive hypothesis to $f(\bar{x})$:
-            $$ f(\bar{x}) \le \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i) $$
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion:</strong> Substituting back:
-            $$ f(x) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} \left(\sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i)\right) = \theta_{k+1} f(x_{k+1}) + \sum_{i=1}^{k} \theta_i f(x_i) = \sum_{i=1}^{k+1} \theta_i f(x_i) $$
+            <strong>Inductive Step:</strong> Assume true for $k-1$ points. Consider a combination of $k$ points with weights $\theta_i$. If $\theta_k=1$, trivial. If $\theta_k < 1$, define normalized weights for the first $k-1$ points: $\alpha_i = \theta_i / (1-\theta_k)$.
+            <br>Let $y = \sum_{i=1}^{k-1} \alpha_i x_i$. Then $\sum_{i=1}^k \theta_i x_i = (1-\theta_k)y + \theta_k x_k$.
+            <br>1. Apply convexity (2-point): $f((1-\theta_k)y + \theta_k x_k) \le (1-\theta_k)f(y) + \theta_k f(x_k)$.
+            <br>2. Apply inductive hypothesis to $f(y)$: $f(y) \le \sum_{i=1}^{k-1} \alpha_i f(x_i)$.
+            <br>Multiply by $(1-\theta_k)$: $(1-\theta_k)f(y) \le \sum_{i=1}^{k-1} \theta_i f(x_i)$.
+            <br>Combine to get the result.
           </div>
         </div>
 
         <h4>Expectation Form</h4>
-        <p>This generalizes to random variables. If $Z$ is a random variable taking values in $\mathrm{dom}\, f$, and $f$ is convex, then:</p>
+        <p>If $Z$ is a random variable in $\mathrm{dom}\, f \subseteq \mathbb{R}^n$ and $f$ is convex, then:</p>
         $$
         \boxed{ f(\mathbb{E}[Z]) \le \mathbb{E}[f(Z)] }
         $$
-        <p>provided the expectations exist.
-        <br><i>Interpretation:</i> For a convex cost function, the cost of the average scenario is less than or equal to the average cost of all scenarios. Uncertainty typically increases expected cost for convex functions.</p>
+        <p><b>Caveat:</b> We require $Z \in \mathrm{dom} f$ almost surely, $\mathbb{E}[Z]$ finite, and $\mathbb{E}[f(Z)]$ well-defined.</p>
 
         <div class="proof-box">
           <h4>Proof via Supporting Hyperplane</h4>
-          <p>This proof connects Jensen's inequality directly to the geometry of convex sets.
-          <br><b>Fact:</b> If $f$ is convex, then at any point $\mu \in \mathrm{dom}\, f$, there exists a subgradient $g \in \partial f(\mu)$ such that $f(x) \ge f(\mu) + g^\top(x - \mu)$ for all $x$.
-          <br><b>Step 1:</b> Let $\mu = \mathbb{E}[Z]$. Apply the subgradient inequality at $\mu$:
+          <p><b>Fact:</b> If $f$ is convex, then at $\mu = \mathbb{E}[Z]$, there exists a subgradient $g$ such that $f(x) \ge f(\mu) + g^\top(x - \mu)$ for all $x$.
+          <br>Substitute random variable $Z$ for $x$:
           $$ f(Z) \ge f(\mu) + g^\top(Z - \mu) $$
-          <br><b>Step 2:</b> Take expectations of both sides. By linearity of expectation:
+          Take expectation (linear operator):
           $$ \mathbb{E}[f(Z)] \ge f(\mu) + g^\top(\mathbb{E}[Z] - \mu) $$
-          Since $\mathbb{E}[Z] = \mu$, the term $g^\top(\mathbb{E}[Z] - \mu) = 0$.
-          <br><b>Result:</b> $\mathbb{E}[f(Z)] \ge f(\mathbb{E}[Z])$.</p>
+          Since $\mathbb{E}[Z] = \mu$, the linear term vanishes.
+          $$ \mathbb{E}[f(Z)] \ge f(\mathbb{E}[Z]) $$
+          This proof confirms Jensen is conceptually "supporting hyperplanes + linearity of expectation".</p>
         </div>
 
         <div class="insight">
-          <h4>Jensen and Variance</h4>
+          <h4>Jensen as "Variance is Nonnegative"</h4>
           <p>For $f(x) = x^2$, Jensen's inequality gives $(\mathbb{E}[X])^2 \le \mathbb{E}[X^2]$.
-          <br>Rearranging this yields $\mathbb{E}[X^2] - (\mathbb{E}[X])^2 \ge 0$, which is exactly $\mathrm{Var}(X) \ge 0$.
-          <br>Thus, the non-negativity of variance is a special case of Jensen's inequality.</p>
+          <br>Rearranging: $\mathbb{E}[X^2] - (\mathbb{E}[X])^2 \ge 0 \implies \mathrm{Var}(X) \ge 0$.
+          <br>For vector $f(x) = \|x\|_2^2$, it gives $\|\mathbb{E}[X]\|_2^2 \le \mathbb{E}[\|X\|_2^2]$. Convexity penalizes dispersion.</p>
         </div>
 
-        <h3>1.3 Applications of Jensen's Inequality</h3>
+        <h4>Equality Conditions</h4>
+        <ul>
+            <li>If $f$ is <b>strictly convex</b>, equality holds if and only if $Z$ is constant almost surely ($Z = \mathbb{E}[Z]$).</li>
+            <li>If $f$ is affine (linear), equality always holds.</li>
+        </ul>
+
+        <h3>1.6 Applications of Jensen's Inequality</h3>
         <p>Jensen's inequality is a powerful engine for generating algebraic inequalities.</p>
 
         <div class="example">
@@ -226,103 +264,26 @@
           <br><b>However:</b> If $\mathbf{w} = c \mathbf{v}$ is a scaled version of $\mathbf{v}$ (with $|c| < 1$), then the monotonicity holds.</p>
         </div>
 
-        <h3>1.4 Integral Characterization of Convexity</h3>
-        <p>A powerful alternative definition of convexity involves integrals. This mirrors the "average value" property of harmonic functions but with an inequality. We define the integral along the chord:</p>
-        $$ I_f(x,y) := \int_0^1 f(tx + (1-t)y) dt $$
+        <h3>1.7 Integral Characterization of Convexity</h3>
+        <p>A continuous function $f: \mathbb{R}^n \to \mathbb{R}$ is convex <b>if and only if</b> for all $x, y \in \mathrm{dom}\, f$:</p>
+        $$ \int_0^1 f(tx + (1-t)y) dt \le \frac{f(x) + f(y)}{2} $$
+        <p>This states that the <b>average value</b> of the function along a segment is less than or equal to the <b>average of the values</b> at the endpoints.</p>
 
-        <div class="theorem-box">
-          <h4>Theorem</h4>
-          <p>A continuous function $f: \mathbb{R}^n \to \mathbb{R}$ is convex <b>if and only if</b> for all $x, y \in \mathrm{dom}\, f$:</p>
-          $$ \int_0^1 f(tx + (1-t)y) dt \le \frac{f(x) + f(y)}{2} $$
-          <p>This states that the <b>average value</b> of the function along a segment is less than or equal to the <b>average of the values</b> at the endpoints.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Proof Breakdown</h4>
-
-          <div class="proof-step">
-            <strong>Step 1: The "Little Red Formula" (Affine Case).</strong>
-            <p>Let $\ell(z) = a^\top z + b$ be an affine function. We evaluate its integral along the segment $z(t) = tx + (1-t)y$ for $t \in [0, 1]$.
-            <br>By linearity:
-            $$ \ell(z(t)) = t(a^\top x + b) + (1-t)(a^\top y + b) = t \ell(x) + (1-t) \ell(y) $$
-            Now integrate from $0$ to $1$:
-            $$ \int_0^1 \ell(z(t)) dt = \ell(x) \underbrace{\int_0^1 t dt}_{1/2} + \ell(y) \underbrace{\int_0^1 (1-t) dt}_{1/2} = \frac{\ell(x) + \ell(y)}{2} $$
-            This establishes a crucial baseline: <b>for an affine function, the average value along the segment equals the average of the endpoint values.</b> Geometrically, this is the area of a trapezoid.</p>
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Convex $\Rightarrow$ Integral Inequality.</strong>
-            <p>If $f$ is convex, the function lies below the chord:
-            $$ f(tx + (1-t)y) \le t f(x) + (1-t)f(y) $$
-            Integrating this inequality with respect to $t$:
-            $$ \int_0^1 f(z(t)) dt \le f(x) \int_0^1 t dt + f(y) \int_0^1 (1-t) dt = \frac{f(x)+f(y)}{2} $$
-            This direction is simply "integrating the convexity definition". It can be viewed as <b>Jensen's inequality applied to the uniform distribution</b> on the chord.</p>
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Integral Inequality $\Rightarrow$ Convex.</strong>
-            <p>This direction uses a clever trick: <b>subtracting a supporting line</b> to measure the "bump" above it.
-            <br>Assume the integral inequality holds for all $x, y$. Suppose for contradiction that $f$ is <b>not</b> convex. Then there exists a point $z_0$ on some segment where $f(z_0)$ lies strictly above the chord.
-            <br>Let $\ell(u)$ be the <b>chord</b> connecting $(x, f(x))$ and $(y, f(y))$.
-            <br>Define the difference function $g(u) = f(u) - \ell(u)$.
-            <br>Key properties of $g$:
-            <ul>
-                <li>$g(x) = f(x) - \ell(x) = 0$ and $g(y) = 0$.</li>
-                <li>At the violating point $z_0$, $g(z_0) > 0$.</li>
-            </ul>
-            Now, apply the integral inequality to $g$. Since the integral condition is linear, and equality holds for $\ell$:
-            $$ \int_0^1 g(z(t)) dt = \int_0^1 f(z(t)) dt - \int_0^1 \ell(z(t)) dt \le \frac{f(x)+f(y)}{2} - \frac{\ell(x)+\ell(y)}{2} = \frac{g(x)+g(y)}{2} = 0 $$
-            So the integral of $g$ must be non-positive.
-            <br>However, since $g(z_0) > 0$ and we typically assume continuity, there is a small interval around $z_0$ where $g$ is positive. Thus $\int g > 0$.
-            <br>The inequality effectively says the "average bump above the supporting line" must be zero (since endpoints are zero), which forces the function to never rise above the chord.
-            <br>This contradiction ($\int g > 0$ vs $\int g \le 0$) proves $f$ must be convex.</p>
-          </div>
-        </div>
-
-        <h3>1.5 Concave Functions</h3>
+        <h3>1.8 Concave Functions</h3>
         <p>A function $f$ is <a href="#" class="definition-link">concave</a> if $-f$ is convex. Equivalently, the chord lies below the graph. All results for convex functions can be "flipped" for concave functions by negating.</p>
 
-        <h3>1.6 Restriction to a Line</h3>
-        <p>A function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ is convex if and only if its restriction to any line is convex. This is a powerful tool for proving convexity.</p>
+        <h3>1.9 Restriction to a Line (The Conceptual Core)</h3>
         <div class="theorem-box">
-          <h4>Theorem (Restriction to a Line)</h4>
-          <p>$f$ is convex if and only if for all $x \in \mathrm{dom}\, f$ and $v \in \mathbb{R}^n$, the function $g(t) = f(x + tv)$ is convex (on its domain $\{t \mid x+tv \in \mathrm{dom}\, f\}$).</p>
+          <h4>Theorem</h4>
+          <p>$f$ is convex if and only if for all $x \in \mathrm{dom}\, f$ and $v \in \mathbb{R}^n$, the function $g(t) = f(x + tv)$ is convex on its domain.</p>
         </div>
-        <div class="proof-box">
-          <h4>Proof</h4>
-          <p>This theorem allows us to reduce $n$-dimensional convexity to 1-dimensional convexity.</p>
-          <div class="proof-step">
-            <strong>($\Rightarrow$) Convex $\implies$ Restriction is Convex.</strong>
-            Assume $f$ is convex. Fix $x, v$. Let $t_1, t_2$ be scalars and $\theta \in [0, 1]$.
-            <br>We compute $g$ at the convex combination of points:
-            $$ g(\theta t_1 + (1-\theta)t_2) = f(x + (\theta t_1 + (1-\theta)t_2)v) $$
-            Rearrange the argument as a convex combination of vectors:
-            $$ = f(\theta(x + t_1 v) + (1-\theta)(x + t_2 v)) $$
-            By convexity of $f$:
-            $$ \le \theta f(x + t_1 v) + (1-\theta)f(x + t_2 v) = \theta g(t_1) + (1-\theta)g(t_2) $$
-            Thus $g$ satisfies the definition of a convex function.
-          </div>
-          <div class="proof-step">
-            <strong>($\Leftarrow$) Restriction is Convex $\implies$ Convex.</strong>
-            Assume $g(t) = f(x+tv)$ is convex for all lines.
-            Take any two points $x, y \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$.
-            We want to evaluate $f$ at $z = \theta x + (1-\theta)y$.
-            <br>Consider the specific line passing through $\mathbf{x}$ and $\mathbf{y}$. Let $\mathbf{v} = \mathbf{y} - \mathbf{x}$.
-            Define the restriction $g(t) = f(x + tv)$.
-            Note that:
-            <ul>
-                <li>$g(0) = f(x)$</li>
-                <li>$g(1) = f(x + (y-x)) = f(y)$</li>
-                <li>$g(1-\theta) = f(x + (1-\theta)(y-x)) = f(\theta x + (1-\theta)y) = f(z)$</li>
-            </ul>
-            Since $g$ is convex, we apply the definition with points $t_1=0, t_2=1$ and weight $1-\theta$:
-            $$ g((1-(1-\theta))\cdot 0 + (1-\theta)\cdot 1) \le (1-(1-\theta))g(0) + (1-\theta)g(1) $$
-            Simplifying the weights:
-            $$ g(1-\theta) \le \theta g(0) + (1-\theta)g(1) $$
-            Substituting back the function values:
-            $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
-            Thus $f$ is convex.
-          </div>
+        <p><b>Why this matters:</b> Convexity is a statement about segments. Segments are 1-D objects. Thus, "n-dimensional convexity" is secretly just "1-D convexity along every possible direction".</p>
+        <div class="warning-box">
+            <h4>Trap: Coordinate-wise Convexity</h4>
+            <p>It is <b>NOT</b> sufficient to check convexity along coordinate axes (varying one $x_i$ at a time).
+            <br><b>Counterexample:</b> $f(x,y) = xy$.
+            <br>Fix $y$: $x \mapsto xy$ is linear (convex). Fix $x$: $y \mapsto xy$ is linear (convex).
+            <br>But along the line $x=t, y=-t$, we get $g(t) = -t^2$, which is strictly concave. Thus $xy$ is not convex.</p>
         </div>
 
         <div class="widget-container" style="margin: 24px 0;">
@@ -342,76 +303,62 @@
       <section class="section-card" id="section-2">
         <h2>2. Epigraph Characterization</h2>
 
-        <h3>2.1 The Epigraph</h3>
-        <p>The <a href="#" class="definition-link">epigraph</a> of a function $f: \mathbb{R}^n \to \mathbb{R}$ is the set of points lying on or above the graph:</p>
+        <h3>2.1 The Epigraph: Function as a Set</h3>
+        <p>The <a href="#" class="definition-link">epigraph</a> of a function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ is the set of points lying on or above the graph:</p>
         $$
         \mathrm{epi}\, f = \{(x, t) \in \mathbb{R}^{n+1} \mid x \in \mathrm{dom}\, f, \ f(x) \le t\}
         $$
-        <p>The epigraph "fills in" everything above the function's graph.</p>
+        <p><b>Orientation:</b> "Epi" means "above". $\mathrm{epi}(f)$ is the set <i>above</i> the graph. (For concave functions, we use the <i>hypograph</i>, the set below).</p>
 
         <div class="insight">
-          <h4>The Epigraph Encodes the Function</h4>
-          <p>The epigraph is not just a visual aid; it is a complete set-theoretic representation of the function. We can reconstruct $f$ from its epigraph via the formula:
+          <h4>The Epigraph Encodes the Function Completely</h4>
+          <p>The epigraph is not merely a certificate of convexity; it is a set-theoretic representation of the function itself. We can recover $f$ from $\mathrm{epi}\, f$ via:</p>
           $$ f(x) = \inf \{ t \mid (x, t) \in \mathrm{epi}\, f \} $$
-          This means that optimizing $f(x)$ is exactly equivalent to finding the "lowest" point in the set $\mathrm{epi}\, f$. This transformation allows us to treat "minimizing a function" as "minimizing a coordinate over a set".</p>
+          <ul>
+              <li>If the set of $t$'s is empty, the infimum is $+\infty$ (correct for $x \notin \mathrm{dom} f$).</li>
+              <li>If the set is unbounded below, the infimum is $-\infty$.</li>
+          </ul>
+          <p>This equivalence allows us to translate "minimizing $f(x)$" into "finding the lowest vertical coordinate in a set".</p>
         </div>
 
-        <h3>2.2 Convexity via Epigraph</h3>
+        <h3>2.2 Theorem: Convexity $\iff$ Convex Epigraph</h3>
         <div class="theorem-box">
-          <h4>Theorem (Epigraph Characterization)</h4>
-          <p>A function $f$ is convex <b>if and only if</b> its epigraph $\mathrm{epi}\, f$ is a convex set.</p>
+          <h4>Theorem</h4>
+          <p>A function $f$ is convex <b>if and only if</b> its epigraph $\mathrm{epi}\, f$ is a convex set in $\mathbb{R}^{n+1}$.</p>
         </div>
 
         <div class="proof-box">
-          <h4>Proof</h4>
+          <h4>Proof (The "Mix" Logic)</h4>
+          <p><b>($\Rightarrow$) $f$ convex $\implies$ $\mathrm{epi}\, f$ convex:</b>
+          <br>Take two points $(x_1, t_1), (x_2, t_2) \in \mathrm{epi}\, f$. This means $f(x_1) \le t_1$ and $f(x_2) \le t_2$.
+          <br>Consider the convex combination for $\theta \in [0,1]$:
+          $$ (\bar{x}, \bar{t}) = \theta(x_1, t_1) + (1-\theta)(x_2, t_2) = (\theta x_1 + (1-\theta)x_2, \theta t_1 + (1-\theta)t_2) $$
+          We check if $(\bar{x}, \bar{t}) \in \mathrm{epi}\, f$, i.e., if $f(\bar{x}) \le \bar{t}$.
+          $$ f(\bar{x}) \le \theta f(x_1) + (1-\theta)f(x_2) \quad \text{(by convexity of } f \text{)} $$
+          $$ \le \theta t_1 + (1-\theta)t_2 = \bar{t} \quad \text{(by epigraph condition)} $$
+          Thus the mixture is in the epigraph.</p>
 
-          <div class="proof-step">
-            <strong>($\Rightarrow$) Convex function implies convex epigraph:</strong> Suppose $f$ is convex. Take any $(x, t), (y, s) \in \mathrm{epi}\, f$ and $\theta \in [0, 1]$. We must show $(\theta x + (1-\theta)y, \theta t + (1-\theta)s) \in \mathrm{epi}\, f$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 1:</strong> Since $(x, t) \in \mathrm{epi}\, f$ and $(y, s) \in \mathrm{epi}\, f$, we have $f(x) \le t$ and $f(y) \le s$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2:</strong> By convexity of $f$:
-            $$
-            f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) \le \theta t + (1-\theta)s
-            $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3:</strong> Therefore, $(\theta x + (1-\theta)y, \theta t + (1-\theta)s) \in \mathrm{epi}\, f$, proving $\mathrm{epi}\, f$ is convex.
-          </div>
-
-          <div class="proof-step">
-            <strong>($\Leftarrow$) Convex epigraph implies convex function:</strong> Suppose $\mathrm{epi}\, f$ is convex. Take any $x, y \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 1:</strong> The points $(x, f(x))$ and $(y, f(y))$ lie in $\mathrm{epi}\, f$ (on the boundary, in fact).
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2:</strong> By convexity of $\mathrm{epi}\, f$, the point $(\theta x + (1-\theta)y, \theta f(x) + (1-\theta)f(y))$ also lies in $\mathrm{epi}\, f$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3:</strong> By definition of epigraph, this means:
-            $$
-            f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)
-            $$
-            proving $f$ is convex.
-          </div>
+          <p><b>($\Leftarrow$) $\mathrm{epi}\, f$ convex $\implies$ $f$ convex:</b>
+          <br>Take $x_1, x_2 \in \mathrm{dom}\, f$. The points $(x_1, f(x_1))$ and $(x_2, f(x_2))$ are in $\mathrm{epi}\, f$.
+          <br>By convexity of the set, their mixture $(\bar{x}, \theta f(x_1) + (1-\theta)f(x_2))$ is in $\mathrm{epi}\, f$.
+          <br>The definition of epigraph requires:
+          $$ f(\bar{x}) \le \text{vertical coordinate} = \theta f(x_1) + (1-\theta)f(x_2) $$
+          This is exactly the convexity inequality.</p>
         </div>
 
-        <div class="insight">
-          <h4>⚡ Why This Matters: The Bridge</h4>
-          <p>The epigraph is the <b>fundamental bridge</b> between <a href="../03-convex-sets-geometry/index.html">Lecture 03 (Sets)</a> and this lecture. It allows us to apply geometric theorems (like separation of convex sets) to derive functional properties (like subgradients and duality).
-          <br><b>Rule of Thumb:</b> If you are stuck proving a function property, try rewriting it as a set property of its epigraph.</p>
+        <h3>2.3 Sublevel Sets (The Bridge to Quasiconvexity)</h3>
+        <p>The $\alpha$-sublevel set is $S_\alpha = \{x \in \mathrm{dom} f \mid f(x) \le \alpha\}$.</p>
+        <div class="theorem-box">
+            <h4>Theorem</h4>
+            <p>If $f$ is convex, then every sublevel set $S_\alpha$ is a convex set.</p>
+            <p><i>Proof:</i> Take $x, y \in S_\alpha$. Then $f(x) \le \alpha$ and $f(y) \le \alpha$.
+            <br>For the mixture $z = \theta x + (1-\theta)y$:
+            $$ f(z) \le \theta f(x) + (1-\theta)f(y) \le \theta \alpha + (1-\theta)\alpha = \alpha $$
+            So $z \in S_\alpha$.</p>
         </div>
+        <p><b>Note:</b> The converse is false. $f(x) = \log x$ has convex sublevel sets (intervals) but is concave. Functions with convex sublevel sets are called <b>quasiconvex</b>.</p>
 
-        <h3>2.3 Convex Hull of a Function</h3>
+        <h3>2.4 Convex Hull of a Function</h3>
         <p>Similar to how we can define the convex hull of a set, we can define the <a href="#" class="definition-link" data-term="convex envelope">convex hull (or convex envelope)</a> of a function $f: \mathbb{R}^n \to \mathbb{R}$ via its epigraph.</p>
         $$ g(x) = \inf \{ t \mid (x, t) \in \text{conv epi } f \} $$
         <p><b>Geometric Intuition:</b> Imagine "shrink-wrapping" the graph of $f$ from below. The function $g$ is the <b>greatest convex underestimator</b> of $f$. This concept is crucial in relaxation techniques for non-convex optimization (e.g., replacing a non-convex constraint with its convex hull).</p>
@@ -459,18 +406,6 @@
       </section>
 
       <section class="section-card" id="section-3">
-
-        <div class="insight">
-          <h4>Standard Epigraph Modeling Patterns</h4>
-          <p>These are the "reflexes" for converting objectives to constraints:</p>
-          <ul>
-            <li><b>Maximum:</b> $\min \max_i f_i(x) \iff \min t \text{ s.t. } f_i(x) \le t \ \forall i$.</li>
-            <li><b>Absolute Value:</b> $|u| \le t \iff -t \le u \le t$.</li>
-            <li><b>Norms:</b> $\|Ax+b\| \le t$. For $\ell_2$, this is SOCP. For $\ell_1/\ell_\infty$, this is LP.</li>
-            <li><b>Piecewise:</b> $f(x) = \max(f_1(x), f_2(x))$ becomes intersection of epigraphs.</li>
-          </ul>
-        </div>
-
         <h2>3. First-Order Conditions (Tangent Line Property)</h2>
 
         <h3>3.1 The First-Order Characterization</h3>
@@ -579,6 +514,16 @@
           \nabla f(x^*)^\top (y - x^*) \ge 0 \quad \forall y \in C
           $$
           <p>This is the <b>first-order optimality condition</b>. For unconstrained problems ($C = \mathbb{R}^n$), this reduces to $\nabla f(x^*) = 0$ (the gradient vanishes). This variational inequality is the basis for the <b>stationarity condition</b> in KKT theory (<a href="../09-duality/index.html">Lecture 09</a>).</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>Common Failure Modes (First-Order)</h4>
+            <ol>
+                <li><b>Boundary Gradients:</b> Using $\nabla f(x)$ at a boundary point where it might not be well-defined (e.g., barrier functions). Always work in the open interior $\operatorname{dom} f^\circ$.</li>
+                <li><b>Nondifferentiable Functions:</b> Applying the tangent condition to functions like $|x|$. You must use <b>subgradients</b> instead ($f(y) \ge f(x) + g^\top(y-x)$).</li>
+                <li><b>Local vs Global:</b> Thinking the tangent underestimator is a local property. It is <b>global</b>. If it only holds locally, the function is not convex.</li>
+                <li><b>Convex vs Concave:</b> Convex is "above tangent". Concave is "below tangent". Don't flip the inequality!</li>
+            </ol>
         </div>
 
       </section>
@@ -819,6 +764,16 @@
           </ul>
           <p><i>Practical insight:</i> This is exactly how numerical optimization libraries verify convexity in practice—by checking that all eigenvalues of the Hessian are non-negative!</p>
           <div id="widget-hessian-heatmap" style="width: 100%; height: 450px; position: relative;"></div>
+        </div>
+
+        <div class="warning-box">
+            <h4>Common Traps (Second-Order)</h4>
+            <ol>
+                <li><b>One-Point Check:</b> Checking $\nabla^2 f(x) \succeq 0$ at a specific point (e.g., the optimum) does NOT prove convexity. It must hold for <b>all</b> $x \in \operatorname{dom} f$.</li>
+                <li><b>Boundary Issues:</b> Barriers like $-\log x$ blow up at the boundary. You must verify the Hessian on the <b>open</b> domain.</li>
+                <li><b>PSD vs PD:</b> $\nabla^2 f(x) \succ 0$ implies strict convexity, but $\nabla^2 f(x) \succeq 0$ allows flat regions (non-unique minimizers).</li>
+                <li><b>Symmetry:</b> If your computed Hessian is not symmetric, you made a calculation error.</li>
+            </ol>
         </div>
       </section>
 
@@ -1611,90 +1566,122 @@
           <p><i>Modeling power:</i> Almost every convex function you'll encounter in practice can be built using these operations! This is the foundation of disciplined convex programming (DCP) in tools like CVXPY.</p>
           <div id="widget-operations-preserving" style="width: 100%; height: 500px; position: relative;"></div>
         </div>
+
+        <h3>5.12 Standard Epigraph Modeling Patterns</h3>
+        <p>These are the "reflexes" for converting complex objectives into standard constraints. They are literally epigraph geometry written algebraically:</p>
+        <div class="example-box">
+            <ul>
+                <li><b>Sum:</b> $f(x) = f_1(x) + f_2(x) \iff \exists t_1, t_2: f_1(x) \le t_1, f_2(x) \le t_2, t_1 + t_2 \le t$.</li>
+                <li><b>Maximum:</b> $f(x) = \max_i f_i(x) \iff f_i(x) \le t \ \forall i$.</li>
+                <li><b>Affine Precomposition:</b> $g(x) = f(Ax+b) \iff f(Ax+b) \le t$ (then apply atom's pattern).</li>
+                <li><b>Partial Minimization:</b> $g(x) = \inf_y f(x,y) \iff \exists y: f(x,y) \le t$.</li>
+                <li><b>Perspective:</b> $g(x,t) = t f(x/t) \iff f(x/t) \le s/t$ (often becomes rotated SOC).</li>
+            </ul>
+        </div>
       </section>
 
       <section class="section-card" id="section-6">
         <h2>6. Standard Convex Function Library</h2>
-        <p>Recognizing these atoms instantly is the key to efficient modeling. Always check the domain!</p>
+        <p>Recognizing these atoms instantly is the key to efficient modeling. The meta-rule is: <b>know the domain</b> and <b>know the cone</b>.</p>
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
           <thead>
             <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
               <th style="padding: 12px; text-align: left;">Function</th>
-              <th style="padding: 12px; text-align: left;">Formula</th>
               <th style="padding: 12px; text-align: left;">Domain</th>
-              <th style="padding: 12px; text-align: left;">Notes</th>
+              <th style="padding: 12px; text-align: left;">Epigraph (Modeling)</th>
             </tr>
           </thead>
           <tbody>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Affine</b></td>
-              <td>$a^\top x + b$</td>
+              <td style="padding: 12px;"><b>Affine</b> $a^\top x + b$</td>
               <td>$\mathbb{R}^n$</td>
-              <td>Convex and Concave.</td>
+              <td>Halfspace (Linear Constraint)</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Quadratic</b></td>
-              <td>$\frac{1}{2}x^\top Q x + c^\top x$</td>
+              <td style="padding: 12px;"><b>Quadratic</b> $\frac{1}{2}x^\top Q x + c^\top x$ ($Q \succeq 0$)</td>
               <td>$\mathbb{R}^n$</td>
-              <td>Convex if $Q \succeq 0$. Strictly convex if $Q \succ 0$.</td>
+              <td>Rotated SOC ($x^\top x \le t$) or LMI</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Norms</b></td>
-              <td>$\|x\|_p$</td>
+              <td style="padding: 12px;"><b>$\ell_2$ Norm</b> $\|x\|_2$</td>
               <td>$\mathbb{R}^n$</td>
-              <td>For $p \ge 1$. Includes $\ell_1, \ell_2, \ell_\infty$.</td>
+              <td>Second-Order Cone (SOC): $(t, x) \in \mathcal{Q}$</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Max / Abs / ReLU</b></td>
-              <td>$\max(x_i)$, $|x|$, $\max(0, x)$</td>
+              <td style="padding: 12px;"><b>$\ell_1$ / $\ell_\infty$</b></td>
               <td>$\mathbb{R}^n$</td>
-              <td>Pointwise max of affines. Nondifferentiable at kinks.</td>
+              <td>Linear Constraints (LP)</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Exponential</b></td>
-              <td>$e^x$ (scalar), $\sum e^{x_i}$</td>
-              <td>$\mathbb{R}$ / $\mathbb{R}^n$</td>
-              <td>Strictly convex.</td>
+              <td style="padding: 12px;"><b>Log-Sum-Exp</b> $\log(\sum e^{x_i})$</td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Exponential Cone</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Negative Log</b></td>
-              <td>$-\log x$</td>
+              <td style="padding: 12px;"><b>Neg-Log</b> $-\log x$</td>
               <td>$\mathbb{R}_{++}$</td>
-              <td>Strictly convex. Basis of geometric programming.</td>
+              <td>Exponential Cone</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Entropy</b></td>
-              <td>$x \log x$</td>
+              <td style="padding: 12px;"><b>Entropy</b> $x \log x$</td>
               <td>$\mathbb{R}_{++}$</td>
-              <td>Strictly convex. ($0 \log 0 = 0$).</td>
+              <td>Exponential Cone</td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Log-Sum-Exp</b></td>
-              <td>$\log(\sum e^{x_i})$</td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Smooth approx of max.</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Log-Determinant</b></td>
-              <td>$-\log \det X$</td>
-              <td>$\mathbb{S}^n_{++}$</td>
-              <td>Convex on PD matrices.</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Matrix Fractional</b></td>
-              <td>$x^\top Y^{-1} x$</td>
-              <td>$\mathbb{R}^n \times \mathbb{S}^n_{++}$</td>
-              <td>Jointly convex.</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Indicator</b></td>
-              <td>$\delta_C(x)$</td>
-              <td>$C$</td>
-              <td>Convex iff $C$ is a convex set.</td>
+              <td style="padding: 12px;"><b>Quad-over-Lin</b> $x^2/y$</td>
+              <td>$y > 0$</td>
+              <td>Rotated SOC: $x^2 \le ty$</td>
             </tr>
           </tbody>
         </table>
+
+        <h3>6.1 Detailed Atom Analysis</h3>
+
+        <div class="example-box">
+            <h4>1. Norms ($\|x\|_p$)</h4>
+            <p><b>Proof:</b> Triangle inequality + Homogeneity.</p>
+            <p><b>Engineering Hook:</b>
+            <br>$\|x\|_2 \le t \iff (t, x) \in \text{SOC}$.
+            <br>$\|x\|_1 \le t \iff \exists u: -u \le x \le u, \mathbf{1}^\top u \le t$.
+            <br>$\|x\|_\infty \le t \iff -t \mathbf{1} \le x \le t \mathbf{1}$.</p>
+            <p><b>Failure Mode:</b> Forgetting that $\|x\|_2^2$ is convex but $\|x\|_2 \ge t$ is <b>non-convex</b> (exterior of ball). Norms are convex, so sublevel sets are convex bodies; superlevel sets are holey.</p>
+        </div>
+
+        <div class="example-box">
+            <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
+            <p><b>Proof:</b> Hessian is $\text{diag}(p) - pp^\top$ (covariance matrix), hence PSD.</p>
+            <p><b>Engineering Hook:</b> Used as a smooth approximation of $\max(x)$.
+            <br>$\text{lse}(x) \le t$ is representable using $n$ exponential cones.</p>
+            <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
+        </div>
+
+        <div class="example-box">
+            <h4>3. Quadratic-over-Linear ($x^\top x / y$)</h4>
+            <p><b>Domain:</b> $y > 0$ (Crucial!). Not defined at $y=0$ (unless 0/0=0 convention) and non-convex for $y < 0$.</p>
+            <p><b>Engineering Hook:</b>
+            $$ x^\top x / y \le t \iff x^\top x \le ty, \ y > 0, \ t \ge 0 $$
+            This is a <b>Rotated Second-Order Cone</b> constraint $x^\top x \le 2uv$ (with $u=y/2, v=t$).</p>
+        </div>
+
+        <div class="example-box">
+            <h4>4. Power Functions ($x^p$)</h4>
+            <p><b>Domain:</b> $x > 0$.</p>
+            <ul>
+                <li>$p \ge 1$: Convex.</li>
+                <li>$0 \le p \le 1$: Concave.</li>
+                <li>$p \le 0$: Convex (e.g., $1/x$).</li>
+            </ul>
+            <p><b>Failure Mode:</b> Applying $x^3$ on all of $\mathbb{R}$. It is only convex on $\mathbb{R}_+$. On $\mathbb{R}$, $x^3$ changes curvature at 0.</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>Common Failure Modes Across the Library</h4>
+            <ol>
+                <li><b>Domain Amnesia:</b> Using $-\log(1 - x^\top x)$ without enforcing $\|x\| < 1$. The solver might step out of domain and crash (or return garbage) if implicit constraints aren't made explicit.</li>
+                <li><b>Constraint Direction:</b> $\max(x_i) \le t$ is convex (intersection of halfspaces). $\max(x_i) \ge t$ is non-convex (union of halfspaces). Always check if your constraint carves out a convex set.</li>
+            </ol>
+        </div>
       </section>
 
       <section class="section-card" id="section-7">

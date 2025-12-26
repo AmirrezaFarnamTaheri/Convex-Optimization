@@ -81,6 +81,29 @@
         \mathcal{Q}^{n+1} = \{(t, \mathbf{x}) \in \mathbb{R} \times \mathbb{R}^n \mid \|\mathbf{x}\|_2 \le t\}
         $
       </p>
+
+      <div class="proof-box">
+        <h4>Convexity of the Second-Order Cone</h4>
+        <div class="proof-step">
+          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{Q}^{n+1}$ and $\theta \in [0, 1]$.
+        </div>
+        <div class="proof-step">
+          <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
+          $
+          \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)}
+          $
+        </div>
+        <div class="proof-step">
+          <strong>Apply constraints:</strong>
+          $
+          \le \theta t_1 + (1-\theta) t_2
+          $
+        </div>
+        <div class="proof-step">
+          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{Q}^{n+1}$, so $\mathcal{Q}^{n+1}$ is convex.
+        </div>
+      </div>
+
       <p><b>Note:</b> This is exactly the epigraph of the Euclidean norm function $f(x) = \|x\|_2$. Since norms are convex, the epigraph is a convex set (specifically, a cone).</p>
 
       <h4>The Rotated Second-Order Cone (RSOC)</h4>
@@ -192,6 +215,25 @@
         <p><b>Implication:</b> Robust linear constraints become deterministic norm constraints.</p>
       </div>
 
+      <div class="proof-box">
+        <h4>Derivation: Robust LP to SOCP</h4>
+        <div class="proof-step">
+          <strong>Step 1: Expand Uncertainty.</strong>
+          $$ \sup_{a \in \mathcal{E}} a^\top x = \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} (Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top (P^\top x) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Dual Norm Representation.</strong>
+          The term $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top \mathbf{v}$ is the definition of the dual norm $\|\mathbf{v}\|_*$.
+          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P^\top \mathbf{x}) = \|P^\top \mathbf{x}\|_2$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Resulting Constraint.</strong>
+          Substituting back, the robust constraint is equivalent to:
+          $$ \bar{a}^\top \mathbf{x} + \|P^\top \mathbf{x}\|_2 \le b $$
+          This is a deterministic constraint on $\mathbf{x}$ involving a linear term and a Euclidean norm term—exactly the form of a Second-Order Cone constraint.
+        </div>
+      </div>
+
       <h4>Case Studies: Uncertainty Geometry $\to$ Problem Class</h4>
       <ul>
           <li><b>Ellipsoidal Uncertainty ($\ell_2$ ball):</b>
@@ -264,6 +306,14 @@
           $
         </p>
       </div>
+
+      <p>where:</p>
+      <ul>
+        <li>$\mathbf{x} \in \mathbb{R}^n$ is the variable</li>
+        <li>$F_i \in \mathbb{S}^m$ (symmetric matrices) for $i = 0, \dots, n$</li>
+        <li>$F(x) \succeq 0$ means $F(x)$ is positive semidefinite</li>
+        <li>$A \in \mathbb{R}^{p \times n}$, $b \in \mathbb{R}^p$ define additional affine constraints</li>
+      </ul>
 
       <p>The constraint $F(x) \succeq 0$ is a <b>Linear Matrix Inequality (LMI)</b>. It requires that the symmetric matrix $F(x)$ be Positive Semidefinite.
       <br><b>Key Insight:</b> This is an infinite set of linear constraints: $v^\top F(x) v \ge 0$ for all $v \in \mathbb{R}^k$. The LMI packages all these directional curvature checks into one convex constraint.</p>

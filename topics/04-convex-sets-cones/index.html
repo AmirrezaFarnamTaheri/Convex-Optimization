@@ -330,24 +330,43 @@
         $$ \|u\|_* = \sup_{\|x\| \le 1} u^\top x $$
         <p>This is exactly the support function of the primal unit ball evaluated at $u$.</p>
 
+        <div class="proof-box">
+          <h4>Proof: The Dual Norm is a Norm</h4>
+          <div class="proof-step">
+            <strong>1. Definiteness:</strong> $\|u\|_* \ge u^\top 0 = 0$. If $\|u\|_*=0$, then $u^\top x=0$ for all $\|x\|\le 1$. By scaling, $u^\top y=0$ for all $y$, so $u=0$.
+          </div>
+          <div class="proof-step">
+            <strong>2. Homogeneity:</strong> $\|\alpha u\|_* = \sup_{x \in B} (\alpha u)^\top x$. If $\alpha \ge 0$, $\alpha \sup u^\top x = \alpha \|u\|_*$. If $\alpha < 0$, let $\alpha = -|\alpha|$. $\sup (-|\alpha|u)^\top x = |\alpha| \sup u^\top (-x)$. Since the unit ball is symmetric, $\{-x : x \in B\} = B$, so this equals $|\alpha| \|u\|_*$.
+          </div>
+          <div class="proof-step">
+            <strong>3. Triangle Inequality:</strong> $\|u+v\|_* = \sup_{x \in B} (u+v)^\top x \le \sup_{x \in B} u^\top x + \sup_{x \in B} v^\top x = \|u\|_* + \|v\|_*$.
+          </div>
+        </div>
+
         <div class="theorem-box">
           <h4>Properties of Dual Norms</h4>
           <ol>
-            <li><b>It is a Norm:</b> $\|\cdot\|_*$ satisfies the axioms of a norm (Definiteness, Homogeneity, Triangle Inequality).</li>
             <li><b>Generalized Hölder Inequality:</b> For any $u, x$:
               $$ u^\top x \le \|u\|_* \|x\| $$
-              This generalizes Cauchy-Schwarz ($u^\top x \le \|u\|_2 \|x\|_2$).
+              <i>Proof:</i> If $x \neq 0$, let $z = x/\|x\|$. Then $\|z\|=1$. By definition, $u^\top z \le \|u\|_*$. Multiplying by $\|x\|$ gives $u^\top x \le \|u\|_* \|x\|$.
+            </li>
+            <li><b>Dual Ball is Polar:</b> The unit ball of the dual norm is the polar of the primal unit ball:
+              $$ \{u : \|u\|_* \le 1\} = \{x : \|x\| \le 1\}^\circ $$
             </li>
             <li><b>Dual of Dual:</b> The dual of the dual norm is the primal norm: $(\|\cdot\|_* )_* = \|\cdot\|$.</li>
           </ol>
         </div>
 
-        <h4>Calculated Dual Pairs</h4>
+        <h4>Calculated Dual Pairs (with explicit maximizers)</h4>
         <ul>
-          <li><b>Euclidean ($\ell_2$):</b> The dual of $\|\cdot\|_2$ is $\|\cdot\|_2$. (Self-dual).</li>
-          <li><b>$\ell_1$ and $\ell_\infty$:</b> The dual of $\|\cdot\|_1$ is $\|\cdot\|_\infty$, and vice-versa.
-            $$ \sup_{\|x\|_1 \le 1} u^\top x = \|u\|_\infty $$
-            <i>Geometric Reason:</i> The maximum of a linear function over a diamond (vertices $\pm e_i$) occurs at the vertex aligned with the largest component of $u$.
+          <li><b>$\ell_2$ is self-dual:</b> $\|\cdot\|_{2,*} = \|\cdot\|_2$.
+            <br><i>Maximizer:</i> For $u \neq 0$, choose $x = u/\|u\|_2$. Then $u^\top x = \|u\|_2$.
+          </li>
+          <li><b>$\ell_1$ dual is $\ell_\infty$:</b> $\|\cdot\|_{1,*} = \|\cdot\|_\infty$.
+            <br><i>Maximizer:</i> To maximize $u^\top x$ subject to $\sum |x_i| \le 1$, we put all weight on the index $k$ where $|u_k|$ is maximal. Choose $x = \text{sign}(u_k) e_k$. Then $u^\top x = |u_k| = \|u\|_\infty$.
+          </li>
+          <li><b>$\ell_\infty$ dual is $\ell_1$:</b> $\|\cdot\|_{\infty,*} = \|\cdot\|_1$.
+            <br><i>Maximizer:</i> To maximize $u^\top x$ subject to $|x_i| \le 1$, we set $x_i = \text{sign}(u_i)$ for all $i$. Then $u^\top x = \sum u_i \text{sign}(u_i) = \sum |u_i| = \|u\|_1$.
           </li>
         </ul>
 

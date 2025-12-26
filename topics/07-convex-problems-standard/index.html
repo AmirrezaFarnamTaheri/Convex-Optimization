@@ -88,12 +88,13 @@
           $$
           \begin{aligned}
           \text{minimize} \quad & t \\
-          \text{subject to} \quad & f_0(x) \le t \\
+          \text{subject to} \quad & (x,t) \in \mathrm{epi}(f_0) \\
           & f_i(x) \le 0 \\
           & h_j(x) = 0
           \end{aligned}
           $$
       </div>
+      <p>Often written as $f_0(x) \le t$, this constraint $\mathrm{epi}(f_0)$ is where we inject our knowledge of <b>standard cones</b>. For example, if $f_0(x) = \|Ax-b\|_2$, the constraint becomes $\|Ax-b\|_2 \le t$, which is an SOC constraint.</p>
 
       <p><b>Why this is profound:</b>
       <br>1. <b>Linear Objective:</b> Every convex problem can be rewritten as a linear program over a convex set.
@@ -217,8 +218,12 @@
         </figcaption>
       </figure>
 
-      <h3>2.2 The Core Modeling Atoms of LP</h3>
-      <p>Many convex functions have <b>polyhedral epigraphs</b>. Recognizing these allows us to "compile" problems into LPs via the epigraph transformation.</p>
+      <h3>2.2 Key Properties and Modeling Atoms</h3>
+      <ul>
+        <li><strong>Feasible set:</strong> A polyhedron (convex intersection of halfspaces).</li>
+        <li><strong>Convexity:</strong> Both the objective (linear) and feasible set are convex, so LP is a convex optimization problem.</li>
+        <li><strong>Complexity:</strong> Polynomial-time solvable (simplex method is exponential worst-case but fast in practice; interior-point methods are polynomial).</li>
+      </ul>
 
       <h4>Atom 1: Absolute Value $|u| \le t$</h4>
       <p>
@@ -231,6 +236,18 @@
       $$ \max_{i} (a_i^\top x + b_i) \le t \iff a_i^\top x + b_i \le t \quad \forall i $$
       This atom converts piecewise-linear convex costs (like hinge loss) into linear constraints.
       </p>
+
+      <h4>Example 2.2: L-infinity Minimization</h4>
+      <p>Find $\mathbf{x} \in \mathbb{R}^n$ minimizing $\|A\mathbf{x} - \mathbf{b}\|_\infty$. This can be reformulated as:</p>
+      <p style="text-align: center;">
+        $
+        \begin{aligned}
+        \text{minimize} \quad & t \\
+        \text{subject to} \quad & -t \mathbf{1} \preceq Ax - b \preceq t \mathbf{1}
+        \end{aligned}
+        $
+      </p>
+      <p>where $\mathbf{1}$ is the vector of ones. This is an LP in variables $(x, t)$.</p>
 
       <h4>Atom 3: $\ell_\infty$ Norm (Box)</h4>
       <p>

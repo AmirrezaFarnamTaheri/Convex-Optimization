@@ -378,10 +378,26 @@
         $$
         <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality).</p>
 
-        <h4>Unit Ball Characterizes the Norm</h4>
+        <h4>Unit Ball Characterizes the Norm (Minkowski Functional)</h4>
         <p>The unit ball $B = \{x : \|x\| \le 1\}$ completely determines the norm. For any $x$, the norm $\|x\|$ is the factor by which you must scale the unit ball to just contain $x$:</p>
         $$ \|x\| = \inf\{t > 0 \mid x \in tB\} $$
-        <p>This quantity is called the <b>Minkowski functional</b> (or gauge) of $B$. It allows us to construct a norm from any set $C$ that is convex, centrally symmetric, bounded, and absorbing (contains the origin in its interior).</p>
+        <p>This quantity is called the <b>Minkowski functional</b> (or gauge) of $B$. It allows us to construct a norm from any set $C$ that is convex, centrally symmetric, bounded, and absorbing.</p>
+
+        <div class="proof-box">
+          <h4>Proof: Unit Ball Determines Norm</h4>
+          <div class="proof-step">
+            <strong>Step 0: Interpretation.</strong> $x \in tB \iff x = tb$ for some $b \in B$. Since $B=\{u : \|u\|\le 1\}$, this is equivalent to $\|x/t\| \le 1 \iff \|x\| \le t$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 1: Lower Bound.</strong> If $x \in tB$, then $\|x\| \le t$. Thus every feasible $t$ is at least $\|x\|$. So $\inf t \ge \|x\|$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Feasibility.</strong> Let $t = \|x\|$. If $x \neq 0$, let $u = x/\|x\|$. Then $\|u\|=1$, so $u \in B$. Thus $x = \|x\| u \in \|x\| B$. So $t=\|x\|$ is feasible.
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> The infimum is exactly $\|x\|$.
+          </div>
+        </div>
 
         <div class="theorem-box">
           <h4>Geometric Properties of Norm Balls</h4>
@@ -417,9 +433,10 @@
           <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
         </figure>
 
-        <h4>Supporting Hyperplanes and Dual Norms</h4>
-        <p>The <b>dual norm</b> $\|u\|_* = \sup_{\|x\| \le 1} u^\top x$ is geometrically the distance from the origin to the supporting hyperplane of the unit ball in the direction $u$.
-        <br>This connects the shape of the ball to the "worst-case" linear objective, a concept central to robust optimization.</p>
+        <h4>Support Functions of Norm Balls = Dual Norms</h4>
+        <p>The geometry of a convex set $C$ is fully described by its support function $\sigma_C(y) = \sup_{x \in C} y^\top x$. For a norm ball $B = \{x : \|x\| \le 1\}$, this supremum is exactly the definition of the <b>dual norm</b>:</p>
+        $$ \|y\|_* = \sup_{\|x\| \le 1} y^\top x = \sigma_B(y) $$
+        <p>This establishes a fundamental duality: the support function of the primal unit ball is the dual norm. Geometrically, $\|y\|_*$ is the distance from the origin to the supporting hyperplane of $B$ with normal $y$.</p>
 
         <p>An <a href="#" class="definition-link">ellipsoid</a> is a generalized Euclidean ball, defined as:</p>
         $$

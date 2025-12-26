@@ -858,11 +858,25 @@
           <p>Thus the convex combination is in the ball.</p>
 
       <h3>4.3 Norms: The Mental Model and Axioms</h3>
-      <p>A <b>norm</b> is a rule that measures the "size" of vectors in a way that is compatible with the two primitive operations of linear algebra: <b>scaling</b> and <b>addition</b>. If "size" is to behave sanely, it must obey these rules:</p>
+
+      <h4>The mental model: what structure are norms trying to capture?</h4>
+      <p>A norm is a rule that measures "size" of vectors in a way that is compatible with two primitive operations you can’t avoid in linear algebra and optimization:</p>
+      <ul>
+        <li><b>Scaling:</b> you can multiply a vector by a scalar.</li>
+        <li><b>Addition:</b> you can add vectors.</li>
+      </ul>
+      <p>If "size" is to behave sanely, it must interact with these operations in a controlled way:</p>
       <ul>
         <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> Scaling the vector scales its size proportionally.</li>
         <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> The size of a sum is not bigger than the sum of sizes (no shortcuts via detours).</li>
         <li><b>Non-degeneracy sanity $\Rightarrow$ Definiteness:</b> Only the zero vector has zero size.</li>
+      </ul>
+      <p>These are not arbitrary. They are exactly what you need for:</p>
+      <ul>
+        <li>"Balls" to be convex (set geometry),</li>
+        <li>The norm function to be convex (function geometry),</li>
+        <li>Stability/continuity (numerics and optimization),</li>
+        <li>A clean link to support functions and dual norms (duality / robust constraints).</li>
       </ul>
 
       <p>These requirements are formalized in the definition of a norm $\|\cdot\|:\mathbb{R}^n\to\mathbb{R}$:</p>
@@ -872,18 +886,20 @@
         <p>1. $\|x\| \ge 0$.</p>
         <p>2. $\|x\| = 0 \iff x = 0$.</p>
         <p><i>What it enforces:</i> "Non-negative length" prevents physical nonsense. Definiteness forbids "invisible nonzero vectors"—if a nonzero vector had zero cost, optimization would break.</p>
+        <p><i>What happens if you drop the "$\Rightarrow$" direction?</i> If you keep $\|x\|\ge 0$ and $\|0\|=0$ but allow $\|x\|=0$ for some nonzero $x$, you have a <b>seminorm</b>. Example: $\|x\| := |a^\top x|$ is zero for every $x$ orthogonal to $a$. Geometrically: everything on a whole hyperplane is "free."</p>
       </div>
 
       <div class="definition-box">
         <h4>(N2) Positive Homogeneity</h4>
         <p>$$ \|\alpha x\| = |\alpha| \, \|x\| $$</p>
-        <p><i>What it enforces:</i> If you double the vector, you double its size. Direction reversal ($\alpha = -1$) does not change size (symmetry).</p>
+        <p><i>What it enforces:</i> If you double the vector, you double its size. The absolute value matters: direction reversal ($\alpha < 0$) should not change size.</p>
       </div>
 
       <div class="definition-box">
         <h4>(N3) Triangle Inequality</h4>
         <p>$$ \|x+y\| \le \|x\| + \|y\| $$</p>
         <p><i>What it enforces:</i> The "no cheating by zig-zagging" law. The straight path is always the shortest. This axiom is the main engine behind convexity.</p>
+        <p><i>What breaks if you drop it?</i> You can create "size" functions that are homogeneous and definite but wildly nonconvex, with nonconvex "balls," which instantly kills convex optimization use.</p>
       </div>
 
       <h3>4.4 Core Lemmas: Reusable Proof Templates</h3>

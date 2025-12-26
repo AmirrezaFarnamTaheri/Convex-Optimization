@@ -166,12 +166,22 @@
             <strong>Base Case ($k=2$):</strong> The inequality $f(\theta_1 x_1 + \theta_2 x_2) \le \theta_1 f(x_1) + \theta_2 f(x_2)$ holds by the definition of convexity.
           </div>
           <div class="proof-step">
-            <strong>Inductive Step:</strong> Assume true for $k-1$ points. Consider a combination of $k$ points with weights $\theta_i$. If $\theta_k=1$, trivial. If $\theta_k < 1$, define normalized weights for the first $k-1$ points: $\alpha_i = \theta_i / (1-\theta_k)$.
-            <br>Let $y = \sum_{i=1}^{k-1} \alpha_i x_i$. Then $\sum_{i=1}^k \theta_i x_i = (1-\theta_k)y + \theta_k x_k$.
-            <br>1. Apply convexity (2-point): $f((1-\theta_k)y + \theta_k x_k) \le (1-\theta_k)f(y) + \theta_k f(x_k)$.
-            <br>2. Apply inductive hypothesis to $f(y)$: $f(y) \le \sum_{i=1}^{k-1} \alpha_i f(x_i)$.
-            <br>Multiply by $(1-\theta_k)$: $(1-\theta_k)f(y) \le \sum_{i=1}^{k-1} \theta_i f(x_i)$.
-            <br>Combine to get the result.
+            <strong>Inductive Step:</strong> Assume the inequality holds for any convex combination of $k$ points. Consider a combination of $k+1$ points: $x = \sum_{i=1}^{k+1} \theta_i x_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$.
+            <br>We can "peel off" the last point $x_{k+1}$ and treat the rest as a sub-combination.
+            Let $\tilde{\theta} = \sum_{i=1}^{k} \theta_i = 1 - \theta_{k+1}$. Since $\theta_{k+1} < 1$, $\tilde{\theta} > 0$.
+            $$ x = \theta_{k+1} x_{k+1} + \tilde{\theta} \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} x_i = \theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x} $$
+            where $\bar{x} = \sum_{i=1}^{k} (\theta_i/\tilde{\theta}) x_i$ is a valid convex combination of $k$ points (weights sum to 1).
+          </div>
+          <div class="proof-step">
+            <strong>Apply Convexity Twice:</strong>
+            <br>1. Apply the 2-point definition to $x_{k+1}$ and $\bar{x}$:
+            $$ f(x) = f(\theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x}) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} f(\bar{x}) $$
+            2. Apply the inductive hypothesis to $f(\bar{x})$:
+            $$ f(\bar{x}) \le \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i) $$
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> Substituting back:
+            $$ f(x) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} \left(\sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i)\right) = \theta_{k+1} f(x_{k+1}) + \sum_{i=1}^{k} \theta_i f(x_i) = \sum_{i=1}^{k+1} \theta_i f(x_i) $$
           </div>
         </div>
 
@@ -184,10 +194,11 @@
 
         <div class="proof-box">
           <h4>Proof via Supporting Hyperplane</h4>
-          <p><b>Fact:</b> If $f$ is convex, then at $\mu = \mathbb{E}[Z]$, there exists a subgradient $g$ such that $f(x) \ge f(\mu) + g^\top(x - \mu)$ for all $x$.
-          <br>Substitute random variable $Z$ for $x$:
+          <p>This proof connects Jensen's inequality directly to the geometry of convex sets.
+          <br><b>Fact:</b> If $f$ is convex, then at any point $\mu \in \mathrm{dom}\, f$, there exists a subgradient $g \in \partial f(\mu)$ such that $f(x) \ge f(\mu) + g^\top(x - \mu)$ for all $x$.
+          <br><b>Step 1:</b> Let $\mu = \mathbb{E}[Z]$. Apply the subgradient inequality at $\mu$:
           $$ f(Z) \ge f(\mu) + g^\top(Z - \mu) $$
-          Take expectation (linear operator):
+          <b>Step 2:</b> Take expectation (linear operator):
           $$ \mathbb{E}[f(Z)] \ge f(\mu) + g^\top(\mathbb{E}[Z] - \mu) $$
           Since $\mathbb{E}[Z] = \mu$, the linear term vanishes.
           $$ \mathbb{E}[f(Z)] \ge f(\mathbb{E}[Z]) $$
@@ -265,9 +276,57 @@
         </div>
 
         <h3>1.7 Integral Characterization of Convexity</h3>
-        <p>A continuous function $f: \mathbb{R}^n \to \mathbb{R}$ is convex <b>if and only if</b> for all $x, y \in \mathrm{dom}\, f$:</p>
-        $$ \int_0^1 f(tx + (1-t)y) dt \le \frac{f(x) + f(y)}{2} $$
-        <p>This states that the <b>average value</b> of the function along a segment is less than or equal to the <b>average of the values</b> at the endpoints.</p>
+        <p>A powerful alternative definition of convexity involves integrals. This mirrors the "average value" property of harmonic functions but with an inequality. We define the integral along the chord:</p>
+        $$ I_f(x,y) := \int_0^1 f(tx + (1-t)y) dt $$
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>A continuous function $f$ is convex <b>if and only if</b> for all $x, y \in \mathrm{dom}\, f$:
+          $$ \int_0^1 f(tx + (1-t)y) dt \le \frac{f(x) + f(y)}{2} $$
+          </p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof Breakdown</h4>
+
+          <div class="proof-step">
+            <strong>Step 1: The "Little Red Formula" (Affine Case).</strong>
+            <p>Let $\ell(z) = a^\top z + b$ be an affine function. We evaluate its integral along the segment $z(t) = tx + (1-t)y$ for $t \in [0, 1]$.
+            <br>By linearity:
+            $$ \ell(z(t)) = t(a^\top x + b) + (1-t)(a^\top y + b) = t \ell(x) + (1-t) \ell(y) $$
+            Now integrate from $0$ to $1$:
+            $$ \int_0^1 \ell(z(t)) dt = \ell(x) \underbrace{\int_0^1 t dt}_{1/2} + \ell(y) \underbrace{\int_0^1 (1-t) dt}_{1/2} = \frac{\ell(x) + \ell(y)}{2} $$
+            This establishes a crucial baseline: <b>for an affine function, the average value along the segment equals the average of the endpoint values.</b> Geometrically, this is the area of a trapezoid.</p>
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Convex $\Rightarrow$ Integral Inequality.</strong>
+            <p>If $f$ is convex, the function lies below the chord:
+            $$ f(tx + (1-t)y) \le t f(x) + (1-t)f(y) $$
+            Integrating this inequality with respect to $t$:
+            $$ \int_0^1 f(z(t)) dt \le f(x) \int_0^1 t dt + f(y) \int_0^1 (1-t) dt = \frac{f(x)+f(y)}{2} $$
+            This direction is simply "integrating the convexity definition". It can be viewed as <b>Jensen's inequality applied to the uniform distribution</b> on the chord.</p>
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Integral Inequality $\Rightarrow$ Convex.</strong>
+            <p>This direction uses a clever trick: <b>subtracting a supporting line</b> to measure the "bump" above it.
+            <br>Assume the integral inequality holds for all $x, y$. Suppose for contradiction that $f$ is <b>not</b> convex. Then there exists a point $z_0$ on some segment where $f(z_0)$ lies strictly above the chord.
+            <br>Let $\ell(u)$ be the <b>chord</b> connecting $(x, f(x))$ and $(y, f(y))$.
+            <br>Define the difference function $g(u) = f(u) - \ell(u)$.
+            <br>Key properties of $g$:
+            <ul>
+                <li>$g(x) = f(x) - \ell(x) = 0$ and $g(y) = 0$.</li>
+                <li>At the violating point $z_0$, $g(z_0) > 0$.</li>
+            </ul>
+            Now, apply the integral inequality to $g$. Since the integral condition is linear, and equality holds for $\ell$:
+            $$ \int_0^1 g(z(t)) dt = \int_0^1 f(z(t)) dt - \int_0^1 \ell(z(t)) dt \le \frac{f(x)+f(y)}{2} - \frac{\ell(x)+\ell(y)}{2} = \frac{g(x)+g(y)}{2} = 0 $$
+            So the integral of $g$ must be non-positive.
+            <br>However, since $g(z_0) > 0$ and we typically assume continuity, there is a small interval around $z_0$ where $g$ is positive. Thus $\int g > 0$.
+            <br>The inequality effectively says the "average bump above the supporting line" must be zero (since endpoints are zero), which forces the function to never rise above the chord.
+            <br>This contradiction ($\int g > 0$ vs $\int g \le 0$) proves $f$ must be convex.</p>
+          </div>
+        </div>
 
         <h3>1.8 Concave Functions</h3>
         <p>A function $f$ is <a href="#" class="definition-link">concave</a> if $-f$ is convex. Equivalently, the chord lies below the graph. All results for convex functions can be "flipped" for concave functions by negating.</p>
@@ -276,6 +335,42 @@
         <div class="theorem-box">
           <h4>Theorem</h4>
           <p>$f$ is convex if and only if for all $x \in \mathrm{dom}\, f$ and $v \in \mathbb{R}^n$, the function $g(t) = f(x + tv)$ is convex on its domain.</p>
+        </div>
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p>This theorem allows us to reduce $n$-dimensional convexity to 1-dimensional convexity.</p>
+          <div class="proof-step">
+            <strong>($\Rightarrow$) Convex $\implies$ Restriction is Convex.</strong>
+            Assume $f$ is convex. Fix $x, v$. Let $t_1, t_2$ be scalars and $\theta \in [0, 1]$.
+            <br>We compute $g$ at the convex combination of points:
+            $$ g(\theta t_1 + (1-\theta)t_2) = f(x + (\theta t_1 + (1-\theta)t_2)v) $$
+            Rearrange the argument as a convex combination of vectors:
+            $$ = f(\theta(x + t_1 v) + (1-\theta)(x + t_2 v)) $$
+            By convexity of $f$:
+            $$ \le \theta f(x + t_1 v) + (1-\theta)f(x + t_2 v) = \theta g(t_1) + (1-\theta)g(t_2) $$
+            Thus $g$ satisfies the definition of a convex function.
+          </div>
+          <div class="proof-step">
+            <strong>($\Leftarrow$) Restriction is Convex $\implies$ Convex.</strong>
+            Assume $g(t) = f(x+tv)$ is convex for all lines.
+            Take any two points $x, y \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$.
+            We want to evaluate $f$ at $z = \theta x + (1-\theta)y$.
+            <br>Consider the specific line passing through $\mathbf{x}$ and $\mathbf{y}$. Let $\mathbf{v} = \mathbf{y} - \mathbf{x}$.
+            Define the restriction $g(t) = f(x + tv)$.
+            Note that:
+            <ul>
+                <li>$g(0) = f(x)$</li>
+                <li>$g(1) = f(x + (y-x)) = f(y)$</li>
+                <li>$g(1-\theta) = f(x + (1-\theta)(y-x)) = f(\theta x + (1-\theta)y) = f(z)$</li>
+            </ul>
+            Since $g$ is convex, we apply the definition with points $t_1=0, t_2=1$ and weight $1-\theta$:
+            $$ g((1-(1-\theta))\cdot 0 + (1-\theta)\cdot 1) \le (1-(1-\theta))g(0) + (1-\theta)g(1) $$
+            Simplifying the weights:
+            $$ g(1-\theta) \le \theta g(0) + (1-\theta)g(1) $$
+            Substituting back the function values:
+            $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
+            Thus $f$ is convex.
+          </div>
         </div>
         <p><b>Why this matters:</b> Convexity is a statement about segments. Segments are 1-D objects. Thus, "n-dimensional convexity" is secretly just "1-D convexity along every possible direction".</p>
         <div class="warning-box">
@@ -329,21 +424,46 @@
 
         <div class="proof-box">
           <h4>Proof (The "Mix" Logic)</h4>
-          <p><b>($\Rightarrow$) $f$ convex $\implies$ $\mathrm{epi}\, f$ convex:</b>
-          <br>Take two points $(x_1, t_1), (x_2, t_2) \in \mathrm{epi}\, f$. This means $f(x_1) \le t_1$ and $f(x_2) \le t_2$.
-          <br>Consider the convex combination for $\theta \in [0,1]$:
-          $$ (\bar{x}, \bar{t}) = \theta(x_1, t_1) + (1-\theta)(x_2, t_2) = (\theta x_1 + (1-\theta)x_2, \theta t_1 + (1-\theta)t_2) $$
-          We check if $(\bar{x}, \bar{t}) \in \mathrm{epi}\, f$, i.e., if $f(\bar{x}) \le \bar{t}$.
-          $$ f(\bar{x}) \le \theta f(x_1) + (1-\theta)f(x_2) \quad \text{(by convexity of } f \text{)} $$
-          $$ \le \theta t_1 + (1-\theta)t_2 = \bar{t} \quad \text{(by epigraph condition)} $$
-          Thus the mixture is in the epigraph.</p>
+          <div class="proof-step">
+            <strong>($\Rightarrow$) $f$ convex $\implies$ $\mathrm{epi}\, f$ convex.</strong>
+            <br>Assume $f$ is convex. Take two points $(x, t)$ and $(y, s)$ in $\mathrm{epi}\, f$.
+            <br>By definition: $f(x) \le t$ and $f(y) \le s$.
+          </div>
 
-          <p><b>($\Leftarrow$) $\mathrm{epi}\, f$ convex $\implies$ $f$ convex:</b>
-          <br>Take $x_1, x_2 \in \mathrm{dom}\, f$. The points $(x_1, f(x_1))$ and $(x_2, f(x_2))$ are in $\mathrm{epi}\, f$.
-          <br>By convexity of the set, their mixture $(\bar{x}, \theta f(x_1) + (1-\theta)f(x_2))$ is in $\mathrm{epi}\, f$.
-          <br>The definition of epigraph requires:
-          $$ f(\bar{x}) \le \text{vertical coordinate} = \theta f(x_1) + (1-\theta)f(x_2) $$
-          This is exactly the convexity inequality.</p>
+          <div class="proof-step">
+            <strong>Step 1:</strong> Consider the convex combination $(\theta x + (1-\theta)y, \theta t + (1-\theta)s)$ for $\theta \in [0, 1]$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2:</strong> By convexity of $f$:
+            $$
+            f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) \le \theta t + (1-\theta)s
+            $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3:</strong> Therefore, $(\theta x + (1-\theta)y, \theta t + (1-\theta)s) \in \mathrm{epi}\, f$, proving $\mathrm{epi}\, f$ is convex.
+          </div>
+
+          <div class="proof-step">
+            <strong>($\Leftarrow$) Convex epigraph implies convex function:</strong> Suppose $\mathrm{epi}\, f$ is convex. Take any $x, y \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 1:</strong> The points $(x, f(x))$ and $(y, f(y))$ lie in $\mathrm{epi}\, f$ (on the boundary, in fact).
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2:</strong> By convexity of $\mathrm{epi}\, f$, the point $(\theta x + (1-\theta)y, \theta f(x) + (1-\theta)f(y))$ also lies in $\mathrm{epi}\, f$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3:</strong> By definition of epigraph, this means:
+            $$
+            f(\theta x + (1-\theta)y) \le \text{vertical coordinate} = \theta f(x) + (1-\theta)f(y)
+            $$
+            proving $f$ is convex.
+          </div>
         </div>
 
         <h3>2.3 Sublevel Sets (The Bridge to Quasiconvexity)</h3>
@@ -419,28 +539,31 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof: Tangent Underestimator (via Line Restriction)</h4>
-          <p>We prove that if $f$ is convex, the tangent underestimates it. (The converse follows by applying this to line segments).</p>
+          <h4>Proof: Tangent Underestimator</h4>
+
           <div class="proof-step">
-            <strong>Step 1: Restrict to 1D.</strong>
-            Fix $x, y \in \operatorname{dom} f$. Let $\phi(t) = f(x + t(y-x))$. Since $f$ is convex, $\phi$ is convex on $[0,1]$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: 1D Secant Lemma.</strong>
-            For a convex function $\phi$, secant slopes are non-decreasing. Thus, the slope at $t=0$ is a lower bound for any secant:
+            <strong>Part 1: Convex $\Rightarrow$ Inequality (via Line Restriction)</strong>
+            <p>We prove that if $f$ is convex, the tangent underestimates it.
+            <br>Fix $x, y \in \operatorname{dom} f$. Let $\phi(t) = f(x + t(y-x))$. Since $f$ is convex, $\phi$ is convex on $[0,1]$.
+            <br>For a convex function $\phi$, secant slopes are non-decreasing. Thus, the slope at $t=0$ is a lower bound for any secant:
             $$ \phi'(0) \le \frac{\phi(t) - \phi(0)}{t} \quad \forall t > 0 $$
             Multiplying by $t$: $\phi(t) \ge \phi(0) + \phi'(0)t$.
+            <br>Chain Rule: $\phi'(0) = \nabla f(x)^\top (y-x)$.
+            <br>Setting $t=1$: $f(y) \ge f(x) + \nabla f(x)^\top (y-x)$.</p>
           </div>
+
           <div class="proof-step">
-            <strong>Step 3: Chain Rule.</strong>
-            $\phi'(0) = \nabla f(x)^\top (y-x)$.
-            $\phi(0) = f(x)$.
-            $\phi(1) = f(y)$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 4: Conclusion.</strong>
-            Setting $t=1$:
-            $$ f(y) \ge f(x) + \nabla f(x)^\top (y-x) $$
+            <strong>Part 2: Inequality $\Rightarrow$ Convex</strong>
+            <p>Assume the inequality holds for all $\mathbf{x}, \mathbf{y}$. Let $\mathbf{z} = \theta \mathbf{x} + (1-\theta)\mathbf{y}$ for $\theta \in [0, 1]$.
+            <br>Apply the inequality at $\mathbf{z}$ targeting $\mathbf{x}$:
+            $$ f(\mathbf{x}) \ge f(\mathbf{z}) + \nabla f(\mathbf{z})^\top (\mathbf{x}-\mathbf{z}) $$
+            Apply the inequality at $\mathbf{z}$ targeting $\mathbf{y}$:
+            $$ f(\mathbf{y}) \ge f(\mathbf{z}) + \nabla f(\mathbf{z})^\top (\mathbf{y}-\mathbf{z}) $$
+            Multiply the first by $\theta$ and the second by $(1-\theta)$ and sum:
+            $$ \theta f(x) + (1-\theta)f(y) \ge f(z) + \nabla f(z)^\top (\theta(x-z) + (1-\theta)(y-z)) $$
+            Since $\theta(x-z) + (1-\theta)(y-z) = 0$, the gradient term vanishes.
+            $$ \theta f(x) + (1-\theta)f(y) \ge f(z) = f(\theta x + (1-\theta)y) $$
+            Thus $f$ is convex.</p>
           </div>
         </div>
 
@@ -564,19 +687,29 @@
           <p>We use the scalar chain rule on $\phi(t) = f(x+tv)$. Recall: $f$ is convex iff $\phi''(t) \ge 0$ for all lines.</p>
 
           <div class="proof-step">
-            <strong>Direction 1: Convex $\implies$ PSD.</strong>
-            Assume $f$ is convex. Then for any $x, v$, $\phi(t)$ is convex.
-            Since $f \in C^2$, $\phi \in C^2$. A convex $C^2$ function has non-negative second derivative: $\phi''(0) \ge 0$.
-            By chain rule: $\phi''(0) = v^\top \nabla^2 f(x) v$.
-            Since $v^\top \nabla^2 f(x) v \ge 0$ for all $v$, $\nabla^2 f(x) \succeq 0$.
+            <strong>Part 1: Convex $\implies$ Hessian PSD.</strong>
+            Assume $f$ is convex. Pick any $x \in \mathrm{dom} f$ and any direction $v \in \mathbb{R}^n$.
+            Define the 1D function $g(t) = f(x + tv)$.
+            Since $f$ is convex, $g$ is convex.
+            For a twice-differentiable 1D function, convexity implies $g''(t) \ge 0$.
+            By the chain rule:
+            $$ g'(t) = \nabla f(x+tv)^\top v \implies g''(t) = v^\top \nabla^2 f(x+tv) v $$
+            Evaluating at $t=0$: $g''(0) = v^\top \nabla^2 f(x) v \ge 0$.
+            Since $\mathbf{v}$ was arbitrary, this means $\nabla^2 f(\mathbf{x})$ is PSD.
           </div>
 
           <div class="proof-step">
-            <strong>Direction 2: PSD $\implies$ Convex.</strong>
-            Assume $\nabla^2 f(x) \succeq 0$ everywhere.
-            Then along any line, $\phi''(t) = v^\top \nabla^2 f(x+tv) v \ge 0$.
-            A function with non-negative second derivative is convex (integrate $\phi'' \ge 0$ twice).
-            Since $\phi(t)$ is convex for every line, $f(x)$ is convex.
+            <strong>Part 2: Hessian PSD $\implies$ Convex.</strong>
+            Assume $\nabla^2 f(\mathbf{x}) \succeq 0$ for all $\mathbf{x}$.
+            Consider any two points $\mathbf{x}, \mathbf{y}$ and define $g(t) = f(\mathbf{x} + t(\mathbf{y}-\mathbf{x}))$ for $t \in [0, 1]$.
+            The second derivative is $g''(t) = (\mathbf{y}-\mathbf{x})^\top \nabla^2 f(\mathbf{z}) (\mathbf{y}-\mathbf{x})$, where $\mathbf{z}$ is on the line segment.
+            By assumption, the Hessian is PSD at $z$, so $g''(t) \ge 0$ for all $t$.
+            A function with non-negative second derivative is convex.
+            Thus $g(t)$ is convex, which implies:
+            $$ g(\theta) \le (1-\theta)g(0) + \theta g(1) $$
+            Substituting back:
+            $$ f(x + \theta(y-x)) \le (1-\theta)f(x) + \theta f(y) $$
+            This is exactly the definition of convexity for $f$.
           </div>
         </div>
 

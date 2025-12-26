@@ -788,18 +788,16 @@
 
 
     <section class="section-card" id="section-norms">
-      <h2>4. Inner Products, Norms, and Angles</h2>
+      <h2>4. Inner Products: Geometry from Algebra</h2>
+      <p>Inner products bridge the gap between abstract vector spaces and geometry. They allow us to talk about <b>angles</b>, <b>lengths</b>, and <b>projections</b>. Without an inner product, a vector space is just a "floppy" elastic sheet; with an inner product, it becomes a rigid structure.</p>
 
-      <h3>4.1 Dot Product as an Inner Product</h3>
-      <p>Up to this point, our vector spaces have been purely algebraic (affine). To measure lengths and angles, we must add an <b>Inner Product</b> structure. The dot product $\langle x,y \rangle = \sum x_i y_i$ is the canonical choice for $\mathbb{R}^n$, but it's just one example of a broader concept. The dot product is not an assumption; it is a bilinear form satisfying specific axioms.</p>
-
-      <h4>The Inner Product Axioms</h4>
-      <p>An inner product is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x,y,z \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
-      <ul>
-        <li><b>Symmetry:</b> $\langle u, v \rangle = \langle v, u \rangle$. (Geometry is undirected).</li>
-        <li><b>Bilinearity:</b> Linear in each argument. $\langle \alpha u + \beta w, v \rangle = \alpha\langle u, v \rangle + \beta\langle w, v \rangle$. (This links algebra to geometry).</li>
-        <li><b>Positive Definiteness:</b> $\langle u, u \rangle \ge 0$, and $\langle u, u \rangle = 0 \iff u = 0$. (Lengths are non-negative and zero only for the zero vector).</li>
-      </ul>
+      <h3>4.1 Definition: Axioms, Not Vibes</h3>
+      <p>An <b>inner product</b> on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x, y, z \in V$ and $\alpha \in \mathbb{R}$:</p>
+      <ol>
+        <li><b>Symmetry:</b> $\langle x, y \rangle = \langle y, x \rangle$.</li>
+        <li><b>Linearity (in first argument):</b> $\langle \alpha x + y, z \rangle = \alpha \langle x, z \rangle + \langle y, z \rangle$. (Combined with symmetry, this implies bilinearity).</li>
+        <li><b>Positive Definiteness:</b> $\langle x, x \rangle \ge 0$, and $\langle x, x \rangle = 0 \iff x = 0$.</li>
+      </ol>
 
       <h4>Verification for the Dot Product</h4>
       <p>For $\langle x,y \rangle = x^\top y$:
@@ -815,10 +813,13 @@
         <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
       </figure>
 
-      <h3>4.2 Norms: Induced by Inner Products</h3>
-      <p>A vector space does not automatically have a notion of "length". We <b>derive</b> it from the inner product:
-      $$ \|x\| := \sqrt{\langle x, x \rangle} $$
-      This is a construction. We must prove it satisfies the three Norm Axioms.</p>
+      <h3>4.2 Geometry Extracted from Axioms</h3>
+      <p>Once you have an inner product, you get geometry for free:</p>
+      <ul>
+        <li><b>Induced Norm:</b> $\|x\| := \sqrt{\langle x, x \rangle}$. (Length).</li>
+        <li><b>Orthogonality:</b> $x \perp y \iff \langle x, y \rangle = 0$.</li>
+        <li><b>Angles:</b> For non-zero vectors, $\cos \theta = \frac{\langle x, y \rangle}{\|x\| \|y\|}$.</li>
+      </ul>
 
       <h4>Proof of Norm Properties</h4>
       <ol>
@@ -828,16 +829,16 @@
       </ol>
 
       <div class="proof-box">
-        <h4>Theorem: Cauchy-Schwarz Inequality</h4>
-        <p>For any inner product, $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x, y$ are dependent.
-        <br><b>Proof from Scratch:</b>
-        If $y=0$, both sides are 0. Assume $y \neq 0$. Consider the quadratic function $f(t) = \|x - ty\|^2$. By positivity, $f(t) \ge 0$ for all $t$.
-        $$ f(t) = \langle x-ty, x-ty \rangle = \langle x,x \rangle - 2t\langle x, y \rangle + t^2 \langle y,y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2 \|y\|^2 $$
-        This is a quadratic $at^2 + bt + c$ with $a=\|y\|^2 > 0$. For it to be non-negative everywhere, its discriminant must be non-positive:
-        $$ b^2 - 4ac \le 0 \implies (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
-        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff discriminant is 0, which means there is a $t$ where $\|x-ty\|=0$, i.e., $x=ty$ (dependent).
-        </p>
+        <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
+        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
+        <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t$.
+        Expanding using bilinearity:
+        $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
+        This is a quadratic polynomial $at^2 + bt + c$ with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
+        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
+        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies |\langle x, y \rangle| \le \|x\| \|y\| $$
+        If the discriminant is 0, the parabola touches 0, meaning $\phi(t)=0$ for some $t$, implying $x=ty$ (collinear).</p>
       </div>
 
       <div class="proof-box">
@@ -855,9 +856,12 @@
       </div>
 
       <h3>4.3 Linear Functionals and Riesz Representation</h3>
-      <p>A linear functional is a linear map $\ell: \mathbb{R}^n \to \mathbb{R}$. In finite dimensions, every linear functional can be represented as an inner product with a unique vector.
-      <br><b>Riesz Representation Theorem:</b> For any linear functional $\ell$, there exists a unique vector $\mathbf{a} \in \mathbb{R}^n$ such that $\ell(\mathbf{x}) = \langle \mathbf{a}, \mathbf{x} \rangle$ for all $\mathbf{x}$.
-      <br>This explains why the derivative $Df(x)$ (a linear map) is represented by the gradient vector $\nabla f(x)$. The gradient is the vector representing the directional derivative functional via the inner product: $Df(x)[d] = \langle \nabla f(x), d \rangle$. Changing the inner product changes the gradient vector.</p>
+      <p>A <b>linear functional</b> is a linear map from vector space $V$ to scalars $\mathbb{R}$.
+      $$ f: \mathbb{R}^n \to \mathbb{R} $$
+      Example: $f(x) = 3x_1 - 5x_2$.
+      <br><b>Theorem (Riesz Representation):</b> In finite dimensions, <i>every</i> linear functional can be represented as an inner product with a unique vector $a$.
+      $$ f(x) = \langle a, x \rangle $$
+      <b>Why this matters:</b> This is why gradients are vectors. The derivative $Df(x)$ is technically a linear functional (it eats a direction and spits out a rate of change). The <b>gradient</b> $\nabla f(x)$ is the unique vector that represents this functional: $Df(x)[v] = \langle \nabla f(x), v \rangle$.</p>
 
       <h3>4.4 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
       <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law, so they have no associated inner product.</p>

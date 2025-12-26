@@ -1723,6 +1723,16 @@
                 <li><b>$\ell_1$ Ball:</b> $\|Ax+b\|_1 \le t \iff \exists s \ge 0: -s \le Ax+b \le s, \mathbf{1}^\top s \le t$ (Linear).</li>
                 <li><b>$\ell_2$ Ball:</b> $\|Ax+b\|_2 \le t \iff (t, Ax+b) \in \mathcal{Q}$ (Second-Order Cone).</li>
             </ul>
+
+            <div class="insight">
+              <h4>Deep Dive: The "Norm $\le$ Affine" Subtlety</h4>
+              <p>Consider the constraint $\|Ax+b\| \le c^\top x + d$. Is it convex?</p>
+              <ul>
+                <li><b>Convexity Perspective:</b> Rewrite as $g(x) = \|Ax+b\| - (c^\top x + d) \le 0$. Since the norm is convex and the affine term is concave (and convex), the difference is <b>convex</b>. Thus, the sublevel set is convex <i>regardless</i> of the sign of the RHS.</li>
+                <li><b>Representability Perspective:</b> Solvers like MOSEK or ECOS use standard cones. The Second-Order Cone requires the "radius" variable to be non-negative ($t \ge 0$). Thus, to implement this in a solver, you must explicitly add the constraint $c^\top x + d \ge 0$.</li>
+              </ul>
+              <p><b>Lesson:</b> A constraint can be mathematically convex but not "conic-representable" until you enforce the domain of the cone.</p>
+            </div>
         </div>
       </section>
 

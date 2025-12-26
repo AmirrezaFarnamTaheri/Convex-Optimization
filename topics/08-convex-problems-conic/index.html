@@ -85,22 +85,18 @@
       <div class="proof-box">
         <h4>Convexity of the Second-Order Cone</h4>
         <div class="proof-step">
-          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{Q}^{n+1}$ and $\theta \in [0, 1]$.
+          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{L}^{n+1}$ and $\theta \in [0, 1]$.
         </div>
         <div class="proof-step">
           <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
-          $
-          \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)}
-          $
+          $ \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)} $
         </div>
         <div class="proof-step">
           <strong>Apply constraints:</strong>
-          $
-          \le \theta t_1 + (1-\theta) t_2
-          $
+          $ \le \theta t_1 + (1-\theta) t_2 $
         </div>
         <div class="proof-step">
-          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{Q}^{n+1}$, so $\mathcal{Q}^{n+1}$ is convex.
+          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{L}^{n+1}$, so $\mathcal{L}^{n+1}$ is convex.
         </div>
       </div>
 
@@ -201,38 +197,33 @@
       <h2>2. Robust Optimization: The "Dual Norm" Lemma</h2>
       <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
-      <h3>2.1 The Robust Constraint Template</h3>
-      <p>Consider the linear constraint $a^\top x \le b$ where $a$ is uncertain. We require:</p>
-      $$ \sup_{a \in \mathcal{U}} a^\top x \le b $$
-      <p>This is equivalent to:</p>
-      $$ \bar{a}^\top x + \sup_{u \in \mathcal{U}_{centered}} u^\top x \le b $$
+      <h3>2.1 Deterministic Robust LP</h3>
+      <p>Consider the constraint $a_i^\top x \le b_i$. If $a_i$ is uncertain and belongs to a set $\mathcal{E}_i$, the robust constraint is:</p>
+      $$ \sup_{a_i \in \mathcal{E}_i} a_i^\top x \le b_i $$
 
-      <div class="theorem-box">
-        <h4>Lemma: Supremum = Dual Norm</h4>
-        <p>If the uncertainty set is a norm ball $\mathcal{U} = \{u : \|u\| \le \rho\}$, then:</p>
-        $$ \sup_{\|u\| \le \rho} u^\top x = \rho \|x\|_* $$
-        <p>where $\|\cdot\|_*$ is the <b>dual norm</b> of the uncertainty norm.</p>
-        <p><b>Implication:</b> Robust linear constraints become deterministic norm constraints.</p>
-      </div>
+      <h4>Ellipsoidal Uncertainty</h4>
+      <p>Suppose $\mathcal{E}_i$ is an ellipsoid: $\mathcal{E}_i = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
+      <br>Here $\bar{a}_i$ is the nominal value and $P_i$ shapes the uncertainty.</p>
 
       <div class="proof-box">
-        <h4>Derivation: Robust LP to SOCP</h4>
+        <h4>Derivation: Robust to SOCP</h4>
         <div class="proof-step">
-          <strong>Step 1: Expand Uncertainty.</strong>
-          $$ \sup_{a \in \mathcal{E}} a^\top x = \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} (Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top (P^\top x) $$
+          <strong>Step 1: Expand the Term.</strong> We want to maximize the LHS over the uncertainty set $\mathbf{u}$:
+          $$ \sup_{\|\mathbf{u}\|_2 \le 1} (\bar{\mathbf{a}}_i + P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} (P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) $$
         </div>
         <div class="proof-step">
           <strong>Step 2: Dual Norm Representation.</strong>
           The term $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top \mathbf{v}$ is the definition of the dual norm $\|\mathbf{v}\|_*$.
-          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P^\top \mathbf{x}) = \|P^\top \mathbf{x}\|_2$.
+          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) = \|P_i^\top \mathbf{x}\|_2$.
         </div>
         <div class="proof-step">
           <strong>Step 3: Resulting Constraint.</strong>
           Substituting back, the robust constraint is equivalent to:
-          $$ \bar{a}^\top \mathbf{x} + \|P^\top \mathbf{x}\|_2 \le b $$
+          $$ \bar{\mathbf{a}}_i^\top \mathbf{x} + \|P_i^\top \mathbf{x}\|_2 \le b_i $$
           This is a deterministic constraint on $\mathbf{x}$ involving a linear term and a Euclidean norm term—exactly the form of a Second-Order Cone constraint.
         </div>
       </div>
+      <p>Thus, Robust LP with ellipsoidal uncertainty is an SOCP.</p>
 
       <h4>Case Studies: Uncertainty Geometry $\to$ Problem Class</h4>
       <ul>
@@ -318,7 +309,14 @@
       <p>The constraint $F(x) \succeq 0$ is a <b>Linear Matrix Inequality (LMI)</b>. It requires that the symmetric matrix $F(x)$ be Positive Semidefinite.
       <br><b>Key Insight:</b> This is an infinite set of linear constraints: $v^\top F(x) v \ge 0$ for all $v \in \mathbb{R}^k$. The LMI packages all these directional curvature checks into one convex constraint.</p>
 
-      <h3>3.2 The Schur Complement: The Absolute Value of SDP</h3>
+      <h3>3.2 The PSD Cone</h3>
+      <p>The constraint $F(x) \succeq 0$ means $F(x)$ lies in the cone of positive semidefinite matrices:</p>
+      <p style="text-align: center;">
+        $ \mathbb{S}_+^m = \{X \in \mathbb{S}^m \mid X \succeq 0\} $
+      </p>
+      <p>Recall from Lecture 04 that $\mathbb{S}_+^m$ is a proper cone (convex, closed, pointed, solid).</p>
+
+      <h3>3.3 The Schur Complement: The Absolute Value of SDP</h3>
       <p>Just as $|x| \le t \iff -t \le x \le t$ allows us to linearize absolute values, the <b>Schur Complement Lemma</b> allows us to linearize quadratic and rational matrix functions.</p>
 
       <div class="theorem-box">
@@ -328,7 +326,7 @@
           <p>This lemma is the primary tool for converting nonlinear convex constraints into LMIs.</p>
       </div>
 
-      <h3>3.3 Key Properties</h3>
+      <h3>3.4 Key Properties</h3>
       <ul>
         <li><strong>Generality:</strong> SDP subsumes LP, QP, and SOCP</li>
         <li><strong>Complexity:</strong> Polynomial-time solvable using interior-point methods</li>
@@ -336,7 +334,7 @@
         <li><strong>Applications:</strong> Combinatorial optimization relaxations, control theory (LMI), matrix completion</li>
       </ul>
 
-      <h3>3.4 Standard SDP Examples</h3>
+      <h3>3.5 Standard SDP Examples</h3>
 
             <h4>Example 3.1: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
@@ -409,7 +407,7 @@
         </div>
       </div>
 
-      <h3>3.5 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
+      <h3>3.6 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
       <p>The standard convex problem classes form a strict hierarchy of expressiveness. Understanding this hierarchy helps in selecting the most efficient solver for a given problem.</p>
 
       <div class="insight">

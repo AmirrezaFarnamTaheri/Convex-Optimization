@@ -61,105 +61,198 @@
 
     <!-- SECTION 1: NOTATION -->
     <section class="section-card" id="section-notation">
-      <h2>1. Mathematical Atoms: The Optimization Type System</h2>
+      <h2>1. Mathematical Atoms: From Fields to Functions</h2>
 
+      <h3>1.1 The Geometric "Atoms" of Optimization</h3>
       <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match.</p>
-
-      <h3>1.1 Scalars, Vectors, and Matrices</h3>
-
-      <h4>Scalars: Elements of a Field</h4>
-      <p>A scalar $a \in \mathbb{R}$ is an element of the field of real numbers. While we often think of them as "dimensionless numbers," structurally:</p>
       <ul>
-        <li>$\mathbb{R}$ is a 1-dimensional vector space over itself.</li>
-        <li>Scalars follow <b>field axioms</b> (associativity, distributivity, inverses) that justify algebra like $a(x+y) = ax+ay$.</li>
+        <li><b>Scalar:</b> $a \in \mathbb{R}$ (or $\mathbb{C}$)</li>
+        <li><b>Vector:</b> $x \in \mathbb{R}^n$ (Column vector)</li>
+        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$ (Linear map $\mathbb{R}^n \to \mathbb{R}^m$)</li>
+        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$ (Boolean predicate on space)</li>
+        <li><b>Function:</b> $f: D \to Y$ (Map with explicit domain)</li>
       </ul>
-      <p><b>Extended Reals:</b> In optimization, we often work with $\overline{\mathbb{R}} = \mathbb{R} \cup \{+\infty\}$. This allows us to treat constraints as "infinite penalties" in the objective function ($f(x) = +\infty$ if infeasible).</p>
-
-      <h4>Vectors: Typed Tuples</h4>
-      <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple of scalars. The notation $\mathbb{R}^n$ acts as a <b>type tag</b>:</p>
-      <ul>
-        <li><b>Shape:</b> It asserts $x$ has exactly $n$ coordinates.</li>
-        <li><b>Equality:</b> $x=y$ if and only if $x_i = y_i$ for all $i$. Equality is coordinatewise.</li>
-        <li><b>Type Safety:</b> $x+y$ is only defined if $x, y$ share the same dimension $n$. Adding vectors of different sizes is undefined.</li>
-      </ul>
-      <p><b>Operations:</b> Addition and scalar multiplication are defined coordinatewise. This is forced by the requirement that $\mathbb{R}^n$ inherits the field structure of $\mathbb{R}$.</p>
-
-      <h4>Matrices: Linear Operators</h4>
-      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best viewed not as a table of numbers, but as a <b>typed linear operator</b>:</p>
-      $$ A: \mathbb{R}^n \to \mathbb{R}^m $$
-      <ul>
-        <li>$n$ is the <b>input dimension</b> (domain).</li>
-        <li>$m$ is the <b>output dimension</b> (codomain).</li>
-      </ul>
-      <p><b>Matrix-Vector Multiplication:</b> The definition $(Ax)_i = \sum_{j=1}^n A_{ij}x_j$ is designed to ensure:</p>
+      <p>In convex optimization, we view algebraic problems through a geometric lens. Throughout this course, you will repeatedly perform three fundamental operations:</p>
       <ol>
-        <li><b>Linearity:</b> $A(\alpha x + \beta y) = \alpha Ax + \beta Ay$.</li>
-        <li><b>Composition:</b> $B(Ax) = (BA)x$. Matrix multiplication corresponds to function composition.</li>
+        <li><b>Mixing (Combinations):</b> Optimization often involves "averaging" or interpolating between candidate solutions.
+          <br><i>Example:</i> A portfolio is a weighted mix of assets. The rules for these weights (sum to 1? non-negative?) determine whether we are working with <b>subspaces</b>, <b>affine sets</b>, or <b>convex sets</b>.</li>
+        <li><b>Measuring (Norms & Inner Products):</b> We need precise tools to quantify "error" and "similarity".
+          <br><i>Example:</i> The objective function minimizes a residual vector. <b>Norms</b> measure lengths (error size), while <b>inner products</b> measure angles (alignment).</li>
+        <li><b>Pullback (Preimages):</b> Constraints $g(\mathbf{x}) \le 0$ define sets implicitly.
+          <br><i>Example:</i> Understanding constraints as <b>preimages</b> allows us to deduce the shape of the feasible region directly from the properties of the function $\mathbf{g}$.</li>
       </ol>
 
-      <h3>1.2 Sets: The Logic Layer</h3>
-      <p>Constraints in optimization are fundamentally <b>membership tests</b>. A constraint $g(x) \le 0$ really means $x \in \{z \mid g(z) \le 0\}$.</p>
+      <h3>1.2 Scalars and Fields: The Rulebook</h3>
+      <p>Before "vectors" exist, linear algebra is already quietly assuming something about the <i>numbers</i> you’re allowed to use as coefficients. Those numbers are the <b>scalars</b>. A <b>field</b> $\mathbb{F}$ is the rulebook that tells you how those scalars behave. In convex optimization, our scalars are almost always $a \in \mathbb{R}$.</p>
+      <p><b>Why "field" matters:</b> When you later do manipulations like $a(x+y) = ax+ay$ or $(a+b)x=ax+bx$, you are using distributivity and associativity in $\mathbb{R}$. If scalars lived in something weaker than a field (e.g., a ring without inverses), many optimization arguments would break.</p>
+      <p><b>Extended Reals:</b> In optimization, we often need the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to treat "constraints" as part of the objective function (e.g., indicator functions where $\delta_C(x) = +\infty$ if $x \notin C$).</p>
 
+      <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
+
+      <h4>The Field Axioms (From Scratch)</h4>
+      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying three bundles of axioms:</p>
       <ul>
-        <li><b>Set Builder:</b> $C = \{x \in \mathbb{R}^n \mid \text{property}(x)\}$. The property acts as a boolean predicate.</li>
-        <li><b>Intersection is AND:</b> The feasible set for a system of constraints is the intersection of the sets defined by each constraint. $\bigcap C_i = \{x \mid x \in C_i \text{ for all } i\}$.</li>
-        <li><b>Infeasibility is Empty Intersection:</b> If $\bigcap C_i = \emptyset$, the problem is infeasible. This is a logical contradiction, not a numerical error.</li>
+        <li><b>A) Addition ($\mathbb{F}, +$ is an abelian group):</b>
+          <ul>
+            <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
+            <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
+            <li><b>Commutativity:</b> $a+b = b+a$.</li>
+            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
+            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
+          </ul>
+        </li>
+        <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
+          <ul>
+            <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
+            <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
+            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
+            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
+            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
+          </ul>
+        </li>
+        <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
       </ul>
 
-      <h3>1.3 Functions: Domain is Law</h3>
-      <p>A function $f: D \to Y$ consists of a <b>domain</b> $D \subseteq \mathbb{R}^n$, a <b>codomain</b> $Y$, and a rule. In convex optimization, the domain is not optional metadata; it is part of the definition.</p>
+      <p><b>Why linear algebra needs a field:</b> To make linear combinations $\sum \alpha_i v_i$ work, scalars must allow scaling, undoing scaling (inverses), and distribution. The hidden reason is solving equations: $\alpha x = y \implies x = \alpha^{-1}y$ requires inverses. Without them, Gaussian elimination fails.</p>
+
+      <h4>Derived Laws (Proven Consequences)</h4>
+      <p>From these axioms alone, we can prove facts you use constantly:</p>
       <ul>
-        <li><b>Implicit Domain:</b> For $f(x) = \log(x)$, the domain is implicitly $x > 0$. Optimization solvers cannot evaluate $f$ outside its domain.</li>
-        <li><b>Preimages:</b> Constraints are preimages. $g(x) \le 0$ defines the set $g^{-1}((-\infty, 0])$. The convexity of the feasible set usually follows from the convexity of preimages under specific maps.</li>
+        <li><b>$0 \cdot a = 0$:</b> Proof: $0a = (0+0)a = 0a + 0a \implies 0 = 0a$ (by additive cancellation).</li>
+        <li><b>$(-1)a = -a$:</b> Proof: $a + (-1)a = 1a + (-1)a = (1-1)a = 0a = 0$. So $(-1)a$ is the additive inverse of $a$.</li>
+        <li><b>No Zero Divisors:</b> If $ab=0$ and $a \neq 0$, then $b=0$. (Multiply by $a^{-1}$). This is why we can solve by factoring.</li>
+        <li><b>Uniqueness:</b> The identities $0, 1$ and inverses $-a, a^{-1}$ are unique.</li>
       </ul>
 
-      <h3>1.4 Linear vs. Affine Mappings</h3>
-      <p>The distinction between linear and affine maps is crucial for understanding which geometric properties are preserved.</p>
+      <h4>Concrete Examples & The Failure Museum</h4>
+      <ul>
+        <li><b>Fields (Good Citizens):</b> $\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex), and finite fields $\mathbb{F}_p$ (where $p$ is prime).</li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory".</li>
+        <li><b>$\mathbb{Z}_n$ (Integers mod $n$):</b> A field if and only if $n$ is prime. If $n=6$, then $2 \cdot 3 = 0 \pmod 6$. This implies we have <b>zero divisors</b> (non-zero numbers multiply to zero), destroying the cancellation law ($ab=ac \implies b=c$). In a field, scaling by a non-zero scalar is always injective (preserves information).</li>
+      </ul>
 
-      <h4>Linear Map</h4>
-      <p>A map $T: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if it preserves superposition: $T(\alpha x + \beta y) = \alpha T(x) + \beta T(y)$.
-      <br><b>Structure:</b> It must fix the origin ($T(0)=0$). It maps subspaces to subspaces.
-      <br><b>Representation:</b> Every linear map is matrix multiplication $T(x) = Ax$.</p>
+      <h3>1.3 Start with $\mathbb{R}^n$ as a Concrete Model</h3>
+      <p>We define $\mathbb{R}^n$ not just as "tuples" but as functions $x: \{1,\dots,n\} \to \mathbb{R}$. This makes it clear that operations are defined <b>componentwise</b>, inheriting properties directly from the field $\mathbb{R}$.</p>
 
-      <h4>Affine Map</h4>
-      <p>A map $A: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it preserves affine combinations: $A(\theta x + (1-\theta)y) = \theta A(x) + (1-\theta)A(y)$ for all $\theta \in \mathbb{R}$.
-      <br><b>Structure:</b> It maps lines to lines (preserves "straightness") but may shift the origin.
-      <br><b>Representation:</b> Every affine map is a linear map plus a translation: $A(x) = Mx + b$.
-      </p>
+      <p><b>$\mathbb{R}^n$ is a Type, Not Decoration:</b> A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple. This asserts two things:
+      <br>1. <b>Shape:</b> $x$ has exactly $n$ coordinates.
+      <br>2. <b>Ambient Space:</b> $x$ lives in a space where addition and scaling are defined.
+      <br><b>Equality is Coordinatewise:</b> $x=y \iff \forall i, x_i=y_i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
+
+      <p><b>Vector Operations (Forced by Consistency):</b>
+      <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
+      <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
+      <br>This is why operations on $\mathbb{R}^n$ are "boring"—they are literally scalar algebra applied $n$ times.</p>
+
+      <h4>The Axioms Verified (Why it works)</h4>
+      <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
+      <ul>
+        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed by componentwise uniqueness.</li>
+        <li><b>Derived Facts:</b> $0 \cdot \mathbf{x} = \mathbf{0}$, $(-1)\mathbf{x} = -\mathbf{x}$. These are not assumptions; they are theorems derived from the axioms.</li>
+        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
+      </ul>
+
+      <h3>1.4 Geometry as a Representation (Points vs. Vectors)</h3>
+      <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In optimization, the distinction is critical.
+      <br><b>Vectors</b> are displacements (elements of a vector space $V$). You can add them and scale them.
+      <br><b>Points</b> are locations (elements of an affine space $A$). You cannot add points intrinsically. Adding locations depends on where you put the origin.</p>
+
+      <h4>The Affine Rules</h4>
+      <ul>
+        <li><b>Point - Point = Vector:</b> $q - p$ is the unique displacement from $p$ to $q$.</li>
+        <li><b>Point + Vector = Point:</b> $p + v$ is the translation of $p$ by $v$.</li>
+        <li><b>Point + Point = Illegal:</b> $(1,1) + (2,2) = (3,3)$ is only meaningful if we secretly treat them as displacements from $(0,0)$. Change the origin, and the sum changes.</li>
+        <li><b>Affine Combinations:</b> $\sum \alpha_i p_i$ is a valid point if and only if $\sum \alpha_i = 1$. This makes the result origin-independent.</li>
+      </ul>
+      <p><b>Why this matters:</b> The solution set to $Ax=0$ is a <b>subspace</b> (contains 0, vectors). The solution set to $Ax=b$ ($b \ne 0$) is an <b>affine set</b> (does not contain 0, points). Mixing them up leads to errors in duality and tangent space calculations.</p>
+
+      <h3>1.5 Linear Combinations: The Fundamental Constructor</h3>
+      <p>Linear algebra is built on one atomic operation: the <b>finite linear combination</b>.
+      $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
+      Every concept in the course reduces to this.</p>
+
+      <h4>(A) Systems of Linear Equations as Linear Maps</h4>
+      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." That description is correct but shallow. The more powerful interpretation is this:
+      <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b>
+      <br>Everything else—Gaussian elimination, pivots, ranks—is machinery for answering that one question.</p>
+
+      <p><b>1. Interpret $A$ as a function, not a table of numbers:</b> A matrix $A \in \mathbb{R}^{m\times n}$ defines a linear transformation $T_A : \mathbb{R}^n \to \mathbb{R}^m, \ T_A(\mathbf{x}) = A\mathbf{x}$. This is literally a function with two defining properties:
+      <ul>
+        <li>$T_A(\mathbf{x}+\mathbf{y}) = T_A(\mathbf{x}) + T_A(\mathbf{y})$</li>
+        <li>$T_A(\alpha \mathbf{x}) = \alpha T_A(\mathbf{x})$</li>
+      </ul>
+      Those properties mean the entire behavior of $T_A$ is determined by what it does to basis vectors, and concretely, to the <b>columns of $A$</b>.</p>
+
+      <p><b>2. The "Fundamental Identity" (Column-space interpretation):</b> Write the columns of $A$ as $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$. Then for any $\mathbf{x} = (x_1,\dots,x_n)$,
+      $$ \boxed{ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n } $$
+      This identity is not a trick. It <i>is</i> matrix–vector multiplication. So now the equation $A\mathbf{x}=\mathbf{b}$ becomes: <i>Does there exist a choice of scalars $x_1,\dots,x_n$ such that $\mathbf{b} = x_1 \mathbf{a}_1 + \cdots + x_n \mathbf{a}_n$?</i> That is exactly the definition of <b>membership in a span</b>.</p>
+
+      <p><b>3. The Column Space Answers Consistency:</b> Define the <b>column space</b> of $A$: $\mathcal{R}(A) = \operatorname{span}\{\mathbf{a}_1,\dots,\mathbf{a}_n\} \subseteq \mathbb{R}^m$. Now the fundamental equivalence:
+      $$ \boxed{ A\mathbf{x} = \mathbf{b} \text{ is solvable } \iff \mathbf{b} \in \mathcal{R}(A). } $$
+      Nothing more, nothing less. If $\mathbf{b}$ lies in the column space, the system is <b>consistent</b>. If $\mathbf{b}$ lies outside it, the system is <b>inconsistent</b>, and no amount of algebra will fix that.</p>
+
+      <h4>(B) Row Reduction as Invertible Transformation</h4>
+      <p>Gaussian elimination is often taught as a sequence of mechanical steps. However, it has a precise algebraic meaning: <b>Row operations are left-multiplications by invertible matrices.</b></p>
+      <p>If we perform a row operation on the augmented matrix $[A \mid \mathbf{b}]$, we are effectively multiplying the system $A\mathbf{x} = \mathbf{b}$ by an elementary matrix $E$:
+      $$ E A \mathbf{x} = E \mathbf{b} $$
+      Since every elementary row operation (swap, scale, add) is reversible, the matrix $E$ is <b>invertible</b>.
+      <br><b>Theorem:</b> If $E$ is invertible, the solution sets of $A\mathbf{x}=\mathbf{b}$ and $(EA)\mathbf{x} = E\mathbf{b}$ are identical.
+      <br><i>Proof:</i> If $A\mathbf{x}=\mathbf{b}$, then $EA\mathbf{x}=E\mathbf{b}$. Conversely, if $EA\mathbf{x}=E\mathbf{b}$, multiplying by $E^{-1}$ yields $A\mathbf{x}=\mathbf{b}$.
+      <br>Thus, row reduction transforms the system into a "simpler" linear map (RREF) without changing the solution set. It changes the <i>coordinate representation</i> of the constraints, not the geometry of the solution space.</p>
 
       <div class="insight">
-        <h4>Why this matters</h4>
-        <p>Convexity is preserved under affine maps (both images and preimages). Linear maps are just a special case ($b=0$). Most constraints in convex optimization (e.g., $Ax=b$) define affine sets (translated subspaces).</p>
+        <h4>Immediate Consequences (Geometry vs. Algebra)</h4>
+        <ol>
+            <li><b>Why inconsistent systems exist:</b> If $\mathcal{R}(A)$ is a proper subspace of $\mathbb{R}^m$ (rank < m), then "most" vectors $\mathbf{b}$ are outside it. Inconsistency is the generic case, not a pathology.</li>
+            <li><b>Why adding columns can make systems solvable:</b> Adding a column to $A$ enlarges $\mathcal{R}(A)$. You are literally adding a new direction you can combine.</li>
+            <li><b>Why rank matters:</b> The rank of $A$ is $\operatorname{rank}(A) = \dim(\mathcal{R}(A))$. Rank measures how "big" the image of the linear map is.</li>
+            <li><b>Why overdetermined systems often fail:</b> If $m > n$, the column space lives in $\mathbb{R}^m$ but has dimension at most $n$. It cannot fill the space. Many $\mathbf{b}$’s are unreachable.</li>
+        </ol>
+        <h4>The Mental Model to Keep Forever</h4>
+        <p>Do not think: <i>"I have equations and unknowns."</i></p>
+        <p>Think instead: <i>"I have a linear map. What outputs can it produce?"</i></p>
+        <p>Solving $A\mathbf{x}=\mathbf{b}$ is not algebra first and geometry later. It is <b>geometry first, algebra as a tool</b>.</p>
       </div>
 
-      <h3>1.5 Fundamental Structure: Linear Combinations and Basis</h3>
-      <p>While the "type system" defines what objects <i>are</i>, linear algebra is the study of how they <i>combine</i>. The atomic operation is the linear combination:
-      $$ \mathbf{y} = \sum_{i=1}^k c_i \mathbf{v}_i $$</p>
+      <h4>(B) Linear Independence as "No Redundancy"</h4>
+      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it precisely to ensure coordinates are unique.</p>
 
-      <h4>(A) Systems of Equations as Linear Maps</h4>
-      <p>The equation $A\mathbf{x} = \mathbf{b}$ is not just a list of constraints; it is a question about geometry.
-      <br><b>Column View (Synthesis):</b> Does $\mathbf{b}$ lie in the span of the columns of $A$?
-      $$ x_1 \mathbf{a}_1 + \dots + x_n \mathbf{a}_n = \mathbf{b} $$
-      <br><b>Row View (Measurement):</b> Do the measurements $a_i^\top \mathbf{x}$ match the target $b_i$?
-      </p>
+      <p><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
+      $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
+      If there exists a non-trivial combination (some $\alpha_i \neq 0$) summing to zero, the vectors are <b>linearly dependent</b>.</p>
 
-      <h4>(B) Row Reduction as Change of Basis</h4>
-      <p>Gaussian elimination (row reduction) is the algorithmic engine of linear algebra. It transforms a system $A\mathbf{x}=\mathbf{b}$ into an equivalent system $R\mathbf{x}=\mathbf{d}$ where the geometry is transparent (Role of Pivots).
-      <br><b>Invariance:</b> Row operations are invertible linear transformations of the <i>constraints</i>. They preserve the solution set (the Kernel), even though they change the column space.</p>
+      <p><b>Why check for zero?</b> You might wonder: why not check if two combinations produce the same vector? Because those are the same question.
+      $$ \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i \iff \sum (\alpha_i - \beta_i) \mathbf{v}_i = 0 $$
+      Thus, <b>Independence $\iff$ Uniqueness of Representation</b>. Once you choose independent vectors as building blocks, every vector in their span has a unique recipe (coordinates).</p>
 
-      <h4>(C) Basis and Dimension</h4>
-      <p>A <b>basis</b> is a set of vectors that is both:
-      <ol>
-        <li><b>Spanning:</b> Enough to build everything (Existence).</li>
-        <li><b>Independent:</b> No redundancy (Uniqueness).</li>
-      </ol>
+      <div class="proof-box">
+        <h4>Proposition: Independence $\iff$ Uniqueness of Representation</h4>
+        <p>Independence is the "secret meaning" of coordinate uniqueness.
+        <br><b>1. Independence $\implies$ Uniqueness:</b>
+        <br>Suppose $\mathbf{v}_1,\dots,\mathbf{v}_k$ are linearly independent. If a vector $\mathbf{w}$ has two representations:
+        $$ \mathbf{w} = \sum_{i=1}^k \alpha_i \mathbf{v}_i = \sum_{i=1}^k \beta_i \mathbf{v}_i $$
+        Subtracting the equations gives $\sum (\alpha_i - \beta_i)\mathbf{v}_i = \mathbf{0}$.
+        By independence, the only linear combination that yields $\mathbf{0}$ is the trivial one, so $\alpha_i - \beta_i = 0$ for all $i$. Thus $\alpha_i = \beta_i$. The coordinates are unique.
+        <br><b>2. Uniqueness $\implies$ Independence:</b>
+        <br>Assume every vector in the span has a unique representation. The zero vector $\mathbf{0}$ is in the span and has the trivial representation $\mathbf{0} = \sum 0\mathbf{v}_i$. If there were <i>any</i> other representation $\sum c_i \mathbf{v}_i = \mathbf{0}$ with non-zero $c_i$, uniqueness would be violated. Thus, the only representation of $\mathbf{0}$ is the trivial one, which is the definition of independence.</p>
+      </div>
+
       <div class="theorem-box">
-        <h4>The Dimension Invariant</h4>
-        <p>Every basis of a vector space has the same number of elements. This number is the <b>dimension</b>.
-        <br><i>Steinitz Exchange Lemma:</i> If you have a basis of size $n$, any set with more than $n$ vectors must be linearly dependent.</p>
+        <h4>Theorem: The Redundancy Test</h4>
+        <p>A set of vectors is linearly independent if and only if <b>no vector in the set is redundant</b> (i.e., lies in the span of the others).
+        <br><i>Proof:</i>
+        <br>($\Rightarrow$) <b>Independence implies No Redundancy:</b> Assume the set is independent. Suppose, for contradiction, that $v_j$ is redundant: $v_j = \sum_{i \neq j} c_i v_i$. Then $1 \cdot v_j - \sum_{i \neq j} c_i v_i = 0$. This is a non-trivial linear combination summing to zero (the coefficient of $v_j$ is 1), which contradicts independence.
+        <br>($\Leftarrow$) <b>No Redundancy implies Independence:</b> Assume no vector is in the span of the others. Suppose the set is dependent: $\sum_{i=1}^k \alpha_i v_i = 0$ with some coefficients not zero. Pick an index $j$ where $\alpha_j \neq 0$. We can isolate $v_j$:
+        $$ \alpha_j v_j = -\sum_{i \neq j} \alpha_i v_i \implies v_j = \sum_{i \neq j} \left( -\frac{\alpha_i}{\alpha_j} \right) v_i $$
+        This expresses $v_j$ as a linear combination of the other vectors, meaning $v_j$ is redundant. This contradicts the assumption. Thus, the set must be independent.</p>
       </div>
 
-      <h4>(D) The Pivot Column Method (Algorithm)</h4>
+      <p><b>Geometric Intuition:</b>
+      <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear.
+      <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
+      <br><b>Redundancy:</b> If a set is dependent, at least one vector adds no new dimension to the span.</p>
+
+      <h4>(C) Algorithmic Check: The Pivot Column Method</h4>
       <p>How do we practically check for independence or finding a basis? We use the <b>Pivot Column Algorithm</b> (Gaussian Elimination).</p>
       <ol>
         <li><b>Form a Matrix:</b> Stack the vectors as columns of a matrix $A = [\mathbf{v}_1 \dots \mathbf{v}_k]$.</li>
@@ -167,6 +260,150 @@
         <li><b>Identify Pivots:</b> A column with a pivot (leading 1) corresponds to a vector that adds a new dimension. A column <i>without</i> a pivot is linearly dependent on the previous pivot columns.</li>
       </ol>
       <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
+
+      <h3>1.6 Functions: Linear vs. Affine Maps</h3>
+      <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. We distinguish two key types:</p>
+
+      <h4>Linear Maps: The Origin-Anchored Structure</h4>
+      <p>A map $T: V \to W$ is <b>linear</b> if it preserves linear combinations: $T(ax+by) = aT(x) + bT(y)$.
+      <br><b>Consequences:</b>
+      <br>1. $T(0) = 0$. Linear maps must fix the origin.
+      <br>2. <b>Matrix Representation:</b> Every linear map $L: \mathbb{R}^n \to \mathbb{R}^m$ is of the form $L(x) = Ax$.
+      <br>3. <b>Geometry:</b> Linear maps send subspaces to subspaces.</p>
+
+      <h4>Affine Maps: Linear + Translation</h4>
+      <p>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it has the form $f(x) = Ax + b$.
+      <br><b>Characterization:</b> A map is affine iff it preserves <b>affine combinations</b> (where $\sum \theta_i = 1$):
+      $$ f(\theta x + (1-\theta)y) = \theta f(x) + (1-\theta)f(y) \quad \forall x,y, \theta \in \mathbb{R} $$
+      <b>Geometry:</b>
+      <br>1. <b>Lines to Lines:</b> Affine maps send lines to lines (or points). They preserve "straightness".
+      <br>2. <b>Parallelism:</b> Parallel lines map to parallel lines.
+      <br>3. <b>Convexity Invariance:</b> The image and preimage of a convex set under an affine map are convex. This is the single most-used convexity fact in modeling. $Ax=b$ defines a convex set because it is the preimage of $\{b\}$ (convex) under the affine map $Ax$.</p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Basis Determines Linear Maps</h4>
+        <p>Let $\mathcal{B} = \{b_1, \dots, b_n\}$ be a basis of $V$. A linear transformation $T: V \to W$ is <b>completely determined</b> by its values on the basis vectors $T(b_1), \dots, T(b_n)$.
+        <br><i>Proof:</i> Take any vector $v \in V$. Since $\mathcal{B}$ is a basis, there exist <b>unique</b> scalars $c_i$ such that $v = \sum_{i=1}^n c_i b_i$.
+        Applying $T$:
+        $$ T(v) = T\left(\sum_{i=1}^n c_i b_i\right) = \sum_{i=1}^n c_i T(b_i) $$
+        There is no freedom left. Once the images of the basis vectors are chosen, the image of every other vector is forced by linearity. This explains why an infinite number of input-output pairs can be encoded by a finite matrix.</p>
+      </div>
+
+      <h3>1.7 Matrix Algebra from Linear Maps</h3>
+      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>typed operator</b>: $A: \mathbb{R}^n \to \mathbb{R}^m$. The number of columns $n$ is the input dimension, and the number of rows $m$ is the output dimension. This prevents shape errors: $BA$ is only defined if the output space of $A$ matches the input space of $B$.</p>
+
+      <p><b>Matrix-Vector Multiplication Definition:</b>
+      $$ (Ax)_i := \sum_{j=1}^n A_{ij} x_j $$
+      This definition is not arbitrary. It is forced by the requirement of linearity ($A(ax+by) = aAx + bAy$) and compatibility with composition. It allows two powerful interpretations:</p>
+
+      <ul>
+        <li><b>Row View (Measurement):</b> Let $A_{i:}$ be the $i$-th row. Then $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row is a linear functional that "measures" the input $x$.</li>
+        <li><b>Column View (Synthesis):</b> Let $A_{:j}$ be the $j$-th column. Then $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns, with coefficients given by $x$. This is the view used for range, span, and feasibility.</li>
+      </ul>
+
+      <p><b>Coordinate Representation:</b>
+      <br>Let $V$ be a vector space with basis $B = \{b_1,\dots,b_n\}$ and $W$ be a vector space with basis $C = \{c_1,\dots,c_m\}$.
+      <br>For a linear map $T: V \to W$, we want a matrix $A$ that transforms coordinates in $B$ to coordinates in $C$:
+      $$ [T(v)]_C = A [v]_B $$
+      This leads to the constructive definition of a matrix:</p>
+
+      <div class="insight">
+        <h4>Construction of the Matrix</h4>
+        <p><b>The $j$-th column of the matrix $A$ is the coordinate vector of the image of the $j$-th basis vector.</b>
+        $$ \text{Column } j = [T(b_j)]_C $$
+        <br><i>Why this works:</i>
+        $$ T(v) = T\left(\sum x_j b_j\right) = \sum x_j T(b_j) $$
+        Taking coordinates in $C$:
+        $$ [T(v)]_C = \sum x_j [T(b_j)]_C = \sum x_j (\text{Column } j) $$
+        This is exactly the definition of matrix-vector multiplication: a linear combination of columns.</p>
+      </div>
+
+      <h4>Composition = Matrix Multiplication</h4>
+      <p>Why do we multiply matrices using the "row-by-column" rule? It is forced by the composition of linear maps.
+      <br>If $S: U \to V$ (Matrix $A$) and $T: V \to W$ (Matrix $B$), then $T \circ S$ corresponds to $BA$.
+      $$ [T(S(u))]_D = B [S(u)]_C = B (A [u]_B) = (BA) [u]_B $$
+      We derive the entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ not as a definition, but as the inevitable algebraic consequence of tracking these coordinates.
+      <br><b>Consequences:</b>
+      <ul>
+        <li><b>Associativity:</b> Matrix multiplication is associative ($(AB)C = A(BC)$) because function composition is associative.</li>
+        <li><b>Non-Commutativity:</b> It is not commutative ($AB \neq BA$) because the order of operations matters (rotating then projecting is different from projecting then rotating).</li>
+      </ul>
+      </p>
+
+      <h3>1.8 Basis and Dimension: Coordinates and Degrees of Freedom</h3>
+      <p>A <b>basis</b> is where linear algebra stops being about abstract sets and becomes a working coordinate system. It combines the two key properties we've studied: existence (spanning) and uniqueness (independence).</p>
+
+      <h4>(A) Basis: A Coordinate System that Actually Works</h4>
+      <p>A set of vectors $\mathcal{B} = \{b_1, \dots, b_n\}$ is a <b>basis</b> for $V$ if:
+      <ol>
+        <li><b>Spanning:</b> $\mathcal{B}$ generates $V$. Every vector can be built from $\mathcal{B}$.</li>
+        <li><b>Independence:</b> $\mathcal{B}$ has no redundancy. Every vector is built in a <i>unique</i> way.</li>
+      </ol>
+      </p>
+
+      <div class="theorem-box">
+        <h4>The Basis Theorem</h4>
+        <p>If $\mathcal{B}$ is a basis, then every vector $\mathbf{v} \in V$ can be written in <b>exactly one way</b> as a linear combination:
+        $$ \mathbf{v} = c_1 b_1 + \dots + c_n b_n $$
+        The unique scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $\mathbf{v}$ in basis $\mathcal{B}$, denoted $[\mathbf{v}]_\mathcal{B}$.
+        <br>This creates a perfect dictionary (bijection) between the abstract space $V$ and the concrete space $\mathbb{F}^n$.
+        </p>
+      </div>
+
+      <h4>(B) Dimension: The Invariant Number</h4>
+      <p>A vector space can have infinitely many different bases. However, a structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
+
+      <div class="proof-box">
+        <h4>Lemma: Steinitz Exchange Lemma (Proof)</h4>
+        <p>Let $V$ be a vector space. Suppose:
+        <ul>
+            <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
+            <li>$L = \{\ell_1,\dots,\ell_k\}$ is linearly independent in $V$.</li>
+        </ul>
+        Then <b>$k \le m$</b>, and we can replace $k$ vectors in $S$ with $L$ to form a new spanning set.</p>
+
+        <h4>Proof by Step-by-Step Replacement</h4>
+        <p>We proceed by induction to inject elements of $L$ into $S$ one by one.</p>
+        <div class="proof-step">
+            <strong>Step 0:</strong> Start with $S^{(0)} = S$, which spans $V$.
+        </div>
+        <div class="proof-step">
+            <strong>Inductive Step:</strong> Assume $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$. We want to insert $\ell_j$.
+            <br>Since $S^{(j-1)}$ spans, write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$.
+            $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
+            Rearranging: $0 = \ell_j - \sum c_u u$.
+            <br>Crucially, at least one vector $u^* \in S^{(j-1)}$ <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{u^*} \neq 0$.
+            <br><i>Why?</i> If only $\ell$'s had non-zero coefficients, then $\ell_j$ would be in the span of previous $\ell$'s, contradicting independence of $L$.
+        </div>
+        <div class="proof-step">
+            <strong>Replacement:</strong> Solve for $u^*$:
+            $$ u^* = \frac{1}{c_{u^*}} \ell_j - \sum \dots $$
+            This shows $u^*$ is in the span of the new set $S^{(j)} = (S^{(j-1)} \setminus \{u^*\}) \cup \{\ell_j\}$.
+            Thus, the new set still spans $V$.
+        </div>
+        <div class="proof-step">
+            <strong>Conclusion:</strong> We can continue this for all $k$ elements of $L$. Since each step consumes a distinct vector from the original $S$ (and never one of the inserted $\ell$'s), we must have enough capacity in $S$. Thus $k \le m$.
+        </div>
+      </div>
+
+      <div class="theorem-box">
+        <h4>Theorem: Characterizations of Dimension</h4>
+        <p>Let $V$ be finite-dimensional with dimension $n$. The following are equivalent:</p>
+        <ol>
+            <li>Every basis has exactly $n$ vectors.</li>
+            <li>The largest possible size of a linearly independent set is $n$.</li>
+            <li>The smallest possible size of a spanning set is $n$.</li>
+        </ol>
+        <p><i>Proof:</i>
+        <br>If $B$ is a basis ($|B|=n$), then any independent set $L$ satisfies $|L| \le |B|=n$ (Steinitz).
+        <br>Any spanning set $S$ satisfies $|S| \ge |B|=n$ (Steinitz with $L=B, S=S$).
+        <br>Thus $n$ is the unique crossover point where max-independence meets min-spanning.</p>
+      </div>
+
+      <h3>1.9 Functions and Preimages</h3>
+      <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
+      <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
+      <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
 
     </section>
 
@@ -553,42 +790,76 @@
     <section class="section-card" id="section-norms">
       <h2>4. Inner Products, Norms, and Angles</h2>
 
-      <h3>4.1 Inner Products: Geometry from Axioms</h3>
-      <p>To measure lengths and angles, we equip our vector space with an <b>Inner Product</b>. The dot product $\langle x,y \rangle = x^\top y$ is the canonical example, but it is just one instance of a general structure.</p>
+      <h3>4.1 Dot Product as an Inner Product</h3>
+      <p>Up to this point, our vector spaces have been purely algebraic (affine). To measure lengths and angles, we must add an <b>Inner Product</b> structure. The dot product $\langle x,y \rangle = \sum x_i y_i$ is the canonical choice for $\mathbb{R}^n$, but it's just one example of a broader concept. The dot product is not an assumption; it is a bilinear form satisfying specific axioms.</p>
 
-      <h4>The Axioms</h4>
-      <p>An inner product is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying:</p>
-      <ol>
-        <li><b>Linearity in first argument:</b> $\langle \alpha x + y, z \rangle = \alpha\langle x, z \rangle + \langle y, z \rangle$.</li>
-        <li><b>Symmetry:</b> $\langle x, y \rangle = \langle y, x \rangle$.</li>
-        <li><b>Positive Definiteness:</b> $\langle x, x \rangle \ge 0$, and $\langle x, x \rangle = 0 \iff x = 0$.</li>
-      </ol>
-      <p><b>Induced Geometry:</b>
-      <br><b>Length:</b> $\|x\| = \sqrt{\langle x, x \rangle}$.
-      <br><b>Angle:</b> $\cos \theta = \frac{\langle x, y \rangle}{\|x\|\|y\|}$.
-      <br><b>Orthogonality:</b> $x \perp y \iff \langle x, y \rangle = 0$.
-      </p>
-
-      <h4>Cauchy-Schwarz Inequality</h4>
-      <p>This is the "triangle inequality" for angles—it ensures $\cos \theta \in [-1, 1]$.
-      $$ |\langle x, y \rangle| \le \|x\| \|y\| $$
-      <b>Proof via Quadratic:</b> Let $\phi(t) = \|x - ty\|^2 \ge 0$. Expanding gives a quadratic in $t$:
-      $$ \phi(t) = \langle x,x \rangle - 2t\langle x,y \rangle + t^2\langle y,y \rangle \ge 0 $$
-      A non-negative quadratic must have a non-positive discriminant ($b^2 - 4ac \le 0$):
-      $$ (-2\langle x,y \rangle)^2 - 4\|y\|^2\|x\|^2 \le 0 \implies \langle x,y \rangle^2 \le \|x\|^2\|y\|^2 $$
-      </p>
-
-      <h3>4.2 Norms: Induced by Inner Products</h3>
-      <p>Every inner product induces a norm $\|x\| = \sqrt{\langle x, x \rangle}$. The properties of the norm follow from the inner product axioms.</p>
+      <h4>The Inner Product Axioms</h4>
+      <p>An inner product is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x,y,z \in V$ and $\alpha, \beta \in \mathbb{R}$:</p>
       <ul>
-        <li><b>Positivity:</b> Direct from inner product positivity.</li>
-        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \|x\|^2 \implies \|\alpha x\| = |\alpha| \|x\|$.</li>
-        <li><b>Triangle Inequality (Minkowski):</b>
-        $$ \|x+y\|^2 = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 = (\|x\|+\|y\|)^2 $$
-        Using Cauchy-Schwarz.</li>
+        <li><b>Symmetry:</b> $\langle u, v \rangle = \langle v, u \rangle$. (Geometry is undirected).</li>
+        <li><b>Bilinearity:</b> Linear in each argument. $\langle \alpha u + \beta w, v \rangle = \alpha\langle u, v \rangle + \beta\langle w, v \rangle$. (This links algebra to geometry).</li>
+        <li><b>Positive Definiteness:</b> $\langle u, u \rangle \ge 0$, and $\langle u, u \rangle = 0 \iff u = 0$. (Lengths are non-negative and zero only for the zero vector).</li>
       </ul>
 
-      <h3>4.3 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
+      <h4>Verification for the Dot Product</h4>
+      <p>For $\langle x,y \rangle = x^\top y$:
+      <br>1. <b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.
+      <br>2. <b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.
+      <br>3. <b>Positivity:</b> $\sum x_i^2 \ge 0$. Sum of squares is zero iff every $x_i=0$.
+      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$.</p>
+
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
+             alt="Parallelogram law for vector addition"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
+        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
+      </figure>
+
+      <h3>4.2 Norms: Induced by Inner Products</h3>
+      <p>A vector space does not automatically have a notion of "length". We <b>derive</b> it from the inner product:
+      $$ \|x\| := \sqrt{\langle x, x \rangle} $$
+      This is a construction. We must prove it satisfies the three Norm Axioms.</p>
+
+      <h4>Proof of Norm Properties</h4>
+      <ol>
+        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
+        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
+        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
+      </ol>
+
+      <div class="proof-box">
+        <h4>Theorem: Cauchy-Schwarz Inequality</h4>
+        <p>For any inner product, $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x, y$ are dependent.
+        <br><b>Proof from Scratch:</b>
+        If $y=0$, both sides are 0. Assume $y \neq 0$. Consider the quadratic function $f(t) = \|x - ty\|^2$. By positivity, $f(t) \ge 0$ for all $t$.
+        $$ f(t) = \langle x-ty, x-ty \rangle = \langle x,x \rangle - 2t\langle x, y \rangle + t^2 \langle y,y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2 \|y\|^2 $$
+        This is a quadratic $at^2 + bt + c$ with $a=\|y\|^2 > 0$. For it to be non-negative everywhere, its discriminant must be non-positive:
+        $$ b^2 - 4ac \le 0 \implies (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
+        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff discriminant is 0, which means there is a $t$ where $\|x-ty\|=0$, i.e., $x=ty$ (dependent).
+        </p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Derivation: Triangle Inequality</h4>
+        <p>Now we can prove the final norm axiom.
+        $$ \begin{aligned}
+        \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
+        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
+        &= (\|x\| + \|y\|)^2
+        \end{aligned} $$
+        Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
+        <br><b>Conclusion:</b> Every inner product space is a normed space. The converse is false (only norms satisfying the Parallelogram Law come from inner products).
+        </p>
+      </div>
+
+      <h3>4.3 Linear Functionals and Riesz Representation</h3>
+      <p>A linear functional is a linear map $\ell: \mathbb{R}^n \to \mathbb{R}$. In finite dimensions, every linear functional can be represented as an inner product with a unique vector.
+      <br><b>Riesz Representation Theorem:</b> For any linear functional $\ell$, there exists a unique vector $\mathbf{a} \in \mathbb{R}^n$ such that $\ell(\mathbf{x}) = \langle \mathbf{a}, \mathbf{x} \rangle$ for all $\mathbf{x}$.
+      <br>This explains why the derivative $Df(x)$ (a linear map) is represented by the gradient vector $\nabla f(x)$. The gradient is the vector representing the directional derivative functional via the inner product: $Df(x)[d] = \langle \nabla f(x), d \rangle$. Changing the inner product changes the gradient vector.</p>
+
+      <h3>4.4 Other Standard Norms ($\ell_1, \ell_\infty$)</h3>
       <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law, so they have no associated inner product.</p>
       <ul>
         <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
@@ -608,7 +879,7 @@
         <div id="widget-norm-geometry" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>4.4 Dual Norms and Polar Sets</h3>
+      <h3>Dual Norms and Polar Sets</h3>
       <p>The <b>dual norm</b> provides a variational definition of size. For any norm $\|\cdot\|$, its dual $\|\cdot\|_*$ is:
       $$ \|\mathbf{y}\|_* = \sup_{\|\mathbf{x}\| \le 1} \mathbf{x}^\top \mathbf{y} $$
       This measures the maximum "correlation" $\mathbf{y}$ can have with any unit vector.</p>
@@ -661,7 +932,7 @@
       $$ B^\circ = \{\mathbf{y} : \|\mathbf{y}\|_* \le 1\} $$
       This geometric duality underpins the duality of optimization problems.</p>
 
-      <h3>4.5 Spectral Norm and Convexity</h3>
+      <h3>Spectral Norm and Convexity</h3>
 
       <h4>Induced Matrix Norms</h4>
       <p>The spectral norm is a specific instance of an <b>induced norm</b> (or operator norm). For any vector norms $\|\cdot\|_a$ on the domain and $\|\cdot\|_b$ on the codomain, the induced norm of a matrix $X$ is:
@@ -718,7 +989,7 @@
       $$ \|X\|_2 = \sup_{\|\mathbf{u}\|_2=1, \|\mathbf{v}\|_2=1} \mathbf{u}^\top X \mathbf{v} $$
       Since $f(X) = \mathbf{u}^\top X \mathbf{v}$ is a <b>linear function</b> of $X$, and $\|X\|_2$ is the supremum of these linear functions, $\|X\|_2$ is a <b>convex function</b>.</p>
 
-      <h3>4.6 Matrix Inner Product and Frobenius Norm</h3>
+      <h3>Matrix Inner Product and Frobenius Norm</h3>
       <p>For matrices $X, Y \in \mathbb{R}^{m \times n}$, the <b>trace inner product</b> (also called the Hilbert-Schmidt inner product) is:
       $$ \langle X, Y \rangle = \mathrm{tr}(X^\top Y) = \sum_{i=1}^m \sum_{j=1}^n X_{ij} Y_{ij} $$
       The <b>Frobenius norm</b> (or Hilbert-Schmidt norm) is $\|X\|_F = \sqrt{\langle X, X \rangle}$.</p>
@@ -789,24 +1060,6 @@
           Taking square roots gives the result: $\boxed{\|AB\|_F \le \|A\|_F \|B\|_F}$.
         </div>
       </div>
-
-      <h3>4.7 Weighted Inner Products</h3>
-      <p>For any symmetric positive definite matrix $P \succ 0$, we can define:
-      $$ \langle x, y \rangle_P = x^\top P y $$
-      This defines a valid inner product. The induced norm $\|x\|_P = \sqrt{x^\top P x} = \|L^\top x\|_2$ (where $P=LL^\top$) represents Euclidean length in a warped coordinate system. This geometry underpins ellipsoids and Newton's method.</p>
-
-      <h3>4.8 Projections onto Convex Sets</h3>
-      <p>Given a closed convex set $C$ and a point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.
-      $$ x^* = \arg\min_{x \in C} \|x - y\|_2 $$
-      <b>The Projection Theorem:</b> $x^*$ is the projection if and only if:
-      $$ \langle y - x^*, z - x^* \rangle \le 0 \quad \forall z \in C $$
-      <i>Geometric Meaning:</i> The vector from the projection to the target ($y-x^*$) makes an obtuse angle with every vector pointing into the set ($z-x^*$). This is the "no feasible descent" condition.</p>
-
-      <div class="proof-box">
-        <h4>Proof Sketch</h4>
-        <p>Consider the function $g(\theta) = \|y - (x^* + \theta(z-x^*))\|^2$ for $\theta \in [0,1]$. Since $C$ is convex, the perturbed point is in $C$. Optimality of $x^*$ at $\theta=0$ implies $g'(0) \ge 0$, which yields the inequality.</p>
-      </div>
-
     </section>
 
     <!-- SECTION 5: ORTHOGONALITY -->
@@ -1496,8 +1749,16 @@
       $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
       </p>
 
-      <h3>Projection onto an Affine Set</h3>
-      <p>Consider an affine set defined by $\mathcal{A} = \{ \mathbf{x} \in \mathbb{R}^n \mid F\mathbf{x} = \mathbf{g} \}$, where $F \in \mathbb{R}^{\mathbf{p} \times n}$ has full row rank and $\mathbf{g} \in \mathbb{R}^p$. Projecting onto this set reduces to subspace projection by translating. This concept is generalized in <a href="../03-convex-sets-geometry/index.html">Lecture 01</a> to <b>projection onto convex sets</b> (POCS).</p>
+      <h3>8.3 Projection onto Closed Convex Sets</h3>
+      <p>The concept of projection extends beyond subspaces. For any nonempty, closed convex set $C$, and any point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.
+      $$ \Pi_C(y) = \operatorname{argmin}_{x \in C} \|x - y\|_2 $$
+      <b>Existence & Uniqueness:</b> Existence follows from $C$ being closed (and the norm being coercive). Uniqueness follows from the strict convexity of the Euclidean norm and the convexity of $C$.
+      <br><b>The Projection Inequality:</b> The defining characteristic of the projection $x^* = \Pi_C(y)$ is the obtuse angle condition:
+      $$ \langle y - x^*, z - x^* \rangle \le 0 \quad \forall z \in C $$
+      Geometrically, the vector from the projection $x^*$ to the target $y$ makes an obtuse angle with any vector pointing from $x^*$ into the set. This condition is the ancestor of KKT stationarity and separating hyperplanes.</p>
+
+      <h3>8.4 Projection onto an Affine Set</h3>
+      <p>Consider an affine set defined by $\mathcal{A} = \{ \mathbf{x} \in \mathbb{R}^n \mid F\mathbf{x} = \mathbf{g} \}$, where $F \in \mathbb{R}^{\mathbf{p} \times n}$ has full row rank and $\mathbf{g} \in \mathbb{R}^p$. Projecting onto this set reduces to subspace projection by translating.</p>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/projection-onto-affine-set.png"

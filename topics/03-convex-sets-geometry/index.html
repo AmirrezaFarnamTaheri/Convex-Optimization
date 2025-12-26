@@ -52,59 +52,115 @@
 
         <p>The geometry of optimization is built on understanding how points combine. Two fundamental operations define the landscape:</p>
 
-        <h3>1.1 Convex Combinations and Sets: Closure Under Mixing</h3>
+        <h3>1.1 Affine Combinations and Affine Sets</h3>
 
-        <h4>Convex Combinations: The Mixing Operation</h4>
-        <p>A <b>convex combination</b> of points $x_1, \dots, x_k \in \mathbb{R}^n$ is a weighted average where weights are non-negative and sum to one:
-        $$ z = \sum_{i=1}^k \theta_i x_i, \quad \theta_i \ge 0, \quad \sum \theta_i = 1 $$
-        <b>Why these rules?</b>
-        <ul>
-          <li><b>Sum to 1:</b> Prevents scaling (moving away from the "cloud" of points).</li>
-          <li><b>Non-negative:</b> Prevents extrapolation (going "past" the points).</li>
-        </ul>
-        This operation captures the notion of "interpolation" or "mixture."</p>
-
-        <h4>Convex Set Definition</h4>
-        <p>A set $C \subseteq \mathbb{R}^n$ is <b>convex</b> if it contains the line segment between any two points in the set.
-        $$ \forall x, y \in C, \forall \theta \in [0, 1] \implies \theta x + (1-\theta)y \in C $$
-        This simple "pairwise" condition implies stability under <i>all</i> finite mixtures.</p>
+        <p>An <a href="#" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one. Geometrically, this operation generates lines, planes, and hyperplanes passing through the given points, without reference to the origin.</p>
+        $$
+        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1
+        $$
+        <p><b>Intuition (Infinite Sheet):</b> The coefficients $\theta_i$ may be negative. For two points $x_1, x_2$, the combination $x = \theta x_1 + (1-\theta)x_2$ traces the <b>infinite line</b> through them. For three points, it traces the infinite plane. Think of affine sets as "infinite sheets" that extend forever.</p>
 
         <div class="theorem-box">
-          <h4>Theorem: Pairwise Closure $\implies$ Finite Closure</h4>
-          <p>If $C$ is convex, then any convex combination of $k$ points from $C$ is also in $C$.
-          <br><i>Proof (Induction):</i> Base case $k=2$ is the definition. Assume true for $k-1$.
-          $$ \sum_{i=1}^k \theta_i x_i = (1-\theta_k) \underbrace{\sum_{i=1}^{k-1} \frac{\theta_i}{1-\theta_k} x_i}_{y \in C \text{ by hypothesis}} + \theta_k x_k $$
-          This expresses the $k$-point sum as a mixture of $y \in C$ and $x_k \in C$. Thus it is in $C$.</p>
+          <h4>Definition (Affine Set)</h4>
+          <p>A set $C$ is <a href="#" class="definition-link">affine</a> if it contains all affine combinations of its points. Equivalently, the <b>infinite line</b> passing through any two points in $C$ lies entirely in $C$.</p>
+          $$ x_1, x_2 \in C, \ \theta \in \mathbb{R} \implies \theta x_1 + (1-\theta)x_2 \in C $$
         </div>
 
-        <h3>1.2 Affine Combinations and Sets</h3>
-        <p>An <b>affine combination</b> drops the non-negativity constraint ($\sum \theta_i = 1$). This generates lines (extrapolation) instead of segments.</p>
-        <ul>
-          <li><b>Affine Set:</b> A set $A$ is affine if it contains the line through any two points.</li>
-          <li><b>Structure Theorem:</b> Every affine set is a translated subspace: $A = x_0 + V$.</li>
-        </ul>
+        <h4>Affine Sets as Translated Subspaces</h4>
+        <p>Geometrically, every affine set is a linear subspace that has been shifted (translated) away from the origin.</p>
 
-        <div class="proof-box">
-          <h4>Proof: Affine Set is Translated Subspace</h4>
-          <p>Let $A$ be affine and $x_0 \in A$. Define $V = A - x_0$.
-          <br><b>Zero:</b> $x_0 - x_0 = 0 \in V$.
-          <br><b>Addition:</b> If $u, v \in V$, then $x_0+u, x_0+v \in A$. The combination $1(x_0+u) + 1(x_0+v) + (-1)x_0 = x_0 + (u+v)$ is an affine combination, so it is in $A$. Thus $u+v \in V$.
-          <br><b>Scaling:</b> If $u \in V$, $\alpha \in \mathbb{R}$, then $\alpha(x_0+u) + (1-\alpha)x_0 = x_0 + \alpha u \in A$. Thus $\alpha u \in V$.
-          <br>So $V$ is a subspace.</p>
+        <div class="theorem-box">
+          <h4>Theorem: Affine Set $\iff$ Translated Subspace</h4>
+          <p>A set $C \subseteq \mathbb{R}^n$ is affine if and only if it can be written as:</p>
+          $$
+          C = x_0 + V = \{x_0 + v \mid v \in V\}
+          $$
+          <p>where $x_0$ is any specific point in $C$, and $V$ is a linear subspace of $\mathbb{R}^n$.</p>
+          <div class="proof-box">
+            <h4>Proof: The Geometric Shift</h4>
+            <div class="proof-step">
+              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. Let $x_1, x_2 \in C$. Then $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
+              For any $\theta \in \mathbb{R}$:
+              $$
+              \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
+            = x_0 + [\theta v_1 + (1-\theta)v_2]
+              $$
+              Since $V$ is a subspace, it is closed under linear combinations, so the bracketed term is in $V$. Thus the combination is in $x_0 + V = C$.
+            </div>
+            <div class="proof-step">
+              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick any $x_0 \in C$ and define $V = C - x_0$. We show $V$ is a subspace.
+              <ul>
+                <li><b>Contains zero:</b> $x_0 - x_0 = 0 \in V$.</li>
+                <li><b>Closed under scaling:</b> Let $v \in V$, so $x_0 + v \in C$. Since $C$ is affine, the combination $\alpha(x_0 + v) + (1-\alpha)x_0 = x_0 + \alpha v$ is in $C$. Thus $\alpha v \in V$.</li>
+                <li><b>Closed under addition:</b> Let $u, v \in V$. Then $x_0+u, x_0+v \in C$. Since $C$ is affine, the midpoint $\frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+v) = x_0 + \frac{1}{2}(u+v)$ is in $C$. Thus $\frac{1}{2}(u+v) \in V$. By scaling (proven above), $u+v \in V$.</li>
+              </ul>
+              Thus $V$ is a subspace.
+            </div>
+          </div>
         </div>
+
+
+        <!-- Moved P3.20 to Section 6 -->
+
+        <figure style="text-align: center;">
+          <img src="assets/affine-subspace.png"
+               alt="An affine set C shown as a red plane parallel to a blue subspace V passing through the origin"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 1:</i> An affine set $C$ (red) is a subspace $V$ (blue) translated by a vector $x_0$. Note that $V$ passes through the origin, while $C$ does not necessarily.</figcaption>
+        </figure>
+
+        <div class="example">
+          <h4>Examples of Affine Sets</h4>
+          <ul>
+            <li><b>Solution set of linear equations:</b> $C = \{x \mid Ax = b\}$. If $x_0$ is a particular solution ($Ax_0 = b$), then $C = x_0 + \mathcal{N}(A)$, where the nullspace $\mathcal{N}(A)$ is the associated subspace.</li>
+            <li><b>$\mathbb{R}^n$ itself:</b> The entire space is affine by definition ($V = \mathbb{R}^n, x_0 = 0$).</li>
+            <li><b>Single point $\{x_0\}$:</b> Affine ($V = \{0\}$).</li>
+          </ul>
+        </div>
+
+        <h3>1.2 Convex Combinations and Convex Sets</h3>
+
+        <p>A <a href="#" class="definition-link">convex combination</a> is an affine combination with the additional constraint that all weights are nonnegative:</p>
+        $$
+        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1
+        $$
+        <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
+        <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
+
+        <div class="theorem-box">
+          <h4>Definition (Convex Set)</h4>
+          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="#" class="definition-link" data-term="convex set">convex</a> if for any two points $x, y \in C$ and any $\theta \in [0,1]$:</p>
+          $$
+          \theta x + (1-\theta)y \in C
+          $$
+          <p><b>Geometric meaning:</b> The line segment connecting any two points in the set lies entirely within the set—no "dents" or "holes."
+          <br><b>Quantifiers matter:</b> This must hold for <b>all</b> pairs $x,y \in C$ and <b>all</b> $\theta \in [0,1]$. A single counterexample (one leaking segment) disproves convexity.</p>
+
+          <h4 style="margin-top: 15px;">Theorem (Pairwise Closure implies Finite Closure)</h4>
+          <p>If a set $C$ is closed under convex combinations of <b>pairs</b> of points, then it is closed under convex combinations of <b>any finite number</b> of points.
+          <br><i>Proof:</i> We prove by induction on $k$.
+          <br><b>Base case $k=2$:</b> True by definition.
+          <br><b>Inductive step:</b> Assume true for $k-1$. Let $z = \sum_{i=1}^k \theta_i x_i$ with $\theta_i \ge 0, \sum \theta_i = 1$.
+          If $\theta_k = 1$, then $z=x_k \in C$. If $\theta_k < 1$, define $\bar{\theta}_i = \theta_i / (1-\theta_k)$ for $i < k$. Note $\sum \bar{\theta}_i = 1$.
+          Let $y = \sum_{i=1}^{k-1} \bar{\theta}_i x_i$. By hypothesis, $y \in C$.
+          Now observe $z = (1-\theta_k)y + \theta_k x_k$. This is a convex combination of two points in $C$. Thus $z \in C$.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/convex-vs-nonconvex.png"
+               alt="Visual definition of convex and non-convex sets"
+               style="max-width: 100%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 2:</i> In a convex set (right), the line segment between any two points lies entirely within the set. In a non-convex set (left), some line segments (red) cross outside the set boundaries.</figcaption>
+        </figure>
 
         <h3>1.3 Convex Hull</h3>
-        <p>The <b>convex hull</b> $\operatorname{conv}(S)$ is the set of all convex combinations of points in $S$.
-        <br><b>Key properties:</b>
-        <ol>
-          <li>$\operatorname{conv}(S)$ is convex.</li>
-          <li>It is the <i>smallest</i> convex set containing $S$.</li>
-        </ol>
-        </p>
-        <div class="proof-box">
-          <h4>Proof of Minimality</h4>
-          <p>Let $K$ be any convex set containing $S$. By the finite closure theorem, $K$ must contain all convex combinations of points in $S$. Thus $\operatorname{conv}(S) \subseteq K$.</p>
-        </div>
+
+        <p>The <a href="#" class="definition-link">convex hull</a> of a set $S$ is the smallest convex set that contains $S$. Intuitively, it is the shape formed by "shrink-wrapping" the set $S$ or stretching a rubber band around it. Mathematically, it is the set of all possible convex combinations of points in $S$:</p>
+        $$
+        \mathrm{conv}(S) = \left\{\sum_{i=1}^k \theta_i x_i \ \bigg| \ x_i \in S, \ \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1, \ k \in \mathbb{N}\right\}
+        $$
+        <p><b>Probability Interpretation:</b> If $\theta_i$ are probabilities ($\theta_i \ge 0, \sum \theta_i = 1$), the convex combination is the expectation $\mathbb{E}[X]$ of a random variable $X$ taking values in $S$. Thus, the convex hull is the set of all possible averages.</p>
+        <p><b>Minimality:</b> $\operatorname{conv}(S)$ is the unique smallest convex set containing $S$. Any convex set containing $S$ must contain all convex combinations of points in $S$.</p>
 
         <h4>Recession Cone (Asymptotic Directions)</h4>
         <p>For unbounded convex sets, it is useful to characterize directions in which the set extends infinitely. The <b>recession cone</b> of a convex set $C$ is defined as:</p>
@@ -253,21 +309,35 @@
         H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
         $$
         <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).</p>
+        <p><b>Distance to Hyperplane:</b> The signed distance of a point $y$ to $H$ is $\frac{a^\top y - b}{\|a\|_2}$. This formula is the quantitative backbone of margins and separating hyperplanes.</p>
 
         <div class="theorem-box">
           <h4>Geometric Interpretation</h4>
           <p>A hyperplane is an affine set of dimension $n-1$. It can be viewed as:</p>
           <ul>
             <li>The solution set of a single linear equation.</li>
-            <li>A linear subspace ($a^\top x = 0$) translated by some vector $x_0$ (where $a^\top x_0 = b$).</li>
+            <li>A linear subspace ($a^\top x = 0$) translated by some vector $x_0$ (where $a^\top x_0 = b$). Thus $H = x_0 + \mathrm{Ker}(a^\top)$.</li>
           </ul>
         </div>
+
+        <h4>Supporting Hyperplanes</h4>
+        <p>A hyperplane $H = \{x \mid a^\top x = b\}$ supports a set $C$ at a point $x_0$ if:
+        <ol>
+            <li>$x_0$ lies on the hyperplane ($a^\top x_0 = b$).</li>
+            <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le b$ for all $x \in C$).</li>
+        </ol>
+        Supporting hyperplanes are the geometric realization of <b>subgradients</b> (which we will meet in Lecture 05). For a convex set, every boundary point has at least one supporting hyperplane.</p>
 
         <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
         $$
         H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
         $$
         <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
+
+        <h4>Normal Cones (Geometry at the Boundary)</h4>
+        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions at $\mathbf{x}$. It is defined as:</p>
+        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
+        <p>If $\mathbf{x}$ is in the interior of $C$, then $N_C(\mathbf{x}) = \{0\}$. If $\mathbf{x}$ is on the boundary, $N_C(\mathbf{x})$ contains the normal vectors to all supporting hyperplanes at $\mathbf{x}$. This geometric object is fundamental to optimality conditions: $\mathbf{x}^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(\mathbf{x}^*) \in N_C(\mathbf{x}^*)$.</p>
 
         <div class="proof-box">
           <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
@@ -369,7 +439,8 @@
         $$
         \mathcal{P} = \{x \in \mathbb{R}^n \mid Ax \le b, \ Cx = d\}
         $$
-        <p>Geometrically, a polyhedron is the intersection of a finite number of halfspaces and hyperplanes. This description is known as the <b>H-representation</b> (Hyperplane representation).</p>
+        <p>Geometrically, a polyhedron is the intersection of a finite number of halfspaces and hyperplanes. This description is known as the <b>H-representation</b> (Hyperplane representation).
+        <br><b>Convexity:</b> Since halfspaces and hyperplanes are convex, and intersections preserve convexity, polyhedra are always convex.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/polyhedron-construction.png"

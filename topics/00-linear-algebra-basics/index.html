@@ -800,15 +800,64 @@
       </ol>
 
       <h4>Verification for the Dot Product</h4>
-      <p>For the standard Euclidean inner product $\langle x,y \rangle = x^\top y$:</p>
-      <ul>
-        <li><b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.</li>
-        <li><b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.</li>
-        <li><b>Positivity:</b> $\sum x_i^2 \ge 0$. The sum of squares is zero if and only if every $x_i=0$.</li>
-      </ul>
-      <p>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$, which distorts the geometry (ellipsoidal inner products).</p>
+      <p>For $\langle x,y \rangle = x^\top y$:
+      <br>1. <b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.
+      <br>2. <b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.
+      <br>3. <b>Positivity:</b> $\sum x_i^2 \ge 0$. Sum of squares is zero iff every $x_i=0$.
+      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>. Any symmetric positive definite matrix $M$ defines a generalized inner product $\langle x, y \rangle_M = x^\top M y$.</p>
 
-      <h3>4.2 Norms: The Mental Model and Axioms</h3>
+      <figure style="text-align: center;">
+        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
+             alt="Parallelogram law for vector addition"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
+        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
+      </figure>
+
+      <h3>4.2 Geometry Extracted from Axioms</h3>
+      <p>Once you have an inner product, you get geometry for free:</p>
+
+      <h4>Proof of Norm Properties</h4>
+      <ol>
+        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
+        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
+        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
+      </ol>
+
+        <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
+        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
+        <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t$.
+        Expanding using bilinearity:
+        $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
+        This is a quadratic polynomial $at^2 + bt + c$ with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
+        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
+        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies |\langle x, y \rangle| \le \|x\| \|y\| $$
+        If the discriminant is 0, the parabola touches 0, meaning $\phi(t)=0$ for some $t$, implying $x=ty$ (collinear).</p>
+
+        <h4>Derivation: Triangle Inequality</h4>
+        <p>Now we can prove the final norm axiom.
+        $$ \begin{aligned}
+        \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
+        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
+        &= (\|x\| + \|y\|)^2
+        \end{aligned} $$
+        Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
+        <br><b>Conclusion:</b> Every inner product space is a normed space. The converse is false (only norms satisfying the Parallelogram Law come from inner products).
+        </p>
+
+          <h4>Proof: Norm Balls are Convex</h4>
+          <p>Let $x, y \in B(x_c, r)$ and $\theta \in [0,1]$. Then $\|x - x_c\| \le r$ and $\|y - x_c\| \le r$.</p>
+          $$
+          \begin{aligned}
+          \|(\theta x + (1-\theta)y) - x_c\| &= \|\theta(x - x_c) + (1-\theta)(y - x_c)\| \\
+          &\le \theta\|x - x_c\| + (1-\theta)\|y - x_c\| \\
+          &\le \theta r + (1-\theta)r = r
+          \end{aligned}
+          $$
+          <p>Thus the convex combination is in the ball.</p>
+
+      <h3>4.3 Norms: The Mental Model and Axioms</h3>
       <p>A <b>norm</b> is a rule that measures the "size" of vectors in a way that is compatible with the two primitive operations of linear algebra: <b>scaling</b> and <b>addition</b>. If "size" is to behave sanely, it must obey these rules:</p>
       <ul>
         <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> Scaling the vector scales its size proportionally.</li>
@@ -837,7 +886,7 @@
         <p><i>What it enforces:</i> The "no cheating by zig-zagging" law. The straight path is always the shortest. This axiom is the main engine behind convexity.</p>
       </div>
 
-      <h3>4.3 Core Lemmas: Reusable Proof Templates</h3>
+      <h3>4.4 Core Lemmas: Reusable Proof Templates</h3>
       <p>From these three axioms, we can derive powerful properties that you will use constantly in proofs.</p>
 
       <h4>Lemma A: $\|0\|=0$</h4>
@@ -877,7 +926,7 @@
         <p>$$ = \theta \|x\| + (1-\theta) \|y\| $$</p>
       </div>
 
-      <h3>4.4 Norms Induce Metrics</h3>
+      <h3>4.5 Norms Induce Metrics</h3>
       <p>Given any norm $\|\cdot\|$, we can define a distance function (metric) $d(x, y) := \|x - y\|$. This metric inherits all required properties:</p>
       <ol>
         <li><b>Non-negativity:</b> $d(x,y) \ge 0$, and $0$ iff $x=y$ (from N1).</li>
@@ -886,7 +935,7 @@
       </ol>
       <p>So norms are not just "sizes"; they generate "distances." This is why we can talk about convergence, limits, and continuity in vector spaces.</p>
 
-      <h3>4.5 Standard Norms ($\ell_2, \ell_1, \ell_\infty$)</h3>
+      <h3>4.6 Standard Norms ($\ell_2, \ell_1, \ell_\infty$)</h3>
       <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law.</p>
 
       <div class="example">
@@ -916,14 +965,7 @@
         </ul>
       </div>
 
-      <figure style="text-align: center;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
-             alt="Parallelogram law for vector addition"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
-        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products (like $\ell_2$).</figcaption>
-      </figure>
-
-      <h3>4.6 Linear Functionals and Riesz Representation</h3>
+      <h3>4.7 Linear Functionals and Riesz Representation</h3>
       <p>A <b>linear functional</b> is a linear map from vector space $V$ to scalars $\mathbb{R}$.
       $$ f: \mathbb{R}^n \to \mathbb{R} $$
       Example: $f(x) = 3x_1 - 5x_2$.
@@ -931,7 +973,7 @@
       $$ f(x) = \langle a, x \rangle $$
       <b>Why this matters:</b> This is why gradients are vectors. The derivative $Df(x)$ is technically a linear functional (it eats a direction and spits out a rate of change). The <b>gradient</b> $\nabla f(x)$ is the unique vector that represents this functional: $Df(x)[v] = \langle \nabla f(x), v \rangle$.</p>
 
-      <h3>4.7 Dual Norms and Polar Sets</h3>
+      <h3>4.8 Dual Norms and Polar Sets</h3>
       <ul>
         <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
         <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>

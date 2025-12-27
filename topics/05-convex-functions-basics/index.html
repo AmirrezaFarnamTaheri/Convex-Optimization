@@ -1714,24 +1714,38 @@
                 <li><b>Maximum:</b> $f(x) = \max_i f_i(x) \iff f_i(x) \le t \ \forall i$.</li>
                 <li><b>Partial Minimization:</b> $g(x) = \inf_y f(x,y) \iff \exists y: f(x,y) \le t$.</li>
             </ul>
-            <h4>Specific Norm Templates</h4>
+            <h4>Specific Modeling Templates (The Grammar)</h4>
+            <p>Treat these rewrite patterns as algebraic identities.</p>
             <ul>
-                <li><b>Objective $\min \|Ax+b\|$:</b> Rewrite as $\min t$ s.t. $\|Ax+b\| \le t$.</li>
-                <li><b>Norm Constraint $\|Ax+b\| \le c$:</b> Convex if $c$ is constant. Just check $c \ge 0$.</li>
-                <li><b>Norm-Affine $\|Ax+b\| \le c^\top x + d$:</b> Rewrite as $\|Ax+b\| \le t, \ t = c^\top x + d, \ t \ge 0$. This is crucial for SOCP compatibility.</li>
-                <li><b>$\ell_\infty$ Ball:</b> $\|Ax+b\|_\infty \le t \iff -t\mathbf{1} \le Ax+b \le t\mathbf{1}$ (Linear).</li>
-                <li><b>$\ell_1$ Ball:</b> $\|Ax+b\|_1 \le t \iff \exists s \ge 0: -s \le Ax+b \le s, \mathbf{1}^\top s \le t$ (Linear).</li>
-                <li><b>$\ell_2$ Ball:</b> $\|Ax+b\|_2 \le t \iff (t, Ax+b) \in \mathcal{Q}$ (Second-Order Cone).</li>
+                <li><b>Template A (Epigraph Objective):</b>
+                $$ \min_x \|Ax+b\| \quad\Longleftrightarrow\quad \min_{x,t} t\ \text{s.t.}\ \|Ax+b\|\le t $$
+                Turns a nonlinear objective into a linear one plus a standard constraint.</li>
+
+                <li><b>Template B (Constant Bound):</b>
+                $$ \|Ax+b\| \le c \quad (c \ge 0) $$
+                Always convex. If $c < 0$, infeasible.</li>
+
+                <li><b>Template C (Norm $\le$ Affine):</b>
+                $$ \|Ax+b\| \le c^\top x + d $$
+                <b>Conic-Safe Form:</b> Introduce $t$ to match standard cones:
+                $$ \|Ax+b\| \le t, \quad t = c^\top x + d, \quad t \ge 0 $$
+                This ensures the RHS is non-negative, which is required for conic solvers (like SOCP), even though the set is convex without it.</li>
+
+                <li><b>Template D (Solver Selection):</b>
+                <ul>
+                    <li>$\|z\|_\infty \le t \implies$ <b>LP</b> (Box: $-t\mathbf{1} \le z \le t\mathbf{1}$).</li>
+                    <li>$\|z\|_1 \le t \implies$ <b>LP</b> (Diamond: $-s \le z \le s, \mathbf{1}^\top s \le t$).</li>
+                    <li>$\|z\|_2 \le t \implies$ <b>SOCP</b> (Ice-cream cone).</li>
+                </ul>
+                </li>
             </ul>
 
             <div class="insight">
-              <h4>Deep Dive: The "Norm $\le$ Affine" Subtlety</h4>
-              <p>Consider the constraint $\|Ax+b\| \le c^\top x + d$. Is it convex?</p>
-              <ul>
-                <li><b>Convexity Perspective:</b> Rewrite as $g(x) = \|Ax+b\| - (c^\top x + d) \le 0$. Since the norm is convex and the affine term is concave (and convex), the difference is <b>convex</b>. Thus, the sublevel set is convex <i>regardless</i> of the sign of the RHS.</li>
-                <li><b>Representability Perspective:</b> Solvers like MOSEK or ECOS use standard cones. The Second-Order Cone requires the "radius" variable to be non-negative ($t \ge 0$). Thus, to implement this in a solver, you must explicitly add the constraint $c^\top x + d \ge 0$.</li>
-              </ul>
-              <p><b>Lesson:</b> A constraint can be mathematically convex but not "conic-representable" until you enforce the domain of the cone.</p>
+              <h4>Deep Dive: "Convex" vs "Representable"</h4>
+              <p>Consider $\|Ax+b\| \le c^\top x + d$.
+              <br><b>Convexity:</b> The function $g(x) = \|Ax+b\| - (c^\top x + d)$ is convex (sum of convex norm and linear). Thus $g(x) \le 0$ defines a convex set.
+              <br><b>Representability:</b> A solver like MOSEK doesn't "know" $g(x)$. It knows the cone $\mathcal{K} = \{(z, t) : \|z\| \le t\}$. To map your problem to $\mathcal{K}$, you must ensure the RHS matches the cone variable $t$, which must be non-negative.
+              <br><b>Lesson:</b> You must often add redundant constraints (like $c^\top x + d \ge 0$) to satisfy the solver's API, even if the math implies them.</p>
             </div>
         </div>
       </section>
@@ -1792,17 +1806,42 @@
           </tbody>
         </table>
 
-        <h3>6.1 Detailed Atom Analysis</h3>
+        <h3>6.1 Deep Dive: Norms (The Archetype)</h3>
+        <p>Norms are the "size" functions of linear space. They are the single most important class of convex functions because they bridge geometry (balls) and algebra (inequalities).</p>
 
+        <h4>The Mental Model: What structure are norms capturing?</h4>
         <div class="example-box">
-            <h4>1. Norms ($\|x\|_p$)</h4>
-            <p><b>Proof:</b> Triangle inequality + Homogeneity.</p>
-            <p><b>Engineering Hook:</b>
-            <br>$\|x\|_2 \le t \iff (t, x) \in \text{SOC}$.
-            <br>$\|x\|_1 \le t \iff \exists u: -u \le x \le u, \mathbf{1}^\top u \le t$.
-            <br>$\|x\|_\infty \le t \iff -t \mathbf{1} \le x \le t \mathbf{1}$.</p>
+            <p>A norm measures size in a way compatible with scaling and addition:</p>
+            <ul>
+                <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> $\|\alpha x\| = |\alpha|\|x\|$. Scaling the vector scales its size.</li>
+                <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. No shortcuts via intermediate points. This is the engine of convexity.</li>
+                <li><b>Non-degeneracy $\Rightarrow$ Definiteness:</b> $\|x\|=0 \iff x=0$. No invisible non-zero vectors.</li>
+            </ul>
+        </div>
+
+        <h4>Tiny Lemmas (Reusable Templates)</h4>
+        <div class="proof-box">
+            <p><b>Lemma 1: Symmetry.</b> $\|x\| = \|-x\|$. (Follows from homogeneity with $\alpha=-1$).</p>
+            <p><b>Lemma 2: Reverse Triangle Inequality.</b> $\big| \|x\| - \|y\| \big| \le \|x-y\|$.
+            <br><i>Interpretation:</i> The norm function is 1-Lipschitz. It cannot change faster than the distance.</p>
+            <p><b>Lemma 3: Two-point Jensen.</b> $\|\theta x + (1-\theta)y\| \le \theta\|x\| + (1-\theta)\|y\|$.
+            <br><i>Proof:</i> Triangle inequality + Homogeneity. This proves all norms are convex.</p>
+        </div>
+
+        <h4>Examples with Proof Content</h4>
+        <div class="example-box">
+            <ul>
+                <li><b>$\ell_1$ Norm:</b> $\|x\|_1 = \sum |x_i|$. Convexity follows from $|a+b| \le |a|+|b|$.
+                <br><i>Engineering Hook:</i> $\ell_1$ minimization promotes sparsity (corners of the unit ball).</li>
+                <li><b>$\ell_\infty$ Norm:</b> $\|x\|_\infty = \max |x_i|$. Convexity follows from $\max(a+b) \le \max(a) + \max(b)$.
+                <br><i>Engineering Hook:</i> Represents "worst-case" or box constraints.</li>
+                <li><b>Euclidean ($\ell_2$) Norm:</b> Convexity follows from Cauchy-Schwarz ($x^\top y \le \|x\|\|y\|$).
+                <br><i>Engineering Hook:</i> Rotational invariance, smooth dependence.</li>
+            </ul>
             <p><b>Failure Mode:</b> Forgetting that $\|x\|_2^2$ is convex but $\|x\|_2 \ge t$ is <b>non-convex</b> (exterior of ball). Norms are convex, so sublevel sets are convex bodies; superlevel sets are holey.</p>
         </div>
+
+        <h3>6.2 Other Standard Atoms</h3>
 
         <div class="example-box">
             <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>

@@ -376,69 +376,84 @@
         $$
         B(x_c, r) = \{x \in \mathbb{R}^n \mid \|x - x_c\| \le r\}
         $$
-        <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality).</p>
+        <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality). In fact, the geometry of the unit ball $B = \{x : \|x\| \le 1\}$ completely determines the norm and its optimization properties.</p>
 
-        <h4>Unit Ball Characterizes the Norm (Minkowski Functional)</h4>
-        <p>The unit ball $B = \{x : \|x\| \le 1\}$ completely determines the norm. For any $x$, the norm $\|x\|$ is the factor by which you must scale the unit ball to just contain $x$:</p>
+        <h4>The Unit Ball Characterizes the Norm (Minkowski Functional)</h4>
+        <p>There is a fundamental equivalence between norms and certain convex sets. The unit ball characterizes the norm via the <b>Minkowski functional</b> (or gauge):</p>
         $$ \|x\| = \inf\{t > 0 \mid x \in tB\} $$
-        <p>This quantity is called the <b>Minkowski functional</b> (or gauge) of $B$. It allows us to construct a norm from any set $C$ that is convex, centrally symmetric, bounded, and absorbing.</p>
+        <p>This definition says: "How much must I scale the unit ball to catch the vector $x$?"</p>
 
         <div class="proof-box">
           <h4>Proof: Unit Ball Determines Norm</h4>
           <div class="proof-step">
-            <strong>Step 0: Interpretation.</strong> $x \in tB \iff x = tb$ for some $b \in B$. Since $B=\{u : \|u\|\le 1\}$, this is equivalent to $\|x/t\| \le 1 \iff \|x\| \le t$.
+            <strong>Step 1: Lower Bound.</strong> If $x \in tB$, then $x = tb$ for some $b \in B$ ($\|b\|\le 1$). By homogeneity, $\|x\| = t\|b\| \le t$. Thus every feasible scaling $t$ is at least $\|x\|$.
           </div>
           <div class="proof-step">
-            <strong>Step 1: Lower Bound.</strong> If $x \in tB$, then $\|x\| \le t$. Thus every feasible $t$ is at least $\|x\|$. So $\inf t \ge \|x\|$.
+            <strong>Step 2: Feasibility.</strong> If $x \neq 0$, let $b = x/\|x\|$. Then $\|b\|=1$, so $b \in B$. Thus $x = \|x\| b \in \|x\| B$. So $t=\|x\|$ is feasible.
           </div>
           <div class="proof-step">
-            <strong>Step 2: Feasibility.</strong> Let $t = \|x\|$. If $x \neq 0$, let $u = x/\|x\|$. Then $\|u\|=1$, so $u \in B$. Thus $x = \|x\| u \in \|x\| B$. So $t=\|x\|$ is feasible.
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion:</strong> The infimum is exactly $\|x\|$.
+            <strong>Conclusion:</strong> The infimum is exactly $\|x\|$. This confirms that the shape of $B$ encodes the entire norm function.
           </div>
         </div>
 
         <div class="theorem-box">
-          <h4>Geometric Properties of Norm Balls</h4>
-          <p>The axioms of a norm enforce specific geometric properties on its unit ball $B$:</p>
-          <ul>
-            <li><b>Convexity (from Triangle Inequality):</b> $B$ contains the line segment between any two points. No dents.</li>
-            <li><b>Central Symmetry (from Homogeneity):</b> $x \in B \iff -x \in B$. The ball is symmetric about the origin.</li>
-            <li><b>Absorbing (from Finiteness):</b> For every direction, the ball eventually captures any vector if scaled enough. It is not "flat" in any dimension.</li>
-            <li><b>Boundedness (from Definiteness):</b> The ball does not extend infinitely in any direction.</li>
-          </ul>
+          <h4>Theorem: What makes a set a Norm Ball?</h4>
+          <p>A set $B \subset \mathbb{R}^n$ is the unit ball of a norm if and only if it satisfies four geometric properties, which correspond directly to the norm axioms:</p>
+          <ol>
+            <li><b>Convexity (from Triangle Inequality):</b> $B$ contains the segment between any two points. No dents.</li>
+            <li><b>Central Symmetry (from Homogeneity):</b> $x \in B \iff -x \in B$. The ball is balanced around the origin.</li>
+            <li><b>Absorbing (from Finiteness):</b> For any $x$, there exists $t>0$ such that $x \in tB$. The ball is not "flat" in any subspace; it surrounds the origin.</li>
+            <li><b>Boundedness and Closure (from Definiteness):</b> The ball does not extend to infinity, and contains its boundary.</li>
+          </ol>
         </div>
 
         <h4>Geometry of Specific Norms ($\ell_1, \ell_2, \ell_\infty$)</h4>
-        <p>The shape of the unit ball predicts the behavior of optimization problems involving that norm.</p>
-        <ul>
-            <li><b>$\ell_2$ (Euclidean):</b> The ball is a <b>sphere</b>. It is smooth and rotationally symmetric. Optimization solutions vary continuously with the data.</li>
-            <li><b>$\ell_\infty$ (Max Norm):</b> The ball is a <b>cube</b> (box). It has flat faces and sharp corners. Solutions tend to be "non-unique" on the faces.</li>
-            <li><b>$\ell_1$ (Sum Norm):</b> The ball is a <b>cross-polytope</b> (diamond). It has sharp corners on the coordinate axes. This geometry is why $\ell_1$ regularization promotes <b>sparsity</b>: solutions "snap" to the corners where coordinates are zero.</li>
-        </ul>
+        <p>The boundary structure of the unit ball—whether it is smooth, pointy, or flat—predicts how the norm behaves in optimization.</p>
 
-        <div class="insight">
-            <h4>Smooth vs. Pointy: Why it matters</h4>
-            <p>If you minimize a linear function over a norm ball (finding the support point):
-            <br><b>Smooth ($\ell_2$):</b> There is a unique optimal point on the boundary.
-            <br><b>Pointy ($\ell_1$):</b> The optimum often snaps to a vertex (corner).
-            <br><b>Flat ($\ell_\infty$):</b> The optimum might be an entire face (non-unique).</p>
-        </div>
+        <ul>
+            <li><b>$\ell_2$ (Euclidean): Circle/Sphere.</b> The ball $\{x : \sum x_i^2 \le 1\}$ is rotationally symmetric and smooth.
+            <br><i>Optimization consequence:</i> Solutions vary continuously with data; there is a unique supporting hyperplane at every boundary point.</li>
+            <li><b>$\ell_\infty$ (Max Norm): Square/Hypercube.</b> The ball $\{x : \max |x_i| \le 1\}$ has flat faces and corners.
+            <br><i>Optimization consequence:</i> Solutions often land on faces, leading to non-uniqueness. Constraints like $\|x\|_\infty \le 1$ decouple into component-wise bounds ("box constraints").</li>
+            <li><b>$\ell_1$ (Sum Norm): Diamond/Cross-Polytope.</b> The ball $\{x : \sum |x_i| \le 1\}$ has sharp corners on the coordinate axes.
+            <br><i>Optimization consequence:</i> <b>Sparsity.</b> When minimizing a linear function over the $\ell_1$ ball, the solution usually snaps to a vertex (where many coordinates are zero). This is the geometric reason for LASSO regression.</li>
+        </ul>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/norm-balls.png"
                alt="Comparison of unit balls for L1, L2, and L-infinity norms"
                style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
+          <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square).</figcaption>
         </figure>
 
-        <h4>Support Functions of Norm Balls = Dual Norms</h4>
-        <p>The geometry of a convex set $C$ is fully described by its support function $\sigma_C(y) = \sup_{x \in C} y^\top x$. For a norm ball $B = \{x : \|x\| \le 1\}$, this supremum is exactly the definition of the <b>dual norm</b>:</p>
-        $$ \|y\|_* = \sup_{\|x\| \le 1} y^\top x = \sigma_B(y) $$
-        <p>This establishes a fundamental duality: the support function of the primal unit ball is the dual norm. Geometrically, $\|y\|_*$ is the distance from the origin to the supporting hyperplane of $B$ with normal $y$.</p>
+        <h3>2.3 Dual Norms and Supporting Hyperplanes</h3>
 
-        <p>An <a href="#" class="definition-link">ellipsoid</a> is a generalized Euclidean ball, defined as:</p>
+        <p>The <b>dual norm</b> connects the geometry of the ball to linear functionals. It asks: "What is the worst-case dot product over the unit ball?"</p>
+        $$ \|u\|_* := \sup_{\|x\| \le 1} u^\top x $$
+
+        <div class="insight">
+            <h4>Geometric Meaning: Support Function</h4>
+            <p>Geometrically, $\|u\|_*$ is the distance from the origin to the supporting hyperplane of $B$ with normal vector $u$.
+            <br>The set of vectors $u$ such that $\|u\|_* \le 1$ forms the <b>dual ball</b> $B^\circ$ (the polar of $B$).
+            <br>Thus: <b>Dual Norm = Support Function of Primal Ball.</b></p>
+        </div>
+
+        <div class="theorem-box">
+            <h4>Theorem: Generalized Hölder Inequality</h4>
+            <p>For any $u, x \in \mathbb{R}^n$:</p>
+            $$ u^\top x \le \|u\|_* \|x\| $$
+            <p><i>Proof:</i> If $x=0$, trivial. If $x \ne 0$, scale to the boundary: let $z = x/\|x\|$. Then $\|z\|=1$, so $z \in B$. By definition, $u^\top z \le \|u\|_*$. Multiplying by $\|x\|$ gives $u^\top x \le \|u\|_* \|x\|$.</p>
+        </div>
+
+        <h4>Examples of Dual Pairs</h4>
+        <ul>
+            <li><b>$\ell_2$ is Self-Dual:</b> $(\|\cdot\|_2)_* = \|\cdot\|_2$. The polar of a sphere is a sphere.</li>
+            <li><b>$\ell_1 \leftrightarrow \ell_\infty$:</b> The dual of the $\ell_1$ norm is the $\ell_\infty$ norm, and vice versa.
+            <br><i>Proof sketch ($\ell_1$ dual):</i> $\sup_{\sum |x_i| \le 1} u^\top x$. To maximize the dot product, put all the "weight" of $x$ on the index $k$ where $|u_k|$ is largest. Then $u^\top x = |u_k| = \|u\|_\infty$.</li>
+        </ul>
+
+        <h3>2.4 Ellipsoids</h3>
+        <p>An <a href="#" class="definition-link">ellipsoid</a> is the image of a Euclidean ball under an invertible affine map. It is defined as:</p>
         $$
         \mathcal{E} = \{x \in \mathbb{R}^n \mid (x - x_c)^\top P^{-1} (x - x_c) \le 1\}
         $$
@@ -468,7 +483,7 @@
           <div id="widget-ellipsoid-explorer" style="width: 100%; height: 400px; position: relative;"></div>
         </div>
 
-        <h3>2.3 Polyhedra</h3>
+        <h3>2.5 Polyhedra</h3>
 
         <p>A <a href="#" class="definition-link">polyhedron</a> is the solution set of finitely many linear inequalities and equalities:</p>
         $$
@@ -513,7 +528,7 @@
           <div id="widget-polyhedron-visualizer" style="width: 100%; height: 520px; position: relative;"></div>
         </div>
 
-        <h3>2.4 The Positive Semidefinite (PSD) Cone</h3>
+        <h3>2.6 The Positive Semidefinite (PSD) Cone</h3>
 
         <p>The set of symmetric positive semidefinite matrices forms a convex cone, denoted $\mathbb{S}^n_+$. This object is the engine of <b>Semidefinite Programming (SDP)</b>.</p>
         $$

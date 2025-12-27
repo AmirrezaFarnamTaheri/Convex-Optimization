@@ -12,7 +12,7 @@
  * @param {number} wait - The delay in milliseconds
  * @returns {Function} The debounced function
  */
-export function debounce(func, wait = 250) {
+function debounce(func, wait = 250) {
     let timeout;
     return function executedFunction(...args) {
         const later = () => {
@@ -33,7 +33,7 @@ export function debounce(func, wait = 250) {
  * @param {number} options.debounceDelay - Debounce delay in ms
  * @returns {ResizeObserver} The observer instance
  */
-export function createManagedResizeObserver(element, callback, options = {}) {
+function createManagedResizeObserver(element, callback, options = {}) {
     const { debounce: shouldDebounce = true, debounceDelay = 250 } = options;
 
     const finalCallback = shouldDebounce ? debounce(callback, debounceDelay) : callback;
@@ -65,7 +65,7 @@ export function createManagedResizeObserver(element, callback, options = {}) {
  * Creates a cleanup manager for widgets
  * @returns {Object} Cleanup manager with methods
  */
-export function createCleanupManager() {
+function createCleanupManager() {
     const cleanupFunctions = [];
 
     return {
@@ -124,7 +124,7 @@ export function createCleanupManager() {
  * @param {HTMLElement} container - Widget container
  * @param {Function} cleanupFn - Cleanup function
  */
-export function autoCleanupOnRemoval(container, cleanupFn) {
+function autoCleanupOnRemoval(container, cleanupFn) {
     const observer = new MutationObserver(() => {
         if (!document.body.contains(container)) {
             try {
@@ -146,7 +146,7 @@ export function autoCleanupOnRemoval(container, cleanupFn) {
  * @param {string} errorMessage - Error message prefix
  * @returns {Function} Wrapped async function
  */
-export function safeAsync(asyncFn, errorMessage = 'Async operation failed') {
+function safeAsync(asyncFn, errorMessage = 'Async operation failed') {
     return async (...args) => {
         try {
             return await asyncFn(...args);
@@ -162,7 +162,7 @@ export function safeAsync(asyncFn, errorMessage = 'Async operation failed') {
  * @param {string} containerId - Container ID
  * @returns {HTMLElement|null} Container element or null
  */
-export function getContainer(containerId) {
+function getContainer(containerId) {
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Container #${containerId} not found.`);
@@ -176,7 +176,7 @@ export function getContainer(containerId) {
  * @param {HTMLElement} container - Container element
  * @param {string} message - Loading message
  */
-export function showLoading(container, message = 'Loading...') {
+function showLoading(container, message = 'Loading...') {
     container.innerHTML = `<div class="widget-loading-indicator">${message}</div>`;
 }
 
@@ -185,7 +185,7 @@ export function showLoading(container, message = 'Loading...') {
  * @param {HTMLElement} container - Container element
  * @param {string} message - Error message
  */
-export function showError(container, message = 'An error occurred') {
+function showError(container, message = 'An error occurred') {
     container.innerHTML = `<div class="widget-error" style="color: var(--color-danger); padding: 20px; text-align: center;">
         <strong>Error:</strong> ${message}
     </div>`;
@@ -197,7 +197,7 @@ export function showError(container, message = 'An error occurred') {
  * @param {*} fallback - Fallback value
  * @returns {*} Parsed object or fallback
  */
-export function safeJSONParse(jsonString, fallback = null) {
+function safeJSONParse(jsonString, fallback = null) {
     try {
         return JSON.parse(jsonString);
     } catch (error) {
@@ -208,12 +208,12 @@ export function safeJSONParse(jsonString, fallback = null) {
 
 /**
  * Clamp value between min and max
- * @param {number} value - Value to clamp
+ * @param {number} value - Number to clamp
  * @param {number} min - Minimum value
  * @param {number} max - Maximum value
  * @returns {number} Clamped value
  */
-export function clamp(value, min, max) {
+function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
@@ -224,7 +224,7 @@ export function clamp(value, min, max) {
  * @param {number} t - Interpolation parameter [0, 1]
  * @returns {number} Interpolated value
  */
-export function lerp(a, b, t) {
+function lerp(a, b, t) {
     return a + (b - a) * clamp(t, 0, 1);
 }
 
@@ -233,7 +233,7 @@ export function lerp(a, b, t) {
  * @param {string} propertyName - CSS custom property name (with or without --)
  * @returns {string} Property value
  */
-export function getCSSVariable(propertyName) {
+function getCSSVariable(propertyName) {
     const name = propertyName.startsWith('--') ? propertyName : `--${propertyName}`;
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
@@ -243,7 +243,7 @@ export function getCSSVariable(propertyName) {
  * @param {THREE.Scene} scene - Three.js scene
  * @param {THREE.Renderer} renderer - Three.js renderer
  */
-export function cleanupThreeJS(scene, renderer) {
+function cleanupThreeJS(scene, renderer) {
     if (!scene || !renderer) return;
 
     try {
@@ -275,7 +275,7 @@ export function cleanupThreeJS(scene, renderer) {
  * @param {number} precision - Decimal places
  * @returns {string} Formatted number
  */
-export function formatNumber(value, precision = 2) {
+function formatNumber(value, precision = 2) {
     if (!isFinite(value)) return 'N/A';
     return value.toFixed(precision);
 }
@@ -285,6 +285,110 @@ export function formatNumber(value, precision = 2) {
  * @param {*} value - Value to check
  * @returns {boolean} True if numeric
  */
-export function isNumeric(value) {
+function isNumeric(value) {
     return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+/**
+ * Enables dragging for an element using a handle
+ * @param {HTMLElement} element - The element to make draggable
+ * @param {HTMLElement} handle - The handle element (optional, defaults to element)
+ * @param {Object} options - Options (saveKey for persistence)
+ */
+function enableDrag(element, handle, options = {}) {
+    handle = handle || element;
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+    const { saveKey } = options;
+
+    // Load saved position
+    if (saveKey) {
+        const saved = JSON.parse(localStorage.getItem(saveKey + '-pos'));
+        if (saved) {
+            element.style.left = saved.left;
+            element.style.top = saved.top;
+            // Clear specific positioning if needed (like bottom/right) to allow left/top to work
+            if (saved.left) element.style.right = 'auto';
+            if (saved.top) element.style.bottom = 'auto';
+        }
+    }
+
+    handle.addEventListener('mousedown', (e) => {
+        // Prevent dragging if clicking on interactive elements inside the handle
+        if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.no-drag')) return;
+
+        isDragging = true;
+        handle.style.cursor = 'grabbing';
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = element.getBoundingClientRect();
+
+        // We must switch to left/top positioning for dragging to work consistently
+        // This calculates the current absolute position relative to the viewport/document
+        initialLeft = rect.left;
+        initialTop = rect.top;
+
+        // Force convert to left/top positioning in pixels
+        element.style.left = `${initialLeft}px`;
+        element.style.top = `${initialTop}px`;
+        element.style.right = 'auto';
+        element.style.bottom = 'auto';
+        element.style.transform = 'none'; // Clear center transforms if any
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+
+    const onMouseMove = (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        element.style.left = `${initialLeft + dx}px`;
+        element.style.top = `${initialTop + dy}px`;
+    };
+
+    const onMouseUp = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        handle.style.cursor = 'grab'; // Reset to grab
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+
+        if (saveKey) {
+            localStorage.setItem(saveKey + '-pos', JSON.stringify({
+                left: element.style.left,
+                top: element.style.top
+            }));
+        }
+    };
+
+    // Set initial cursor
+    handle.style.cursor = 'grab';
+}
+
+// Expose utilities to global scope for non-module scripts
+if (typeof window !== 'undefined') {
+    window.enableDrag = enableDrag;
+    window.widgetUtils = {
+        debounce,
+        createManagedResizeObserver,
+        createCleanupManager,
+        autoCleanupOnRemoval,
+        safeAsync,
+        getContainer,
+        showLoading,
+        showError,
+        safeJSONParse,
+        clamp,
+        lerp,
+        getCSSVariable,
+        cleanupThreeJS,
+        formatNumber,
+        isNumeric,
+        enableDrag
+    };
 }

@@ -223,6 +223,30 @@
       $$ \sup_{u \in \mathcal{U}} (\bar{a}_i + u)^\top x \le b_i \iff \bar{a}_i^\top x + \sigma_{\mathcal{U}}(x) \le b_i $$
       <p>where $\sigma_{\mathcal{U}}(x) = \sup_{u \in \mathcal{U}} u^\top x$ is the <b>support function</b> of the uncertainty set.</p>
 
+      <h4>2.1 Deterministic Robust LP</h4>
+      <p>Suppose $\mathcal{U}$ is an ellipsoid: $\mathcal{U} = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
+      <br>Here $\bar{a}_i$ is the nominal value and $P_i$ shapes the uncertainty.</p>
+
+      <div class="proof-box">
+        <h4>Derivation: Robust to SOCP</h4>
+        <div class="proof-step">
+          <strong>Step 1: Expand the Term.</strong> We want to maximize the LHS over the uncertainty set $\mathbf{u}$:
+          $$ \sup_{\|\mathbf{u}\|_2 \le 1} (\bar{\mathbf{a}}_i + P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} (P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Dual Norm Representation.</strong>
+          The term $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top \mathbf{v}$ is the definition of the dual norm $\|\mathbf{v}\|_*$.
+          For the Euclidean norm (L2), the dual is also L2. Thus, $\sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) = \|P_i^\top \mathbf{x}\|_2$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Resulting Constraint.</strong>
+          Substituting back, the robust constraint is equivalent to:
+          $$ \bar{\mathbf{a}}_i^\top \mathbf{x} + \|P_i^\top \mathbf{x}\|_2 \le b_i $$
+          This is a deterministic constraint on $\mathbf{x}$ involving a linear term and a Euclidean norm term—exactly the form of a Second-Order Cone constraint.
+        </div>
+      </div>
+      <p>Thus, Robust LP with ellipsoidal uncertainty is an SOCP.</p>
+
       <h4>The "Supremum = Dual Norm" Lemma</h4>
       <p>If the uncertainty set is a norm ball $\mathcal{U} = \{u \mid \|u\| \le \rho\}$, then the support function is the scaled dual norm:</p>
       <p style="text-align: center; border: 1px solid var(--primary-300); padding: 10px; border-radius: 4px;">
@@ -616,13 +640,18 @@
       <div class="proof-box">
           <h4>Algorithm: Bisection</h4>
           <ol>
-            <li><b>Initialize:</b> Interval $[L, U]$ such that $\Phi(L)=$ False, $\Phi(U)=$ True. (e.g., lower/upper bounds on objective).</li>
-            <li><b>Iterate:</b>
-                <br>Set $\alpha = (L+U)/2$.
-                <br>Solve convex feasibility: Is there an $x \in \mathcal{F}$ with $f_0(x) \le \alpha$?
-                <br><b>If Feasible:</b> $U \leftarrow \alpha$ (Optimum is lower).
-                <br><b>If Infeasible:</b> $L \leftarrow \alpha$ (Optimum is higher).</li>
-            <li><b>Terminate:</b> When $U - L \le \epsilon$.</li>
+            <li><b>Initialize:</b> Find an interval $[l, u]$ known to contain the optimal value $p^*$.</li>
+            <li><b>Check Feasibility:</b> Let $t = (l+u)/2$. Solve the convex feasibility problem:
+              $$ \text{find } \mathbf{x} \quad \text{subject to } \quad f_i(\mathbf{x}) \le 0, \ A\mathbf{x} = \mathbf{b}, \ f_0(\mathbf{x}) \le t $$
+              Note that $f_0(\mathbf{x}) \le t$ is a convex constraint.
+            </li>
+            <li><b>Update:</b>
+              <ul>
+                <li>If feasible, then the optimal value $p^*$ is at most $t$. Set $u = t$.</li>
+                <li>If infeasible, then $p^*$ must be greater than $t$. Set $l = t$.</li>
+              </ul>
+            </li>
+            <li><b>Repeat:</b> Continue until $u - l < \epsilon$.</li>
           </ol>
           <p><b>Complexity:</b> $\lceil \log_2((U_{init}-L_{init})/\epsilon) \rceil$ feasibility solves. This is very efficient.</p>
       </div>

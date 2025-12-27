@@ -1505,6 +1505,18 @@
           </div>
         </div>
 
+        <div class="proof-box">
+          <h4>Alternative Proof: Epigraph Mapping</h4>
+          <p>We can prove convexity by relating the epigraph of $g$ to the epigraph of $f$ via a linear map.
+          <br>Define the mapping $\Phi: \{(x,t,s) \mid t>0\} \to \mathbb{R}^{n+1}$ by $\Phi(x,t,s) = (x/t, s/t)$.
+          <br>The epigraph of $g$ is defined by $g(x,t) \le s \iff t f(x/t) \le s \iff f(x/t) \le s/t$.
+          <br>Thus $(x,t,s) \in \text{epi } g \iff t > 0 \text{ and } (x/t, s/t) \in \text{epi } f$.
+          <br>We can express this explicitly as:
+          $$ \mathrm{epi}\, g = \Phi^{-1}(\mathrm{epi}\, f) \cap \{(x, t, s) \mid t > 0\} $$
+          where $\Phi$ is the linear map defined on homogeneous coordinates. Since the inverse image of a convex set under a linear map is convex, and the intersection with a halfspace ($t>0$) is convex, $\mathrm{epi}\, g$ is convex.
+          <br>More simply: $\text{epi } g$ is the conic hull of $\text{epi } f$ (embedded at $t=1$). The conic hull of a convex set is convex.</p>
+        </div>
+
         <h4>The Modeling Engine: Removing Denominators</h4>
         <p>The perspective transform allows us to solve problems involving ratios with positive denominators by <b>linearizing</b> the denominator into a variable $t$.</p>
 

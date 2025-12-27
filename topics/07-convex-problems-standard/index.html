@@ -1000,6 +1000,19 @@
         </ol>
         All checks pass. This is a valid GP.
         </p>
+        <p><strong>GP Formulation:</strong>
+        Minimize the inverse volume $x^{-1} y^{-1} z^{-1}$ (a monomial).
+        Constraints must be in the form (Posynomial $\le 1$).
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & x^{-1} y^{-1} z^{-1} \\
+        \text{subject to} \quad & \frac{2}{A_{wall}} x z + \frac{2}{A_{wall}} y z \le 1 \\
+        & \frac{1}{A_{floor}} x y \le 1 \\
+        & 0.5 x^{-1} z \le 1
+        \end{aligned}
+        $$
+        All constraints are posynomials (or monomials). This is a standard GP.
+        </p>
       </div>
     </section>
 

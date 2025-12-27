@@ -8,13 +8,14 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <!-- Header with navigation -->
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <div class="container header-inner">
       <div class="brand">
-        <a href="index.html">Convex Optimization</a>
+        <a href="index.html" aria-label="Convex Optimization Home">Convex Optimization</a>
       </div>
-      <nav class="nav">
+      <nav class="nav" role="navigation" aria-label="Main Navigation">
         <a href="#sessions">Lectures</a>
         <a href="syllabus.html">Syllabus</a>
       </nav>
@@ -22,8 +23,11 @@
   </header>
 
   <!-- Main content -->
-  <main class="container" style="padding: 32px 0 60px;">
-    <section class="section-card" id="hero" style="text-align: center; margin-bottom: 48px;">
+  <main id="main" class="container" role="main" style="padding: 32px 0 60px;">
+    <section class="section-card hero-section" id="hero" style="text-align: center; margin-bottom: 48px; position: relative; overflow: hidden;">
+      <!-- Decorative background element -->
+      <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, var(--primary-500) 0%, transparent 70%); opacity: 0.1; border-radius: 50%; pointer-events: none;"></div>
+
       <h1>Convex Optimization</h1>
       <p style="margin: 16px auto; font-size: 1.25rem; max-width: 800px; color: var(--text-secondary);">
         A comprehensive introduction to the theory, algorithms, and applications of convex optimization.
@@ -262,6 +266,7 @@
   </footer>
 
   <script src="static/js/ui.js"></script>
+  <script src="static/js/theme-switcher.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>

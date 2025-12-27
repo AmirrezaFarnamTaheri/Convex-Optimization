@@ -126,7 +126,13 @@ class PomodoroWidget {
             localStorage.setItem('pomodoro-sound', this.soundEnabled);
         };
 
-        this.initDragging();
+        // Use generic enableDrag
+        if (window.enableDrag) {
+            window.enableDrag(this.container, this.header, { saveKey: 'pomodoro' });
+        } else {
+            this.initDragging(); // Fallback
+        }
+
         this.updateProgress();
 
         if (typeof Resizable !== 'undefined') {

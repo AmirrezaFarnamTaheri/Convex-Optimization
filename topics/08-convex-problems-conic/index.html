@@ -657,50 +657,13 @@
       </div>
     </section>
 
-    <!-- Section 6: Disciplined Convex Programming (DCP) -->
     <section class="section-card" id="section-6">
-      <h2>6. Disciplined Convex Programming (DCP)</h2>
-
-      <h3>6.1 Motivation</h3>
-      <p>While we can recognize many convex problems, it's often unclear whether a complex formulation is convex. <strong>Disciplined Convex Programming</strong> is a system of rules for constructing convex optimization problems from basic atoms.</p>
-
-      <div class="intuition-box">
-        <p><b>Intuition:</b> DCP is a “type system” for convexity. You build an expression tree; each atom (like $\|\cdot\|_2$, $\log$, $\max$) has known curvature and monotonicity rules. If the whole expression type-checks, the model is guaranteed convex (or concave/affine) and the solver can safely transform it into a standard conic form.</p>
-      </div>
-
-      <h3>6.2 DCP Rules (a practical checklist)</h3>
-      <div class="theorem-box">
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Every atom has metadata:</b> curvature (convex/concave/affine), monotonicity in each argument, and domain/sign requirements.</li>
-          <li><b>Affine arguments are always safe:</b> composing with an affine expression preserves curvature (convex stays convex, concave stays concave).</li>
-          <li><b>Monotone composition is the key:</b> if an outer atom is convex and nondecreasing in an argument, you may plug a convex expression into that argument; if it is convex and nonincreasing, you may plug a concave expression into that argument (and similarly with “convex” replaced by “concave”).</li>
-          <li><b>Objectives &amp; constraints:</b> minimize a convex objective (or maximize a concave one); allow constraints of the form $f(x)\le 0$ with $f$ convex, and equalities with affine expressions.</li>
-          <li><b>Sufficient, not necessary:</b> some convex problems fail DCP because they are written in a form that hides convexity; algebraic rewriting can make the structure visible.</li>
-        </ul>
-      </div>
-      <div class="interpretation-box">
-        <p><b>Interpretation:</b> When a model satisfies DCP, you are providing a mechanically checkable convexity proof. This reduces modeling errors and makes solver behavior more predictable because transformations are justified by the expression structure.</p>
-      </div>
-
-      <h3>5.3 DCP in Practice: CVXPY</h3>
-      <p>Tools like CVXPY verify DCP compliance and automatically transform problems to standard solver forms (LP, SOCP, SDP).</p>
-
-      <!-- Widget 8: Solver Selection Guide -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Interactive: Solver Selection Guide</h3>
-        <p><strong>Purpose:</strong> Decision tree tool for selecting the most appropriate solver (GLPK, CVXOPT, MOSEK, SeDuMi, etc.) based on problem structure and scale.</p>
-        <ul style="font-size: 14px; line-height: 1.6;">
-          <li>Input problem characteristics (size, sparsity, cone type)</li>
-          <li>Receive solver recommendations with rationale</li>
-          <li>Learn performance tradeoffs between solvers</li>
-        </ul>
-        <div id="widget-solver-guide" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
+      <h2>6. Disciplined Convex Programming (Recap)</h2>
+      <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVXPY to verify convexity automatically.
+      <br>While this lecture focused on the raw "conic form" (how the solver sees the problem), in practice, you rarely write raw conic constraints. You use DCP-compliant expressions (like <code>norm(x) <= t</code>) and the software compiles them into the standard cones (SOC, Exp, PSD) we studied here.</p>
     </section>
 
-<section class="section-card" id="section-7">
+    <section class="section-card" id="section-7">
       <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
       <p>These problems consolidate the lecture material and provide practice in problem classification, formulation, and reformulation.</p>
 
@@ -1461,31 +1424,6 @@
   </div>
 </div>
 
-    </section>
-
-<section class="section-card" id="section-9">
-      <h2>9. Readings & Resources</h2>
-      <ul class="link-list">
-        <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 4 — Convex Optimization Problems</li>
-        <li><strong>Nesterov, Introductory Lectures on Convex Optimization:</strong> Chapter 1 — Linear and Conic Programming</li>
-        <li><strong>Ben-Tal & Nemirovski, Lectures on Modern Convex Optimization:</strong> Part I — Conic Programming</li>
-        <li><strong>CVXPY Documentation:</strong> <a href="https://www.cvxpy.org/" target="_blank">https://www.cvxpy.org/</a> — DCP rules and examples</li>
-      </ul>
-    </section>
-
-    <section class="section-card" id="section-10">
-      <h2>10. Recap &amp; What's Next</h2>
-      <div class="recap-box">
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Conic viewpoint:</b> many constraints can be written as “(expression) $\in K$” for a cone $K$ (SOC, PSD cone, etc.).</li>
-          <li><b>SOCP/SDP are modeling languages:</b> they capture norms, quadratic forms, and matrix inequalities while remaining convex.</li>
-          <li><b>Robustness via geometry:</b> uncertainty sets turn into conic constraints that enforce worst-case feasibility.</li>
-          <li><b>DCP is a proof system:</b> composition rules guarantee convexity so you can model safely at scale.</li>
-        </ul>
-      </div>
-      <div class="interpretation-box">
-        <p style="margin: 0;"><b>Forward look:</b> In <a href="../09-duality/index.html">Lecture 09</a>, these conic forms gain optimality certificates: dual cones appear as dual constraints, and strong duality explains when the primal and dual solutions match.</p>
-      </div>
     </section>
 
 <section class="section-card" id="section-8">

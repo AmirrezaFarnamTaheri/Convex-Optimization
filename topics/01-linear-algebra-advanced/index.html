@@ -59,191 +59,12 @@
       </ul>
     </section>
 
-    <!-- SECTION 1: ABSTRACT VECTOR SPACES -->
-    <section class="section-card" id="section-vector-spaces">
-      <h2>1. Abstract Vector Spaces</h2>
-      <p>In Lecture 00, we worked with $\mathbb{R}^n$, where vectors were tuples. Here we abstract that away. A <b>Vector Space</b> is defined not by what vectors <i>are</i>, but by what you can <i>do</i> with them. This "conceptual compression" reveals that matrices, functions, and polynomials are all the same kind of object.</p>
-
-      <h3>1.1 The Axiomatic Definition</h3>
-      <p>A vector space over a field $\mathbb{F}$ is a set $V$ equipped with two operations—addition ($+$) and scalar multiplication ($\cdot$)—that satisfy the following 8 axioms for all $u,v,w \in V$ and $\alpha, \beta \in \mathbb{F}$. These axioms are exactly what is needed to make linear combinations behave predictably.</p>
-
-      <ul>
-        <li><b>Additivity ($V$ is an Abelian Group):</b>
-          <ul>
-            <li><b>Closure:</b> $u+v \in V$.</li>
-            <li><b>Associativity & Commutativity:</b> $(u+v)+w = u+(v+w)$ and $u+v = v+u$.</li>
-            <li><b>Identity:</b> There exists a unique $\mathbf{0} \in V$ such that $v+\mathbf{0}=v$.</li>
-            <li><b>Inverses:</b> For every $v$, there exists a unique $-v$ such that $v+(-v)=\mathbf{0}$.</li>
-          </ul>
-        </li>
-        <li><b>Scalar Structure:</b>
-          <ul>
-            <li><b>Compatibility:</b> $\alpha(\beta v) = (\alpha\beta)v$. (Scaling twice matches multiplying scalars).</li>
-            <li><b>Identity:</b> $1 \cdot v = v$. (Scaling by 1 does nothing).</li>
-          </ul>
-        </li>
-        <li><b>Distributivity (Linearity):</b>
-          <ul>
-            <li>$\alpha(u+v) = \alpha u + \alpha v$ (Distributes over vector sum).</li>
-            <li>$(\alpha+\beta)u = \alpha u + \beta u$ (Distributes over scalar sum).</li>
-          </ul>
-        </li>
-      </ul>
-
-      <p><b>Immediate Theorems:</b> From these axioms, we prove derived facts like:
-      <br>1. $\mathbf{0}$ is unique.
-      <br>2. $0 \cdot v = \mathbf{0}$. (Proof: $0v = (0+0)v = 0v + 0v \implies \mathbf{0} = 0v$).
-      <br>3. $(-1)v = -v$. (Proof: $v + (-1)v = 1v + (-1)v = (1-1)v = 0v = \mathbf{0}$).</p>
-
-      <h3>1.2 Subspaces: "Closed Worlds"</h3>
-      <p>The most important subsets in linear algebra are those that inherit the linear structure. A subset $W \subseteq V$ is a <b>subspace</b> if it is a self-contained linear universe.</p>
-
-      <h4>The One-Line Subspace Test</h4>
-      <p>A nonempty subset $W \subseteq V$ is a subspace if and only if it is closed under all linear combinations:
-      $$ \forall u,v \in W, \alpha, \beta \in \mathbb{F} \implies \alpha u + \beta v \in W $$
-      This implies $W$ contains $\mathbf{0}$, is closed under addition, and is closed under scaling.
-      <br><b>Fast Check:</b> If a set does not contain $\mathbf{0}$, it is <b>not</b> a subspace.</p>
-
-      <h4>Fundamental Subspaces</h4>
-      <ul>
-        <li><b>Intersection:</b> $\bigcap W_i$ is always a subspace. (This is the "AND" of linear constraints).</li>
-        <li><b>Sum:</b> $U + W = \{u+w \mid u \in U, w \in W\}$ is a subspace. It is the "smallest closed world" containing both.</li>
-        <li><b>Direct Sum:</b> If $U \cap W = \{0\}$, then every element in $U+W$ has a <i>unique</i> representation. We write $U \oplus W$.</li>
-      </ul>
-
-      <h3>1.3 Span: The Closure Operator</h3>
-      <p>The <b>span</b> of a set $S$, denoted $\mathrm{span}(S)$, is the set of all <i>finite</i> linear combinations of vectors in $S$.
-      $$ \mathrm{span}(S) = \left\{ \sum_{i=1}^k \alpha_i v_i \;\middle|\; v_i \in S, \alpha_i \in \mathbb{F}, k \in \mathbb{N} \right\} $$
-      <b>Theorem:</b> $\mathrm{span}(S)$ is the smallest subspace containing $S$.
-      <br><i>Proof (via Intersection):</i> Define $\mathrm{span}(S) = \bigcap \{W \le V : S \subseteq W\}$. Since the intersection of subspaces is a subspace, and every subspace containing $S$ must contain all linear combinations of $S$, the definitions match.</p>
-
-      <p><b>Solvability:</b> Asking "Does $Ax=b$ have a solution?" is equivalent to "Is $b \in \mathrm{span}(\text{columns of } A)$?". Span translates existence problems into geometric containment problems.</p>
-
-      <h3>1.4 Linear Maps (Structure-Preserving Functions)</h3>
-      <p>A function $T: V \to W$ is a <b>Linear Map</b> if it preserves the vector space operations:
-      $$ T(\alpha \mathbf{u} + \beta \mathbf{v}) = \alpha T(\mathbf{u}) + \beta T(\mathbf{v}) $$
-      This is the definition of a homomorphism in algebra. It implies $T(0)=0$ and $T(-u) = -T(u)$.
-      <br><b>Kernel and Image:</b> The kernel $\ker(T) = \{\mathbf{v} \mid T(\mathbf{v}) = 0\}$ is a subspace of the domain. The image $\mathrm{im}(T) = \{T(\mathbf{v}) \mid \mathbf{v} \in V\}$ is a subspace of the codomain.</p>
-    </section>
-
-    <!-- SECTION 2: BASES AND COORDINATES -->
-    <section class="section-card" id="section-bases">
-      <h2>2. Bases, Coordinates, and Dimension</h2>
-
-      <p>Up to now, we have "generated" subspaces via Span. However, spans are wasteful: they can contain redundant vectors. This section is about <b>minimal</b> representations.
-      <br>The key questions are:
-      1. When does a set have <i>no redundancy</i>? (Independence)
-      2. When does a set provide <i>unique coordinates</i>? (Basis)
-      3. Is the "number of degrees of freedom" well-defined? (Dimension)</p>
-
-      <h3>2.1 Linear Independence: The "No Redundancy" Condition</h3>
-      <p><b>Definition:</b> A finite set of vectors $\{v_1, \dots, v_k\}$ is <b>linearly independent</b> if the only linear combination that sums to zero is the trivial one:
-      $$ \sum_{i=1}^k \alpha_i v_i = 0 \implies \alpha_1 = \dots = \alpha_k = 0 $$
-
-      <h4>Independence as "Uniqueness of Representation"</h4>
-      <p>This is the meaning of independence.
-      <br><b>Proposition:</b> $v_1, \dots, v_k$ are independent if and only if every vector $w \in \mathrm{span}(v_1, \dots, v_k)$ has a <b>unique</b> representation as a linear combination.
-      <br><i>Proof:</i> If there were two representations $\sum \alpha_i v_i = \sum \beta_i v_i$, then subtracting them gives $\sum (\alpha_i - \beta_i) v_i = 0$. If independent, $\alpha_i - \beta_i = 0$, so $\alpha_i = \beta_i$. Uniqueness holds.</p>
-
-      <h4>The Redundancy Theorem</h4>
-      <p>Linear independence is equivalent to saying "no vector is redundant".
-      <br><b>Theorem:</b> A set is linearly dependent if and only if there exists some index $j$ such that $v_j \in \mathrm{span}(\{v_i\}_{i \neq j})$.
-      <br><i>Proof:</i>
-      <br>($\Rightarrow$) If $\sum \alpha_i v_i = 0$ with $\alpha_j \neq 0$, then $v_j = -\sum_{i \ne j} (\alpha_i/\alpha_j) v_i$.
-      <br>($\Leftarrow$) If $v_j = \sum_{i \ne j} c_i v_i$, then $1v_j - \sum c_i v_i = 0$ is a non-trivial relation.</p>
-
-      <h3>2.2 Basis: Existence + Uniqueness = Coordinate System</h3>
-      <p>A <b>Basis</b> is a set $\mathcal{B} = \{b_1, \dots, b_n\}$ that is both:
-      1. <b>Spanning:</b> $\mathrm{span}(\mathcal{B}) = V$ (Every vector can be represented).
-      2. <b>Independent:</b> No redundancy (Representation is unique).
-      </p>
-
-      <div class="theorem-box">
-        <h4>Theorem: The Basis Theorem</h4>
-        <p>If $\mathcal{B}$ is a basis of $V$, then every vector $v \in V$ can be written in <b>exactly one way</b> as:
-        $$ v = \sum_{i=1}^n c_i b_i $$
-        The scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $v$ in basis $\mathcal{B}$, denoted $[v]_\mathcal{B}$.
-        <br><b>Crucial Distinction:</b> Coordinates are not vectors.
-        <ul>
-            <li>$v$ lives in the abstract vector space $V$.</li>
-            <li>$[v]_\mathcal{B}$ lives in the coordinate space $\mathbb{F}^n$.</li>
-        </ul>
-        This isomorphism $v \leftrightarrow [v]_\mathcal{B}$ justifies treating vectors as column arrays <i>after</i> a basis is fixed.</p>
-      </div>
-
-      <h3>2.3 Dimension: Degrees of Freedom</h3>
-      <p>We define $\dim(V)$ as the number of vectors in a basis. But how do we know all bases have the same size? This is the central structural theorem of linear algebra, relying on the <b>Exchange Lemma</b>.</p>
-
-      <div class="proof-box">
-        <h4>Lemma: Steinitz Exchange Lemma</h4>
-        <p>If $S = \{s_1, \dots, s_m\}$ spans $V$ and $L = \{\ell_1, \dots, \ell_k\}$ is linearly independent in $V$, then:
-        <br>1. <b>$k \le m$</b> (You cannot have more independent vectors than the size of a spanning set).
-        <br>2. We can replace $k$ vectors of $S$ with the vectors in $L$ to form a new spanning set.</p>
-
-        <h4>Proof (Step-by-Step)</h4>
-        <p>We proceed by induction.</p>
-        <div class="proof-step">
-            <strong>Step 1: Express $\ell_1$.</strong> Since $S$ spans, $\ell_1 = \sum a_i s_i$. Since $\ell_1 \neq 0$, some coefficient $a_j \neq 0$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Swap.</strong> We can solve for $s_j$ in terms of $\ell_1$ and the other $s$'s. Thus, we can replace $s_j$ with $\ell_1$ and still span $V$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Iterate.</strong> Suppose we have replaced $r$ vectors. To insert $\ell_{r+1}$, we express it in the current basis. Because $L$ is independent, $\ell_{r+1}$ cannot depend only on the $\ell$'s already inserted; it must use at least one of the remaining $s$'s. This allows us to swap that $s$ out.
-        </div>
-        <div class="proof-step">
-            <strong>Step 4: Count.</strong> Each independent vector consumes one spanning vector. Thus, we must have enough spanning vectors to accommodate all independent ones: $k \le m$.
-        </div>
-      </div>
-
-      <h4>The Dimension Theorem</h4>
-      <p>All bases of a finite-dimensional vector space have the same number of elements.
-      <br><i>Proof:</i> Let $B_1$ (size $n$) and $B_2$ (size $m$) be bases.
-      <br>Since $B_1$ spans and $B_2$ is independent, $m \le n$ (by Exchange Lemma).
-      <br>Since $B_2$ spans and $B_1$ is independent, $n \le m$.
-      <br>Thus $n=m$. This invariant number is the <b>Dimension</b>.</p>
-
-      <h3>2.4 Matrices as Representations of Linear Maps</h3>
-      <p>Up to now, we’ve treated matrices as arrays. But why do they exist?
-      <br><b>A matrix is a linear map written in coordinates after you choose bases.</b></p>
-
-      <h4>Constructing the Matrix (Column by Column)</h4>
-      <p>Let $V$ have basis $B=\{b_1, \dots, b_n\}$ and $W$ have basis $C=\{c_1, \dots, c_m\}$.
-      <br>For a map $T: V \to W$, the matrix $A = [T]_{C \leftarrow B}$ is constructed by the rule:
-      <br><b>The $j$-th column of $A$ is the coordinate vector of $T(b_j)$ in basis $C$.</b>
-      $$ T(b_j) = \sum_{i=1}^m A_{ij} c_i \quad \iff \quad \text{Column } j = [T(b_j)]_C $$
-      This guarantees that $[T(v)]_C = A [v]_B$. The diagram commutes.</p>
-
-      <h4>Composition = Multiplication</h4>
-      <p>Why is matrix multiplication "row-by-column"? Because it simulates function composition.
-      <br>If $S: U \to V$ and $T: V \to W$, then the matrix for $T \circ S$ must satisfy:
-      $$ [T(S(u))]_C = [T]_{C \leftarrow B} [S(u)]_B = [T]_{C \leftarrow B} ([S]_{B \leftarrow A} [u]_A) $$
-      Associativity ($A(BC)=(AB)C$) is forced by associativity of function composition ($f \circ (g \circ h) = (f \circ g) \circ h$). Non-commutativity ($AB \ne BA$) is forced because order of operations matters.</p>
-
-      <h4>Change of Basis and Similarity</h4>
-      <p>If we change the basis of $V$ from $B$ to $B'$, the vector $v$ doesn't change, but its coordinates do.
-      <br>Let $P = [\mathrm{Id}]_{B \leftarrow B'}$ be the change-of-basis matrix. It maps new coordinates to old: $[v]_B = P [v]_{B'}$.
-      <br>Suppose $A$ represents $T$ in basis $B$ (so $[T(v)]_B = A [v]_B$) and $A'$ represents $T$ in basis $B'$.
-      <br>We can derive $A'$ by tracking the coordinates:
-      $$ [T(v)]_{B'} = P^{-1} [T(v)]_B = P^{-1} (A [v]_B) = P^{-1} A (P [v]_{B'}) = (P^{-1} A P) [v]_{B'} $$
-      Thus:
-      $$ A' = P^{-1} A P $$
-      This relation is called <b>Similarity</b>.
-      <br><b>Key Insight:</b> Similar matrices ($A \sim P^{-1}AP$) represent the <b>same linear operator</b> in different coordinate systems. Thus, they share all intrinsic properties (invariants):
-      <ul>
-        <li><b>Rank:</b> Dimension of the image.</li>
-        <li><b>Determinant & Trace:</b> Coefficients of characteristic polynomial.</li>
-        <li><b>Eigenvalues:</b> Roots of $\det(A-\lambda I)=0$.</li>
-      </ul>
-      </p>
-    </section>
-
-    <!-- SECTION 3: SCALAR INVARIANTS -->
+    <!-- SECTION 1: SCALAR INVARIANTS -->
     <section class="section-card" id="section-invariants">
-      <h2>3. Scalar Invariants: Determinant and Trace</h2>
+      <h2>1. Scalar Invariants: Determinant and Trace</h2>
       <p>A scalar invariant is a function of a matrix that does not change under similarity transformations ($A \mapsto P^{-1}AP$). Geometrically, these are properties of the linear operator itself, not its specific matrix representation. There are exactly two fundamental independent polynomial invariants: the Determinant and the Trace.</p>
 
-      <h3>3.1 Determinant: The Unique Volume Form</h3>
+      <h3>1.1 Determinant: The Unique Volume Form</h3>
       <p>The determinant is often taught as a recursive formula. It is better understood as a characterized object. It is the <b>unique</b> function $\det: \mathbb{F}^{n \times n} \to \mathbb{F}$ satisfying three axioms:</p>
       <ol>
         <li><b>Multilinearity:</b> Linear in each column separately.</li>
@@ -274,7 +95,7 @@
       </ul>
       </p>
 
-      <h3>3.2 Trace: The Unique Linear Invariant</h3>
+      <h3>1.2 Trace: The Unique Linear Invariant</h3>
       <p>The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
       $$ \mathrm{tr}(AB) = \mathrm{tr}(BA) $$
       This property implies similarity invariance: $\mathrm{tr}(P^{-1}AP) = \mathrm{tr}(APP^{-1}) = \mathrm{tr}(A)$. Thus, the trace is defined for linear operators, not just matrices.</p>
@@ -303,17 +124,17 @@
 
     <!-- SECTION 4: EIGENVALUES -->
     <section class="section-card" id="section-eigenvalues">
-      <h2>4. The Spectral Layer: Eigenvalues and Diagonalization</h2>
+      <h2>2. The Spectral Layer: Eigenvalues and Diagonalization</h2>
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
-      <h3>4.1 Eigenvalues: The Invariant Directions</h3>
+      <h3>2.1 Eigenvalues: The Invariant Directions</h3>
       <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
       <br><b>The Logic of Detection:</b>
       $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
       Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ is singular (not invertible). This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
       <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
 
-      <h3>4.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
+      <h3>2.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
       <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
       <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
       <ul>
@@ -322,7 +143,7 @@
       </ul>
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
-      <h3>4.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
+      <h3>2.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
       <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. The missing directions are supplied by <b>generalized eigenvectors</b>.</p>
 
       <h4>Generalized Eigenvectors and Jordan Chains</h4>
@@ -345,7 +166,7 @@
         <br>For discrete dynamics $x_{k+1} = J x_k$, powers $J^t$ contain terms like $\binom{t}{k} \lambda^{t-k}$. Even if $|\lambda| < 1$ (stability), the polynomial factor from the nilpotent drift can cause transient growth before asymptotic decay. This "hump" phenomenon is critical in non-normal stability analysis.</p>
       </div>
 
-      <h3>4.4 The Spectral Theorem: Perfect Geometry</h3>
+      <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>
@@ -356,7 +177,7 @@
       <br><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$ with $Q$ orthogonal.
       <br><b>Why this matters:</b> This theorem underpins the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), the analysis of Hessian curvature, and the convergence of optimization algorithms.</p>
 
-      <h3>4.4 The Rayleigh Quotient</h3>
+      <h3>2.4 The Rayleigh Quotient</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
       $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} $$
       This scalar measures the "gain" of the matrix in the direction $\mathbf{x}$. Its critical points are the eigenvectors.</p>
@@ -371,11 +192,11 @@
 
     <!-- SECTION 5: INDUCED NORMS -->
     <section class="section-card" id="section-induced-norms">
-      <h2>5. Induced Matrix Norms</h2>
+      <h2>3. Induced Matrix Norms</h2>
       <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
       $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
 
-      <h3>5.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
+      <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
       <p>$$ \|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}| $$</p>
       <div class="proof-box">
         <h4>Derivation</h4>
@@ -384,15 +205,15 @@
         Equality is achieved by choosing $\mathbf{x} = e_k$ where $k$ is the index of the column with the largest norm.</p>
       </div>
 
-      <h3>5.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
+      <h3>3.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
       <p>$$ \|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}| $$</p>
       <p><i>Intuition:</i> To maximize the $\infty$-norm of $A\mathbf{x}$, we want to maximize a single component $|(A\mathbf{x})_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
 
-      <h3>5.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
+      <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
 
-      <h3>5.4 Convexity of Induced Norms</h3>
+      <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>
       <div class="proof-box">
         <h4>Proof: Convexity via Dual Norms</h4>
@@ -420,11 +241,11 @@
 
     <!-- SECTION 6: QR DECOMPOSITION -->
     <section class="section-card" id="section-qr">
-      <h2>6. The QR Decomposition: Geometry First</h2>
+      <h2>4. The QR Decomposition: Geometry First</h2>
 
       <p>QR is not just an algorithm. It is the <b>algebraic shadow</b> of the Gram-Schmidt process. It formalizes the fact that every matrix can be split into "perfect geometry" ($Q$) and "coordinates" ($R$).</p>
 
-      <h3>6.1 Definition and Existence</h3>
+      <h3>4.1 Definition and Existence</h3>
       <p>Let $A \in \mathbb{R}^{m \times n}$ with $m \ge n$ (Full column rank). There exists a unique factorization:
       $$ \boxed{ A = Q R } $$
       where:
@@ -440,7 +261,7 @@
       $$ a_k = \sum_{j=1}^k r_{jk} q_j $$
       where $r_{jk} = \langle q_j, a_k \rangle$. This forces the matrix form $A=QR$, where $R$ is upper triangular. The diagonal entries $r_{kk} = \|u_k\|$ are positive, ensuring uniqueness.</p>
 
-      <h3>6.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
+      <h3>4.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
       <p>Consider $\min \|A\mathbf{x} - \mathbf{b}\|_2$.
       Using Normal Equations: $A^\top A \mathbf{x} = A^\top \mathbf{b}$. The condition number is $\kappa(A^\top A) = \kappa(A)^2$. This squaring doubles the number of digits of precision lost.
       <br>Using QR:
@@ -450,7 +271,7 @@
       This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
       <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
 
-      <h3>6.3 Full vs. Thin QR</h3>
+      <h3>4.3 Full vs. Thin QR</h3>
       <p>
       <ul>
         <li><b>Thin QR ($Q \in \mathbb{R}^{m \times n}$):</b> Only computes an orthonormal basis for the column space. Sufficient for least squares.</li>
@@ -461,10 +282,10 @@
 
     <!-- SECTION 7: SVD -->
     <section class="section-card" id="section-svd">
-      <h2>7. Singular Value Decomposition (SVD): The True Geometry</h2>
+      <h2>5. Singular Value Decomposition (SVD): The True Geometry</h2>
       <p>If the spectral theorem was "perfect geometry under symmetry," and QR was "geometry separated from coordinates," then <b>SVD is the fundamental theorem of linear algebra</b>. It applies to every matrix, square or rectangular, symmetric or not.</p>
 
-      <h3>7.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
+      <h3>5.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
       <p><b>Theorem (SVD):</b> Any matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:
       $$ \boxed{ A = U \Sigma V^\top } $$
       where:
@@ -500,7 +321,7 @@
         </figure>
       </div>
 
-      <h3>7.2 Rank and the Four Fundamental Subspaces</h3>
+      <h3>5.2 Rank and the Four Fundamental Subspaces</h3>
       <p>SVD provides the optimal basis for all four fundamental subspaces of the matrix $A$. Let $r$ be the number of non-zero singular values.</p>
       <ul>
         <li><b>Range (Column Space):</b> Spanned by the first $r$ columns of $U$ (Left singular vectors).
@@ -514,7 +335,7 @@
       </ul>
       <p>This explicitly diagonalizes the geometry: $A$ maps the row space basis $\{v_1, \dots, v_r\}$ to the column space basis $\{u_1, \dots, u_r\}$ with scaling factors $\sigma_i$, and kills everything else.</p>
 
-      <h3>7.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
+      <h3>5.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
       <p>SVD solves the problem of finding the best approximation of a matrix by one of lower rank.
       $$ A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top $$
       This matrix $A_k$ minimizes $\|A - X\|$ in both Spectral and Frobenius norms among all matrices of rank $k$.
@@ -526,7 +347,7 @@
         <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>7.4 Application: PCA as SVD of Data</h3>
+      <h3>5.4 Application: PCA as SVD of Data</h3>
       <p>Principal Component Analysis (PCA) is simply SVD applied to a data matrix.
       <br>Let $X \in \mathbb{R}^{N \times d}$ be the <b>centered</b> data matrix (rows are points).
       <br>We want to find the direction of maximum variance (max $\mathbf{v}^\top X^\top X \mathbf{v}$).
@@ -544,9 +365,9 @@
 
     <!-- SECTION 8: PSEUDOINVERSE -->
     <section class="section-card" id="section-pseudoinverse">
-      <h2>8. The Pseudoinverse and Condition Number</h2>
+      <h2>6. The Pseudoinverse and Condition Number</h2>
 
-      <h3>8.1 The Moore-Penrose Pseudoinverse ($A^+$)</h3>
+      <h3>6.1 The Moore-Penrose Pseudoinverse ($A^+$)</h3>
       <p>When $A$ is not square or not invertible, we cannot define $A^{-1}$. However, we can define a generalized inverse $A^+$ that "inverts" the action of $A$ on its range and sends the orthogonal complement to zero.</p>
 
       <h4>The Moore-Penrose Axioms</h4>
@@ -634,7 +455,7 @@
         <li><b>Projectors:</b> $AA^+$ is the orthogonal projector onto the column space $\mathcal{R}(A)$. $A^+A$ is the orthogonal projector onto the row space $\mathcal{R}(A^\top)$.</li>
       </ul>
 
-      <h3>8.2 Condition Number</h3>
+      <h3>6.2 Condition Number</h3>
       <p>The condition number $\kappa(A)$ measures the sensitivity of the solution of a linear system to perturbations in the data. Formally, it is defined as:</p>
       $$ \kappa(A) = \|A\|_2 \|A^+\|_2 = \frac{\sigma_{\max}(A)}{\sigma_{\min}(A)} $$
       <p>where $\sigma_{\min}$ is the smallest <i>non-zero</i> singular value.</p>
@@ -676,7 +497,7 @@
         <div id="widget-condition-number" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>8.3 Regularization: Controlled Bias for Stability</h3>
+      <h3>6.3 Regularization: Controlled Bias for Stability</h3>
       <p>When a matrix is ill-conditioned, the pseudoinverse solution $x_{LS} = \sum \frac{\mathbf{u}_i^\top \mathbf{b}}{\sigma_i} \mathbf{v}_i$ becomes unstable because division by small $\sigma_i$ amplifies noise.
       <br><b>Regularization</b> stabilizes the inversion by filtering out these small singular values. The classic method is <b>Tikhonov Regularization</b> (Ridge Regression):</p>
       $$ \min_{\mathbf{x}} \|A\mathbf{x} - \mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_2^2 $$
@@ -700,7 +521,7 @@
 
     <!-- SECTION 9: REVIEW -->
     <section class="section-card" id="section-review">
-      <h2>9. Review & Cheat Sheet</h2>
+      <h2>7. Review & Cheat Sheet</h2>
 
       <table class="data-table">
         <thead>
@@ -775,7 +596,7 @@
     </section>
 
     <!-- SECTION 10: EXERCISES -->
-    <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 10. Exercises</h2>
+    <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 8. Exercises</h2>
       <div class="insight">
         <h4>Recap & Key Concepts</h4>
         <p>These exercises explore the theoretical depths of matrix norms, the geometry of projections, and the algebraic properties of the trace. P1.1 links norms to duality (Lecture 02). P1.12 links SVD to the operator norm.</p>
@@ -1076,7 +897,7 @@
 
     <!-- SECTION 11: READINGS -->
     <section class="section-card" id="section-readings">
-      <h2>11. Readings & Resources</h2>
+      <h2>9. Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Required:</strong> Boyd & Vandenberghe, Appendix A.</li>
         <li><strong>Recommended:</strong> Trefethen & Bau, <em>Numerical Linear Algebra</em>, Lectures 1–5.</li>

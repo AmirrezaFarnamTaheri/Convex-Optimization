@@ -4,7 +4,7 @@
  * A comprehensive, modern CSS design system consolidating all styles
  * for the Convex Optimization course website.
  *
- * Version: 5.0.0 (Visual Overhaul)
+ * Version: 5.1.0 (Refined UI/UX)
  */
 
 /* ====================
@@ -69,7 +69,7 @@
   --bg-surface-2: var(--neutral-800);
   --bg-surface-3: var(--neutral-700);
   --bg-highlight: rgba(59, 130, 246, 0.1);
-  --bg-glass: rgba(15, 23, 42, 0.75);
+  --bg-glass: rgba(15, 23, 42, 0.85);
   --bg-glass-strong: rgba(15, 23, 42, 0.95);
 
   /* Legacy Colors (Backwards Compatibility) */
@@ -145,7 +145,7 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
   --shadow-glow: 0 0 25px rgba(59, 130, 246, 0.25);
   
-  --backdrop-blur: 16px;
+  --backdrop-blur: 20px;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -327,6 +327,7 @@ pre code {
   display: flex;
   align-items: center;
   transition: var(--transition);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .site-header .container {
@@ -338,16 +339,28 @@ pre code {
 
 .brand {
   font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: var(--text-heading);
   text-decoration: none;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.brand a { color: inherit; border: none; }
+.brand a {
+  color: inherit;
+  border: none;
+  background: linear-gradient(to right, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand a:hover {
+  background: linear-gradient(to right, #fff, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
 .nav {
   display: flex;
@@ -516,11 +529,17 @@ pre code {
   border: 1px solid transparent;
   text-decoration: none;
   letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn:focus-visible {
   outline: 2px solid var(--primary-400);
-  outline-offset: 2px;
+  outline-offset: 4px;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn-primary {
@@ -555,65 +574,114 @@ pre code {
 }
 
 /* ====================
-   MATH BOXES
+   MATH BOXES (REDESIGNED)
    ==================== */
 .proof-box, .theorem-box, .example-box, .solution-box, .recap-box, .intuition-box {
   background: var(--bg-surface-2);
   border: 1px solid var(--border-subtle);
-  border-left-width: 4px;
   border-radius: var(--radius-md);
-  padding: var(--space-6);
   margin: var(--space-8) 0;
   position: relative;
   box-shadow: var(--shadow-sm);
+  padding-top: 36px; /* Header space */
+  overflow: hidden; /* For header strip */
 }
 
-.proof-box { border-left-color: var(--primary-500); background: rgba(59, 130, 246, 0.03); }
-.theorem-box { border-left-color: var(--accent-500); background: rgba(16, 185, 129, 0.03); }
-.example-box { border-left-color: var(--info); background: rgba(59, 130, 246, 0.03); }
-.solution-box { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.03); }
-.recap-box { border-left-color: var(--neutral-500); }
-.intuition-box { border-left-color: var(--primary-300); border-style: solid; border-left-style: dashed; }
-
-/* Box Labels */
+/* Common Header Style via pseudo-element */
 .proof-box::before, .theorem-box::before, .example-box::before, .solution-box::before, .recap-box::before, .intuition-box::before {
+  display: block;
   position: absolute;
-  top: -12px;
-  left: 16px;
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.7rem;
+  top: 0; left: 0; right: 0;
+  height: 36px;
+  padding: 0 var(--space-4);
+  line-height: 36px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: var(--bg-surface-1);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.proof-box::before { content: 'Proof'; color: var(--primary-400); border-color: var(--primary-900); }
-.theorem-box::before { content: 'Theorem'; color: var(--accent-400); border-color: var(--accent-900); }
-.example-box::before { content: 'Example'; color: var(--info); }
-.solution-box::before { content: 'Solution'; color: var(--warning); }
-.recap-box::before { content: 'Recap'; color: var(--text-tertiary); }
-.intuition-box::before { content: 'Intuition'; color: var(--primary-300); }
+/* Content padding adjustment */
+.proof-box > *, .theorem-box > *, .example-box > *, .solution-box > *, .recap-box > *, .intuition-box > * {
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+.proof-box > :first-child, .theorem-box > :first-child, .example-box > :first-child, .solution-box > :first-child, .recap-box > :first-child, .intuition-box > :first-child {
+  margin-top: var(--space-4);
+}
+.proof-box > :last-child, .theorem-box > :last-child, .example-box > :last-child, .solution-box > :last-child, .recap-box > :last-child, .intuition-box > :last-child {
+  margin-bottom: var(--space-4);
+}
+
+
+/* Specific Styles */
+.proof-box { border: 1px solid rgba(59, 130, 246, 0.2); }
+.proof-box::before {
+  content: 'Proof';
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary-300);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.theorem-box { border: 1px solid rgba(16, 185, 129, 0.2); }
+.theorem-box::before {
+  content: 'Theorem';
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-400);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.example-box { border: 1px solid rgba(96, 165, 250, 0.2); }
+.example-box::before {
+  content: 'Example';
+  background: rgba(96, 165, 250, 0.1);
+  color: var(--primary-400);
+  border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.solution-box { border: 1px solid rgba(245, 158, 11, 0.2); }
+.solution-box::before {
+  content: 'Solution';
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.recap-box { border: 1px solid var(--border-subtle); }
+.recap-box::before {
+  content: 'Recap';
+  background: var(--bg-surface-3);
+  color: var(--text-tertiary);
+}
+
+.intuition-box { border: 1px dashed var(--primary-300); }
+.intuition-box::before {
+  content: 'Intuition';
+  background: rgba(59, 130, 246, 0.05);
+  color: var(--primary-300);
+  border-bottom: 1px dashed var(--primary-300);
+}
 
 /* Toggle Button for Boxes */
 .env-toggle-btn {
   position: absolute;
-  top: 8px;
+  top: 4px; /* Align with header center */
   right: 8px;
   background: transparent;
   border: none;
-  color: var(--text-tertiary);
+  color: inherit;
+  opacity: 0.7;
   cursor: pointer;
   padding: 4px;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  z-index: 2; /* Above pseudo-element */
 }
 .env-toggle-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  opacity: 1;
 }
 
 /* ====================

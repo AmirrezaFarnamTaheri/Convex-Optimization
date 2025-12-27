@@ -108,6 +108,11 @@
         </ol>
         <p><i>Note:</i> Minimizing a concave function is generally non-convex. Equality constraints $h(x)=0$ where $h$ is convex (but not affine) are generally non-convex (see "Counter-Example Corner" below).</p>
 
+        <h4>Sets and Functions: The Vocabulary of Constraints</h4>
+        <p>Before optimizing, we must define what "allowed" means.
+        <br><b>Sets (0.2):</b> A set defines feasibility. An inequality $g(x) \le 0$ is really a membership test $x \in \{z \mid g(z) \le 0\}$. Feasibility is the <b>intersection</b> of sets defined by each constraint. If any set is empty, the problem is infeasible.
+        <br><b>Functions (0.3):</b> A function $f: D \to Y$ is a rule assigning outputs to inputs. In optimization, domains are <b>laws</b>. If $f(x) = \log(x)$, the domain $x > 0$ is a hard constraint. Ignoring domains leads to undefined operations and invalid proofs.</p>
+
         <div class="insight">
           <h4>Why Inequality $\le 0$ and Equality $Ax=b$?</h4>
           <p>The standard form is not arbitrary; it is designed to ensure the <b>feasible set</b> is convex.</p>
@@ -161,6 +166,12 @@
           <li><b>Logic/Set Membership:</b> $x \in \{z : Az=b\}$, $x \in B$, $x \in f^{-1}((-\infty, t])$.</li>
         </ol>
         <p>The core move is to turn every constraint into "$x \in \text{SomeSet}$" and understand how that set behaves under mixing (convexity) and transformations.</p>
+
+        <h4>Affine vs. Linear Maps (0.5)</h4>
+        <p>Distinguishing linear and affine maps is crucial.
+        <br><b>Linear Map:</b> $L(x) = Ax$. Passes through the origin. Preserves linear combinations.
+        <br><b>Affine Map:</b> $f(x) = Ax + b$. Linear plus translation. Preserves affine combinations.
+        <br>Optimization uses affine maps because constraints like $Ax=b$ define <b>affine sets</b> (shifted subspaces), not just subspaces. Affine preimages preserve convexity, which is why linear inequality constraints define convex sets.</p>
 
         <h3>1.6 Optimal Value and Optimal Points</h3>
         <ul>

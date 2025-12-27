@@ -63,15 +63,21 @@
     <section class="section-card" id="section-notation">
       <h2>1. Mathematical Atoms: From Fields to Functions</h2>
 
-      <h3>1.1 The Geometric "Atoms" of Optimization</h3>
-      <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match.</p>
+      <h3>1.1 The Optimization Type System</h3>
+      <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match. Most errors in convex optimization are not conceptual—they are <b>type errors</b> disguised as math.</p>
+
+      <h4>The Geometric "Atoms"</h4>
       <ul>
-        <li><b>Scalar:</b> $a \in \mathbb{R}$ (or $\mathbb{C}$)</li>
-        <li><b>Vector:</b> $x \in \mathbb{R}^n$ (Column vector)</li>
-        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$ (Linear map $\mathbb{R}^n \to \mathbb{R}^m$)</li>
-        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$ (Boolean predicate on space)</li>
-        <li><b>Function:</b> $f: D \to Y$ (Map with explicit domain)</li>
+        <li><b>Scalar:</b> $a \in \mathbb{R}$. Simple numbers. They scale vectors and matrices.</li>
+        <li><b>Vector:</b> $x \in \mathbb{R}^n$. An ordered list of $n$ scalars. Interpretation: a point in space or a direction.</li>
+        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$. A machine that transforms vectors from $\mathbb{R}^n$ to $\mathbb{R}^m$.</li>
+        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$. A boolean predicate (membership test) on the space. Constraints define sets.</li>
+        <li><b>Function:</b> $f: D \to Y$. A rule assigning values to inputs. Domains are mandatory, not optional.</li>
       </ul>
+
+      <h4>Type Checking: The First Line of Defense</h4>
+      <p>You may only add vectors of the same dimension. You may only multiply $A$ and $x$ if inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" prevents silent errors like writing $Ax=b$ with incompatible dimensions or forming gradients of the wrong shape.</p>
+
       <p>In convex optimization, we view algebraic problems through a geometric lens. Throughout this course, you will repeatedly perform three fundamental operations:</p>
       <ol>
         <li><b>Mixing (Combinations):</b> Optimization often involves "averaging" or interpolating between candidate solutions.
@@ -859,25 +865,16 @@
 
       <h3>4.3 Norms: The Mental Model and Axioms</h3>
 
-      <h4>The mental model: what structure are norms trying to capture?</h4>
-      <p>A norm is a rule that measures "size" of vectors in a way that is compatible with two primitive operations you can’t avoid in linear algebra and optimization:</p>
-      <ul>
-        <li><b>Scaling:</b> you can multiply a vector by a scalar.</li>
-        <li><b>Addition:</b> you can add vectors.</li>
-      </ul>
-      <p>If "size" is to behave sanely, it must interact with these operations in a controlled way:</p>
-      <ul>
-        <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> Scaling the vector scales its size proportionally.</li>
-        <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> The size of a sum is not bigger than the sum of sizes (no shortcuts via detours).</li>
-        <li><b>Non-degeneracy sanity $\Rightarrow$ Definiteness:</b> Only the zero vector has zero size.</li>
-      </ul>
-      <p>These are not arbitrary. They are exactly what you need for:</p>
-      <ul>
-        <li>"Balls" to be convex (set geometry),</li>
-        <li>The norm function to be convex (function geometry),</li>
-        <li>Stability/continuity (numerics and optimization),</li>
-        <li>A clean link to support functions and dual norms (duality / robust constraints).</li>
-      </ul>
+      <div class="insight">
+        <h4>The Mental Model: What structure are norms capturing?</h4>
+        <p>A norm is a rule that measures "size" of vectors in a way that is compatible with two primitive operations you can’t avoid in linear algebra and optimization:</p>
+        <ul>
+            <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> $\|\alpha x\| = |\alpha|\|x\|$. Scaling the vector scales its size.</li>
+            <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. No shortcuts via intermediate points. This is the engine of convexity.</li>
+            <li><b>Non-degeneracy sanity $\Rightarrow$ Definiteness:</b> $\|x\|=0 \iff x=0$. No invisible non-zero vectors.</li>
+        </ul>
+        <p>These axioms ensure that "balls" are convex sets and that the norm function itself is convex, which is critical for optimization stability.</p>
+      </div>
 
       <p>These requirements are formalized in the definition of a norm $\|\cdot\|:\mathbb{R}^n\to\mathbb{R}$:</p>
 

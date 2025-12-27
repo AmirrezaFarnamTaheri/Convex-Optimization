@@ -9,14 +9,61 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Dock First
+    initControlDock();
+
+    // 2. Initialize Components
     initCollapsibleEnvironments();
     initHierarchicalSections();
     initPageSettings();
     initHeaderFontSize();
     initSidebarToggle();
     initBackToTop();
+
     if (typeof feather !== 'undefined') feather.replace();
 });
+
+/* =========================================
+   0. CONTROL DOCK (New Centralized Toolbar)
+   ========================================= */
+class ControlDock {
+    constructor() {
+        if (document.querySelector('.control-dock')) return;
+
+        this.dock = document.createElement('div');
+        this.dock.className = 'control-dock';
+        document.body.appendChild(this.dock);
+    }
+
+    addButton(id, icon, title, onClick, position = 'end') {
+        if (document.getElementById(id)) return document.getElementById(id);
+
+        const btn = document.createElement('button');
+        btn.id = id;
+        btn.className = 'dock-btn';
+        btn.innerHTML = icon.startsWith('<') ? icon : `<i data-feather="${icon}"></i>`;
+        btn.setAttribute('data-title', title);
+        btn.setAttribute('aria-label', title);
+
+        btn.addEventListener('click', (e) => {
+            onClick(e, btn);
+        });
+
+        if (position === 'start') {
+            this.dock.insertBefore(btn, this.dock.firstChild);
+        } else {
+            this.dock.appendChild(btn);
+        }
+
+        if (typeof feather !== 'undefined') feather.replace();
+        return btn;
+    }
+}
+
+function initControlDock() {
+    window.controlDock = new ControlDock();
+}
+
 
 /* =========================================
    1. COLLAPSIBLE ENVIRONMENTS
@@ -227,25 +274,6 @@ function initHeaderFontSize() {
 function initPageSettings() {
     if (document.getElementById('page-settings-panel')) return;
 
-    // 1. Create Trigger Button
-    const triggerBtn = document.createElement('button');
-    triggerBtn.className = 'btn btn-primary';
-    triggerBtn.style.position = 'fixed';
-    triggerBtn.style.bottom = '20px';
-    triggerBtn.style.left = '20px';
-    triggerBtn.style.zIndex = '1031';
-    triggerBtn.style.borderRadius = '50%';
-    triggerBtn.style.width = '48px';
-    triggerBtn.style.height = '48px';
-    triggerBtn.style.padding = '0';
-    triggerBtn.style.display = 'flex';
-    triggerBtn.style.alignItems = 'center';
-    triggerBtn.style.justifyContent = 'center';
-    triggerBtn.style.boxShadow = 'var(--shadow-lg)';
-    triggerBtn.title = 'Page Settings';
-    triggerBtn.innerHTML = '<i data-feather="settings"></i>';
-    document.body.appendChild(triggerBtn);
-
     // 2. Create Panel
     const panel = document.createElement('div');
     panel.id = 'page-settings-panel';
@@ -294,20 +322,58 @@ function initPageSettings() {
 
     // 3. Event Listeners
 
-    // Toggle Panel
-    triggerBtn.addEventListener('click', () => {
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-            triggerBtn.classList.add('active');
-        } else {
-            panel.style.display = 'none';
-            triggerBtn.classList.remove('active');
-        }
-    });
+    // 1. Add Dock Button
+    let triggerBtn;
+    if (window.controlDock) {
+        triggerBtn = window.controlDock.addButton(
+            'settings-trigger',
+            'settings',
+            'Page Settings',
+            () => {
+                if (panel.style.display === 'none') {
+                    panel.style.display = 'block';
+                    triggerBtn.classList.add('active');
+                } else {
+                    panel.style.display = 'none';
+                    triggerBtn.classList.remove('active');
+                }
+            }
+        );
+    } else {
+        // Fallback if no dock (Legacy Floating Button)
+        triggerBtn = document.createElement('button');
+        triggerBtn.className = 'btn btn-primary';
+        triggerBtn.style.position = 'fixed';
+        triggerBtn.style.bottom = '20px';
+        triggerBtn.style.left = '20px';
+        triggerBtn.style.zIndex = '1031';
+        triggerBtn.style.borderRadius = '50%';
+        triggerBtn.style.width = '48px';
+        triggerBtn.style.height = '48px';
+        triggerBtn.style.padding = '0';
+        triggerBtn.style.display = 'flex';
+        triggerBtn.style.alignItems = 'center';
+        triggerBtn.style.justifyContent = 'center';
+        triggerBtn.style.boxShadow = 'var(--shadow-lg)';
+        triggerBtn.title = 'Page Settings';
+        triggerBtn.innerHTML = '<i data-feather="settings"></i>';
+        document.body.appendChild(triggerBtn);
+
+        triggerBtn.addEventListener('click', () => {
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                triggerBtn.classList.add('active');
+            } else {
+                panel.style.display = 'none';
+                triggerBtn.classList.remove('active');
+            }
+        });
+    }
+
     
     document.getElementById('close-settings').addEventListener('click', () => {
         panel.style.display = 'none';
-        triggerBtn.classList.remove('active');
+        if (triggerBtn) triggerBtn.classList.remove('active');
     });
 
     // Font Size Logic
@@ -415,108 +481,72 @@ function initSidebarToggle() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    if (document.getElementById('sidebar-toggle')) return;
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'sidebar-toggle';
-    toggleBtn.className = 'btn btn-secondary';
-    toggleBtn.style.position = 'fixed';
-    toggleBtn.style.bottom = '80px'; 
-    toggleBtn.style.left = '20px';
-    toggleBtn.style.zIndex = '1030';
-    toggleBtn.style.borderRadius = '50%';
-    toggleBtn.style.width = '48px';
-    toggleBtn.style.height = '48px';
-    toggleBtn.style.padding = '0';
-    toggleBtn.style.display = 'none'; // Hidden by default, shown via media query typically
-    toggleBtn.style.alignItems = 'center';
-    toggleBtn.style.justifyContent = 'center';
-    toggleBtn.title = 'Toggle Sidebar';
-
-    toggleBtn.innerHTML = '<i data-feather="menu"></i>';
-
-    document.body.appendChild(toggleBtn);
-
-    // Show button only on smaller screens via JS check
+    // Logic: Only show this button if screen is small
     const checkSize = () => {
-        if (window.innerWidth <= 1024) {
-            toggleBtn.style.display = 'flex';
-        } else {
-            toggleBtn.style.display = 'none';
-            sidebar.classList.remove('active'); // Reset sidebar on large screens
-        }
-    };
-    
-    window.addEventListener('resize', checkSize);
-    checkSize();
+        // If small screen, we need the button. If large screen, we might hide it.
+        // But with Dock, we can keep it or hide the specific button.
+        // Let's rely on CSS media queries or check here.
+        const isMobile = window.innerWidth <= 1024;
+        const btn = document.getElementById('sidebar-toggle-dock');
+        if (btn) btn.style.display = isMobile ? 'flex' : 'none';
 
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-        // We might need CSS to handle .sidebar.active for mobile slide-in
-        if (sidebar.classList.contains('active')) {
-             sidebar.style.position = 'fixed';
-             sidebar.style.top = '70px';
-             sidebar.style.left = '0';
-             sidebar.style.height = 'calc(100vh - 70px)';
-             sidebar.style.width = '80%';
-             sidebar.style.maxWidth = '300px';
-             sidebar.style.zIndex = '2000';
-             sidebar.style.background = 'var(--bg-surface-1)';
-             sidebar.style.borderRight = '1px solid var(--border-subtle)';
-             sidebar.style.padding = 'var(--space-4)';
-             sidebar.style.display = 'block';
-        } else {
-             sidebar.style = ''; // Reset inline styles
-        }
-    });
+        if (!isMobile) sidebar.classList.remove('active');
+    };
+
+    if (window.controlDock) {
+        window.controlDock.addButton(
+            'sidebar-toggle-dock',
+            'menu',
+            'Toggle Sidebar',
+            () => {
+                sidebar.classList.toggle('active');
+                if (sidebar.classList.contains('active')) {
+                     sidebar.style.position = 'fixed';
+                     sidebar.style.top = '72px';
+                     sidebar.style.left = '0';
+                     sidebar.style.height = 'calc(100vh - 72px)';
+                     sidebar.style.width = '80%';
+                     sidebar.style.maxWidth = '300px';
+                     sidebar.style.zIndex = '2000';
+                     sidebar.style.background = 'var(--bg-surface-1)';
+                     sidebar.style.borderRight = '1px solid var(--border-subtle)';
+                     sidebar.style.padding = 'var(--space-4)';
+                     sidebar.style.display = 'block';
+                } else {
+                     sidebar.style = '';
+                }
+            },
+            'end' // Position
+        );
+        checkSize();
+        window.addEventListener('resize', checkSize);
+    }
 }
 
 /* =========================================
    5. BACK TO TOP BUTTON
    ========================================= */
 function initBackToTop() {
-    if (document.getElementById('back-to-top')) return;
+    if (!window.controlDock) return;
 
-    const btn = document.createElement('button');
-    btn.id = 'back-to-top';
-    btn.className = 'btn btn-primary';
-    btn.innerHTML = '<i data-feather="arrow-up"></i>';
-    btn.title = 'Back to Top';
-    btn.style.position = 'fixed';
-    btn.style.bottom = '20px';
-    btn.style.right = '20px';
-    btn.style.zIndex = '1020';
-    btn.style.borderRadius = '50%';
-    btn.style.width = '48px';
-    btn.style.height = '48px';
-    btn.style.padding = '0';
-    btn.style.display = 'flex';
-    btn.style.alignItems = 'center';
-    btn.style.justifyContent = 'center';
-    btn.style.boxShadow = 'var(--shadow-lg)';
-    btn.style.opacity = '0';
-    btn.style.transform = 'translateY(20px)';
-    btn.style.transition = 'all 0.3s ease';
-    btn.style.pointerEvents = 'none';
+    const btn = window.controlDock.addButton(
+        'back-to-top-dock',
+        'arrow-up',
+        'Back to Top',
+        () => {
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        'start' // At the top of the stack (which is visually bottom/top depending on flex direction)
+    );
 
-    document.body.appendChild(btn);
+    // Default hidden
+    btn.style.display = 'none';
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
-            btn.style.opacity = '1';
-            btn.style.transform = 'translateY(0)';
-            btn.style.pointerEvents = 'all';
+            btn.style.display = 'flex';
         } else {
-            btn.style.opacity = '0';
-            btn.style.transform = 'translateY(20px)';
-            btn.style.pointerEvents = 'none';
+            btn.style.display = 'none';
         }
-    });
-
-    btn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
     });
 }

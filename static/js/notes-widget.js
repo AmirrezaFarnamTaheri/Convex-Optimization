@@ -232,14 +232,24 @@ class KnowledgeWidget {
         // Remove existing if any
         if (document.querySelector('.kw-panel')) return;
 
-        // Button in Nav (if exists)
-        const headerNav = document.querySelector('.site-header .nav');
-        if (headerNav) {
-            this.toggleBtn = document.createElement('button');
-            this.toggleBtn.className = 'kw-nav-toggle'; // Styled below
-            this.toggleBtn.innerHTML = '<i data-feather="book-open"></i> Tools';
-            this.toggleBtn.onclick = (e) => { e.preventDefault(); this.togglePanel(); };
-            headerNav.insertBefore(this.toggleBtn, headerNav.firstChild);
+        // Integrate with Control Dock if available
+        if (window.controlDock) {
+            this.toggleBtn = window.controlDock.addButton(
+                'kw-tools-dock',
+                'book-open',
+                'Study Tools',
+                () => this.togglePanel()
+            );
+        } else {
+            // Fallback: Button in Nav (if exists)
+            const headerNav = document.querySelector('.site-header .nav');
+            if (headerNav) {
+                this.toggleBtn = document.createElement('button');
+                this.toggleBtn.className = 'kw-nav-toggle'; // Styled below
+                this.toggleBtn.innerHTML = '<i data-feather="book-open"></i> Tools';
+                this.toggleBtn.onclick = (e) => { e.preventDefault(); this.togglePanel(); };
+                headerNav.insertBefore(this.toggleBtn, headerNav.firstChild);
+            }
         }
 
         // Panel

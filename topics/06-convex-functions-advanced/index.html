@@ -474,7 +474,26 @@
         <p>is a convex set for every $\alpha \in \mathbb{R}$.
         <br><i>Note:</i> Convex $\implies$ Quasiconvex, but not conversely. Quasiconvexity allows "bendy" graphs, as long as the "valley" shape is maintained.</p>
 
-        <h3>4.2 Simple 1D Examples</h3>
+        <div class="theorem-box">
+            <h4>Equivalent Condition: Max on a Segment</h4>
+            <p>A function is quasiconvex if and only if for all $x, y \in \mathrm{dom} f$ and $\theta \in [0, 1]$:
+            $$ f(\theta x + (1-\theta)y) \le \max\{f(x), f(y)\} $$
+            This is the quasiconvex analog of Jensen's inequality: "Along any segment, the function value never exceeds the larger of the endpoints."</p>
+        </div>
+
+        <h3>4.2 The Optimization Viewpoint (Why this matters)</h3>
+        <p>Quasiconvexity is the property that allows us to solve optimization problems via <b>bisection</b>.
+        <br>If $f$ is quasiconvex, the problem "find $x$ such that $f(x) \le \alpha$" is a <b>convex feasibility problem</b> (since $S_\alpha$ is a convex set).
+        <br>This allows us to reduce optimization to a sequence of convex feasibility checks:
+        <ol>
+            <li>Pick a target value $\alpha$.</li>
+            <li>Check if the convex set $S_\alpha \cap \mathcal{F}$ is non-empty.</li>
+            <li>If yes, the optimal value $p^\star \le \alpha$. If no, $p^\star > \alpha$.</li>
+            <li>Bisect on $\alpha$.</li>
+        </ol>
+        This works because the feasibility predicate $\Phi(\alpha) = [\exists x: f(x) \le \alpha]$ is <b>monotone</b> in $\alpha$. We will detail the Bisection Algorithm in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>.</p>
+
+        <h3>4.3 Simple 1D Examples</h3>
         <div class="example">
             <h4>(a) Logarithm: $f(x) = \log x$</h4>
             <p>Sublevel set $\{x > 0 \mid \log x \le \alpha\} = \{x \mid x \le e^\alpha\} = (0, e^\alpha]$. This is a convex interval.
@@ -486,7 +505,7 @@
             <br>So $\lceil x \rceil$ is quasiconvex. (It is step-like and definitely not convex).</p>
         </div>
 
-        <h3>4.3 Vector Examples</h3>
+        <h3>4.4 Vector Examples</h3>
         <div class="example">
             <h4>1. Length of a Vector</h4>
             <p>Define len$(x) = \max\{i \mid x_i \ne 0\}$ (index of last nonzero element).
@@ -500,30 +519,28 @@
             <br>Thus $f$ is <b>quasiconcave</b> on the positive quadrant.</p>
         </div>
         <div class="example">
-            <h4>3. Linear-Fractional: $f(x) = \frac{a^\top x + b}{c^\top x + d}$</h4>
-            <p>Defined on the halfspace $D = \{x \mid c^\top x + d > 0\}$.
-            <br>Consider the sublevel set $S_\alpha = \{x \in D \mid \frac{a^\top x + b}{c^\top x + d} \le \alpha\}$.
-            $$ \frac{a^\top x + b}{c^\top x + d} \le \alpha \iff a^\top x + b \le \alpha (c^\top x + d) \iff (a - \alpha c)^\top x + (b - \alpha d) \le 0 $$
-            This is a linear inequality, which defines a closed halfspace (if $a-\alpha c \ne 0$) or the whole space/empty set (degenerate cases).
-            <br>Thus $S_\alpha$ is the intersection of the domain $D$ (halfspace) and another halfspace. The intersection of convex sets is convex.
-            <br>Conclusion: Linear-fractional functions are quasiconvex. (Applying the same logic to $-f$ shows they are also quasiconcave, i.e., <b>quasilinear</b>).</p>
+            <h4>3. Linear-Fractional (The Classic)</h4>
+            <p>Let $f(x) = \frac{a^\top x + b}{c^\top x + d}$ on domain $c^\top x + d > 0$.
+            <br><b>Proof of Quasiconvexity:</b>
+            $$ \frac{a^\top x + b}{c^\top x + d} \le \alpha \iff a^\top x + b \le \alpha(c^\top x + d) \iff (a - \alpha c)^\top x + (b - \alpha d) \le 0 $$
+            Since $c^\top x + d > 0$, we can cross-multiply without flipping the sign.
+            The sublevel set is the intersection of the halfspace $c^\top x + d > 0$ and the halfspace $(a - \alpha c)^\top x + (b - \alpha d) \le 0$. Intersection of convex sets is convex.
+            <br><b>Trap:</b> If the domain allows $c^\top x + d < 0$, the inequality flips, and the set becomes a union of disjoint regions (not convex).</p>
         </div>
         <div class="example">
-            <h4>4. Distance Ratio (Rigorous Analysis)</h4>
-            <p>Let $f(x) = \frac{\|x-a\|_2}{\|x-b\|_2}$. We analyze the sublevel set $S_\alpha = \{x \mid \|x-a\| \le \alpha \|x-b\|\}$.
-            <br>Squaring leads to the quadratic inequality:
-            $$ (1-\alpha^2)x^\top x + 2(\alpha^2 b - a)^\top x + (\|a\|^2 - \alpha^2 \|b\|^2) \le 0 $$
-            <ul>
-              <li><b>Case $\alpha < 1$:</b> The coefficient of $x^\top x$ is positive ($1-\alpha^2 > 0$).
-                The inequality takes the form $|x-c|^2 \le R^2$. This describes a <b>Euclidean ball</b>, which is a convex set.</li>
-              <li><b>Case $\alpha = 1$:</b> The quadratic term vanishes. We are left with a linear inequality $2(b-a)^\top x + C \le 0$, which describes a <b>halfspace</b>. This is a convex set.</li>
-              <li><b>Case $\alpha > 1$:</b> The coefficient of $x^\top x$ is negative ($1-\alpha^2 < 0$).
-                Dividing by the negative coefficient reverses the inequality: $x^\top x + v^\top x + C \ge 0$.
-                Completing the square, this is equivalent to $\|x-c\|^2 \ge R^2$.
-                This describes the <b>exterior (complement) of an open ball</b>.
-                <br><i>Correction:</i> The complement of a ball is <b>not convex</b>. (e.g., midpoint of two distant points is inside the hole).
-                <br>Therefore, the distance ratio function is <b>quasiconvex</b> only on the halfspace defined by $\alpha \le 1$ (the set of points closer to $a$ than $b$). It is not globally quasiconvex on $\mathbb{R}^n$.</li>
-            </ul></p>
+            <h4>4. Generalized Eigenvalue</h4>
+            <p>Let $\lambda_{\max}(A, B) = \sup \{ \lambda \mid \det(\lambda B - A) = 0 \} = \sup_{x \ne 0} \frac{x^\top A x}{x^\top B x}$ for $B \succ 0$.
+            <br>The sublevel set is $\{x \mid x^\top A x \le \alpha x^\top B x\} = \{x \mid x^\top (A - \alpha B) x \le 0\}$.
+            This is not generally convex for the vector $x$.
+            However, as a function of the <i>matrices</i>, $f(A, B) = \lambda_{\max}(A, B)$ is quasiconvex on $B \succ 0$.
+            Sublevel set: $A \preceq \alpha B$, which is a convex cone in $(A, B)$.</p>
+        </div>
+        <div class="example">
+            <h4>5. Norm-Ratio (Signal-to-Noise)</h4>
+            <p>$f(x) = \frac{\|Ax-b\|_2}{c^\top x + d}$ on $c^\top x + d > 0$.
+            <br>Sublevel set: $\|Ax-b\|_2 \le \alpha(c^\top x + d)$.
+            For $\alpha \ge 0$, this is exactly a Second-Order Cone constraint.
+            Thus sublevel sets are convex (specifically, SOC-representable).</p>
         </div>
         <div class="example">
             <h4>7. Internal Rate of Return (IRR)</h4>

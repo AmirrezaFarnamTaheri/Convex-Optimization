@@ -903,18 +903,29 @@
         <!-- NEW SECTION 5: Geometric Programming -->
     <section class="section-card" id="section-5">
       <h2>5. Geometric Programming (GP)</h2>
-      <p>Geometric Programs (GP) are a class of quasiconvex optimization problems that become convex under a logarithmic change of variables. They naturally model problems involving powers, products, and ratios, such as circuit sizing and chemical equilibrium.</p>
+      <p>Geometric Programs are a class of optimization problems that are not convex in their natural form but become convex under a logarithmic change of variables. This "secret linearity" allows us to solve complex problems involving products and powers efficiently.</p>
 
-      <h3>5.1 Monomials and Posynomials</h3>
-      <p>We work with variables $x \in \mathbb{R}_{++}^n$ (strictly positive).
-      <ul>
-          <li>A <strong>monomial</strong> is a function $f(x) = c x_1^{a_1} x_2^{a_2} \dots x_n^{a_n}$ with $c > 0$ and $a_i \in \mathbb{R}$.</li>
-          <li>A <strong>posynomial</strong> is a sum of monomials: $f(x) = \sum_{k=1}^K c_k x_1^{a_1^k} \dots x_n^{a_n^k}$ with $c_k > 0$.</li>
-      </ul>
-      Posynomials are closed under addition, multiplication, and nonnegative scaling. Monomials are closed under multiplication and division.</p>
+      <h3>5.1 The Atoms: Monomials and Posynomials</h3>
+      <p>GP modeling requires strict adherence to variable types. Variables $x$ are always <b>strictly positive</b> ($x \in \mathbb{R}_{++}^n$).</p>
+
+      <div class="definition-box">
+          <h4>Monomial</h4>
+          <p>A function $f: \mathbb{R}_{++}^n \to \mathbb{R}$ is a monomial if it has the form:
+          $$ f(x) = c x_1^{a_1} x_2^{a_2} \dots x_n^{a_n} $$
+          where $c > 0$ and exponents $a_i \in \mathbb{R}$ are arbitrary real numbers.
+          <br><i>Key Property:</i> Log-Affine. $\log f(x) = \log c + \sum a_i \log x_i$.</p>
+      </div>
+
+      <div class="definition-box">
+          <h4>Posynomial</h4>
+          <p>A function $f(x)$ is a posynomial if it is a sum of monomials:
+          $$ f(x) = \sum_{k=1}^K c_k x_1^{a_{1k}} \dots x_n^{a_{nk}} $$
+          where coefficients $c_k > 0$.
+          <br><i>Key Property:</i> Log-Sum-Exp. $\log f(x)$ is a convex function of $y = \log x$.</p>
+      </div>
 
       <h3>5.2 Standard GP Form</h3>
-      <p>A <strong>Geometric Program</strong> in standard form is:</p>
+      <p>A standard GP minimizes a posynomial subject to posynomial inequality constraints ($\le 1$) and monomial equality constraints ($= 1$).</p>
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
           $$
@@ -926,59 +937,68 @@
           $$
         </p>
       </div>
-      <p>where $f_0, \dots, f_m$ are posynomials and $h_1, \dots, h_p$ are monomials.
-      <br><em>Note:</em> The constraints are upper-bound 1 for posynomials and equality to 1 for monomials.</p>
+      <p><b>Rules:</b>
+      <ul>
+          <li>Objective $f_0$: Must be a posynomial (or monomial).</li>
+          <li>Inequalities $f_i$: Must be <b>Posynomial</b> $\le 1$.</li>
+          <li>Equalities $h_j$: Must be <b>Monomial</b> $= 1$. (Posynomial equality is generally non-convex).</li>
+      </ul></p>
 
-      <h3>5.3 Convex Reformulation via Log-Transform</h3>
-      <p>GPs are not convex in their natural variables $x$. We convexify them by transforming variables to the log-domain.</p>
-      <p>Let $y_i = \log x_i$, so $x_i = e^{y_i}$.</p>
+      <h3>5.3 The Convex Reformulation (Log-Log)</h3>
+      <p>We transform the problem by changing variables to $y_i = \log x_i$ (so $x_i = e^{y_i}$) and taking the logarithm of the objective and constraints.</p>
 
-      <h4>Transforming Monomials</h4>
-      <p>A monomial $f(x) = c \prod x_i^{a_i}$ becomes:
-      $$ f(e^y) = c \prod (e^{y_i})^{a_i} = c e^{\sum a_i y_i} = e^{a^\top y + b} $$
-      where $b = \log c$. Taking the log gives an <strong>affine function</strong>: $\log f(e^y) = a^\top y + b$.</p>
+      <h4>1. Monomials become Affine</h4>
+      <p>For a monomial $h(x) = c \prod x_i^{a_i}$:
+      $$ \log h(e^y) = \log c + \sum a_i y_i $$
+      The constraint $h(x) = 1$ becomes the linear equation $\mathbf{a}^\top y + \log c = 0$.</p>
 
-      <h4>Transforming Posynomials</h4>
-      <p>A posynomial $f(x) = \sum_k c_k \prod x_i^{a_{ik}}$ becomes:
-      $$ f(e^y) = \sum_k e^{a_k^\top y + b_k} $$
-      Taking the log gives the <strong>Log-Sum-Exp</strong> function:
-      $$ \log f(e^y) = \log \left( \sum_{k=1}^K e^{a_k^\top y + b_k} \right) $$
-      Recall from <a href="../05-convex-functions-basics/index.html">Lecture 05</a> that Log-Sum-Exp is convex.</p>
+      <h4>2. Posynomials become Log-Sum-Exp</h4>
+      <p>For a posynomial $f(x) = \sum c_k \prod x_i^{a_{ik}}$:
+      $$ f(e^y) = \sum c_k \exp(\mathbf{a}_k^\top y) = \sum \exp(\mathbf{a}_k^\top y + \log c_k) $$
+      The constraint $f(x) \le 1$ becomes $\log f(e^y) \le 0$:
+      $$ \log \left( \sum_{k=1}^K \exp(\mathbf{a}_k^\top y + b_k) \right) \le 0 $$
+      This is a convex constraint because the <b>Log-Sum-Exp</b> function is convex.</p>
 
-      <h4>The Convexified GP</h4>
-      <p>Taking the log of the objective and constraints in the standard GP transforms it into a convex problem in $y$:</p>
+      <h4>3. The Resulting Convex Problem</h4>
       <p style="text-align: center;">
           $$
           \begin{aligned}
-          \text{minimize} \quad & \log \left( \sum_{k} e^{a_{0k}^\top y + b_{0k}} \right) \\
-          \text{subject to} \quad & \log \left( \sum_{k} e^{a_{ik}^\top y + b_{ik}} \right) \le 0, \quad i=1,\dots,m \\
-          & G y + d = 0
+          \text{minimize} \quad & \operatorname{lse}(A_0 y + b_0) \\
+          \text{subject to} \quad & \operatorname{lse}(A_i y + b_i) \le 0, \quad i=1,\dots,m \\
+          & Gy + d = 0
           \end{aligned}
           $$
       </p>
-      <p>This is a convex optimization problem. We can solve it for $y^*$ and recover $x^* = e^{y^*}$.</p>
+      <p>This is a convex optimization problem. We solve for $y^*$ and return $x^* = \exp(y^*)$.</p>
+
+      <h3>5.4 The GP Cookbook (Procedure)</h3>
+      <div class="proof-box">
+          <h4>Step-by-Step Reformulation</h4>
+          <ol>
+              <li><b>Variable Check:</b> Ensure all decision variables are strictly positive.</li>
+              <li><b>Canonical Form:</b> Rearrange inequalities to the form $LHS \le 1$.
+                  <br>Example: $x + y \le z \implies \frac{x}{z} + \frac{y}{z} \le 1$ ($x z^{-1} + y z^{-1} \le 1$).</li>
+              <li><b>Type Check:</b>
+                  <ul>
+                      <li>Is the LHS of every $\le$ constraint a posynomial?</li>
+                      <li>Is both sides of every $=$ constraint a monomial?</li>
+                  </ul>
+              </li>
+              <li><b>Solve:</b> Pass the posynomial coefficients and exponents to a GP solver (like CVXPY `gp=True`).</li>
+          </ol>
+      </div>
 
       <div class="example">
         <h4>Example: Box Volume Maximization</h4>
-        <p>We want to maximize the volume of a box with dimensions $x, y, z$ (so maximize $xyz$), subject to:
-        <ul>
-          <li><strong>Wall Area Limit:</strong> The total area of the walls (excluding top/bottom) is at most $A_{wall}$. ($2xz + 2yz \le A_{wall}$)</li>
-          <li><strong>Floor Area Limit:</strong> The floor area is at most $A_{floor}$. ($xy \le A_{floor}$)</li>
-          <li><strong>Aspect Ratio:</strong> The height cannot be more than twice the width. ($z/x \le 2$)</li>
-        </ul>
-        </p>
-        <p><strong>GP Formulation:</strong>
-        Minimize the inverse volume $x^{-1} y^{-1} z^{-1}$ (a monomial).
-        Constraints must be in the form (Posynomial $\le 1$).
-        $$
-        \begin{aligned}
-        \text{minimize} \quad & x^{-1} y^{-1} z^{-1} \\
-        \text{subject to} \quad & \frac{2}{A_{wall}} x z + \frac{2}{A_{wall}} y z \le 1 \\
-        & \frac{1}{A_{floor}} x y \le 1 \\
-        & 0.5 x^{-1} z \le 1
-        \end{aligned}
-        $$
-        All constraints are posynomials (or monomials). This is a standard GP.
+        <p>We want to maximize the volume of a box ($xyz$) subject to area limits.
+        <br><b>Objective:</b> Maximize $xyz \iff$ Minimize $x^{-1}y^{-1}z^{-1}$ (Monomial).
+        <br><b>Constraints:</b>
+        <ol>
+            <li>Floor area $\le A_{floor} \implies x y A_{floor}^{-1} \le 1$. (Monomial $\le 1$).</li>
+            <li>Wall area $\le A_{wall} \implies (2xz + 2yz)/A_{wall} \le 1 \implies 2 A_{wall}^{-1} xz + 2 A_{wall}^{-1} yz \le 1$. (Posynomial $\le 1$).</li>
+            <li>Aspect ratio $z/x \le 2 \implies 0.5 z x^{-1} \le 1$. (Monomial $\le 1$).</li>
+        </ol>
+        All checks pass. This is a valid GP.
         </p>
       </div>
     </section>

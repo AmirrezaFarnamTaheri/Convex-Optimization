@@ -142,28 +142,106 @@
       </ul>
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
-      <h3>2.3 Jordan Canonical Form: What happens when Diagonalization Fails?</h3>
-      <p>If $g_\lambda < m_\lambda$, the matrix is <b>defective</b>. Eigenvectors alone cannot span the space. The missing directions are supplied by <b>generalized eigenvectors</b>.</p>
+      <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
+      <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
 
-      <h4>Generalized Eigenvectors and Jordan Chains</h4>
-      <p>A vector $\mathbf{v} \ne 0$ is a generalized eigenvector of rank $k$ if $(A-\lambda I)^k \mathbf{v} = 0$ but $(A-\lambda I)^{k-1} \mathbf{v} \ne 0$.
-      <br>These vectors form a <b>Jordan Chain</b>:
-      $$ (A-\lambda I)\mathbf{v}_k = \mathbf{v}_{k-1}, \quad \dots, \quad (A-\lambda I)\mathbf{v}_2 = \mathbf{v}_1, \quad (A-\lambda I)\mathbf{v}_1 = 0 $$
-      Here, $\mathbf{v}_1$ is a true eigenvector. The others are "almost" invariant—they map into the subspace below them.</p>
+      <h4>1) Why Diagonalization Fails (The Obstruction)</h4>
+      <p>Recall the criterion: A matrix $A \in \mathbb{C}^{n \times n}$ is diagonalizable iff the total dimension of its eigenspaces equals $n$. Failure occurs exactly when, for some eigenvalue $\lambda$:</p>
+      $$ \underbrace{\dim\ker(A-\lambda I)}_{\text{geometric multiplicity } g_\lambda} < \underbrace{\text{mult}_\lambda}_{\text{algebraic multiplicity } m_\lambda} $$
+      <p><b>Interpretation:</b>
+      <ul>
+        <li>The characteristic polynomial promises $m_\lambda$ "slots" for eigenvalues.</li>
+        <li>The eigenspace only supplies $g_\lambda$ genuine invariant directions.</li>
+        <li>The missing $m_\lambda - g_\lambda$ directions must exist—but <b>not</b> as eigenvectors. They are hidden in the "generalized" structure.</li>
+      </ul>
+      </p>
 
-      <h4>The Jordan Block</h4>
-      <p>In the basis of a Jordan chain, the operator acts as a <b>Jordan block</b> $J_k(\lambda)$:
-      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} = \lambda I + N $$
-      Here $N$ is <b>nilpotent</b> ($N^k = 0$). The term $N$ represents "drift": the operator not only scales but also shifts vectors along the chain. This drift prevents diagonalization.
-      <br><b>Theorem:</b> Every square matrix over $\mathbb{C}$ is similar to a block diagonal matrix of Jordan blocks. This form is unique (up to ordering).</p>
+      <h4>2) Generalized Eigenvectors: The Missing Link</h4>
+      <p>If $\mathbf{v}$ is an eigenvector, $(A-\lambda I)\mathbf{v} = 0$. But what if there are vectors $\mathbf{w} \neq 0$ such that:
+      $$ (A-\lambda I)\mathbf{w} = \mathbf{v} \quad \text{(an eigenvector)} $$
+      Then $\mathbf{w}$ is <b>not</b> an eigenvector, but applying $A$ gives:
+      $$ A\mathbf{w} = \lambda \mathbf{w} + \mathbf{v} $$
+      So $\mathbf{w}$ is <i>almost</i> invariant—it scales by $\lambda$, but suffers a "drift" term aligned with $\mathbf{v}$. This is a <b>generalized eigenvector</b>.</p>
+
+      <h4>3) Generalized Eigenspaces</h4>
+      <p>For an eigenvalue $\lambda$, define the <b>generalized eigenspace</b>:
+      $$ \mathcal{G}_\lambda := \ker\big((A-\lambda I)^n\big) $$
+      <b>Facts:</b>
+      <ul>
+        <li>$\dim(\mathcal{G}_\lambda) = m_\lambda$. (It recovers the full algebraic multiplicity).</li>
+        <li>$\ker(A-\lambda I) \subseteq \mathcal{G}_\lambda$.</li>
+        <li>$\mathcal{G}_\lambda$ is invariant under $A$.</li>
+      </ul>
+      This space contains the missing dimensions.</p>
+
+      <h4>4) The Jordan Block: The Atomic Failure Unit</h4>
+      <p>The simplest non-diagonalizable behavior occurs in a <b>Jordan block</b>. A Jordan block $J_k(\lambda)$ of size $k$ is:</p>
+      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} $$
+      <p><b>Properties:</b>
+      <ul>
+        <li>Diagonal entries are $\lambda$ (pure scaling).</li>
+        <li>Superdiagonal entries are $1$ (coupling/drift).</li>
+        <li>Geometric multiplicity is $1$ (only one true eigenvector $e_1$). Algebraic multiplicity is $k$.</li>
+      </ul>
+      This is the irreducible unit of defect.</p>
+
+      <h4>5) Jordan Chains</h4>
+      <p>A basis for the generalized eigenspace is built from <b>Jordan chains</b>:
+      $$ (A-\lambda I)\mathbf{v}_1 = 0 \quad (\text{eigenvector}) $$
+      $$ (A-\lambda I)\mathbf{v}_2 = \mathbf{v}_1 $$
+      $$ \vdots $$
+      $$ (A-\lambda I)\mathbf{v}_k = \mathbf{v}_{k-1} $$
+      In this basis, the matrix takes the Jordan block form.</p>
+
+      <div class="theorem-box">
+        <h4>6) The Jordan Canonical Form Theorem</h4>
+        <p>Let $A \in \mathbb{C}^{n \times n}$. There exists an invertible matrix $P$ such that:
+        $$ \boxed{ A = P J P^{-1} } $$
+        where $J$ is block diagonal:
+        $$ J = \operatorname{diag}(J_{k_1}(\lambda_1), \dots, J_{k_r}(\lambda_r)) $$
+        <b>Uniqueness:</b> The form is unique up to the ordering of blocks.
+        <br><b>Structure:</b>
+        <ul>
+            <li>The total size of blocks for $\lambda$ equals $m_\lambda$.</li>
+            <li>The number of blocks for $\lambda$ equals $g_\lambda$.</li>
+        </ul>
+        </p>
+      </div>
+
+      <h4>7) Decomposition: Scaling + Nilpotent</h4>
+      <p>Jordan form decomposes a linear map into $A = S + N$, where:
+      <ul>
+        <li>$S = P \operatorname{diag}(\lambda_i) P^{-1}$ is <b>diagonalizable</b> (semisimple).</li>
+        <li>$N$ is <b>nilpotent</b> ($N^n = 0$).</li>
+        <li>$S$ and $N$ commute ($SN = NS$).</li>
+      </ul>
+      Diagonalizable matrices are exactly those where $N=0$. The nilpotent part $N$ measures the "defect".</p>
+
+      <h4>8) Dynamics: Why Blocks Matter</h4>
+      <p>Consider the discrete system $x_{t+1} = A x_t$. For a Jordan block:
+      $$ J_k(\lambda)^t \approx \lambda^t \begin{bmatrix} 1 & t & t^2/2 & \dots \\ 0 & 1 & t & \dots \\ \vdots & & \ddots & \\ 0 & \dots & 0 & 1 \end{bmatrix} $$
+      Even if $|\lambda| < 1$, the polynomial terms ($t, t^2$) cause <b>transient growth</b> before asymptotic decay. This explains why stability analysis based solely on eigenvalues ($\rho(A) < 1$) can miss short-term instabilities ("humps").</p>
+
+      <h4>9) Invariants Preserved</h4>
+      <p>Jordan form preserves all algebraic invariants: eigenvalues, algebraic/geometric multiplicities, and the minimal polynomial. However, it does <b>not</b> preserve geometric properties like orthogonality or singular values. It is an algebraic classification, not a geometric one.</p>
 
       <div class="insight">
-        <h4>Physical Interpretation: Scaling + Drift</h4>
-        <p>The decomposition $J = \lambda I + N$ splits the dynamics into two parts:
-        <br>1. <b>Pure Scaling ($\lambda I$):</b> Uniform expansion/contraction/rotation.
-        <br>2. <b>Nilpotent Drift ($N$):</b> A transient coupling term.
-        <br>For discrete dynamics $x_{k+1} = J x_k$, powers $J^t$ contain terms like $\binom{t}{k} \lambda^{t-k}$. Even if $|\lambda| < 1$ (stability), the polynomial factor from the nilpotent drift can cause transient growth before asymptotic decay. This "hump" phenomenon is critical in non-normal stability analysis.</p>
+        <h4>10) Real vs. Complex Fields</h4>
+        <p>Over $\mathbb{C}$, Jordan form always exists. Over $\mathbb{R}$, if eigenvalues are complex, we get $2 \times 2$ rotation blocks instead of diagonal entries. This is why Spectral Theory (symmetric matrices) is so powerful: it guarantees real eigenvalues and orthogonal diagonalization, avoiding these complications.</p>
       </div>
+
+      <h4>11) Numerical Instability</h4>
+      <p>Jordan form is <b>discontinuous</b> with respect to matrix entries. An arbitrarily small perturbation can break a Jordan block into distinct eigenvalues (diagonalizable). Thus, Jordan form is a theoretical tool, not a computational one. For numerics, we use <b>Schur Decomposition</b> (unitary triangularization) or SVD.</p>
+
+      <h4>12) Conceptual Summary</h4>
+      <p><b>Diagonalization</b> fails when eigenvectors are insufficient. <b>Jordan form</b> shows that the failure is controlled: each eigenvalue carries a nilpotent "defect" measuring how far the map is from being diagonal.</p>
+
+      <h4>13) The Big Picture</h4>
+      <ul>
+        <li><b>Spectral Theorem:</b> Perfect geometry (Self-Adjoint).</li>
+        <li><b>Jordan Form:</b> Perfect algebra (Similarity classification).</li>
+        <li><b>SVD:</b> Perfect geometry for <i>all</i> matrices.</li>
+      </ul>
 
       <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
@@ -347,18 +425,40 @@
       </div>
 
       <h3>5.4 Application: PCA as SVD of Data</h3>
-      <p>Principal Component Analysis (PCA) is simply SVD applied to a data matrix.
-      <br>Let $X \in \mathbb{R}^{N \times d}$ be the <b>centered</b> data matrix (rows are points).
-      <br>We want to find the direction of maximum variance (max $\mathbf{v}^\top X^\top X \mathbf{v}$).
-      <br>Taking the SVD: $X = U \Sigma V^\top$.
-      <br>The Covariance Matrix is proportional to $X^\top X = V \Sigma^2 V^\top$.
-      <br><b>Conclusion:</b>
+      <p>Principal Component Analysis (PCA) is often presented as a statistical method. In reality, it is <b>pure geometry</b>: finding the best ellipsoidal approximation to a point cloud. We derive it from scratch using SVD, bypassing "covariance" jargon.</p>
+
+      <h4>1) The Question</h4>
+      <p>Given data points $\mathbf{x}_1, \dots, \mathbf{x}_N \in \mathbb{R}^d$, PCA asks: <b>Along which orthogonal directions does the data spread the most?</b></p>
+
+      <h4>2) Centering (Non-negotiable)</h4>
+      <p>Define the mean $\mu = \frac{1}{N}\sum \mathbf{x}_i$. We work with centered data $\tilde{\mathbf{x}}_i = \mathbf{x}_i - \mu$.
+      <br>Stack them into a data matrix $X \in \mathbb{R}^{N \times d}$ (rows are points):
+      $$ X = \begin{bmatrix} \tilde{\mathbf{x}}_1^\top \\ \vdots \\ \tilde{\mathbf{x}}_N^\top \end{bmatrix} $$
+      </p>
+
+      <h4>3) Variance as a Quadratic Form</h4>
+      <p>The variance along a unit direction $\mathbf{v}$ is the average squared projection:
+      $$ \text{Var}(\mathbf{v}) = \frac{1}{N} \sum_{i=1}^N (\tilde{\mathbf{x}}_i^\top \mathbf{v})^2 = \frac{1}{N} \|X\mathbf{v}\|_2^2 = \mathbf{v}^\top \left( \frac{1}{N} X^\top X \right) \mathbf{v} $$
+      Let $C = \frac{1}{N} X^\top X$ be the empirical covariance matrix. The problem is to maximize $\mathbf{v}^\top C \mathbf{v}$ subject to $\|\mathbf{v}\|=1$. This is exactly the Rayleigh Quotient maximization.</p>
+
+      <h4>4) Enter SVD</h4>
+      <p>Take the SVD of the centered data matrix: $\boxed{X = U \Sigma V^\top}$.
+      <br>Then the covariance matrix is:
+      $$ C = \frac{1}{N} (V \Sigma U^\top)(U \Sigma V^\top) = V \left( \frac{1}{N} \Sigma^2 \right) V^\top $$
+      This is the eigendecomposition of $C$.
+      </p>
+
+      <h4>5) The Geometric Translation</h4>
       <ul>
-        <li><b>Principal Components:</b> The columns of $V$ (Right singular vectors of $X$).</li>
-        <li><b>Variances:</b> The squared singular values $\sigma_i^2/N$.</li>
-        <li><b>Projections:</b> The coordinates of data in the new basis are $XV = U\Sigma$.</li>
+        <li><b>Principal Components:</b> The columns of $V$ (Right singular vectors). These are the axes of the ellipse.</li>
+        <li><b>Explained Variance:</b> The eigenvalues $\lambda_i = \sigma_i^2 / N$.</li>
+        <li><b>Principal Scores:</b> The coordinates of the data in the new basis are given by $XV = U \Sigma$.</li>
       </ul>
-      This unifies statistics and geometry.</p>
+
+      <h4>6) Dimensionality Reduction</h4>
+      <p>The truncated SVD $X_k = U_k \Sigma_k V_k^\top$ gives the optimal rank-$k$ approximation of the data in the Frobenius norm. This means PCA minimizes the reconstruction error:
+      $$ \sum_{i=1}^N \|\mathbf{x}_i - \text{proj}_k(\mathbf{x}_i)\|^2 $$
+      PCA is not just a heuristic; it is the <b>optimal</b> linear compression scheme.</p>
     </section>
     </section>
 
@@ -516,6 +616,13 @@
       <p>Another approach is to simply discard singular values below a threshold. This is the optimal low-rank approximation applied to the inversion process.
       $$ \mathbf{x}_{\text{trunc}} = \sum_{\sigma_i > \epsilon} \frac{1}{\sigma_i} (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
       Both methods trade a small amount of bias (exactness) for a large reduction in variance (stability).</p>
+
+      <div class="insight">
+        <h4>The Irreducible Truth</h4>
+        <p>You should now be able to see the single thread connecting these topics:
+        <br><b>PCA, Least Squares, Pseudoinverses, and Regularization are all consequences of the SVD.</b>
+        <br>The SVD exposes the intrinsic geometry of a linear map: which directions survive, which collapse, and which amplify noise. Every stable algorithm in optimization is, explicitly or implicitly, an SVD-aware algorithm.</p>
+      </div>
     </section>
 
     <!-- SECTION 9: REVIEW -->

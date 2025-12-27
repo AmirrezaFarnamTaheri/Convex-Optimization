@@ -1145,6 +1145,12 @@
           <br>This can be viewed as partial minimization of the function $F(x, y) = h(y) + \delta_{\{Ay=x\}}(x,y)$.
           <br>The set $\{(x, y) \mid Ay=x\}$ is an affine subspace, so its indicator function is convex.
           <br>Thus $F$ is convex (sum of convex functions), and $f$ is convex (partial minimization of $F$).</p>
+          <p><b>Alternative Proof (Epigraph Projection):</b>
+          <br>The epigraph of $f$ is the set $\{(x,t) \mid f(x) \le t\}$.
+          <br>Using the definition, $f(x) \le t \iff \exists y$ such that $Ay=x$ and $h(y) \le t$.
+          <br>This means $(x,t) \in \mathrm{epi}\, f \iff \exists y$ such that $(x,y,t)$ is in the set $S = \{(x,y,t) \mid Ay=x, h(y) \le t\}$.
+          <br>The set $S$ is convex because it is the intersection of the convex set $\mathbb{R}^n \times \mathrm{epi}\, h$ with the affine subspace defined by $Ay=x$.
+          <br>The epigraph of $f$ is the projection of $S$ onto the $(x,t)$ variables. Since projection preserves convexity, $\mathrm{epi}\, f$ is convex.</p>
         </div>
 
         <div class="proof-box">
@@ -2235,17 +2241,27 @@
     </div>
 
     <div class="proof-step">
-      <strong>(d) Norm Cone Concavity (Geometric Proof).</strong>
-      <p>Let $s(x,t) = (t^p - \|x\|_p^p)^{1/p}$. We show $s$ is concave by showing its hypograph is convex.</p>
+      <strong>(d) Norm Cone Concavity.</strong>
+      <p>Let $s(x,t) = (t^p - \|x\|_p^p)^{1/p}$. We show $s$ is concave. We present two proofs.</p>
+      <p><b>Proof 1: Geometric (Hypograph).</b></p>
       <ul>
         <li><b>Step 1: Hypograph.</b> $\text{hypo } s = \{(x,t,s) \mid s \le s(x,t)\}$.
         Since $s \ge 0$, this is equivalent to $s^p \le t^p - \|x\|_p^p \iff \|x\|_p^p + s^p \le t^p$.</li>
         <li><b>Step 2: Norm Cone.</b> The inequality $\|x\|_p^p + |s|^p \le t^p$ is exactly $\|(x,s)\|_p \le t$.
         This defines the $(n+1)$-dimensional $p$-norm cone $K_p = \{(y,t) \mid \|y\|_p \le t\}$.</li>
         <li><b>Step 3: Convexity.</b> Norm cones are convex sets. Therefore, the hypograph of $s$ is a convex set.</li>
-        <li><b>Conclusion:</b> A function is concave if and only if its hypograph is convex. Thus $s$ is concave.
-        So $f = -s$ is <b>Convex</b>.</li>
       </ul>
+      <p><b>Proof 2: Algebraic (Composition).</b></p>
+      <ul>
+        <li>Factor the expression: $t^p - \|x\|_p^p = t^{p-1} (t - \|x\|_p^p/t^{p-1})$.</li>
+        <li>The term $q(x,t) = \|x\|_p^p/t^{p-1}$ is the perspective of the convex function $\|x\|_p^p$, so $q$ is convex.</li>
+        <li>Thus $r(x,t) = t - q(x,t)$ is concave and positive on the domain.</li>
+        <li>We can write $s(x,t) = (t^{p-1} r(x,t))^{1/p} = t^{(p-1)/p} r(x,t)^{1/p}$.</li>
+        <li>This is the composition of the function $\Phi(a,b) = a^{(p-1)/p} b^{1/p}$ with $a=t$ (affine) and $b=r(x,t)$ (concave).</li>
+        <li>$\Phi(a,b)$ is a weighted geometric mean, which is concave and non-decreasing in both arguments.</li>
+        <li>Therefore, by the composition rule (concave non-decreasing outer $\circ$ concave inner), $s(x,t)$ is concave.</li>
+      </ul>
+      <p><b>Conclusion:</b> $f = -s$ is <b>Convex</b>.</p>
     </div>
 
     <div class="proof-step">
@@ -2343,6 +2359,15 @@
       The term $f_i f_j$ corresponds to the rank-1 matrix $\nabla f(x) \nabla f(x)^\top$.
       Thus:
       $$ \nabla^2 h(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
+    </div>
+
+    <div class="proof-step">
+        <strong>Directional Derivative Intuition.</strong>
+        For any direction vector $v \in \mathbb{R}^n$, the quadratic form is:
+        $$ v^\top \nabla^2 (\log f) v = \frac{v^\top \nabla^2 f v}{f} - \frac{(v^\top \nabla f)^2}{f^2} $$
+        This expresses the curvature of $\log f$ as the "curvature of $f$ divided by $f$" minus the "squared slope divided by $f^2$".
+        Since the squared slope term is always non-negative, the log function "subtracts curvature," pushing the function towards concavity.
+        (For $f$ to be log-concave, we need this expression $\le 0$, meaning the curvature of $f$ must not exceed its squared slope relative to its value).
     </div>
 
     <div class="proof-step">

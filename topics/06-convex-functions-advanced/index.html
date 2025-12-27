@@ -1327,19 +1327,34 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      <strong>Step 1: Transform to Log-Space.</strong>
-      Take the logarithm of the inequality (monotonicity preserves direction):
-      $\log f(y) \le \log f(x) + \frac{\nabla f(x)}{f(x)}^\top (y-x)$.
+      <strong>Step 1: Bedrock Lemma (Concavity $\iff$ Tangent Upper Bound).</strong>
+      We first prove that a differentiable function $h$ on a convex set is concave if and only if $h(y) \le h(x) + \nabla h(x)^\top (y-x)$ for all $x,y$.
+      <br><b>Proof ($\Rightarrow$):</b>
+      Let $h$ be concave. Restrict $h$ to the line segment between $x$ and $y$: $\phi(t) = h(x + t(y-x))$.
+      $\phi$ is concave on $[0,1]$. Thus its secant slope is bounded by its derivative:
+      $$ \phi(1) \le \phi(0) + \phi'(0) $$
+      Substituting back: $h(y) \le h(x) + \nabla h(x)^\top (y-x)$.
+      <br><b>Proof ($\Leftarrow$):</b>
+      Assume the inequality holds. Let $z = \theta x + (1-\theta)y$.
+      Apply the inequality at $z$:
+      $h(x) \le h(z) + \nabla h(z)^\top (x-z)$ and $h(y) \le h(z) + \nabla h(z)^\top (y-z)$.
+      Multiply by $\theta$ and $1-\theta$ and sum:
+      $\theta h(x) + (1-\theta)h(y) \le h(z) + \nabla h(z)^\top (\theta(x-z) + (1-\theta)(y-z))$.
+      The gradient term is zero because $\theta x + (1-\theta)y - z = 0$.
+      Thus $\theta h(x) + (1-\theta)h(y) \le h(z)$, so $h$ is concave.
     </div>
     <div class="proof-step">
-      <strong>Step 2: Identify Gradients.</strong>
+      <strong>Step 2: Application to Log-Concavity.</strong>
       Let $h(x) = \log f(x)$. Then $\nabla h(x) = \frac{\nabla f(x)}{f(x)}$.
-      The inequality becomes $h(y) \le h(x) + \nabla h(x)^\top (y-x)$.
+      The condition for $f$ being log-concave is that $h$ is concave.
+      By the lemma, this is equivalent to:
+      $$ \log f(y) \le \log f(x) + \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
     </div>
     <div class="proof-step">
-      <strong>Step 3: Equivalence.</strong>
-      This is exactly the first-order condition for the concavity of $h(x)$.
-      Thus, the inequality holds iff $\log f$ is concave, i.e., $f$ is log-concave.
+      <strong>Step 3: Exponentiate.</strong>
+      Since $\exp$ is strictly increasing, we can exponentiate both sides:
+      $$ f(y) \le f(x) \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) $$
+      Dividing by $f(x)$ gives the stated inequality.
     </div>
   </div>
 </div>
@@ -1371,6 +1386,13 @@
       $f(X)$ is the pointwise supremum of the family of linear functions $\{g_u(X) \mid \|u\|_2 = 1\}$.
       Since the pointwise supremum of any collection of convex functions is convex, $f(X)$ is convex.
     </div>
+    <div class="proof-step">
+        <strong>Alternative Proof: Density Matrix Representation.</strong>
+        We can also write $\lambda_{\max}(X) = \sup \{ \langle X, W \rangle \mid W \succeq 0, \mathrm{tr}(W)=1 \}$.
+        <br>Here $W$ represents a "density matrix" (convex combination of rank-1 projectors).
+        <br>For any fixed density matrix $W$, the function $X \mapsto \langle X, W \rangle$ is linear.
+        <br>Thus $\lambda_{\max}(X)$ is the support function of the set of density matrices, which implies convexity.
+    </div>
   </div>
 </div>
 
@@ -1388,9 +1410,14 @@
       $$ \|Xv\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top (Xv) $$
     </div>
     <div class="proof-step">
-      <strong>Step 2: Bilinear Supremum.</strong>
-      Substitute this back into the definition of the operator norm:
-      $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top X v \right) = \sup \{ u^\top X v \mid \|v\|_b=1, \|u\|_{a^*} \le 1 \} $$
+      <strong>Step 2: Bilinear Supremum (Dual Norm Derivation).</strong>
+      We rigorously dualize the inner term $\|Xv\|_a$.
+      Recall the dual norm identity: $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
+      Proof: By definition $\|u\|_{a^*} = \sup_{\|z\|_a \le 1} u^\top z$. This implies $u^\top z \le \|u\|_{a^*} \|z\|_a$.
+      Thus $\sup_{\|u\|_{a^*} \le 1} u^\top z \le \|z\|_a$. Equality is achieved by a supporting hyperplane to the unit ball at $z/\|z\|_a$.
+      <br>Substitute $z=Xv$: $\|Xv\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top (Xv)$.
+      <br>Now substitute back into the operator norm:
+      $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \sup_{\|u\|_{a^*} \le 1} u^\top X v = \sup \{ u^\top X v \mid \|v\|_b=1, \|u\|_{a^*} \le 1 \} $$
     </div>
     <div class="proof-step">
       <strong>Step 3: Convexity via Linearity.</strong>
@@ -1606,11 +1633,21 @@
       Taking infimum over $\alpha$, $h(x) \le g(x)$.
     </div>
     <div class="proof-step">
-      <strong>(c) Convexity:</strong>
-      Since $f(0)=0$ and $f$ is convex, the function $\phi(\alpha) = f(\alpha x)/\alpha$ is non-decreasing in $\alpha$ (slope of secant from 0).
-      Thus the infimum is the limit as $\alpha \to 0$: $g(x) = \lim_{\alpha \to 0} \frac{f(\alpha x) - f(0)}{\alpha} = f'(0; x)$ (directional derivative).
-      The directional derivative of a convex function is sublinear (convex).
-      Proof: $g(x+y) = \lim \frac{f(t(x+y))}{t} \le \lim \frac{t/2 f(2tx) + t/2 f(2ty)}{t} = g(x) + g(y)$ (using convexity with weights $1/2$).
+      <strong>(c) Convexity (Direct Jensen Proof).</strong>
+      We want to show $g(\theta x + (1-\theta)y) \le \theta g(x) + (1-\theta)g(y)$.
+      <br>Fix $\epsilon > 0$. Choose $\alpha_1, \alpha_2$ such that $f(\alpha_1 x)/\alpha_1 \le g(x) + \epsilon$ and $f(\alpha_2 y)/\alpha_2 \le g(y) + \epsilon$.
+      <br>Let $z = \theta x + (1-\theta)y$. We need to choose a specific scaling factor $\alpha$ for $z$.
+      <br>Choose the harmonic mean weighting: $\alpha = \frac{1}{\theta/\alpha_1 + (1-\theta)/\alpha_2}$.
+      <br>Define $\lambda = \frac{\alpha \theta}{\alpha_1}$. Then $1-\lambda = \frac{\alpha (1-\theta)}{\alpha_2}$. Note $\lambda \in [0,1]$.
+      <br>Key Identity: $\alpha z = \lambda (\alpha_1 x) + (1-\lambda)(\alpha_2 y)$.
+      <br>By convexity of $f$:
+      $$ f(\alpha z) \le \lambda f(\alpha_1 x) + (1-\lambda) f(\alpha_2 y) $$
+      Dividing by $\alpha$:
+      $$ \frac{f(\alpha z)}{\alpha} \le \frac{\lambda}{\alpha} f(\alpha_1 x) + \frac{1-\lambda}{\alpha} f(\alpha_2 y) = \theta \frac{f(\alpha_1 x)}{\alpha_1} + (1-\theta) \frac{f(\alpha_2 y)}{\alpha_2} $$
+      Using the near-optimal choices:
+      $$ \frac{f(\alpha z)}{\alpha} \le \theta (g(x) + \epsilon) + (1-\theta)(g(y) + \epsilon) = \theta g(x) + (1-\theta)g(y) + \epsilon $$
+      Since $g(z) \le f(\alpha z)/\alpha$, we have $g(z) \le \theta g(x) + (1-\theta)g(y) + \epsilon$.
+      Letting $\epsilon \to 0$ proves convexity.
     </div>
   </div>
 </div>

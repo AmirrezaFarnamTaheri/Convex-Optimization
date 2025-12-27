@@ -1547,20 +1547,35 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      We need to show $\log(f(x) - a)$ is concave.
-      Let $h(y) = \log(e^y - a)$ for $y > \log a$.
-      Calculate derivatives w.r.t $y$:
-      $h'(y) = \frac{e^y}{e^y - a}$.
-      $h''(y) = \frac{e^y(e^y - a) - e^y(e^y)}{(e^y - a)^2} = \frac{-a e^y}{(e^y - a)^2}$.
-      Since $a \ge 0$, $h''(y) \le 0$, so $h(y)$ is concave.
-      Also $h'(y) > 0$, so $h$ is non-decreasing.
+      <strong>1. Setup Decomposition.</strong>
+      Let $h(x) = \log f(x)$. Since $f$ is log-concave, $h$ is <b>concave</b>.
+      We have $g(x) = e^{h(x)} - a$.
+      The log-concavity of $g$ depends on $H(x) = \log g(x) = \log(e^{h(x)} - a)$.
+      Define the scalar function $\phi(t) = \log(e^t - a)$ for $t > \log a$.
+      Then $H(x) = \phi(h(x))$.
     </div>
     <div class="proof-step">
-      Now write $\log g(x) = \log(f(x) - a) = h(\log f(x))$.
-      We know $\log f(x)$ is concave (definition of log-concave).
-      We have $h$ is concave and non-decreasing.
-      By composition rules, $h(\log f(x))$ is concave.
-      Thus $f(x) - a$ is log-concave.
+      <strong>2. Composition Rule Check.</strong>
+      We have a composition $H(x) = \phi(h(x))$.
+      The inner function $h(x)$ is concave.
+      For $H(x)$ to be concave, it suffices that the outer function $\phi(t)$ is <b>concave</b> and <b>non-decreasing</b>.
+    </div>
+    <div class="proof-step">
+      <strong>3. Verify Monotonicity of $\phi$.</strong>
+      $$ \phi'(t) = \frac{d}{dt} \log(e^t - a) = \frac{e^t}{e^t - a} $$
+      Since domain requires $e^t > a$, the denominator is positive. $e^t$ is positive.
+      Thus $\phi'(t) > 0$, so $\phi$ is strictly increasing.
+    </div>
+    <div class="proof-step">
+      <strong>4. Verify Concavity of $\phi$.</strong>
+      $$ \phi''(t) = \frac{d}{dt} \left( \frac{e^t}{e^t - a} \right) = \frac{e^t(e^t - a) - e^t(e^t)}{(e^t - a)^2} = \frac{-a e^t}{(e^t - a)^2} $$
+      Since $a \ge 0$ and $e^t > 0$, the numerator is $\le 0$. The denominator is positive.
+      Thus $\phi''(t) \le 0$, so $\phi$ is concave.
+      <br><i>Note:</i> If $a < 0$, $\phi$ would be convex, and the result would fail.
+    </div>
+    <div class="proof-step">
+      <strong>5. Conclusion.</strong>
+      Since $h$ is concave and $\phi$ is concave increasing, $H(x) = \log g(x)$ is concave. Thus $g$ is log-concave.
     </div>
   </div>
 </div>

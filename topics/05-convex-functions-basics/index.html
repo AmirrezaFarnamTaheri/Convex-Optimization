@@ -477,49 +477,76 @@
         </div>
         <p><b>Note:</b> The converse is false. $f(x) = \log x$ has convex sublevel sets (intervals) but is concave. Functions with convex sublevel sets are called <b>quasiconvex</b>.</p>
 
-        <h3>2.4 Convex Hull of a Function</h3>
+        <h3>2.4 Convex Hull of a Function (Example 3.30)</h3>
         <p>Similar to how we can define the convex hull of a set, we can define the <a href="#" class="definition-link" data-term="convex envelope">convex hull (or convex envelope)</a> of a function $f: \mathbb{R}^n \to \mathbb{R}$ via its epigraph.</p>
         $$ g(x) = \inf \{ t \mid (x, t) \in \text{conv epi } f \} $$
         <p><b>Geometric Intuition:</b> Imagine "shrink-wrapping" the graph of $f$ from below. The function $g$ is the <b>greatest convex underestimator</b> of $f$. This concept is crucial in relaxation techniques for non-convex optimization (e.g., replacing a non-convex constraint with its convex hull).</p>
 
         <div class="proof-box">
-          <h4>Proof: Largest Convex Underestimator</h4>
-          <p>We prove that $g$ defined above is indeed the largest convex function satisfying $g(\mathbf{x}) \le f(\mathbf{x})$ for all $\mathbf{x}$.</p>
+          <h4>Explicit Formula and Proof of Maximality</h4>
+          <p>We prove that $g$ is the largest convex function satisfying $g(\mathbf{x}) \le f(\mathbf{x})$ for all $\mathbf{x}$.
+          <br><b>Explicit Formula:</b> The condition $(x,t) \in \text{conv epi } f$ means $(x,t)$ is a convex combination of points in the epigraph of $f$. This leads to the variational formula:
+          $$ g(x) = \inf \left\{ \sum_{i=1}^{n+1} \theta_i f(x_i) \ \middle| \ \sum \theta_i x_i = x, \ \sum \theta_i = 1, \ \theta_i \ge 0 \right\} $$
+          </p>
           <div class="proof-step">
             <strong>Step 1: $g$ is an underestimator.</strong>
-            For any $\mathbf{x}$, $(\mathbf{x}, f(\mathbf{x})) \in \mathrm{epi}\, f \subseteq \text{conv epi } f$.
-            Since $(\mathbf{x}, f(\mathbf{x}))$ is in the set over which we take the infimum, $g(\mathbf{x}) \le f(\mathbf{x})$.
+            For any $\mathbf{x}$, we can choose the trivial combination $k=1, x_1=x, \theta_1=1$. Then the objective is $1 \cdot f(x) = f(x)$.
+            Since $g(x)$ is the infimum over all such combinations, $g(\mathbf{x}) \le f(\mathbf{x})$.
           </div>
           <div class="proof-step">
             <strong>Step 2: $g$ is convex.</strong>
-            The epigraph of $g$ is (up to closure) the set $E = \text{conv epi } f$. Since the convex hull of any set is convex, $\mathrm{epi}\, g$ is a convex set. A function with a convex epigraph is a convex function.
+            The epigraph of $g$ is exactly $\text{conv epi } f$ (technically, its closure for lower semi-continuity). Since the convex hull of any set is a convex set, $\mathrm{epi}\, g$ is convex. A function with a convex epigraph is a convex function.
           </div>
           <div class="proof-step">
             <strong>Step 3: Maximality.</strong>
             Let $h$ be any convex function such that $h(\mathbf{x}) \le f(\mathbf{x})$ for all $\mathbf{x}$.
-            This inequality implies $\mathrm{epi}\, f \subseteq \mathrm{epi}\, h$.
-            Since $h$ is convex, $\mathrm{epi}\, h$ is a convex set.
-            The convex hull of a set is the smallest convex set containing it. Therefore:
-            $$ \text{conv epi } f \subseteq \mathrm{epi}\, h $$
-            Now, take any $\mathbf{x}$. By definition of $g$, $(\mathbf{x}, g(\mathbf{x}))$ is on the boundary of $\text{conv epi } f$.
-            Since this set is contained in $\mathrm{epi}\, h$, we have $(\mathbf{x}, g(\mathbf{x})) \in \mathrm{epi}\, h$.
-            This means $g(\mathbf{x}) \ge h(\mathbf{x})$.
-            Thus, $g$ is the largest convex underestimator.
+            Take any candidate convex combination $x = \sum \theta_i x_i$. By Jensen's inequality for $h$:
+            $$ h(x) = h\left(\sum \theta_i x_i\right) \le \sum \theta_i h(x_i) $$
+            Since $h \le f$ everywhere, $h(x_i) \le f(x_i)$, so:
+            $$ h(x) \le \sum \theta_i f(x_i) $$
+            This holds for <i>every</i> valid representation of $x$. Thus, it holds for the infimum:
+            $$ h(x) \le \inf \sum \theta_i f(x_i) = g(x) $$
+            Thus, $g$ dominates every other convex underestimator.
           </div>
         </div>
 
         <div class="proof-box">
           <h4>Example: Homogeneous Envelope (Exercise 3.31)</h4>
-          <p>A specific type of envelope is the <b>homogeneous envelope</b> of a convex function $f$ (with $f(0)=0$). It is defined as:
+          <p>Given a convex function $f$ (with $f(0)=0$), its <b>homogeneous envelope</b> is defined as:
           $$ g(x) = \inf_{\alpha > 0} \frac{f(\alpha x)}{\alpha} $$
-          This function represents the "best linear approximation" from the origin in the direction $\mathbf{x}$.
-          </p>
-          <p><b>Properties:</b></p>
-          <ul>
-            <li><b>Homogeneity:</b> $g(tx) = t g(x)$ for $t \ge 0$. (Proof via substitution $\beta = \alpha t$).</li>
-            <li><b>Underestimator:</b> $g(x) \le f(x)$ (set $\alpha=1$). It is the largest homogeneous underestimator.</li>
-            <li><b>Convexity:</b> $g(x)$ is convex. This follows because $g(x) = \lim_{t \to 0^+} \frac{f(tx)}{t}$, which is the directional derivative $f'(0; x)$. The directional derivative of a convex function is a sublinear (convex) function of the direction.</li>
-          </ul>
+          This function is the "tightest" homogeneous function that stays below $f$.</p>
+
+          <div class="proof-step">
+            <strong>1. Homogeneity ($g(tx) = t g(x)$ for $t > 0$).</strong>
+            $$ g(tx) = \inf_{\alpha > 0} \frac{f(\alpha t x)}{\alpha} $$
+            Let $\beta = \alpha t \implies \alpha = \beta/t$. As $\alpha$ traverses $(0, \infty)$, so does $\beta$.
+            $$ g(tx) = \inf_{\beta > 0} \frac{f(\beta x)}{\beta/t} = t \inf_{\beta > 0} \frac{f(\beta x)}{\beta} = t g(x) $$
+          </div>
+
+          <div class="proof-step">
+            <strong>2. Largest Homogeneous Underestimator.</strong>
+            <ul>
+              <li><b>Underestimator:</b> Choosing $\alpha=1$ in the infimum gives $g(x) \le f(x)/1 = f(x)$.</li>
+              <li><b>Largest:</b> Let $h$ be any homogeneous function with $h \le f$. Then $h(\alpha x) \le f(\alpha x)$.
+              Using homogeneity: $\alpha h(x) \le f(\alpha x) \implies h(x) \le f(\alpha x)/\alpha$.
+              Since this holds for all $\alpha > 0$, $h(x) \le \inf_{\alpha} \frac{f(\alpha x)}{\alpha} = g(x)$.</li>
+            </ul>
+          </div>
+
+          <div class="proof-step">
+            <strong>3. Convexity via Joint Convexity.</strong>
+            This is the subtle part. We use a direct Jensen-style proof with a specific scaling choice.
+            <br>We want to show $g(z) \le \theta g(x) + (1-\theta) g(y)$ where $z = \theta x + (1-\theta)y$.
+            <br>For any $\epsilon > 0$, pick $\alpha_1, \alpha_2$ such that $\frac{f(\alpha_1 x)}{\alpha_1} \le g(x) + \epsilon$ and $\frac{f(\alpha_2 y)}{\alpha_2} \le g(y) + \epsilon$.
+            <br>Choose the "harmonic" scaling $\alpha$ such that $\frac{1}{\alpha} = \frac{\theta}{\alpha_1} + \frac{1-\theta}{\alpha_2}$.
+            <br>Let $\lambda = \frac{\theta \alpha}{\alpha_1}$. Then $1-\lambda = \frac{(1-\theta)\alpha}{\alpha_2}$. Note $\lambda \in [0,1]$.
+            <br>Then $\alpha z = \lambda (\alpha_1 x) + (1-\lambda)(\alpha_2 y)$.
+            <br>By convexity of $f$: $f(\alpha z) \le \lambda f(\alpha_1 x) + (1-\lambda) f(\alpha_2 y)$.
+            <br>Divide by $\alpha$:
+            $$ \frac{f(\alpha z)}{\alpha} \le \frac{\lambda}{\alpha} f(\alpha_1 x) + \frac{1-\lambda}{\alpha} f(\alpha_2 y) = \theta \frac{f(\alpha_1 x)}{\alpha_1} + (1-\theta) \frac{f(\alpha_2 y)}{\alpha_2} $$
+            $$ \le \theta(g(x)+\epsilon) + (1-\theta)(g(y)+\epsilon) $$
+            Since $g(z) \le \frac{f(\alpha z)}{\alpha}$, letting $\epsilon \to 0$ gives $g(z) \le \theta g(x) + (1-\theta)g(y)$.
+          </div>
         </div>
 
       </section>
@@ -1140,17 +1167,37 @@
         </div>
 
         <div class="example">
-          <h4>3. Infimum over an Affine Constraint</h4>
+          <h4>3. Infimum over an Affine Constraint (Example 3.17)</h4>
           <p>Let $f(x) = \inf \{ h(y) \mid Ay = x \}$, where $h$ is a convex function.
           <br>This can be viewed as partial minimization of the function $F(x, y) = h(y) + \delta_{\{Ay=x\}}(x,y)$.
           <br>The set $\{(x, y) \mid Ay=x\}$ is an affine subspace, so its indicator function is convex.
           <br>Thus $F$ is convex (sum of convex functions), and $f$ is convex (partial minimization of $F$).</p>
           <p><b>Alternative Proof (Epigraph Projection):</b>
-          <br>The epigraph of $f$ is the set $\{(x,t) \mid f(x) \le t\}$.
-          <br>Using the definition, $f(x) \le t \iff \exists y$ such that $Ay=x$ and $h(y) \le t$.
-          <br>This means $(x,t) \in \mathrm{epi}\, f \iff \exists y$ such that $(x,y,t)$ is in the set $S = \{(x,y,t) \mid Ay=x, h(y) \le t\}$.
-          <br>The set $S$ is convex because it is the intersection of the convex set $\mathbb{R}^n \times \mathrm{epi}\, h$ with the affine subspace defined by $Ay=x$.
-          <br>The epigraph of $f$ is the projection of $S$ onto the $(x,t)$ variables. Since projection preserves convexity, $\mathrm{epi}\, f$ is convex.</p>
+          <br>This proof relies on the fact that the epigraph of $g(x) = \inf \{ h(y) \mid Ay=x \}$ is a linear projection of a higher-dimensional convex set.</p>
+          <div class="proof-box">
+            <h4>Detailed Epigraph Construction</h4>
+            <div class="proof-step">
+              <strong>Step 1: Characterize the Epigraph.</strong>
+              $(x,t) \in \text{epi } g \iff g(x) \le t$.
+              By definition of infimum, this means there exists some $y$ such that $Ay=x$ and $h(y) \le t$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Lift to Higher Dimension.</strong>
+              Consider the set $C = \{ (x,y,t) \mid Ay=x, \ h(y) \le t \}$.
+              This set is the intersection of:
+              <ul>
+                <li>The cylinder $\{(x,y,t) \mid (y,t) \in \text{epi } h\}$, which is convex because $h$ is convex.</li>
+                <li>The affine subspace $\{(x,y,t) \mid Ay=x\}$, which is convex.</li>
+              </ul>
+              Thus, $C$ is a convex set in $(x,y,t)$-space.
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Project.</strong>
+              The condition from Step 1 says that $(x,t) \in \text{epi } g$ if and only if there exists $y$ such that $(x,y,t) \in C$.
+              This means $\text{epi } g$ is exactly the projection of the convex set $C$ onto the $(x,t)$ coordinates.
+              Since linear projections preserve convexity, $\text{epi } g$ is convex.
+            </div>
+          </div>
         </div>
 
         <div class="proof-box">

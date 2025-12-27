@@ -121,14 +121,31 @@
       <p><b>Why linear algebra needs a field:</b> To make linear combinations $\sum \alpha_i v_i$ work, scalars must allow scaling, undoing scaling (inverses), and distribution. The hidden reason is solving equations: $\alpha x = y \implies x = \alpha^{-1}y$ requires inverses. Without them, Gaussian elimination fails.</p>
 
       <h4>Derived Laws (Proven Consequences)</h4>
-      <p>From these axioms alone, we can prove facts you use constantly. These are not assumptions; they are <b>theorems</b> derived from the field axioms:</p>
-      <ul>
-        <li><b>$0 \cdot a = 0$:</b> Proof: $0a = (0+0)a = 0a + 0a \implies 0 = 0a$ (by additive cancellation).</li>
-        <li><b>$(-1)a = -a$:</b> Proof: $a + (-1)a = 1a + (-1)a = (1-1)a = 0a = 0$. So $(-1)a$ is the additive inverse of $a$.</li>
-        <li><b>No Zero Divisors:</b> If $ab=0$ and $a \neq 0$, then $b=0$. (Multiply by $a^{-1}$). This is why we can solve by factoring.</li>
-        <li><b>Uniqueness:</b> The identities $0, 1$ and inverses $-a, a^{-1}$ are unique.</li>
-        <li><b>Linear Equation Solvability:</b> For $a \neq 0$, the equation $ax=b$ has a unique solution $x=a^{-1}b$. This is the microscopic engine behind Gaussian elimination.</li>
-      </ul>
+      <p>From these axioms alone, we can prove facts you use constantly. These are not assumptions; they are <b>theorems</b> derived from the field axioms.</p>
+
+      <div class="proof-box">
+        <h4>Fundamental Field Lemmas</h4>
+        <p>These proofs demonstrate how algebraic rigor underpins "obvious" arithmetic.</p>
+        <div class="proof-step">
+          <strong>Lemma 1: $0 \cdot a = 0$ for all $a$.</strong>
+          $$ 0\cdot a = (0+0)\cdot a = 0\cdot a + 0\cdot a \quad \text{(Distributivity)} $$
+          Add $-(0\cdot a)$ to both sides:
+          $$ 0 = 0\cdot a $$
+        </div>
+        <div class="proof-step">
+          <strong>Lemma 2: $(-1)a = -a$.</strong>
+          We must show that $(-1)a$ acts as the additive inverse of $a$.
+          $$ a + (-1)a = 1\cdot a + (-1)\cdot a = (1 + (-1))a = 0\cdot a = 0 $$
+          By uniqueness of the additive inverse, $(-1)a = -a$.
+        </div>
+        <div class="proof-step">
+          <strong>Lemma 3: No Zero Divisors.</strong>
+          If $ab=0$ and $a \neq 0$, then $b=0$.
+          <br><i>Proof:</i> Since $a \neq 0$, $a^{-1}$ exists. Multiply both sides by $a^{-1}$:
+          $$ a^{-1}(ab) = a^{-1}(0) \implies (a^{-1}a)b = 0 \implies 1\cdot b = 0 \implies b=0 $$
+          This property fails in rings like $\mathbb{Z}_6$ (where $2 \cdot 3 = 0$), which is why linear algebra requires a field.
+        </div>
+      </div>
 
       <h4>Concrete Examples & The Failure Museum</h4>
       <p>Understanding what <i>breaks</i> when axioms are missing is the best way to understand the axioms.</p>
@@ -211,6 +228,19 @@
         <li><b>Point + Point = Illegal:</b> $(1,1) + (2,2) = (3,3)$ is only meaningful if we secretly treat them as displacements from $(0,0)$. Change the origin, and the sum changes.</li>
         <li><b>Affine Combinations:</b> $\sum \alpha_i p_i$ is a valid point if and only if $\sum \alpha_i = 1$. This makes the result origin-independent.</li>
       </ul>
+
+      <div class="proof-box">
+        <h4>Proof: Affine Combinations are Origin-Independent</h4>
+        <p>Let $p_1, \dots, p_k$ be points. Choose an origin $o$ and represent points as vectors $v_i = p_i - o$.
+        The "computed point" in this coordinate system is $p = o + \sum \alpha_i v_i$.
+        <br>Now choose a different origin $o' = o + t$. The coordinates change to $v_i' = p_i - o' = v_i - t$.
+        The computed point in the new system is:
+        $$ p' = o' + \sum \alpha_i v_i' = (o+t) + \sum \alpha_i (v_i - t) $$
+        $$ = o + t + \sum \alpha_i v_i - (\sum \alpha_i) t $$
+        $$ = \left(o + \sum \alpha_i v_i\right) + t (1 - \sum \alpha_i) $$
+        Thus, $p' = p$ if and only if $\sum \alpha_i = 1$. If the weights sum to 1, the result is intrinsic geometry; otherwise, it is an artifact of the coordinate system.</p>
+      </div>
+
       <p><b>Why this matters:</b> The solution set to $Ax=0$ is a <b>subspace</b> (contains 0, vectors). The solution set to $Ax=b$ ($b \ne 0$) is an <b>affine set</b> (does not contain 0, points). Mixing them up leads to errors in duality and tangent space calculations.</p>
 
       <h3>1.5 Linear Combinations: The Fundamental Constructor</h3>

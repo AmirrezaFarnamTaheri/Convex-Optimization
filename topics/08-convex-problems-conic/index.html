@@ -55,10 +55,10 @@
 
     <article>
       <section class="section-card" id="section-1">
-      <h2>1. Second-Order Cone Programs (SOCP)</h2>
+      <h2>1. Second-Order Cone Programs (SOCP): The Geometry of Norms</h2>
 
-      <h3>1.1 Definition</h3>
-      <p>A <strong>Second-Order Cone Program (<a href="#" class="definition-link" data-term="socp">SOCP</a>)</strong> has the form:</p>
+      <h3>1.1 Definition: Norms Made Conic</h3>
+      <p>A <strong>Second-Order Cone Program (<a href="#" class="definition-link" data-term="socp">SOCP</a>)</strong> minimizes a linear function over the intersection of an affine set and the product of second-order cones.</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -72,13 +72,13 @@
         </p>
       </div>
 
-      <p>where $\mathbf{x} \in \mathbb{R}^n$ is the variable. Each constraint $\|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{c}_i^\top \mathbf{x} + d_i$ is called a <strong>second-order cone constraint</strong>.</p>
+      <p>where $\mathbf{x} \in \mathbb{R}^n$ is the variable. The constraint $\|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{c}_i^\top \mathbf{x} + d_i$ is a <strong>second-order cone constraint</strong>.</p>
 
       <h3>1.2 The Second-Order Cone (Lorentz Cone)</h3>
-      <p>The <strong>second-order cone</strong> (or <strong>Lorentz cone</strong>) in $\mathbb{R}^{n+1}$ is:</p>
+      <p>The standard <strong>second-order cone</strong> $\mathcal{Q}^{n+1} \subset \mathbb{R}^{n+1}$ is defined as:</p>
       <p style="text-align: center;">
         $
-        \mathcal{L}^{n+1} = \{(\mathbf{x}, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|\mathbf{x}\|_2 \le t\}
+        \mathcal{Q}^{n+1} = \{(t, \mathbf{x}) \in \mathbb{R} \times \mathbb{R}^n \mid \|\mathbf{x}\|_2 \le t\}
         $
       </p>
 
@@ -89,20 +89,23 @@
         </div>
         <div class="proof-step">
           <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
-          $
-          \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)}
-          $
+          $ \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)} $
         </div>
         <div class="proof-step">
           <strong>Apply constraints:</strong>
-          $
-          \le \theta t_1 + (1-\theta) t_2
-          $
+          $ \le \theta t_1 + (1-\theta) t_2 $
         </div>
         <div class="proof-step">
           <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{L}^{n+1}$, so $\mathcal{L}^{n+1}$ is convex.
         </div>
       </div>
+
+      <p><b>Note:</b> This is exactly the epigraph of the Euclidean norm function $f(x) = \|x\|_2$. Since norms are convex, the epigraph is a convex set (specifically, a cone).</p>
+
+      <h4>The Rotated Second-Order Cone (RSOC)</h4>
+      <p>A useful variation is the <strong>rotated second-order cone</strong> $\mathcal{Q}_r^{n+2}$, defined by the hyperbolic constraint:</p>
+      $$ \mathcal{Q}_r^{n+2} = \{(x, y, z) \in \mathbb{R}^n \times \mathbb{R} \times \mathbb{R} \mid \|x\|_2^2 \le 2yz, \ y \ge 0, z \ge 0\} $$
+      <p>This cone handles <strong>quadratic-over-linear</strong> terms and <strong>geometric means</strong>. It is a linear transformation of the standard SOC.</p>
 
       <h3>1.3 Key Properties</h3>
       <ul>
@@ -191,8 +194,8 @@
 
     <!-- Section 2: Robust Linear Programming -->
     <section class="section-card" id="section-2">
-      <h2>2. Robust Linear Programming</h2>
-      <p>Standard Linear Programming assumes exact data. In practice, data $(a_i, b_i, c)$ is often uncertain. <strong>Robust Optimization</strong> seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set.</p>
+      <h2>2. Robust Optimization: The "Dual Norm" Lemma</h2>
+      <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
       <h3>2.1 Deterministic Robust LP</h3>
       <p>Consider the constraint $a_i^\top x \le b_i$. If $a_i$ is uncertain and belongs to a set $\mathcal{E}_i$, the robust constraint is:</p>
@@ -201,11 +204,11 @@
       <h4>Ellipsoidal Uncertainty</h4>
       <p>Suppose $\mathcal{E}_i$ is an ellipsoid: $\mathcal{E}_i = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
       <br>Here $\bar{a}_i$ is the nominal value and $P_i$ shapes the uncertainty.</p>
+
       <div class="proof-box">
         <h4>Derivation: Robust to SOCP</h4>
         <div class="proof-step">
-          <strong>Step 1: Expand the Term.</strong>
-          We want to maximize the LHS over the uncertainty set $\mathbf{u}$:
+          <strong>Step 1: Expand the Term.</strong> We want to maximize the LHS over the uncertainty set $\mathbf{u}$:
           $$ \sup_{\|\mathbf{u}\|_2 \le 1} (\bar{\mathbf{a}}_i + P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} (P_i \mathbf{u})^\top \mathbf{x} = \bar{\mathbf{a}}_i^\top \mathbf{x} + \sup_{\|\mathbf{u}\|_2 \le 1} \mathbf{u}^\top (P_i^\top \mathbf{x}) $$
         </div>
         <div class="proof-step">
@@ -221,6 +224,22 @@
         </div>
       </div>
       <p>Thus, Robust LP with ellipsoidal uncertainty is an SOCP.</p>
+
+      <h4>Case Studies: Uncertainty Geometry $\to$ Problem Class</h4>
+      <ul>
+          <li><b>Ellipsoidal Uncertainty ($\ell_2$ ball):</b>
+            <br>Constraint becomes $\bar{a}^\top x + \rho \|x\|_2 \le b$.
+            <br>Dual of $\ell_2$ is $\ell_2$. Result: <b>SOCP</b>.
+          </li>
+          <li><b>Box Uncertainty ($\ell_\infty$ ball):</b>
+            <br>Constraint becomes $\bar{a}^\top x + \rho \|x\|_1 \le b$.
+            <br>Dual of $\ell_\infty$ is $\ell_1$. Result: <b>LP</b> (linearize $\ell_1$).
+          </li>
+          <li><b>Diamond Uncertainty ($\ell_1$ ball):</b>
+            <br>Constraint becomes $\bar{a}^\top x + \rho \|x\|_\infty \le b$.
+            <br>Dual of $\ell_1$ is $\ell_\infty$. Result: <b>LP</b>.
+          </li>
+      </ul>
 
       <div class="theorem-box">
         <h4>Deep Dive: Value-at-Risk (VaR) vs. Conditional Value-at-Risk (CVaR)</h4>
@@ -262,10 +281,10 @@
 
     <!-- Section 3: Semidefinite Programs (SDP) -->
     <section class="section-card" id="section-3">
-      <h2>3. Semidefinite Programs (SDP)</h2>
+      <h2>3. Semidefinite Programs (SDP): Matrix Geometry</h2>
 
-      <h3>3.1 Definition</h3>
-      <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> has the form:</p>
+      <h3>3.1 Definition: Linear Matrix Inequalities</h3>
+      <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -287,16 +306,27 @@
         <li>$A \in \mathbb{R}^{p \times n}$, $b \in \mathbb{R}^p$ define additional affine constraints</li>
       </ul>
 
+      <p>The constraint $F(x) \succeq 0$ is a <b>Linear Matrix Inequality (LMI)</b>. It requires that the symmetric matrix $F(x)$ be Positive Semidefinite.
+      <br><b>Key Insight:</b> This is an infinite set of linear constraints: $v^\top F(x) v \ge 0$ for all $v \in \mathbb{R}^k$. The LMI packages all these directional curvature checks into one convex constraint.</p>
+
       <h3>3.2 The PSD Cone</h3>
       <p>The constraint $F(x) \succeq 0$ means $F(x)$ lies in the cone of positive semidefinite matrices:</p>
       <p style="text-align: center;">
-        $
-        \mathbb{S}_+^m = \{X \in \mathbb{S}^m \mid X \succeq 0\}
-        $
+        $ \mathbb{S}_+^m = \{X \in \mathbb{S}^m \mid X \succeq 0\} $
       </p>
       <p>Recall from Lecture 04 that $\mathbb{S}_+^m$ is a proper cone (convex, closed, pointed, solid).</p>
 
-      <h3>3.3 Key Properties</h3>
+      <h3>3.3 The Schur Complement: The Absolute Value of SDP</h3>
+      <p>Just as $|x| \le t \iff -t \le x \le t$ allows us to linearize absolute values, the <b>Schur Complement Lemma</b> allows us to linearize quadratic and rational matrix functions.</p>
+
+      <div class="theorem-box">
+          <h4>Schur Complement Lemma</h4>
+          <p>For a block symmetric matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$:</p>
+          $$ M \succeq 0 \iff C - B^\top A^{-1} B \succeq 0 $$
+          <p>This lemma is the primary tool for converting nonlinear convex constraints into LMIs.</p>
+      </div>
+
+      <h3>3.4 Key Properties</h3>
       <ul>
         <li><strong>Generality:</strong> SDP subsumes LP, QP, and SOCP</li>
         <li><strong>Complexity:</strong> Polynomial-time solvable using interior-point methods</li>
@@ -304,7 +334,7 @@
         <li><strong>Applications:</strong> Combinatorial optimization relaxations, control theory (LMI), matrix completion</li>
       </ul>
 
-      <h3>3.4 Standard SDP Examples</h3>
+      <h3>3.5 Standard SDP Examples</h3>
 
             <h4>Example 3.1: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
@@ -377,7 +407,7 @@
         </div>
       </div>
 
-      <h3>3.5 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
+      <h3>3.6 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
       <p>The standard convex problem classes form a strict hierarchy of expressiveness. Understanding this hierarchy helps in selecting the most efficient solver for a given problem.</p>
 
       <div class="insight">

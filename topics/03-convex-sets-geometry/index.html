@@ -378,23 +378,53 @@
         $$
         <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality).</p>
 
-        <div class="theorem-box">
-          <h4>Proof: Norm Balls are Convex</h4>
-          <p>Let $x, y \in B(x_c, r)$ and $\theta \in [0,1]$. Then $\|x - x_c\| \le r$ and $\|y - x_c\| \le r$.</p>
-          $$
-          \begin{aligned}
-          \|(\theta x + (1-\theta)y) - x_c\| &= \|\theta(x - x_c) + (1-\theta)(y - x_c)\| \\
-          &\le \theta\|x - x_c\| + (1-\theta)\|y - x_c\| \\
-          &\le \theta r + (1-\theta)r = r
-          \end{aligned}
-          $$
-          <p>Thus the convex combination is in the ball.</p>
+        <h4>Unit Ball Characterizes the Norm (Minkowski Functional)</h4>
+        <p>The unit ball $B = \{x : \|x\| \le 1\}$ completely determines the norm. For any $x$, the norm $\|x\|$ is the factor by which you must scale the unit ball to just contain $x$:</p>
+        $$ \|x\| = \inf\{t > 0 \mid x \in tB\} $$
+        <p>This quantity is called the <b>Minkowski functional</b> (or gauge) of $B$. It allows us to construct a norm from any set $C$ that is convex, centrally symmetric, bounded, and absorbing.</p>
+
+        <div class="proof-box">
+          <h4>Proof: Unit Ball Determines Norm</h4>
+          <div class="proof-step">
+            <strong>Step 0: Interpretation.</strong> $x \in tB \iff x = tb$ for some $b \in B$. Since $B=\{u : \|u\|\le 1\}$, this is equivalent to $\|x/t\| \le 1 \iff \|x\| \le t$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 1: Lower Bound.</strong> If $x \in tB$, then $\|x\| \le t$. Thus every feasible $t$ is at least $\|x\|$. So $\inf t \ge \|x\|$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Feasibility.</strong> Let $t = \|x\|$. If $x \neq 0$, let $u = x/\|x\|$. Then $\|u\|=1$, so $u \in B$. Thus $x = \|x\| u \in \|x\| B$. So $t=\|x\|$ is feasible.
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> The infimum is exactly $\|x\|$.
+          </div>
         </div>
 
-        <h4>Support Functions of Norm Balls = Dual Norms</h4>
-        <p>The geometry of a convex set $C$ is fully described by its support function $\sigma_C(y) = \sup_{x \in C} y^\top x$. For a norm ball $B = \{x : \|x\| \le 1\}$, this supremum is exactly the definition of the <b>dual norm</b>:</p>
-        $$ \|y\|_* = \sup_{\|x\| \le 1} y^\top x = \sigma_B(y) $$
-        <p>This establishes a fundamental duality: the support function of the primal unit ball is the dual norm.</p>
+        <div class="theorem-box">
+          <h4>Geometric Properties of Norm Balls</h4>
+          <p>The axioms of a norm enforce specific geometric properties on its unit ball $B$:</p>
+          <ul>
+            <li><b>Convexity (from Triangle Inequality):</b> $B$ contains the line segment between any two points. No dents.</li>
+            <li><b>Central Symmetry (from Homogeneity):</b> $x \in B \iff -x \in B$. The ball is symmetric about the origin.</li>
+            <li><b>Absorbing (from Finiteness):</b> For every direction, the ball eventually captures any vector if scaled enough. It is not "flat" in any dimension.</li>
+            <li><b>Boundedness (from Definiteness):</b> The ball does not extend infinitely in any direction.</li>
+          </ul>
+        </div>
+
+        <h4>Geometry of Specific Norms ($\ell_1, \ell_2, \ell_\infty$)</h4>
+        <p>The shape of the unit ball predicts the behavior of optimization problems involving that norm.</p>
+        <ul>
+            <li><b>$\ell_2$ (Euclidean):</b> The ball is a <b>sphere</b>. It is smooth and rotationally symmetric. Optimization solutions vary continuously with the data.</li>
+            <li><b>$\ell_\infty$ (Max Norm):</b> The ball is a <b>cube</b> (box). It has flat faces and sharp corners. Solutions tend to be "non-unique" on the faces.</li>
+            <li><b>$\ell_1$ (Sum Norm):</b> The ball is a <b>cross-polytope</b> (diamond). It has sharp corners on the coordinate axes. This geometry is why $\ell_1$ regularization promotes <b>sparsity</b>: solutions "snap" to the corners where coordinates are zero.</li>
+        </ul>
+
+        <div class="insight">
+            <h4>Smooth vs. Pointy: Why it matters</h4>
+            <p>If you minimize a linear function over a norm ball (finding the support point):
+            <br><b>Smooth ($\ell_2$):</b> There is a unique optimal point on the boundary.
+            <br><b>Pointy ($\ell_1$):</b> The optimum often snaps to a vertex (corner).
+            <br><b>Flat ($\ell_\infty$):</b> The optimum might be an entire face (non-unique).</p>
+        </div>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/norm-balls.png"
@@ -402,6 +432,11 @@
                style="max-width: 60%; height: auto; border-radius: 8px;" />
           <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square). All are convex sets.</figcaption>
         </figure>
+
+        <h4>Support Functions of Norm Balls = Dual Norms</h4>
+        <p>The geometry of a convex set $C$ is fully described by its support function $\sigma_C(y) = \sup_{x \in C} y^\top x$. For a norm ball $B = \{x : \|x\| \le 1\}$, this supremum is exactly the definition of the <b>dual norm</b>:</p>
+        $$ \|y\|_* = \sup_{\|x\| \le 1} y^\top x = \sigma_B(y) $$
+        <p>This establishes a fundamental duality: the support function of the primal unit ball is the dual norm. Geometrically, $\|y\|_*$ is the distance from the origin to the supporting hyperplane of $B$ with normal $y$.</p>
 
         <p>An <a href="#" class="definition-link">ellipsoid</a> is a generalized Euclidean ball, defined as:</p>
         $$

@@ -98,7 +98,7 @@
       <div class="proof-box">
         <h4>Convexity of the Second-Order Cone</h4>
         <div class="proof-step">
-          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{L}^{n+1}$ and $\theta \in [0, 1]$.
+          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{Q}^{n+1}$ and $\theta \in [0, 1]$.
         </div>
         <div class="proof-step">
           <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
@@ -109,18 +109,24 @@
           $ \le \theta t_1 + (1-\theta) t_2 $
         </div>
         <div class="proof-step">
-          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{L}^{n+1}$, so $\mathcal{L}^{n+1}$ is convex.
+          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{Q}^{n+1}$, so $\mathcal{Q}^{n+1}$ is convex.
         </div>
       </div>
 
-      <h4>The Rotated Second-Order Cone (RSOC)</h4>
-      <p>The <strong>rotated second-order cone</strong> $\mathcal{Q}_r^{n+2}$ handles products and squares. It is defined by:</p>
-      $$ \mathcal{Q}_r^{n+2} = \{(x, y, z) \in \mathbb{R}^n \times \mathbb{R} \times \mathbb{R} \mid \|x\|_2^2 \le 2yz, \ y \ge 0, z \ge 0\} $$
-      <p>This is useful for:</p>
+      <h4>Phase 5.4: The Rotated Second-Order Cone (RSOC)</h4>
+      <p>The <strong>rotated second-order cone</strong> handles products and squares. It is the "bridge" between conic programming and quadratic/product constraints.</p>
+      $$ \mathcal{Q}_r^{n+2} = \{(u, v, w) \in \mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \mid \|w\|_2^2 \le 2uv, \ u \ge 0, v \ge 0\} $$
+      <p><b>Equivalence to SOC:</b> $\mathcal{Q}_r$ is just $\mathcal{Q}$ rotated by 45 degrees.
+      $$ (u, v, w) \in \mathcal{Q}_r \iff \left( u+v, \ \begin{bmatrix} u-v \\ \sqrt{2}w \end{bmatrix} \right) \in \mathcal{Q} $$
+      <b>Applications:</b></p>
       <ul>
-          <li><b>Hyperbolic constraints:</b> $w^2 \le xy \iff (x, y, w) \in \mathcal{Q}_r^3$.</li>
-          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t/2, y, x) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Hyperbolic constraints:</b> $w^2 \le xy \iff (x, y/2, w) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Vector Q-over-L:</b> $\|x\|_2^2/y \le t \iff (t, y/2, x) \in \mathcal{Q}_r^{n+2}$.</li>
       </ul>
+      <div class="warning-box">
+          <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
+      </div>
 
       <h3>1.3 Key Properties</h3>
       <ul>
@@ -212,12 +218,13 @@
       <h2>2. Robust Optimization: The "Dual Norm" Lemma</h2>
       <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
-      <h3>2.1 Deterministic Robust LP</h3>
-      <p>Consider the constraint $a_i^\top x \le b_i$. If $a_i$ is uncertain and belongs to a set $\mathcal{E}_i$, the robust constraint is:</p>
-      $$ \sup_{a_i \in \mathcal{E}_i} a_i^\top x \le b_i $$
+      <h3>Phase 5.5: Robustness via Dual Norms</h3>
+      <p>Consider the constraint $a_i^\top x \le b_i$. If $a_i$ is uncertain ($a_i = \bar{a}_i + u$, with $u \in \mathcal{U}$), the robust constraint is:</p>
+      $$ \sup_{u \in \mathcal{U}} (\bar{a}_i + u)^\top x \le b_i \iff \bar{a}_i^\top x + \sigma_{\mathcal{U}}(x) \le b_i $$
+      <p>where $\sigma_{\mathcal{U}}(x) = \sup_{u \in \mathcal{U}} u^\top x$ is the <b>support function</b> of the uncertainty set.</p>
 
-      <h4>Ellipsoidal Uncertainty</h4>
-      <p>Suppose $\mathcal{E}_i$ is an ellipsoid: $\mathcal{E}_i = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
+      <h4>2.1 Deterministic Robust LP</h4>
+      <p>Suppose $\mathcal{U}$ is an ellipsoid: $\mathcal{U} = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
       <br>Here $\bar{a}_i$ is the nominal value and $P_i$ shapes the uncertainty.</p>
 
       <div class="proof-box">
@@ -241,27 +248,44 @@
       <p>Thus, Robust LP with ellipsoidal uncertainty is an SOCP.</p>
 
       <h4>The "Supremum = Dual Norm" Lemma</h4>
-      <p>The robust constraint $\sup_{u \in \mathcal{U}} u^\top y(x) \le t$ is equivalent to a deterministic norm constraint. The key rule is:</p>
+      <p>If the uncertainty set is a norm ball $\mathcal{U} = \{u \mid \|u\| \le \rho\}$, then the support function is the scaled dual norm:</p>
       <p style="text-align: center; border: 1px solid var(--primary-300); padding: 10px; border-radius: 4px;">
-          $\sup_{\|u\| \le \rho} u^\top y = \rho \|y\|_*$
-          <br>where $\|\cdot\|_*$ is the <b>dual</b> of the uncertainty norm.
+          $\sup_{\|u\| \le \rho} u^\top x = \rho \|x\|_*$
+          <br>where $\|\cdot\|_*$ is the <b>dual norm</b> of $\|\cdot\|$.
       </p>
 
       <h4>Case Studies: Uncertainty Geometry $\to$ Dual Norm $\to$ Problem Class</h4>
       <ul>
           <li><b>Ellipsoidal Uncertainty ($\ell_2$ ball):</b>
-            <br>Constraint: $\|u\|_2 \le \rho$. Dual is $\ell_2$.
+            <br>Uncertainty: $\|u\|_2 \le \rho$. Dual norm: $\|\cdot\|_2$.
             <br>Robust Form: $\bar{a}^\top x + \rho \|x\|_2 \le b$. (SOCP).
           </li>
           <li><b>Box Uncertainty ($\ell_\infty$ ball):</b>
-            <br>Constraint: $\|u\|_\infty \le \rho$. Dual is $\ell_1$.
+            <br>Uncertainty: $\|u\|_\infty \le \rho$. Dual norm: $\|\cdot\|_1$.
             <br>Robust Form: $\bar{a}^\top x + \rho \|x\|_1 \le b$. (LP, via slack variables).
           </li>
           <li><b>Diamond Uncertainty ($\ell_1$ ball):</b>
-            <br>Constraint: $\|u\|_1 \le \rho$. Dual is $\ell_\infty$.
+            <br>Uncertainty: $\|u\|_1 \le \rho$. Dual norm: $\|\cdot\|_\infty$.
             <br>Robust Form: $\bar{a}^\top x + \rho \|x\|_\infty \le b$. (LP, via bounds).
           </li>
       </ul>
+
+      <div class="proof-box">
+        <h4>Derivation: Robust Ellipsoidal Constraint</h4>
+        <div class="proof-step">
+          <strong>Step 1: Expand.</strong> Let $a_i \in \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
+          $$ \sup_{\|u\|_2 \le 1} (\bar{a}_i + P_i u)^\top x = \bar{a}_i^\top x + \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Dual Norm.</strong> The max of $u^\top z$ over the unit $\ell_2$ ball is $\|z\|_2$.
+          $$ \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) = \|P_i^\top x\|_2 $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Result.</strong>
+          $$ \bar{a}_i^\top x + \|P_i^\top x\|_2 \le b_i $$
+          This is a deterministic SOC constraint.
+        </div>
+      </div>
 
       <div class="theorem-box">
         <h4>Deep Dive: Value-at-Risk (VaR) vs. Conditional Value-at-Risk (CVaR)</h4>
@@ -356,14 +380,24 @@
         <li><strong>Applications:</strong> Combinatorial optimization relaxations, control theory (LMI), matrix completion</li>
       </ul>
 
-      <h3>3.5 Core SDP Modeling Templates</h3>
-      <p>Use these patterns to recognize when to use SDP.</p>
-      <ul>
-          <li><b>Quadratic Bound:</b> $x^\top P x \le t \ (P \succ 0) \iff \begin{bmatrix} t & x^\top \\ x & P^{-1} \end{bmatrix} \succeq 0$.</li>
-          <li><b>Norm Bound (SOC as SDP):</b> $\|x\|_2 \le t \iff \begin{bmatrix} tI & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
-          <li><b>Eigenvalue Bound:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.</li>
-          <li><b>Matrix Fractional:</b> $x^\top Y^{-1} x \le t \ (Y \succ 0) \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
-      </ul>
+      <h3>3.5 Core SDP Modeling Templates (Phase 5.6 & 5.7)</h3>
+      <p>SDP power comes from two main sources: the Schur Complement (handling inverses) and the Variational Characterization of eigenvalues.</p>
+
+      <div class="example-box">
+          <h4>Phase 5.6: The Matrix Inverse Atom (Schur)</h4>
+          <p>Constraints involving $X^{-1}$ (where $X$ is a variable) are handled by the <b>Schur Complement</b>.
+          <br><b>Atom:</b> $x^\top X^{-1} x \le t \iff \begin{bmatrix} X & x \\ x^\top & t \end{bmatrix} \succeq 0$.
+          <br><b>Conditions:</b> $X \succ 0$.
+          <br><b>Generalization:</b> Matrix fractional $Y^\top X^{-1} Y \preceq T \iff \begin{bmatrix} X & Y \\ Y^\top & T \end{bmatrix} \succeq 0$.</p>
+      </div>
+
+      <div class="example-box">
+          <h4>Phase 5.7: The Spectral Atom (Eigenvalues)</h4>
+          <p>Constraints on eigenvalues transform into LMIs via the definition of PSD.
+          <br><b>Atom 1:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.
+          <br><b>Atom 2:</b> $\lambda_{\min}(X) \ge t \iff X - tI \succeq 0$.
+          <br><b>Atom 3:</b> Spectral Norm $\|X\|_2 \le t \iff \begin{bmatrix} tI & X \\ X^\top & tI \end{bmatrix} \succeq 0$. (Works for non-symmetric $X$).</p>
+      </div>
 
       <h3>3.6 Standard SDP Examples</h3>
 
@@ -599,24 +633,28 @@
         $
       </p>
 
-      <h3>5.3 Solution via Bisection (Convex Feasibility)</h3>
-      <p>Quasiconvex optimization can be solved by solving a sequence of convex feasibility problems. This algorithm relies on the fact that for a fixed $t$, the set of $\mathbf{x}$ such that $f_0(\mathbf{x}) \le t$ is a convex set (by definition of quasiconvexity).</p>
-      <p>The algorithm finds the optimal value $p^*$ by performing a binary search (bisection) on the range of possible values.</p>
-      <ol>
-        <li><b>Initialize:</b> Find an interval $[l, u]$ known to contain the optimal value $p^*$.</li>
-        <li><b>Check Feasibility:</b> Let $t = (l+u)/2$. Solve the convex feasibility problem:
-          $$ \text{find } \mathbf{x} \quad \text{subject to } \quad f_i(\mathbf{x}) \le 0, \ A\mathbf{x} = \mathbf{b}, \ f_0(\mathbf{x}) \le t $$
-          Note that $f_0(\mathbf{x}) \le t$ is a convex constraint.
-        </li>
-        <li><b>Update:</b>
-          <ul>
-            <li>If feasible, then the optimal value $p^*$ is at most $t$. Set $u = t$.</li>
-            <li>If infeasible, then $p^*$ must be greater than $t$. Set $l = t$.</li>
-          </ul>
-        </li>
-        <li><b>Repeat:</b> Continue until $u - l < \epsilon$.</li>
-      </ol>
-      <p>This method allows us to solve any quasiconvex problem using a standard convex solver, at the cost of solving multiple (logarithmically many) instances.</p>
+      <h3>5.3 Phase 6.2: The Bisection Algorithm</h3>
+      <p>Quasiconvex optimization is solved by a sequence of convex feasibility problems.
+      <br><b>The Logic:</b> The feasibility predicate $\Phi(\alpha) = [\exists x \in \mathcal{F} : f_0(x) \le \alpha]$ is <b>monotone</b> in $\alpha$. We want to find the threshold $p^\star$ where $\Phi$ switches from False to True.</p>
+
+      <div class="proof-box">
+          <h4>Algorithm: Bisection</h4>
+          <ol>
+            <li><b>Initialize:</b> Find an interval $[l, u]$ known to contain the optimal value $p^*$.</li>
+            <li><b>Check Feasibility:</b> Let $t = (l+u)/2$. Solve the convex feasibility problem:
+              $$ \text{find } \mathbf{x} \quad \text{subject to } \quad f_i(\mathbf{x}) \le 0, \ A\mathbf{x} = \mathbf{b}, \ f_0(\mathbf{x}) \le t $$
+              Note that $f_0(\mathbf{x}) \le t$ is a convex constraint.
+            </li>
+            <li><b>Update:</b>
+              <ul>
+                <li>If feasible, then the optimal value $p^*$ is at most $t$. Set $u = t$.</li>
+                <li>If infeasible, then $p^*$ must be greater than $t$. Set $l = t$.</li>
+              </ul>
+            </li>
+            <li><b>Repeat:</b> Continue until $u - l < \epsilon$.</li>
+          </ol>
+          <p><b>Complexity:</b> $\lceil \log_2((U_{init}-L_{init})/\epsilon) \rceil$ feasibility solves. This is very efficient.</p>
+      </div>
     </section>
 
     <!-- Section 6: Disciplined Convex Programming (DCP) -->

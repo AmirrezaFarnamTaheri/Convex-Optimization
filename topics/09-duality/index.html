@@ -159,6 +159,35 @@
           </div>
         </div>
 
+        <div class="insight">
+          <h4>Why the Dual is Always Convex (Even When the Primal is Not)</h4>
+          <p>This is a fundamental fact that deserves emphasis. The dual problem:</p>
+          $$ \max_{\lambda \succeq 0, \nu} g(\lambda, \nu) $$
+          <p>is <b>always a convex optimization problem</b>:</p>
+          <ul>
+            <li>The domain $\{\lambda \succeq 0\}$ is a convex set (the non-negative orthant).</li>
+            <li>Maximizing a concave function is equivalent to minimizing a convex function.</li>
+          </ul>
+          <p><b>The "One-Line" Proof:</b> For any $\lambda_1, \lambda_2 \ge 0$ and $\theta \in [0,1]$:
+          $$ g(\theta\lambda_1 + (1-\theta)\lambda_2) = \inf_x L(x, \theta\lambda_1 + (1-\theta)\lambda_2) = \inf_x [\theta L(x,\lambda_1) + (1-\theta) L(x,\lambda_2)] $$
+          $$ \ge \theta \inf_x L(x,\lambda_1) + (1-\theta) \inf_x L(x,\lambda_2) = \theta g(\lambda_1) + (1-\theta) g(\lambda_2) $$
+          The inequality holds because $\inf$ of a convex combination is at least the convex combination of $\inf$s.</p>
+          <p><b>Geometric Intuition:</b> For each fixed $x$, the Lagrangian is a "hyperplane" in $(\lambda, \nu)$-space. The dual function is the <b>lower envelope</b> of these hyperplanes. Lower envelopes of affine functions are always concave, regardless of the original problem's structure.</p>
+        </div>
+        
+        <div class="theorem-box">
+          <h4>Alternative View: Conjugate Functions and Perspective</h4>
+          <p>For a single-constraint problem $\min c^\top x$ s.t. $f(x) \le 0$, the dual function can be written using the Fenchel conjugate:</p>
+          $$ g(\lambda) = -\lambda f^*\left(-\frac{c}{\lambda}\right), \quad \lambda > 0 $$
+          <p><b>Why this is concave:</b></p>
+          <ul>
+            <li>$f^*$ is <b>always convex</b> (even if $f$ is not), since it's a supremum of affine functions.</li>
+            <li>The map $\lambda \mapsto \lambda f^*(y/\lambda)$ is the <b>perspective transform</b> of $f^*$, which preserves convexity.</li>
+            <li>Negating gives a concave function.</li>
+          </ul>
+          <p>This shows that duality "convexifies" through the conjugate, regardless of the original problem's structure.</p>
+        </div>
+
         <h3>3.2 Lower Bound on Optimal Value</h3>
         <p>For any $\lambda \succeq 0$ and any $\nu$, we have:</p>
         $$ g(\lambda, \nu) \le p^* $$
@@ -582,15 +611,62 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 6: Trust-Region QCQP</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}x^\top P x + q^\top x + r$ s.t. $x^\top x \le 1$. ($P \succ 0$).</p>
-        <p><b>Lagrangian:</b> $L(x, \lambda) = \frac{1}{2}x^\top (P + 2\lambda I) x + q^\top x + r - \lambda$ ($\lambda \ge 0$).</p>
-        <p><b>Dual Function:</b>
-        <br>Minimize quadratic in $\mathbf{x}$: $\mathbf{x}^* = -(P + 2\lambda I)^{-1}\mathbf{q}$.
-        <br>Value: $r - \lambda - \frac{1}{2}q^\top (P + 2\lambda I)^{-1} q$.
-        <br><b>Dual Problem:</b> $\max_{\lambda \ge 0} r - \lambda - \frac{1}{2}q^\top (P + 2\lambda I)^{-1} q$.
-        <br>This is a 1D concave maximization, easily solvable (finding the root of the secular equation).
-        </p>
+        <h3>Problem 6: Trust-Region QCQP (Nonconvex with Strong Duality)</h3>
+        <p><b>Primal:</b> $\min x^\top A x + 2 b^\top x$ s.t. $x^\top x \le 1$.</p>
+        <p>This is the classic <b>trust-region subproblem</b>. Even if $A \not\succeq 0$ (making the objective nonconvex), strong duality still holds.</p>
+        
+        <div class="insight">
+          <h4>Why It Matters</h4>
+          <p>This problem arises in Newton-type methods when optimizing within a trusted region. The constraint $\|x\|_2 \le 1$ is the unit ball—the "trust region" where a quadratic approximation is valid.</p>
+        </div>
+        
+        <p><b>Lagrangian:</b></p>
+        $$ L(x, \lambda) = x^\top A x + 2 b^\top x + \lambda(x^\top x - 1) = x^\top (A + \lambda I) x + 2 b^\top x - \lambda $$
+        
+        <div class="proof-box">
+          <h4>Dual Function Derivation (Complete Case Analysis)</h4>
+          <div class="proof-step">
+            <strong>Define:</strong> $H(\lambda) = A + \lambda I$. The Lagrangian is $L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda$.
+          </div>
+          <div class="proof-step">
+            <strong>Case 1: $H(\lambda) \not\succeq 0$.</strong>
+            <p>There exists direction $d$ with $d^\top H d < 0$. Along $x = td$:</p>
+            $$ L(td, \lambda) = t^2 (d^\top H d) + 2t(b^\top d) - \lambda \to -\infty \text{ as } |t| \to \infty $$
+            <p>So $g(\lambda) = \inf_x L(x, \lambda) = -\infty$.</p>
+          </div>
+          <div class="proof-step">
+            <strong>Case 2: $H(\lambda) \succeq 0$ but $b \notin \mathcal{R}(H)$.</strong>
+            <p>There exists $d \in \ker(H)$ with $b^\top d \ne 0$. Then:</p>
+            $$ L(x + td, \lambda) = L(x, \lambda) + 2t(b^\top d) \to -\infty \text{ as } t \to \pm\infty $$
+            <p>So $g(\lambda) = -\infty$.</p>
+          </div>
+          <div class="proof-step">
+            <strong>Case 3: $H(\lambda) \succeq 0$ and $b \in \mathcal{R}(H)$.</strong>
+            <p>The quadratic is minimized at $x^* = -H^\dagger b$ (Moore-Penrose pseudoinverse). The minimum value is:</p>
+            $$ g(\lambda) = -b^\top H^\dagger b - \lambda = -b^\top (A + \lambda I)^\dagger b - \lambda $$
+          </div>
+        </div>
+        
+        <p><b>Eigenvalue Form:</b> Let $A = Q \Lambda Q^\top$ with eigenvalues $\lambda_1, \ldots, \lambda_n$. Let $\beta_i = q_i^\top b$. Then:
+        $$ g(\lambda) = -\sum_{i=1}^n \frac{\beta_i^2}{\lambda_i + \lambda} - \lambda, \quad \text{for } \lambda > -\lambda_{\min}(A) $$</p>
+        
+        <p><b>Dual Problem:</b> $\max_{\lambda \ge 0} g(\lambda)$. This is a 1D concave maximization.</p>
+        
+        <div class="theorem-box">
+          <h4>Strong Duality for QCQP with One Quadratic Constraint</h4>
+          <p><b>Theorem (S-Lemma/Hidden Convexity):</b> For QCQPs with a single quadratic inequality constraint and Slater's condition (strict feasibility), strong duality holds regardless of whether the objective is convex.</p>
+          <p><b>Why:</b> With one quadratic constraint $\|x\|^2 \le 1$, the Lagrangian dual can exactly certify the primal optimum. The certificate structure is encoded in a single scalar $\lambda$, and the PSD condition $A + \lambda I \succeq 0$ is exactly what the dual optimizes over.</p>
+        </div>
+        
+        <div class="insight">
+          <h4>Recovering the Primal Solution via KKT</h4>
+          <p>At optimality $\lambda^*$, the KKT conditions give:</p>
+          <ul>
+            <li><b>Stationarity:</b> $(A + \lambda^* I) x^* = -b$</li>
+            <li><b>Complementary Slackness:</b> $\lambda^*(\|x^*\|^2 - 1) = 0$</li>
+          </ul>
+          <p>If $\lambda^* > 0$, the solution lies on the boundary $\|x^*\| = 1$. If $\lambda^* = 0$, the unconstrained minimizer lies inside the ball.</p>
+        </div>
       </div>
 
       <div class="problem">

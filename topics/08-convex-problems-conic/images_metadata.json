@@ -1,0 +1,23 @@
+[
+  {
+    "filename": "dual_norm_animation.gif",
+    "description": "Animation showing dual norms and the dual norm lemma. For a direction u rotating around, the supporting hyperplane touches the norm ball at the point achieving the supremum. Visualizes ||u||* = sup{ u^T x : ||x|| ≤ 1 }."
+  },
+  {
+    "filename": "l1_linf_polar_swap.gif",
+    "description": "Animation showing l1/l∞ duality via polar sets. The ℓ1 ball (diamond) becomes the ℓ∞ ball (square) under the dual operation, and vice versa. Supporting hyperplanes achieve the dual norm value."
+  },
+  {
+    "filename": "supporting_hyperplanes_l1_linf_three_panels.gif",
+    "description": "Three-panel animation of supporting hyperplanes over ℓ1/ℓ∞ balls. Panel 1 (diamond): sup over ||x||_1 ≤ 1 gives ||u||_∞. Panel 2 (square): sup over ||x||_∞ ≤ 1 gives ||u||_1. Panel 3 overlays both showing different shadow lengths for the same direction."
+  },
+  {
+    "filename": "epigraph_dual_norm_l1_linf.gif",
+    "description": "Animation of ℓ1 epigraph via dual ℓ∞. Left: diamond ||x||_1 ≤ γ with u* = sign(x). Shows identity: sup over ||u||_∞ ≤ 1 of u^T x = ||x||_1. Right: epigraph view t ≥ ||x||_1."
+  },
+  {
+    "filename": "epigraph_dual_norm_linf_l1.gif",
+    "description": "Animation of ℓ∞ epigraph via dual ℓ1. Left: square ||x||_∞ ≤ γ with u* as one-hot vector. Shows identity: sup over ||u||_1 ≤ 1 of u^T x = ||x||_∞. u* jumps when max-absolute coordinate switches."
+  }
+]
+

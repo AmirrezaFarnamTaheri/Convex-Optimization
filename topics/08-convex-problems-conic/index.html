@@ -112,9 +112,56 @@
         </div>
       </div>
 
+      <h4>Phase 5.3: The Euclidean Norm → SOCP Atom</h4>
+      <p>LP handles $\ell_1$ and $\ell_\infty$ because they have polyhedral epigraphs. The $\ell_2$ norm is different: its epigraph is curved (an ice-cream cone). This is where SOCP comes in.</p>
+      
+      <div class="theorem-box">
+        <h4>The Core SOCP Atom</h4>
+        $$ \|Ax + b\|_2 \le c^\top x + d \iff (c^\top x + d, \ Ax + b) \in \mathcal{Q}^{m+1} $$
+        <p>Any "norm ≤ affine" constraint is SOCP. The right-hand side must be nonnegative, but SOC membership implies this automatically.</p>
+      </div>
+      
+      <div class="insight">
+        <h4>Objective Reformulation (Epigraph)</h4>
+        <p>To minimize $\|Ax - b\|_2$, introduce $t$ and solve:</p>
+        $$ \min_{x, t} t \quad \text{s.t.} \quad (t, Ax-b) \in \mathcal{Q} $$
+        <p>This is the same epigraph trick from LP, applied to the Euclidean norm.</p>
+      </div>
+      
+      <div class="warning-box">
+        <h4>Why $\ell_2$ Needs SOCP, Not LP</h4>
+        <ul>
+          <li><b>$\ell_1, \ell_\infty$:</b> Built from absolute values and max—polyhedral epigraph → LP</li>
+          <li><b>$\ell_2$:</b> Curved unit ball—non-polyhedral epigraph → needs SOC</li>
+        </ul>
+      </div>
+
       <h4>Phase 5.4: The Rotated Second-Order Cone (RSOC)</h4>
       <p>The <strong>rotated second-order cone</strong> handles products and squares. It is the "bridge" between conic programming and quadratic/product constraints.</p>
       $$ \mathcal{Q}_r^{n+2} = \{(u, v, w) \in \mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \mid \|w\|_2^2 \le 2uv, \ u \ge 0, v \ge 0\} $$
+      
+      <div class="theorem-box">
+        <h4>The Hyperbolic Atom (Phase 5.4 Core)</h4>
+        <p>The canonical hyperbolic constraint is:</p>
+        $$ w^2 \le xy, \quad x \ge 0, y \ge 0 $$
+        <p>This is exactly RSOC membership: $(x, y/2, w) \in \mathcal{Q}_r^3$.</p>
+      </div>
+      
+      <div class="proof-box">
+        <h4>Converting RSOC ↔ Standard SOC</h4>
+        <div class="proof-step">
+          <strong>Algebraic Identity:</strong> Let $t = u + v$ and $s = u - v$. Then:
+          $$ t^2 - s^2 = (u+v)^2 - (u-v)^2 = 4uv $$
+        </div>
+        <div class="proof-step">
+          <strong>Equivalence:</strong>
+          $$ \|w\|_2^2 \le 2uv, \ u \ge 0, v \ge 0 \iff \left\| \begin{bmatrix} 2w \\ u-v \end{bmatrix} \right\|_2 \le u + v $$
+        </div>
+        <div class="proof-step">
+          <strong>Practical:</strong> RSOC is not a new cone—it's SOC in rotated coordinates. Solvers accept both.
+        </div>
+      </div>
+      
       <p><b>Equivalence to SOC:</b> $\mathcal{Q}_r$ is just $\mathcal{Q}$ rotated by 45 degrees.
       $$ (u, v, w) \in \mathcal{Q}_r \iff \left( u+v, \ \begin{bmatrix} u-v \\ \sqrt{2}w \end{bmatrix} \right) \in \mathcal{Q} $$
       <b>Applications:</b></p>
@@ -123,8 +170,31 @@
           <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.</li>
           <li><b>Vector Q-over-L:</b> $\|x\|_2^2/y \le t \iff (t, y/2, x) \in \mathcal{Q}_r^{n+2}$.</li>
       </ul>
+      
+      <div class="insight">
+        <h4>Why Convexity Requires the Right Direction</h4>
+        <p>The constraint $w^2 \le xy$ with $x, y \ge 0$ is convex (RSOC). But $xy \le w^2$ is <b>not convex</b>—it's the complement of a convex set. Phase 5.4 only handles "product dominates square," not vice versa.</p>
+      </div>
       <div class="warning-box">
           <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
+      </div>
+      
+      <div class="proof-box">
+        <h4>Converting RSOC ↔ Standard SOC</h4>
+        <p>If your solver only supports standard SOC, use this identity:</p>
+        <div class="proof-step">
+          <strong>Algebraic Identity:</strong> Define $t = u + v$ and $s = u - v$. Then:
+          $$ t^2 - s^2 = (u+v)^2 - (u-v)^2 = 4uv $$
+        </div>
+        <div class="proof-step">
+          <strong>Equivalence:</strong>
+          $$ uv \ge \|w\|_2^2, \ u,v \ge 0 \iff \|(u-v, 2w)\|_2 \le u+v $$
+          The right side is a standard SOC constraint.
+        </div>
+        <div class="proof-step">
+          <strong>Proof:</strong> $\|(u-v, 2w)\|_2 \le u+v$ squares to $(u-v)^2 + 4\|w\|^2 \le (u+v)^2$.
+          <br>Rearranging: $4\|w\|^2 \le (u+v)^2 - (u-v)^2 = 4uv$, i.e., $\|w\|^2 \le uv$.
+        </div>
       </div>
 
       <h3>1.3 Key Properties</h3>
@@ -371,6 +441,66 @@
           <p>This lemma is the primary tool for converting nonlinear convex constraints into LMIs.</p>
       </div>
 
+      <div class="proof-box">
+        <h4>Full Proof of the Schur Complement Lemma</h4>
+        <div class="proof-step">
+            <strong>Step 1: Block LDL Factorization.</strong>
+            Assume $A \succ 0$ and perform a congruence transformation:
+            $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} I & -A^{-1}B \\ 0 & I \end{bmatrix} = \begin{bmatrix} A & 0 \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Congruence Preserves Inertia.</strong>
+            Congruence by an invertible matrix preserves the number of positive, negative, and zero eigenvalues (Sylvester's Law of Inertia).
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Conclusion.</strong>
+            The block diagonal matrix $\begin{bmatrix} A & 0 \\ 0 & S \end{bmatrix}$ is PSD iff both blocks are PSD. Since $A \succ 0$, we need $S = C - B^\top A^{-1} B \succeq 0$.
+        </div>
+      </div>
+
+      <h4>Schur Complement Applications: The SDP Modeling Cookbook</h4>
+      
+      <div class="example-box">
+        <h4>Application 1: Quadratic-over-Linear as LMI</h4>
+        <p>The function $f(x, t) = x^\top P x / t$ (with $P \succeq 0$, $t > 0$) is convex. Its epigraph can be written as an LMI:</p>
+        $$ \frac{x^\top P x}{t} \le s \iff \begin{bmatrix} sI & x \\ x^\top & t \end{bmatrix} \succeq 0 \quad \text{(when } P = I \text{)} $$
+        <p>More generally: $x^\top P x \le st \iff \begin{bmatrix} t & x^\top P^{1/2} \\ P^{1/2} x & sI \end{bmatrix} \succeq 0$.</p>
+      </div>
+
+      <div class="example-box">
+        <h4>Application 2: Matrix Fractional Minimization</h4>
+        <p>Minimize $y(x)^\top F(x)^{-1} y(x)$ where $y(x) = Ax + b$ is affine and $F(x) = F_0 + \sum_i x_i F_i$ is an affine symmetric matrix function with $F(x) \succ 0$.</p>
+        <div class="proof-box">
+          <h4>Derivation as SDP</h4>
+          <div class="proof-step">
+            <strong>Step 1 (Epigraph):</strong> Introduce $t$ and minimize $t$ subject to $y^\top F^{-1} y \le t$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2 (Schur Complement):</strong> Apply the lemma with $A = F$, $B = y$, $C = t$:
+            $$ y^\top F^{-1} y \le t, \ F \succ 0 \iff \begin{bmatrix} F & y \\ y^\top & t \end{bmatrix} \succeq 0 $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3 (Final SDP):</strong>
+            $$ \min t \quad \text{s.t.} \quad \begin{bmatrix} F_0 + \sum_i x_i F_i & Ax + b \\ (Ax+b)^\top & t \end{bmatrix} \succeq 0 $$
+            All entries are affine in $(x, t)$, so this is a valid SDP.
+          </div>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <h4>Application 3: LP, QP, SOCP as SDP (The Hierarchy)</h4>
+        <p>Every LP, QP, and SOCP can be written as an SDP. These are the five "micro-templates" to memorize:</p>
+        <ul>
+          <li><b>Scalar inequality:</b> $\alpha(x) \ge 0 \iff [\alpha(x)] \succeq 0$ (a $1 \times 1$ LMI).</li>
+          <li><b>LP:</b> $Gx \le h \iff \text{diag}(h - Gx) \succeq 0$ (diagonal LMI).</li>
+          <li><b>Quadratic epigraph:</b> $\|z\|_2^2 \le t \iff \begin{bmatrix} t & z^\top \\ z & I \end{bmatrix} \succeq 0$.</li>
+          <li><b>SOCP:</b> $\|u\|_2 \le v \iff \begin{bmatrix} v & u^\top \\ u & vI \end{bmatrix} \succeq 0$.</li>
+          <li><b>Matrix fractional:</b> $y^\top F^{-1} y \le t \iff \begin{bmatrix} F & y \\ y^\top & t \end{bmatrix} \succeq 0$.</li>
+        </ul>
+        <p><b>Proof for SOCP → SDP:</b> Assume $v > 0$. Take Schur complement of $[v]$: $vI - u \frac{1}{v} u^\top \succeq 0$. Multiply by $v$: $v^2 I - uu^\top \succeq 0$. Since $uu^\top$ has eigenvalue $\|u\|^2$, this means $\|u\|^2 \le v^2$, i.e., $\|u\| \le v$.</p>
+        <p>Thus: $\text{LP} \subseteq \text{QP} \subseteq \text{SOCP} \subseteq \text{SDP}$.</p>
+      </div>
+
       <h3>3.4 Key Properties</h3>
       <ul>
         <li><strong>Generality:</strong> SDP subsumes LP, QP, and SOCP</li>
@@ -470,6 +600,48 @@
           <!-- Widget will be rendered here -->
         </div>
       </div>
+
+      <h4>Example 3.3: Minimum-Volume Ellipsoid Containing Points</h4>
+      <p>Given points $a_1, \ldots, a_m \in \mathbb{R}^n$ spanning $\mathbb{R}^n$, find the smallest ellipsoid centered at the origin that contains all points.</p>
+      
+      <div class="proof-box">
+        <h4>SDP Formulation via Log-Det</h4>
+        <div class="proof-step">
+          <strong>Ellipsoid Representation:</strong> A centered ellipsoid is $\mathcal{E}(X) = \{x : x^\top X x \le 1\}$ with $X \succ 0$.
+          <br>Point $a_i$ is contained iff $a_i^\top X a_i \le 1$.
+        </div>
+        <div class="proof-step">
+          <strong>Volume:</strong> $\text{vol}(\mathcal{E}(X)) \propto \det(X^{-1/2}) = (\det X)^{-1/2}$.
+          <br>Minimizing volume $\equiv$ minimizing $\log \det(X^{-1})$.
+        </div>
+        <div class="proof-step">
+          <strong>Primal Problem:</strong>
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & \log \det(X^{-1}) \\
+          \text{subject to} \quad & a_i^\top X a_i \le 1, \ i = 1, \ldots, m \\
+          & X \succ 0
+          \end{aligned}
+          $$
+          The objective is convex (log-det of inverse is convex on PSD cone). Constraints are linear in $X$.
+        </div>
+      </div>
+      
+      <div class="theorem-box">
+        <h4>A Simple Feasible Solution via Schur Complement</h4>
+        <p>Let $S = \sum_{k=1}^m a_k a_k^\top$. Then $X_{\text{simple}} = S^{-1}$ is feasible.</p>
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p><b>Step 1:</b> Since $\{a_k\}$ span $\mathbb{R}^n$, we have $S \succ 0$, so $S^{-1}$ exists and is PD.</p>
+          <p><b>Step 2:</b> For each $i$, consider the block matrix:
+          $$ M_i = \begin{bmatrix} S & a_i \\ a_i^\top & 1 \end{bmatrix} $$
+          This can be written as a sum of rank-1 PSD matrices, hence $M_i \succeq 0$.</p>
+          <p><b>Step 3:</b> By Schur complement: $M_i \succeq 0$ and $S \succ 0$ implies $1 - a_i^\top S^{-1} a_i \ge 0$.
+          <br>Thus $a_i^\top X_{\text{simple}} a_i \le 1$ for all $i$.</p>
+        </div>
+      </div>
+      
+      <p>The dual problem provides a <b>lower bound</b> on the optimal value, allowing us to quantify how suboptimal any feasible solution is. For $X_{\text{simple}}$, duality analysis shows the suboptimality gap is bounded by $\log m$, meaning the volume ratio is at most $e^{\log m/2} = \sqrt{m}$.</p>
 
       <h3>3.6 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
       <p>The standard convex problem classes form a strict hierarchy of expressiveness. Understanding this hierarchy helps in selecting the most efficient solver for a given problem.</p>

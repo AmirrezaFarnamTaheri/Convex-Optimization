@@ -1,5 +1,21 @@
 [
   {
+    "filename": "diagonalization_eigenbasis.gif",
+    "description": "Animation showing diagonalization in eigenbasis. Left: in standard coordinates, a circle becomes an ellipse. Right: in eigen-coordinates, the same transformation is pure independent scaling along axes. Diagonalization reveals the hidden simplicity of a linear transformation."
+  },
+  {
+    "filename": "least_squares_via_qr.gif",
+    "description": "Animation of least squares via QR decomposition. Shows stable computation: y = q^T b, then x* = y/r, and Ax* is the same projection result. Demonstrates the numerical stability advantage of QR over normal equations."
+  },
+  {
+    "filename": "row_ops_four_spaces.gif",
+    "description": "Animation showing how row operations affect the four fundamental subspaces. Applying invertible row operation A' = EA: Domain (Row(A) and Null(A)) stay invariant. Codomain (Col(EA) and LeftNull(EA)) moves—but they remain orthogonal complements."
+  },
+  {
+    "filename": "row_reduction_preserves_solution.gif",
+    "description": "Animation showing row reduction preserves the solution set. Two equations as lines; a row operation morphs equation 2 while the intersection point stays fixed. This is the geometric reason elimination doesn't change the solution set."
+  },
+  {
     "filename": "schur_complement_block.png",
     "description": "A visualization of the Schur complement process as a transformation of matrix structure. Left: A large square matrix M partitioned into blocks A (top-left, red), B (top-right, blue), C (bottom-left, blue), and D (bottom-right, green). The determinant of the whole block matrix is represented as the volume of a parallelpiped formed by its column vectors. Center: An 'Elimination Matrix' E (block lower triangular) acting on M. Right: The result ME which is block upper triangular. The bottom-right block is still D, but the top-left block has transformed into the Schur complement S = A - BD^{-1}C. The determinant is det(S) * det(D), visualized as the product of the 'volumes' of the diagonal blocks."
   },

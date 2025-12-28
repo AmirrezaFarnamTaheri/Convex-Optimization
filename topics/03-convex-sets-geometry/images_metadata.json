@@ -1,6 +1,26 @@
 [
   {
     "filename": "minkowski-sum-difference.png",
-    "description": "Two-panel diagram illustrating Minkowski operations on convex sets. Left: Minkowski sum S1+S2 = {x1+x2 | x1∈S1, x2∈S2}, visualized by “sweeping” S2 around S1. Right: Minkowski difference/erosion S1⊖S2 = {x | x+S2 ⊆ S1}, visualized as the set of translations where S2 still fits inside S1."
+    "description": "Two-panel diagram illustrating Minkowski operations on convex sets. Left: Minkowski sum S1+S2 = {x1+x2 | x1∈S1, x2∈S2}, visualized by 'sweeping' S2 around S1. Right: Minkowski difference/erosion S1⊖S2 = {x | x+S2 ⊆ S1}, visualized as the set of translations where S2 still fits inside S1."
+  },
+  {
+    "filename": "layer3_31_universality.gif",
+    "description": "Animation showing vector space axioms are universal across different worlds. Three panels evolving in sync: R² vectors, polynomials a+bx, and functions a*sin(t)+b*cos(t). Same coefficients a(t), b(t) drive all three simultaneously. Proves vector spaces are not defined by geometry—they are defined by addition, scalar multiplication, and axioms."
+  },
+  {
+    "filename": "layer3_32_subspace_affine.gif",
+    "description": "Animation distinguishing subspace from affine set. Blue arrow: vector in subspace (line through origin). Red arrow: same vector plus fixed offset → affine set. Both move identically but one always passes through 0, the other never does. Clarifies: Ax=0 is a subspace, Ax=b is affine (unless b=0)."
+  },
+  {
+    "filename": "layer3_33_span_generators.gif",
+    "description": "Animation of span and generating sets with redundancy. v1, v2 (dashed arrows): generators. v3 (dotted): redundant. Red arrow: all linear combinations αv1+βv2 reach everything v3 ever could. Locks in: span = all linear combinations, redundancy = vectors adding no new reach, basis = minimal spanning set."
+  },
+  {
+    "filename": "epigraph_dual_norm_l1_linf.gif",
+    "description": "Animation of ℓ1 epigraph via dual ℓ∞. Left: diamond ||x||_1 ≤ γ. Red arrow u* = sign(x) always satisfies ||u*||_∞ ≤ 1. Shows identity: sup over ||u||_∞ ≤ 1 of u^T x = ||x||_1. Right: epigraph view t ≥ ||x||_1. u* snaps when x crosses an axis (face-switching)."
+  },
+  {
+    "filename": "epigraph_dual_norm_linf_l1.gif",
+    "description": "Animation of ℓ∞ epigraph via dual ℓ1. Left: square ||x||_∞ ≤ γ. Red arrow u* is one-hot vector (all mass on coordinate with largest |x_i|), satisfying ||u*||_1 = 1. Shows identity: sup over ||u||_1 ≤ 1 of u^T x = ||x||_∞. u* jumps when max-absolute coordinate switches."
   }
 ]

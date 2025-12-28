@@ -605,6 +605,28 @@
           The first-order condition is equivalent to saying $D_f(y, x) \ge 0$ for all $x, y$. This non-negative "distance" measures how much the function curves up from its tangent plane and is central to analyzing mirror descent algorithms.</p>
         </div>
 
+        <div class="proof-box">
+          <h4>First-Order Optimality Condition</h4>
+          <p>The first-order characterization immediately gives a powerful <b>optimality condition</b>.</p>
+          <div class="proof-step">
+            <strong>Theorem:</strong> Let $f$ be convex and differentiable. Then $x^*$ is a <b>global minimizer</b> of $f$ if and only if:
+            $$ \nabla f(x^*) = 0 $$
+          </div>
+          <div class="proof-step">
+            <strong>Proof ($\Leftarrow$):</strong> Suppose $\nabla f(x^*) = 0$. By the first-order condition, for all $y$:
+            $$ f(y) \ge f(x^*) + \nabla f(x^*)^\top (y - x^*) = f(x^*) + 0 = f(x^*) $$
+            Thus $x^*$ is a global minimizer.
+          </div>
+          <div class="proof-step">
+            <strong>Proof ($\Rightarrow$):</strong> Suppose $x^*$ is a global minimizer but $\nabla f(x^*) \neq 0$. Then moving in direction $-\nabla f(x^*)$ would decrease $f$ (by differentiability), contradicting minimality.
+          </div>
+          <div class="proof-step">
+            <strong>For constrained problems:</strong> When minimizing over a convex set $C$, the condition becomes:
+            $$ \nabla f(x^*)^\top (y - x^*) \ge 0 \quad \forall y \in C $$
+            This is the variational inequality characterization of optimality.
+          </div>
+        </div>
+
         <h3>3.2 Monotonicity of the Gradient</h3>
         <p>Another powerful first-order characterization involves the change in gradients. A differentiable function $f$ is convex <b>if and only if</b> its gradient is a <a href="#" class="definition-link">monotone operator</a>:</p>
         $$

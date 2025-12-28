@@ -1,5 +1,65 @@
 [
   {
+    "filename": "linear_map_grid.gif",
+    "description": "Animation showing a linear map as structure-preserving deformation. A square grid smoothly deforms under a linear transformation. Straight lines remain straight, parallel lines remain parallel, and the origin never moves. This visual locks in the core concept: a linear map preserves linear structure."
+  },
+  {
+    "filename": "four_fundamental_subspaces.gif",
+    "description": "Animation of the four fundamental subspaces in action. Domain panel shows Row(A) vs Null(A) directions. Codomain panel shows Col(A) vs LeftNull(A) directions. Two inputs differing only in their nullspace component map to the same output, demonstrating the kernel/row-space split."
+  },
+  {
+    "filename": "kernel_image_rank_unified.gif",
+    "description": "Unified animation of kernel, image, and rank. Left panel (domain): input vector explores all directions with kernel direction marked. Right panel (codomain): output lands on the image line. When input aligns with kernel, output snaps to zero. Caption shows rank-nullity: dim(R^2) = rank(A) + nullity(A) = 1 + 1."
+  },
+  {
+    "filename": "basis_coordinates.gif",
+    "description": "Animation demonstrating basis and coordinates. A fixed blue vector v in a skewed red basis {b1, b2}. Coefficients (c1, c2) update live as the basis changes, always satisfying v = c1*b1 + c2*b2. Illustrates that coordinates depend on basis choice—the vector itself is the geometry."
+  },
+  {
+    "filename": "dimension_degrees_of_freedom.gif",
+    "description": "Animation showing dimension as degrees of freedom. Left panel: motion constrained to a line (1 degree of freedom, 1 slider). Right panel: motion fills the plane (2 degrees of freedom, 2 sliders). Dimension = number of independent parameters needed to describe all vectors."
+  },
+  {
+    "filename": "determinant_area_orientation.gif",
+    "description": "Animation showing determinant as signed area scaling. The unit square becomes a parallelogram. |det(A)| is the area scale factor; the sign indicates orientation preservation or flip. When det(A) ≈ 0, the parallelogram collapses (singular map)."
+  },
+  {
+    "filename": "determinant_column_dependence.gif",
+    "description": "Animation showing det(A) → 0 when columns become dependent. As two columns become nearly collinear, the parallelogram flattens and determinant shrinks to ~0. Geometric proof: det(A) = 0 ⟺ columns are linearly dependent ⟺ A is not invertible."
+  },
+  {
+    "filename": "diagonalization_eigenbasis.gif",
+    "description": "Animation showing diagonalization in eigenbasis. Left: in standard coordinates, a circle becomes an ellipse. Right: in eigen-coordinates, the same transformation is pure independent scaling along axes. Diagonalization reveals hidden simplicity."
+  },
+  {
+    "filename": "trace_sum_eigenvalues_constant.gif",
+    "description": "Animation showing trace as sum of eigenvalues. A circle maps to an ellipse while λ1 increases and λ2 decreases, but tr(A) = λ1 + λ2 stays fixed. The trace is a 'total scaling budget' across invariant directions."
+  },
+  {
+    "filename": "layer2_21_dot_product_projection.gif",
+    "description": "Animation showing dot product as projection (shadow length). Black arrow: fixed direction u. Blue arrow: moving vector x. Red dashed segment: projection of x onto u. Displays x^T u = ||u|| × (signed shadow length of x on u). Eliminates misconception that dot product is just coordinate multiplication."
+  },
+  {
+    "filename": "layer2_23_orthogonality_projection.gif",
+    "description": "Animation of orthogonality and projection decomposition. Black arrow: fixed u. Blue: v. Red: proj_u(v). Green: residual v - proj_u(v). Displayed: ⟨residual, u⟩ ≈ 0. Core fact behind least squares, normal equations, Gram-Schmidt, orthogonal decompositions."
+  },
+  {
+    "filename": "orthonormal_coordinates.gif",
+    "description": "Animation showing orthonormal basis coordinates as dot products. Demonstrates v = (q1^T v)q1 + (q2^T v)q2. When basis is orthonormal, coefficients are literally the inner products with basis vectors."
+  },
+  {
+    "filename": "least_squares_projection.gif",
+    "description": "Animation of least squares as projection onto Col(A). Shows b moving, its projection p = proj_{Col(A)}(b), and Ax* = p. The residual length ||b - Ax*|| updates live, visualizing the minimization of squared error."
+  },
+  {
+    "filename": "least_squares_via_qr.gif",
+    "description": "Animation of least squares via QR decomposition. Shows stable computation: y = q^T b, then x* = y/r, and Ax* is the same projection result. Demonstrates the numerical stability advantage of QR over normal equations."
+  },
+  {
+    "filename": "supporting_hyperplanes_l1_linf_three_panels.gif",
+    "description": "Three-panel animation of supporting hyperplanes over ℓ1/ℓ∞ balls. Panel 1 (diamond): sup over ||x||_1 ≤ 1 gives ||u||_∞. Panel 2 (square): sup over ||x||_∞ ≤ 1 gives ||u||_1. Panel 3 overlays both showing different 'shadow lengths' for the same direction."
+  },
+  {
     "filename": "schur_complement_block.png",
     "description": "A visualization of the Schur complement process as a transformation of matrix structure. Left: A large square matrix M partitioned into blocks A (top-left, red), B (top-right, blue), C (bottom-left, blue), and D (bottom-right, green). The determinant of the whole block matrix is represented as the volume of a parallelpiped formed by its column vectors. Center: An 'Elimination Matrix' E (block lower triangular) acting on M. Right: The result ME which is block upper triangular. The bottom-right block is still D, but the top-left block has transformed into the Schur complement S = A - BD^{-1}C. The determinant is now clearly det(S) * det(D), visualized as the product of the 'volumes' of the diagonal blocks."
   },

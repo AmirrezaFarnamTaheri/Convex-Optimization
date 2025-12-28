@@ -242,6 +242,24 @@
                 <li>$(L_p \text{ norm cone})^* = L_q \text{ norm cone}$ where $1/p + 1/q = 1$.</li>
             </ul>
         </div>
+        
+        <div class="proof-box">
+          <h4>Proof: Self-Duality of the Second-Order Cone</h4>
+          <p>We prove $\mathcal{Q}^{n+1} = (\mathcal{Q}^{n+1})^*$ where $\mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^n \times \mathbb{R} : \|x\|_2 \le t\}$.</p>
+          <div class="proof-step">
+            <strong>Step 1: $\mathcal{Q} \subseteq \mathcal{Q}^*$.</strong>
+            Take $(x, t), (y, s) \in \mathcal{Q}$. We show $(x, t)^\top (y, s) = x^\top y + ts \ge 0$.
+            <br>By Cauchy-Schwarz: $x^\top y \ge -\|x\|_2 \|y\|_2 \ge -ts$.
+            <br>Thus $x^\top y + ts \ge 0$. So every element of $\mathcal{Q}$ is in $\mathcal{Q}^*$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: $\mathcal{Q}^* \subseteq \mathcal{Q}$.</strong>
+            Take $(y, s) \in \mathcal{Q}^*$. We must show $\|y\|_2 \le s$.
+            <br>For any $x$ with $\|x\|_2 \le 1$, we have $(x, 1) \in \mathcal{Q}$.
+            <br>By dual membership: $x^\top y + s \ge 0$ for all such $x$.
+            <br>Taking $x = -y/\|y\|_2$ (if $y \ne 0$): $-\|y\|_2 + s \ge 0 \implies \|y\|_2 \le s$.
+          </div>
+        </div>
 
         <div class="proof-box">
           <h4>Proof: Self-Duality of the PSD Cone</h4>

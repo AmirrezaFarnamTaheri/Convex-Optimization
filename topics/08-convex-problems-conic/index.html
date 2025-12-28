@@ -641,7 +641,30 @@
         </div>
       </div>
       
-      <p>The dual problem provides a <b>lower bound</b> on the optimal value, allowing us to quantify how suboptimal any feasible solution is. For $X_{\text{simple}}$, duality analysis shows the suboptimality gap is bounded by $\log m$, meaning the volume ratio is at most $e^{\log m/2} = \sqrt{m}$.</p>
+      <div class="proof-box">
+        <h4>Dual Analysis: Quantifying Suboptimality</h4>
+        <p>The dual of the minimum-volume ellipsoid problem is:</p>
+        $$ \maximize_{\lambda \ge 0} \; \log\det\Big(\sum_{i=1}^m \lambda_i a_i a_i^\top\Big) - \mathbf{1}^\top \lambda + n $$
+        <p>subject to $\sum_{i=1}^m \lambda_i a_i a_i^\top \succ 0$.</p>
+        
+        <div class="proof-step">
+          <strong>Restricted Dual:</strong> Restrict to $\lambda = t\mathbf{1}$ (equal weights). Then $\sum_i \lambda_i a_i a_i^\top = tS$, and the dual objective becomes:
+          $$ \Phi(t) = \log\det(tS) - mt + n = n\log t + \log\det S - mt + n $$
+        </div>
+        <div class="proof-step">
+          <strong>Optimize:</strong> Setting $\Phi'(t) = n/t - m = 0$ gives $t^* = n/m$. The optimal restricted dual value is:
+          $$ \Phi(t^*) = \log\det S + n\log(n/m) - n + n = \log\det S - n\log(m/n) $$
+        </div>
+        <div class="proof-step">
+          <strong>Gap Bound:</strong> By weak duality, $p^* \ge \Phi(t^*)$. Since $f_0(X_{\text{simple}}) = \log\det S$:
+          $$ f_0(X_{\text{simple}}) - p^* \le n\log(m/n) $$
+        </div>
+        <div class="proof-step">
+          <strong>Volume Ratio:</strong> Since $\text{vol}(\mathcal{E}(X)) \propto \exp(\frac{1}{2}f_0(X))$:
+          $$ \boxed{\frac{\text{vol}(\mathcal{E}(X_{\text{simple}}))}{\text{vol}(\mathcal{E}(X^*))} \le \left(\frac{m}{n}\right)^{n/2}} $$
+        </div>
+        <p>This bound depends only on the number of points $m$ and dimension $n$, providing a worst-case guarantee that the simple covariance-type ellipsoid is never catastrophically worse than optimal.</p>
+      </div>
 
       <h3>3.6 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
       <p>The standard convex problem classes form a strict hierarchy of expressiveness. Understanding this hierarchy helps in selecting the most efficient solver for a given problem.</p>

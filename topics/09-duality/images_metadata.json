@@ -14,6 +14,37 @@
   {
     "filename": "trust_region_strong_duality.png",
     "description": "Illustration of strong duality in the trust-region problem despite nonconvexity. The quadratic objective x^T A x + 2b^T x is minimized over the unit ball. Even when A is not PSD, the 1D dual problem solves the primal exactly."
+  },
+  {
+    "filename": "duality_lagrangian_demo.gif",
+    "description": "Animated demonstration of the Lagrangian L(x,λ) = (x-2)² + λ(x-1) for varying λ. Shows how the Lagrangian curves shift as λ increases, the moving minimizer argmin_x L, and the corresponding dual function value g(λ). Demonstrates that g(λ) provides a certified lower bound on the primal optimal value."
+  },
+  {
+    "filename": "duality_kkt_2d.gif",
+    "description": "2D KKT geometry animation for the problem min x²+y² s.t. x+y≥1. Shows contours of the objective, the constraint boundary x+y=1, and the argmin of L(x,y,λ) = (λ/2, λ/2) moving as λ varies from 0 to 2. At λ*=1, the minimizer hits the constraint boundary at the primal optimum (0.5, 0.5)."
+  },
+  {
+    "filename": "duality_sensitivity.gif",
+    "description": "Sensitivity analysis animation showing the perturbation function p(u) = min (x-2)² s.t. x≤1+u. Demonstrates how the supporting line ℓ_λ(u) = 1-λu rotates as λ varies, with the optimal dual variable λ*=2 being the slope (subgradient) of p(u) at u=0."
+  },
+  {
+    "filename": "duality_saddle_path.gif",
+    "description": "Primal-dual saddle-point dynamics visualization. Shows contours of L(x,λ) in the (x,λ) plane and traces the primal-dual iteration path converging to the saddle point (x*=1, λ*=2). The Lagrangian is minimized in x and maximized in λ at the saddle point."
+  },
+  {
+    "filename": "duality_comp_slack.gif",
+    "description": "Complementary slackness animation. As the constraint boundary x=1+u moves, shows how λ*(u) drops to zero when the constraint becomes inactive (u≥1). Demonstrates the core KKT insight: active constraints have positive multipliers; inactive constraints have zero multipliers."
+  },
+  {
+    "filename": "duality_farkas_infeasible.gif",
+    "description": "Farkas' Lemma infeasibility certificate animation. Visualizes the contradictory system x+y≤0 and x+y≥1 (no feasible region). Shows how the certificate y=t·(1,1) with t>0 proves infeasibility: y≥0, y^T A = 0, and y^T b < 0."
+  },
+  {
+    "filename": "duality_gap_convergence.gif",
+    "description": "Duality gap convergence animation. Plots the primal value f₀(x_k), dual bound g(λ_k), and gap over iterations. Shows both sequences converging to the common optimal value p*=d*=1, demonstrating how primal-dual methods close the duality gap."
+  },
+  {
+    "filename": "duality_lower_envelope.gif",
+    "description": "Animated construction of the dual function as the lower envelope. For each λ value, shows the Lagrangian L(x,λ) curve and its minimum point, building up the envelope g(λ) = inf_x L(x,λ). Visually demonstrates why g is always concave."
   }
 ]
-

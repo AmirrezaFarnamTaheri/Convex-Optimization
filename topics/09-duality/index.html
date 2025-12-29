@@ -1345,6 +1345,53 @@
   </div>
 </div>
 
+      <div class="problem">
+        <h3>Problem 14: Dual of One Inequality Constraint (General Convexity)</h3>
+        <p>Derive the dual of $\min c^\top x$ subject to $f(x) \le 0$ in terms of the conjugate $f^*$, <b>without assuming $f$ is convex</b>. Explain why the dual is convex.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: Dual Function.</strong>
+            $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+            If $\lambda = 0$, $\inf c^\top x = -\infty$ (since $c \ne 0$). So assume $\lambda > 0$.
+            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = -\lambda \sup_x \left( \left(-\frac{c}{\lambda}\right)^\top x - f(x) \right) = -\lambda f^*\left(-\frac{c}{\lambda}\right) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Dual Problem.</strong>
+            $\max_{\lambda > 0} -\lambda f^*(-c/\lambda)$. Equivalently: $\min_{\lambda > 0} \lambda f^*(-c/\lambda)$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Convexity.</strong>
+            The function $h(\lambda) = \lambda f^*(-c/\lambda)$ is the <b>perspective function</b> of the conjugate $f^*$.
+            Since $f^*$ is always convex (supremum of affine functions), its perspective is convex.
+            Thus, the dual problem is convex regardless of the convexity of $f$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>Problem 15: Geometric View of LP Duality (Relaxation)</h3>
+        <p>Consider $\min c^\top x$ s.t. $Ax \le b$. Construct a "relaxed" problem by aggregating constraints with weights $w \ge 0$: $\min c^\top x$ s.t. $w^\top A x \le w^\top b$.
+        <br>Show that maximizing the lower bound from this relaxation yields the LP dual.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: Relaxed Problem.</strong>
+            The constraint is $(A^\top w)^\top x \le b^\top w$. This defines a halfspace $H_w$.
+            We minimize $c^\top x$ over $H_w$.
+            The minimum is finite only if the normal vector of the halfspace aligns with $-c$.
+            Specifically, if $A^\top w = -c$, the minimum is bounded and equals $-b^\top w$ (achieved at the boundary).
+            If $A^\top w \ne -c$, we can slide to $-\infty$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Best Lower Bound.</strong>
+            We want to maximize the lower bound $-b^\top w$ subject to the validity condition $A^\top w = -c$ and weights $w \ge 0$.
+            $$ \max -b^\top w \quad \text{s.t.} \quad A^\top w = -c, \ w \ge 0 $$
+            This is exactly the standard dual of the LP.
+          </div>
+        </div>
+      </div>
+
 </section>
     </article>
 

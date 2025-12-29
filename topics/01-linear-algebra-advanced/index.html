@@ -126,27 +126,45 @@
       <h2>2. The Spectral Layer: Eigenvalues and Diagonalization</h2>
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
-      <h3>2.1 Invariant Subspaces and Eigenvalues</h3>
-      <p>The concept of eigenvalues begins with <b>invariant subspaces</b>. A subspace $U \subseteq V$ is $T$-invariant if $T(u) \in U$ for all $u \in U$. This allows us to restrict the operator to a smaller domain, simplifying the analysis.</p>
-      <ul>
-        <li><b>Trivial Invariants:</b> $\{0\}$, $V$, $\text{ker}(T)$, and $\text{im}(T)$ are always invariant.</li>
-        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$.</li>
-      </ul>
+      <h3>2.1 Invariant Directions and Dynamics</h3>
+      <p>A matrix $A$ generally "mixes" directions—rotating, stretching, and shearing them. <b>Eigenvectors</b> are the special directions that refuse to be mixed. They are the <b>invariant directions</b> of the transformation.</p>
 
-      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
-      <br><b>The Logic of Detection:</b>
-      $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
-      Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ is singular (not invertible). This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
-      <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
+      <h4>The "Direction Unchanged" Interpretation</h4>
+      <p>If $A\mathbf{v} = \lambda \mathbf{v}$ (with $\mathbf{v} \neq 0$), then $A$ maps the line spanned by $\mathbf{v}$ onto itself:
+      $$ \text{span}(\mathbf{v}) \mapsto \text{span}(\mathbf{v}) $$
+      Along this line, the matrix acts as a simple scalar multiplier $\lambda$.
+      <ul>
+        <li>$|\lambda| > 1$: Expansion along this mode (instability).</li>
+        <li>$|\lambda| < 1$: Contraction along this mode (stability).</li>
+        <li>$\lambda < 0$: The direction flips (oscillation).</li>
+      </ul>
+      </p>
+
+      <h4>Why Eigenvalues Govern Dynamics</h4>
+      <p>Consider a discrete-time system $\mathbf{x}_{k+1} = A \mathbf{x}_k$. The solution is $\mathbf{x}_k = A^k \mathbf{x}_0$.
+      If we express the initial state in the eigenbasis $\mathbf{x}_0 = \sum c_i \mathbf{v}_i$, then:
+      $$ A^k \mathbf{x}_0 = \sum c_i A^k \mathbf{v}_i = \sum c_i \lambda_i^k \mathbf{v}_i $$
+      The long-term behavior is entirely dominated by the eigenvalues with the largest magnitude (spectral radius). If $\max |\lambda_i| < 1$, the system is stable ($\mathbf{x}_k \to 0$). If $\max |\lambda_i| > 1$, it explodes.</p>
 
       <h3>2.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
-      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
-      <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
-      <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
-      </ul>
-      <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
+      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.</p>
+
+      <h4>What Diagonalization Really Means</h4>
+      <p>If $A = V \Lambda V^{-1}$, we can view the transformation $\mathbf{y} = A\mathbf{x}$ as a three-step process:
+      1. <b>Change Basis ($V^{-1}$):</b> Convert $\mathbf{x}$ into eigen-coordinates.
+      2. <b>Scale ($\Lambda$):</b> Multiply each coordinate $i$ by $\lambda_i$. No mixing happens here.
+      3. <b>Reconstruct ($V$):</b> Convert back to the original basis.
+      <br>Diagonalization means "the matrix is just a bundle of scalar multiplications, viewed from the wrong angle."</p>
+
+      <div class="definition-box">
+        <h4>The Criterion</h4>
+        <p>Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
+        <ul>
+            <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
+            <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
+        </ul>
+        <br><b>Sufficient Condition:</b> If an $n \times n$ matrix has $n$ <b>distinct</b> eigenvalues, it is guaranteed to be diagonalizable.</p>
+      </div>
 
       <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
       <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
@@ -282,19 +300,48 @@
       <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
       <p>$$ \|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}| $$</p>
       <div class="proof-box">
-        <h4>Derivation</h4>
-        <p>Let $\mathbf{x}$ be a unit vector in $\ell_1$. Then $A\mathbf{x} = \sum x_j a_j$ (linear combination of columns).
-        $$ \|A\mathbf{x}\|_1 = \|\sum_j x_j a_j\|_1 \le \sum_j |x_j| \|a_j\|_1 \le (\max_j \|a_j\|_1) \sum_j |x_j| = \max_j \|a_j\|_1 $$
-        Equality is achieved by choosing $\mathbf{x} = e_k$ where $k$ is the index of the column with the largest norm.</p>
+        <h4>Rigorous Derivation</h4>
+        <p><b>Step 1: Upper Bound.</b> Let $\|\mathbf{x}\|_1 = 1$. The $i$-th component of $A\mathbf{x}$ is $(A\mathbf{x})_i = \sum_{j=1}^n a_{ij} x_j$.
+        Taking the absolute value:
+        $$ |(A\mathbf{x})_i| \le \sum_{j=1}^n |a_{ij}| |x_j| $$
+        Summing over $i$ to get the $\ell_1$ norm:
+        $$ \|A\mathbf{x}\|_1 = \sum_{i=1}^m |(A\mathbf{x})_i| \le \sum_{i=1}^m \sum_{j=1}^n |a_{ij}| |x_j| = \sum_{j=1}^n |x_j| \left( \sum_{i=1}^m |a_{ij}| \right) $$
+        Let $c_j = \sum_{i=1}^m |a_{ij}|$ be the absolute sum of column $j$. Then:
+        $$ \|A\mathbf{x}\|_1 \le \sum_{j=1}^n |x_j| c_j \le (\max_j c_j) \sum_{j=1}^n |x_j| = (\max_j c_j) \|\mathbf{x}\|_1 = \max_j c_j $$
+        Thus, $\|A\|_1 \le \max_j \sum_i |a_{ij}|$.
+        <br><b>Step 2: Lower Bound (Achievability).</b> Pick the index $k$ that maximizes the column sum: $k = \arg\max_j c_j$. Choose $\mathbf{x} = \mathbf{e}_k$ (standard basis vector). Then $\|\mathbf{x}\|_1=1$ and $A\mathbf{x}$ is exactly the $k$-th column of $A$.
+        $$ \|A \mathbf{e}_k\|_1 = \|\mathbf{a}_k\|_1 = c_k = \max_j c_j $$
+        Since we found a unit vector achieving the bound, equality holds.</p>
+        <p><b>Intuition:</b> With an $\ell_1$ budget, you can put all your "mass" on a single coordinate. To maximize stretch, you put it on the column with the largest total mass.</p>
       </div>
 
       <h3>3.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
       <p>$$ \|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}| $$</p>
-      <p><i>Intuition:</i> To maximize the $\infty$-norm of $A\mathbf{x}$, we want to maximize a single component $|(A\mathbf{x})_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
+      <div class="proof-box">
+        <h4>Rigorous Derivation</h4>
+        <p><b>Step 1: Upper Bound.</b> Let $\|\mathbf{x}\|_\infty = 1$, so $|x_j| \le 1$ for all $j$. Consider the $i$-th component of $A\mathbf{x}$:
+        $$ |(A\mathbf{x})_i| = \left| \sum_{j=1}^n a_{ij} x_j \right| \le \sum_{j=1}^n |a_{ij}| |x_j| \le \sum_{j=1}^n |a_{ij}| $$
+        The $\ell_\infty$ norm is the maximum of these components:
+        $$ \|A\mathbf{x}\|_\infty = \max_i |(A\mathbf{x})_i| \le \max_i \sum_{j=1}^n |a_{ij}| $$
+        <br><b>Step 2: Lower Bound (Achievability).</b> Let $k$ be the index of the row with the maximum absolute sum. Construct $\mathbf{x}$ such that $x_j = \mathrm{sign}(a_{kj})$. Then $\|\mathbf{x}\|_\infty = 1$ (assuming row $k$ is not zero), and for this row:
+        $$ (A\mathbf{x})_k = \sum_{j=1}^n a_{kj} \mathrm{sign}(a_{kj}) = \sum_{j=1}^n |a_{kj}| $$
+        Thus $\|A\mathbf{x}\|_\infty \ge \sum_j |a_{kj}|$, achieving the bound.</p>
+        <p><b>Intuition:</b> With an $\ell_\infty$ budget, you can set every coordinate to $\pm 1$. To maximize the output, you align the signs of $\mathbf{x}$ with the row of $A$ that has the most "aggregate magnitude".</p>
+      </div>
 
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
-      <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
+
+      <h4>Geometry: The Ellipsoid Radius</h4>
+      <p>The unit ball $\{\mathbf{x} : \|\mathbf{x}\|_2 \le 1\}$ is a sphere. A linear map $A$ transforms this sphere into an <b>ellipsoid</b>. The operator norm $\|A\|_2$ is simply the <b>length of the longest semi-axis</b> of that ellipsoid.</p>
+
+      <h4>Why Singular Values Appear ($A^\top A$)</h4>
+      <p>Why does the transpose appear? Let's maximize the squared output length:
+      $$ \|A\mathbf{x}\|_2^2 = (A\mathbf{x})^\top (A\mathbf{x}) = \mathbf{x}^\top A^\top A \mathbf{x} $$
+      We are maximizing the quadratic form defined by the symmetric matrix $M = A^\top A$ over the unit sphere. By the theory of the <b>Rayleigh Quotient</b> (see Section 2.4), this maximum is exactly the largest eigenvalue of $M$:
+      $$ \max_{\|\mathbf{x}\|=1} \mathbf{x}^\top (A^\top A) \mathbf{x} = \lambda_{\max}(A^\top A) $$
+      Taking the square root gives $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$. These square roots of eigenvalues of $A^\top A$ are defined as the <b>singular values</b>, $\sigma_i(A)$.
+      <br><b>Important Distinction:</b> Eigenvalues measure stretching along invariant directions ($A\mathbf{x} = \lambda \mathbf{x}$). Singular values measure the maximum stretching dimension ($A\mathbf{x} = \sigma \mathbf{u}$), even if the input and output directions differ (rotation/shear).</p>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>

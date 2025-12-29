@@ -418,6 +418,16 @@
             <br><i>Optimization consequence:</i> <b>Sparsity.</b> When minimizing a linear function over the $\ell_1$ ball, the solution usually snaps to a vertex (where many coordinates are zero). This is the geometric reason for LASSO regression.</li>
         </ul>
 
+        <div class="insight">
+          <h4>Optimization View: Norms as Shapes</h4>
+          <p>Key intuition: Optimization problems like "minimize $\|x\|$ subject to constraints" are geometrically equivalent to "find the smallest scaled copy of the unit ball that touches the feasible set."</p>
+          <ul>
+            <li><b>$\ell_2$:</b> Inflating a sphere. Touches at a single point (usually not sparse).</li>
+            <li><b>$\ell_1$:</b> Inflating a diamond. Touches at a corner (sparse).</li>
+            <li><b>$\ell_\infty$:</b> Inflating a square. Touches along a face (many equal components).</li>
+          </ul>
+        </div>
+
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/norm-balls.png"
                alt="Comparison of unit balls for L1, L2, and L-infinity norms"

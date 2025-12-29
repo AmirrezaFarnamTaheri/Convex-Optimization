@@ -670,7 +670,42 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 7: Simplex Projection</h3>
+        <h3>Problem 7: Sum of Largest Elements (Constructive Duality)</h3>
+        <p>Consider the function $f(x) = \sum_{i=1}^r x_{[i]}$, the sum of the $r$ largest components of $x$. Derive a compact LP formulation for the constraint $f(x) \le \alpha$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: Variational Definition.</strong>
+            $f(x) = \max \{ x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$. The extreme points of this polytope correspond to selecting exactly $r$ coordinates.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Dual of the Inner Maximization.</strong>
+            We want to express $f(x) \le \alpha$. Using LP duality on the inner problem:
+            $$ \max_y \{ x^\top y \mid y \le \mathbf{1}, \mathbf{1}^\top y = r, y \ge 0 \} = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Compact Formulation.</strong>
+            The condition $f(x) \le \alpha$ is satisfied iff there exist $t, u$ such that:
+            $$ rt + \sum u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
+            This replaces a combinatorial condition ($\binom{n}{r}$ inequalities) with $2n+1$ linear inequalities.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>Problem 8: Markowitz Portfolio with Diversification</h3>
+        <p>Add a constraint to the Markowitz problem to ensure "no more than 80% of capital in any 10% of assets".</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>Let $r = \lfloor 0.1 n \rfloor$. The constraint is $\sum_{i=1}^r x_{[i]} \le 0.8$.
+          Using the result from Problem 7, we introduce variables $t, u$ and add:
+          $$ rt + \mathbf{1}^\top u \le 0.8, \quad u \ge x - t\mathbf{1}, \quad u \ge 0 $$
+          The portfolio problem remains a convex QP (or SOCP/LP depending on risk model).</p>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>Problem 9: Simplex Projection</h3>
         <p><b>Primal:</b> $\min \frac{1}{2}\|x-z\|_2^2$ s.t. $\mathbf{1}^\top x = 1, x \ge 0$.</p>
         <p><b>KKT Approach (No explicit dual needed for solution):</b>
         <br>Stationarity: $x - z - \lambda + \nu \mathbf{1} = 0 \implies x = z + \lambda - \nu \mathbf{1}$.
@@ -683,7 +718,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 8: Logistic Regression</h3>
+        <h3>Problem 10: Logistic Regression</h3>
         <p><b>Primal:</b> $\min \sum \log(1 + e^{x_i^\top w}) - y_i x_i^\top w + \frac{\lambda}{2}\|w\|^2$.</p>
         <p><b>Dual:</b> Uses the conjugate of the logistic loss (binary entropy).
         <br>The dual involves maximizing entropy subject to correlation constraints with data.

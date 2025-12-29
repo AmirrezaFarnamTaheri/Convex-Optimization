@@ -380,6 +380,13 @@
       <h3>1.7 Matrix Algebra from Linear Maps</h3>
       <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>typed operator</b>: $A: \mathbb{R}^n \to \mathbb{R}^m$. The number of columns $n$ is the input dimension, and the number of rows $m$ is the output dimension. This prevents shape errors: $BA$ is only defined if the output space of $A$ matches the input space of $B$.</p>
 
+      <h4>Theorem (Matrix Representation)</h4>
+      <p>Let $T: V \to W$ be a linear map between finite-dimensional vector spaces. Fix a basis $\mathcal{B}=\{v_1,\dots,v_n\}$ for $V$ and a basis $\mathcal{C}=\{w_1,\dots,w_m\}$ for $W$. Then there exists a unique matrix $A \in \mathbb{R}^{m \times n}$ such that for every $x \in V$:</p>
+      $$ [T(x)]_\mathcal{C} = A [x]_\mathcal{B} $$
+      <p><b>Explicit Construction:</b> The $j$-th column of $A$ consists of the coordinates of the image of the $j$-th basis vector $v_j$ with respect to the basis $\mathcal{C}$:</p>
+      $$ \text{Column } j \text{ of } A = [T(v_j)]_\mathcal{C} $$
+      <p>This theorem bridges the abstract definition of linear maps (additivity, homogeneity) with the concrete world of matrix algebra. It implies that every property of matrices (rank, trace, determinant) corresponds to an intrinsic property of linear maps, provided we account for coordinate systems.</p>
+
       <figure style="text-align: center; margin: 24px 0;">
         <img src="../../Contents To Adopt/Animations/linear_map_grid.gif"
              alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"
@@ -424,6 +431,13 @@
         <li><b>Non-Commutativity:</b> It is not commutative ($AB \neq BA$) because the order of operations matters (rotating then projecting is different from projecting then rotating).</li>
       </ul>
       </p>
+
+      <h4>Change of Basis</h4>
+      <p>Since matrices depend on the choice of basis, we must understand how they transform when the basis changes. Let $\mathcal{B}$ and $\mathcal{B}'$ be two bases for $V$. The <b>change-of-basis matrix</b> $P$ transforms coordinates from $\mathcal{B}'$ to $\mathcal{B}$:</p>
+      $$ [x]_\mathcal{B} = P [x]_{\mathcal{B}'} $$
+      <p>The columns of $P$ are simply the coordinates of the new basis vectors expressed in the old basis. If a linear operator $T: V \to V$ is represented by matrix $A$ in basis $\mathcal{B}$ and by matrix $A'$ in basis $\mathcal{B}'$, the relationship is:</p>
+      $$ A' = P^{-1} A P $$
+      <p>This is the definition of <b>similarity</b>. Properties invariant under this transformation (like eigenvalues, trace, and determinant) are intrinsic properties of the operator $T$, not artifacts of the coordinate system.</p>
 
       <h3>1.8 Linear Independence, Basis, and Dimension</h3>
       <p>A <b>basis</b> is where linear algebra stops being about abstract sets and becomes a working coordinate system. To get there, we first need to formalize "redundancy".</p>
@@ -530,6 +544,11 @@
       <p>A <a href="#" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
 
       <h3>2.1 Kernel and Image: Where Information Dies and Survives</h3>
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: Kernel and Image</h3>
+        <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
+        <div id="widget-kernel-image" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
       <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
         <li><b>Kernel (Nullspace):</b> $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
@@ -1485,6 +1504,11 @@
 
       <h3>5.4 The Gram-Schmidt Process</h3>
       <p>Gram-Schmidt is not just an algorithm; it is the <b>constructive proof</b> that every finite-dimensional subspace admits an orthonormal basis. It systematically manufactures geometry from algebra.</p>
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: Gram-Schmidt Process</h3>
+        <p>Watch step-by-step how an orthonormal basis is built. At each step, we subtract the projection onto the previously constructed subspace to get a new orthogonal direction.</p>
+        <div id="widget-gram-schmidt" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
 
       <div class="insight">
         <h4>Gram-Schmidt is "Projection Theorem in Disguise"</h4>
@@ -3145,6 +3169,11 @@
   </script>
 
   <!-- Widget Loaders -->
+  <script type="module">
+    import { initLinearAlgebraDemos } from './widgets/js/linear-algebra-demos.js';
+    initLinearAlgebraDemos('widget-kernel-image', 'kernel');
+    initLinearAlgebraDemos('widget-gram-schmidt', 'gram-schmidt');
+  </script>
   <script type="module">
     import { initNormGeometryVisualizer } from './widgets/js/norm-geometry-visualizer.js';
     initNormGeometryVisualizer('widget-norm-geometry');

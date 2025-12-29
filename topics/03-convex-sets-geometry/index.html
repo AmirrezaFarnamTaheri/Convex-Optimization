@@ -427,29 +427,40 @@
 
         <h3>2.3 Dual Norms and Supporting Hyperplanes</h3>
 
-        <p>The <b>dual norm</b> connects the geometry of the ball to linear functionals. It asks: "What is the worst-case dot product over the unit ball?"</p>
+        <p>The <b>dual norm</b> is one of the most powerful tools in convex analysis. It answers a fundamental question: "If I know a vector $\mathbf{x}$ lies in a unit ball defined by some norm $\|\cdot\|$, what is the worst-case (maximum) dot product it can form with a given vector $\mathbf{u}$?"</p>
+
+        <p>Formally, let $\|\cdot\|$ be any norm on $\mathbb{R}^n$. The dual norm $\|\cdot\|_*$ is defined as:</p>
         $$ \|u\|_* := \sup_{\|x\| \le 1} u^\top x $$
 
         <div class="insight">
-            <h4>Geometric Meaning: Support Function</h4>
-            <p>Geometrically, $\|u\|_*$ is the distance from the origin to the supporting hyperplane of $B$ with normal vector $u$.
-            <br>The set of vectors $u$ such that $\|u\|_* \le 1$ forms the <b>dual ball</b> $B^\circ$ (the polar of $B$).
-            <br>Thus: <b>Dual Norm = Support Function of Primal Ball.</b></p>
+            <h4>Geometric Intuition: The Shadow Ruler</h4>
+            <p>Imagine the unit ball $B = \{x : \|x\| \le 1\}$. The dot product $u^\top x$ measures the "shadow" of $x$ along the direction $u$.
+            <br>The dual norm $\|u\|_*$ is the <b>maximum shadow length</b> that the unit ball can cast in the direction $u$.
+            <br>Geometrically, this corresponds to the distance from the origin to the <b>supporting hyperplane</b> of the unit ball with normal vector $u$. If the hyperplane is $u^\top x = \alpha$, then the maximum value $\alpha$ is exactly $\|u\|_*$.</p>
         </div>
 
         <div class="theorem-box">
-            <h4>Theorem: Generalized Hölder Inequality</h4>
-            <p>For any $u, x \in \mathbb{R}^n$:</p>
-            $$ u^\top x \le \|u\|_* \|x\| $$
-            <p><i>Proof:</i> If $x=0$, trivial. If $x \ne 0$, scale to the boundary: let $z = x/\|x\|$. Then $\|z\|=1$, so $z \in B$. By definition, $u^\top z \le \|u\|_*$. Multiplying by $\|x\|$ gives $u^\top x \le \|u\|_* \|x\|$.</p>
+            <h4>Theorem: Properties of the Dual Norm</h4>
+            <ol>
+                <li><b>Valid Norm:</b> The function $\|\cdot\|_*$ satisfies all three norm axioms (positivity, homogeneity, triangle inequality).</li>
+                <li><b>Generalized Hölder Inequality:</b> For any $u, x$:
+                $$ u^\top x \le \|u\|_* \|x\| $$
+                <i>Proof:</i> If $x=0$, trivial. If $x \ne 0$, scale to the boundary: let $z = x/\|x\|$. Then $\|z\|=1$. By definition of dual norm, $u^\top z \le \|u\|_*$. Multiplying by $\|x\|$ gives $u^\top x \le \|u\|_* \|x\|$.</li>
+                <li><b>Reflexivity:</b> The dual of the dual is the primal norm: $(\|\cdot\|_* )_* = \|\cdot\|$.</li>
+            </ol>
         </div>
 
-        <h4>Examples of Dual Pairs</h4>
+        <h4>Canonical Dual Pairs</h4>
+        <p>We derive the dual norms for the standard $\ell_p$ norms.</p>
         <ul>
-            <li><b>$\ell_2$ is Self-Dual:</b> $(\|\cdot\|_2)_* = \|\cdot\|_2$. The polar of a sphere is a sphere.</li>
-            <li><b>$\ell_1 \leftrightarrow \ell_\infty$:</b> The dual of the $\ell_1$ norm is the $\ell_\infty$ norm, and vice versa.
-            <br><i>Proof sketch ($\ell_1$ dual):</i> $\sup_{\sum |x_i| \le 1} u^\top x$. To maximize the dot product, put all the "weight" of $x$ on the index $k$ where $|u_k|$ is largest. Then $u^\top x = |u_k| = \|u\|_\infty$.</li>
-            <li><b>General $\ell_p \leftrightarrow \ell_q$:</b> For $1/p + 1/q = 1$ (Hölder conjugates), $(\|\cdot\|_p)_* = \|\cdot\|_q$.</li>
+            <li><b>$\ell_2$ is Self-Dual:</b> $\|\mathbf{y}\|_{2,*} = \|\mathbf{y}\|_2$.
+            <br><i>Reason:</i> The Cauchy-Schwarz inequality $u^\top x \le \|u\|_2 \|x\|_2$ gives the upper bound. Equality is achieved by choosing $x$ parallel to $u$.</li>
+
+            <li><b>$\ell_1 \leftrightarrow \ell_\infty$:</b> The dual of $\ell_1$ is $\ell_\infty$.
+            <br><i>Reason:</i> We want to maximize $\sum u_i x_i$ subject to $\sum |x_i| \le 1$. The best strategy is to put all the "mass" of $x$ (magnitude 1) onto the index $k$ where $|u_k|$ is largest. Then the sum becomes $|u_k| \cdot 1 = \|u\|_\infty$.</li>
+
+            <li><b>$\ell_\infty \leftrightarrow \ell_1$:</b> The dual of $\ell_\infty$ is $\ell_1$.
+            <br><i>Reason:</i> We want to maximize $\sum u_i x_i$ subject to $|x_i| \le 1$ for all $i$. To maximize the sum, we should simply match the signs: set $x_i = \mathrm{sign}(u_i)$. Then the sum becomes $\sum u_i \mathrm{sign}(u_i) = \sum |u_i| = \|u\|_1$.</li>
         </ul>
         
         <div class="proof-box">
@@ -459,11 +470,12 @@
           </div>
           <div class="proof-step">
             <strong>Upper Bound:</strong> For any $x$ with $\|x\|_\infty \le 1$, we have $|x_i| \le 1$ for all $i$.
-            $$ u^\top x = \sum_i u_i x_i \le \sum_i |u_i| |x_i| \le \sum_i |u_i| = \|u\|_1 $$
+            $$ u^\top x = \sum_i u_i x_i \le \sum_i |u_i| |x_i| \le \sum_i |u_i| (1) = \|u\|_1 $$
           </div>
           <div class="proof-step">
-            <strong>Achievability:</strong> Choose $x_i = \text{sign}(u_i)$ for each $i$. Then $\|x\|_\infty = 1$ and:
+            <strong>Achievability:</strong> Choose $x_i = \text{sign}(u_i)$ for each $i$. Since each component is $\pm 1$ or 0, we have $\|x\|_\infty \le 1$.
             $$ u^\top x = \sum_i u_i \cdot \text{sign}(u_i) = \sum_i |u_i| = \|u\|_1 $$
+            Since the upper bound is achievable, it is the supremum.
           </div>
         </div>
         
@@ -471,7 +483,13 @@
           <h4>Geometric Meaning: Dual Ball = Polar of Primal Ball</h4>
           <p>The unit ball of the dual norm is the <b>polar set</b> of the primal unit ball:
           $$ B_* = \{u : \|u\|_* \le 1\} = \{u : u^\top x \le 1 \ \forall \|x\| \le 1\} = B^\circ $$
-          This explains the visual duality: the $\ell_1$ ball (diamond) and $\ell_\infty$ ball (cube) are polars of each other; the $\ell_2$ ball (sphere) is self-polar.</p>
+          This duality explains the shape relationships:
+          <ul>
+            <li>The polar of the <b>Diamond</b> ($\ell_1$ ball) is the <b>Square</b> ($\ell_\infty$ ball).</li>
+            <li>The polar of the <b>Square</b> ($\ell_\infty$ ball) is the <b>Diamond</b> ($\ell_1$ ball).</li>
+            <li>The polar of the <b>Sphere</b> ($\ell_2$ ball) is the <b>Sphere</b>.</li>
+          </ul>
+          </p>
         </div>
 
         <h3>2.4 Ellipsoids</h3>

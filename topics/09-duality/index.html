@@ -500,6 +500,13 @@
         $$ g(\lambda) = -\frac{1}{2} \lambda^\top (A P^{-1} A^\top) \lambda - (b + A P^{-1} q)^\top \lambda - \frac{1}{2} q^\top P^{-1} q $$
         This is a concave quadratic maximization (since $A P^{-1} A^\top \succeq 0$).</p>
 
+      <figure class="animation-figure">
+        <div class="animation-container">
+          <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif" alt="Dual Norm Geometry Animation" loading="lazy">
+        </div>
+        <figcaption><i>Animation:</i> Supporting hyperplanes $u^\top x = \|u\|_*$ for the $\ell_1$ and $\ell_\infty$ balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
+      </figure>
+
         <h3>7.3 Semidefinite Programming</h3>
         <p>Primal: $\min \mathrm{tr}(CX)$ s.t. $\mathrm{tr}(A_i X) = b_i, X \succeq 0$.
         <br>We derive the dual using the generalized Lagrangian with matrix inner product.
@@ -562,6 +569,13 @@
           <li><b>Lemma A3 (Conjugate of Norm):</b> $\sup_x (y^\top x - \|x\|) = 0$ if $\|y\|_* \le 1$, else $\infty$. This generates dual norm constraints.</li>
         </ul>
       </div>
+
+      <figure class="animation-figure">
+        <div class="animation-container">
+          <img src="assets/epigraph_dual_norm_linf_l1.gif" alt="Dual Norm Animation" loading="lazy">
+        </div>
+        <figcaption><i>Animation:</i> The condition $\sup_x (u^\top x - \|x\|_\infty) = 0$ is equivalent to $\|u\|_1 \le 1$. The red vector $u^*$ is a "one-hot" vector concentrating on the coordinate with the largest absolute value, demonstrating the dual norm relationship.</figcaption>
+      </figure>
 
       <div class="problem">
         <h3>Problem 1: Least Squares (Residual Form)</h3>
@@ -699,7 +713,20 @@
             $$ \max_y \{ x^\top y \mid y \le \mathbf{1}, \mathbf{1}^\top y = r, y \ge 0 \} = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
           </div>
           <div class="proof-step">
-            <strong>Step 3: Compact Formulation.</strong>
+            <strong>Step 3: Dual of the Inner Maximization.</strong>
+            We want to express $f(x) \le \alpha$. The inner problem is an LP:
+            $$ \max_y \{ x^\top y \mid y \le \mathbf{1}, -y \le 0, \mathbf{1}^\top y = r \} $$
+            Using LP duality (minimizing variables $t$ for equality, $u$ for $y \le \mathbf{1}$):
+            $$ \max_y x^\top y = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Deeper Insight - The Threshold Interpretation.</strong>
+            Consider the constraints on the dual variables: $u_i \ge x_i - t$ and $u_i \ge 0$. To minimize the objective $rt + \sum u_i$, we should choose the smallest feasible $u_i$:
+            $$ u_i(t) = \max(0, x_i - t) = (x_i - t)_+ $$
+            Substituting this back, the dual value is $\min_t (rt + \sum_{i=1}^n (x_i - t)_+)$. Here, $t$ acts as a <b>threshold</b>. The optimization automatically finds the $r$-th largest element as the cutoff.
+          </div>
+          <div class="proof-step">
+            <strong>Step 5: Compact Formulation.</strong>
             The condition $f(x) \le \alpha$ is satisfied iff there exist $t, u$ such that:
             $$ rt + \sum u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
             This replaces a combinatorial condition ($\binom{n}{r}$ inequalities) with $2n+1$ linear inequalities.
@@ -712,10 +739,19 @@
         <p>Add a constraint to the Markowitz problem to ensure "no more than 80% of capital in any 10% of assets".</p>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>Let $r = \lfloor 0.1 n \rfloor$. The constraint is $\sum_{i=1}^r x_{[i]} \le 0.8$.
-          Using the result from Problem 7, we introduce variables $t, u$ and add:
-          $$ rt + \mathbf{1}^\top u \le 0.8, \quad u \ge x - t\mathbf{1}, \quad u \ge 0 $$
-          The portfolio problem remains a convex QP (or SOCP/LP depending on risk model).</p>
+          <p>Let $r = \lfloor 0.1 n \rfloor$. The diversification constraint is $\sum_{i=1}^r x_{[i]} \le 0.8$.
+          <br>Using the compact representation from Problem 7, we introduce auxiliary variables $t \in \mathbb{R}$ and $u \in \mathbb{R}^n$.
+          <br>The full Markowitz problem becomes:</p>
+          $$
+          \begin{aligned}
+          \text{minimize}_{x, t, u} \quad & x^\top \Sigma x \\
+          \text{subject to} \quad & \bar{p}^\top x \ge r_{\min}, \quad \mathbf{1}^\top x = 1, \quad x \ge 0 \\
+          & rt + \mathbf{1}^\top u \le 0.8 \\
+          & t\mathbf{1} + u \ge x \\
+          & u \ge 0
+          \end{aligned}
+          $$
+          <p>This is a <b>Convex QP</b> because the objective $x^\top \Sigma x$ is convex ($\Sigma \succeq 0$) and all constraints are linear inequalities or equalities in the variables $(x, t, u)$.</p>
         </div>
       </div>
 
@@ -1211,24 +1247,35 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      <strong>(a) Primal Bound.</strong>
-      Let $r(x) = Ax - b$. We know $\|z\|_\infty \le \|z\|_2 \le \sqrt{m}\|z\|_\infty$.
-      <br>1. $\|r(x_{ls})\|_\infty \le \|r(x_{ls})\|_2$.
-      <br>2. Since $x_{ls}$ minimizes the 2-norm: $\|r(x_{ls})\|_2 \le \|r(x^*)\|_2$ (where $x^*$ is the Chebyshev optimizer).
-      <br>3. $\|r(x^*)\|_2 \le \sqrt{m}\|r(x^*)\|_\infty = \sqrt{m} p^*$.
-      <br>Chaining these: $\|r(x_{ls})\|_\infty \le \sqrt{m} p^*$.
+      <strong>(a) Primal Bound ($\sqrt{m}$-approximation).</strong>
+      Let $r(x) = Ax - b$. We use the norm inequalities $\|z\|_\infty \le \|z\|_2 \le \sqrt{m}\|z\|_\infty$.
+      <br>1. $\|r(x_{ls})\|_\infty \le \|r(x_{ls})\|_2$ (Max entry $\le$ Euclidean length).
+      <br>2. $\|r(x_{ls})\|_2 \le \|r(x^*)\|_2$ (Since $x_{ls}$ minimizes the 2-norm, it beats any other $x$, including the Chebyshev optimizer $x^*$).
+      <br>3. $\|r(x^*)\|_2 \le \sqrt{m}\|r(x^*)\|_\infty = \sqrt{m} p^*$ (Euclidean length $\le \sqrt{m} \times$ max entry).
+      <br>Chaining these gives the result: $\|r(x_{ls})\|_\infty \le \sqrt{m} p^*$.
     </div>
     <div class="proof-step">
-      <strong>(b) Dual Problem.</strong>
-      Primal: $\min t$ s.t. $-t\mathbf{1} \le Ax-b \le t\mathbf{1}$.
-      <br>Lagrangian dual derivation leads to: $\max b^\top \nu$ s.t. $A^\top \nu = 0, \|\nu\|_1 \le 1$.
+      <strong>(b) Zero-to-Hero Dual Derivation.</strong>
+      Rewrite the primal as an LP: $\min_{x,t} t$ s.t. $Ax - b \le t\mathbf{1}$ and $-(Ax - b) \le t\mathbf{1}$.
+      <br>The dual problem simplifies to:
+      $$ \max_{\nu} b^\top \nu \quad \text{subject to} \quad A^\top \nu = 0, \ \|\nu\|_1 \le 1 $$
+      Any feasible $\nu$ provides a lower bound $b^\top \nu \le p^*$.
     </div>
     <div class="proof-step">
-      <strong>Constructing a Certificate.</strong>
-      Let $r_{ls} = b - Ax_{ls}$. From normal equations, $A^\top r_{ls} = 0$.
-      <br>Thus $\nu = r_{ls} / \|r_{ls}\|_1$ is a feasible dual variable.
-      <br>Lower Bound: $b^\top \nu = \frac{b^\top r_{ls}}{\|r_{ls}\|_1} = \frac{(r_{ls} + Ax_{ls})^\top r_{ls}}{\|r_{ls}\|_1} = \frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$.
-      <br>This bound $\frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$ is readily computable and certifies a lower bound on the Chebyshev error.
+      <strong>Constructing Certificates from Least Squares.</strong>
+      Let $r_{ls} = b - Ax_{ls}$. The normal equations imply $A^\top r_{ls} = 0$. We can normalize $r_{ls}$ to be dual feasible.
+      <br><b>Candidate 1 ($\ell_1$ normalized):</b> $\hat{\nu} = r_{ls} / \|r_{ls}\|_1$.
+      <br>This is always feasible. Bound: $b^\top \hat{\nu} = \frac{b^\top r_{ls}}{\|r_{ls}\|_1} = \frac{(r_{ls} + Ax_{ls})^\top r_{ls}}{\|r_{ls}\|_1} = \frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$.
+      <br><b>Candidate 2 ($\ell_\infty$ normalized):</b> $\tilde{\nu} = r_{ls} / \|r_{ls}\|_\infty$.
+      <br>Feasible only if $\|\tilde{\nu}\|_1 \le 1$ (i.e., $\|r_{ls}\|_1 \le \|r_{ls}\|_\infty$). Bound: $\frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_\infty}$.
+      <br>Since $\|r\|_1 \ge \|r\|_\infty$, Candidate 2 is rarely feasible, but Candidate 1 provides a guaranteed computable lower bound.
+    </div>
+    <div class="proof-step">
+      <strong>Bound Comparison.</strong>
+      Is the dual bound better than the crude bound from (a)?
+      <br>From (a), $p^* \ge \frac{1}{\sqrt{m}}\|r_{ls}\|_\infty$.
+      <br>The dual bound is $\frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$. Using Cauchy-Schwarz ($\|r\|_1 \le \sqrt{m}\|r\|_2$), we have $\frac{\|r\|_2^2}{\|r\|_1} \ge \frac{\|r\|_2^2}{\sqrt{m}\|r\|_2} = \frac{\|r\|_2}{\sqrt{m}}$.
+      <br>Since $\|r\|_2 \ge \|r\|_\infty$, the dual bound is strictly tighter (or equal): $\frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1} \ge \frac{1}{\sqrt{m}}\|r_{ls}\|_\infty$.
     </div>
   </div>
 </div>

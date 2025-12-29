@@ -241,9 +241,10 @@
       <p>This is the single most important modeling atom in convex optimization. The absolute value $|u|$ is not linear (it has a kink at 0), but its epigraph is polyhedral—describable by finitely many linear inequalities.</p>
       
       <div class="theorem-box">
-        <h4>The Atomic Rewrite</h4>
+        <h4>The Atomic Rewrite: Phase 5.1 Atom</h4>
         <p>For scalar $u \in \mathbb{R}$ and scalar $t$:</p>
-        $$ |u| \le t \iff -t \le u \le t \iff \begin{cases} u - t \le 0 \\ -u - t \le 0 \end{cases} $$
+        $$ |u| \le t \iff -t \le u \le t \iff \begin{cases} u \le t \\ -u \le t \end{cases} $$
+        <p><b>Why this matters:</b> Absolute value is not linear (it has a kink at 0). But its epigraph is polyhedral. By "lifting" the problem with an auxiliary variable $t$, we replace the non-smooth $|u|$ with two smooth linear inequalities. This is the gateway from non-smooth to LP-clean.</p>
       </div>
       
       <div class="proof-box">
@@ -271,6 +272,7 @@
         $$ \text{epi}(|\cdot|) = \{(u, t) : u \le t, -u \le t\} $$
         <p>This is an intersection of two halfspaces in $(u, t)$-space—a polyhedron, hence convex, hence LP-representable. Geometrically, it's the region above the "V" formed by lines $t = u$ and $t = -u$.</p>
         <p><b>Why it works:</b> Absolute value is not linear, but its epigraph is polyhedral.</p>
+        <p><b>Note:</b> Strictly speaking, feasibility implies $t \ge 0$. Many formulations explicitly include $t \ge 0$ for clarity, though it is redundant if the feasible set for $u$ is non-empty.</p>
       </div>
 
       <div class="warning-box">
@@ -331,12 +333,12 @@
       </div>
       
       <div class="warning-box">
-        <h4>Do Not Confuse $\ell_1$ and $\ell_\infty$</h4>
+        <h4>Phase 5.2: Do Not Confuse $\ell_1$ and $\ell_\infty$</h4>
         <ul>
-          <li><b>$\ell_1$:</b> many slacks $s_i$, then sum them: $\sum s_i \le t$</li>
-          <li><b>$\ell_\infty$:</b> one slack $t$, then bound each component: $|x_i| \le t$ for all $i$</li>
+          <li><b>$\ell_1$ (Sum of Magnitudes):</b> Needs <b>many slacks</b> $s_i$ (one per component), then sum them: $\sum s_i \le t$. Constraints: $-s_i \le x_i \le s_i$.</li>
+          <li><b>$\ell_\infty$ (Max Magnitude):</b> Needs <b>one slack</b> $t$, then bound each component by that same $t$: $|x_i| \le t$ for all $i$. Constraints: $-t \le x_i \le t$.</li>
         </ul>
-        <p>Writing $\|x\|_1 \le t$ as "$|x_i| \le t$ for all $i$" is wrong—that's $\ell_\infty$!</p>
+        <p>Writing $\|x\|_1 \le t$ as "$|x_i| \le t$ for all $i$" is a common error—that models $\ell_\infty$, not $\ell_1$!</p>
       </div>
 
       <h3>2.3 Standard LP Examples</h3>
@@ -1072,24 +1074,30 @@
       </div>
       
       <div class="proof-box">
-        <h4>Bisection Algorithm for Quasiconvex Minimization</h4>
+        <h4>Phase 6.2: Bisection Algorithm for Quasiconvex Minimization</h4>
         <div class="proof-step">
           <strong>Setup:</strong> Define the feasibility oracle:
-          $$ \Phi(\alpha) = \text{"Is there } x \in \mathcal{F} \text{ with } f_0(x) \le \alpha\text{?"} $$
-          <p>The set $\{\alpha : \Phi(\alpha) = \text{true}\}$ is an interval $[p^*, \infty)$ by monotonicity of sublevel sets.</p>
+          $$ \Phi(\alpha) = \text{"Does there exist } x \in \mathcal{F} \text{ such that } f_0(x) \le \alpha\text{?"} $$
+          <p>Since $f_0$ is quasiconvex, the sublevel set $\{x : f_0(x) \le \alpha\}$ is convex. Thus, checking $\Phi(\alpha)$ is a <b>convex feasibility problem</b>.
+          <br>Due to monotonicity ($S_\alpha \subseteq S_\beta$ for $\alpha \le \beta$), the set of "true" values forms an interval $[p^\star, \infty)$. We find the threshold $p^\star$ by binary search.</p>
         </div>
         <div class="proof-step">
-          <strong>Iteration:</strong> Maintain $[L, U]$ with $\Phi(L) = \text{false}$, $\Phi(U) = \text{true}$.
+          <strong>Iteration:</strong> Maintain an interval $[L, U]$ such that $\Phi(L) = \text{false}$ (lower bound) and $\Phi(U) = \text{true}$ (upper bound).
           <ol>
-            <li>Set $\alpha = (L + U)/2$.</li>
-            <li>Solve feasibility problem at level $\alpha$.</li>
-            <li>If feasible: set $U \leftarrow \alpha$. If infeasible: set $L \leftarrow \alpha$.</li>
-            <li>Repeat until $U - L \le \varepsilon$.</li>
+            <li><b>Midpoint:</b> Set $\alpha_k = (L_k + U_k)/2$.</li>
+            <li><b>Solve Feasibility:</b> Check if there exists $x \in \mathcal{F}$ with $f_0(x) \le \alpha_k$.</li>
+            <li><b>Update:</b>
+              <ul>
+                <li>If <b>Feasible</b> (we found a valid point with cost $\le \alpha_k$): Set $U_{k+1} = \alpha_k$ (tighten upper bound). Keep best $x$ seen so far.</li>
+                <li>If <b>Infeasible</b> (no point achieves $\le \alpha_k$): Set $L_{k+1} = \alpha_k$ (tighten lower bound).</li>
+              </ul>
+            </li>
+            <li><b>Stop:</b> When $U_k - L_k \le \varepsilon$.</li>
           </ol>
         </div>
         <div class="proof-step">
-          <strong>Convergence:</strong> After $k$ iterations, $U_k - L_k = (U_0 - L_0)/2^k$.
-          <p>Need $O(\log_2((U_0 - L_0)/\varepsilon))$ feasibility solves for $\varepsilon$-accuracy.</p>
+          <strong>Convergence:</strong> The interval size halves at each step: $U_k - L_k = (U_0 - L_0)/2^k$.
+          <p>We need exactly $\lceil \log_2((U_0 - L_0)/\varepsilon) \rceil$ feasibility solves to reach $\varepsilon$-accuracy. This method is extremely robust because it relies only on the monotonicity of the feasibility oracle, not on gradients.</p>
         </div>
       </div>
 
@@ -1152,7 +1160,10 @@
           <p>A function $f(x)$ is a posynomial if it is a sum of monomials:
           $$ f(x) = \sum_{k=1}^K c_k x_1^{a_{1k}} \dots x_n^{a_{nk}} $$
           where coefficients $c_k > 0$.
-          <br><i>Key Property:</i> Log-Sum-Exp. $\log f(x)$ is a convex function of $y = \log x$.</p>
+          <br><i>Key Property:</i> Log-Sum-Exp. $\log f(x)$ is a convex function of $y = \log x$.
+          <br><b>Proof:</b> Let $x_i = e^{y_i}$. Then a monomial becomes $c \prod e^{a_{ik} y_i} = c e^{\mathbf{a}_k^\top \mathbf{y}}$.
+          A posynomial becomes $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}}$.
+          Taking the log gives $\log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$, which is the composition of the convex Log-Sum-Exp function with affine maps. Thus, it is convex.</p>
       </div>
 
       <h3>5.2 Standard GP Form</h3>

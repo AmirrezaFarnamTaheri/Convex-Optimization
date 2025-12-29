@@ -175,17 +175,27 @@
           <p><b>Geometric Intuition:</b> For each fixed $x$, the Lagrangian is a "hyperplane" in $(\lambda, \nu)$-space. The dual function is the <b>lower envelope</b> of these hyperplanes. Lower envelopes of affine functions are always concave, regardless of the original problem's structure.</p>
         </div>
         
-        <div class="theorem-box">
-          <h4>Alternative View: Conjugate Functions and Perspective</h4>
-          <p>For a single-constraint problem $\min c^\top x$ s.t. $f(x) \le 0$, the dual function can be written using the Fenchel conjugate:</p>
-          $$ g(\lambda) = -\lambda f^*\left(-\frac{c}{\lambda}\right), \quad \lambda > 0 $$
-          <p><b>Why this is concave:</b></p>
-          <ul>
-            <li>$f^*$ is <b>always convex</b> (even if $f$ is not), since it's a supremum of affine functions.</li>
-            <li>The map $\lambda \mapsto \lambda f^*(y/\lambda)$ is the <b>perspective transform</b> of $f^*$, which preserves convexity.</li>
-            <li>Negating gives a concave function.</li>
-          </ul>
-          <p>This shows that duality "convexifies" through the conjugate, regardless of the original problem's structure.</p>
+        <div class="proof-box">
+          <h4>Deep Dive: Deriving the Dual via Conjugates</h4>
+          <p>We derive the dual of $\min c^\top x$ s.t. $f(x) \le 0$ step-by-step.</p>
+          <div class="proof-step">
+            <strong>1. Lagrangian:</strong> $L(x, \lambda) = c^\top x + \lambda f(x)$. Dual function $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+          </div>
+          <div class="proof-step">
+            <strong>2. Factor out $\lambda > 0$:</strong>
+            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{1}{\lambda}c^\top x \right) $$
+          </div>
+          <div class="proof-step">
+            <strong>3. Apply Conjugate Identity:</strong>
+            Use the identity $\inf_z (f(z) + y^\top z) = -f^*(-y)$.
+            Here $y = c/\lambda$.
+            $$ \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = -f^*\left(-\frac{c}{\lambda}\right) $$
+          </div>
+          <div class="proof-step">
+            <strong>4. Result:</strong>
+            $$ \boxed{g(\lambda) = -\lambda f^*\left(-\frac{c}{\lambda}\right)} $$
+            This is the (negative) perspective of the conjugate function $f^*$. Since $f^*$ is convex, its perspective is convex. Thus $g(\lambda)$ is concave.
+          </div>
         </div>
 
         <h3>3.2 Lower Bound on Optimal Value</h3>

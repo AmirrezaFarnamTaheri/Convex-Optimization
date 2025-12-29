@@ -91,7 +91,8 @@
           <h4>SOCP Atom #2: Affine Maps (The Workhorse)</h4>
           <p>Since affine preimages of convex sets are convex, any constraint of the form
           $$ \|Ax+b\|_2 \le c^\top x + d $$
-          is convex (provided $c^\top x + d \ge 0$). By defining $u = Ax+b$ and $t = c^\top x + d$, we map this to $(t, u) \in \mathcal{Q}$. This single pattern covers ellipsoids, robust constraints, and distance minimization.</p>
+          is convex. This is the <b>Phase 5.3 Atom</b>. By defining $u = Ax+b$ and $t = c^\top x + d$, we map this to $(t, u) \in \mathcal{Q}$.
+          <br><b>Note:</b> The cone membership $(t, u) \in \mathcal{Q}$ implicitly enforces $t \ge 0$, ensuring the RHS is non-negative.</p>
       </div>
 
       <div class="proof-box">
@@ -142,9 +143,10 @@
       
       <div class="theorem-box">
         <h4>The Hyperbolic Atom (Phase 5.4 Core)</h4>
-        <p>The canonical hyperbolic constraint is:</p>
+        <p>The canonical hyperbolic constraint involves a product dominating a square:</p>
         $$ w^2 \le xy, \quad x \ge 0, y \ge 0 $$
-        <p>This is exactly RSOC membership: $(x, y/2, w) \in \mathcal{Q}_r^3$.</p>
+        <p>This is exactly RSOC membership: $(x, y/2, w) \in \mathcal{Q}_r^3$. (Note the factor of 2 in definition $2uv \ge w^2$).</p>
+        <p><b>Quadratic-over-Linear:</b> This also handles $w^2/x \le y$ (for $x>0$). Rewrite as $w^2 \le xy$ with $y \ge 0$.</p>
       </div>
       
       <div class="proof-box">
@@ -340,13 +342,15 @@
       </ul>
 
       <div class="proof-box">
-        <h4>Derivation: Robust Ellipsoidal Constraint</h4>
+        <h4>Derivation: Robust Ellipsoidal Constraint (Phase 5.5)</h4>
         <div class="proof-step">
-          <strong>Step 1: Expand.</strong> Let $a_i \in \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
-          $$ \sup_{\|u\|_2 \le 1} (\bar{a}_i + P_i u)^\top x = \bar{a}_i^\top x + \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) $$
+          <strong>Step 1: Expand.</strong> Let $a_i \in \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$. We require $(\bar{a}_i + P_i u)^\top x \le b_i$ for all $\|u\|_2 \le 1$.
+          This is equivalent to the worst-case condition:
+          $$ \sup_{\|u\|_2 \le 1} (\bar{a}_i + P_i u)^\top x \le b_i \iff \bar{a}_i^\top x + \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) \le b_i $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Dual Norm.</strong> The max of $u^\top z$ over the unit $\ell_2$ ball is $\|z\|_2$.
+          <strong>Step 2: Dual Norm.</strong> The supremum of a linear function $z^\top u$ over a norm ball $\|u\| \le \rho$ is exactly the dual norm scaled by $\rho$: $\rho \|z\|_*$.
+          For the $\ell_2$ ball with $\rho=1$, the dual is $\ell_2$.
           $$ \sup_{\|u\|_2 \le 1} u^\top (P_i^\top x) = \|P_i^\top x\|_2 $$
         </div>
         <div class="proof-step">
@@ -514,18 +518,18 @@
 
       <div class="example-box">
           <h4>Phase 5.6: The Matrix Inverse Atom (Schur)</h4>
-          <p>Constraints involving $X^{-1}$ (where $X$ is a variable) are handled by the <b>Schur Complement</b>.
-          <br><b>Atom:</b> $x^\top X^{-1} x \le t \iff \begin{bmatrix} X & x \\ x^\top & t \end{bmatrix} \succeq 0$.
-          <br><b>Conditions:</b> $X \succ 0$.
-          <br><b>Generalization:</b> Matrix fractional $Y^\top X^{-1} Y \preceq T \iff \begin{bmatrix} X & Y \\ Y^\top & T \end{bmatrix} \succeq 0$.</p>
+          <p>Constraints involving $X^{-1}$ (where $X$ is a variable) are handled by the <b>Schur Complement</b>. This "lifts" the nonlinear inverse into a linear matrix inequality.
+          <br><b>Scalar Atom:</b> $x^\top X^{-1} x \le t \iff \begin{bmatrix} X & x \\ x^\top & t \end{bmatrix} \succeq 0$.
+          <br><b>Conditions:</b> $X \succ 0$ (strict) or extended definition.
+          <br><b>Matrix Atom:</b> $Y^\top X^{-1} Y \preceq T \iff \begin{bmatrix} X & Y \\ Y^\top & T \end{bmatrix} \succeq 0$.</p>
       </div>
 
       <div class="example-box">
           <h4>Phase 5.7: The Spectral Atom (Eigenvalues)</h4>
-          <p>Constraints on eigenvalues transform into LMIs via the definition of PSD.
-          <br><b>Atom 1:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.
-          <br><b>Atom 2:</b> $\lambda_{\min}(X) \ge t \iff X - tI \succeq 0$.
-          <br><b>Atom 3:</b> Spectral Norm $\|X\|_2 \le t \iff \begin{bmatrix} tI & X \\ X^\top & tI \end{bmatrix} \succeq 0$. (Works for non-symmetric $X$).</p>
+          <p>Spectral constraints transform directly into LMIs because the PSD cone is defined by eigenvalues.
+          <br><b>Max Eigenvalue:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.
+          <br><b>Min Eigenvalue:</b> $\lambda_{\min}(X) \ge t \iff X - tI \succeq 0$.
+          <br><b>Spectral Norm:</b> $\|X\|_2 \le t \iff \begin{bmatrix} tI & X \\ X^\top & tI \end{bmatrix} \succeq 0$. (Equivalent to $\sigma_{\max}(X) \le t$).</p>
       </div>
 
       <h3>3.6 Standard SDP Examples</h3>

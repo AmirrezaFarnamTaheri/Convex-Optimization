@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Conjugate Function Visualization</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:950px;margin:20px auto;padding:0 14px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Conjugate f*(λ): Gap between Linear and f(x)</h2>
+  <div class="card">
+    <canvas id="c" width="860" height="420"></canvas>
+    <label>Slope λ (Dual Variable)</label>
+    <input id="lam" type="range" min="-4" max="4" step="0.01" value="-2.0">
+    <div class="mono" id="info"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const c = document.getElementById("c");
+  const ctx = c.getContext("2d");
+  const s = document.getElementById("lam");
+  const info = document.getElementById("info");
+
+  // Function f(x) = x^2 + 1
+  // Conjugate f*(lam) = sup (lam*x - f(x))
+  // = sup (lam*x - x^2 - 1). Max at x = lam/2.
+  // Value = lam(lam/2) - (lam/2)^2 - 1 = lam^2/4 - 1.
+
+  // Plot range
+  const xMin=-3, xMax=3, yMin=-2, yMax=8;
+  function mapX(x){ return 60 + (x-xMin)*(c.width-90)/(xMax-xMin); }
+  function mapY(y){ return (c.height-60) - (y-yMin)*(c.height-100)/(yMax-yMin); }
+
+  function f(x){ return x*x + 1; }
+
+  function render(){
+    const lam = parseFloat(s.value);
+    ctx.clearRect(0,0,c.width,c.height);
+
+    // Axes
+    ctx.strokeStyle="rgba(255,255,255,0.2)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(0),40); ctx.lineTo(mapX(0),c.height-50);
+    ctx.moveTo(50, mapY(0)); ctx.lineTo(c.width-30, mapY(0));
+    ctx.stroke();
+
+    // f(x)
+    ctx.strokeStyle="#4ade80"; ctx.lineWidth=3; ctx.beginPath();
+    for(let i=0;i<600;i++){
+      let x = xMin + (xMax-xMin)*i/599;
+      let y = f(x);
+      if(i==0) ctx.moveTo(mapX(x),mapY(y)); else ctx.lineTo(mapX(x),mapY(y));
+    }
+    ctx.stroke();
+
+    // Line y = lam*x (passing through origin, but we want the supporting hyperplane)
+    // Actually, conjugate definition is sup(lam*x - f(x)).
+    // This gap is max when slope of f is lam.
+    // Let's draw the line y = lam*x - conjugate. This line touches f(x).
+    // f*(lam) = lam^2/4 - 1.
+    const conj = lam*lam/4 - 1;
+    // Tangent line: y = lam*x - conj.
+    // Wait, f*(y) = sup( <y,x> - f(x) ). So f(x) + f*(y) >= <x,y>.
+    // Equality when y is subgrad. Then <x,y> - f*(y) = f(x).
+    // So line y = lam*x - f*(lam) is tangent to f(x).
+
+    ctx.strokeStyle="#f472b6"; ctx.lineWidth=2; ctx.beginPath();
+    ctx.moveTo(mapX(xMin), mapY(lam*xMin - conj));
+    ctx.lineTo(mapX(xMax), mapY(lam*xMax - conj));
+    ctx.stroke();
+
+    // Draw the "Gap" visualization?
+    // Maybe better: draw y = lam*x. The max vertical gap between lam*x and f(x) is usually not how it's visualized.
+    // Visualizing f*(y) as the intercept of the supporting hyperplane with slope y is best.
+    // The intercept on the vertical axis (x=0) is -f*(lam).
+    // Line eq: y = lam*x - f*(lam). At x=0, y = -f*(lam).
+
+    // Point of tangency
+    const tanX = lam/2;
+    const tanY = f(tanX);
+    ctx.fillStyle="#f472b6"; ctx.beginPath(); ctx.arc(mapX(tanX), mapY(tanY), 6, 0, Math.PI*2); ctx.fill();
+
+    // Intercept
+    const intercept = -conj;
+    ctx.fillStyle="#60a5fa"; ctx.beginPath(); ctx.arc(mapX(0), mapY(intercept), 6, 0, Math.PI*2); ctx.fill();
+
+    info.innerHTML =
+      `<div class="mono">
+        f(x) = x² + 1<br/>
+        Slope λ = ${lam.toFixed(2)}<br/>
+        Tangent point x* = λ/2 = ${tanX.toFixed(2)}<br/>
+        Supporting Line: y = ${lam.toFixed(2)}x + ${intercept.toFixed(2)}<br/>
+        Conjugate f*(λ) = -intercept = ${conj.toFixed(2)}
+       </div>`;
+  }
+
+  s.oninput = render;
+  render();
+})();
+</script>
+</body>
+</html>

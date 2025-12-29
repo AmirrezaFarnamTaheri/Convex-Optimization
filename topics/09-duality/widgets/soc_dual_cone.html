@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>SOC Cone & Dual Cone Widget</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:950px;margin:20px auto;padding:0 14px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>SOC cone (t ≥ |x|) and dual feasibility</h2>
+  <div class="card">
+    <canvas id="c" width="860" height="420"></canvas>
+    <label>Point (t,x): move t</label>
+    <input id="t" type="range" min="-1" max="2.5" step="0.01" value="1.00">
+    <label>move x</label>
+    <input id="x" type="range" min="-2.2" max="2.2" step="0.01" value="0.70">
+    <div class="mono" id="info"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const c = document.getElementById("c");
+  const ctx = c.getContext("2d");
+  const tS = document.getElementById("t");
+  const xS = document.getElementById("x");
+  const info = document.getElementById("info");
+
+  // Plot region
+  const tMin=-1.0, tMax=2.5;
+  const xMin=-2.2, xMax=2.2;
+
+  function mapX(x){ return 60 + (x-xMin)*(c.width-90)/(xMax-xMin); }
+  function mapY(t){ return (c.height-60) - (t-tMin)*(c.height-100)/(tMax-tMin); }
+
+  function inSOC(t,x){ return t >= Math.abs(x); }
+
+  function render(){
+    const t = parseFloat(tS.value);
+    const x = parseFloat(xS.value);
+    const inside = inSOC(t,x);
+
+    ctx.clearRect(0,0,c.width,c.height);
+
+    // frame
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.strokeRect(50,40,c.width-80,c.height-90);
+
+    // cone boundaries: t=|x|
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle="rgba(255,255,255,0.65)";
+    ctx.beginPath();
+    // t = x for x>=0, t=-x for x<=0
+    ctx.moveTo(mapX(xMin), mapY(Math.abs(xMin)));
+    for(let i=0;i<600;i++){
+      const xx = xMin + (xMax-xMin)*i/599;
+      const tt = Math.abs(xx);
+      const px=mapX(xx), py=mapY(tt);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // fill SOC region (t >= |x|) by sampling
+    ctx.fillStyle="rgba(60,120,255,0.10)";
+    const step=6;
+    for(let px=50; px<c.width-30; px+=step){
+      for(let py=40; py<c.height-50; py+=step){
+        const xx = xMin + (px-60)*(xMax-xMin)/(c.width-90);
+        const tt = tMin + ((c.height-60)-py)*(tMax-tMin)/(c.height-100);
+        if(inSOC(tt,xx)) ctx.fillRect(px,py,step,step);
+      }
+    }
+
+    // point
+    ctx.fillStyle = inside ? "rgba(170,220,255,1)" : "rgba(255,140,140,1)";
+    ctx.beginPath(); ctx.arc(mapX(x), mapY(t), 6, 0, Math.PI*2); ctx.fill();
+
+    info.innerHTML = `<div class="mono">
+      Point (t,x)=(${t.toFixed(2)}, ${x.toFixed(2)})<br/>
+      SOC membership: t ≥ |x| is <b>${inside ? "TRUE" : "FALSE"}</b><br/>
+      Since K* = K for SOC, “dual feasible” ⇔ point is inside same cone.
+    </div>`;
+  }
+
+  tS.oninput = render; xS.oninput = render;
+  render();
+})();
+</script>
+</body>
+</html>

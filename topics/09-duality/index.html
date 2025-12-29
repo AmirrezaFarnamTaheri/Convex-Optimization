@@ -98,6 +98,21 @@
         <p>where $\lambda_i$ is the Lagrange multiplier associated with $f_i(\mathbf{x}) \le 0$, and $\nu_j$ with $h_j(\mathbf{x}) = 0$.
         <br>Domain: $\mathrm{dom}\, L = \mathcal{D} \times \mathbb{R}^m \times \mathbb{R}^p$.</p>
 
+        <div class="example">
+          <h4>Motivating Example: Primal Dual Optimization Walkthrough</h4>
+          <p>Consider the simple problem:
+          $$ \min_{x,y} x^2 + y^2 \quad \text{subject to} \quad x+y \ge 1 $$
+          <br><b>1. Primal Problem:</b> The feasible region is the half-plane $x+y \ge 1$. The level sets of the objective are circles centered at the origin. Geometrically, the minimum is the point on the line $x+y=1$ closest to the origin, which is $(0.5, 0.5)$, yielding $p^* = 0.5$.</p>
+          <p><b>2. Lagrangian:</b> $L(x, y, \lambda) = x^2 + y^2 + \lambda(1 - x - y)$. (Note the constraint $1-x-y \le 0$).</p>
+          <p><b>3. Dual Function:</b> Minimize $L$ over unconstrained $x, y$:
+          $$ \nabla_x L = 2x - \lambda = 0 \implies x^* = \lambda/2, \quad y^* = \lambda/2 $$
+          $$ g(\lambda) = (\lambda/2)^2 + (\lambda/2)^2 + \lambda(1 - \lambda) = \lambda^2/2 + \lambda - \lambda^2 = \lambda - \lambda^2/2 $$</p>
+          <p><b>4. Dual Problem:</b> Maximize $g(\lambda) = \lambda - \lambda^2/2$ for $\lambda \ge 0$.
+          <br>$\nabla g = 1 - \lambda = 0 \implies \lambda^* = 1$.
+          <br>Dual optimal value $d^* = g(1) = 1 - 0.5 = 0.5$.</p>
+          <p><b>Result:</b> $p^* = d^* = 0.5$. Strong duality holds.</p>
+        </div>
+
         <div class="insight">
           <h4>💡 Idea: Lower Bound Property</h4>
           <p>For any feasible $\mathbf{x}$ and any $\lambda \succeq 0, \nu$, we have:
@@ -245,6 +260,10 @@
           <br>Dual function: $g(\nu) = \inf_x (f(x) + \nu^\top x) = -\sup_x ((-\nu)^\top x - f(x)) = -f^*(-\nu)$.
           <br>Here, the dual function is directly related to the <b>convex conjugate</b>.</p>
         </div>
+
+        <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+          <iframe src="widgets/conjugate_function.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+        </div>
       </section>
 
       <section class="section-card" id="section-3">
@@ -268,6 +287,11 @@
         <p>Let $d^*$ be the optimal value of the dual problem. The weak duality theorem states:</p>
         $$ \boxed{ d^* \le p^* } $$
         <p>This holds for <b>any</b> optimization problem. The difference $p^* - d^*$ is called the <b>duality gap</b>.</p>
+
+        <div style="margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+          <iframe src="widgets/primal_dual_1d.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+        </div>
+
         <div class="example">
             <h4>Example: Non-Convex Problem with Duality Gap</h4>
             <p>We illustrate the duality gap with a simple discrete optimization problem where the feasible set is not convex.</p>
@@ -522,6 +546,10 @@
         \end{aligned}
         $$
         This is another SDP.</p>
+
+        <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+          <iframe src="widgets/psd_cone_2x2.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+        </div>
       </section>
 
       <section class="section-card" id="section-7">
@@ -531,6 +559,10 @@
         <br>Lagrangian term: $\lambda^\top g(x)$ where $\lambda \in K^*$ (dual cone).
         <br>Dual constraint: $\lambda \succeq_{K^*} 0$.
         <br>Complementary slackness: $\lambda^\top g(x) = 0$.</p>
+
+        <div style="margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+          <iframe src="widgets/soc_dual_cone.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+        </div>
 
         <h3>8.1 The Standard Conic Form</h3>
         <p>Primal: $\min c^\top x$ s.t. $Ax=b, x \in K$.
@@ -555,6 +587,14 @@
           <li>$\lambda_i f_i(x) = 0$ (Comp. Slackness)</li>
           <li>$\nabla f_0 + \sum \lambda_i \nabla f_i + \sum \nu_j \nabla h_j = 0$ (Stationarity)</li>
         </ol>
+
+        <h3>Algorithms Preview</h3>
+        <p>Duality is the foundation for many modern algorithms:</p>
+        <ul>
+          <li><b>Dual Ascent:</b> Maximize $g(\lambda)$ via gradient ascent: $\lambda^{k+1} = (\lambda^k + \alpha \nabla g(\lambda^k))_+$. Useful for distributed optimization.</li>
+          <li><b>Augmented Lagrangian:</b> Adds a quadratic penalty $\frac{\rho}{2}\|Ax-b\|^2$ to the Lagrangian. Smoothes the dual function and improves convergence.</li>
+          <li><b>ADMM (Alternating Direction Method of Multipliers):</b> Splits problems into smaller subproblems ($x$-update, $z$-update) coordinated by a dual update.</li>
+        </ul>
       </section>
 
     <section class="section-card" id="section-canonical-duals">

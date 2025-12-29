@@ -1151,32 +1151,35 @@
       <p>So norms are not just "sizes"; they generate "distances." This is why we can talk about convergence, limits, and continuity in vector spaces.</p>
 
       <h3>4.6 Standard Norms ($\ell_2, \ell_1, \ell_\infty$)</h3>
-      <p>Not all norms come from inner products. The $\ell_1$ and $\ell_\infty$ norms are crucial in optimization (sparsity, robustness) but do not satisfy the Parallelogram Law.</p>
+      <p>Not all norms come from inner products. The choice of $p$ in the $\ell_p$ norm corresponds to a choice of "spikiness sensitivity".</p>
 
       <div class="example">
         <h4>Example 1: Euclidean Norm ($\ell_2$)</h4>
         <p>$$ \|x\|_2 = \sqrt{\sum x_i^2} $$</p>
+        <p><b>Unit Ball:</b> A sphere. Rotational symmetry.
+        <br><b>Sensitivity:</b> "Democratic". Large coordinates dominate the sum, but all coordinates contribute.</p>
         <ul>
-          <li><b>N1 & N2:</b> Trivial from square root properties.</li>
-          <li><b>N3 (Triangle Inequality):</b> Follows from the Cauchy-Schwarz inequality ($\mathbf{x}^\top \mathbf{y} \le \|x\|_2 \|y\|_2$).</li>
+          <li><b>N3 (Triangle Inequality):</b> Follows from Cauchy-Schwarz.</li>
         </ul>
       </div>
 
       <div class="example">
         <h4>Example 2: Manhattan Norm ($\ell_1$)</h4>
         <p>$$ \|x\|_1 = \sum |x_i| $$</p>
+        <p><b>Unit Ball:</b> A diamond (cross-polytope). The corners lie on the axes.
+        <br><b>Sensitivity:</b> "Linear". Every coordinate contributes equally to the cost. This geometry promotes <b>sparsity</b> (solutions at corners).</p>
         <ul>
-          <li><b>N1 & N2:</b> Trivial.</li>
-          <li><b>N3:</b> Follows from the scalar triangle inequality $|a+b| \le |a| + |b|$ applied coordinate-wise.</li>
+          <li><b>N3:</b> $|a+b| \le |a| + |b|$ coordinate-wise.</li>
         </ul>
       </div>
 
       <div class="example">
         <h4>Example 3: Chebyshev Norm ($\ell_\infty$)</h4>
         <p>$$ \|x\|_\infty = \max_i |x_i| $$</p>
+        <p><b>Unit Ball:</b> A square/cube. Flat faces aligned with axes.
+        <br><b>Sensitivity:</b> "Max-only". Only the single worst coordinate matters. This is the norm of uniform convergence and robustness.</p>
         <ul>
-          <li><b>N1 & N2:</b> Trivial.</li>
-          <li><b>N3:</b> $|x_i + y_i| \le |x_i| + |y_i| \le \|x\|_\infty + \|y\|_\infty$. Taking the max over $i$ proves it.</li>
+          <li><b>N3:</b> $\max |x_i + y_i| \le \max (|x_i| + |y_i|) \le \max |x_i| + \max |y_i|$.</li>
         </ul>
       </div>
 

@@ -17,34 +17,34 @@
   },
   {
     "filename": "duality_lagrangian_demo.gif",
-    "description": "Animated demonstration of the Lagrangian L(x,λ) = (x-2)² + λ(x-1) for varying λ. Shows how the Lagrangian curves shift as λ increases, the moving minimizer argmin_x L, and the corresponding dual function value g(λ). Demonstrates that g(λ) provides a certified lower bound on the primal optimal value."
+    "description": "Animated demonstration of the Lagrangian L(x,λ) = (x-2)² + λ(x-1) for varying λ. As λ increases, the Lagrangian curve shifts and tilts. The minimizer x*(λ) = 2 - λ/2 moves with it. For each λ, the dual value g(λ) = inf_x L(x,λ) is marked. Key insight: g(λ) ≤ p* for all λ≥0 (certified lower bound). At λ*=2, we achieve x*(2)=1 which is exactly on the constraint boundary, and g(2)=1=p*."
   },
   {
     "filename": "duality_kkt_2d.gif",
-    "description": "2D KKT geometry animation for the problem min x²+y² s.t. x+y≥1. Shows contours of the objective, the constraint boundary x+y=1, and the argmin of L(x,y,λ) = (λ/2, λ/2) moving as λ varies from 0 to 2. At λ*=1, the minimizer hits the constraint boundary at the primal optimum (0.5, 0.5)."
+    "description": "2D KKT geometry animation for the problem min x²+y² s.t. x+y≥1. Left panel: objective contours (circles centered at origin) with the feasible half-plane shaded. Blue dot: argmin of L(x,y,λ) = x²+y² + λ(1-x-y), which is (λ/2, λ/2). For λ<1, this point violates the constraint (x+y<1). For λ=λ*=1, the minimizer lands exactly on the constraint boundary at (0.5, 0.5), the primal optimum. Right panel: dual function g(λ) = λ - λ²/2, showing the dual value as λ varies. This visualization locks in the core KKT insight: the optimal λ* is exactly the 'tension' required to push the unconstrained minimizer onto the constraint."
   },
   {
     "filename": "duality_sensitivity.gif",
-    "description": "Sensitivity analysis animation showing the perturbation function p(u) = min (x-2)² s.t. x≤1+u. Demonstrates how the supporting line ℓ_λ(u) = 1-λu rotates as λ varies, with the optimal dual variable λ*=2 being the slope (subgradient) of p(u) at u=0."
+    "description": "Sensitivity analysis animation showing the perturbation function p(u) = min (x-2)² s.t. x≤1+u. The curve p(u) is convex and decreasing in u (relaxing the constraint makes the problem easier). For each λ, a supporting line ℓ_λ(u) = p(0) - λu rotates. The optimal λ*=2 is exactly the (negative) slope of p(u) at u=0: -dp/du|_{u=0} = λ*. This is the fundamental sensitivity interpretation: the optimal dual variable is the rate of change of the optimal value with respect to constraint perturbation."
   },
   {
     "filename": "duality_saddle_path.gif",
-    "description": "Primal-dual saddle-point dynamics visualization. Shows contours of L(x,λ) in the (x,λ) plane and traces the primal-dual iteration path converging to the saddle point (x*=1, λ*=2). The Lagrangian is minimized in x and maximized in λ at the saddle point."
+    "description": "Primal-dual saddle-point dynamics visualization. Main panel: contours of L(x,λ) in the (x,λ) plane with a traced path converging to the saddle point (x*,λ*). The saddle point is where L is minimized in x and maximized in λ: the primal-dual optimum. Side panel: convergence of primal f₀(x_k) and dual g(λ_k) values over iterations, demonstrating the gap closing to zero. This animation shows why saddle-point formulations are fundamental to optimization algorithms."
   },
   {
     "filename": "duality_comp_slack.gif",
-    "description": "Complementary slackness animation. As the constraint boundary x=1+u moves, shows how λ*(u) drops to zero when the constraint becomes inactive (u≥1). Demonstrates the core KKT insight: active constraints have positive multipliers; inactive constraints have zero multipliers."
+    "description": "Complementary slackness animation. As the constraint boundary x≤1+u shifts (u varies from 0 to 2), shows how λ*(u) transitions. For u<1, the constraint is active (x*=1+u binds), and λ*(u)>0. For u≥1, the unconstrained optimum x*=2 becomes feasible, the constraint is inactive, and λ*(u)=0. The 'switch' point is at u=1. This animation locks in the KKT complementary slackness condition: λ_i*·g_i(x*)=0 for each constraint—either the constraint binds or its multiplier is zero."
   },
   {
     "filename": "duality_farkas_infeasible.gif",
-    "description": "Farkas' Lemma infeasibility certificate animation. Visualizes the contradictory system x+y≤0 and x+y≥1 (no feasible region). Shows how the certificate y=t·(1,1) with t>0 proves infeasibility: y≥0, y^T A = 0, and y^T b < 0."
+    "description": "Farkas' Lemma infeasibility certificate animation. The system {x+y≤0, x+y≥1} has no feasible point (contradiction: x+y cannot be ≤0 and ≥1 simultaneously). The animation constructs the Farkas certificate: a nonnegative linear combination of the constraints that yields 0·(x,y)^T ≤ -1, an impossibility. The certificate y = [t, t] with t>0 proves infeasibility via y≥0, y^T A = 0, y^T b = -t < 0. This is the core of duality: either a system is feasible, or there exists a proof of infeasibility."
   },
   {
     "filename": "duality_gap_convergence.gif",
-    "description": "Duality gap convergence animation. Plots the primal value f₀(x_k), dual bound g(λ_k), and gap over iterations. Shows both sequences converging to the common optimal value p*=d*=1, demonstrating how primal-dual methods close the duality gap."
+    "description": "Duality gap convergence animation. Plots the primal value f₀(x_k), dual bound g(λ_k), and the duality gap (shaded region between them) over iterations. Both curves converge to the common optimal value p*=d*=1. The shrinking gap provides a computable stopping criterion: when f₀(x_k) - g(λ_k) < ε, we have certified ε-optimality. This is the power of duality in algorithms—the gap gives both an upper and lower bound on the true optimum."
   },
   {
     "filename": "duality_lower_envelope.gif",
-    "description": "Animated construction of the dual function as the lower envelope. For each λ value, shows the Lagrangian L(x,λ) curve and its minimum point, building up the envelope g(λ) = inf_x L(x,λ). Visually demonstrates why g is always concave."
+    "description": "Animated construction of the dual function as the lower envelope of affine functions. Left panel: for each fixed x, the Lagrangian L(x,λ) is affine (linear) in λ. As λ varies, we see multiple lines (one for each x value). Right panel: the dual function g(λ) = inf_x L(x,λ) is the pointwise minimum of these affine functions—the lower envelope. Since g is a pointwise minimum of affine functions, it is always concave. This animation provides the definitive geometric proof of dual concavity."
   }
 ]

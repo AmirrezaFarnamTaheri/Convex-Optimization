@@ -388,7 +388,7 @@
       <p>This theorem bridges the abstract definition of linear maps (additivity, homogeneity) with the concrete world of matrix algebra. It implies that every property of matrices (rank, trace, determinant) corresponds to an intrinsic property of linear maps, provided we account for coordinate systems.</p>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/linear_map_grid.gif"
+        <img src="assets/linear_map_grid.gif"
              alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> A linear map is a structure-preserving deformation. Straight lines remain straight, parallel lines remain parallel, and the origin never moves. This is the geometric essence of linearity.</figcaption>
@@ -474,7 +474,7 @@
       </div>
       
       <figure style="text-align:center; margin: 20px 0;">
-        <img src="../../Contents To Adopt/Animations/basis_coordinates.gif"
+        <img src="assets/basis_coordinates.gif"
              alt="Basis and Coordinates Animation"
              style="max-width:80%; border-radius:8px; border:1px solid var(--border);">
         <figcaption><i>Animation:</i> A fixed vector $\mathbf{v}$ (blue) in a skewed basis $\{b_1, b_2\}$ (red grid). The coefficients $(c_1, c_2)$ update live as the basis changes, always satisfying $\mathbf{v} = c_1 b_1 + c_2 b_2$. This illustrates that coordinates depend on the choice of basis—the vector itself is the geometry.</figcaption>
@@ -662,14 +662,14 @@
       </table>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/four_fundamental_subspaces.gif"
+        <img src="assets/four_fundamental_subspaces.gif"
              alt="The four fundamental subspaces under a linear map"
              style="max-width: 90%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> The four fundamental subspaces in action. Domain (left): Row(A) vs Null(A). Codomain (right): Col(A) vs LeftNull(A). Inputs differing only in the nullspace direction map to the same output.</figcaption>
       </figure>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/kernel_image_rank_unified.gif"
+        <img src="assets/kernel_image_rank_unified.gif"
              alt="Unified view of kernel, image, and rank"
              style="max-width: 85%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> Left: Input vector explores all directions; the kernel direction (dashed) maps to zero. Right: Output always lands on the image line. When input aligns with the kernel, output snaps to zero. $\dim(\mathbb{R}^2) = \mathrm{rank}(A) + \mathrm{nullity}(A) = 1 + 1$.</figcaption>
@@ -833,13 +833,13 @@
 
       <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/determinant_area_orientation.gif"
+          <img src="assets/determinant_area_orientation.gif"
                alt="Determinant as signed area scaling"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> The determinant as signed area: $|\det(A)|$ is the area scale factor; the sign indicates orientation.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/determinant_column_dependence.gif"
+          <img src="assets/determinant_column_dependence.gif"
                alt="Determinant approaching zero as columns become dependent"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> As columns become dependent, the parallelogram flattens and $\det(A) \to 0$.</figcaption>
@@ -857,7 +857,7 @@
       </div>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/diagonalization_eigenbasis.gif"
+        <img src="assets/diagonalization_eigenbasis.gif"
              alt="In the eigenbasis, a linear map becomes pure axis scaling"
              style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> Left: In standard coordinates, a circle becomes an ellipse. Right: In eigen-coordinates, the same map is pure axis scaling. Diagonalization reveals the hidden simplicity.</figcaption>
@@ -947,7 +947,7 @@
       </div>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/trace_sum_eigenvalues_constant.gif"
+        <img src="assets/trace_sum_eigenvalues_constant.gif"
              alt="Trace as sum of eigenvalues: eigenvalues trade off while trace remains constant"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> The trace equals the sum of eigenvalues. As the matrix deforms, $\lambda_1$ increases and $\lambda_2$ decreases, but $\mathrm{tr}(A) = \lambda_1 + \lambda_2$ remains constant. The trace is a "total scaling budget".</figcaption>
@@ -1275,7 +1275,7 @@
       </div>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/supporting_hyperplanes_l1_linf_three_panels.gif"
+        <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif"
              alt="Supporting hyperplanes for L1 and L-infinity norms"
              style="max-width: 95%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> Supporting hyperplanes $\mathbf{u}^\top \mathbf{x} = \|\mathbf{u}\|_*$ for the $\ell_1$ (diamond) and $\ell_\infty$ (square) balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
@@ -1469,13 +1469,13 @@
 
       <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/layer2_21_dot_product_projection.gif"
+          <img src="assets/layer2_21_dot_product_projection.gif"
                alt="Dot product as projection onto a direction"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> The dot product $\mathbf{x}^\top \mathbf{u} = \|\mathbf{u}\| \times (\text{signed shadow length of } \mathbf{x} \text{ on } \mathbf{u})$.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/layer2_23_orthogonality_projection.gif"
+          <img src="assets/layer2_23_orthogonality_projection.gif"
                alt="Projection decomposition: v = proj + residual"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> The decomposition $\mathbf{v} = \mathrm{proj}_\mathbf{u}(\mathbf{v}) + \text{residual}$, where the residual is always orthogonal to $\mathbf{u}$.</figcaption>
@@ -1499,7 +1499,7 @@
       The norm of a vector equals the Euclidean norm of its coordinate vector. This is why orthonormal coordinate changes are <b>isometries</b>.</p>
 
       <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../Contents To Adopt/Animations/orthonormal_coordinates.gif"
+        <img src="assets/orthonormal_coordinates.gif"
              alt="In an orthonormal basis, coordinates are inner products"
              style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
         <figcaption><i>Animation:</i> $\mathbf{v} = (q_1^\top \mathbf{v}) q_1 + (q_2^\top \mathbf{v}) q_2$. When the basis is orthonormal, the expansion coefficients are simply the inner products—no matrix inversion required.</figcaption>
@@ -2332,13 +2332,13 @@
 
       <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/least_squares_projection.gif"
+          <img src="assets/least_squares_projection.gif"
                alt="Least squares as projection onto column space"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> As $\mathbf{b}$ moves, its projection $\mathbf{p} = A\mathbf{x}^\star$ onto $\mathrm{Col}(A)$ updates, with residual length $\|\mathbf{b} - A\mathbf{x}^\star\|$ shown.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="../../Contents To Adopt/Animations/least_squares_via_qr.gif"
+          <img src="assets/least_squares_via_qr.gif"
                alt="Least squares via QR decomposition"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
           <figcaption><i>Animation:</i> Stable computation via QR: compute $\mathbf{y} = Q^\top \mathbf{b}$, then $\mathbf{x}^\star = R^{-1}\mathbf{y}$. The result matches the projection.</figcaption>

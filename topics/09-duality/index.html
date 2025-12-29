@@ -641,6 +641,12 @@
 
       <div class="problem">
         <h3>Problem 3: LASSO</h3>
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/epigraph_dual_norm_linf_l1.gif"
+               alt="LASSO Dual Norm Feasibility"
+               style="max-width: 90%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+          <figcaption><i>Animation:</i> Dual norm feasibility for LASSO. The condition $\|A^\top \nu\|_\infty \le \lambda$ corresponds to checking if the dual variable vector lies inside the scaled $\ell_\infty$ ball. The "one-hot" vector $u^*$ in the animation tracks the active constraint (largest coordinate), visualizing the dual norm's geometry.</figcaption>
+        </figure>
         <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1$. Rewrite with $y = Ax - b$.</p>
         <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \lambda \|x\|_1 + \nu^\top(Ax - b - y)$.</p>
         <p><b>Dual Function:</b>

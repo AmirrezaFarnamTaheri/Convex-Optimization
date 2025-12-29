@@ -164,6 +164,13 @@
       </ul>
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/diagonalization_eigenbasis.gif"
+             alt="Diagonalization transforms a linear map into pure axis scaling"
+             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+        <figcaption><i>Animation:</i> Diagonalization. Left: In standard coordinates, the map shears and stretches (circle $\to$ ellipse). Right: In the eigenbasis, the same map is pure independent scaling along the axes.</figcaption>
+      </figure>
+
       <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
       <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
 
@@ -417,6 +424,13 @@
       $$ R\mathbf{x} = Q^\top \mathbf{b} $$
       This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
       <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/least_squares_via_qr.gif"
+             alt="Least Squares via QR decomposition"
+             style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+        <figcaption><i>Animation:</i> Least squares via QR. We compute $y = Q^\top b$ (projection coordinates), then solve $Rx = y$ by back-substitution. The result is the exact orthogonal projection $Ax^*$.</figcaption>
+      </figure>
 
       <h3>4.3 Full vs. Thin QR</h3>
       <p>

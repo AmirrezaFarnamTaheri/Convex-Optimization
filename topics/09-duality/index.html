@@ -687,6 +687,9 @@
           <div class="proof-step">
             <strong>Step 1: Variational Definition.</strong>
             $f(x) = \max \{ x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$. The extreme points of this polytope correspond to selecting exactly $r$ coordinates.
+      <div class="intuition-box">
+        <p><b>Why this works (The Swap Argument):</b> Suppose the optimal $y$ puts weight on a smaller component $x_j$ (i.e., $y_j > 0$) while a larger component $x_i$ is not fully selected ($y_i < 1$). We can move mass $\epsilon$ from $j$ to $i$. The objective changes by $\epsilon(x_i - x_j) > 0$. Thus, the optimizer must greedily fill the buckets corresponding to the largest $x_i$'s.</p>
+      </div>
           </div>
           <div class="proof-step">
             <strong>Step 2: Dual of the Inner Maximization.</strong>
@@ -1192,6 +1195,63 @@
       The remaining term in Lagrangian is $z_1^\top b$.
       $$ \max_{z_1} \quad b^\top z_1 \quad \text{s.t.} \quad \|z_1\|_2 \le 1, \quad \|A^\top z_1\|_2 \le \rho $$
       This is the dual of Robust Least Squares. It is a maximization of a linear function over the intersection of a ball and an ellipsoidal cylinder.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P9.12 — Chebyshev Approximation vs Least Squares</h3>
+  <p>Consider the problem of minimizing the $\ell_\infty$ norm of the residual: $p^* = \min_x \|Ax - b\|_\infty$.
+  <br>Let $x_{ls}$ be the least-squares solution ($p_{ls} = \min \|Ax-b\|_2$).
+  <br><strong>(a)</strong> Prove that the least-squares solution provides a $\sqrt{m}$-approximation: $\|Ax_{ls} - b\|_\infty \le \sqrt{m} p^*$.
+  <br><strong>(b)</strong> Derive the dual problem and show how to construct a lower bound certificate using the least-squares residual.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Primal Bound.</strong>
+      Let $r(x) = Ax - b$. We know $\|z\|_\infty \le \|z\|_2 \le \sqrt{m}\|z\|_\infty$.
+      <br>1. $\|r(x_{ls})\|_\infty \le \|r(x_{ls})\|_2$.
+      <br>2. Since $x_{ls}$ minimizes the 2-norm: $\|r(x_{ls})\|_2 \le \|r(x^*)\|_2$ (where $x^*$ is the Chebyshev optimizer).
+      <br>3. $\|r(x^*)\|_2 \le \sqrt{m}\|r(x^*)\|_\infty = \sqrt{m} p^*$.
+      <br>Chaining these: $\|r(x_{ls})\|_\infty \le \sqrt{m} p^*$.
+    </div>
+    <div class="proof-step">
+      <strong>(b) Dual Problem.</strong>
+      Primal: $\min t$ s.t. $-t\mathbf{1} \le Ax-b \le t\mathbf{1}$.
+      <br>Lagrangian dual derivation leads to: $\max b^\top \nu$ s.t. $A^\top \nu = 0, \|\nu\|_1 \le 1$.
+    </div>
+    <div class="proof-step">
+      <strong>Constructing a Certificate.</strong>
+      Let $r_{ls} = b - Ax_{ls}$. From normal equations, $A^\top r_{ls} = 0$.
+      <br>Thus $\nu = r_{ls} / \|r_{ls}\|_1$ is a feasible dual variable.
+      <br>Lower Bound: $b^\top \nu = \frac{b^\top r_{ls}}{\|r_{ls}\|_1} = \frac{(r_{ls} + Ax_{ls})^\top r_{ls}}{\|r_{ls}\|_1} = \frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$.
+      <br>This bound $\frac{\|r_{ls}\|_2^2}{\|r_{ls}\|_1}$ is readily computable and certifies a lower bound on the Chebyshev error.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P9.13 — Log-Sum-Exp Smoothing and Entropy</h3>
+  <p>Consider minimizing the piecewise-linear function $f(x) = \max_i (a_i^\top x + b_i)$.
+  <br><strong>(a)</strong> Derive the dual of the smooth approximation $f_{sm}(x) = \log(\sum \exp(a_i^\top x + b_i))$.
+  <br><strong>(b)</strong> Show that the smoothing corresponds to adding an entropy regularization term to the dual.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>(a) Dual Derivation.</strong>
+      Using the conjugate identity $\log(\sum e^{u_i}) = \max_{\lambda \in \Delta} (\lambda^\top u - \sum \lambda_i \log \lambda_i)$.
+      <br>Let $u_i = a_i^\top x + b_i$.
+      $$ \min_x f_{sm}(x) = \min_x \max_{\lambda \in \Delta} \left( \sum \lambda_i (a_i^\top x + b_i) - \sum \lambda_i \log \lambda_i \right) $$
+      Swap min and max (by minimax theorem). The inner min over $x$ is $\min_x (\sum \lambda_i a_i)^\top x$. This is bounded only if $A^\top \lambda = 0$ (weighted slope is zero).
+    </div>
+    <div class="proof-step">
+      <strong>(b) Entropy Interpretation.</strong>
+      The dual problem becomes:
+      $$ \max_{\lambda} \quad b^\top \lambda - \sum_{i=1}^m \lambda_i \log \lambda_i \quad \text{s.t.} \quad A^\top \lambda = 0, \ \mathbf{1}^\top \lambda = 1, \ \lambda \ge 0 $$
+      Comparing to the dual of the original max-function ($\max b^\top \lambda$ s.t. same constraints), we see the only difference is the term $-\sum \lambda_i \log \lambda_i$.
+      <br>This <b>entropy term</b> regularizes the dual, encouraging the weights $\lambda$ to be uniform rather than sparse (sparse $\lambda$ corresponds to a "hard" max).
     </div>
   </div>
 </div>

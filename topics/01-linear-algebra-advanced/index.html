@@ -126,7 +126,13 @@
       <h2>2. The Spectral Layer: Eigenvalues and Diagonalization</h2>
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
-      <h3>2.1 Eigenvalues: The Invariant Directions</h3>
+      <h3>2.1 Invariant Subspaces and Eigenvalues</h3>
+      <p>The concept of eigenvalues begins with <b>invariant subspaces</b>. A subspace $U \subseteq V$ is $T$-invariant if $T(u) \in U$ for all $u \in U$. This allows us to restrict the operator to a smaller domain, simplifying the analysis.</p>
+      <ul>
+        <li><b>Trivial Invariants:</b> $\{0\}$, $V$, $\text{ker}(T)$, and $\text{im}(T)$ are always invariant.</li>
+        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$.</li>
+      </ul>
+
       <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
       <br><b>The Logic of Detection:</b>
       $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
@@ -375,16 +381,33 @@
       $$ x \xrightarrow{V^\top} \text{rotate coordinates} \xrightarrow{\Sigma} \text{independent scaling} \xrightarrow{U} \text{rotate to output basis} $$
       This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse.</p>
 
-      <div class="insight">
-        <h4>Construction via Spectral Theorem</h4>
-        <p>SVD is forced by the spectral theorem applied to $A^\top A$.
-        <br>1. $A^\top A$ is symmetric positive semidefinite.
-        <br>2. It has an eigendecomposition $A^\top A = V \Lambda V^\top$ with $\lambda_i \ge 0$.
-        <br>3. Define $\sigma_i = \sqrt{\lambda_i}$.
-        <br>4. Define $u_i = \frac{1}{\sigma_i} A v_i$ for $\sigma_i > 0$.
-        <br>5. Check orthogonality: $\langle u_i, u_j \rangle = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \delta_{ij}$.
-        <br>6. Extend $U$ to a full basis. $A V = U \Sigma \implies A = U \Sigma V^\top$.
-        </p>
+      <div class="proof-box">
+        <h4>Rigorous Derivation via $A^\top A$</h4>
+        <p>The existence of the SVD is a direct consequence of the Spectral Theorem applied to the symmetric positive semidefinite matrix $G = A^\top A$. This matrix captures the geometry of the domain metric induced by $A$.</p>
+        <div class="proof-step">
+            <strong>Step 1: Spectral Decomposition of $G$.</strong>
+            Since $G = A^\top A$ is symmetric, there exists an orthonormal basis $\{v_1, \dots, v_n\}$ of eigenvectors with real eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$.
+            $$ A^\top A v_i = \lambda_i v_i $$
+            Since $\|A v_i\|^2 = v_i^\top A^\top A v_i = \lambda_i \|v_i\|^2 = \lambda_i$, we must have $\lambda_i \ge 0$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Define Singular Values and Right Singular Vectors.</strong>
+            Set $\sigma_i = \sqrt{\lambda_i}$. Let $r$ be the number of non-zero singular values (the rank).
+            The matrix $V = [v_1 \dots v_n]$ is orthogonal.
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Construct Left Singular Vectors.</strong>
+            For $i \le r$, define $u_i = \frac{1}{\sigma_i} A v_i$.
+            Check orthonormality:
+            $$ u_i^\top u_j = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{1}{\sigma_i \sigma_j} v_i^\top (\lambda_j v_j) = \frac{\sigma_j^2}{\sigma_i \sigma_j} \delta_{ij} = \delta_{ij} $$
+            For $i > r$, $A v_i = 0$. We complete the set $\{u_1, \dots, u_r\}$ to an orthonormal basis $\{u_1, \dots, u_m\}$ for $\mathbb{R}^m$ (e.g., via Gram-Schmidt).
+        </div>
+        <div class="proof-step">
+            <strong>Step 4: Matrix Factorization.</strong>
+            Compute $A V$:
+            $$ A v_i = \begin{cases} \sigma_i u_i & i \le r \\ 0 & i > r \end{cases} $$
+            This is exactly the column-wise definition of $U \Sigma$. Thus $AV = U \Sigma$, or $A = U \Sigma V^\top$.
+        </div>
       </div>
 
       <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
@@ -424,7 +447,32 @@
         <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>5.4 Application: PCA as SVD of Data</h3>
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: SVD Geometry</h3>
+        <p>Visualize the SVD decomposition $A = U \Sigma V^\top$ as a sequence of three geometric transformations: rotation ($V^\top$), axis-aligned scaling ($\Sigma$), and rotation ($U$).</p>
+        <div id="widget-svd-geometry" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+
+      <h3>5.4 The Schur Complement: Block Elimination</h3>
+      <p>The <b>Schur Complement</b> arises naturally when solving block linear systems or analyzing positive definiteness of block matrices. It corresponds to Gaussian elimination performed on blocks.</p>
+      <p>Consider a symmetric block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$. If $A$ is invertible, we can eliminate $B^\top$ by multiplying by a block row-operation matrix:
+      $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} = \begin{bmatrix} A & B \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
+      The matrix $S = C - B^\top A^{-1} B$ is the Schur complement of $A$ in $M$.</p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Schur Complement Condition for PSD</h4>
+        <p>If $A \succ 0$, then:
+        $$ M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0 $$
+        This converts a block matrix constraint into a scalar (or smaller matrix) constraint involving inverses. This is the key tool for converting rational inequalities into Linear Matrix Inequalities (LMIs) in convex optimization.</p>
+      </div>
+
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: Schur Complement</h3>
+        <p>Visualize the quadratic form of a block matrix. See how the Schur complement condition $s = a - b^2/d \ge 0$ determines positive semidefiniteness. The line $y = -(b/d)x$ corresponds to minimizing the quadratic over $y$ for a fixed $x$, which is the geometric operation underlying the Schur complement.</p>
+        <div id="widget-schur-complement" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+
+      <h3>5.5 Application: PCA as SVD of Data</h3>
       <p>Principal Component Analysis (PCA) is often presented as a statistical method. In reality, it is <b>pure geometry</b>: finding the best ellipsoidal approximation to a point cloud. We derive it from scratch using SVD, bypassing "covariance" jargon.</p>
 
       <h4>1) The Question</h4>
@@ -1039,6 +1087,11 @@
   <script type="module">
     import { initConditionNumber } from './widgets/js/condition-number.js';
     initConditionNumber('widget-condition-number');
+  </script>
+  <script type="module">
+    import { initAdvancedLaDemos } from './widgets/js/advanced-la-demos.js';
+    initAdvancedLaDemos('widget-svd-geometry', 'svd');
+    initAdvancedLaDemos('widget-schur-complement', 'schur');
   </script>
   <script src="../../static/js/glossary-loader.js"></script>
 </body>

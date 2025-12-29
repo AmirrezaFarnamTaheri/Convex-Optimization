@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>PSD Cone 2x2 Widget</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:950px;margin:20px auto;padding:0 14px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>2×2 PSD cone: X = [[a,b],[b,c]] is PSD iff a≥0, c≥0, ac−b²≥0</h2>
+  <div class="card">
+    <canvas id="c" width="860" height="420"></canvas>
+    <label>a</label><input id="a" type="range" min="0" max="2.5" step="0.01" value="1.20">
+    <label>c</label><input id="cval" type="range" min="0" max="2.5" step="0.01" value="1.20">
+    <label>b</label><input id="b" type="range" min="-2.0" max="2.0" step="0.01" value="0.80">
+    <div class="mono" id="info"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
+  const aS = document.getElementById("a");
+  const cS = document.getElementById("cval");
+  const bS = document.getElementById("b");
+  const info = document.getElementById("info");
+
+  // We’ll plot b on horizontal axis and sqrt(ac) on vertical axis,
+  // because PSD condition is |b| <= sqrt(ac).
+  // So as you move a and c, the "allowed band" expands/contracts.
+
+  function render(){
+    const a = parseFloat(aS.value);
+    const c = parseFloat(cS.value);
+    const b = parseFloat(bS.value);
+
+    const rad = Math.sqrt(a*c); // sqrt(ac)
+    const det = a*c - b*b;
+    const psd = (a>=0) && (c>=0) && (det>=-1e-6);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // plot box
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.strokeRect(50,40,canvas.width-80,canvas.height-90);
+
+    // mapping
+    const bMin=-2.0, bMax=2.0;
+    const rMin=0.0, rMax=2.5;
+
+    const mapX = bb => 60 + (bb-bMin)*(canvas.width-90)/(bMax-bMin);
+    const mapY = rr => (canvas.height-60) - (rr-rMin)*(canvas.height-100)/(rMax-rMin);
+
+    // shade feasible region: |b| <= sqrt(ac) (i.e. between -rad and +rad)
+    ctx.fillStyle="rgba(60,120,255,0.10)";
+    const step=6;
+    for(let px=50; px<canvas.width-30; px+=step){
+      for(let py=40; py<canvas.height-50; py+=step){
+        const bb = bMin + (px-60)*(bMax-bMin)/(canvas.width-90);
+        const rr = rMin + ((canvas.height-60)-py)*(rMax-rMin)/(canvas.height-100);
+        // for a,c fixed, feasible band is rr >= |bb| ? not exactly.
+        // Our vertical axis is r = sqrt(ac) constant; band is horizontal constraint |b| <= r.
+        // We'll just shade rectangle strip between -rad and +rad across the whole plot.
+        if(bb >= -rad && bb <= rad) ctx.fillRect(px,py,step,step);
+      }
+    }
+
+    // draw boundaries b = ±sqrt(ac)
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle="rgba(255,255,255,0.65)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(-rad), 40);
+    ctx.lineTo(mapX(-rad), canvas.height-50);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mapX(rad), 40);
+    ctx.lineTo(mapX(rad), canvas.height-50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // draw point at current b, and show rad as horizontal band
+    ctx.fillStyle = psd ? "rgba(170,220,255,1)" : "rgba(255,140,140,1)";
+    ctx.beginPath();
+    ctx.arc(mapX(b), mapY(rad), 6, 0, Math.PI*2);
+    ctx.fill();
+
+    // labels
+    ctx.fillStyle="rgba(255,255,255,0.85)";
+    ctx.font="12px ui-monospace,Menlo,Consolas,monospace";
+    ctx.fillText("b", canvas.width/2, canvas.height-25);
+    ctx.fillText("sqrt(ac)", 12, 30);
+    ctx.fillText(`b=+sqrt(ac)`, mapX(rad)+6, 60);
+    ctx.fillText(`b=-sqrt(ac)`, mapX(-rad)+6, 60);
+
+    info.innerHTML = `<div class="mono">
+      a=${a.toFixed(2)}, c=${c.toFixed(2)}, b=${b.toFixed(2)}<br/>
+      sqrt(ac)=${rad.toFixed(3)}, det=ac-b²=${det.toFixed(3)}<br/>
+      PSD? <b>${psd ? "YES" : "NO"}</b><br/>
+      Condition shown: |b| ≤ sqrt(ac) ⇔ ac-b² ≥ 0 (with a,c≥0).
+    </div>`;
+  }
+
+  aS.oninput=render; cS.oninput=render; bS.oninput=render;
+  render();
+})();
+</script>
+</body>
+</html>

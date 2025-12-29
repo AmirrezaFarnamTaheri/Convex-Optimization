@@ -634,48 +634,50 @@
         $$ L(x, \lambda) = x^\top A x + 2 b^\top x + \lambda(x^\top x - 1) = x^\top (A + \lambda I) x + 2 b^\top x - \lambda $$
         
         <div class="proof-box">
-          <h4>Dual Function Derivation (Complete Case Analysis)</h4>
+          <h4>Deep Dive: Zero-to-Hero Derivation of the Dual</h4>
+          <p>We analyze the dual function $g(\lambda) = \inf_x L(x, \lambda)$ completely, handling all edge cases.</p>
+
           <div class="proof-step">
-            <strong>Define:</strong> $H(\lambda) = A + \lambda I$. The Lagrangian is $L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda$.
+            <strong>1. The Hidden Convexity.</strong>
+            Define $H(\lambda) = A + \lambda I$. The Lagrangian is a quadratic in $x$:
+            $$ L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda $$
+            Even if $A$ is indefinite, we can choose $\lambda$ large enough such that $H(\lambda) \succeq 0$. This "convexifies" the Lagrangian.
           </div>
+
           <div class="proof-step">
-            <strong>Case 1: $H(\lambda) \not\succeq 0$.</strong>
-            <p>There exists direction $d$ with $d^\top H d < 0$. Along $x = td$:</p>
-            $$ L(td, \lambda) = t^2 (d^\top H d) + 2t(b^\top d) - \lambda \to -\infty \text{ as } |t| \to \infty $$
-            <p>So $g(\lambda) = \inf_x L(x, \lambda) = -\infty$.</p>
+            <strong>2. When is the Dual Finite?</strong>
+            The function $L(x, \lambda)$ is bounded below if and only if:
+            <ul>
+              <li><b>Curvature Condition:</b> $H(\lambda) \succeq 0$. If $H(\lambda)$ has a negative eigenvalue, $L \to -\infty$ along that eigenvector. This requires $\lambda \ge -\lambda_{\min}(A)$.</li>
+              <li><b>Range Condition:</b> $b \in \mathcal{R}(H(\lambda))$. If $H(\lambda)$ is singular (has 0 eigenvalues) and $b$ has a component in the nullspace, $L \to -\infty$ (linear tilt on a flat valley).</li>
+            </ul>
           </div>
+
           <div class="proof-step">
-            <strong>Case 2: $H(\lambda) \succeq 0$ but $b \notin \mathcal{R}(H)$.</strong>
-            <p>There exists $d \in \ker(H)$ with $b^\top d \ne 0$. Then:</p>
-            $$ L(x + td, \lambda) = L(x, \lambda) + 2t(b^\top d) \to -\infty \text{ as } t \to \pm\infty $$
-            <p>So $g(\lambda) = -\infty$.</p>
-          </div>
-          <div class="proof-step">
-            <strong>Case 3: $H(\lambda) \succeq 0$ and $b \in \mathcal{R}(H)$.</strong>
-            <p>The quadratic is minimized at $x^* = -H^\dagger b$ (Moore-Penrose pseudoinverse). The minimum value is:</p>
-            $$ g(\lambda) = -b^\top H^\dagger b - \lambda = -b^\top (A + \lambda I)^\dagger b - \lambda $$
+            <strong>3. The Dual Function Expression.</strong>
+            Provided the conditions hold, the optimal $x$ satisfies $H(\lambda)x = -b$. The value is:
+            $$ g(\lambda) = -b^\top H(\lambda)^\dagger b - \lambda $$
+            Using the eigendecomposition $A = Q \Lambda Q^\top$, with $\beta = Q^\top b$:
+            $$ g(\lambda) = -\sum_{i=1}^n \frac{\beta_i^2}{\lambda_i + \lambda} - \lambda $$
+            This is a concave function of $\lambda$ defined for $\lambda \ge \max(0, -\lambda_{\min}(A))$.
           </div>
         </div>
         
-        <p><b>Eigenvalue Form:</b> Let $A = Q \Lambda Q^\top$ with eigenvalues $\lambda_1, \ldots, \lambda_n$. Let $\beta_i = q_i^\top b$. Then:
-        $$ g(\lambda) = -\sum_{i=1}^n \frac{\beta_i^2}{\lambda_i + \lambda} - \lambda, \quad \text{for } \lambda > -\lambda_{\min}(A) $$</p>
-        
-        <p><b>Dual Problem:</b> $\max_{\lambda \ge 0} g(\lambda)$. This is a 1D concave maximization.</p>
-        
         <div class="theorem-box">
-          <h4>Strong Duality for QCQP with One Quadratic Constraint</h4>
-          <p><b>Theorem (S-Lemma/Hidden Convexity):</b> For QCQPs with a single quadratic inequality constraint and Slater's condition (strict feasibility), strong duality holds regardless of whether the objective is convex.</p>
-          <p><b>Why:</b> With one quadratic constraint $\|x\|^2 \le 1$, the Lagrangian dual can exactly certify the primal optimum. The certificate structure is encoded in a single scalar $\lambda$, and the PSD condition $A + \lambda I \succeq 0$ is exactly what the dual optimizes over.</p>
+          <h4>Strong Duality Theorem</h4>
+          <p><b>Theorem:</b> For the Trust Region Subproblem, $p^\star = d^\star$ even if non-convex.</p>
+          <p><b>Geometric Intuition (The S-Lemma):</b>
+          The joint range of $(x^\top x, x^\top A x + 2b^\top x)$ is a convex set in $\mathbb{R}^2$ (this is specific to having only <i>one</i> quadratic constraint).
+          Because the image is convex, we can separate the optimal point from the infeasible region with a hyperplane. The normal vector to this hyperplane corresponds to the dual variable $\lambda$. Thus, a linear combination of the objective and constraint supports the optimal value exactly.</p>
         </div>
         
         <div class="insight">
-          <h4>Recovering the Primal Solution via KKT</h4>
-          <p>At optimality $\lambda^*$, the KKT conditions give:</p>
+          <h4>Recovering the Primal Solution</h4>
+          <p>Solve the 1D dual problem $\max_{\lambda} g(\lambda)$. Let $\lambda^*$ be the optimum.</p>
           <ul>
-            <li><b>Stationarity:</b> $(A + \lambda^* I) x^* = -b$</li>
-            <li><b>Complementary Slackness:</b> $\lambda^*(\|x^*\|^2 - 1) = 0$</li>
+            <li><b>Easy Case ($H(\lambda^*) \succ 0$):</b> $x^* = -(A + \lambda^* I)^{-1} b$.</li>
+            <li><b>Hard Case ($H(\lambda^*)$ singular):</b> This happens if $\lambda^* = -\lambda_{\min}(A)$. The system $(A + \lambda^* I)x = -b$ has infinitely many solutions. We must choose the specific solution $x = x_{base} + \alpha v_{null}$ such that $\|x\|_2 = 1$.</li>
           </ul>
-          <p>If $\lambda^* > 0$, the solution lies on the boundary $\|x^*\| = 1$. If $\lambda^* = 0$, the unconstrained minimizer lies inside the ball.</p>
         </div>
       </div>
 

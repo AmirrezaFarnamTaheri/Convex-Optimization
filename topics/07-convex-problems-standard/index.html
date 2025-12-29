@@ -284,6 +284,19 @@
         </ul>
       </div>
 
+      <div class="theorem-box">
+        <h4>Modeling Guide: The Mechanical Translator</h4>
+        <p><b>Pattern:</b> $|a^\top x + b| \le t$
+        <br><b>Action:</b> Replace with two linear constraints:
+        $$ \begin{cases} a^\top x + b \le t \\ -a^\top x - b \le t \end{cases} $$
+        <b>Pattern:</b> $\min \|Ax - b\|_1$
+        <br><b>Action:</b> Introduce slack vector $s \in \mathbb{R}^m$.
+        <br>Minimize $\sum s_i$ subject to $-s \preceq Ax - b \preceq s$.
+        <br><b>Pattern:</b> $\min \|Ax - b\|_\infty$
+        <br><b>Action:</b> Introduce scalar $t$.
+        <br>Minimize $t$ subject to $-t\mathbf{1} \preceq Ax - b \preceq t\mathbf{1}$.</p>
+      </div>
+
       <h4>Atom 2: Maximum of Affine Functions</h4>
       <p>
       $$ \max_{i} (a_i^\top x + b_i) \le t \iff a_i^\top x + b_i \le t \quad \forall i $$
@@ -1161,9 +1174,19 @@
           $$ f(x) = \sum_{k=1}^K c_k x_1^{a_{1k}} \dots x_n^{a_{nk}} $$
           where coefficients $c_k > 0$.
           <br><i>Key Property:</i> Log-Sum-Exp. $\log f(x)$ is a convex function of $y = \log x$.
-          <br><b>Proof:</b> Let $x_i = e^{y_i}$. Then a monomial becomes $c \prod e^{a_{ik} y_i} = c e^{\mathbf{a}_k^\top \mathbf{y}}$.
-          A posynomial becomes $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}}$.
-          Taking the log gives $\log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$, which is the composition of the convex Log-Sum-Exp function with affine maps. Thus, it is convex.</p>
+          <br><b>Proof (Step-by-Step):</b>
+          <br>1. Let $x_i = e^{y_i}$. Then a monomial becomes $c \prod e^{a_{ik} y_i} = c e^{\mathbf{a}_k^\top \mathbf{y}}$.
+          <br>2. A posynomial becomes a sum of exponentials: $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}} = \sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k}$ (where $b_k = \log c_k$).
+          <br>3. Taking the log gives the function $g(y) = \log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$. This is the composition of the **Log-Sum-Exp** function with affine maps.
+          <br>4. <b>Why is Log-Sum-Exp convex?</b> We prove $f(u) = \log(\sum e^{u_i})$ is convex using Hölder's inequality.
+          <br>Let $u, v \in \mathbb{R}^n$ and $\theta \in [0,1]$.
+          $$ f(\theta u + (1-\theta)v) = \log\left(\sum e^{\theta u_i} e^{(1-\theta)v_i}\right) $$
+          Applying Hölder's inequality with $p=1/\theta$ and $q=1/(1-\theta)$:
+          $$ \sum (e^{u_i})^\theta (e^{v_i})^{1-\theta} \le \left(\sum e^{u_i}\right)^\theta \left(\sum e^{v_i}\right)^{1-\theta} $$
+          Taking the log of both sides (log is monotonic increasing):
+          $$ \log\left(\sum e^{\theta u_i + (1-\theta)v_i}\right) \le \theta \log\left(\sum e^{u_i}\right) + (1-\theta) \log\left(\sum e^{v_i}\right) $$
+          Thus, $f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v)$.
+          <br>5. Since Log-Sum-Exp is convex and affine composition preserves convexity, the transformed posynomial is convex.</p>
       </div>
 
       <h3>5.2 Standard GP Form</h3>

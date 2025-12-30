@@ -1173,6 +1173,22 @@
         </ul>
       </div>
 
+      <div class="insight">
+        <h4>Optimization View: Norms as Shapes</h4>
+        <p>In optimization, the choice of norm determines the "shape" of the trust region or constraint set.
+        <br><b>Minimizing a norm subject to constraints</b> is equivalent to finding the smallest scaled copy of the norm ball that touches the feasible set.</p>
+        <ul>
+            <li><b>$\ell_2$ (Sphere):</b> The contact point is usually generic (dense solution).</li>
+            <li><b>$\ell_1$ (Diamond):</b> The "pointy" corners reach out further in coordinate directions. The contact point is likely to be a vertex, where many coordinates are zero (sparse solution). This is the geometric intuition behind LASSO.</li>
+            <li><b>$\ell_\infty$ (Box):</b> The flat faces mean the solution is likely to have many coordinates "maxed out" at the same value.</li>
+        </ul>
+      </div>
+
+      <div class="figure-container" style="text-align: center; margin: 24px 0;">
+        <img src="assets/layer2_21_dot_product_projection.gif" alt="Dot Product Projection" style="width: 70%; height: auto; border-radius: 8px;">
+        <figcaption><i>Animation:</i> Norms and Projections are linked. The dot product is the length of the shadow. Different norms measure this length differently.</figcaption>
+      </div>
+
       <div class="example">
         <h4>Example 3: Chebyshev Norm ($\ell_\infty$)</h4>
         <p>$$ \|x\|_\infty = \max_i |x_i| $$</p>
@@ -3115,8 +3131,24 @@
         <p><b>Quadratic Forms:</b> Every convex quadratic problem reduces to solving a linear system ($H\mathbf{x} = -\mathbf{g}$).
         <br><b>Completing the Square:</b> The minimum value is always "constant minus quadratic form of the gradient inverse".</p>
       </div>
-    
 
+      <h3>P0.21 — Chebyshev Approximation Bound</h3>
+      <p>Let $x_{\text{ls}}$ be the least-squares solution to $A\mathbf{x} \approx \mathbf{b}$, minimizing $\|A\mathbf{x}-\mathbf{b}\|_2$. Let $x_{\text{ch}}$ be the solution to the Chebyshev approximation problem minimizing $\|A\mathbf{x}-\mathbf{b}\|_\infty$.
+      <br>Show that the $\ell_\infty$ error of the least-squares solution is at most $\sqrt{m}$ times the optimal $\ell_\infty$ error.</p>
+      <div class="solution-box">
+        <h4>Solution</h4>
+        <p>Let $\mathbf{r}_{\text{ls}} = \mathbf{b} - A\mathbf{x}_{\text{ls}}$ and $\mathbf{r}_{\text{ch}} = \mathbf{b} - A\mathbf{x}_{\text{ch}}$.
+        We want to bound $\|\mathbf{r}_{\text{ls}}\|_\infty$.
+        <br>1. Norm equivalence: $\|\mathbf{z}\|_\infty \le \|\mathbf{z}\|_2 \le \sqrt{m} \|\mathbf{z}\|_\infty$.
+        <br>2. Optimality of LS: Since $x_{\text{ls}}$ minimizes the $\ell_2$ norm of the residual, $\|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2$.
+        <br>3. Chain inequalities:
+        $$ \|\mathbf{r}_{\text{ls}}\|_\infty \le \|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2 \le \sqrt{m} \|\mathbf{r}_{\text{ch}}\|_\infty $$
+        Thus, the least squares solution provides a $\sqrt{m}$-approximation to the Chebyshev problem.</p>
+      </div>
+      <div class="recap-box">
+        <h4>Recap</h4>
+        <p><b>Approximation Ratios:</b> Norm equivalence constants often translate directly into approximation guarantees for optimization problems involving different norms.</p>
+      </div>
 </section>
 
 

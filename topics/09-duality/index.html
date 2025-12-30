@@ -689,31 +689,38 @@
         
         <div class="proof-box">
           <h4>Deep Dive: Zero-to-Hero Derivation of the Dual</h4>
-          <p>We analyze the dual function $g(\lambda) = \inf_x L(x, \lambda)$ completely, handling all edge cases.</p>
+          <p>We derive the dual function $g(\lambda) = \inf_x L(x, \lambda)$ from first principles, showing why this nonconvex problem behaves nicely.</p>
 
           <div class="proof-step">
-            <strong>1. The Hidden Convexity.</strong>
-            Define $H(\lambda) = A + \lambda I$. The Lagrangian is a quadratic in $x$:
+            <strong>1. The Lagrangian Form.</strong>
+            Define $H(\lambda) = A + \lambda I$. The Lagrangian is a quadratic function of $x$:
             $$ L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda $$
-            Even if $A$ is indefinite, we can choose $\lambda$ large enough such that $H(\lambda) \succeq 0$. This "convexifies" the Lagrangian.
+            Even if $A$ is indefinite (negative eigenvalues), we can choose $\lambda$ large enough such that $H(\lambda) \succeq 0$. This "convexifies" the Lagrangian.
           </div>
 
           <div class="proof-step">
-            <strong>2. When is the Dual Finite?</strong>
-            The function $L(x, \lambda)$ is bounded below if and only if:
+            <strong>2. Finiteness Conditions (Avoiding $-\infty$).</strong>
+            The quadratic $L(x, \lambda)$ has a finite minimum if and only if:
             <ul>
-              <li><b>Curvature Condition:</b> $H(\lambda) \succeq 0$. If $H(\lambda)$ has a negative eigenvalue, $L \to -\infty$ along that eigenvector. This requires $\lambda \ge -\lambda_{\min}(A)$.</li>
-              <li><b>Range Condition:</b> $b \in \mathcal{R}(H(\lambda))$. If $H(\lambda)$ is singular (has 0 eigenvalues) and $b$ has a component in the nullspace, $L \to -\infty$ (linear tilt on a flat valley).</li>
+              <li><b>Curvature:</b> $H(\lambda) \succeq 0$. If $H(\lambda)$ has a negative eigenvalue, we can send $x$ to infinity along that eigenvector to drive $L \to -\infty$. This forces $\lambda \ge -\lambda_{\min}(A)$.</li>
+              <li><b>Range:</b> $b \in \mathcal{R}(H(\lambda))$. If $H(\lambda)$ is singular (has 0 eigenvalues), the quadratic is "flat" along the nullspace. If $b$ has a component in that nullspace ($b \notin \mathcal{R}(H(\lambda))$), the linear term $2b^\top x$ tilts the flat valley, driving the minimum to $-\infty$.</li>
             </ul>
           </div>
 
           <div class="proof-step">
-            <strong>3. The Dual Function Expression.</strong>
-            Provided the conditions hold, the optimal $x$ satisfies $H(\lambda)x = -b$. The value is:
+            <strong>3. Computing the Minimum.</strong>
+            When finite, the minimum is attained at any $x$ satisfying the stationarity condition $2H(\lambda)x + 2b = 0 \implies H(\lambda)x = -b$.
+            <br>The optimal value is obtained by completing the square or using the pseudoinverse $H(\lambda)^\dagger$:
             $$ g(\lambda) = -b^\top H(\lambda)^\dagger b - \lambda $$
-            Using the eigendecomposition $A = Q \Lambda Q^\top$, with $\beta = Q^\top b$:
+          </div>
+
+          <div class="proof-step">
+            <strong>4. Eigen-Decomposition Form.</strong>
+            Let $A = Q \Lambda Q^\top$. In the eigenbasis, $H(\lambda)$ is diagonal with entries $\lambda_i + \lambda$. Let $\beta = Q^\top b$ be the coordinates of $b$.
+            The quadratic form becomes a sum:
             $$ g(\lambda) = -\sum_{i=1}^n \frac{\beta_i^2}{\lambda_i + \lambda} - \lambda $$
-            This is a concave function of $\lambda$ defined for $\lambda \ge \max(0, -\lambda_{\min}(A))$.
+            <b>Convention:</b> If $\lambda_i + \lambda = 0$, the term is $0$ if $\beta_i=0$, and $-\infty$ if $\beta_i \neq 0$ (enforcing the range condition).
+            <br>This explicitly displays $g(\lambda)$ as a concave function to be maximized over $\lambda \ge \max(0, -\lambda_{\min}(A))$.
           </div>
         </div>
         

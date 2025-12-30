@@ -133,6 +133,22 @@
         <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$.</li>
       </ul>
 
+      <div class="insight">
+        <h4>Dynamics Intuition: Why Eigenvalues Govern Stability</h4>
+        <p>Eigenvectors are the "pure modes" of a linear system.
+        <br><b>Discrete Time ($x_{k+1} = Ax_k$):</b> If $x_0$ is an eigenvector with value $\lambda$, then $x_k = A^k x_0 = \lambda^k x_0$. The magnitude $|\lambda|$ determines stability:
+        <ul>
+            <li>$|\lambda| < 1$: Decay to zero (stable).</li>
+            <li>$|\lambda| > 1$: Explosion (unstable).</li>
+        </ul>
+        <br><b>Continuous Time ($\dot{x} = Ax$):</b> Solutions are $x(t) = e^{At}x_0 = e^{\lambda t}x_0$. The real part $\mathrm{Re}(\lambda)$ matters:
+        <ul>
+            <li>$\mathrm{Re}(\lambda) < 0$: Decay (stable).</li>
+            <li>$\mathrm{Re}(\lambda) > 0$: Growth (unstable).</li>
+        </ul>
+        </p>
+      </div>
+
       <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
       <br><b>The Logic of Detection:</b>
       $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
@@ -270,6 +286,26 @@
         $$ \lambda_{\min}(A) = \min_{\mathbf{x} \ne 0} R_A(\mathbf{x}) \quad \text{and} \quad \lambda_{\max}(A) = \max_{\mathbf{x} \ne 0} R_A(\mathbf{x}) $$
         </p>
       </div>
+      <div class="proof-box">
+        <h4>Proof: Weighted Average Interpretation</h4>
+        <p>Why do min/max Rayleigh quotients give the extreme eigenvalues? The cleanest intuition comes from the Spectral Theorem.</p>
+        <div class="proof-step">
+          <strong>Step 1: Diagonalization.</strong>
+          Since $A$ is symmetric, $A = Q \Lambda Q^\top$ with orthonormal $Q$.
+          Let $\mathbf{y} = Q^\top \mathbf{x}$. Since $Q$ is orthogonal, $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Convex Combination.</strong>
+          $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top Q \Lambda Q^\top \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum \lambda_i y_i^2}{\sum y_i^2} $$
+          Define weights $w_i = y_i^2 / (\sum y_j^2)$. Then $w_i \ge 0$ and $\sum w_i = 1$.
+          $$ R_A(\mathbf{x}) = \sum_{i=1}^n w_i \lambda_i $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Conclusion.</strong>
+          The Rayleigh quotient is a weighted average of eigenvalues. Thus it must lie between $\lambda_{\min}$ and $\lambda_{\max}$.
+          We achieve the max by putting all "mass" $w_i$ on the largest eigenvalue (choosing $\mathbf{x}$ as the corresponding eigenvector).
+        </div>
+      </div>
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
     </section>
 
@@ -280,21 +316,48 @@
       $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
 
       <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
-      <p>$$ \|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}| $$</p>
+      <p>$$ \boxed{\|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}|} $$</p>
       <div class="proof-box">
-        <h4>Derivation</h4>
-        <p>Let $\mathbf{x}$ be a unit vector in $\ell_1$. Then $A\mathbf{x} = \sum x_j a_j$ (linear combination of columns).
-        $$ \|A\mathbf{x}\|_1 = \|\sum_j x_j a_j\|_1 \le \sum_j |x_j| \|a_j\|_1 \le (\max_j \|a_j\|_1) \sum_j |x_j| = \max_j \|a_j\|_1 $$
-        Equality is achieved by choosing $\mathbf{x} = e_k$ where $k$ is the index of the column with the largest norm.</p>
+        <h4>Derivation (Zero to Hero)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Upper Bound (The Cost Analysis).</strong>
+          Let $\|\mathbf{x}\|_1 = 1$. This is a "mass budget" of 1.
+          $$ \|A\mathbf{x}\|_1 = \left\| \sum_j x_j \mathbf{a}_j \right\|_1 \le \sum_j |x_j| \|\mathbf{a}_j\|_1 $$
+          Let $C = \max_j \|\mathbf{a}_j\|_1$ (max column sum). Then:
+          $$ \sum_j |x_j| \|\mathbf{a}_j\|_1 \le C \sum_j |x_j| = C \|\mathbf{x}\|_1 = C $$
+          Thus, $\|A\|_1 \le \max_j \|\mathbf{a}_j\|_1$. The operator cannot stretch more than the "biggest" column.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Achievability (The Worst-Case Input).</strong>
+          Pick the index $k$ maximizing the column sum $\|\mathbf{a}_k\|_1$. Choose $\mathbf{x} = \mathbf{e}_k$ (standard basis vector).
+          $$ \|A\mathbf{e}_k\|_1 = \|\mathbf{a}_k\|_1 = \max_j \sum_i |a_{ij}| $$
+          Since we found a unit vector achieving the bound, equality holds.
+        </div>
       </div>
 
       <h3>3.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
-      <p>$$ \|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}| $$</p>
-      <p><i>Intuition:</i> To maximize the $\infty$-norm of $A\mathbf{x}$, we want to maximize a single component $|(A\mathbf{x})_i| = |\sum_j a_{ij} x_j|$. With constraints $|x_j| \le 1$, we set $x_j = \text{sign}(a_{ij})$ to make all terms positive and maximal.</p>
+      <p>$$ \boxed{\|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}|} $$</p>
+      <div class="proof-box">
+        <h4>Derivation (Zero to Hero)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Upper Bound (Worst Row).</strong>
+          Let $\|\mathbf{x}\|_\infty = 1$, so $|x_j| \le 1$.
+          The output norm is $\max_i |(A\mathbf{x})_i|$. Look at row $i$:
+          $$ |(A\mathbf{x})_i| = \left| \sum_j a_{ij} x_j \right| \le \sum_j |a_{ij}| |x_j| \le \sum_j |a_{ij}| $$
+          Let $R = \max_i \sum_j |a_{ij}|$ (max row sum). Then $\|A\mathbf{x}\|_\infty \le R$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Achievability (Constructing the "Bad" Input).</strong>
+          Let $k$ be the index of the row with the maximum absolute sum.
+          Construct $\mathbf{x}$ such that $x_j = \text{sign}(a_{kj})$. Then $\|\mathbf{x}\|_\infty = 1$.
+          The $k$-th entry of the output is:
+          $$ (A\mathbf{x})_k = \sum_j a_{kj} \text{sign}(a_{kj}) = \sum_j |a_{kj}| = R $$
+          Thus $\|A\mathbf{x}\|_\infty \ge R$, proving equality.
+        </div>
+      </div>
 
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
-      <p>This is the square root of the maximum eigenvalue of $A^\top A$, which is the largest <b>singular value</b> of $A$. It represents the maximum stretch of the matrix in the Euclidean sense. This norm plays a crucial role in convergence analysis, as it dictates the worst-case amplification of errors.</p>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>

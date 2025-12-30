@@ -956,6 +956,15 @@
               $$ \min_{\mathbf{x}, t} \{ t \mid \max_i f_i(\mathbf{x}) \le t \} = \min_{\mathbf{x}} \left( \min_{t \ge \max_i f_i(\mathbf{x})} t \right) = \min_{\mathbf{x}} \max_i f_i(\mathbf{x}) $$
             </div>
           </div>
+
+          <div class="insight">
+            <h4>💡 Smooth Approximation: Log-Sum-Exp</h4>
+            <p>The function $f(x) = \max_i x_i$ is convex but non-differentiable (has sharp corners). A common <b>smooth approximation</b> is the Log-Sum-Exp function (also known as Softmax in machine learning):
+            $$ \text{LSE}(x) = \log\left(\sum_{i=1}^m e^{x_i}\right) $$
+            This function is convex and satisfies the tight bound:
+            $$ \max_i x_i \le \text{LSE}(x) \le \max_i x_i + \log m $$
+            This smoothing allows gradient-based methods to work efficiently on minimax problems.</p>
+          </div>
         </div>
 
         <div class="example">
@@ -1032,7 +1041,25 @@
           </div>
         </div>
 
-        <h3>6.6 Quick Reference Table</h3>
+        <h3>6.6 Sum of Largest Elements (Advanced Modeling)</h3>
+        <p>Consider the function $f(x) = \sum_{i=1}^r x_{[i]}$, the sum of the $r$ largest components of a vector $x \in \mathbb{R}^n$.
+        <br>This function is convex (it is the pointwise maximum of sums of all possible subsets of size $r$).
+        <br>Remarkably, the constraint $\sum_{i=1}^r x_{[i]} \le \alpha$ can be represented using only <b>linear inequalities</b> ($2n+1$ of them), avoiding combinatorial complexity.</p>
+
+        <div class="proof-box">
+          <h4>Derivation via Duality</h4>
+          <p>We start with the variational definition of the sum of $r$ largest elements:
+          $$ \sum_{i=1}^r x_{[i]} = \max \{x^\top y \mid 0 \le y \le \mathbf{1}, \ \mathbf{1}^\top y = r\} $$
+          Taking the <b>dual</b> of this linear maximization problem yields a minimization problem. Strong duality guarantees their optimal values are equal.
+          <br>The dual problem is:
+          $$ \min_{t, u} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad t\mathbf{1} + u \ge x, \ u \ge 0 $$
+          Thus, the constraint $\sum_{i=1}^r x_{[i]} \le \alpha$ is equivalent to the existence of auxiliary variables $t \in \mathbb{R}, u \in \mathbb{R}^n$ such that:
+          $$ rt + \sum_{i=1}^n u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
+          This is a set of $2n+1$ linear inequalities.
+          </p>
+        </div>
+
+        <h3>6.7 Quick Reference Table</h3>
 
         <table class="data-table" style="width: 100%; margin-top: 16px;">
           <thead>

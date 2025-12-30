@@ -1151,7 +1151,18 @@
       <p>So norms are not just "sizes"; they generate "distances." This is why we can talk about convergence, limits, and continuity in vector spaces.</p>
 
       <h3>4.6 Standard Norms ($\ell_2, \ell_1, \ell_\infty$)</h3>
-      <p>Not all norms come from inner products. The choice of $p$ in the $\ell_p$ norm corresponds to a choice of "spikiness sensitivity".</p>
+      <p>Not all norms come from inner products. The choice of $p$ in the $\ell_p$ norm corresponds to a choice of "spikiness sensitivity"—what kind of "badness" we are measuring.</p>
+
+      <div class="insight">
+        <h4>Interpretation by "Sensitivity to Spikes"</h4>
+        <p>As $p$ increases, the norm is increasingly dominated by the largest coordinate.</p>
+        <ul>
+            <li><b>$p=1$ (Sum):</b> Adds magnitudes. It "cares" linearly about each coordinate. In optimization, it encourages <b>sparsity</b> (solutions at corners).</li>
+            <li><b>$p=2$ (Energy):</b> "Cares" quadratically. Smooth geometry, loves inner products. Large components dominate, but others still matter.</li>
+            <li><b>$p=\infty$ (Max):</b> Only the worst coordinate matters. Used when you care about the largest deviation.</li>
+        </ul>
+        <p><b>Example:</b> For $x=(10, 1, 1, 1)$, $\|x\|_1=13$, $\|x\|_2=\sqrt{103} \approx 10.15$, $\|x\|_\infty=10$. As $p \to \infty$, the "small stuff" vanishes.</p>
+      </div>
 
       <div class="example">
         <h4>Example 1: Euclidean Norm ($\ell_2$)</h4>
@@ -1198,6 +1209,7 @@
       <b>Why this matters:</b> This is why gradients are vectors. The derivative $Df(x)$ is technically a linear functional (it eats a direction and spits out a rate of change). The <b>gradient</b> $\nabla f(x)$ is the unique vector that represents this functional: $Df(x)[v] = \langle \nabla f(x), v \rangle$.</p>
 
       <h3>4.8 Dual Norms and Polar Sets</h3>
+      <p>Given a norm $\|\cdot\|$, its <b>dual norm</b> is $\|\mathbf{y}\|_* := \sup_{\|\mathbf{x}\| \le 1} \mathbf{y}^\top \mathbf{x}$. It measures the maximum "dot-product gain" or alignment possible against a unit vector in the primal norm.</p>
       <ul>
         <li><b>$\ell_1$ (Manhattan):</b> $\|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. Unit ball is a diamond (polyhedron).</li>
         <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>

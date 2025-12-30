@@ -1352,6 +1352,106 @@
   </div>
 </div>
 
+  <div class="problem">
+    <h3>P9.14 — Dual of a Single Inequality Constraint</h3>
+    <p>Consider $\min c^\top x$ s.t. $f(x) \le 0$, where $f$ is convex. Show that for $\lambda > 0$, the dual function is $g(\lambda) = -\lambda f^*(-c/\lambda)$.</p>
+    <div class="solution-box">
+      <h4>Solution</h4>
+      <div class="proof-step">
+        <strong>Derivation:</strong>
+        The dual function is $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+        <br>Factor out $\lambda$: $g(\lambda) = \lambda \inf_x (f(x) + (c/\lambda)^\top x)$.
+        <br>Recall the conjugate definition $f^*(y) = \sup_x (y^\top x - f(x))$, which implies $\inf_x (f(x) - y^\top x) = -f^*(y)$.
+        <br>Setting $y = -c/\lambda$, we get $\inf_x (f(x) + (c/\lambda)^\top x) = -f^*(-c/\lambda)$.
+        <br>Thus, $g(\lambda) = -\lambda f^*(-c/\lambda)$.
+      </div>
+      <div class="proof-step">
+        <strong>Convexity Interpretation:</strong>
+        The function $\lambda f^*(-c/\lambda)$ is the <b>perspective function</b> of the convex function $f^*$. Since perspective functions preserve convexity, the dual problem (maximizing a concave function) is a convex optimization problem.
+      </div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <h3>P9.15 — Geometric View of LP Duality</h3>
+    <p>Consider the LP $\min c^\top x$ s.t. $Ax \le b$.
+    <br><strong>(a)</strong> Show that any nonnegative combination of constraints $w^\top Ax \le w^\top b$ defines a relaxed halfspace containing the feasible set.
+    <br><strong>(b)</strong> Show that if we choose $w$ such that the objective is bounded below on this halfspace, we must have $A^\top w = -c$.
+    <br><strong>(c)</strong> Conclude that the best lower bound from such relaxations is the dual LP.</p>
+    <div class="solution-box">
+      <h4>Solution</h4>
+      <div class="proof-step">
+        <strong>(a) Relaxation.</strong>
+        For any $w \ge 0$, if $Ax \le b$, then $w^\top A x \le w^\top b$. Let $H_w = \{x \mid (A^\top w)^\top x \le b^\top w\}$.
+        Since the feasible set $\mathcal{F} \subseteq H_w$, $\min_{x \in H_w} c^\top x \le p^*$.
+      </div>
+      <div class="proof-step">
+        <strong>(b) Boundedness Condition.</strong>
+        We want to minimize $c^\top x$ over the halfspace $a^\top x \le \beta$ where $a = A^\top w, \beta = b^\top w$.
+        <br>If $c$ is not a multiple of $-a$ (i.e., $c \ne -ka$ for $k > 0$), we can move infinitely in a descent direction within the halfspace, so the minimum is $-\infty$.
+        <br>To get a non-trivial bound, the gradient $c$ must point opposite to the normal $a$. For the bound to be tightest (equality on the boundary), we align them: $c = -a = -A^\top w$.
+      </div>
+      <div class="proof-step">
+        <strong>(c) Best Lower Bound.</strong>
+        If $A^\top w = -c$, the minimum of $c^\top x$ on the halfspace is achieved on the boundary $w^\top Ax = w^\top b$.
+        <br>Substitute $-A^\top w = c$: $c^\top x = -w^\top A x \ge -w^\top b$.
+        <br>So the lower bound is $-b^\top w$.
+        <br>To get the <i>best</i> lower bound, we maximize $-b^\top w$ subject to $A^\top w = -c, w \ge 0$. This is exactly the dual LP.
+      </div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <h3>P9.16 — Sum of Largest Elements via Duality</h3>
+    <p>Let $f(x)$ be the sum of the $r$ largest elements of $x$. Show that $f(x) \le \alpha$ is equivalent to the existence of $t, u$ such that:
+    $$ rt + \mathbf{1}^\top u \le \alpha, \quad t\mathbf{1} + u \ge x, \quad u \ge 0 $$
+    Use linear programming duality.</p>
+    <div class="solution-box">
+      <h4>Solution</h4>
+      <div class="proof-step">
+        <strong>Primal LP:</strong> $f(x) = \max_y \{x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r\}$.
+        <br>This is an LP in standard form.
+      </div>
+      <div class="proof-step">
+        <strong>Dual LP:</strong>
+        Dual variables $t$ (for equality $\mathbf{1}^\top y = r$) and $u$ (for inequality $y \le \mathbf{1}$).
+        $$ \min_{t, u} \quad rt + \mathbf{1}^\top u \quad \text{s.t.} \quad t\mathbf{1} + u \ge x, \quad u \ge 0 $$
+      </div>
+      <div class="proof-step">
+        <strong>Strong Duality:</strong> Since the feasible sets are non-empty bounded polyhedra, strong duality holds.
+        $$ f(x) = \min \{rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0\} $$
+        Thus $f(x) \le \alpha \iff \exists t, u$ satisfying the dual constraints with objective $\le \alpha$.
+      </div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <h3>P9.17 — Dual of Piecewise Linear Minimization</h3>
+    <p>Derive the dual of $\min_x \max_i (a_i^\top x + b_i)$. Show it corresponds to finding a probability distribution $\lambda$ over the functions such that the weighted gradient is zero.</p>
+    <div class="solution-box">
+      <h4>Solution</h4>
+      <div class="proof-step">
+        <strong>Epigraph Form:</strong> $\min t$ s.t. $a_i^\top x + b_i \le t$.
+      </div>
+      <div class="proof-step">
+        <strong>Lagrangian:</strong>
+        $$ L(x, t, \lambda) = t + \sum \lambda_i (a_i^\top x + b_i - t) = t(1 - \mathbf{1}^\top \lambda) + x^\top (\sum \lambda_i a_i) + \lambda^\top b $$
+      </div>
+      <div class="proof-step">
+        <strong>Dual Function:</strong>
+        Minimize $L$ over unconstrained $x, t$.
+        <br>Min over $t$: requires $\mathbf{1}^\top \lambda = 1$.
+        <br>Min over $x$: requires $\sum \lambda_i a_i = 0$ (weighted gradient zero).
+        <br>If these hold, $g(\lambda) = \lambda^\top b$. Else $-\infty$.
+      </div>
+      <div class="proof-step">
+        <strong>Dual Problem:</strong>
+        $$ \max_{\lambda} b^\top \lambda \quad \text{s.t.} \quad A^\top \lambda = 0, \ \mathbf{1}^\top \lambda = 1, \ \lambda \ge 0 $$
+        This interprets the minimum of the max-function as the maximum lower bound provable by a convex combination of the affine functions.
+      </div>
+    </div>
+  </div>
+
 </section>
     </article>
 

@@ -88,11 +88,22 @@
       <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ is the volume of the parallelepiped spanned by the columns of $A$.
       <br><b>Properties forced by geometry:</b>
       <ul>
-        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are linearly independent $\iff$ volume is non-zero.</li>
+        <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are linearly independent $\iff$ volume is non-zero. If columns are dependent, the parallelepiped flattens to zero volume.</li>
         <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. The volume scaling of a composite map is the product of the individual scalings.</li>
         <li><b>Orientation:</b> The sign of $\det(A)$ indicates whether the map preserves or reverses orientation (e.g., reflection has det -1).</li>
       </ul>
       </p>
+
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/determinant_area_orientation.gif" alt="Determinant as Area and Orientation" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 1a:</i> Determinant measures signed area. $|\det(A)|$ is the scaling factor; the sign flips if orientation is reversed.</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/determinant_column_dependence.gif" alt="Determinant Collapsing" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 1b:</i> As columns become linearly dependent, the parallelogram collapses, and the determinant approaches zero.</figcaption>
+        </figure>
+      </div>
 
       <h3>1.2 Trace: The Unique Linear Invariant</h3>
       <p>The trace is the unique linear functional $\mathrm{tr}: \mathbb{F}^{n \times n} \to \mathbb{F}$ (up to scaling) that satisfies the <b>cyclic property</b>:
@@ -119,6 +130,11 @@
         <li><b>Derivative of Det:</b> $\frac{d}{dt} \det(A(t)) = \det(A(t)) \mathrm{tr}(A(t)^{-1} A'(t))$.</li>
       </ul>
       </p>
+
+      <div class="figure-container" style="text-align: center; margin: 24px 0;">
+        <img src="assets/trace_sum_eigenvalues_constant.gif" alt="Trace as Sum of Eigenvalues" style="width: 60%; height: auto; border-radius: 8px;">
+        <figcaption><i>Figure 2:</i> Trace as a conserved quantity. Even as the linear map deforms (eigenvalues change), the sum $\lambda_1 + \lambda_2$ (the trace) remains constant.</figcaption>
+      </div>
     </section>
 
     <!-- SECTION 4: EIGENVALUES -->
@@ -127,15 +143,24 @@
       <p>We now ask: <b>Are there directions that a linear map preserves, changing only their length?</b> This is the spectral perspective. It collapses the complexity of matrix multiplication into simple scalar multiplication along specific axes.</p>
 
       <h3>2.1 Invariant Subspaces and Eigenvalues</h3>
-      <p>The concept of eigenvalues begins with <b>invariant subspaces</b>. A subspace $U \subseteq V$ is $T$-invariant if $T(u) \in U$ for all $u \in U$. This allows us to restrict the operator to a smaller domain, simplifying the analysis.</p>
+      <p>A matrix $A$ acts as a machine that transforms space. Usually, it "mixes" directions: it rotates, shears, and stretches. Eigenvectors are the rare directions where the machine acts simply as a scaler.</p>
+      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $A\mathbf{v} = \lambda \mathbf{v}$.
+      <br>Geometrically, the line spanned by $\mathbf{v}$ is an <b>invariant subspace</b>: $A$ maps the line to itself, only scaling it by $\lambda$.
       <ul>
-        <li><b>Trivial Invariants:</b> $\{0\}$, $V$, $\text{ker}(T)$, and $\text{im}(T)$ are always invariant.</li>
-        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$.</li>
+        <li>$|\lambda| > 1$: Expansion along the invariant line.</li>
+        <li>$|\lambda| < 1$: Contraction along the invariant line.</li>
+        <li>$\lambda < 0$: The direction is flipped (and scaled).</li>
       </ul>
+      </p>
+
+      <div class="figure-container" style="text-align: center; margin: 24px 0;">
+        <img src="assets/linear_map_grid.gif" alt="Linear Map Deformation" style="width: 70%; height: auto; border-radius: 8px;">
+        <figcaption><i>Figure 3:</i> A linear map deforming a grid. Notice how some lines rotate, while eigenvectors (if real) would stay on their original lines.</figcaption>
+      </div>
 
       <div class="insight">
         <h4>Dynamics Intuition: Why Eigenvalues Govern Stability</h4>
-        <p>Eigenvectors are the "pure modes" of a linear system.
+        <p>Eigenvectors are the "pure modes" of a linear system. They decompose complex dynamics into independent 1D behaviors.
         <br><b>Discrete Time ($x_{k+1} = Ax_k$):</b> If $x_0$ is an eigenvector with value $\lambda$, then $x_k = A^k x_0 = \lambda^k x_0$. The magnitude $|\lambda|$ determines stability:
         <ul>
             <li>$|\lambda| < 1$: Decay to zero (stable).</li>
@@ -149,20 +174,25 @@
         </p>
       </div>
 
-      <p>A non-zero vector $\mathbf{v}$ is an <b>eigenvector</b> with <b>eigenvalue</b> $\lambda$ if $T(\mathbf{v}) = \lambda \mathbf{v}$. This is a statement about invariant 1D subspaces.
+      <p><b>The Logic of Detection:</b>
       <br><b>The Logic of Detection:</b>
       $$ T(\mathbf{v}) = \lambda \mathbf{v} \iff (T - \lambda I)\mathbf{v} = 0 \iff \ker(T - \lambda I) \neq \{0\} $$
       Thus, $\lambda$ is an eigenvalue if and only if the operator $T - \lambda I$ is singular (not invertible). This is detected by the characteristic polynomial $p_T(\lambda) = \det(T - \lambda I) = 0$.
       <br><b>Basis Invariance:</b> Since $P(A-\lambda I)P^{-1} = PAP^{-1} - \lambda I$, similar matrices have the same characteristic polynomial and thus the same eigenvalues.</p>
 
-      <h3>2.2 Diagonalization: When do Eigenvectors Form a Basis?</h3>
-      <p>An operator $T$ is <b>diagonalizable</b> if there exists a basis of $V$ consisting of eigenvectors. In this basis, the matrix of $T$ is diagonal.
-      <br><b>The Criterion:</b> Diagonalization is possible if and only if for every eigenvalue $\lambda$, the geometric multiplicity equals the algebraic multiplicity ($g_\lambda = m_\lambda$).
-      <ul>
-        <li><b>Algebraic Multiplicity ($m_\lambda$):</b> Multiplicity of $\lambda$ as a root of $p_T(\lambda)$.</li>
-        <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
-      </ul>
-      <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
+      <h3>2.2 Diagonalization: When the Dream is True</h3>
+      <p>"Diagonalization" is the moment linear algebra stops being a haunted house of coupled variables and becomes a clean spreadsheet. It means there exists a coordinate system where the matrix acts independently on each coordinate.</p>
+      <p>Formally, $A$ is <b>diagonalizable</b> if $A = V \Lambda V^{-1}$ for a diagonal $\Lambda$.
+      <br>This is equivalent to finding a basis of eigenvectors. If we change basis to these eigenvectors ($y = V^{-1}x$), the map becomes diagonal:
+      $$ A\mathbf{x} = V \Lambda (V^{-1}\mathbf{x}) \implies \mathbf{y}_{new} = \Lambda \mathbf{y}_{old} $$
+      Each coordinate $y_i$ scales by $\lambda_i$ independently.</p>
+
+      <div class="figure-container" style="text-align: center; margin: 24px 0;">
+        <img src="assets/diagonalization_eigenbasis.gif" alt="Diagonalization in Eigenbasis" style="width: 80%; height: auto; border-radius: 8px;">
+        <figcaption><i>Figure 4:</i> Left: In standard coordinates, the map shears and rotates. Right: In the eigenbasis, the same map is pure axis-aligned scaling.</figcaption>
+      </div>
+
+      <p><b>The Criterion:</b> Diagonalization is possible if and only if there are enough eigenvectors to form a basis ($n$ linearly independent ones). This fails only when "geometric multiplicity" (number of eigenvectors) is less than "algebraic multiplicity" (root multiplicity).</p>
 
       <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
       <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
@@ -312,8 +342,10 @@
     <!-- SECTION 5: INDUCED NORMS -->
     <section class="section-card" id="section-induced-norms">
       <h2>3. Induced Matrix Norms</h2>
-      <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
+      <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> (or operator norm) corresponds to the "Lipschitz constant" of the linear map.</p>
+      <p>It measures the maximum factor by which $A$ can stretch a vector (worst-case amplification):</p>
       $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
+      <p>The inequality $\|A\mathbf{x}\| \le \|A\| \|\mathbf{x}\|$ is the tightest possible bound of this form.</p>
 
       <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
       <p>$$ \boxed{\|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}|} $$</p>
@@ -417,6 +449,17 @@
       This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
       <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
 
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/least_squares_projection.gif" alt="Least Squares Projection" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 5a:</i> Geometric view: Least squares finds the point in Col(A) closest to $\mathbf{b}$. The residual is orthogonal to the subspace.</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/least_squares_via_qr.gif" alt="Least Squares via QR" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 5b:</i> Algorithmic view: QR decomposition rotates the basis so solving the system becomes simple back-substitution.</figcaption>
+        </figure>
+      </div>
+
       <h3>4.3 Full vs. Thin QR</h3>
       <p>
       <ul>
@@ -497,6 +540,22 @@
         $$ \mathcal{N}(A^\top) = \operatorname{span}\{u_{r+1}, \dots, u_m\} $$</li>
       </ul>
       <p>This explicitly diagonalizes the geometry: $A$ maps the row space basis $\{v_1, \dots, v_r\}$ to the column space basis $\{u_1, \dots, u_r\}$ with scaling factors $\sigma_i$, and kills everything else.</p>
+
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/kernel_image_rank_unified.gif" alt="Kernel, Image, and Rank" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 6a:</i> Rank-Nullity in action. Dimensions of the image (blue line) and kernel (dashed line) sum to the domain dimension.</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/four_fundamental_subspaces.gif" alt="The Four Fundamental Subspaces" style="width: 100%; height: auto; border-radius: 8px;">
+          <figcaption><i>Figure 6b:</i> The "Big Picture" of linear algebra. Inputs split into Row Space vs Nullspace; Outputs split into Column Space vs Left Nullspace.</figcaption>
+        </figure>
+      </div>
+
+      <div class="figure-container" style="text-align: center; margin: 24px 0;">
+        <img src="assets/row_ops_four_spaces.gif" alt="Row Operations and Subspaces" style="width: 70%; height: auto; border-radius: 8px;">
+        <figcaption><i>Figure 6c:</i> Row operations change the column space but preserve the row space and nullspace. This is why Gaussian elimination works for solving $Ax=0$.</figcaption>
+      </div>
 
       <h3>5.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
       <p>SVD solves the problem of finding the best approximation of a matrix by one of lower rank.

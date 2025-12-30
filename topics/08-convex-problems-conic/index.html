@@ -1649,6 +1649,28 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P8.19 — Suboptimality of Simple Covering Ellipsoid (Problem 5.9)</h3>
+  <p>Find the minimum volume ellipsoid $\mathcal{E}$ centered at the origin containing the points $a_1, \dots, a_m \in \mathbb{R}^n$.
+  <br>Let $X_{\text{sim}} = (\sum a_k a_k^\top)^{-1}$ be a simple candidate solution.
+  <br>Show that the volume of the ellipsoid defined by $X_{\text{sim}}$ is at most $(m/n)^{n/2}$ times the volume of the optimal ellipsoid.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Feasibility:</strong> We showed in Example 3.3 that $X_{\text{sim}}$ is feasible.
+    </div>
+    <div class="proof-step">
+      <strong>Objective Gap:</strong> By restricting the dual to $\lambda_i = t$, we found a lower bound on the optimal value $p^\star \ge \log\det S - n\log(m/n)$, where $S = \sum a_k a_k^\top$.
+      The objective value of $X_{\text{sim}}$ is $p_{\text{sim}} = \log\det S$.
+      The gap is $p_{\text{sim}} - p^\star \le n\log(m/n)$.
+    </div>
+    <div class="proof-step">
+      <strong>Volume Ratio:</strong> Since $\text{vol} \propto e^{p/2}$:
+      $$ \frac{\text{vol}(X_{\text{sim}})}{\text{vol}(X^\star)} = \exp\left(\frac{p_{\text{sim}} - p^\star}{2}\right) \le \exp\left(\frac{n}{2}\log\frac{m}{n}\right) = \left(\frac{m}{n}\right)^{n/2} $$
+    </div>
+  </div>
+</div>
+
     </section>
 
 <section class="section-card" id="section-8">

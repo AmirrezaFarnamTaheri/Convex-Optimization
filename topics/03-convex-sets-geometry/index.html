@@ -889,7 +889,7 @@
           <p>Since $C$ is convex, the first bracket is in $C$. Since $D$ is convex, the second is in $D$. Thus the sum is in $C+D$.</p>
         </div>
 
-        <h4>3.4.1 Minkowski Difference (Erosion)</h4>
+        <h3>3.5 Minkowski Difference (Erosion)</h3>
         <p>There is a related operation that “shrinks” a set. The <b>Minkowski difference</b> (also called <b>erosion</b>) of $C$ by $D$ is defined as:</p>
         $$
         C \ominus D := \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} + D \subseteq C\}
@@ -918,7 +918,7 @@
           <figcaption><i>Figure 24:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
         </figure>
 
-        <h3>3.5 Cartesian Product</h3>
+        <h3>3.6 Cartesian Product</h3>
         <p>The product of convex sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is convex in $\mathbb{R}^{n+m}$:</p>
         $$ C \times D = \{(x, y) \mid x \in C, y \in D\} $$
         <p>This follows because component-wise convex combinations preserve membership in $C$ and $D$ respectively.</p>

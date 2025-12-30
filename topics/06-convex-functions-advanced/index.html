@@ -1821,6 +1821,32 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P6.32 — Dual of Single Inequality (Perspective of Conjugate)</h3>
+  <p>Consider the problem $\min c^\top x$ subject to $f(x) \le 0$, where $f$ is convex. Show that the dual function is the perspective of the conjugate of $f$:
+  $$ g(\lambda) = -\lambda f^*(-c/\lambda), \quad \lambda > 0 $$</p>
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Homogeneity:</b> The dual function of a single constraint problem often involves a perspective transformation (homogenization).</li>
+    </ul>
+  </div>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step"><strong>Step 1: Lagrangian.</strong>
+    $L(x, \lambda) = c^\top x + \lambda f(x)$.</div>
+    <div class="proof-step"><strong>Step 2: Dual Function.</strong>
+    $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+    For $\lambda > 0$, we can factor it out:
+    $$ g(\lambda) = \lambda \inf_x \left( \frac{c^\top}{\lambda} x + f(x) \right) $$
+    $$ = \lambda \left( - \sup_x \left( \left(-\frac{c}{\lambda}\right)^\top x - f(x) \right) \right) $$</div>
+    <div class="proof-step"><strong>Step 3: Conjugate Definition.</strong>
+    The term in the supremum is exactly the definition of $f^*(-c/\lambda)$.
+    Thus $g(\lambda) = -\lambda f^*(-c/\lambda)$.
+    This is the perspective of $-f^*$, evaluated at $(-c, \lambda)$.</div>
+  </div>
+</div>
+
 </section>
 
     <section class="section-card" id="section-8">

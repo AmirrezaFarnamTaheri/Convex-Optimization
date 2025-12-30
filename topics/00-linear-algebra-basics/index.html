@@ -1163,16 +1163,6 @@
         </ul>
       </div>
 
-      <div class="example">
-        <h4>Example 2: Manhattan Norm ($\ell_1$)</h4>
-        <p>$$ \|x\|_1 = \sum |x_i| $$</p>
-        <p><b>Unit Ball:</b> A diamond (cross-polytope). The corners lie on the axes.
-        <br><b>Sensitivity:</b> "Linear". Every coordinate contributes equally to the cost. This geometry promotes <b>sparsity</b> (solutions at corners).</p>
-        <ul>
-          <li><b>N3:</b> $|a+b| \le |a| + |b|$ coordinate-wise.</li>
-        </ul>
-      </div>
-
       <div class="insight">
         <h4>Optimization View: Norms as Shapes</h4>
         <p>In optimization, the choice of norm determines the "shape" of the trust region or constraint set.
@@ -1190,12 +1180,12 @@
       </div>
 
       <div class="example">
-        <h4>Example 3: Chebyshev Norm ($\ell_\infty$)</h4>
-        <p>$$ \|x\|_\infty = \max_i |x_i| $$</p>
-        <p><b>Unit Ball:</b> A square/cube. Flat faces aligned with axes.
-        <br><b>Sensitivity:</b> "Max-only". Only the single worst coordinate matters. This is the norm of uniform convergence and robustness.</p>
+        <h4>Example 2: Manhattan Norm ($\ell_1$)</h4>
+        <p>$$ \|x\|_1 = \sum |x_i| $$</p>
+        <p><b>Unit Ball:</b> A diamond (cross-polytope). The corners lie on the axes.
+        <br><b>Sensitivity:</b> "Linear". Every coordinate contributes equally to the cost. This geometry promotes <b>sparsity</b> (solutions at corners).</p>
         <ul>
-          <li><b>N3:</b> $\max |x_i + y_i| \le \max (|x_i| + |y_i|) \le \max |x_i| + \max |y_i|$.</li>
+          <li><b>N3:</b> $|a+b| \le |a| + |b|$ coordinate-wise.</li>
         </ul>
       </div>
 

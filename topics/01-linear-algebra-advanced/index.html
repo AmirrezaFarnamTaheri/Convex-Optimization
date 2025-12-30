@@ -130,7 +130,7 @@
       <p>The concept of eigenvalues begins with <b>invariant subspaces</b>. A subspace $U \subseteq V$ is $T$-invariant if $T(u) \in U$ for all $u \in U$. This allows us to restrict the operator to a smaller domain, simplifying the analysis.</p>
       <ul>
         <li><b>Trivial Invariants:</b> $\{0\}$, $V$, $\text{ker}(T)$, and $\text{im}(T)$ are always invariant.</li>
-        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$.</li>
+        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$. Geometrically, $T$ maps the line spanned by $v$ into itself; it does not rotate $v$ away, it only scales it.</li>
       </ul>
 
       <div class="insight">
@@ -163,6 +163,13 @@
         <li><b>Geometric Multiplicity ($g_\lambda$):</b> Dimension of the eigenspace $E_\lambda = \ker(T - \lambda I)$.</li>
       </ul>
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
+
+      <div class="insight">
+        <h4>What Diagonalization Really Means: "The Dream"</h4>
+        <p>Diagonalization is the moment linear algebra stops being a "haunted house" of coupled variables and becomes a clean spreadsheet.
+        <br>If $A = V\Lambda V^{-1}$, we can change coordinates to $y = V^{-1}x$. In this new system, the map becomes $y \mapsto \Lambda y$.
+        <br>We didn't change the space; we just chose the <b>right basis</b> (the eigenvectors) where the matrix acts as independent scalar multiplications along each axis.</p>
+      </div>
 
       <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
       <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
@@ -312,7 +319,7 @@
     <!-- SECTION 5: INDUCED NORMS -->
     <section class="section-card" id="section-induced-norms">
       <h2>3. Induced Matrix Norms</h2>
-      <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector.</p>
+      <p>We defined vector norms in Lecture 00. Now we ask: how "big" is a matrix $A$? The <b>induced norm</b> measures the maximum factor by which $A$ can stretch a vector. It is effectively the <b>Lipschitz constant</b> of the linear map.</p>
       $$ \|A\|_p = \sup_{\mathbf{x} \ne 0} \frac{\|A\mathbf{x}\|_p}{\|\mathbf{x}\|_p} = \max_{\|\mathbf{x}\|_p = 1} \|A\mathbf{x}\|_p $$
 
       <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
@@ -358,6 +365,7 @@
 
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
+      <p><b>Geometry:</b> A linear map $A$ transforms the unit sphere into an ellipsoid. The spectral norm $\|A\|_2$ is the length of the <b>longest semi-axis</b> of that ellipsoid (the maximum stretch).</p>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>

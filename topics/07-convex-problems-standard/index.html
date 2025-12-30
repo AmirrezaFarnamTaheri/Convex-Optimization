@@ -31,10 +31,10 @@
       <div class="lecture-meta">
         <span>Date: 2025-11-11</span>
         <span>Duration: 90 min</span>
-        <span>Tags: standard-forms, classification, LP, QP, LFP</span>
+        <span>Tags: standard-forms, classification, LP, QP, GP</span>
       </div>
       <div class="lecture-summary">
-        <p><strong>Overview:</strong> This lecture covers the standard form of convex optimization problems and the fundamental problem classes: Linear Programs (LP), Quadratic Programs (QP), and Linear-Fractional Programs (LFP). We develop techniques for recognizing and formulating convex problems, delving deep into the geometry of LPs and the reformulation of fractional problems.</p>
+        <p><strong>Overview:</strong> This lecture covers the standard form of convex optimization problems and the fundamental problem classes: Linear Programs (LP), Quadratic Programs (QP), Geometric Programs (GP), and Linear-Fractional Programs (LFP). We develop techniques for recognizing and formulating convex problems, delving deep into the geometry of LPs and the reformulation of fractional and posynomial problems.</p>
         <p><strong>Prerequisites:</strong> <a href="../06-convex-functions-advanced/index.html">Lecture 06: Convex Functions Advanced</a> (convex functions, first- and second-order conditions).</p>
         <p><strong>Forward Connections:</strong> Conic programming (SOCP, SDP) is covered in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>. Duality theory (<a href="../09-duality/index.html">Lecture 09</a>) provides optimality conditions for these problem classes.</p>
       </div>
@@ -47,6 +47,7 @@
         <li>Define and recognize the standard form of a convex optimization problem.</li>
         <li>Visualize Linear Programs using sliding hyperplanes and identify solutions at vertices.</li>
         <li>Formulate complex problems like the Chebyshev Center and Piecewise-Linear minimization as LPs.</li>
+        <li>Understand Geometric Programming and the log-log transformation.</li>
         <li>Understand Linear-Fractional Programming and the perspective transformation.</li>
         <li>Apply problem reformulation techniques (epigraph, slack variables) to convert non-standard forms.</li>
       </ul>
@@ -543,11 +544,10 @@
         <div class="proof-step">
             <strong>Step 1: Epigraph Form.</strong>
             Minimize $t$ subject to $\|A(x)\|_\infty \le t$.
-            By definition of the infinity norm, this means $\max_i \sum_j |a_{ij}(x)| \le t$.
-            This splits into $m$ constraints: $\sum_j |a_{ij}(x)| \le t$ for each row $i$.
+            This is equivalent to: $\sum_{j=1}^n |a_{ij}(x)| \le t$ for all $i = 1, \dots, m$.
         </div>
         <div class="proof-step">
-            <strong>Step 2: Lifting Absolute Values.</strong>
+            <strong>Step 2: Linearize Absolute Values.</strong>
             We cannot put absolute values in an LP. We introduce new variables $y_{ij}$ to "upper bound" the magnitudes:
             $$ |a_{ij}(x)| \le y_{ij} $$
             This condition is equivalent to two linear inequalities:
@@ -599,38 +599,21 @@
       <div class="proof-box">
         <h4>LP Formulation</h4>
         <div class="proof-step">
-            <strong>Step 1: Epigraph of Cost.</strong>
-            We can express the fuel cost as the maximum of 2 convex functions of $|a|$.
-            Let $s = |a|$. Then $f(a) = \max(s, 2s-1)$.
-            Since $s$ is the pointwise max of $a$ and $-a$, we can characterize the epigraph of $f$ using:
-            <ul>
-              <li>$p \ge s$ and $s \ge |a| \iff s \ge a, s \ge -a$.</li>
-              <li>$p \ge 2s - 1$.</li>
-            </ul>
-            Here $p$ is the cost variable and $s$ is the magnitude variable.
+            <strong>Step 1: Characterize Cost Function.</strong>
+            Let $s = |a|$. Then $f(a) = s$ if $s \le 1$ and $2s-1$ if $s > 1$.
+            Notice that for $s \ge 0$, $f(a) = \max(s, 2s-1)$.
+            (Check: if $s \le 1$, $s \ge 2s-1$. If $s > 1$, $2s-1 > s$).
         </div>
         <div class="proof-step">
-            <strong>Step 2: Dynamics.</strong>
-            The state constraints $x(t+1) = Ax(t) + bu(t)$ are linear equalities.
+            <strong>Step 2: Epigraph Variables.</strong>
+            Introduce $z_t$ for the cost $f(u_t)$ and $s_t$ for the magnitude $|u_t|$.
+            $$ s_t \ge u_t, \quad s_t \ge -u_t $$
+            $$ z_t \ge s_t, \quad z_t \ge 2s_t - 1 $$
         </div>
         <div class="proof-step">
-            <strong>Step 3: Full LP.</strong>
-            $$
-            \begin{aligned}
-            \text{minimize} \quad & \sum_{t=0}^{N-1} p_t \\
-            \text{subject to} \quad & x(t+1) = Ax(t) + bu(t) \\
-            & s_t \ge u_t, \quad s_t \ge -u_t, \quad s_t \ge 0 \\
-            & p_t \ge s_t, \quad p_t \ge 2s_t-1
-            \end{aligned}
-            $$
-            This separates the "absolute value" logic from the "piecewise cost" logic, making it cleaner than listing 4 affine inequalities for $u$.
-        </div>
-
-        <div class="example">
-          <h4>Example: Trust-Region QCQP</h4>
-          <p>Minimize a quadratic over the unit ball (trust region):</p>
-          $$ \min_x \frac{1}{2}x^\top P x + q^\top x + r \quad \text{s.t.} \quad x^\top x \le 1 $$
-          <p>This is a QP if $P \succeq 0$. If $P$ is indefinite, it is non-convex, but its dual is an SDP (strong duality holds by S-lemma).</p>
+            <strong>Step 3: Final LP.</strong>
+            Minimize $\sum z_t$ subject to dynamics $x(t+1)=Ax(t)+bu(t)$, boundary conditions, and the inequalities above.
+            This avoids casework or binary variables by using the convexity of $f$.
         </div>
       </div>
 
@@ -751,9 +734,9 @@
           <h4>Proof</h4>
           <p>Chain four inequalities using norm relations:</p>
           <ol>
-            <li>$\|e(x_{\text{ls}})\|_\infty \le \|e(x_{\text{ls}})\|_2$ (from $\|z\|_\infty \le \|z\|_2$)</li>
             <li>$\|e(x_{\text{ls}})\|_2 \le \|e(x_{\text{ch}})\|_2$ (LS optimality: it's the minimizer of ℓ₂ norm)</li>
             <li>$\|e(x_{\text{ch}})\|_2 \le \sqrt{m} \|e(x_{\text{ch}})\|_\infty$ (from $\|z\|_2 \le \sqrt{m} \|z\|_\infty$)</li>
+            <li>$\|e(x_{\text{ls}})\|_\infty \le \|e(x_{\text{ls}})\|_2$ (from $\|z\|_\infty \le \|z\|_2$)</li>
           </ol>
           <p>Chaining gives the result.</p>
         </div>
@@ -924,18 +907,70 @@
       </div>
     </section>
 
-    <!-- NEW SECTION 4: Linear-Fractional Programming -->
+    <!-- NEW SECTION 4: Geometric Programming -->
     <section class="section-card" id="section-4">
-      <h2>4. Linear-Fractional Programming</h2>
+      <h2>4. Geometric Programming</h2>
+
+      <p>Geometric Programming (GP) is a powerful class of optimization problems that are not convex in their natural form but become convex after a change of variables.</p>
+
+      <h3>4.1 Monomials and Posynomials</h3>
+      <ul>
+        <li><strong>Monomial:</strong> $f(x) = c x_1^{a_1} x_2^{a_2} \cdots x_n^{a_n}$, where $c > 0$ and $a_i \in \mathbb{R}$. Domain is $x_i > 0$.</li>
+        <li><strong>Posynomial:</strong> A sum of monomials: $f(x) = \sum_{k=1}^K c_k x_1^{a_{1k}} \cdots x_n^{a_{nk}}$, where $c_k > 0$.</li>
+      </ul>
+
+      <h3>4.2 GP Standard Form</h3>
+      <p>A <strong>Geometric Program</strong> is an optimization problem of the form:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & f_0(x) \\
+      \text{subject to} \quad & f_i(x) \le 1, \quad i=1,\dots,m \\
+      & h_j(x) = 1, \quad j=1,\dots,p
+      \end{aligned}
+      $$
+      <p>where $f_0, \dots, f_m$ are posynomials and $h_1, \dots, h_p$ are monomials.</p>
+
+      <h3>4.3 Convex Reformulation (Log-Log Transformation)</h3>
+      <p>We apply a change of variables $y_i = \log x_i$ (so $x_i = e^{y_i}$) and take the logarithm of the objective and constraints.</p>
+      <ul>
+        <li><strong>Monomial to Affine:</strong>
+          $$ \log(c x_1^{a_1} \cdots x_n^{a_n}) = \log c + \sum a_i y_i = \mathbf{a}^\top \mathbf{y} + b $$
+        </li>
+        <li><strong>Posynomial to Convex (LSE):</strong>
+          $$ \log\left(\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}}\right) = \log\left(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k}\right) $$
+          This is the <strong>Log-Sum-Exp</strong> function, which is convex.
+        </li>
+      </ul>
+      <p>The transformed problem is convex:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & \log(\sum \exp(\mathbf{a}_{0k}^\top \mathbf{y} + b_{0k})) \\
+      \text{subject to} \quad & \log(\sum \exp(\mathbf{a}_{ik}^\top \mathbf{y} + b_{ik})) \le 0 \\
+      & \mathbf{g}_j^\top \mathbf{y} + d_j = 0
+      \end{aligned}
+      $$
+
+      <div class="example">
+        <h4>Example: Wire Sizing</h4>
+        <p>Minimize power dissipation subject to timing and area constraints in chip design.
+        <br>Power $\propto \sum w_i$ (area/capacitance).
+        <br>Delay $\propto \sum 1/w_i$ (RC constants).
+        <br>This fits the posynomial structure perfectly.</p>
+      </div>
+    </section>
+
+    <!-- NEW SECTION 5: Linear-Fractional Programming -->
+    <section class="section-card" id="section-5">
+      <h2>5. Linear-Fractional Programming</h2>
 
       <p>We now advance from linear functions to <strong>linear-fractional functions</strong>, which have the form:</p>
       $$ f_0(x) = \frac{c^\top x + d}{e^\top x + f}, \quad \text{dom } f_0 = \{x \mid e^\top x + f > 0\} $$
       <p>These functions are <strong>quasiconvex</strong> (their sublevel sets are convex). Optimization problems involving them can be surprisingly transformed into LPs.</p>
 
-      <h3>4.1 The Geometric Perspective</h3>
+      <h3>5.1 The Geometric Perspective</h3>
       <p>The linear-fractional function arises from the <strong>perspective map</strong>. To see this, let's start with 1D.</p>
 
-      <h4>4.1.1 The 1D Case</h4>
+      <h4>5.1.1 The 1D Case</h4>
       <p>Consider $f(x) = \frac{x}{ax + b}$ with domain $ax+b > 0$. We can visualize this construction in three steps:</p>
       <ol>
         <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$. (Note: $x$ is scalar here)</li>
@@ -944,7 +979,7 @@
       </ol>
       <p>The intersection point is $(\frac{x}{ax+b}, 1)$. The x-coordinate is exactly our function value! This geometric operation—projecting onto a plane through the origin—is the definition of the perspective map.</p>
 
-      <h4>4.1.2 The General Case</h4>
+      <h4>5.1.2 The General Case</h4>
       <p>In higher dimensions ($\mathbf{x} \in \mathbb{R}^n$), we do the same:</p>
       <ul>
           <li>Map $\mathbf{x} \in \mathbb{R}^n$ to $(\mathbf{c}^\top \mathbf{x} + d, \mathbf{e}^\top \mathbf{x} + f)$ in $\mathbb{R}^2$.</li>
@@ -952,7 +987,7 @@
       </ul>
       <p>This perspective viewpoint explains why these functions preserve certain convexity properties.</p>
 
-      <h3>4.2 Linear-Fractional Programs (LFP)</h3>
+      <h3>5.2 Linear-Fractional Programs (LFP)</h3>
       <p>A Linear-Fractional Program is:</p>
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -968,7 +1003,7 @@
         </p>
       </div>
 
-      <h3>4.3 Reformulation as an LP</h3>
+      <h3>5.3 Reformulation as an LP</h3>
       <p>We can transform the LFP into an equivalent LP using the <strong>Charnes-Cooper transformation</strong>. This is a specific instance of the "perspective transformation" applied to the entire problem.</p>
 
       <div class="proof-box">
@@ -1010,7 +1045,7 @@
           $$
       </p>
 
-      <h3>4.4 Recovering the Solution and the Case $z=0$</h3>
+      <h3>5.4 Recovering the Solution and the Case $z=0$</h3>
       <p>Once we solve the LP, we need to map the solution $(y^*, z^*)$ back to $x^*$.</p>
 
       <h4>Case 1: $z^* > 0$</h4>
@@ -1036,7 +1071,7 @@
           <li><strong>Conclusion:</strong> If $z^*=0$, the LFP optimal value is finite but <strong>not attained</strong>.</li>
       </ul>
 
-      <h3>4.5 Generalized Linear-Fractional Programming (GLFP)</h3>
+      <h3>5.5 Generalized Linear-Fractional Programming (GLFP)</h3>
       <p>The "LP trick" above relies on having a <strong>single denominator</strong>. What if we have multiple ratios?</p>
       <p>Consider the <strong>Generalized Linear-Fractional Program (GLFP)</strong>:</p>
       $$ f_0(x) = \max_{i=1,\dots,r} \frac{c_i^\top x + d_i}{e_i^\top x + f_i} $$
@@ -1065,7 +1100,7 @@
         This is a GLFP. It cannot be reduced to a single LP, but it is quasiconvex and efficiently solvable.</p>
       </div>
 
-      <h3>4.6 Convex-Concave Fractional Programming</h3>
+      <h3>5.6 Convex-Concave Fractional Programming</h3>
       <p>The perspective transform trick extends beyond linear functions (Exercise 4.7). Consider minimizing:</p>
       $$ f_0(x) = \frac{f(x)}{h(x)}, \quad h(x) > 0 $$
       <p>where $f$ is convex ($f(x) \ge 0$) and $h$ is <strong>concave</strong>. (Note: standard LFP has affine $f, h$).</p>
@@ -1152,136 +1187,7 @@
       <p>This fits the convex-concave framework perfectly and can be solved efficiently either via bisection or the perspective formulation.</p>
     </section>
 
-        <!-- NEW SECTION 5: Geometric Programming -->
-    <section class="section-card" id="section-5">
-      <h2>5. Geometric Programming (GP)</h2>
-      <p>Geometric Programs are a class of optimization problems that are not convex in their natural form but become convex under a logarithmic change of variables. This "secret linearity" allows us to solve complex problems involving products and powers efficiently.</p>
-
-      <h3>5.1 The Atoms: Monomials and Posynomials</h3>
-      <p>GP modeling requires strict adherence to variable types. Variables $x$ are always <b>strictly positive</b> ($x \in \mathbb{R}_{++}^n$).</p>
-
-      <div class="definition-box">
-          <h4>Monomial</h4>
-          <p>A function $f: \mathbb{R}_{++}^n \to \mathbb{R}$ is a monomial if it has the form:
-          $$ f(x) = c x_1^{a_1} x_2^{a_2} \dots x_n^{a_n} $$
-          where $c > 0$ and exponents $a_i \in \mathbb{R}$ are arbitrary real numbers.
-          <br><i>Key Property:</i> Log-Affine. $\log f(x) = \log c + \sum a_i \log x_i$.</p>
-      </div>
-
-      <div class="definition-box">
-          <h4>Posynomial</h4>
-          <p>A function $f(x)$ is a posynomial if it is a sum of monomials:
-          $$ f(x) = \sum_{k=1}^K c_k x_1^{a_{1k}} \dots x_n^{a_{nk}} $$
-          where coefficients $c_k > 0$.
-          <br><i>Key Property:</i> Log-Sum-Exp. $\log f(x)$ is a convex function of $y = \log x$.
-          <br><b>Proof (Step-by-Step):</b>
-          <br>1. Let $x_i = e^{y_i}$. Then a monomial becomes $c \prod e^{a_{ik} y_i} = c e^{\mathbf{a}_k^\top \mathbf{y}}$.
-          <br>2. A posynomial becomes a sum of exponentials: $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}} = \sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k}$ (where $b_k = \log c_k$).
-          <br>3. Taking the log gives the function $g(y) = \log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$. This is the composition of the **Log-Sum-Exp** function with affine maps.
-          <br>4. <b>Why is Log-Sum-Exp convex?</b> We prove $f(u) = \log(\sum e^{u_i})$ is convex using Hölder's inequality.
-          <br>Let $u, v \in \mathbb{R}^n$ and $\theta \in [0,1]$.
-          $$ f(\theta u + (1-\theta)v) = \log\left(\sum e^{\theta u_i} e^{(1-\theta)v_i}\right) $$
-          Applying Hölder's inequality with $p=1/\theta$ and $q=1/(1-\theta)$:
-          $$ \sum (e^{u_i})^\theta (e^{v_i})^{1-\theta} \le \left(\sum e^{u_i}\right)^\theta \left(\sum e^{v_i}\right)^{1-\theta} $$
-          Taking the log of both sides (log is monotonic increasing):
-          $$ \log\left(\sum e^{\theta u_i + (1-\theta)v_i}\right) \le \theta \log\left(\sum e^{u_i}\right) + (1-\theta) \log\left(\sum e^{v_i}\right) $$
-          Thus, $f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v)$.
-          <br>5. Since Log-Sum-Exp is convex and affine composition preserves convexity, the transformed posynomial is convex.</p>
-      </div>
-
-      <h3>5.2 Standard GP Form</h3>
-      <p>A standard GP minimizes a posynomial subject to posynomial inequality constraints ($\le 1$) and monomial equality constraints ($= 1$).</p>
-      <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
-        <p style="margin: 0;">
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & f_0(x) \\
-          \text{subject to} \quad & f_i(x) \le 1, \quad i=1,\dots,m \\
-          & h_j(x) = 1, \quad j=1,\dots,p
-          \end{aligned}
-          $$
-        </p>
-      </div>
-      <p><b>Rules:</b>
-      <ul>
-          <li>Objective $f_0$: Must be a posynomial (or monomial).</li>
-          <li>Inequalities $f_i$: Must be <b>Posynomial</b> $\le 1$.</li>
-          <li>Equalities $h_j$: Must be <b>Monomial</b> $= 1$. (Posynomial equality is generally non-convex).</li>
-      </ul></p>
-
-      <h3>5.3 The Convex Reformulation (Log-Log)</h3>
-      <p>We transform the problem by changing variables to $y_i = \log x_i$ (so $x_i = e^{y_i}$) and taking the logarithm of the objective and constraints.</p>
-
-      <h4>1. Monomials become Affine</h4>
-      <p>For a monomial $h(x) = c \prod x_i^{a_i}$:
-      $$ \log h(e^y) = \log c + \sum a_i y_i $$
-      The constraint $h(x) = 1$ becomes the linear equation $\mathbf{a}^\top y + \log c = 0$.</p>
-
-      <h4>2. Posynomials become Log-Sum-Exp</h4>
-      <p>For a posynomial $f(x) = \sum c_k \prod x_i^{a_{ik}}$:
-      $$ f(e^y) = \sum c_k \exp(\mathbf{a}_k^\top y) = \sum \exp(\mathbf{a}_k^\top y + \log c_k) $$
-      The constraint $f(x) \le 1$ becomes $\log f(e^y) \le 0$:
-      $$ \log \left( \sum_{k=1}^K \exp(\mathbf{a}_k^\top y + b_k) \right) \le 0 $$
-      This is a convex constraint because the <b>Log-Sum-Exp</b> function is convex.</p>
-
-      <h4>3. The Resulting Convex Problem</h4>
-      <p style="text-align: center;">
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & \operatorname{lse}(A_0 y + b_0) \\
-          \text{subject to} \quad & \operatorname{lse}(A_i y + b_i) \le 0, \quad i=1,\dots,m \\
-          & Gy + d = 0
-          \end{aligned}
-          $$
-      </p>
-      <p>This is a convex optimization problem. We solve for $y^*$ and return $x^* = \exp(y^*)$.</p>
-
-      <h3>5.4 The GP Cookbook (Procedure)</h3>
-      <div class="proof-box">
-          <h4>Step-by-Step Reformulation</h4>
-          <ol>
-              <li><b>Variable Check:</b> Ensure all decision variables are strictly positive.</li>
-              <li><b>Canonical Form:</b> Rearrange inequalities to the form $LHS \le 1$.
-                  <br>Example: $x + y \le z \implies \frac{x}{z} + \frac{y}{z} \le 1$ ($x z^{-1} + y z^{-1} \le 1$).</li>
-              <li><b>Type Check:</b>
-                  <ul>
-                      <li>Is the LHS of every $\le$ constraint a posynomial?</li>
-                      <li>Is both sides of every $=$ constraint a monomial?</li>
-                  </ul>
-              </li>
-              <li><b>Solve:</b> Pass the posynomial coefficients and exponents to a GP solver (like CVXPY `gp=True`).</li>
-          </ol>
-      </div>
-
-      <div class="example">
-        <h4>Example: Box Volume Maximization</h4>
-        <p>We want to maximize the volume of a box ($xyz$) subject to area limits.
-        <br><b>Objective:</b> Maximize $xyz \iff$ Minimize $x^{-1}y^{-1}z^{-1}$ (Monomial).
-        <br><b>Constraints:</b>
-        <ol>
-            <li>Floor area $\le A_{floor} \implies x y A_{floor}^{-1} \le 1$. (Monomial $\le 1$).</li>
-            <li>Wall area $\le A_{wall} \implies (2xz + 2yz)/A_{wall} \le 1 \implies 2 A_{wall}^{-1} xz + 2 A_{wall}^{-1} yz \le 1$. (Posynomial $\le 1$).</li>
-            <li>Aspect ratio $z/x \le 2 \implies 0.5 z x^{-1} \le 1$. (Monomial $\le 1$).</li>
-        </ol>
-        All checks pass. This is a valid GP.
-        </p>
-        <p><strong>GP Formulation:</strong>
-        Minimize the inverse volume $x^{-1} y^{-1} z^{-1}$ (a monomial).
-        Constraints must be in the form (Posynomial $\le 1$).
-        $$
-        \begin{aligned}
-        \text{minimize} \quad & x^{-1} y^{-1} z^{-1} \\
-        \text{subject to} \quad & \frac{2}{A_{wall}} x z + \frac{2}{A_{wall}} y z \le 1 \\
-        & \frac{1}{A_{floor}} x y \le 1 \\
-        & 0.5 x^{-1} z \le 1
-        \end{aligned}
-        $$
-        All constraints are posynomials (or monomials). This is a standard GP.
-        </p>
-      </div>
-    </section>
-
-<!-- NEW SECTION 5: Summary Pattern Library -->
+<!-- NEW SECTION 6: Summary Pattern Library -->
     <section class="section-card" id="section-6">
       <h2>6. Summary: The Convex Optimization Pattern Library</h2>
       <p>We have encountered three fundamental patterns that translate geometric or analytic descriptions into standard convex problems. Internalizing these is key to mastering formulation.</p>
@@ -1316,7 +1222,7 @@
 
     </section>
 
-    <!-- NEW SECTION 6: Matrix Viewpoint -->
+    <!-- NEW SECTION 7: Matrix Viewpoint -->
     <section class="section-card" id="section-7">
       <h2>7. Matrix Viewpoint: The Algebra of QPs</h2>
       <p>Throughout this lecture, we've used block matrices and quadratic forms to construct optimization problems. Let's formalize the linear algebra that makes this work.</p>
@@ -1346,7 +1252,7 @@
       </ul>
     </section>
 
-    <!-- SECTION 7: Reformulation -->
+    <!-- SECTION 8: Reformulation -->
     <section class="section-card" id="section-8">
       <h2>8. Problem Reformulation</h2>
       <h3>8.1 Equivalent Problems</h3>
@@ -1367,7 +1273,7 @@
       </div>
     </section>
 
-    <!-- SECTION 8: EXERCISES -->
+    <!-- SECTION 9: EXERCISES -->
     <section class="section-card" id="section-9">
       <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
 
@@ -1585,7 +1491,7 @@
         $$ \phi(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
         We minimize $\sum \phi(a_i^\top x - b_i)$. Show that the following three formulations are equivalent.</p>
         <p><strong>(A) Unconstrained:</strong> $\min_x \sum \phi(r_i(x))$.</p>
-        <p><strong>(B) Weighted LS:</strong> $\min_{x, w \succeq 0} \sum \left( \frac{r_i(x)^2}{1+w_i} + M^2 w_i \right)$.</p>
+        <p><strong>(B) Weighted Least Squares:</strong> $\min_{x, w \succeq 0} \sum \left( \frac{r_i(x)^2}{1+w_i} + M^2 w_i \right)$.</p>
         <p><strong>(C) Quadratic Program:</strong> $\min_{x, u, v} \sum (u_i^2 + 2M v_i)$ subject to $|r_i(x)| \le u_i + v_i, 0 \le u_i \le M, v_i \ge 0$.</p>
 
         <div class="recap-box">
@@ -1605,7 +1511,7 @@
             Constraint $w \ge 0$ implies we use this root only if $|u| \ge M$.
             <ul>
               <li>If $|u| \le M$, optimal $w=0$. Value is $u^2$.</li>
-              <li>If $|u| > M$, optimal $w = |u|/M - 1$. Value is $\frac{u^2}{|u|/M} + M^2(|u|/M - 1) = M|u| + M|u| - M^2 = 2M|u| - M^2$.</li>
+              <li>If $|u| > M$, optimal $w = |u|/M - 1$. Value is $\frac{u^2}{|u|/M} + M^2(|u|/M - 1) = M|u| + M|u| - M^2 = 2M|u| - M^2 = M(2|r|-M)$.</li>
             </ul>
             This matches $\phi(u)$. Since the sum is separable, the equivalence holds.
           </div>
@@ -1722,9 +1628,33 @@
           </div>
         </div>
       </div>
+
+      <div class="problem">
+        <h3>P7.13 — Sum of Largest Elements (Problem 5.19)</h3>
+        <p>Consider the function $f(x) = \sum_{i=1}^r x_{[i]}$, the sum of the $r$ largest elements of $x$.
+        <br><b>(a)</b> Show that $f(x)$ is the optimal value of an LP.
+        <br><b>(b)</b> Derive the dual of this LP and use it to express the constraint $f(x) \le \alpha$ as a set of linear inequalities.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Part (a): Variational Form.</strong>
+            $f(x) = \max \{ x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$.
+            The extreme points of this polytope are vectors with $r$ ones and $n-r$ zeros. Maximizing $x^\top y$ selects the $r$ indices corresponding to the largest components of $x$.
+          </div>
+          <div class="proof-step">
+            <strong>Part (b): LP Duality.</strong>
+            The primal problem is $\max x^\top y$ subject to $y_i \le 1, -y_i \le 0, \sum y_i = r$.
+            Dual variables: $u \ge 0$ for $y \le \mathbf{1}$, $t$ (free) for sum equality.
+            Dual: $\min rt + \mathbf{1}^\top u$ subject to $t \mathbf{1} + u \ge x, u \ge 0$.
+            <br>By strong duality, $f(x) \le \alpha \iff \exists t, u : rt + \sum u_i \le \alpha, u_i \ge x_i - t, u_i \ge 0$.
+            This replaces a sorting condition with $2n+1$ linear inequalities.
+          </div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- SECTION 9: READINGS -->
+    <!-- SECTION 10: READINGS -->
     <section class="section-card" id="section-10">
       <h2>10. Readings & Resources</h2>
       <ul class="link-list">
@@ -1743,7 +1673,7 @@
         </ul>
       </div>
       <div class="interpretation-box">
-        <p style="margin: 0;"><b>Forward look:</b> <a href="../08-convex-problems-conic/index.html">Lecture 08</a> shows how many constraints can be written as membership in a cone (SOCP/SDP), expanding what you can model while keeping convexity. <a href="../09-duality/index.html">Lecture 09</a> explains why solvers can certify optimality and how dual variables interpret constraints.</p>
+        <p style="margin: 0;"><b>Forward look:</b> <a href="../08-convex-problems-conic/index.html">Lecture 08</a> shows how how many constraints can be written as membership in a cone (SOCP/SDP), expanding what you can model while keeping convexity. <a href="../09-duality/index.html">Lecture 09</a> explains why solvers can certify optimality and how dual variables interpret constraints.</p>
       </div>
     </section>
 

@@ -512,9 +512,31 @@
       <section class="section-card" id="section-6">
         <h2>7. Examples of Dual Problems</h2>
 
-        <h3>6.1 Linear Programming</h3>
-        <p>Primal: $\min c^\top x$ s.t. $Ax \le b, x \ge 0$.
-        <br>Dual: $\max -b^\top \lambda$ s.t. $A^\top \lambda + c \ge 0, \lambda \ge 0$. (See Sec 2.3).</p>
+        <h3>7.1 Linear Programming</h3>
+        <p>Primal: $\min c^\top x$ s.t. $Ax \le b$.
+        <br>Dual: $\max -b^\top \lambda$ s.t. $A^\top \lambda + c = 0, \lambda \ge 0$.</p>
+
+        <div class="proof-box">
+          <h4>Deep Dive: Geometric View of the LP Dual</h4>
+          <p>We can derive the dual not just algebraically, but geometrically by constructing "relaxed" problems.
+          <br><b>1. Aggregating Constraints:</b>
+          Let $Ax \le b$ be the constraints. Multiply each by a weight $\lambda_i \ge 0$ and sum them up:
+          $$ \lambda^\top A x \le \lambda^\top b $$
+          This defines a single halfspace $H_\lambda = \{x \mid (A^\top \lambda)^\top x \le \lambda^\top b\}$ that contains the feasible set.
+          <br><b>2. Relaxed Problem:</b>
+          Minimizing the objective $c^\top x$ over this larger set $H_\lambda$ gives a <b>lower bound</b> on the true optimum $p^*$.
+          $$ \tilde{p}(\lambda) = \inf_{x \in H_\lambda} c^\top x $$
+          <br><b>3. Finiteness Condition:</b>
+          When is $\inf c^\top x$ over a halfspace finite?
+          The normal to the halfspace is $a = A^\top \lambda$. The objective points in direction $-c$.
+          Unless the normal aligns exactly opposite to the objective ($A^\top \lambda = -c$), we can slide down the halfspace forever ($-\infty$).
+          If they align ($A^\top \lambda = -c$), the minimum occurs on the boundary hyperplane, where $(A^\top \lambda)^\top x = \lambda^\top b$.
+          $$ c^\top x = (-A^\top \lambda)^\top x = -(A^\top \lambda)^\top x = -\lambda^\top b $$
+          <br><b>4. The Best Bound:</b>
+          To get the tightest lower bound, we maximize this value over all valid weights $\lambda \ge 0$.
+          $$ \max_{\lambda \ge 0} -b^\top \lambda \quad \text{subject to} \quad A^\top \lambda = -c $$
+          This recovers the standard dual (for the equality-constrained form $\min c^\top x$ s.t. $Ax \le b$).</p>
+        </div>
 
         <h3>7.2 Quadratic Programming</h3>
         <p>Primal: $\min \frac{1}{2}x^\top P x + q^\top x$ s.t. $Ax \le b$. ($P \succ 0$).

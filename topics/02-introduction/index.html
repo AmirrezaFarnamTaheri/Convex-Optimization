@@ -102,9 +102,9 @@
         $$
         <p>where three conditions must be satisfied:</p>
         <ol>
-          <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. (i.e., its domain is convex and $f_0(\theta x + (1-\theta)y) \le \theta f_0(x) + (1-\theta)f_0(y)$).</li>
-          <li><b>Convex Inequality Constraints:</b> The functions $f_i$ defining the sublevel sets must be convex. This ensures the set $\{x \mid f_i(x) \le 0\}$ is convex.</li>
-          <li><b>Affine Equality Constraints:</b> The equality constraints must be linear/affine ($Ax=b$). Arbitrary convex equality constraints (like $x^2=1$) define non-convex sets.</li>
+          <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. Geometrically, this means the graph of the function is bowl-shaped, ensuring that any local minimum is a global minimum.</li>
+          <li><b>Convex Inequality Constraints:</b> The functions $f_i$ defining the sublevel sets must be convex. This ensures that the feasible region defined by $f_i(x) \le 0$ is a convex set (no "dents" or holes).</li>
+          <li><b>Affine Equality Constraints:</b> The equality constraints must be linear/affine ($Ax=b$). This restricts the solution to a flat subspace (hyperplane), which is the only kind of equality constraint that preserves convexity (as it is both convex and concave).</li>
         </ol>
         <p><i>Note:</i> Minimizing a concave function is generally non-convex. Equality constraints $h(x)=0$ where $h$ is convex (but not affine) are generally non-convex (see "Counter-Example Corner" below).</p>
 

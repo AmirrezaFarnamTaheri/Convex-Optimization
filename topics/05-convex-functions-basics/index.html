@@ -193,8 +193,9 @@
 
         <div class="proof-box">
           <h4>Proof via Supporting Hyperplane</h4>
-          <p>This proof connects Jensen's inequality directly to the geometry of convex sets.
-          <br><b>Fact:</b> If $f$ is convex, then at any point $\mu \in \mathrm{dom}\, f$, there exists a subgradient $g \in \partial f(\mu)$ such that $f(x) \ge f(\mu) + g^\top(x - \mu)$ for all $x$.
+          <p>This proof connects Jensen's inequality directly to the geometry of convex sets (see <a href="../04-convex-sets-cones/index.html#section-2">Lecture 04: Separation Theorems</a>).
+          <br><b>Fact:</b> If $f$ is convex, its epigraph is a convex set. By the <b>Supporting Hyperplane Theorem</b>, at any boundary point $(\mu, f(\mu))$, there exists a supporting hyperplane. This hyperplane defines a subgradient $g \in \partial f(\mu)$ such that:
+          $$ f(x) \ge f(\mu) + g^\top(x - \mu) \quad \forall x $$
           <br><b>Step 1:</b> Let $\mu = \mathbb{E}[Z]$. Apply the subgradient inequality at $\mu$:
           $$ f(Z) \ge f(\mu) + g^\top(Z - \mu) $$
           <b>Step 2:</b> Take expectation (linear operator):

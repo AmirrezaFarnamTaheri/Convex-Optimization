@@ -803,7 +803,8 @@
         <li><b>Determinant:</b> $\det(A) = \prod_{i=1}^n \lambda_i$.</li>
         <li><b>Eigenvalues:</b> Roots of the characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$.
             <br><i>Definition:</i> $\lambda$ is an eigenvalue if there exists $v \neq 0$ such that $Av = \lambda v$.
-            <br><i>Geometric Meaning:</i> $v$ is a direction where the matrix acts as a pure scaling.
+            <br><i>Geometric Meaning:</i> $v$ is an <b>invariant direction</b>. The matrix $A$ maps the line spanned by $v$ into itself, scaling it by $\lambda$.
+            <br><i>Dynamics Intuition:</i> If $x_{k+1} = Ax_k$, components of the state aligned with $v$ grow or decay according to $\lambda^k$. This determines the stability of the system.
         </li>
       </ul>
 

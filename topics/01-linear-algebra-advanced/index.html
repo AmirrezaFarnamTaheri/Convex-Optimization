@@ -164,11 +164,21 @@
       </ul>
       <p><b>Distinct Eigenvalues implies Diagonalizable:</b> If an $n \times n$ matrix has $n$ distinct eigenvalues, the corresponding eigenvectors are linearly independent, forming a basis.</p>
 
+      <div class="proof-box">
+        <h4>Why Columns of $V$ are Eigenvectors</h4>
+        <p>If $A = V\Lambda V^{-1}$ where $\Lambda$ is diagonal, then multiplying by $V$ gives $AV = V\Lambda$.
+        <br>Let $V = [v_1 \dots v_n]$ and $\Lambda = \text{diag}(\lambda_1, \dots, \lambda_n)$.
+        <br>Matching columns on both sides:
+        $$ [Av_1 \dots Av_n] = [\lambda_1 v_1 \dots \lambda_n v_n] $$
+        Thus, for each column $i$, we have $Av_i = \lambda_i v_i$. This forces the columns of $V$ to be eigenvectors.</p>
+      </div>
+
       <div class="insight">
-        <h4>What Diagonalization Really Means: "The Dream"</h4>
-        <p>Diagonalization is the moment linear algebra stops being a "haunted house" of coupled variables and becomes a clean spreadsheet.
-        <br>If $A = V\Lambda V^{-1}$, we can change coordinates to $y = V^{-1}x$. In this new system, the map becomes $y \mapsto \Lambda y$.
-        <br>We didn't change the space; we just chose the <b>right basis</b> (the eigenvectors) where the matrix acts as independent scalar multiplications along each axis.</p>
+        <h4>The "Same Vectors, Different Coordinates" Insight</h4>
+        <p>We did not change the underlying space $\mathbb{R}^n$. We changed the <b>coordinate system</b> used to describe vectors.
+        <br>If $x$ are coordinates in the standard basis and $y$ are coordinates in the eigenbasis ($x = Vy$), then the linear map simplifies:
+        $$ x \mapsto Ax \quad \iff \quad Vy \mapsto A(Vy) = V\Lambda y \quad \iff \quad y \mapsto \Lambda y $$
+        In the new coordinates $y$, the matrix is diagonal. Diagonalization is the process of finding the coordinate system where the map uncouples.</p>
       </div>
 
       <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>

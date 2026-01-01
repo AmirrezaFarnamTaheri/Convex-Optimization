@@ -176,11 +176,11 @@ For all lectures, the following steps will be applied:
     - [x] Audit and polish 02 through 06.
     - [x] Inject intuition from the "Zero to Hero" philosophy.
     - [x] Integrate relevant animations.
-- [ ] **Phase 3: Problems & Duality (07-09)**
-    - [ ] Enhance 07 & 08 with practical examples (Markowitz, etc.).
-    - [ ] **Major Rewrite of 09**: Integrate the entire `Problemset.md` as a structured walkthrough.
-    - [ ] Integrate relevant animations.
-- [ ] **Phase 4: Cleanup**
-    - [ ] Run path consistency checks for all images/links.
-    - [ ] Deduplicate content between lectures (e.g., ensure norms aren't re-taught poorly in 05 if mastered in 00).
-    - [ ] Final polish of text for coherence.
+- [x] **Phase 3: Problems & Duality (07-09)**
+    - [x] Enhance 07 & 08 with practical examples (Markowitz, etc.).
+    - [x] **Major Rewrite of 09**: Integrate the entire `Problemset.md` as a structured walkthrough.
+    - [x] Integrate relevant animations.
+- [x] **Phase 4: Cleanup**
+    - [x] Run path consistency checks for all images/links.
+    - [x] Deduplicate content between lectures (e.g., ensure norms aren't re-taught poorly in 05 if mastered in 00).
+    - [x] Final polish of text for coherence.

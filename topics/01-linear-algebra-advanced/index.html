@@ -375,8 +375,12 @@
           So the output cannot exceed the maximum absolute row sum.
         </div>
         <div class="proof-step">
-          <strong>Step 2: Achievability.</strong>
-          Pick the row $k$ with the largest sum. Set $x_j = \text{sign}(a_{kj})$. This aligns every term in the sum $\sum a_{kj} x_j$ to be positive, achieving the maximum possible value.
+          <strong>Step 2: Achievability (Constructing the "Bad" Input).</strong>
+          Let $k$ be the index of the row with the maximum absolute sum.
+          Construct $\mathbf{x}$ such that $x_j = \text{sign}(a_{kj})$. Then $\|\mathbf{x}\|_\infty = 1$.
+          The $k$-th entry of the output is:
+          $$ (A\mathbf{x})_k = \sum_j a_{kj} \text{sign}(a_{kj}) = \sum_j |a_{kj}| = R $$
+          Thus $\|A\mathbf{x}\|_\infty \ge R$, proving equality.
         </div>
       </div>
 

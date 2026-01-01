@@ -652,7 +652,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 4: Basis Pursuit</h3>
+        <h3>Problem 4: Basis Pursuit (Problem 5.3)</h3>
         <p><b>Primal:</b> $\min \|x\|_1$ s.t. $Ax = b$.</p>
         <p><b>Lagrangian:</b> $L(x, \nu) = \|x\|_1 + \nu^\top(b - Ax) = b^\top \nu + (\|x\|_1 - (A^\top \nu)^\top x)$.</p>
         <p><b>Dual Function:</b>
@@ -661,10 +661,38 @@
         <br><b>Dual Problem:</b> $\max b^\top \nu$ s.t. $\|A^\top \nu\|_\infty \le 1$.
         <br><b>KKT Insight:</b> At optimum, $A^\top \nu \in \partial \|x\|_1$. Dual variables certify the support of the sparse solution.
         </p>
+        <div class="proof-box">
+          <h4>Deep Dive: Dual of $\min c^\top x$ s.t. $f(x) \le 0$ via Conjugates</h4>
+          <p>We derive the general dual for a single inequality constraint using conjugates.</p>
+          <div class="proof-step">
+            <strong>1. Lagrangian:</strong> $L(x, \lambda) = c^\top x + \lambda f(x)$ with $\lambda \ge 0$.
+          </div>
+          <div class="proof-step">
+            <strong>2. Dual Function $g(\lambda) = \inf_x L(x, \lambda)$.</strong>
+            If $\lambda = 0$, $\inf c^\top x = -\infty$ unless $c=0$. Assume $\lambda > 0$.
+            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = -\lambda \sup_x \left( \left(-\frac{c}{\lambda}\right)^\top x - f(x) \right) = -\lambda f^*\left(-\frac{c}{\lambda}\right) $$
+          </div>
+          <div class="proof-step">
+            <strong>3. Convexity.</strong>
+            The function $g(\lambda) = -\lambda f^*(-c/\lambda)$ is concave because it is the perspective of the (negative) conjugate function. Thus the dual problem is convex.
+          </div>
+        </div>
       </div>
 
       <div class="problem">
-        <h3>Problem 5: Support Vector Machine (Hinge Loss)</h3>
+        <h3>Problem 5: LP Dual via Relaxed Problems (Problem 5.4)</h3>
+        <p><b>Primal:</b> $\min c^\top x$ s.t. $Ax \le b$.</p>
+        <p><b>Interpretation:</b> Instead of enforcing all constraints, consider a non-negative weighted sum $w^\top A x \le w^\top b$.
+        $$ \tilde{p}(w) = \min c^\top x \quad \text{s.t.} \quad (A^\top w)^\top x \le b^\top w $$
+        The set of points satisfying the weighted constraint contains the original feasible set, so $\tilde{p}(w)$ is a lower bound.
+        <br>The minimization $\min c^\top x$ s.t. $a^\top x \le \beta$ is finite only if $c$ is a multiple of $a$ (specifically $c = -ka$ for $k \ge 0$) or if $a=0$.
+        <br>Setting the gradient to match: $c = -A^\top w$ (implies the objective is supported by the constraint).
+        <br>The value is $-b^\top w$.
+        <br>The best lower bound is $\max -b^\top w$ s.t. $A^\top w + c = 0, w \ge 0$. This recovers the standard LP dual.</p>
+      </div>
+
+      <div class="problem">
+        <h3>Problem 6: Support Vector Machine (Hinge Loss)</h3>
         <p><b>Primal:</b> $\min \frac{1}{2}\|w\|^2 + C \sum \max(0, 1 - y_i w^\top x_i)$.
         <br>Rewrite: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $\xi_i \ge 1 - y_i w^\top x_i, \xi_i \ge 0$.</p>
         <p><b>Dual Derivation:</b>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>10. Algorithms II: Equality-Constrained Minimization — Convex Optimization</title>
+  <title>14. Algorithms II: Equality-Constrained Minimization — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
@@ -28,15 +28,15 @@
   <main class="container" style="padding: 32px 0 60px;">
     <!-- Lecture header -->
     <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">10. Algorithms II: Equality-Constrained Minimization</h1>
+      <h1 style="margin-top: 0;">14. Algorithms II: Equality-Constrained Minimization</h1>
       <div class="meta">
         Date: 2026-01-06 · Duration: 90 min · Tags: algorithms, constrained
       </div>
 
       <!-- Brief introduction -->
       <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> Null-space methods, projected gradient descent, penalty methods.</p>
-        <p><strong>Prerequisites:</strong> <a href="../09-duality/index.html">Lecture 13</a>, <a href="../13-unconstrained-minimization/index.html">Lecture 13</a></p>
+        <p><strong>Overview:</strong> Newton's method with equality constraints, KKT systems, elimination.</p>
+        <p><strong>Prerequisites:</strong> <a href="../13-unconstrained-minimization/index.html">Lecture 13</a></p>
       </section>
     </article>
 
@@ -45,9 +45,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you should understand:</p>
       <ul style="line-height: 1.8;">
-        <li>How to solve equality-constrained convex optimization problems using Newton's method.</li>
-        <li>The concept of eliminating equality constraints.</li>
-        <li>The basics of penalty and barrier methods.</li>
+        <li>How to formulate and solve the Newton step for equality constrained problems using KKT systems.</li>
+        <li>The distinction between feasible-start and infeasible-start Newton methods.</li>
+        <li>The elimination method (null-space method) and its relation to the KKT system.</li>
       </ul>
     </section>
 
@@ -55,46 +55,38 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
-      <h3>1. KKT System for Equality-Constrained Problems</h3>
-      <p>For $\min f(x)$ subject to $Ax = b$, the KKT conditions are $\nabla f(x^*) + A^\top \nu^* = 0$ and $Ax^* = b$. Newton's method solves the KKT system $\begin{bmatrix} \nabla^2 f & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x \\ \nu \end{bmatrix} = -\begin{bmatrix} \nabla f \\ Ax - b \end{bmatrix}$ at each iteration.</p>
+      <h3>1. Equality Constrained Minimization</h3>
+      <p>We solve $\min f(x)$ subject to $Ax = b$. The optimality conditions (KKT) are $Ax^* = b$ and $\nabla f(x^*) + A^\top \nu^* = 0$. This is a system of nonlinear equations (if $f$ is not quadratic) or linear equations (if $f$ is quadratic).</p>
 
-      <!-- Include images as needed -->
-      <figure style="margin: 16px 0; text-align: center;">
-        <img src="../../static/assets/topics/14-equality-constrained-minimization/null-space-method.svg" alt="The null-space method" style="max-width: 100%; height: auto;" />
-        <figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;">
-          The null-space method eliminates the equality constraints.
-        </figcaption>
-      </figure>
+      <h3>2. The KKT System</h3>
+      <p>The Newton step $\Delta x_{nt}$ and dual step $\nu$ are found by solving the linearized KKT conditions:
+      $$ \begin{bmatrix} \nabla^2 f(x) & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x_{nt} \\ w \end{bmatrix} = -\begin{bmatrix} \nabla f(x) \\ 0 \end{bmatrix} $$
+      Here we assume a feasible start ($Ax=b$). The KKT matrix is nonsingular if $\nabla^2 f(x)$ is positive definite on the null space of $A$ and $A$ has full rank.</p>
 
-      <h3>2. Feasible Start Newton Method</h3>
-      <p>Starting from feasible $x_0$ (i.e., $Ax_0 = b$), Newton updates maintain feasibility by restricting to null space: $\Delta x \in \text{null}(A)$. This reduces the KKT system to $(Z^\top \nabla^2 f Z)\Delta \tilde{x} = -Z^\top \nabla f$ where $Z$ is a null-space basis.</p>
+      <h3>3. Elimination Method</h3>
+      <p>We can eliminate the constraints by parameterizing the feasible set as $\{x : Ax=b\} = \{ Fz + \hat{x} : z \in \mathbb{R}^{n-p} \}$, where $F$ is a matrix whose columns span the null space of $A$, and $\hat{x}$ is a particular solution. This reduces the problem to unconstrained minimization of $\phi(z) = f(Fz + \hat{x})$.</p>
 
-      <h3>3. Infeasible Start Newton Method</h3>
-      <p>When starting from infeasible $x_0$ (i.e., $Ax_0 \neq b$), each Newton step solves the full KKT system, converging to both primal feasibility and optimality simultaneously. The residual $r = \begin{bmatrix} \nabla f + A^\top \nu \\ Ax - b \end{bmatrix}$ measures both optimality and feasibility.</p>
+      <h3>4. Newton's Method with Equality Constraints</h3>
+      <p>Just like the unconstrained case, we iterate $x_{k+1} = x_k + t \Delta x_{nt}$ with backtracking line search. The Newton decrement is $\lambda(x) = (\Delta x_{nt}^\top \nabla^2 f(x) \Delta x_{nt})^{1/2}$. Convergence is quadratic near the solution.</p>
 
-      <h3>4. Elimination via Null-Space Methods</h3>
-      <p>By parameterizing $x = x_0 + Zz$ where $Ax_0 = b$ and $AZ = 0$, the constrained problem reduces to unconstrained minimization of $\tilde{f}(z) = f(x_0 + Zz)$ over $z \in \mathbb{R}^{n-p}$. QR or SVD factorization of $A$ provides numerical basis $Z$.</p>
+      <h3>5. Infeasible Start Newton Method</h3>
+      <p>If $x_0$ is not feasible ($Ax_0 \ne b$), we solve a modified KKT system:
+      $$ \begin{bmatrix} \nabla^2 f(x) & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x \\ w \end{bmatrix} = -\begin{bmatrix} \nabla f(x) \\ Ax - b \end{bmatrix} $$
+      This updates both primal and dual variables to reduce the residual $r(x, \nu) = (\nabla f(x) + A^\top \nu, Ax - b)$. It finds a feasible point and optimum simultaneously.</p>
 
-      <h3>5. Elimination via Explicit Solution</h3>
-      <p>For linear equality $Ax = b$ and quadratic $f(x) = \frac{1}{2}x^\top P x + q^\top x$, the solution is $x^* = P^{-1}(A^\top \nu^* - q)$ where $\nu^* = (AP^{-1}A^\top)^{-1}(AP^{-1}q + b)$. This generalizes the method of Lagrange multipliers for QPs.</p>
-
-      <h3>6. Augmented Lagrangian and Penalty Methods</h3>
-      <p>The augmented Lagrangian $L_\rho(x,\nu) = f(x) + \nu^\top(Ax-b) + \frac{\rho}{2}\|Ax-b\|_2^2$ combines dual and quadratic penalty. The method of multipliers alternates: minimize over $x$ (for fixed $\nu$), then update $\nu \leftarrow \nu + \rho(Ax-b)$.</p>
-
-      <h3>7. Projected Gradient Descent</h3>
-      <p>Projected GD alternates gradient steps with projection onto feasible set: $x_{k+1} = \Pi_{\{Ax=b\}}(x_k - t\nabla f(x_k))$. The projection $\Pi_{\{Ax=b\}}(y) = \arg\min_{Ax=b} \|x-y\|_2^2$ has closed form $y - A^\top(AA^\top)^{-1}(Ay-b)$.</p>
-
-      <h3>8. Range-Space vs. Null-Space Methods</h3>
-      <p>Range-space (direct KKT system) costs $O((n+p)^3)$ but works for general $A$. Null-space (dimension reduction) costs $O(n^2(n-p))$ when $p \ll n$, more efficient for few constraints. Sparse-direct and iterative methods exploit structure for large-scale problems.</p>
-
-      <h3>9. Sequential Quadratic Programming (SQP)</h3>
-      <p>For nonconvex $\min f(x)$ subject to $h(x)=0$, SQP iteratively solves QP approximations: $\min \nabla f^\top \Delta x + \frac{1}{2}\Delta x^\top \nabla^2 L \Delta x$ subject to $\nabla h^\top \Delta x + h = 0$. This extends Newton's method to nonlinear equality constraints.</p>
+      <h3>6. Solving KKT Systems</h3>
+      <p>Solving the KKT system is the main computational cost. Approaches include:
+      <ul>
+          <li><strong>LDL Factorization:</strong> Factor the indefinite KKT matrix directly.</li>
+          <li><strong>Elimination (Null-Space):</strong> Requires finding a basis $F$ (e.g., via QR or SVD), reducing to a smaller dense system.</li>
+          <li><strong>Schur Complement:</strong> If $\nabla^2 f$ is easily invertible (e.g., diagonal), eliminate $\Delta x$ to solve for $w$ first.</li>
+      </ul></p>
     </section>
 
     <!-- Interactive widgets -->
     <section class="section-card" id="widgets" style="margin-bottom: 32px;">
       <h2>Interactive Widgets</h2>
-      <p>Below are tools to explore the concepts interactively. Try tweaking parameters to build intuition.</p>
+      <p>Below are tools to explore the concepts interactively.</p>
 
       <!-- Widget 1 -->
       <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
@@ -129,7 +121,7 @@
       <h2>Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 10 — Equality Constrained Minimization</li>
-        <li><strong>Course slides:</strong> [Link if available]</li>
+        <li><strong>Course slides:</strong> <a href="https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">PDF</a></li>
       </ul>
     </section>
 
@@ -137,54 +129,153 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <h3>Example 10.1: QP with Equality Constraints via KKT System</h3>
-      <p><strong>Problem:</strong> Solve $\min \frac{1}{2}x^\top \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix} x - \begin{bmatrix} 1 \\ 1 \end{bmatrix}^\top x$ subject to $x_1 + x_2 = 1$.</p>
-      <p><em>[Detailed worked solution to be added: Forms KKT system, solves for $(x^*, \nu^*)$, verifies optimality]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.1: KKT System for QP</h3>
+        <p><strong>Problem:</strong> Solve $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax = b$ analytically.</p>
+        <p><strong>Solution:</strong></p>
+        <p>KKT conditions:
+        1. $P x + q + A^\top \nu = 0$
+        2. $Ax = b$
+        From (1): $x = -P^{-1}(q + A^\top \nu)$.
+        Substitute into (2): $A(-P^{-1}(q + A^\top \nu)) = b$.
+        $-AP^{-1}q - AP^{-1}A^\top \nu = b$.
+        $\nu = -(AP^{-1}A^\top)^{-1}(b + AP^{-1}q)$.
+        Then substitute $\nu$ back to find $x$. This is the method of Lagrange multipliers.</p>
+      </div>
 
-      <h3>Example 10.2: Null-Space Elimination</h3>
-      <p><strong>Problem:</strong> For constraint $Ax = b$ with $A = [1, 1, 1]$ and $b=3$, find null-space basis $Z$ and reduce to unconstrained problem.</p>
-      <p><em>[Detailed worked solution to be added: Computes $Z$ via QR or explicit construction, shows dimension reduction from 3 to 2]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.2: Null-Space Basis Construction</h3>
+        <p><strong>Problem:</strong> Construct a null-space matrix $F$ for $A = [1, 1, 1]$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>We need $F \in \mathbb{R}^{3 \times 2}$ such that $AF = 0$ and $F$ has rank 2.
+        One choice: $F = \begin{bmatrix} 1 & 0 \\ -1 & 1 \\ 0 & -1 \end{bmatrix}$.
+        Check: $[1, 1, 1] \begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix} = 0$, $[1, 1, 1] \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix} = 0$.
+        Reduced Hessian $\nabla^2 \phi(z) = F^\top \nabla^2 f(x) F$.
+        Allows solving unconstrained problem in $\mathbb{R}^2$.</p>
+      </div>
 
-      <h3>Example 10.3: Projected Gradient Descent</h3>
-      <p><strong>Problem:</strong> Minimize $f(x) = \|x - c\|_2^2$ subject to $\mathbf{1}^\top x = 1$ using projected GD starting from $x_0 = 0$.</p>
-      <p><em>[Detailed worked solution to be added: Derives projection formula, shows convergence to $x^* = c + \alpha \mathbf{1}$ where $\alpha = (1 - \mathbf{1}^\top c)/n$]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.3: Projected Gradient vs Newton</h3>
+        <p><strong>Problem:</strong> Compare projected gradient descent with Newton for minimizing $\|x\|^2$ s.t. $Ax=b$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Objective is quadratic with Hessian $2I$.
+        Newton's method converges in **one step** for quadratic problems.
+        Projected gradient descent: $x_{k+1} = \Pi(x_k - t \nabla f(x_k))$.
+        For $f(x) = \|x\|^2$, $\nabla f = 2x$. With optimal step, it also converges fast, but depends on conditioning of $A$.
+        Newton solves the KKT system directly, which is equivalent to the analytic solution here.</p>
+      </div>
 
-      <h3>Example 10.4: Augmented Lagrangian Method</h3>
-      <p><strong>Problem:</strong> Apply method of multipliers to $\min x_1^2 + x_2^2$ subject to $x_1 + x_2 = 1$ with $\rho=10$.</p>
-      <p><em>[Detailed worked solution to be added: Shows iterations $x^{(k)} = \arg\min L_\rho(x, \nu^{(k)})$, $\nu^{(k+1)} = \nu^{(k)} + \rho(Ax^{(k)} - b)$]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.4: Augmented Lagrangian</h3>
+        <p><strong>Problem:</strong> Define the augmented Lagrangian and explain why it helps.</p>
+        <p><strong>Solution:</strong></p>
+        <p>$L_\rho(x, \nu) = f(x) + \nu^\top(Ax-b) + \frac{\rho}{2}\|Ax-b\|^2$.
+        The quadratic penalty term convexifies the problem locally near the solution even if $f$ is not strictly convex.
+        It allows finding the solution by alternating minimization of $x$ and update of $\nu$.
+        Unlike pure penalty ($\nu=0$), $\rho$ doesn't need to go to infinity, avoiding ill-conditioning.</p>
+      </div>
 
-      <h3>Example 10.5: Feasible vs. Infeasible Start</h3>
-      <p><strong>Problem:</strong> Compare Newton's method with feasible start $Ax_0=b$ to infeasible start for a simple equality-constrained problem.</p>
-      <p><em>[Detailed worked solution to be added: Shows feasible method maintains $Ax_k=b$, infeasible converges to feasibility and optimality]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.5: Infeasible Start Newton Residual</h3>
+        <p><strong>Problem:</strong> How does the residual decrease in infeasible start Newton method?</p>
+        <p><strong>Solution:</strong></p>
+        <p>Residual $r(x, \nu) = (r_{dual}, r_{pri}) = (\nabla f + A^\top \nu, Ax - b)$.
+        Newton step solves linearization $r(y) + Dr(y)\Delta y = 0$.
+        With step size $t$, new residual is roughly $(1-t)r(y)$.
+        Thus the residual norm decreases linearly (or better) to zero.</p>
+      </div>
 
-      <h3>Example 10.6: Analytic Center of Linear Inequalities</h3>
-      <p><strong>Problem:</strong> Find analytic center of $\{x : Ax \preceq b\}$ by minimizing barrier $-\sum_i \log(b_i - a_i^\top x)$.</p>
-      <p><em>[Detailed worked solution to be added: Derives gradient and Hessian, applies Newton's method, shows convergence to interior point]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.6: Analytic Center with Equality</h3>
+        <p><strong>Problem:</strong> Find the analytic center of $\{x : x \ge 0, \mathbf{1}^\top x = 1\}$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Minimize $-\sum \log x_i$ subject to $\sum x_i = 1$.
+        KKT: $-1/x_i + \nu = 0 \implies x_i = 1/\nu$.
+        Sum constraint: $\sum (1/\nu) = n/\nu = 1 \implies \nu = n$.
+        So $x_i = 1/n$. Center is uniform distribution.</p>
+      </div>
 
-      <h3>Example 10.7: Explicit QP Solution</h3>
-      <p><strong>Problem:</strong> For QP $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax=b$, derive explicit solution using Lagrange multipliers.</p>
-      <p><em>[Detailed worked solution to be added: Solves KKT system analytically, gives formulas for $x^*$ and $\nu^*$ in terms of $P, q, A, b$]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.7: Schur Complement Solver</h3>
+        <p><strong>Problem:</strong> How to solve KKT system if $H = \nabla^2 f$ is diagonal?</p>
+        <p><strong>Solution:</strong></p>
+        <p>System: $\begin{bmatrix} D & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x \\ w \end{bmatrix} = \begin{bmatrix} -g \\ 0 \end{bmatrix}$.
+        1. $D \Delta x + A^\top w = -g \implies \Delta x = -D^{-1}(g + A^\top w)$.
+        2. $A \Delta x = 0 \implies -A D^{-1} g - A D^{-1} A^\top w = 0$.
+        3. Solve $(A D^{-1} A^\top) w = -A D^{-1} g$ for $w$.
+        4. Compute $\Delta x$ from step 1.
+        Requires solving system size $p \times p$ instead of $(n+p) \times (n+p)$. Efficient if $p \ll n$.</p>
+      </div>
 
-      <h3>Example 10.8: Range-Space vs. Null-Space Complexity</h3>
-      <p><strong>Problem:</strong> For $n=1000$ variables and $p=10$ constraints, compare operation counts for range-space vs. null-space Newton.</p>
-      <p><em>[Detailed worked solution to be added: Computes $O((1000+10)^3) \approx 10^9$ vs. $O(1000^2 \cdot 990) \approx 10^9$, discusses when each is better]</em></p>
+      <div class="example-problem">
+        <h3>Example 14.8: Complexity Analysis</h3>
+        <p><strong>Problem:</strong> Compare elimination vs KKT for dense $A \in \mathbb{R}^{p \times n}$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>1. <strong>Elimination:</strong> Form $H_{red} = F^\top H F$ ($O(n^2(n-p))$), factor $H_{red}$ ($O((n-p)^3)$).
+        2. <strong>KKT LDL:</strong> Factor $(n+p) \times (n+p)$ matrix ($O((n+p)^3)$).
+        If $p$ is small ($p \ll n$), Elimination dominates with $O(n^3)$.
+        Actually, KKT approach via block elimination (Schur complement) is $O(np^2)$ if diagonal H, or $O(n^3)$ if dense H.
+        Often KKT is preferred for sparsity.</p>
+      </div>
     </section>
 
-    <!-- Exercises (optional) -->
+    <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Exercises</h2>
-      <p>Try these problems to deepen your understanding. Solutions are provided at the end of the course.</p>
       <ol style="line-height: 2;">
-        <li>Prove that the KKT matrix $\begin{bmatrix} \nabla^2 f & A^\top \\ A & 0 \end{bmatrix}$ is invertible if $\nabla^2 f \succ 0$ and $A$ has full row rank.</li>
-        <li>Show that for equality-constrained QP $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax=b$, the solution is $x^* = P^{-1}(A^\top \nu^* - q)$ where $\nu^* = (AP^{-1}A^\top)^{-1}(AP^{-1}q + b)$.</li>
-        <li>Derive the projection formula $\Pi_{\{Ax=b\}}(y) = y - A^\top(AA^\top)^{-1}(Ay-b)$ by minimizing $\|x-y\|_2^2$ subject to $Ax=b$.</li>
-        <li>For augmented Lagrangian $L_\rho(x,\nu) = f(x) + \nu^\top(Ax-b) + \frac{\rho}{2}\|Ax-b\|_2^2$, show that as $\rho \to \infty$, minimizers of $L_\rho(\cdot,\nu)$ approach feasibility.</li>
-        <li>Prove that projected gradient descent $x_{k+1} = \Pi_{\mathcal{C}}(x_k - t\nabla f(x_k))$ converges to optimum for strongly convex $f$ and convex $\mathcal{C}$.</li>
-        <li>Show that null-space method costs $O(n^2(n-p))$ operations per iteration when $A$ has $p$ rows and $n$ columns, assuming dense factorization.</li>
-        <li>For quadratic penalty $\min_x f(x) + \frac{\rho}{2}\|Ax-b\|_2^2$, prove that as $\rho \to \infty$, solutions converge to the solution of $\min f(x)$ subject to $Ax=b$.</li>
-        <li>Implement Newton's method for equality-constrained problem using both range-space (direct KKT) and null-space approaches, compare numerical stability.</li>
-        <li>Derive the gradient and Hessian of the log-barrier $\phi(x) = -\sum_i \log(b_i - a_i^\top x)$ for linear inequalities $Ax \preceq b$.</li>
-        <li>For SQP applied to $\min f(x)$ subject to $h(x)=0$, show that each iteration solves a QP with linearized constraints. Discuss connection to Newton's method on the KKT system.</li>
+        <li>
+          <strong>Invertibility of KKT Matrix:</strong><br>
+          Prove that $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix}$ is nonsingular if $P \succ 0$ and $A$ has full row rank.
+          <br><em>Solution:</em>
+          Suppose $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = 0$.
+          $Px + A^\top y = 0$ and $Ax = 0$.
+          Multiply first eq by $x^\top$: $x^\top P x + x^\top A^\top y = 0$.
+          Since $Ax=0$, $x^\top A^\top = 0$, so $x^\top P x = 0$.
+          Since $P \succ 0$, this implies $x=0$.
+          Then $A^\top y = 0$. Since $A$ has full row rank, $A^\top$ has full column rank, so $y=0$.
+          Thus only trivial solution exists $\implies$ Nonsingular.
+        </li>
+        <li>
+          <strong>Newton Step as Weighted Projection:</strong><br>
+          Show that the Newton step $\Delta x_{nt}$ minimizes the quadratic approximation of $f$ constrained to the linearized feasible set.
+          <br><em>Solution:</em>
+          Problem: $\min \nabla f^\top v + \frac{1}{2}v^\top \nabla^2 f v$ s.t. $A(x+v) = b$.
+          Since $Ax=b$ (feasible start), constraint is $Av=0$.
+          Lagrangian: $L(v, w) = \nabla f^\top v + \frac{1}{2}v^\top H v + w^\top Av$.
+          Optimality: $H v + \nabla f + A^\top w = 0$ and $Av = 0$.
+          This is exactly the KKT system for the Newton step.
+          So $\Delta x_{nt}$ is the solution to this constrained QP.
+        </li>
+        <li>
+          <strong>Projection Operator Derivation:</strong><br>
+          Derive the projection of $y$ onto $\{x : Ax=b\}$: $\Pi(y) = y - A^\top(AA^\top)^{-1}(Ay-b)$.
+          <br><em>Solution:</em>
+          $\min \frac{1}{2}\|x-y\|^2$ s.t. $Ax=b$.
+          KKT: $(x-y) + A^\top \nu = 0 \implies x = y - A^\top \nu$.
+          $A(y - A^\top \nu) = b \implies Ay - AA^\top \nu = b$.
+          $AA^\top \nu = Ay - b \implies \nu = (AA^\top)^{-1}(Ay - b)$.
+          Substitute $\nu$ back: $x = y - A^\top(AA^\top)^{-1}(Ay-b)$.
+        </li>
+        <li>
+          <strong>Penalty Method Convergence:</strong><br>
+          Explain why the condition number of the Hessian in the quadratic penalty method diverges as $\rho \to \infty$.
+          <br><em>Solution:</em>
+          $f_\rho(x) = f(x) + \frac{\rho}{2}\|Ax-b\|^2$.
+          $\nabla^2 f_\rho(x) = \nabla^2 f(x) + \rho A^\top A$.
+          Eigenvalues of $A^\top A$ are non-negative.
+          Eigenvalues corresponding to the range of $A^\top$ scale with $\rho$.
+          Eigenvalues in the null space of $A$ depend on $\nabla^2 f$ and don't scale with $\rho$.
+          Ratio $\lambda_{\max}/\lambda_{\min} \propto \rho$. Ill-conditioning grows linearly with $\rho$.
+        </li>
+        <li>
+          <strong>Null-Space Operation Count:</strong><br>
+          Confirm that solving the reduced Newton system requires $O((n-p)^3)$ operations.
+          <br><em>Solution:</em>
+          Reduced system is $H_{red} \Delta z = -g_{red}$ where $H_{red} \in \mathbb{R}^{(n-p) \times (n-p)}$.
+          Cholesky factorization of $H_{red}$ takes $(1/3)(n-p)^3$ flops.
+          Back-substitution takes $O((n-p)^2)$.
+          Dominant term is the factorization, cubic in the dimension of the null space.
+        </li>
       </ol>
     </section>
   </main></div>
@@ -223,20 +314,6 @@
 <script src="../../static/js/ui.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-
-  <!-- Widget loaders -->
-  <script type="module">
-    import { initNullSpaceVisualizer } from './widgets/js/null-space-visualizer.js';
-    initNullSpaceVisualizer('widget-1');
-  </script>
-  <script type="module">
-    import { initProjectedGradientDescent } from './widgets/js/projected-gd.js';
-    initProjectedGradientDescent('widget-2');
-  </script>
-  <script type="module">
-    import { initFeasibleVsInterior } from './widgets/js/feasible-vs-interior.js';
-    initFeasibleVsInterior('widget-3');
   </script>
   <script src="../../static/js/glossary-loader.js"></script>
 <script src="../../static/js/notes-widget.js"></script>

@@ -1065,7 +1065,8 @@
           <h4>Example 1: Piecewise-Linear (Max of Affine Functions)</h4>
           <p>Let $\ell_i(x) = a_i^\top x + b_i$ for $i=1,\dots,m$. Define:</p>
           $$ f(x) = \max_{1\le i\le m} (a_i^\top x + b_i) $$
-          <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).</p>
+          <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).
+          <br><b>Application:</b> This function arises in minimizing the $\ell_\infty$ norm residual $\min \|Ax-b\|_\infty$ (which is $\max_i |a_i^\top x - b_i|$).</p>
         </div>
 
         <div class="example">

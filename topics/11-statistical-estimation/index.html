@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>07. Applications II: Statistical Estimation & Machine Learning — Convex Optimization</title>
+  <title>11. Applications II: Statistical Estimation & Machine Learning — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
@@ -28,15 +28,15 @@
   <main class="container" style="padding: 32px 0 60px;">
     <!-- Lecture header -->
     <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">07. Applications II: Statistical Estimation & Machine Learning</h1>
+      <h1 style="margin-top: 0;">11. Applications II: Statistical Estimation & Machine Learning</h1>
       <div class="meta">
         Date: 2025-12-02 · Duration: 90 min · Tags: applications, ml, statistics
       </div>
 
       <!-- Brief introduction -->
       <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> MLE, logistic regression, SVM, classification—convex optimization at the heart of ML.</p>
-        <p><strong>Prerequisites:</strong> <a href="../10-approximation-fitting/index.html">Lecture 14</a></p>
+        <p><strong>Overview:</strong> MLE, logistic regression, SVM, experiment design—convex optimization at the heart of ML.</p>
+        <p><strong>Prerequisites:</strong> <a href="../10-approximation-fitting/index.html">Lecture 10</a></p>
       </section>
     </article>
 
@@ -45,9 +45,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you should understand:</p>
       <ul style="line-height: 1.8;">
-        <li>How to formulate maximum likelihood estimation (MLE) problems as convex optimization problems.</li>
-        <li>The formulation of logistic regression and support vector machines (SVMs).</li>
-        <li>The role of convex optimization in modern machine learning.</li>
+        <li>How to formulate maximum likelihood estimation (MLE) as a convex optimization problem, particularly for exponential families.</li>
+        <li>The mathematical derivations of logistic regression, support vector machines (SVM), and their duals.</li>
+        <li>The application of convex optimization in experiment design (A-opt, D-opt, E-opt).</li>
       </ul>
     </section>
 
@@ -56,45 +56,45 @@
       <h2>Key Concepts</h2>
 
       <h3>1. Maximum Likelihood Estimation (MLE)</h3>
-      <p>MLE finds parameters $\theta$ that maximize the likelihood $p(y_1, \ldots, y_n \mid \theta)$ of observed data. Equivalently, we minimize the negative log-likelihood, which is often a convex function for exponential family distributions (Gaussian, Poisson, exponential, etc.).</p>
-
-      <!-- Include images as needed -->
-      <figure style="margin: 16px 0; text-align: center;">
-        <img src="../../static/assets/topics/11-statistical-estimation/mle-illustration.svg" alt="An illustration of maximum likelihood estimation" style="max-width: 100%; height: auto;" />
-        <figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;">
-          The MLE is the point in the parameter space that maximizes the likelihood function.
-        </figcaption>
-      </figure>
+      <p>MLE seeks parameters $\theta$ that maximize the probability of observed data. For an exponential family with density $p(y|\theta) = \exp(y^\top \theta - \psi(\theta))$, the negative log-likelihood is convex because the log-partition function $\psi(\theta)$ is convex. Minimizing $-\log L(\theta)$ is therefore a convex problem.</p>
 
       <h3>2. Logistic Regression</h3>
-      <p>Binary classification via logistic model: $p(y=1 \mid x) = \sigma(w^\top x + b)$ where $\sigma(z) = 1/(1+e^{-z})$. The negative log-likelihood $\sum_i \log(1 + e^{-y_i(w^\top x_i + b)})$ is convex in $(w,b)$, enabling efficient gradient-based optimization.</p>
+      <p>For binary classification $y \in \{0,1\}$, we model $p(y=1|x) = \sigma(w^\top x + b)$. The negative log-likelihood is:
+      $$ \ell(w,b) = \sum_{i=1}^n \left( \log(1 + e^{w^\top x_i + b}) - y_i(w^\top x_i + b) \right) $$
+      This function is convex. Its Hessian is $X^\top D X$ where $D$ is a diagonal matrix of variances $p_i(1-p_i)$, ensuring positive semidefiniteness.</p>
 
-      <h3>3. Support Vector Machines (SVMs)</h3>
-      <p>SVMs maximize margin between classes by solving $\min_{w,b} \frac{1}{2}\|w\|_2^2$ subject to $y_i(w^\top x_i + b) \geq 1$ for all $i$. The soft-margin version adds slack variables and hinge loss, yielding the convex problem $\min \frac{1}{2}\|w\|_2^2 + C\sum_i \max(0, 1-y_i(w^\top x_i + b))$.</p>
+      <h3>3. Support Vector Machines (SVM)</h3>
+      <p>The hard-margin SVM maximizes the margin $2/\|w\|_2$ separating two classes. This is equivalent to minimizing $\frac{1}{2}\|w\|_2^2$ subject to $y_i(w^\top x_i + b) \ge 1$. The soft-margin variant minimizes $\frac{1}{2}\|w\|_2^2 + C \sum_i \xi_i$ with slack variables, equivalent to minimizing the hinge loss $\sum_i \max(0, 1-y_i(w^\top x_i+b))$.</p>
 
       <h3>4. Regularized Maximum Likelihood</h3>
-      <p>To prevent overfitting, regularization adds a penalty: $\min_\theta -\ell(\theta) + \lambda R(\theta)$ where $\ell$ is log-likelihood and $R$ is a regularizer (e.g., $\|w\|_2^2$ for Ridge, $\|w\|_1$ for LASSO). This yields sparse or smooth estimators depending on $R$.</p>
+      <p>Adding a convex regularizer $R(\theta)$ (like $\|w\|_2^2$ or $\|w\|_1$) to the negative log-likelihood defines a MAP estimate or regularized MLE. This controls overfitting and can induce sparsity (LASSO) or smoothness (Ridge).</p>
 
-      <h3>5. Exponential Family and GLMs</h3>
-      <p>Generalized Linear Models (GLMs) extend linear regression to exponential family distributions. The log-likelihood is concave, so MLE is a convex optimization problem. Examples include Poisson regression (count data) and Gamma regression (positive continuous data).</p>
+      <h3>5. Generalized Linear Models (GLMs)</h3>
+      <p>GLMs extend linear regression to other distributions (Poisson, Exponential) using a link function $g(\mu) = w^\top x$. With the canonical link, the negative log-likelihood is convex. For Poisson regression, $\log(\lambda) = w^\top x$, leading to loss $\sum_i (e^{w^\top x_i} - y_i w^\top x_i)$.</p>
 
       <h3>6. Multi-Class Classification</h3>
-      <p>Softmax regression extends logistic regression to $K$ classes via $p(y=k \mid x) = e^{w_k^\top x}/\sum_j e^{w_j^\top x}$. The negative log-likelihood is convex, and the problem can be solved via gradient descent or Newton's method.</p>
+      <p>Softmax regression handles $K$ classes. The probability of class $k$ is $e^{w_k^\top x} / \sum_j e^{w_j^\top x}$. The cross-entropy loss is convex in the concatenated weight vector. The Hessian is block-structured, facilitating Newton's method.</p>
 
       <h3>7. Robust Estimation</h3>
-      <p>Robust statistics use loss functions less sensitive to outliers than squared error. Huber loss and $\ell_1$ penalty create convex problems that downweight extreme observations, improving estimator reliability in contaminated data.</p>
+      <p>Standard MLE (like Least Squares) is sensitive to outliers. Robust estimation replaces the quadratic loss with a robust loss like the Huber loss (quadratic near zero, linear far away) or the $\ell_1$ loss. These remain convex but limit the influence of outliers.</p>
 
       <h3>8. Empirical Risk Minimization (ERM)</h3>
-      <p>ERM minimizes average loss over training data: $\min_\theta \frac{1}{n}\sum_{i=1}^n \text{loss}(f_\theta(x_i), y_i)$. For convex losses (hinge, logistic, squared), this is a convex problem, forming the basis of supervised learning theory.</p>
+      <p>Modern ML is often framed as ERM: $\min_\theta \frac{1}{n}\sum_i L(f_\theta(x_i), y_i) + \lambda R(\theta)$. If the loss $L$ is convex (Hinge, Logistic, Exponential) and the model is linear in parameters, the problem is convex.</p>
 
-      <h3>9. Regularization Paths and Model Selection</h3>
-      <p>The regularization parameter $\lambda$ controls bias-variance tradeoff. Computing the full solution path (all $\lambda$ values) via LARS or proximal gradient methods enables cross-validation for optimal $\lambda$ selection.</p>
+      <h3>9. Experiment Design</h3>
+      <p>We choose measurement vectors $v_i$ to estimate a vector $x$ from $y_i = v_i^\top x + \epsilon_i$. The error covariance is proportional to $(\sum v_i v_i^\top)^{-1}$. We maximize this "information matrix" in various senses:
+      <ul>
+          <li><strong>D-optimal:</strong> Maximize $\det(\sum v_i v_i^\top)$ (minimize ellipsoid volume).</li>
+          <li><strong>E-optimal:</strong> Maximize $\lambda_{\min}(\sum v_i v_i^\top)$ (minimize worst-case diameter).</li>
+          <li><strong>A-optimal:</strong> Minimize $\text{tr}((\sum v_i v_i^\top)^{-1})$ (minimize average variance).</li>
+      </ul>
+      These can be relaxed to convex problems over the probability simplex of experiment weights.</p>
     </section>
 
     <!-- Interactive widgets -->
     <section class="section-card" id="widgets" style="margin-bottom: 32px;">
       <h2>Interactive Widgets</h2>
-      <p>Below are tools to explore the concepts interactively. Try tweaking parameters to build intuition.</p>
+      <p>Below are tools to explore the concepts interactively.</p>
 
       <!-- Widget 1 -->
       <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
@@ -129,7 +129,7 @@
       <h2>Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 7 — Statistical Estimation</li>
-        <li><strong>Course slides:</strong> [Link if available]</li>
+        <li><strong>Course slides:</strong> <a href="https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">PDF</a></li>
       </ul>
     </section>
 
@@ -137,54 +137,171 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <h3>Example 7.1: MLE for Gaussian Distribution</h3>
-      <p><strong>Problem:</strong> Given $n$ i.i.d. samples from $\mathcal{N}(\mu, \sigma^2)$, derive the MLE for $\mu$ and $\sigma^2$ by minimizing the negative log-likelihood.</p>
-      <p><em>[Detailed worked solution to be added: Shows $\hat{\mu} = \frac{1}{n}\sum_i x_i$, $\hat{\sigma}^2 = \frac{1}{n}\sum_i (x_i - \hat{\mu})^2$, proves convexity]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.1: MLE for Gaussian Distribution</h3>
+        <p><strong>Problem:</strong> Given $n$ i.i.d. samples $y_1, \ldots, y_n$ from $\mathcal{N}(\mu, \Sigma)$, formulate the MLE problem for estimating $\mu$ and $\Sigma$. Show it is convex in terms of natural parameters.</p>
+        <p><strong>Solution:</strong></p>
+        <p>The log-likelihood is:
+        $$ \ell(\mu, \Sigma) = -\frac{n}{2}\log\det(2\pi\Sigma) - \frac{1}{2}\sum_{i=1}^n (y_i - \mu)^\top \Sigma^{-1} (y_i - \mu) $$
+        In terms of $\mu$ and $\Sigma$, this is not jointly concave. However, change variables to the natural parameters of the exponential family: $P = \Sigma^{-1}$ (precision matrix) and $q = \Sigma^{-1}\mu$.
+        $$ (y - \mu)^\top \Sigma^{-1} (y - \mu) = y^\top P y - 2 y^\top q + q^\top P^{-1} q $$
+        The log-likelihood becomes (ignoring constants):
+        $$ \mathcal{L}(P, q) = \frac{n}{2}\log\det(P) - \frac{1}{2}\sum_i (y_i^\top P y_i - 2 y_i^\top q + q^\top P^{-1} q) $$
+        This involves concave term $\log\det(P)$ and convex term $q^\top P^{-1} q$ (matrix fractional). We want to maximize $\mathcal{L}$, which means minimizing $-\mathcal{L}$.
+        Wait, for Gaussian, usually we fix mean or covariance. If both vary, the problem is not jointly convex in standard parameters. However, optimizing $\mu$ gives $\hat{\mu} = \bar{y}$. Then optimizing $\Sigma$ gives $\hat{\Sigma} = \frac{1}{n}\sum (y_i-\bar{y})(y_i-\bar{y})^\top$. The problem is convex in $P = \Sigma^{-1}$ if $\mu$ is known.</p>
+      </div>
 
-      <h3>Example 7.2: Logistic Regression for Binary Classification</h3>
-      <p><strong>Problem:</strong> For spam detection with features (word counts), formulate the logistic regression problem and derive the gradient for gradient descent.</p>
-      <p><em>[Detailed worked solution to be added: Constructs feature matrix, writes negative log-likelihood, derives gradient $\nabla_w \ell = \sum_i (\sigma(w^\top x_i) - y_i)x_i$]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.2: Logistic Regression Gradient</h3>
+        <p><strong>Problem:</strong> Derive the gradient of the negative log-likelihood for logistic regression.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Loss function: $J(w) = \sum_{i=1}^n \left( -y_i \log(\sigma(z_i)) - (1-y_i) \log(1-\sigma(z_i)) \right)$ where $z_i = w^\top x_i$.
+        Simplify to $J(w) = \sum_{i=1}^n \left( \log(1+e^{z_i}) - y_i z_i \right)$.
+        Differentiate with respect to $w$:
+        $$ \nabla J(w) = \sum_{i=1}^n \left( \frac{e^{z_i}}{1+e^{z_i}} x_i - y_i x_i \right) = \sum_{i=1}^n (\sigma(z_i) - y_i) x_i $$
+        In matrix form: $\nabla J(w) = X^\top (\sigma(Xw) - y)$.
+        The Hessian is $\nabla^2 J(w) = X^\top \text{diag}(\sigma(z_i)(1-\sigma(z_i))) X$, which is PSD.</p>
+      </div>
 
-      <h3>Example 7.3: Hard-Margin SVM</h3>
-      <p><strong>Problem:</strong> For linearly separable data, derive the dual of the hard-margin SVM and show that only support vectors have nonzero dual variables.</p>
-      <p><em>[Detailed worked solution to be added: Forms Lagrangian, derives dual $\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{ij} \alpha_i\alpha_j y_i y_j x_i^\top x_j$, shows KKT conditions]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.3: Hard-Margin SVM Dual</h3>
+        <p><strong>Problem:</strong> Derive the dual of $\min \frac{1}{2}\|w\|_2^2$ s.t. $y_i(w^\top x_i + b) \ge 1$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Lagrangian: $L(w,b,\alpha) = \frac{1}{2}\|w\|^2 - \sum_i \alpha_i [y_i(w^\top x_i + b) - 1]$ with $\alpha_i \ge 0$.
+        Minimize w.r.t $w, b$:
+        $$ \nabla_w L = w - \sum_i \alpha_i y_i x_i = 0 \implies w = \sum_i \alpha_i y_i x_i $$
+        $$ \nabla_b L = -\sum_i \alpha_i y_i = 0 \implies \sum_i \alpha_i y_i = 0 $$
+        Substitute $w$ back:
+        $$ L = \frac{1}{2}\|\sum \alpha_i y_i x_i\|^2 - \sum_i \alpha_i y_i (\sum_j \alpha_j y_j x_j)^\top x_i - b\sum \alpha_i y_i + \sum \alpha_i $$
+        $$ = \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j - \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j + \sum \alpha_i $$
+        Dual Problem:
+        $$ \max_\alpha \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i,j=1}^n \alpha_i \alpha_j y_i y_j x_i^\top x_j $$
+        Subject to: $\alpha_i \ge 0$, $\sum \alpha_i y_i = 0$. This is a QP.</p>
+      </div>
 
-      <h3>Example 7.4: Soft-Margin SVM with Hinge Loss</h3>
-      <p><strong>Problem:</strong> Formulate the soft-margin SVM as an unconstrained problem using hinge loss and explain the role of parameter $C$.</p>
-      <p><em>[Detailed worked solution to be added: Shows equivalence of constrained and unconstrained forms, explains $C$ as regularization weight]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.4: Soft-Margin SVM as Unconstrained Problem</h3>
+        <p><strong>Problem:</strong> Show that soft-margin SVM is equivalent to minimizing hinge loss + L2 regularization.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Primal: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1 - \xi_i, \xi_i \ge 0$.
+        Rewrite constraints: $\xi_i \ge 1 - y_i(w^\top x_i + b)$ and $\xi_i \ge 0$.
+        To minimize the objective, we choose the smallest possible $\xi_i$:
+        $$ \xi_i = \max(0, 1 - y_i(w^\top x_i + b)) $$
+        Substitute into objective:
+        $$ \min_{w,b} \frac{1}{2}\|w\|^2 + C \sum_{i=1}^n \max(0, 1 - y_i(w^\top x_i + b)) $$
+        This is unconstrained minimization of (Regularizer + $C \times$ Hinge Loss).</p>
+      </div>
 
-      <h3>Example 7.5: Poisson Regression for Count Data</h3>
-      <p><strong>Problem:</strong> Model website traffic (counts) as Poisson with rate $\lambda(x) = e^{w^\top x}$, formulate MLE as convex problem.</p>
-      <p><em>[Detailed worked solution to be added: Writes log-likelihood for Poisson GLM, shows convexity via Hessian analysis]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.5: Poisson Regression</h3>
+        <p><strong>Problem:</strong> Derive the loss function for Poisson regression.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Model: $y \sim \text{Poisson}(\lambda)$ with $\lambda = e^{w^\top x}$.
+        Likelihood: $P(y|x;w) = \frac{\lambda^y e^{-\lambda}}{y!}$.
+        Log-likelihood: $\ell(w) = y \log \lambda - \lambda - \log(y!) = y(w^\top x) - e^{w^\top x} - \text{const}$.
+        Negative Log-Likelihood (to minimize):
+        $$ J(w) = \sum_{i=1}^n \left( e^{w^\top x_i} - y_i w^\top x_i \right) $$
+        Gradient: $\sum (e^{w^\top x_i} - y_i) x_i$. Hessian: $\sum e^{w^\top x_i} x_i x_i^\top \succeq 0$.
+        This is convex.</p>
+      </div>
 
-      <h3>Example 7.6: Softmax Regression for Multi-Class Classification</h3>
-      <p><strong>Problem:</strong> Extend logistic regression to 3-class problem (iris dataset), derive the gradient of the cross-entropy loss.</p>
-      <p><em>[Detailed worked solution to be added: Defines softmax probabilities, writes cross-entropy, computes $\nabla_{w_k} \ell = \sum_i (p_{ik} - \mathbb{1}_{y_i=k})x_i$]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.6: Softmax Regression Gradient</h3>
+        <p><strong>Problem:</strong> Compute gradient for cross-entropy loss with softmax.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Softmax: $p_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$ where $z_k = w_k^\top x$.
+        Cross-entropy loss for one sample (class $y$): $L = -\log p_y = -z_y + \log(\sum_j e^{z_j})$.
+        Gradient w.r.t $z_k$:
+        $$ \frac{\partial L}{\partial z_k} = -\mathbb{1}(y=k) + \frac{e^{z_k}}{\sum_j e^{z_j}} = p_k - \mathbb{1}(y=k) $$
+        Gradient w.r.t $w_k$:
+        $$ \nabla_{w_k} L = (p_k - \mathbb{1}(y=k)) x $$
+        This leads to the standard update rule.</p>
+      </div>
 
-      <h3>Example 7.7: Regularized Logistic Regression</h3>
-      <p><strong>Problem:</strong> Add $\ell_1$ penalty to logistic regression for feature selection, solve using proximal gradient descent.</p>
-      <p><em>[Detailed worked solution to be added: Formulates $\min \ell(w) + \lambda\|w\|_1$, applies soft-thresholding in proximal step]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.7: Regularized Logistic (L1)</h3>
+        <p><strong>Problem:</strong> Formulate L1-regularized logistic regression.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Objective: $f(w) = \sum \log(1+e^{-y_i w^\top x_i}) + \lambda \|w\|_1$.
+        This is a composite convex problem: Smooth $g(w)$ + Non-smooth $h(w)$.
+        Solved via Proximal Gradient Descent (ISTA):
+        1. Gradient step: $w^{k+1/2} = w^k - \eta \nabla g(w^k)$
+        2. Prox step: $w^{k+1} = S_{\eta \lambda}(w^{k+1/2})$
+        Where $S_\tau(u)$ is soft-thresholding: $\text{sign}(u)\max(|u|-\tau, 0)$.
+        This induces sparsity in $w$.</p>
+      </div>
 
-      <h3>Example 7.8: Robust MLE with Huber Loss</h3>
-      <p><strong>Problem:</strong> For regression with outliers, replace squared loss with Huber loss and formulate as QP or smooth optimization problem.</p>
-      <p><em>[Detailed worked solution to be added: Defines Huber function, shows SOCP reformulation or uses smooth approximation for gradient methods]</em></p>
+      <div class="example-problem">
+        <h3>Example 11.8: Robust MLE with Huber Loss</h3>
+        <p><strong>Problem:</strong> Define the Huber loss and its use in robust regression.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Huber loss $H_\delta(u)$:
+        $$ H_\delta(u) = \begin{cases} \frac{1}{2}u^2 & |u| \le \delta \\ \delta(|u| - \frac{1}{2}\delta) & |u| > \delta \end{cases} $$
+        This is convex, differentiable, and grows linearly for large errors (robust to outliers).
+        Problem: $\min_w \sum_i H_\delta(y_i - w^\top x_i)$.
+        Can be solved via L-BFGS or by converting to a QP (since Huber is the envelope of parabolas or via slack variables).</p>
+      </div>
     </section>
 
-    <!-- Exercises (optional) -->
+    <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Exercises</h2>
-      <p>Try these problems to deepen your understanding. Solutions are provided at the end of the course.</p>
       <ol style="line-height: 2;">
-        <li>Derive the dual of the soft-margin SVM problem $\min_{w,b,\xi} \frac{1}{2}\|w\|_2^2 + C\sum_i \xi_i$ subject to $y_i(w^\top x_i + b) \geq 1 - \xi_i$ and $\xi_i \geq 0$. Show that the dual is a QP with box constraints.</li>
-        <li>Compare logistic regression and linear SVM: both are linear classifiers, but logistic regression uses log loss $\log(1+e^{-yf})$ while SVM uses hinge loss $\max(0, 1-yf)$. What are the implications for outliers and probabilistic interpretation?</li>
-        <li>Prove that the negative log-likelihood for logistic regression $\ell(w) = \sum_i \log(1 + e^{-y_i w^\top x_i})$ is convex by computing the Hessian and showing it is positive semidefinite.</li>
-        <li>Show that MLE for the exponential distribution with rate $\lambda$ yields $\hat{\lambda} = n/\sum_i x_i$. Is this a convex optimization problem? Why or why not?</li>
-        <li>For Poisson regression with $\log \lambda_i = w^\top x_i$, derive the gradient and Hessian of the negative log-likelihood. Show that the Hessian is positive definite.</li>
-        <li>Implement Newton's method for logistic regression and compare convergence speed to gradient descent. Explain why Newton is faster (hint: second-order information).</li>
-        <li>For softmax regression with $K$ classes, show that the Hessian of the negative log-likelihood is block diagonal. How does this structure help computational efficiency?</li>
-        <li>Prove that adding $\ell_2$ regularization to logistic regression ensures strong convexity, guaranteeing a unique solution even when data is linearly separable.</li>
-        <li>Show that the kernel trick can be applied to SVMs: the solution depends only on inner products $x_i^\top x_j$, which can be replaced by $k(x_i, x_j)$ for a kernel function $k$.</li>
-        <li>For $\ell_1$-regularized logistic regression, prove that the proximal operator of $\lambda\|w\|_1$ is the soft-thresholding operator: $\text{prox}_{\lambda\|\cdot\|_1}(w) = \text{sign}(w) \odot \max(|w| - \lambda, 0)$.</li>
+        <li>
+          <strong>SVM Dual Derivation (Soft Margin):</strong><br>
+          Derive the dual of the soft-margin SVM: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1-\xi_i, \xi_i \ge 0$.
+          <br><em>Solution:</em>
+          Lagrangian: $L = \frac{1}{2}\|w\|^2 + C \sum \xi_i - \sum \alpha_i(y_i(w^\top x_i+b)-1+\xi_i) - \sum \mu_i \xi_i$.
+          Optimality:
+          1. $\nabla_w L = w - \sum \alpha_i y_i x_i = 0 \implies w = \sum \alpha_i y_i x_i$
+          2. $\nabla_b L = -\sum \alpha_i y_i = 0 \implies \sum \alpha_i y_i = 0$
+          3. $\nabla_{\xi_i} L = C - \alpha_i - \mu_i = 0 \implies \alpha_i = C - \mu_i$. Since $\mu_i \ge 0$, we get $\alpha_i \le C$.
+          Dual: $\max_\alpha \sum \alpha_i - \frac{1}{2}\sum_{ij} \alpha_i \alpha_j y_i y_j x_i^\top x_j$ s.t. $0 \le \alpha_i \le C$ and $\sum \alpha_i y_i = 0$.
+          The only difference from Hard-Margin is the box constraint $\alpha_i \le C$.
+        </li>
+        <li>
+          <strong>Logistic Hessian Analysis:</strong><br>
+          Prove that the Hessian of the logistic loss is strictly positive definite if $X$ has full rank.
+          <br><em>Solution:</em>
+          $\nabla^2 J(w) = X^\top D X$ where $D = \text{diag}(p_i(1-p_i))$.
+          For any $v \ne 0$: $v^\top \nabla^2 J(w) v = v^\top X^\top D X v = (Xv)^\top D (Xv)$.
+          Let $u = Xv$. Since $X$ is full rank, $u \ne 0$ for $v \ne 0$.
+          The term is $\sum u_i^2 p_i(1-p_i)$.
+          Since $0 < p_i < 1$ (for finite weights), $p_i(1-p_i) > 0$.
+          Thus the sum is strictly positive. $J(w)$ is strictly convex.
+        </li>
+        <li>
+          <strong>Poisson Regression Hessian:</strong><br>
+          Derive the Hessian for Poisson regression $\ell(w) = \sum (e^{w^\top x_i} - y_i w^\top x_i)$ and show convexity.
+          <br><em>Solution:</em>
+          $\nabla \ell(w) = \sum (e^{w^\top x_i} - y_i) x_i$.
+          $\nabla^2 \ell(w) = \sum e^{w^\top x_i} x_i x_i^\top$.
+          Let $v$ be any vector. $v^\top \nabla^2 \ell(w) v = \sum e^{w^\top x_i} (x_i^\top v)^2$.
+          Since exponential is positive and squared term is non-negative, the sum is $\ge 0$.
+          Thus Hessian is PSD $\implies$ Convex.
+        </li>
+        <li>
+          <strong>Experiment Design (A-optimal):</strong><br>
+          Formulate the A-optimal experiment design problem as an SDP.
+          <br><em>Solution:</em>
+          We want to minimize $\text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ s.t. $\sum \lambda_i = 1, \lambda_i \ge 0$.
+          Let $X = \sum \lambda_i v_i v_i^\top$. Minimize $\text{tr}(X^{-1})$.
+          Introduce variables $u_k$ to bound eigenvalues or use Schur complement.
+          More simply, cast as:
+          $\min \sum_k t_k$ s.t. $\begin{bmatrix} X & e_k \\ e_k^\top & t_k \end{bmatrix} \succeq 0$.
+          This is an SDP in $\lambda$ and auxiliary variables $t$.
+        </li>
+        <li>
+          <strong>L1 Proximal Operator:</strong><br>
+          Derive $\text{prox}_{\lambda \|\cdot\|_1}(v) = \text{argmin}_x \frac{1}{2}\|x-v\|^2 + \lambda \|x\|_1$.
+          <br><em>Solution:</em>
+          The problem separates by coordinate: $\min_{x_i} \frac{1}{2}(x_i - v_i)^2 + \lambda |x_i|$.
+          Subgradient optimality: $x_i - v_i + \lambda \partial |x_i| \ni 0$.
+          Case 1: $x_i > 0 \implies \partial = \{1\} \implies x_i - v_i + \lambda = 0 \implies x_i = v_i - \lambda$. Valid if $v_i > \lambda$.
+          Case 2: $x_i < 0 \implies \partial = \{-1\} \implies x_i - v_i - \lambda = 0 \implies x_i = v_i + \lambda$. Valid if $v_i < -\lambda$.
+          Case 3: $x_i = 0 \implies \partial = [-1, 1]$. Need $0 \in v_i - \lambda[-1, 1] \implies |v_i| \le \lambda$.
+          Combining: $x_i = \text{sign}(v_i)\max(|v_i|-\lambda, 0)$.
+        </li>
       </ol>
     </section>
   </main></div>

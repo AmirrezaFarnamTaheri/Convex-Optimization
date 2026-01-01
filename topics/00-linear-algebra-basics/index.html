@@ -1174,11 +1174,11 @@
         <h4>Deep Intuition: Sensitivity to Spikes</h4>
         <p>Consider a vector representing errors $x = (10, 1, 1, 1)$. How "big" is this error?</p>
         <ul>
-            <li><b>$\ell_1$ (Sum of Magnitudes):</b> $\|x\|_1 = 10+1+1+1 = 13$. It treats every unit of error equally. It sees the "total mass" of the error.</li>
-            <li><b>$\ell_2$ (Energy):</b> $\|x\|_2 = \sqrt{100+1+1+1} \approx 10.15$. The large coordinate (10) dominates because of the squaring. The small ones matter less.</li>
-            <li><b>$\ell_\infty$ (Max Error):</b> $\|x\|_\infty = 10$. It <i>only</i> cares about the worst coordinate. The small ones are invisible.</li>
+            <li><b>$\ell_1$ (Sum of Magnitudes):</b> $\|x\|_1 = 10+1+1+1 = 13$. It treats every unit of error equally. It sees the "total mass" of the error. It is "democratic" in that every non-zero entry contributes.</li>
+            <li><b>$\ell_2$ (Energy):</b> $\|x\|_2 = \sqrt{100+1+1+1} \approx 10.15$. The large coordinate (10) dominates because of the squaring. The small ones matter less. This norm is "aristocratic" — the largest entries have the most influence.</li>
+            <li><b>$\ell_\infty$ (Max Error):</b> $\|x\|_\infty = 10$. It <i>only</i> cares about the worst coordinate. The small ones are invisible. This is the "dictator" norm.</li>
         </ul>
-        <p>As $p$ increases, the norm becomes more sensitive to "spikes" (large outliers) and less sensitive to "noise" (small background values).</p>
+        <p>As $p$ increases, the norm becomes more sensitive to "spikes" (large outliers) and less sensitive to "noise" (small background values). Choosing a norm is choosing a philosophy of error.</p>
       </div>
 
       <div class="example">
@@ -1228,7 +1228,7 @@
       <h3>4.8 Dual Norms and Polar Sets</h3>
       <p>Given a norm $\|\cdot\|$, its <b>dual norm</b> is defined as:
       $$ \|\mathbf{y}\|_* := \sup_{\|\mathbf{x}\| \le 1} \mathbf{y}^\top \mathbf{x} $$
-      <b>Interpretation (The "Shadow Norm"):</b> Think of $\|\mathbf{y}\|_*$ as the maximum "dot-product gain" you can get by aligning a unit vector $\mathbf{x}$ (measured in the primal norm) with $\mathbf{y}$.
+      <b>Interpretation (The "Shadow Norm"):</b> Think of $\|\mathbf{y}\|_*$ as the maximum "dot-product gain" you can get by aligning a unit vector $\mathbf{x}$ (measured in the primal norm) with $\mathbf{y}$. It tells you how "aligned" $\mathbf{y}$ is with the geometry of the primal unit ball.
       <br>This leads to the generalized Cauchy-Schwarz inequality (Hölder's inequality):
       $$ \mathbf{x}^\top \mathbf{y} \le \|\mathbf{x}\| \|\mathbf{y}\|_* $$
       </p>
@@ -1899,52 +1899,46 @@
       </ul>
       <p>This geometric link explains why "conditioning" matters. If the ratio $\lambda_{\max}/\lambda_{\min}$ is large, the ellipsoid is very long and thin (a narrow valley in one direction, flat in another), making optimization difficult.</p>
 
-      <h3>7.4 The Rayleigh Quotient and Eigenvalues</h3>
+      <h3>7.4 The Rayleigh Quotient: Bridge to Optimization</h3>
       <p>For a symmetric matrix $A \in \mathbb{S}^n$, the <b>Rayleigh Quotient</b> is defined as:</p>
       $$ R_A(\mathbf{x}) := \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}}, \quad \mathbf{x} \neq 0 $$
       
       <div class="insight">
-        <h4>💡 Geometric Interpretation</h4>
-        <p>The Rayleigh quotient measures the "effective scaling" of $A$ along direction $\mathbf{x}$. It tells you how much the quadratic form $\mathbf{x}^\top A \mathbf{x}$ values that direction relative to its length squared. When $\|\mathbf{x}\|_2 = 1$, we simply have $R_A(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$.</p>
+        <h4>💡 The "Effective Eigenvalue"</h4>
+        <p>The Rayleigh quotient measures the "effective scaling" of $A$ along direction $\mathbf{x}$. It is a scalar field on the unit sphere whose "special points" (stationary points) are the eigenvectors, and whose values at those points are the eigenvalues. It turns the algebraic problem of finding roots of a polynomial into the analytic problem of finding critical points on a sphere.</p>
       </div>
 
-      <h4>Key Properties of the Rayleigh Quotient</h4>
+      <h4>Key Properties</h4>
       <ul>
-        <li><b>Scale Invariance:</b> $R_A(\alpha \mathbf{x}) = R_A(\mathbf{x})$ for any $\alpha \neq 0$, since both numerator and denominator scale by $\alpha^2$.</li>
-        <li><b>Eigenvectors Give Exact Eigenvalues:</b> If $A\mathbf{v} = \lambda \mathbf{v}$, then $R_A(\mathbf{v}) = \frac{\mathbf{v}^\top (\lambda \mathbf{v})}{\mathbf{v}^\top \mathbf{v}} = \lambda$.</li>
+        <li><b>Scale Invariance:</b> $R_A(\alpha \mathbf{x}) = R_A(\mathbf{x})$ for any $\alpha \neq 0$. It depends only on the <i>direction</i> of $\mathbf{x}$.</li>
+        <li><b>Eigenvalue Readout:</b> If $A\mathbf{v} = \lambda \mathbf{v}$, then $R_A(\mathbf{v}) = \frac{\mathbf{v}^\top (\lambda \mathbf{v})}{\mathbf{v}^\top \mathbf{v}} = \lambda$.</li>
       </ul>
 
-      <h4>The Variational Characterization of Eigenvalues</h4>
-      <p>The <b>maximum eigenvalue</b> $\lambda_{\max}(A)$ can be defined as an optimization problem:</p>
-      $$ \lambda_{\max}(A) = \max_{\mathbf{x} \neq 0} R_A(\mathbf{x}) = \max_{\|\mathbf{x}\|_2 = 1} \mathbf{x}^\top A \mathbf{x} $$
-      <p>Similarly for the minimum:</p>
-      $$ \lambda_{\min}(A) = \min_{\mathbf{x} \neq 0} R_A(\mathbf{x}) = \min_{\|\mathbf{x}\|_2 = 1} \mathbf{x}^\top A \mathbf{x} $$
+      <h4>The Core Theorem: Min/Max = Extreme Eigenvalues</h4>
+      <p>For symmetric $A$ with eigenvalues $\lambda_{\min} \le \dots \le \lambda_{\max}$:</p>
+      $$ \lambda_{\min} = \min_{\mathbf{x} \neq 0} R_A(\mathbf{x}) \quad \text{and} \quad \lambda_{\max} = \max_{\mathbf{x} \neq 0} R_A(\mathbf{x}) $$
+      <p>This variational characterization is fundamental. It explains why optimization algorithms like Power Iteration converge to the top eigenvector.</p>
 
       <div class="proof-box">
-        <h4>Proof: Rayleigh Quotient is a Weighted Average of Eigenvalues</h4>
-        <p>This proof provides deep geometric intuition for why extremizing the Rayleigh quotient gives eigenvalues.</p>
+        <h4>Proof: The "Weighted Average" Intuition</h4>
+        <p>Why does the Rayleigh quotient never escape the range $[\lambda_{\min}, \lambda_{\max}]$? Because it is literally an average.</p>
         <div class="proof-step">
-          <strong>Step 1: Apply the Spectral Theorem.</strong>
-          Since $A$ is symmetric, $A = Q \Lambda Q^\top$ where $Q$ is orthonormal and $\Lambda = \text{diag}(\lambda_1, \ldots, \lambda_n)$.
+          <strong>Step 1: Spectral Decomposition.</strong>
+          Since $A$ is symmetric, $A = Q \Lambda Q^\top$ with orthonormal $Q$. Let $\mathbf{y} = Q^\top \mathbf{x}$. Then $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
         </div>
         <div class="proof-step">
-          <strong>Step 2: Change Coordinates.</strong>
-          Let $\mathbf{y} = Q^\top \mathbf{x}$. Since $Q$ is orthonormal, $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
+          <strong>Step 2: Rewrite in Eigen-Coordinates.</strong>
+          $$ R_A(\mathbf{x}) = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum_{i=1}^n \lambda_i y_i^2}{\sum_{i=1}^n y_i^2} $$
         </div>
         <div class="proof-step">
-          <strong>Step 3: Expand the Quadratic Form.</strong>
-          $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top Q \Lambda Q^\top \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum_{i=1}^n \lambda_i y_i^2}{\sum_{i=1}^n y_i^2} $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 4: Interpret as Weighted Average.</strong>
-          Define weights $w_i = \frac{y_i^2}{\sum_j y_j^2}$. Then $w_i \ge 0$ and $\sum_i w_i = 1$, so:
+          <strong>Step 3: Define Weights.</strong>
+          Let $w_i = \frac{y_i^2}{\sum_j y_j^2}$. Notice that $w_i \ge 0$ and $\sum w_i = 1$. Thus:
           $$ R_A(\mathbf{x}) = \sum_{i=1}^n w_i \lambda_i $$
-          <p>The Rayleigh quotient is a <b>convex combination of eigenvalues</b>. Any weighted average lies between the minimum and maximum:</p>
-          $$ \lambda_{\min} \le R_A(\mathbf{x}) \le \lambda_{\max} $$
+          This is a <b>convex combination</b> of the eigenvalues.
         </div>
         <div class="proof-step">
-          <strong>Step 5: Extremizers are Eigenvectors.</strong>
-          The maximum $\lambda_{\max}$ is achieved when all weight is on the largest eigenvalue: set $\mathbf{y} = \mathbf{e}_{i_{\max}}$, which means $\mathbf{x} = Q \mathbf{e}_{i_{\max}}$, the corresponding eigenvector.
+          <strong>Step 4: Conclusion.</strong>
+          The value must lie in $[\min \lambda_i, \max \lambda_i]$. To achieve the maximum, we must put all the "weight" $w_i$ on the largest eigenvalue. This implies $y_i=0$ for all $i$ except $i_{\max}$, which means $\mathbf{x}$ aligns perfectly with the top eigenvector.
         </div>
       </div>
 

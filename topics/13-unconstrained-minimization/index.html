@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>09. Algorithms I: Unconstrained Minimization — Convex Optimization</title>
+  <title>13. Algorithms I: Unconstrained Minimization — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
@@ -28,15 +28,15 @@
   <main class="container" style="padding: 32px 0 60px;">
     <!-- Lecture header -->
     <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">09. Algorithms I: Unconstrained Minimization</h1>
+      <h1 style="margin-top: 0;">13. Algorithms I: Unconstrained Minimization</h1>
       <div class="meta">
         Date: 2025-12-16 · Duration: 90 min · Tags: algorithms, unconstrained
       </div>
 
       <!-- Brief introduction -->
       <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> Gradient descent, Newton's method, step size selection, convergence rates.</p>
-        <p><strong>Prerequisites:</strong> <a href="../05-convex-functions-basics/index.html">Lecture 05-06</a></p>
+        <p><strong>Overview:</strong> Gradient descent, Newton's method, step size selection, convergence rates, self-concordance.</p>
+        <p><strong>Prerequisites:</strong> <a href="../05-convex-functions-basics/index.html">Lecture 05</a></p>
       </section>
     </article>
 
@@ -45,9 +45,10 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you should understand:</p>
       <ul style="line-height: 1.8;">
-        <li>The gradient descent algorithm and its convergence properties.</li>
-        <li>Newton's method and its convergence properties.</li>
-        <li>The trade-offs between gradient descent and Newton's method.</li>
+        <li>The convergence properties of gradient descent for strongly convex and merely convex functions.</li>
+        <li>How to implement backtracking line search and why it is preferred over exact search.</li>
+        <li>The derivation and quadratic convergence of Newton's method.</li>
+        <li>The concept of self-concordance and its role in Newton's method analysis.</li>
       </ul>
     </section>
 
@@ -56,45 +57,37 @@
       <h2>Key Concepts</h2>
 
       <h3>1. Gradient Descent (GD)</h3>
-      <p>The gradient descent algorithm iterates $x_{k+1} = x_k - t_k \nabla f(x_k)$ with step size $t_k$. For strongly convex $f$ with condition number $\kappa$, GD converges linearly at rate $(1 - 1/\kappa)$, making it efficient for well-conditioned problems but slow for ill-conditioned ones.</p>
-
-      <!-- Include images as needed -->
-      <figure style="margin: 16px 0; text-align: center;">
-        <img src="../../static/assets/topics/13-unconstrained-minimization/gd-trajectory.svg" alt="The trajectory of gradient descent" style="max-width: 100%; height: auto;" />
-        <figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;">
-          Gradient descent converges to a local minimum.
-        </figcaption>
-      </figure>
+      <p>Gradient descent iterates $x_{k+1} = x_k - t_k \nabla f(x_k)$. For $f$ strongly convex ($\mu I \preceq \nabla^2 f \preceq L I$), GD with appropriate step size converges linearly: $f(x_k) - p^* \le c^k (f(x_0) - p^*)$ where $c \approx 1 - \mu/L$. For merely convex functions, the rate is $O(1/k)$.</p>
 
       <h3>2. Step Size Selection</h3>
-      <p>Common step size strategies: (1) exact line search $t_k = \arg\min_t f(x_k - t\nabla f(x_k))$, (2) backtracking with Armijo condition $f(x + t\Delta x) \leq f(x) + \alpha t \nabla f(x)^\top \Delta x$, (3) constant step $t_k = 1/L$ where $L$ is Lipschitz constant of $\nabla f$.</p>
+      <p><strong>Backtracking Line Search:</strong> Given descent direction $\Delta x$ (e.g., $-\nabla f(x)$), start with $t=1$. While $f(x+t\Delta x) > f(x) + \alpha t \nabla f(x)^\top \Delta x$, update $t \leftarrow \beta t$. Typical values: $\alpha \in (0.01, 0.3), \beta \in (0.1, 0.8)$. This guarantees sufficient decrease without the cost of exact minimization.</p>
 
       <h3>3. Newton's Method</h3>
-      <p>Newton's method uses second-order information: $x_{k+1} = x_k - [\nabla^2 f(x_k)]^{-1}\nabla f(x_k)$. Near the optimum, it exhibits quadratic convergence: $\|x_{k+1} - x^*\| \leq c\|x_k - x^*\|^2$, converging much faster than GD but requiring Hessian computation and inversion.</p>
+      <p>Newton's step is $\Delta x_{nt} = -[\nabla^2 f(x)]^{-1} \nabla f(x)$. This minimizes the second-order Taylor approximation of $f$ at $x$. The iteration is $x_{k+1} = x_k + t \Delta x_{nt}$. Newton's method is affine invariant and converges quadratically near the optimum: $\|x_{k+1} - x^*\| \le C \|x_k - x^*\|^2$.</p>
 
-      <h3>4. Quasi-Newton Methods</h3>
-      <p>BFGS and limited-memory BFGS (L-BFGS) approximate the Hessian inverse using gradient information only, avoiding expensive Hessian computation. BFGS achieves superlinear convergence while maintaining $O(n^2)$ storage (vs. $O(n)$ for L-BFGS), balancing Newton's speed with GD's low memory footprint.</p>
+      <h3>4. Newton Decrement</h3>
+      <p>The quantity $\lambda(x) = (\nabla f(x)^\top [\nabla^2 f(x)]^{-1} \nabla f(x))^{1/2}$ is the Newton decrement. It relates to the difference between $f(x)$ and the minimum of its quadratic approximation: $f(x) - \inf_y \hat{f}(y) = \frac{1}{2}\lambda(x)^2$. It serves as a robust stopping criterion: stop when $\lambda(x)^2/2 \le \epsilon$.</p>
 
-      <h3>5. Conjugate Gradient Method</h3>
-      <p>For quadratic $f(x) = \frac{1}{2}x^\top A x - b^\top x$, conjugate gradient finds the minimum in at most $n$ steps by choosing search directions $A$-orthogonal. For general convex $f$, nonlinear CG uses Polak-Ribière or Fletcher-Reeves formulas to update directions, often outperforming GD without Hessian computation.</p>
+      <h3>5. Self-Concordance</h3>
+      <p>A function is self-concordant if $|f'''(x)| \le 2 f''(x)^{3/2}$. For such functions, Newton's method can be analyzed without unknown constants like $L, \mu$. The analysis guarantees convergence based purely on the Newton decrement $\lambda(x)$. Standard barriers like $-\sum \log x_i$ are self-concordant.</p>
 
-      <h3>6. Accelerated Gradient Methods</h3>
-      <p>Nesterov's accelerated gradient (NAG) achieves optimal $O(1/k^2)$ convergence for smooth convex functions via momentum: $y_{k+1} = x_k - t\nabla f(x_k)$, $x_{k+1} = y_{k+1} + \frac{k-1}{k+2}(y_{k+1} - y_k)$. This improves on GD's $O(1/k)$ rate without using second-order information.</p>
+      <h3>6. Quasi-Newton Methods</h3>
+      <p>Methods like BFGS approximate the Hessian (or its inverse) using gradient differences $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ and steps $s_k = x_{k+1} - x_k$, satisfying the secant equation $B_{k+1} s_k = y_k$. They achieve superlinear convergence without $O(n^3)$ Hessian inversion.</p>
 
-      <h3>7. Convergence Analysis and Rates</h3>
-      <p>Convergence rates classify algorithms: sublinear ($O(1/k)$ for GD on convex), linear ($O(\rho^k)$ for GD on strongly convex, $\rho < 1$), superlinear (BFGS), quadratic (Newton). The choice depends on problem structure, dimension, and computational budget per iteration.</p>
-
-      <h3>8. Self-Concordance and Damped Newton</h3>
-      <p>For self-concordant functions, the Newton decrement $\lambda(x) = (\nabla f(x)^\top [\nabla^2 f(x)]^{-1} \nabla f(x))^{1/2}$ provides a stopping criterion and affine-invariant measure of optimality. Damped Newton with backtracking ensures global convergence followed by locally quadratic convergence.</p>
-
-      <h3>9. Preconditioning and Scaling</h3>
-      <p>Preconditioning transforms $f(x)$ to $f(P^{-1}x)$ where $P$ approximates $\nabla^2 f$, improving condition number. Diagonal preconditioning (rescaling variables), incomplete Cholesky, and L-BFGS approximations reduce iteration count significantly for ill-conditioned problems.</p>
+      <h3>7. Convergence Analysis</h3>
+      <p>
+        <ul>
+            <li><strong>Strongly Convex:</strong> GD is Linear ($c < 1$), Newton is Quadratic (doubles digits of accuracy).</li>
+            <li><strong>Convex (not strong):</strong> GD is Sublinear ($O(1/k)$), Accelerated GD is $O(1/k^2)$.</li>
+        </ul>
+        Condition number $\kappa = L/\mu$ dictates the speed of first-order methods. Newton's method is largely independent of $\kappa$.
+      </p>
     </section>
 
     <!-- Interactive widgets -->
     <section class="section-card" id="widgets" style="margin-bottom: 32px;">
       <h2>Interactive Widgets</h2>
-      <p>Below are tools to explore the concepts interactively. Try tweaking parameters to build intuition.</p>
+      <p>Below are tools to explore the concepts interactively.</p>
 
       <!-- Widget 1 -->
       <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
@@ -129,7 +122,7 @@
       <h2>Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 9 — Unconstrained Minimization</li>
-        <li><strong>Course slides:</strong> [Link if available]</li>
+        <li><strong>Course slides:</strong> <a href="https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">PDF</a></li>
       </ul>
     </section>
 
@@ -137,54 +130,146 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <h3>Example 9.1: Gradient Descent on Quadratic Function</h3>
-      <p><strong>Problem:</strong> Apply GD with exact line search to $f(x) = \frac{1}{2}x^\top \begin{bmatrix} 4 & 0 \\ 0 & 1 \end{bmatrix} x$ starting from $x_0 = [1, 1]^\top$.</p>
-      <p><em>[Detailed worked solution to be added: Computes gradient, derives optimal step size, shows zigzagging behavior due to condition number $\kappa=4$]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.1: Gradient Descent on Quadratic</h3>
+        <p><strong>Problem:</strong> Apply GD to $f(x) = \frac{1}{2}(x_1^2 + \gamma x_2^2)$ with $\gamma = 10$. Start at $(10, 1)$. Estimate steps to reach $\|x\| \le 10^{-3}$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Condition number $\kappa = 10$. Optimal step rate $t = 2/(L+\mu) = 2/(10+1) \approx 0.18$.
+        Convergence factor $\rho = (\kappa-1)/(\kappa+1) = 9/11 \approx 0.818$.
+        Error decays as $(0.818)^k$.
+        Need $(0.818)^k \cdot \sqrt{101} \le 10^{-3}$.
+        $k \log(0.818) \le \log(10^{-4})$. $k \approx 45$.
+        With exact line search, zigzagging occurs.</p>
+      </div>
 
-      <h3>Example 9.2: Newton's Method for Logistic Regression</h3>
-      <p><strong>Problem:</strong> Implement Newton's method for logistic regression with 3 data points, show quadratic convergence.</p>
-      <p><em>[Detailed worked solution to be added: Derives Hessian $\nabla^2 \ell = X^\top D X$ where $D = \text{diag}(p_i(1-p_i))$, shows 3-4 iterations suffice]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.2: Newton's Method for Logistic Regression</h3>
+        <p><strong>Problem:</strong> Formulate Newton step for logistic regression.</p>
+        <p><strong>Solution:</strong></p>
+        <p>$f(w) = \sum \log(1 + e^{z_i}) - y_i z_i$ where $z_i = w^\top x_i$.
+        Gradient $\nabla f = X^\top (p - y)$ where $p_i = \sigma(z_i)$.
+        Hessian $H = X^\top D X$ where $D_{ii} = p_i(1-p_i)$.
+        Newton step $\Delta w = -H^{-1} g = -(X^\top D X)^{-1} X^\top (p-y)$.
+        This is iteratively reweighted least squares (IRLS).</p>
+      </div>
 
-      <h3>Example 9.3: Backtracking Line Search</h3>
-      <p><strong>Problem:</strong> For $f(x) = e^{x_1} + x_1^2 + x_2^2$, implement backtracking with $\alpha=0.3, \beta=0.8$ from $x_0=[2,2]^\top$.</p>
-      <p><em>[Detailed worked solution to be added: Shows step size sequence, verifies Armijo condition, compares to exact line search]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.3: Backtracking Line Search</h3>
+        <p><strong>Problem:</strong> Describe the backtracking condition for $f(x) = x^2$ with $\Delta x = -1$ at $x=2$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Condition: $f(x+t\Delta x) \le f(x) + \alpha t f'(x)\Delta x$.
+        $f(2)=4, f'(2)=4, \Delta x=-1$.
+        $(2-t)^2 \le 4 + \alpha t (4)(-1) = 4 - 4\alpha t$.
+        $4 - 4t + t^2 \le 4 - 4\alpha t$.
+        $t^2 \le 4t(1-\alpha) \implies t \le 4(1-\alpha)$.
+        For small $t$, this always holds. We start with $t=1$. If $1 > 4(1-\alpha)$, we reduce $t$.
+        E.g., if $\alpha=0.25$, limit is $3$. $t=1$ is accepted immediately.</p>
+      </div>
 
-      <h3>Example 9.4: Conjugate Gradient for Linear System</h3>
-      <p><strong>Problem:</strong> Solve $Ax = b$ for $3 \times 3$ SPD matrix using CG, verify convergence in 3 iterations.</p>
-      <p><em>[Detailed worked solution to be added: Computes conjugate directions, shows $A$-orthogonality, verifies finite termination]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.4: Conjugate Gradient Direction</h3>
+        <p><strong>Problem:</strong> For $f(x) = \frac{1}{2}x^\top A x - b^\top x$, how is the search direction updated?</p>
+        <p><strong>Solution:</strong></p>
+        <p>$d_{k+1} = -g_{k+1} + \beta_k d_k$.
+        For quadratic CG, $\beta_k = \frac{g_{k+1}^\top g_{k+1}}{g_k^\top g_k}$ (Fletcher-Reeves).
+        Ensures $d_{k+1}^\top A d_k = 0$ ($A$-conjugacy).
+        This allows exact minimization in $n$ steps.</p>
+      </div>
 
-      <h3>Example 9.5: BFGS Update</h3>
-      <p><strong>Problem:</strong> Given $x_k, x_{k+1}, \nabla f(x_k), \nabla f(x_{k+1})$, compute the BFGS approximation $B_{k+1}$ to the Hessian.</p>
-      <p><em>[Detailed worked solution to be added: Applies BFGS formula with $s_k = x_{k+1}-x_k$, $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.5: BFGS Update Rank</h3>
+        <p><strong>Problem:</strong> Show that the BFGS update is a rank-2 update.</p>
+        <p><strong>Solution:</strong></p>
+        <p>Update: $B_{k+1} = B_k + \frac{y y^\top}{y^\top s} - \frac{B s s^\top B}{s^\top B s}$.
+        This adds two rank-1 matrices.
+        It preserves positive definiteness if $y^\top s > 0$ (curvature condition).
+        Avoids $O(n^3)$ cost of inverting Hessian.</p>
+      </div>
 
-      <h3>Example 9.6: Convergence Rate Comparison</h3>
-      <p><strong>Problem:</strong> For $f(x) = \frac{1}{2}\|Ax-b\|_2^2$ with $\kappa(A)=100$, compare iterations required for GD vs. Newton to achieve $\|x_k - x^*\| \leq 10^{-6}$.</p>
-      <p><em>[Detailed worked solution to be added: Estimates GD iterations $\approx 100\log(10^6)$, Newton $\approx 5-6$ iterations]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.6: Convergence Rate Comparison</h3>
+        <p><strong>Problem:</strong> Compare GD and Newton on $f(x) = x^4$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>GD: $x_{k+1} = x_k - t 4 x_k^3$. For convergence, need small $t$. Rate is sublinear (slow).
+        Newton: $\Delta x = -f'/f'' = -4x^3 / 12x^2 = -x/3$.
+        $x_{k+1} = x_k - x_k/3 = (2/3)x_k$.
+        Linear convergence with rate $2/3$.
+        Note: $x^4$ is strictly convex but not strongly convex at 0 ($f''(0)=0$). Newton is not quadratic here!</p>
+      </div>
 
-      <h3>Example 9.7: Nesterov Acceleration</h3>
-      <p><strong>Problem:</strong> Implement accelerated GD for $f(x) = \frac{1}{2}x^\top A x - b^\top x$, compare convergence to standard GD.</p>
-      <p><em>[Detailed worked solution to be added: Shows momentum term, verifies $O(1/k^2)$ vs. $O(1/k)$ convergence empirically]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.7: Nesterov Acceleration</h3>
+        <p><strong>Problem:</strong> Write the update equations for Nesterov's accelerated gradient.</p>
+        <p><strong>Solution:</strong></p>
+        <p>$x_k$: current position, $y_k$: momentum variable.
+        1. $x_{k+1} = y_k - t \nabla f(y_k)$
+        2. $y_{k+1} = x_{k+1} + \frac{k-1}{k+2} (x_{k+1} - x_k)$
+        Step 1 is standard GD step from the lookahead position $y_k$.
+        Step 2 adds momentum.
+        Converges as $1/k^2$ for smooth convex functions.</p>
+      </div>
 
-      <h3>Example 9.8: Newton Decrement and Stopping Criterion</h3>
-      <p><strong>Problem:</strong> For self-concordant $f$, compute $\lambda(x) = (\nabla f^\top [\nabla^2 f]^{-1} \nabla f)^{1/2}$ and show $\lambda(x) \leq \epsilon$ implies near-optimality.</p>
-      <p><em>[Detailed worked solution to be added: Derives bound $f(x) - f(x^*) \leq \lambda^2/2$, uses as stopping criterion]</em></p>
+      <div class="example-problem">
+        <h3>Example 13.8: Newton Decrement Property</h3>
+        <p><strong>Problem:</strong> Show $\lambda(x)^2 = \nabla f(x)^\top \Delta x_{nt}$.</p>
+        <p><strong>Solution:</strong></p>
+        <p>$\Delta x_{nt} = -H^{-1} g$.
+        $\lambda(x)^2 = g^\top H^{-1} g$.
+        Inner product: $g^\top \Delta x_{nt} = g^\top (-H^{-1} g) = -g^\top H^{-1} g = -\lambda(x)^2$.
+        So $\lambda^2 = -g^\top \Delta x_{nt}$ (directional derivative in Newton direction is $-\lambda^2$).</p>
+      </div>
     </section>
 
-    <!-- Exercises (optional) -->
+    <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Exercises</h2>
-      <p>Try these problems to deepen your understanding. Solutions are provided at the end of the course.</p>
       <ol style="line-height: 2;">
-        <li>Prove that for strongly convex $f$ with strong convexity constant $m$ and Lipschitz constant $L$, gradient descent with step size $t = 2/(m+L)$ converges at rate $(1 - m/L)^k = (1 - 1/\kappa)^k$.</li>
-        <li>Show that Newton's method is affine-invariant: if $x_{k+1}$ is the Newton update for $f(x)$, then $Tx_{k+1}$ is the Newton update for $f(T^{-1}x)$ for nonsingular $T$.</li>
-        <li>Derive the backtracking line search algorithm and prove that it terminates in finite iterations under Lipschitz continuous gradient assumption.</li>
-        <li>For the quadratic $f(x) = \frac{1}{2}x^\top A x - b^\top x$, show that conjugate gradient finds the exact minimizer in at most $n$ iterations, where $n = \dim(x)$.</li>
-        <li>Prove the BFGS update formula maintains positive definiteness: if $B_k \succ 0$ and $s_k^\top y_k > 0$, then $B_{k+1} \succ 0$.</li>
-        <li>Show that Nesterov's accelerated gradient achieves $f(x_k) - f(x^*) \leq \frac{2L\|x_0-x^*\|^2}{(k+1)^2}$ for $L$-smooth convex $f$.</li>
-        <li>For self-concordant $f$, prove that the Newton decrement $\lambda(x)$ satisfies $f(x) - f(x^*) \leq \lambda(x)^2/2$ when $\lambda(x) < 1$.</li>
-        <li>Implement L-BFGS with memory size $m=10$ and compare memory usage to full BFGS for $n=1000$ dimensional problems.</li>
-        <li>Show that preconditioning with $P = \text{diag}(\nabla^2 f(x^*))$ can reduce the condition number from $\kappa$ to approximately $\sqrt{\kappa}$ for certain problem classes.</li>
-        <li>Prove that exact line search in gradient descent guarantees $\nabla f(x_k)^\top \nabla f(x_{k+1}) = 0$ (consecutive gradients are orthogonal).</li>
+        <li>
+          <strong>Gradient Descent Rate:</strong><br>
+          Prove that for $f(x) = \frac{1}{2}x^\top Q x$, GD with optimal constant step size converges as $\|x_{k+1}\| \le \frac{\kappa-1}{\kappa+1}\|x_k\|$.
+          <br><em>Solution:</em>
+          $x_{k+1} = (I - tQ)x_k$. Minimize spectral radius $\rho(I - tQ) = \max_i |1 - t\lambda_i|$.
+          Optimal $t = 2/(\lambda_{\min} + \lambda_{\max})$.
+          $\rho = \frac{\lambda_{\max} - \lambda_{\min}}{\lambda_{\max} + \lambda_{\min}} = \frac{\kappa-1}{\kappa+1}$.
+        </li>
+        <li>
+          <strong>Affine Invariance of Newton's Method:</strong><br>
+          Let $y = Tx$. Define $g(y) = f(Ty) = f(x)$. Show that the Newton step for $g$ at $y$ corresponds to the Newton step for $f$ at $x$ transformed by $T^{-1}$.
+          <br><em>Solution:</em>
+          $\nabla g(y) = T^\top \nabla f(x)$. $\nabla^2 g(y) = T^\top \nabla^2 f(x) T$.
+          $\Delta y = -[T^\top H T]^{-1} T^\top g = -T^{-1} H^{-1} T^{-\top} T^\top g = -T^{-1} H^{-1} g = T^{-1} \Delta x$.
+          So updates are consistent: $y + \Delta y = T(x + \Delta x)$.
+        </li>
+        <li>
+          <strong>Backtracking Termination:</strong><br>
+          Prove that backtracking line search terminates if $f$ has Lipschitz gradient.
+          <br><em>Solution:</em>
+          Lipschitz gradient implies $f(y) \le f(x) + \nabla f(x)^\top(y-x) + \frac{L}{2}\|y-x\|^2$.
+          With $y = x - t\nabla f$, $f(y) \le f(x) - t\|\nabla f\|^2 + \frac{Lt^2}{2}\|\nabla f\|^2$.
+          We want $f(y) \le f(x) - \alpha t \|\nabla f\|^2$.
+          Satisfied if $-t + Lt^2/2 \le -\alpha t \implies Lt/2 \le 1-\alpha \implies t \le \frac{2(1-\alpha)}{L}$.
+          Since we reduce $t$ by factor $\beta$, we eventually drop below this threshold.
+        </li>
+        <li>
+          <strong>Conjugate Gradient Finite Termination:</strong><br>
+          Explain why CG terminates in $n$ steps for $n$-dimensional quadratic problems.
+          <br><em>Solution:</em>
+          CG generates search directions $d_0, \dots, d_{n-1}$ that are $Q$-conjugate ($d_i^\top Q d_j = 0$).
+          These form a basis for $\mathbb{R}^n$.
+          Minimizing a convex quadratic sequentially along conjugate directions is equivalent to minimizing over their span.
+          After $n$ steps, we minimize over full $\mathbb{R}^n$.
+        </li>
+        <li>
+          <strong>BFGS Positive Definiteness:</strong><br>
+          Show that if $B_k \succ 0$ and $y_k^\top s_k > 0$, then $B_{k+1} \succ 0$.
+          <br><em>Solution:</em>
+          $B_{k+1} = B_k + \frac{y y^\top}{y^\top s} - \frac{B s s^\top B}{s^\top B s}$.
+          Evaluate quadratic form $z^\top B_{k+1} z$.
+          Let $a = y^\top s > 0, b = s^\top B s > 0$.
+          Use Cauchy-Schwarz type inequality or determinant formula.
+          Intuitively, we add a rank-1 PSD term and subtract a rank-1 term, but in a way that preserves PD nature if curvature condition holds.
+          Formal proof uses product form of inverse update (DFP) or determinant update.
+        </li>
       </ol>
     </section>
   </main></div>

@@ -719,7 +719,8 @@
           $$
           \nabla^2 f(x) \succeq 0
           $$
-          <p>That is, the <b>Hessian matrix is positive semidefinite</b> (PSD) at every point.</p>
+          <p>That is, the <b>Hessian matrix is positive semidefinite</b> (PSD) at every point.
+          <br><b>Linear Algebra Connection:</b> This means all eigenvalues of $\nabla^2 f(x)$ are non-negative ($\lambda_i \ge 0$). Geometrically, the function curves "up" (or is flat) in every direction.</p>
         </div>
 
         <div class="insight">
@@ -794,7 +795,8 @@
 
         <div class="proof-box">
           <h4>Example 3: Log-Sum-Exp (Full Derivation)</h4>
-          <p>Let $f(x) = \log \left(\sum_{k=1}^n e^{x_k}\right)$. We perform a detailed derivation to prove its Hessian is PSD.</p>
+          <p>Let $f(x) = \log \left(\sum_{k=1}^n e^{x_k}\right)$. This function is a smooth approximation of the maximum function $\max(x)$.
+          <br><b>Smooth Max Intuition:</b> $\max(x) \le f(x) \le \max(x) + \log n$. As we scale $x$, $f(x)$ hugs the max function.</p>
           <p>Define $z_k = e^{x_k}$ and $S = \sum_{k=1}^n z_k$. Then $f(x) = \log S$.</p>
 
           <div class="proof-step">

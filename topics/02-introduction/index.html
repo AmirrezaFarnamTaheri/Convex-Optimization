@@ -84,6 +84,17 @@
         </ul>
         <p>This distinction is not merely academic—it determines whether a real-world problem can be solved reliably at scale.</p>
 
+        <div class="insight">
+          <h4>Why Convexity is the Watershed Moment</h4>
+          <p>For decades, the optimization world was divided into "Linear" vs "Nonlinear". This was a mistake. The true dividing line is <b>Convexity</b>.
+          <br><b>Why?</b> Because in a convex world, <b>local information predicts global behavior</b>.
+          <ul>
+            <li>If you are at a point where the gradient is zero (local property), you are at the global minimum (global property).</li>
+            <li>If you have a separating hyperplane locally, it separates the sets globally.</li>
+          </ul>
+          <p>This "holographic" property—the whole is encoded in the part—is what makes convex problems solvable in polynomial time. Once you lose convexity, you lose the ability to trust your local compass.</p>
+        </div>
+
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
                alt="Schematic overview of the optimization problem landscape"

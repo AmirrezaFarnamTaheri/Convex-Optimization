@@ -57,6 +57,14 @@
         $$
         \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1
         $$
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/layer3_32_subspace_affine.gif"
+               alt="Animation distinguishing Subspaces from Affine Sets"
+               style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+          <figcaption><i>Animation:</i> A <b>Subspace</b> (left) is tied to the origin (infinite sheet through 0). An <b>Affine Set</b> (right) is a translated subspace (infinite sheet floating in space). Affine combinations let you travel anywhere on the sheet, but never off it.</figcaption>
+        </figure>
+
         <p><b>Intuition (Infinite Sheet):</b> The coefficients $\theta_i$ may be negative. For two points $x_1, x_2$, the combination $x = \theta x_1 + (1-\theta)x_2$ traces the <b>infinite line</b> through them. For three points, it traces the infinite plane. Think of affine sets as "infinite sheets" that extend forever.</p>
 
         <div class="theorem-box">
@@ -123,6 +131,17 @@
         $$
         \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1
         $$
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/layer3_33_span_generators.gif"
+               alt="Animation of Convex Combinations vs Linear Span"
+               style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+          <figcaption><i>Animation:</i> <b>Convex Hull</b> vs <b>Affine Hull</b> vs <b>Linear Span</b>.
+          <br>$\bullet$ <b>Span (Blue):</b> Infinite sheet through origin (Linear combinations).
+          <br>$\bullet$ <b>Affine (Green):</b> Infinite sheet through points (Affine combinations).
+          <br>$\bullet$ <b>Convex (Orange):</b> The finite region strictly "between" the points (Convex combinations).</figcaption>
+        </figure>
+
         <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
         <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
 

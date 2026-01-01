@@ -168,14 +168,14 @@ For all lectures, the following steps will be applied:
 
 ## Execution Checklist
 
-- [ ] **Phase 1: Linear Algebra (00-01)**
-    - [ ] Update `00-linear-algebra-basics/index.html` with Vector Norms & Determinants.
-    - [ ] Update `01-linear-algebra-advanced/index.html` with Induced Norms, Eigenvalues, & Rayleigh Quotient.
-    - [ ] Integrate relevant animations.
-- [ ] **Phase 2: Convex Core (02-06)**
-    - [ ] Audit and polish 02 through 06.
-    - [ ] Inject intuition from the "Zero to Hero" philosophy.
-    - [ ] Integrate relevant animations.
+- [x] **Phase 1: Linear Algebra (00-01)**
+    - [x] Update `00-linear-algebra-basics/index.html` with Vector Norms & Determinants.
+    - [x] Update `01-linear-algebra-advanced/index.html` with Induced Norms, Eigenvalues, & Rayleigh Quotient.
+    - [x] Integrate relevant animations.
+- [x] **Phase 2: Convex Core (02-06)**
+    - [x] Audit and polish 02 through 06.
+    - [x] Inject intuition from the "Zero to Hero" philosophy.
+    - [x] Integrate relevant animations.
 - [ ] **Phase 3: Problems & Duality (07-09)**
     - [ ] Enhance 07 & 08 with practical examples (Markowitz, etc.).
     - [ ] **Major Rewrite of 09**: Integrate the entire `Problemset.md` as a structured walkthrough.

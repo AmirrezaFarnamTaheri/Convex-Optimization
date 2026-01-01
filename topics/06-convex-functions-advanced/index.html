@@ -203,6 +203,21 @@
       \boxed{f^*(\mathbf{y}) := \sup_{\mathbf{x}\in\mathrm{dom} f} \big( \mathbf{y}^\top \mathbf{x} - f(\mathbf{x}) \big), \quad \mathbf{y}\in\mathbb{R}^n}
       $$
 
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/epigraph_dual_norm.gif"
+             alt="Animation showing the conjugate as the maximum gap between the function and a line"
+             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+        <figcaption><i>Animation:</i> The conjugate $f^*(y)$ is the maximum vertical distance between the linear function $y^\top x$ and the function $f(x)$. Varying $y$ changes the slope of the line, and $f^*(y)$ records the intercept of the supporting hyperplane.</figcaption>
+      </figure>
+
+      <div class="insight">
+        <h4>The "Supremum of Linear Family" Intuition</h4>
+        <p>You can think of the conjugate as trying to <b>explain the function $f$ using lines</b>.
+        <br>For a fixed slope $y$, we want to find the best linear lower bound $y^\top x - c \le f(x)$.
+        <br>This requires $c \ge y^\top x - f(x)$ for all $x$. The tightest (smallest) such constant is $c = \sup_x (y^\top x - f(x)) = f^*(y)$.
+        <br>Thus, $f^*$ records the optimal intercepts for every possible slope $y$. This construction guarantees that $f^*$ is always convex, because it is a pointwise supremum of affine functions of $y$ (specifically $g_x(y) = x^\top y - f(x)$).</p>
+      </div>
+
       <div class="interpretation-box">
         <p><b>Economic Interpretation (Prices & Profit):</b> Imagine $\mathbf{x}$ is a production plan and $f(\mathbf{x})$ is the cost of production. If the market price vector is $\mathbf{y}$, then the revenue is $\mathbf{y}^\top \mathbf{x}$. The term $\mathbf{y}^\top \mathbf{x} - f(\mathbf{x})$ represents the <b>net profit</b>.
         <br>The conjugate $f^*(\mathbf{y})$ is the <b>maximum possible profit</b> achievable given prices $\mathbf{y}$. This explains why $f^*$ is convex: profit is the pointwise supremum of linear functions (revenue minus fixed cost) as prices vary.</p>

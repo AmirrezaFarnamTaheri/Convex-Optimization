@@ -1054,20 +1054,39 @@
 
         <h3>6.6 Sum of Largest Elements (Advanced Modeling)</h3>
         <p>Consider the function $f(x) = \sum_{i=1}^r x_{[i]}$, the sum of the $r$ largest components of a vector $x \in \mathbb{R}^n$.
-        <br>This function is convex (it is the pointwise maximum of sums of all possible subsets of size $r$).
-        <br>Remarkably, the constraint $\sum_{i=1}^r x_{[i]} \le \alpha$ can be represented using only <b>linear inequalities</b> ($2n+1$ of them), avoiding combinatorial complexity.</p>
+        <br>This function is convex. A naive description would involve $\binom{n}{r}$ inequalities (checking every subset of size $r$). Remarkably, we can represent the constraint $\sum_{i=1}^r x_{[i]} \le \alpha$ using only $2n+1$ <b>linear inequalities</b> by using duality.</p>
 
         <div class="proof-box">
-          <h4>Derivation via Duality</h4>
-          <p>We start with the variational definition of the sum of $r$ largest elements:
-          $$ \sum_{i=1}^r x_{[i]} = \max \{x^\top y \mid 0 \le y \le \mathbf{1}, \ \mathbf{1}^\top y = r\} $$
-          Taking the <b>dual</b> of this linear maximization problem yields a minimization problem. Strong duality guarantees their optimal values are equal.
-          <br>The dual problem is:
-          $$ \min_{t, u} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad t\mathbf{1} + u \ge x, \ u \ge 0 $$
-          Thus, the constraint $\sum_{i=1}^r x_{[i]} \le \alpha$ is equivalent to the existence of auxiliary variables $t \in \mathbb{R}, u \in \mathbb{R}^n$ such that:
-          $$ rt + \sum_{i=1}^n u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
-          This is a set of $2n+1$ linear inequalities.
-          </p>
+          <h4>Deep Dive: Derivation via Duality</h4>
+          <div class="proof-step">
+            <strong>Step 1: Variational Definition (The Primal).</strong>
+            We can express the sum of the $r$ largest elements as an optimization problem. We want to "select" $r$ elements to maximize the sum. Let $y_i$ be the weight of element $i$.
+            $$ f(x) = \max_{y} x^\top y \quad \text{s.t.} \quad 0 \le y \le \mathbf{1}, \quad \mathbf{1}^\top y = r $$
+            The constraints define a polytope. The extreme points of this polytope are binary vectors with exactly $r$ ones. Thus, the maximum is achieved by selecting the $r$ largest components of $x$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Form the Dual.</strong>
+            This is a Linear Programming (LP) maximization problem. We want to convert it to a minimization problem to obtain an upper bound structure.
+            <br>We use the standard dual form.
+            <br>Primal: $\max \{ x^\top y \mid y \le \mathbf{1}, \mathbf{1}^\top y = r, y \ge 0 \}$.
+            <br>Dual variables: $u \ge 0$ (for $y \le \mathbf{1}$), $t \in \mathbb{R}$ (for $\mathbf{1}^\top y = r$).
+            <br>Dual Problem:
+            $$ \min_{t, u} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad t\mathbf{1} + u \ge x, \quad u \ge 0 $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Strong Duality.</strong>
+            By strong duality for LP, the optimal value of the dual equals the optimal value of the primal, which is $f(x)$.
+            $$ f(x) = \min \{ rt + \sum u_i \mid u_i \ge x_i - t, \ u_i \ge 0 \} $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: The Compact Representation.</strong>
+            The condition $f(x) \le \alpha$ holds <i>if and only if</i> there exist feasible dual variables $t, u$ such that the dual objective is $\le \alpha$.
+            $$ \exists t \in \mathbb{R}, u \in \mathbb{R}^n : \quad rt + \sum_{i=1}^n u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
+            This replaces the combinatorial complexity with $2n+1$ linear constraints.
+          </div>
         </div>
 
         <h3>6.7 Quick Reference Table</h3>

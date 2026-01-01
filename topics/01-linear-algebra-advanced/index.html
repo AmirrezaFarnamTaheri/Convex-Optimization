@@ -387,7 +387,7 @@
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p><b>Geometry:</b> A linear map $A$ transforms the unit sphere into an ellipsoid. The spectral norm $\|A\|_2$ is the length of the <b>longest semi-axis</b> of that ellipsoid (the maximum stretch).</p>
-      <p><b>Lipschitz Interpretation:</b> $\|A\|_2$ is the "best Lipschitz constant" for the map $f(x)=Ax$. It bounds how much the distance between two points can expand: $\|Ax - Ay\| \le \|A\|_2 \|x - y\|$.</p>
+      <p><b>Lipschitz Interpretation:</b> The induced norm is the smallest number $L$ such that $\|Ax - Ay\| \le L \|x - y\|$. It is the "best Lipschitz constant" for the linear map.</p>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>
@@ -472,7 +472,21 @@
       </ul>
       <p><b>Interpretation:</b>
       $$ x \xrightarrow{V^\top} \text{rotate coordinates} \xrightarrow{\Sigma} \text{independent scaling} \xrightarrow{U} \text{rotate to output basis} $$
-      This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse.</p>
+      This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse. The singular values are the lengths of the semi-axes.</p>
+
+      <div class="insight">
+        <h4>Why Singular Values = Roots of Eigenvalues of $A^\top A$</h4>
+        <p>Using $A = U \Sigma V^\top$:
+        $$ A^\top A = (V \Sigma^\top U^\top)(U \Sigma V^\top) = V (\Sigma^\top \Sigma) V^\top = V \Lambda V^\top $$
+        Since $U^\top U = I$, we just multiply the diagonal matrices. $\Lambda = \text{diag}(\sigma_1^2, \dots, \sigma_n^2)$.
+        <br>Thus:
+        <ol>
+            <li>The <b>right singular vectors</b> $V$ are the eigenvectors of $A^\top A$.</li>
+            <li>The squared singular values $\sigma_i^2$ are the eigenvalues of $A^\top A$.</li>
+            <li>This explains why $\|A\|_2 = \sigma_1 = \sqrt{\lambda_{\max}(A^\top A)}$.</li>
+        </ol>
+        </p>
+      </div>
 
       <div class="proof-box">
         <h4>Rigorous Derivation via $A^\top A$</h4>

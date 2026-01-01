@@ -324,6 +324,12 @@
         </div>
       </div>
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
+
+      <h4>Convexity of $\lambda_{\max}$</h4>
+      <p>This variational characterization proves that the maximum eigenvalue function $f(A) = \lambda_{\max}(A)$ is a <b>convex function</b> of the matrix $A$.
+      <br><i>Reasoning:</i> For a fixed unit vector $\mathbf{x}$, the function $g_\mathbf{x}(A) = \mathbf{x}^\top A \mathbf{x}$ is linear in the entries of $A$.
+      $$ \lambda_{\max}(A) = \max_{\|\mathbf{x}\|_2=1} \mathbf{x}^\top A \mathbf{x} = \max_{\|\mathbf{x}\|_2=1} g_\mathbf{x}(A) $$
+      Since the pointwise maximum (or supremum) of a family of linear (and thus convex) functions is always convex, $\lambda_{\max}(A)$ is convex.</p>
     </section>
 
     <!-- SECTION 5: INDUCED NORMS -->
@@ -376,6 +382,24 @@
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p><b>Geometry:</b> A linear map $A$ transforms the unit sphere into an ellipsoid. The spectral norm $\|A\|_2$ is the length of the <b>longest semi-axis</b> of that ellipsoid (the maximum stretch).</p>
+
+      <div class="proof-box">
+        <h4>Proof: $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$</h4>
+        <div class="proof-step">
+          <strong>Step 1: Squared Norm.</strong>
+          Maximize the squared norm over the unit sphere:
+          $$ \|A\|_2^2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2^2 = \max_{\|\mathbf{x}\|_2=1} (A\mathbf{x})^\top (A\mathbf{x}) = \max_{\|\mathbf{x}\|_2=1} \mathbf{x}^\top (A^\top A) \mathbf{x} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Rayleigh Quotient.</strong>
+          The matrix $M = A^\top A$ is symmetric and positive semidefinite. The expression $\mathbf{x}^\top M \mathbf{x}$ for $\|\mathbf{x}\|=1$ is exactly the Rayleigh Quotient of $M$.
+          As shown in Section 2.4, the maximum value of the Rayleigh quotient is the largest eigenvalue $\lambda_{\max}(M)$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Conclusion.</strong>
+          $$ \|A\|_2^2 = \lambda_{\max}(A^\top A) \implies \|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)} $$
+        </div>
+      </div>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>
@@ -534,24 +558,9 @@
         <div id="widget-svd-geometry" style="width: 100%; height: 400px; position: relative;"></div>
       </div>
 
-      <h3>5.4 The Schur Complement: Block Elimination</h3>
-      <p>The <b>Schur Complement</b> arises naturally when solving block linear systems or analyzing positive definiteness of block matrices. It corresponds to Gaussian elimination performed on blocks.</p>
-      <p>Consider a symmetric block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$. If $A$ is invertible, we can eliminate $B^\top$ by multiplying by a block row-operation matrix:
-      $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} = \begin{bmatrix} A & B \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
-      The matrix $S = C - B^\top A^{-1} B$ is the Schur complement of $A$ in $M$.</p>
-
-      <div class="theorem-box">
-        <h4>Theorem: Schur Complement Condition for PSD</h4>
-        <p>If $A \succ 0$, then:
-        $$ M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0 $$
-        This converts a block matrix constraint into a scalar (or smaller matrix) constraint involving inverses. This is the key tool for converting rational inequalities into Linear Matrix Inequalities (LMIs) in convex optimization.</p>
-      </div>
-
-      <div class="widget-container" style="margin: 24px 0;">
-        <h3 style="margin-top: 0;">Interactive Demo: Schur Complement</h3>
-        <p>Visualize the quadratic form of a block matrix. See how the Schur complement condition $s = a - b^2/d \ge 0$ determines positive semidefiniteness. The line $y = -(b/d)x$ corresponds to minimizing the quadratic over $y$ for a fixed $x$, which is the geometric operation underlying the Schur complement.</p>
-        <div id="widget-schur-complement" style="width: 100%; height: 400px; position: relative;"></div>
-      </div>
+      <h3>5.4 The Schur Complement</h3>
+      <p>The Schur Complement arises from block elimination. As derived in <a href="../00-linear-algebra-basics/index.html#section-psd">Lecture 00</a>, for a symmetric block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$, the matrix $M$ is positive semidefinite if and only if the Schur complement $S = C - B^\top A^{-1} B \succeq 0$.</p>
+      <p>In the context of SVD and numerical linear algebra, Schur complements appear in block Gaussian elimination and in recursive algorithms for matrix factorizations.</p>
 
       <h3>5.5 Application: PCA as SVD of Data</h3>
       <p>Principal Component Analysis (PCA) is often presented as a statistical method. In reality, it is <b>pure geometry</b>: finding the best ellipsoidal approximation to a point cloud. We derive it from scratch using SVD, bypassing "covariance" jargon.</p>

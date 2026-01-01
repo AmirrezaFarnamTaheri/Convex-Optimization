@@ -130,7 +130,7 @@
       <p>The concept of eigenvalues begins with <b>invariant subspaces</b>. A subspace $U \subseteq V$ is $T$-invariant if $T(u) \in U$ for all $u \in U$. This allows us to restrict the operator to a smaller domain, simplifying the analysis.</p>
       <ul>
         <li><b>Trivial Invariants:</b> $\{0\}$, $V$, $\text{ker}(T)$, and $\text{im}(T)$ are always invariant.</li>
-        <li><b>1D Invariants (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$. Geometrically, $T$ maps the line spanned by $v$ into itself; it does not rotate $v$ away, it only scales it.</li>
+        <li><b>Invariant Directions (Eigenvectors):</b> If a 1-dimensional subspace spanned by $v \neq 0$ is invariant, then $T(v)$ must be a multiple of $v$. This forces the condition $T(v) = \lambda v$. Geometrically, $T$ maps the line spanned by $v$ into itself; it does not rotate $v$ away, it only scales it.</li>
       </ul>
 
       <div class="insight">
@@ -181,8 +181,23 @@
         In the new coordinates $y$, the matrix is diagonal. Diagonalization is the process of finding the coordinate system where the map uncouples.</p>
       </div>
 
-      <h3>2.3 Jordan Canonical Form: When Diagonalization Fails</h3>
-      <p>Diagonalization ($A = PDP^{-1}$) is the dream case: the linear map splits into independent scalings along axes. <b>Jordan Canonical Form</b> is what reality gives you when that dream fails. It tells you exactly <i>how</i> it fails, quantifying the "defect" in the matrix structure.</p>
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/diagonalization_eigenbasis.gif"
+             alt="Diagonalization transforms the map into pure scaling along axes"
+             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+        <figcaption><i>Animation:</i> Diagonalization allows us to view the linear map as pure scaling along the eigenvector axes. This is the "Dream" case.</figcaption>
+      </figure>
+
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/trace_sum_eigenvalues_constant.gif"
+             alt="Trace is the sum of eigenvalues"
+             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+        <figcaption><i>Animation:</i> The sum of eigenvalues (trace) is conserved even as the matrix deforms, acting as a "total scaling budget".</figcaption>
+      </figure>
+
+      <h3>2.3 Dream vs. Nightmare: Diagonalization and its Failure</h3>
+      <p><b>Diagonalization ($A = PDP^{-1}$) is the "Dream" case:</b> the linear map splits into independent scalings along axes.
+      <br><b>Defective Matrices are the "Nightmare" case:</b> If a matrix lacks a full set of eigenvectors, it cannot be diagonalized. This happens in the presence of <b>Jordan Blocks</b>.</p>
 
       <h4>1) Why Diagonalization Fails (The Obstruction)</h4>
       <p>Recall the criterion: A matrix $A \in \mathbb{C}^{n \times n}$ is diagonalizable iff the total dimension of its eigenspaces equals $n$. Failure occurs exactly when, for some eigenvalue $\lambda$:</p>
@@ -282,7 +297,7 @@
         <li><b>SVD:</b> Perfect geometry for <i>all</i> matrices.</li>
       </ul>
 
-      <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
+      <h3>2.4 The Spectral Theorem: Perfect Geometry (The Paradise Case)</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>
@@ -293,18 +308,18 @@
       <br><b>Matrix Form:</b> If $A$ is symmetric, $A = Q \Lambda Q^\top$ with $Q$ orthogonal.
       <br><b>Why this matters:</b> This theorem underpins the geometry of ellipsoids ($\mathbf{x}^\top A \mathbf{x} = 1$), the analysis of Hessian curvature, and the convergence of optimization algorithms.</p>
 
-      <h3>2.4 The Rayleigh Quotient</h3>
+      <h3>2.5 The Rayleigh Quotient: Bridge to Optimization</h3>
       <p>For a symmetric matrix $A$, the <b>Rayleigh Quotient</b> is defined as:
       $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} $$
-      This scalar measures the "gain" of the matrix in the direction $\mathbf{x}$. Its critical points are the eigenvectors.</p>
+      This scalar measures the "gain" or "effective eigenvalue" of the matrix in the direction $\mathbf{x}$. Its critical points are the eigenvectors.</p>
       <div class="theorem-box">
         <h4>Variational Characterization of Eigenvalues</h4>
         <p>The eigenvalues of a symmetric matrix $A$ are the stationary values of the Rayleigh Quotient. Specifically:
         $$ \lambda_{\min}(A) = \min_{\mathbf{x} \ne 0} R_A(\mathbf{x}) \quad \text{and} \quad \lambda_{\max}(A) = \max_{\mathbf{x} \ne 0} R_A(\mathbf{x}) $$
-        </p>
+        This allows us to treat eigenvalues as solutions to optimization problems.</p>
       </div>
       <div class="proof-box">
-        <h4>Proof: Weighted Average Interpretation</h4>
+        <h4>Proof: Weighted Average Intuition</h4>
         <p>Why do min/max Rayleigh quotients give the extreme eigenvalues? The cleanest intuition comes from the Spectral Theorem.</p>
         <div class="proof-step">
           <strong>Step 1: Diagonalization.</strong>
@@ -319,7 +334,7 @@
         </div>
         <div class="proof-step">
           <strong>Step 3: Conclusion.</strong>
-          The Rayleigh quotient is a weighted average of eigenvalues. Thus it must lie between $\lambda_{\min}$ and $\lambda_{\max}$.
+          The Rayleigh quotient is a <b>weighted average (convex combination) of the eigenvalues</b>. Thus it must lie between $\lambda_{\min}$ and $\lambda_{\max}$.
           We achieve the max by putting all "mass" $w_i$ on the largest eigenvalue (choosing $\mathbf{x}$ as the corresponding eigenvector).
         </div>
       </div>
@@ -335,47 +350,40 @@
       <h3>3.1 The $\ell_1$ Operator Norm (Max Column Sum)</h3>
       <p>$$ \boxed{\|A\|_1 = \max_{j} \sum_{i=1}^m |a_{ij}|} $$</p>
       <div class="proof-box">
-        <h4>Derivation (Zero to Hero)</h4>
+        <h4>Derivation: Budget Allocation Intuition</h4>
         <div class="proof-step">
-          <strong>Step 1: Upper Bound (The Cost Analysis).</strong>
-          Let $\|\mathbf{x}\|_1 = 1$. This is a "mass budget" of 1.
+          <strong>Step 1: Upper Bound.</strong>
+          Think of $\|\mathbf{x}\|_1 = 1$ as a "mass budget" of 1 that you can distribute among the coordinates $x_j$. The map $A$ takes mass from coordinate $j$ and distributes it according to column $j$.
           $$ \|A\mathbf{x}\|_1 = \left\| \sum_j x_j \mathbf{a}_j \right\|_1 \le \sum_j |x_j| \|\mathbf{a}_j\|_1 $$
-          Let $C = \max_j \|\mathbf{a}_j\|_1$ (max column sum). Then:
-          $$ \sum_j |x_j| \|\mathbf{a}_j\|_1 \le C \sum_j |x_j| = C \|\mathbf{x}\|_1 = C $$
-          Thus, $\|A\|_1 \le \max_j \|\mathbf{a}_j\|_1$. The operator cannot stretch more than the "biggest" column.
+          To maximize the output mass, you should put all your budget on the column $\mathbf{a}_k$ that has the largest norm.
+          $$ \sum_j |x_j| \|\mathbf{a}_j\|_1 \le (\max_k \|\mathbf{a}_k\|_1) \sum_j |x_j| = \max_k \|\mathbf{a}_k\|_1 $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Achievability (The Worst-Case Input).</strong>
-          Pick the index $k$ maximizing the column sum $\|\mathbf{a}_k\|_1$. Choose $\mathbf{x} = \mathbf{e}_k$ (standard basis vector).
-          $$ \|A\mathbf{e}_k\|_1 = \|\mathbf{a}_k\|_1 = \max_j \sum_i |a_{ij}| $$
-          Since we found a unit vector achieving the bound, equality holds.
+          <strong>Step 2: Achievability.</strong>
+          Simply choose $\mathbf{x} = \mathbf{e}_k$, where $k$ is the index of the largest column. Then $\|A\mathbf{e}_k\|_1 = \|\mathbf{a}_k\|_1$, hitting the bound.
         </div>
       </div>
 
       <h3>3.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
       <p>$$ \boxed{\|A\|_\infty = \max_{i} \sum_{j=1}^n |a_{ij}|} $$</p>
       <div class="proof-box">
-        <h4>Derivation (Zero to Hero)</h4>
+        <h4>Derivation: Sign Alignment Intuition</h4>
         <div class="proof-step">
-          <strong>Step 1: Upper Bound (Worst Row).</strong>
-          Let $\|\mathbf{x}\|_\infty = 1$, so $|x_j| \le 1$.
-          The output norm is $\max_i |(A\mathbf{x})_i|$. Look at row $i$:
-          $$ |(A\mathbf{x})_i| = \left| \sum_j a_{ij} x_j \right| \le \sum_j |a_{ij}| |x_j| \le \sum_j |a_{ij}| $$
-          Let $R = \max_i \sum_j |a_{ij}|$ (max row sum). Then $\|A\mathbf{x}\|_\infty \le R$.
+          <strong>Step 1: Upper Bound.</strong>
+          Here $\|\mathbf{x}\|_\infty = 1$ means $|x_j| \le 1$ for all $j$. We want to maximize the absolute value of some row output $(A\mathbf{x})_i = \sum_j a_{ij} x_j$.
+          $$ |(A\mathbf{x})_i| \le \sum_j |a_{ij}| |x_j| \le \sum_j |a_{ij}| $$
+          So the output cannot exceed the maximum absolute row sum.
         </div>
         <div class="proof-step">
-          <strong>Step 2: Achievability (Constructing the "Bad" Input).</strong>
-          Let $k$ be the index of the row with the maximum absolute sum.
-          Construct $\mathbf{x}$ such that $x_j = \text{sign}(a_{kj})$. Then $\|\mathbf{x}\|_\infty = 1$.
-          The $k$-th entry of the output is:
-          $$ (A\mathbf{x})_k = \sum_j a_{kj} \text{sign}(a_{kj}) = \sum_j |a_{kj}| = R $$
-          Thus $\|A\mathbf{x}\|_\infty \ge R$, proving equality.
+          <strong>Step 2: Achievability.</strong>
+          Pick the row $k$ with the largest sum. Set $x_j = \text{sign}(a_{kj})$. This aligns every term in the sum $\sum a_{kj} x_j$ to be positive, achieving the maximum possible value.
         </div>
       </div>
 
       <h3>3.3 The $\ell_2$ Operator Norm (Spectral Norm)</h3>
       <p>$$ \|A\|_2 = \max_{\|\mathbf{x}\|_2=1} \|A\mathbf{x}\|_2 = \sqrt{\lambda_{\max}(A^\top A)} = \sigma_{\max}(A) $$</p>
       <p><b>Geometry:</b> A linear map $A$ transforms the unit sphere into an ellipsoid. The spectral norm $\|A\|_2$ is the length of the <b>longest semi-axis</b> of that ellipsoid (the maximum stretch).</p>
+      <p><b>Lipschitz Interpretation:</b> $\|A\|_2$ is the "best Lipschitz constant" for the map $f(x)=Ax$. It bounds how much the distance between two points can expand: $\|Ax - Ay\| \le \|A\|_2 \|x - y\|$.</p>
 
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$? We can prove this using the property that the pointwise supremum of linear functions is convex.</p>

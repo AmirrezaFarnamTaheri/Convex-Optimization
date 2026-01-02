@@ -45,7 +45,7 @@ export function initProblemFlowchart(containerId) {
         lp: {
             text: "Linear Program (LP)",
             type: 'terminal',
-            desc: "The workhorse of industry. Solvable in milliseconds for millions of variables.",
+            desc: "The most common optimization problem. Solvable in milliseconds for millions of variables.",
             color: "var(--success)",
             icon: "⚡"
         },
@@ -130,7 +130,7 @@ export function initProblemFlowchart(containerId) {
             } else {
                 display.innerHTML = `
                     <h3 style="font-size: 1.4rem; margin-bottom: 12px; line-height: 1.4; color:var(--text-heading);">${node.text}</h3>
-                    ${node.hint ? `<div style="color: var(--text-secondary); font-size: 0.9rem; background: var(--bg-surface-2); padding: 8px 12px; border-radius: 6px; display: inline-block;">💡 ${node.hint}</div>` : ''}
+                    ${node.hint ? `<div style="color: var(--text-secondary); font-size: 0.9rem; background: var(--bg-surface-2); padding: 8px 12px; border-radius: 6px; display: inline-block;">${node.hint}</div>` : ''}
                 `;
             }
             display.style.opacity = 1;

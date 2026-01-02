@@ -446,7 +446,7 @@
 
         <h3>2.3 Dual Norms and Supporting Hyperplanes</h3>
 
-        <p>The <b>dual norm</b> is one of the most powerful tools in convex analysis. It answers a fundamental question: "If I know a vector $\mathbf{x}$ lies in a unit ball defined by some norm $\|\cdot\|$, what is the worst-case (maximum) dot product it can form with a given vector $\mathbf{u}$?"</p>
+        <p>The <b>dual norm</b> is a fundamental concept in convex analysis. It answers a fundamental question: "If I know a vector $\mathbf{x}$ lies in a unit ball defined by some norm $\|\cdot\|$, what is the worst-case (maximum) dot product it can form with a given vector $\mathbf{u}$?"</p>
 
         <p>Formally, let $\|\cdot\|$ be any norm on $\mathbb{R}^n$. The dual norm $\|\cdot\|_*$ is defined as:</p>
         $$ \|u\|_* := \sup_{\|x\| \le 1} u^\top x $$
@@ -719,7 +719,7 @@
             <li><b>Image:</b> If $C \subseteq \mathbb{R}^n$ is convex, then $f(C) = \{Ax + b \mid x \in C\} \subseteq \mathbb{R}^m$ is convex.
             <br><i>Modeling Meaning:</i> Taking linear measurements preserves convexity. Projections are affine images.</li>
             <li><b>Preimage (Inverse Image):</b> If $D \subseteq \mathbb{R}^m$ is convex, then $f^{-1}(D) = \{x \in \mathbb{R}^n \mid Ax + b \in D\}$ is convex.
-            <br><i>Modeling Meaning:</i> This is the workhorse of convex modeling. Constraints like $Ax \le b$, $\|Ax-b\| \le t$, and LMIs are all affine preimages of simple convex sets (orthants, norm balls, PSD cones).</li>
+            <br><i>Modeling Meaning:</i> This is fundamental to convex modeling. Constraints like $Ax \le b$, $\|Ax-b\| \le t$, and LMIs are all affine preimages of simple convex sets (orthants, norm balls, PSD cones).</li>
           </ul>
         </div>
 
@@ -778,7 +778,7 @@
         </div>
 
         <h3>3.3 The Separating Hyperplane Theorem</h3>
-        <p>One of the most powerful tools in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
+        <p>A central result in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
 
         <div class="theorem-box">
           <h4>Theorem (Separating Hyperplane)</h4>

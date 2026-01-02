@@ -185,7 +185,7 @@
         <img src="assets/diagonalization_eigenbasis.gif"
              alt="Diagonalization transforms the map into pure scaling along axes"
              style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
-        <figcaption><i>Animation:</i> Diagonalization allows us to view the linear map as pure scaling along the eigenvector axes. This is the "Dream" case.</figcaption>
+        <figcaption><i>Animation:</i> Diagonalization allows us to view the linear map as pure scaling along the eigenvector axes. This is the ideal case.</figcaption>
       </figure>
 
       <figure style="text-align: center; margin: 24px 0;">
@@ -195,9 +195,9 @@
         <figcaption><i>Animation:</i> The sum of eigenvalues (trace) is conserved even as the matrix deforms, acting as a "total scaling budget".</figcaption>
       </figure>
 
-      <h3>2.3 Dream vs. Nightmare: Diagonalization and its Failure</h3>
-      <p><b>Diagonalization ($A = PDP^{-1}$) is the "Dream" case:</b> the linear map splits into independent scalings along axes.
-      <br><b>Defective Matrices are the "Nightmare" case:</b> If a matrix lacks a full set of eigenvectors, it cannot be diagonalized. This happens in the presence of <b>Jordan Blocks</b>.</p>
+      <h3>2.3 Diagonalization and its Failure</h3>
+      <p><b>Diagonalization ($A = PDP^{-1}$) is the ideal case:</b> the linear map splits into independent scalings along axes.
+      <br><b>Defective Matrices present complications:</b> If a matrix lacks a full set of eigenvectors, it cannot be diagonalized. This happens in the presence of <b>Jordan Blocks</b>.</p>
 
       <h4>1) Why Diagonalization Fails (The Obstruction)</h4>
       <p>Recall the criterion: A matrix $A \in \mathbb{C}^{n \times n}$ is diagonalizable iff the total dimension of its eigenspaces equals $n$. Failure occurs exactly when, for some eigenvalue $\lambda$:</p>
@@ -297,7 +297,7 @@
         <li><b>SVD:</b> Perfect geometry for <i>all</i> matrices.</li>
       </ul>
 
-      <h3>2.4 The Spectral Theorem: Perfect Geometry (The Paradise Case)</h3>
+      <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
       <ol>
         <li>All eigenvalues are <b>real</b>.</li>

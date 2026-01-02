@@ -147,7 +147,7 @@ export function initSolverGuide(containerId) {
                 </div>
 
                 <div style="margin: 15px 0; padding: 15px; background: var(--panel-dark); border-left: 4px solid var(--brand); border-radius: 8px;">
-                    <strong>💡 Recommendation:</strong><br>
+                    <strong>Recommendation:</strong><br>
                     <div style="margin-top: 8px;">${problemInfo.recommendation}</div>
                 </div>
 

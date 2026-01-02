@@ -469,6 +469,30 @@
             </ol>
         </div>
 
+        <div class="proof-box">
+          <h4>Proof: The Dual Norm is a Valid Norm</h4>
+          <p>We verify the three norm axioms for $\|\cdot\|_*$ defined by $\|u\|_* := \sup_{\|x\| \le 1} u^\top x$.</p>
+
+          <div class="proof-step">
+            <strong>(N1) Positive Definiteness:</strong> $\|u\|_* \ge 0$ and $\|u\|_* = 0 \iff u = 0$.
+            <br><i>Nonnegativity:</i> The feasible set $\{x : \|x\| \le 1\}$ contains $x = 0$, so the supremum includes $u^\top 0 = 0$. Hence $\|u\|_* \ge 0$.
+            <br><i>Definiteness:</i> If $u = 0$, then $u^\top x = 0$ for all $x$, so $\|u\|_* = 0$. Conversely, if $\|u\|_* = 0$, then $u^\top x \le 0$ for all $\|x\| \le 1$. But the unit ball is symmetric: if $x \in B$, then $-x \in B$. So $u^\top x \le 0$ and $u^\top(-x) = -u^\top x \le 0$, implying $u^\top x = 0$ for all $x \in B$. Since the unit ball spans all directions, $u = 0$.
+          </div>
+
+          <div class="proof-step">
+            <strong>(N2) Homogeneity:</strong> $\|\alpha u\|_* = |\alpha| \|u\|_*$ for all $\alpha \in \mathbb{R}$.
+            <br>For $\alpha \ge 0$: $\|\alpha u\|_* = \sup_{\|x\| \le 1} (\alpha u)^\top x = \alpha \sup_{\|x\| \le 1} u^\top x = \alpha \|u\|_*$.
+            <br>For $\alpha < 0$: Write $\alpha = -|\alpha|$. Then $\sup_{\|x\| \le 1} (\alpha u)^\top x = \sup_{\|x\| \le 1} (-|\alpha| u)^\top x = |\alpha| \sup_{\|x\| \le 1} (-u)^\top x$. Since the unit ball is symmetric, $\sup_{\|x\| \le 1} (-u)^\top x = \sup_{\|x\| \le 1} u^\top (-x) = \sup_{\|y\| \le 1} u^\top y = \|u\|_*$. Thus $\|\alpha u\|_* = |\alpha| \|u\|_*$.
+          </div>
+
+          <div class="proof-step">
+            <strong>(N3) Triangle Inequality:</strong> $\|u + v\|_* \le \|u\|_* + \|v\|_*$.
+            <br>For any $x$ with $\|x\| \le 1$:
+            $$ (u + v)^\top x = u^\top x + v^\top x \le \sup_{\|y\| \le 1} u^\top y + \sup_{\|z\| \le 1} v^\top z = \|u\|_* + \|v\|_* $$
+            Taking the supremum over all such $x$ gives $\|u + v\|_* \le \|u\|_* + \|v\|_*$.
+          </div>
+        </div>
+
         <h4>Canonical Dual Pairs</h4>
         <p>We derive the dual norms for the standard $\ell_p$ norms.</p>
         <ul>

@@ -328,8 +328,67 @@
           </div>
         </div>
 
-        <h3>1.8 Concave Functions</h3>
-        <p>A function $f$ is <a href="#" class="definition-link">concave</a> if $-f$ is convex. Equivalently, the chord lies below the graph. All results for convex functions can be "flipped" for concave functions by negating.</p>
+        <h3>1.8 Concave Functions: The Dual Perspective</h3>
+
+        <div class="definition-box">
+          <h4>Definition: Concave Function</h4>
+          <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <b>concave</b> if its negation $-f$ is convex. Equivalently, $f$ is concave if for all $\mathbf{x}, \mathbf{y} \in \mathrm{dom}\, f$ and $\theta \in [0,1]$:
+          $$ f(\theta \mathbf{x} + (1-\theta)\mathbf{y}) \ge \theta f(\mathbf{x}) + (1-\theta)f(\mathbf{y}) $$
+          The inequality is reversed compared to convexity: the function value at a convex combination is <i>at least</i> as large as the convex combination of function values. Geometrically, <b>the chord lies below the graph</b> (the graph "bulges upward").</p>
+        </div>
+
+        <h4>Geometric Intuition: Flipping the Picture</h4>
+        <p>While convex functions have "bowl-shaped" graphs where every chord lies above the function, concave functions have "dome-shaped" or "hill-like" graphs where every chord lies below. If you flip a convex function upside down (negate it), you get a concave function.</p>
+
+        <h4>Examples of Concave Functions</h4>
+        <ul>
+          <li><b>Logarithm:</b> $f(x) = \log x$ on $\mathbb{R}_{++}$ is strictly concave. The second derivative $f''(x) = -1/x^2 < 0$ confirms concavity via the second-order condition.</li>
+          <li><b>Negative Quadratic:</b> $f(x) = -x^\top Q x$ where $Q \succeq 0$ (positive semidefinite). This is the negation of a convex quadratic.</li>
+          <li><b>Geometric Mean:</b> $f(\mathbf{x}) = \left(\prod_{i=1}^n x_i\right)^{1/n}$ on $\mathbb{R}_{++}^n$ is concave (proven via the Hessian in Section 4).</li>
+          <li><b>Entropy:</b> $f(\mathbf{x}) = -\sum_{i=1}^n x_i \log x_i$ on the probability simplex is concave, which is fundamental in information theory and statistical mechanics.</li>
+          <li><b>Minimum Function:</b> $f(\mathbf{x}) = \min\{x_1, x_2, \dots, x_n\}$ is concave (the pointwise minimum of concave functions is concave).</li>
+        </ul>
+
+        <h4>Connection to Maximization Problems</h4>
+        <p>Concave functions are the natural objective functions for <b>maximization</b> problems. Just as minimizing a convex function is tractable (any local minimum is global), <b>maximizing a concave function is equally tractable</b> (any local maximum is global). In fact, the problems are equivalent:
+        $$ \max_{\mathbf{x} \in C} f(\mathbf{x}) \quad \text{(concave $f$)} \iff \min_{\mathbf{x} \in C} -f(\mathbf{x}) \quad \text{(convex $-f$)} $$
+        This duality means that all the theory and algorithms for convex minimization immediately apply to concave maximization by simply negating the objective.</p>
+
+        <div class="insight">
+          <h4>Why Economics Loves Concave Functions</h4>
+          <p>In microeconomics, utility functions are typically assumed to be concave, reflecting the principle of <b>diminishing marginal utility</b>: the more you have of a good, the less additional satisfaction each extra unit provides. Similarly, production functions are often concave, reflecting <b>diminishing returns to scale</b>. Maximizing concave utility subject to a budget constraint (a convex set) is a canonical problem in consumer theory, and it's guaranteed to have a unique global maximum under mild regularity conditions.</p>
+        </div>
+
+        <h4>Key Characterizations (Duals of Convex Results)</h4>
+        <p>All the characterizations of convexity have "flipped" analogs for concavity:</p>
+        <ul>
+          <li><b>First-Order Condition (Supergradient):</b> A differentiable $f$ is concave if and only if the first-order Taylor approximation is a <i>global overestimate</i>:
+          $$ f(\mathbf{y}) \le f(\mathbf{x}) + \nabla f(\mathbf{x})^\top (\mathbf{y} - \mathbf{x}) \quad \forall \mathbf{x}, \mathbf{y} $$
+          The tangent hyperplane lies <i>above</i> the graph everywhere.</li>
+          <li><b>Second-Order Condition:</b> A twice-differentiable $f$ is concave if and only if its Hessian is <b>negative semidefinite</b> everywhere: $\nabla^2 f(\mathbf{x}) \preceq 0$ for all $\mathbf{x} \in \mathrm{dom}\, f$.</li>
+          <li><b>Epigraph Characterization:</b> While the epigraph $\{(x,t) : f(x) \le t\}$ characterizes convex functions, the <b>hypograph</b> $\{(\mathbf{x}, t) : f(\mathbf{x}) \ge t\}$ (the region <i>below</i> the graph) is convex if and only if $f$ is concave.</li>
+        </ul>
+
+        <h4>Preservation Under Operations</h4>
+        <p>The rules for preserving concavity mirror those for convexity with sign flips:</p>
+        <ul>
+          <li><b>Sums:</b> The sum of concave functions is concave.</li>
+          <li><b>Positive Scaling:</b> If $f$ is concave and $\alpha \ge 0$, then $\alpha f$ is concave.</li>
+          <li><b>Pointwise Minimum:</b> If $f_1, \dots, f_m$ are concave, then $f(\mathbf{x}) = \min\{f_1(\mathbf{x}), \dots, f_m(\mathbf{x})\}$ is concave.</li>
+          <li><b>Composition:</b> Concave functions composed with affine maps remain concave. However, composition with nonlinear transformations requires careful analysis of monotonicity, just as with convex functions.</li>
+        </ul>
+
+        <div class="theorem-box">
+          <h4>Theorem: Equivalence Principle</h4>
+          <p>Every statement about convex functions has a corresponding statement about concave functions obtained by:
+          <ol>
+            <li>Replacing $f$ with $-f$.</li>
+            <li>Flipping all inequalities ($\le$ becomes $\ge$, etc.).</li>
+            <li>Replacing "minimum" with "maximum" and "infimum" with "supremum".</li>
+            <li>Replacing "epigraph" with "hypograph".</li>
+          </ol>
+          This <b>duality</b> between convexity and concavity is a fundamental symmetry in optimization theory.</p>
+        </div>
 
         <h3>1.9 Restriction to a Line (The Conceptual Core)</h3>
         <div class="theorem-box">

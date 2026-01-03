@@ -180,24 +180,6 @@
       <div class="warning-box">
           <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
       </div>
-      
-      <div class="proof-box">
-        <h4>Converting RSOC ↔ Standard SOC</h4>
-        <p>If your solver only supports standard SOC, use this identity:</p>
-        <div class="proof-step">
-          <strong>Algebraic Identity:</strong> Define $t = u + v$ and $s = u - v$. Then:
-          $$ t^2 - s^2 = (u+v)^2 - (u-v)^2 = 4uv $$
-        </div>
-        <div class="proof-step">
-          <strong>Equivalence:</strong>
-          $$ uv \ge \|w\|_2^2, \ u,v \ge 0 \iff \|(u-v, 2w)\|_2 \le u+v $$
-          The right side is a standard SOC constraint.
-        </div>
-        <div class="proof-step">
-          <strong>Proof:</strong> $\|(u-v, 2w)\|_2 \le u+v$ squares to $(u-v)^2 + 4\|w\|^2 \le (u+v)^2$.
-          <br>Rearranging: $4\|w\|^2 \le (u+v)^2 - (u-v)^2 = 4uv$, i.e., $\|w\|^2 \le uv$.
-        </div>
-      </div>
 
       <h3>1.3 Key Properties</h3>
       <ul>

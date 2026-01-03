@@ -92,7 +92,7 @@
             <li>If you are at a point where the gradient is zero (local property), you are at the global minimum (global property).</li>
             <li>If you have a separating hyperplane locally, it separates the sets globally.</li>
           </ul>
-          <p>This "holographic" property—the whole is encoded in the part—is what makes convex problems solvable in polynomial time. Once you lose convexity, you lose the ability to trust your local compass.</p>
+          <p>This local-to-global correspondence—where local conditions imply global structure—is what makes convex problems solvable in polynomial time. Once you lose convexity, local information no longer predicts global behavior.</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -152,7 +152,7 @@
         </div>
 
         <div class="insight">
-          <h4>💡 Why These Conditions Matter</h4>
+          <h4>Why These Conditions Matter</h4>
           <p>These three conditions guarantee that:</p>
           <ul>
             <li>The <b>feasible set</b> $\mathcal{F} = \{x \mid f_i(x) \le 0, Ax = b\}$ is a convex set.</li>
@@ -384,7 +384,7 @@
         </div>
 
         <h3>3.3 When Convexity is Lost</h3>
-        <p>Certain problem features immediately destroy convexity. Recognizing these "red flags" saves time:</p>
+        <p>Certain problem features immediately destroy convexity. Recognizing these structural obstacles saves time:</p>
         <ul>
           <li><b>Integer constraints:</b> $x_i \in \{0,1\}$.
             <br><i>Why?</i> The set $\{0, 1\}$ is not convex (doesn't contain the interval $[0,1]$). This turns the problem into a combinatorial one (NP-hard).</li>
@@ -760,7 +760,7 @@
 
         <h3>5.4 Why LASSO Promotes Sparsity</h3>
         <div class="insight">
-          <h4>⚡ Geometric Intuition</h4>
+          <h4>Geometric Intuition</h4>
           <p>The $\ell_1$ regularizer promotes sparsity due to the geometry of its unit ball:</p>
           <ul>
             <li>The $\ell_1$ ball $\{x \mid \|x\|_1 \le 1\}$ is a <b>cross-polytope</b> (diamond in 2D) with sharp corners at the coordinate axes.</li>
@@ -969,7 +969,7 @@
           </div>
 
           <div class="insight">
-            <h4>💡 Smooth Approximation: Log-Sum-Exp</h4>
+            <h4>Smooth Approximation: Log-Sum-Exp</h4>
             <p>The function $f(x) = \max_i x_i$ is convex but non-differentiable (has sharp corners). A common <b>smooth approximation</b> is the Log-Sum-Exp function (also known as Softmax in machine learning):
             $$ \text{LSE}(x) = \log\left(\sum_{i=1}^m e^{x_i}\right) $$
             This function is convex and satisfies the tight bound:

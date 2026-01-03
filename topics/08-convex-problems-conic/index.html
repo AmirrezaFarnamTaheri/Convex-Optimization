@@ -169,7 +169,8 @@
       <b>Applications:</b></p>
       <ul>
           <li><b>Hyperbolic constraints:</b> $w^2 \le xy \iff (x, y/2, w) \in \mathcal{Q}_r^3$.</li>
-          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.
+              <br><em>Real-world use:</em> Models energy-to-power ratios, variance-to-mean relations, and power allocation efficiency.</li>
           <li><b>Vector Q-over-L:</b> $\|x\|_2^2/y \le t \iff (t, y/2, x) \in \mathcal{Q}_r^{n+2}$.</li>
       </ul>
       
@@ -650,24 +651,6 @@
           $$ \boxed{\frac{\text{vol}(\mathcal{E}(X_{\text{simple}}))}{\text{vol}(\mathcal{E}(X^*))} \le \left(\frac{m}{n}\right)^{n/2}} $$
         </div>
         <p>This bound depends only on the number of points $m$ and dimension $n$, providing a worst-case guarantee that the simple covariance-type ellipsoid is never catastrophically worse than optimal.</p>
-      </div>
-
-      <h4>Phase 5.4: Rotated SOC and the Product Cone</h4>
-      <p>Constraints of the form $w^2 \le xy$ (with $x, y \ge 0$) arise frequently. These are handled by the <b>Rotated Second-Order Cone</b>.</p>
-
-      <div class="proof-box">
-        <h4>Conversion: Rotated SOC $\leftrightarrow$ Standard SOC</h4>
-        <p>The standard definition is $\mathcal{Q}_r = \{(x, y, w) \mid \|w\|_2^2 \le 2xy, x \ge 0, y \ge 0\}$.
-        <br><b>Identity:</b> Let $u = x+y, v = x-y$. Then $u^2 - v^2 = (x+y)^2 - (x-y)^2 = 4xy$.
-        <br>Thus $2xy \ge \|w\|^2 \iff \frac{1}{2}(u^2 - v^2) \ge \|w\|^2 \iff u^2 \ge v^2 + 2\|w\|^2$.
-        <br>Taking square roots (since $u = x+y \ge 0$): $u \ge \sqrt{v^2 + 2\|w\|^2} = \|(v, \sqrt{2}w)\|_2$.
-        <br><b>Result:</b> $(x, y, w) \in \mathcal{Q}_r \iff (x+y, x-y, \sqrt{2}w) \in \mathcal{Q}$ (standard SOC).</p>
-      </div>
-
-      <div class="example-box">
-        <h4>Application: Quadratic-Over-Linear</h4>
-        <p>The constraint $\frac{\|w\|^2}{x} \le y$ (for $x > 0$) is equivalent to $\|w\|^2 \le xy$, which is $(x/2, y, w) \in \mathcal{Q}_r$.
-        <br>This allows convex modeling of energy-to-power ratios and variance-to-mean relations.</p>
       </div>
 
       <h4>Phase 5.6: The Matrix Inverse Atom</h4>

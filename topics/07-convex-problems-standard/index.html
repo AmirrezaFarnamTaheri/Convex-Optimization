@@ -112,6 +112,30 @@
       <h4>Handling Domains</h4>
       <p>The epigraph form handles domains implicitly. If $f_0(x)$ is defined as $+\infty$ outside its domain, the constraint $f_0(x) \le t$ is impossible for finite $t$ when $x \notin \mathrm{dom} f_0$. Thus, implicit constraints become explicit feasibility requirements.</p>
 
+      <h4>Key Pattern: Minimizing a Maximum (The Modeling Workhorse)</h4>
+      <p>The most common application of the epigraph transformation is minimizing the maximum of several functions:</p>
+      $$
+      \min_x \max_{i=1,\dots,m} f_i(x)
+      $$
+      <p><b>Epigraph Reformulation:</b> Introduce a scalar variable $t$ to represent the maximum. The problem becomes:</p>
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & t \\
+      \text{subject to} \quad & f_i(x) \le t, \quad i=1,\dots,m
+      \end{aligned}
+      $$
+
+      <div class="insight">
+        <h4>Why This Works</h4>
+        <p>At optimality, $t^* = \max_i f_i(x^*)$. Since we minimize $t$, it is pushed down until it equals the largest $f_i(x)$.
+        <br><b>Applications:</b></p>
+        <ul>
+          <li><b>Piecewise-linear functions:</b> $\min \max_i (a_i^\top x + b_i)$ becomes an LP</li>
+          <li><b>Robust optimization:</b> $\min \max_{u \in \mathcal{U}} f(x, u)$ where $\mathcal{U}$ is a finite set</li>
+          <li><b>Chebyshev approximation:</b> $\min \max_i |r_i(x)|$ becomes LP after applying absolute value atoms</li>
+        </ul>
+      </div>
+
       <h3>1.3 The Feasible Set</h3>
       <p>The <strong>feasible set</strong> (or constraint set) is:</p>
       <p style="text-align: center;">
@@ -143,7 +167,7 @@
         </div>
       </div>
 
-      <h3>1.3 Optimal Value and Optimal Points</h3>
+      <h3>1.4 Optimal Value and Optimal Points</h3>
       <ul>
         <li>The <strong>optimal value</strong> is $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$</li>
         <li>$x^*$ is <strong>optimal</strong> (or a <strong>minimizer</strong>) if $x^* \in \mathcal{F}$ and $f_0(x^*) = p^*$</li>
@@ -433,27 +457,17 @@
       $$ \text{minimize} \quad f(x) = \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
       <p>The function $f(x)$ is convex and piecewise-linear. Its graph is the "upper envelope" of several hyperplanes.</p>
 
-      <div class="proof-box">
-        <h4>The Epigraph Trick: Reformulation as LP</h4>
-        <p>We introduce a scalar variable $t$ to represent the upper bound.</p>
-        <p style="text-align: center;">
-            $
-            \begin{aligned}
-            \text{minimize} \quad & t \\
-            \text{subject to} \quad & a_i^\top x + b_i \le t, \quad i=1,\dots,m
-            \end{aligned}
-            $
-        </p>
-        <div class="proof-step">
-            <strong>Equivalence:</strong>
-            <ul>
-                <li><strong>(1) Original to LP:</strong> For any $\mathbf{x}$, let $t = \max_i(a_i^\top \mathbf{x} + b_i)$. Then $(\mathbf{x}, t)$ is feasible for the LP and has the same objective value.</li>
-                <li><strong>(2) LP to Original:</strong> If $(x, t)$ is feasible, then $a_i^\top x + b_i \le t$ for all $i$, implying $f(x) \le t$. If we minimize $t$, we push it down until $t = f(x)$.</li>
-            </ul>
-        </div>
-        <div class="proof-step">
-            Thus, minimizing the piecewise-linear function is equivalent to solving this LP with one extra variable.
-        </div>
+      <div class="insight">
+        <h4>Application: The Epigraph Transformation (See Section 1.2)</h4>
+        <p>This is a direct application of the <b>epigraph transformation for minimizing a maximum</b> (covered in <a href="#section-1">Section 1.2</a>).
+        <br>We introduce a scalar variable $t$ and reformulate as:</p>
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & t \\
+        \text{subject to} \quad & a_i^\top x + b_i \le t, \quad i=1,\dots,m
+        \end{aligned}
+        $$
+        <p>Since the functions $f_i(x) = a_i^\top x + b_i$ are affine, this becomes a <b>Linear Program</b> with one extra variable.</p>
       </div>
 
       <h4>The Dual of Max-of-Affines: Complete Derivation</h4>
@@ -1287,10 +1301,10 @@
       <p>We have encountered three fundamental patterns that translate geometric or analytic descriptions into standard convex problems. Internalizing these is key to mastering formulation.</p>
 
       <div class="proof-box">
-        <h4>Pattern 1: The Epigraph Trick</h4>
+        <h4>Pattern 1: The Epigraph Transformation</h4>
         <p><strong>Problem:</strong> Minimize a maximum of functions, $\min_x \max_i f_i(x)$.</p>
         <p><strong>Transformation:</strong> Introduce a scalar variable $t$. Minimize $t$ subject to $f_i(x) \le t$ for all $i$.</p>
-        <p><strong>Result:</strong> Turns piecewise-linear objectives into LPs.</p>
+        <p><strong>Result:</strong> Turns piecewise-linear objectives into LPs. (See <a href="#section-1">Section 1.2</a> for complete theory and applications.)</p>
       </div>
 
       <div class="proof-box">

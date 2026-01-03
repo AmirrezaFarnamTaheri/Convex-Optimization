@@ -512,7 +512,7 @@
       <section class="section-card" id="section-6">
         <h2>7. Examples of Dual Problems</h2>
 
-        <h3>6.1 Linear Programming</h3>
+        <h3>7.1 Linear Programming</h3>
         <p>Primal: $\min c^\top x$ s.t. $Ax \le b, x \ge 0$.
         <br>Dual: $\max -b^\top \lambda$ s.t. $A^\top \lambda + c \ge 0, \lambda \ge 0$. (See Sec 2.3).</p>
 
@@ -703,7 +703,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 6: Trust-Region QCQP (Nonconvex with Strong Duality)</h3>
+        <h3>Problem 7: Trust-Region QCQP (Nonconvex with Strong Duality)</h3>
         <p><b>Primal:</b> $\min x^\top A x + 2 b^\top x$ s.t. $x^\top x \le 1$.</p>
         <p>This is the classic <b>trust-region subproblem</b>. Even if $A \not\succeq 0$ (making the objective nonconvex), strong duality still holds.</p>
         
@@ -771,7 +771,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 7: Sum of Largest Elements (Constructive Duality)</h3>
+        <h3>Problem 8: Sum of Largest Elements (Constructive Duality)</h3>
         <p>Consider the function $f(x) = \sum_{i=1}^r x_{[i]}$, the sum of the $r$ largest components of $x$. Derive a compact LP formulation for the constraint $f(x) \le \alpha$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -810,7 +810,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 8: Markowitz Portfolio with Diversification</h3>
+        <h3>Problem 9: Markowitz Portfolio with Diversification</h3>
         <p>Add a constraint to the Markowitz problem to ensure "no more than 80% of capital in any 10% of assets".</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -831,7 +831,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 9: Simplex Projection</h3>
+        <h3>Problem 10: Simplex Projection</h3>
         <p><b>Primal:</b> $\min \frac{1}{2}\|x-z\|_2^2$ s.t. $\mathbf{1}^\top x = 1, x \ge 0$.</p>
         <p><b>KKT Approach (No explicit dual needed for solution):</b>
         <br>Stationarity: $x - z - \lambda + \nu \mathbf{1} = 0 \implies x = z + \lambda - \nu \mathbf{1}$.
@@ -844,7 +844,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 10: Logistic Regression</h3>
+        <h3>Problem 11: Logistic Regression</h3>
         <p><b>Primal:</b> $\min \sum \log(1 + e^{x_i^\top w}) - y_i x_i^\top w + \frac{\lambda}{2}\|w\|^2$.</p>
         <p><b>Dual:</b> Uses the conjugate of the logistic loss (binary entropy).
         <br>The dual involves maximizing entropy subject to correlation constraints with data.

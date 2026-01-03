@@ -992,10 +992,87 @@
           <figcaption><i>Figure 24:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
         </figure>
 
-        <h3>3.7 Cartesian Product</h3>
-        <p>The product of convex sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is convex in $\mathbb{R}^{n+m}$:</p>
-        $$ C \times D = \{(x, y) \mid x \in C, y \in D\} $$
-        <p>This follows because component-wise convex combinations preserve membership in $C$ and $D$ respectively.</p>
+        <h3>3.7 Cartesian Product: Building Higher-Dimensional Convex Sets</h3>
+
+        <div class="definition-box">
+          <h4>Definition: Cartesian Product</h4>
+          <p>The <b>Cartesian product</b> of two sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is the set of all ordered pairs:
+          $$ C \times D = \{(\mathbf{x}, \mathbf{y}) \in \mathbb{R}^{n+m} \mid \mathbf{x} \in C, \ \mathbf{y} \in D\} $$
+          Geometrically, $C \times D$ lives in the $(n+m)$-dimensional product space $\mathbb{R}^n \times \mathbb{R}^m \cong \mathbb{R}^{n+m}$, where the first $n$ coordinates come from $C$ and the last $m$ coordinates come from $D$.</p>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem: Cartesian Product Preserves Convexity</h4>
+          <p>If $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ are convex sets, then their Cartesian product $C \times D \subseteq \mathbb{R}^{n+m}$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <div class="proof-step">
+            <strong>Setup:</strong> Let $(\mathbf{x}_1, \mathbf{y}_1), (\mathbf{x}_2, \mathbf{y}_2) \in C \times D$ be two arbitrary points in the product. By definition, this means $\mathbf{x}_1, \mathbf{x}_2 \in C$ and $\mathbf{y}_1, \mathbf{y}_2 \in D$. We must show that for any $\theta \in [0,1]$, the convex combination
+            $$ \theta (\mathbf{x}_1, \mathbf{y}_1) + (1-\theta)(\mathbf{x}_2, \mathbf{y}_2) $$
+            also lies in $C \times D$.
+          </div>
+          <div class="proof-step">
+            <strong>Component-wise Convex Combination:</strong> The convex combination in the product space decomposes into separate convex combinations in each coordinate block:
+            $$ \theta (\mathbf{x}_1, \mathbf{y}_1) + (1-\theta)(\mathbf{x}_2, \mathbf{y}_2) = \left( \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \right) $$
+          </div>
+          <div class="proof-step">
+            <strong>Apply Convexity of $C$ and $D$:</strong> Since $C$ is convex and $\mathbf{x}_1, \mathbf{x}_2 \in C$, we have:
+            $$ \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2 \in C $$
+            Similarly, since $D$ is convex and $\mathbf{y}_1, \mathbf{y}_2 \in D$, we have:
+            $$ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \in D $$
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> By definition of the Cartesian product, if the first $n$ coordinates lie in $C$ and the last $m$ coordinates lie in $D$, then the combined point $(\mathbf{x}, \mathbf{y})$ lies in $C \times D$. Thus:
+            $$ \left( \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \right) \in C \times D $$
+            This proves that $C \times D$ is convex.
+          </div>
+        </div>
+
+        <h4>Examples</h4>
+
+        <div class="example">
+          <h4>Example 1: Product of Intervals</h4>
+          <p>Consider two closed intervals on the real line: $C = [a, b] \subseteq \mathbb{R}$ and $D = [c, d] \subseteq \mathbb{R}$. Their Cartesian product is:
+          $$ C \times D = [a, b] \times [c, d] = \{(x, y) \in \mathbb{R}^2 \mid a \le x \le b, \ c \le y \le d\} $$
+          This is a <b>rectangle</b> (or "box") in $\mathbb{R}^2$ with corners at $(a, c), (a, d), (b, c), (b, d)$. Since intervals are convex (in fact, they are line segments), the theorem guarantees that this rectangle is convex—which is geometrically obvious.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 2: Box in $\mathbb{R}^n$</h4>
+          <p>Generalizing the rectangle, the product of $n$ intervals:
+          $$ \prod_{i=1}^n [a_i, b_i] = [a_1, b_1] \times [a_2, b_2] \times \cdots \times [a_n, b_n] $$
+          is an $n$-dimensional <b>hyperrectangle</b> or <b>box</b> in $\mathbb{R}^n$. This is the set of all points $\mathbf{x} = (x_1, \dots, x_n)$ satisfying $a_i \le x_i \le b_i$ for each $i$. Boxes are fundamental in optimization for defining simple bound constraints.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 3: Product of Simplices</h4>
+          <p>Let $\Delta_n = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} \ge 0, \ \sum x_i = 1\}$ be the standard $(n-1)$-simplex (the probability simplex) in $\mathbb{R}^n$. The product of two simplices:
+          $$ \Delta_2 \times \Delta_3 \subseteq \mathbb{R}^5 $$
+          consists of all pairs $(\mathbf{p}, \mathbf{q})$ where $\mathbf{p} = (p_1, p_2) \in \Delta_2$ (a probability distribution over 2 outcomes) and $\mathbf{q} = (q_1, q_2, q_3) \in \Delta_3$ (a probability distribution over 3 outcomes). This higher-dimensional convex set arises in multi-stage decision problems or probabilistic models with multiple independent random variables.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Connection to Separable Optimization Problems</h4>
+          <p>Cartesian products naturally arise in <b>separable</b> or <b>decomposable</b> optimization problems where variables can be partitioned into independent groups. Consider the problem:
+          $$ \min_{\mathbf{x} \in C, \mathbf{y} \in D} f(\mathbf{x}) + g(\mathbf{y}) $$
+          Here, the objective function is the sum of two functions, each depending on disjoint variable sets. The feasible region is the Cartesian product $C \times D$. Such problems can often be solved by decomposition: optimize over $\mathbf{x} \in C$ and $\mathbf{y} \in D$ <i>separately</i>, then combine the solutions. This is the foundation of <b>block coordinate descent</b> and <b>alternating minimization</b> algorithms.</p>
+        </div>
+
+        <h4>Generalization to Multiple Sets</h4>
+        <p>The Cartesian product extends naturally to any finite number of sets. If $C_1, C_2, \dots, C_k$ are convex sets in spaces $\mathbb{R}^{n_1}, \mathbb{R}^{n_2}, \dots, \mathbb{R}^{n_k}$ respectively, then:
+        $$ C_1 \times C_2 \times \cdots \times C_k = \{(\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_k) \mid \mathbf{x}_i \in C_i \ \forall i\} \subseteq \mathbb{R}^{n_1 + n_2 + \cdots + n_k} $$
+        is convex. The proof follows the same component-wise argument: convex combinations are taken independently in each coordinate block, and since each $C_i$ is convex, the componentwise convex combinations remain inside each $C_i$.</p>
+
+        <div class="example">
+          <h4>Example 4: Polyhedra as Products</h4>
+          <p>In optimization, box constraints like:
+          $$ 0 \le x_1 \le 5, \quad -2 \le x_2 \le 3, \quad 1 \le x_3 \le 4 $$
+          define the feasible region as the Cartesian product:
+          $$ [0, 5] \times [-2, 3] \times [1, 4] \subseteq \mathbb{R}^3 $$
+          This is a rectangular box in 3D space. Many optimization solvers exploit this product structure for efficient constraint handling.</p>
+        </div>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Laboratory: Convex Geometry</h3>

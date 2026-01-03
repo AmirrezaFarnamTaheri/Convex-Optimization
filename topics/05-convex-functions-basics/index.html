@@ -1348,9 +1348,13 @@
         Since $f(x, Y) = \sup_z h_z(x, Y)$ is the pointwise supremum of a family of convex (linear) functions, $f$ is jointly convex.</p>
       </div>
 
+      </section>
 
+      <section class="section-card" id="section-6">
+        <h2>6. Composition and Transformation Rules</h2>
+        <p>Building complex convex functions from simpler ones through composition and transformations. These rules form the "algebra" of convexity.</p>
 
-        <h3>5.6 Composition Rules: The Algebra of Convexity</h3>
+        <h3>6.1 Composition with Increasing/Decreasing Functions</h3>
         <p>Recognizing convexity is often about parsing a function into a composition of atomic convex functions. We use a set of recursive rules.</p>
 
         <div class="theorem-box">
@@ -1562,7 +1566,7 @@
           <b>Result:</b> If $g_i$ are concave and positive, then the geometric mean $f(x)$ is concave.</p>
         </div>
 
-        <h3>5.7 Perspective Function (The Modeling Engine)</h3>
+        <h3>6.2 Perspective Function (The Modeling Engine)</h3>
         <p>The perspective transformation is more than a convexity property; it is a <b>modeling engine</b>. It allows you to remove denominators (fractions) by "absorbing" them into new variables, transforming fractional expressions into convex ones in a higher dimension.</p>
 
         <div class="theorem-box">
@@ -1669,7 +1673,7 @@
           <br>More generally, $f(x) = \frac{\|Ax+b\|_2^2}{c^\top x + d}$ is convex (Affine composition of perspective).</p>
         </div>
 
-        <h3>5.8 Power Functions and Homogeneity</h3>
+        <h3>6.3 Power Functions and Homogeneity</h3>
 
         <p>Power functions are a rich source of examples and inequalities.</p>
 
@@ -1714,7 +1718,7 @@
           </div>
         </div>
 
-        <h3>5.9 The Minkowski Functional (3.34)</h3>
+        <h3>6.4 The Minkowski Functional</h3>
         <p>The Minkowski functional generalizes the notion of a norm using a convex set. Let $C \subset \mathbb{R}^n$ be a convex set containing the origin. We define for each $x$:</p>
         $$
         M_C(x) = \inf \{ t > 0 \mid t^{-1} x \in C \}
@@ -1778,7 +1782,13 @@
           </div>
         </div>
 
-        <h3>5.10 Pitfalls and Illegal Moves</h3>
+      </section>
+
+      <section class="section-card" id="section-7">
+        <h2>7. Summary and Modeling Patterns</h2>
+        <p>A comprehensive summary of convexity-preserving operations, pitfalls to avoid, and standard modeling patterns.</p>
+
+        <h3>7.1 Pitfalls and Illegal Moves</h3>
         <p>A common pitfall is to assume the <b>minimum</b> of convex functions is convex. It is generally <b>not</b>.</p>
         <div class="insight">
           <h4>Counterexample</h4>
@@ -1797,7 +1807,7 @@
           </ul>
         </div>
 
-        <h3>5.11 Summary: A Complete "Legal Moves Checklist" (The Compiler)</h3>
+        <h3>7.2 Summary: A Complete "Legal Moves Checklist"</h3>
         <p>When you build or analyze a function, follow this "compiler" checklist. If your function passes, it is certified convex.</p>
         <ul>
             <li>Is it an <b>atom</b> from the standard library? (See Section 6).</li>
@@ -1841,7 +1851,7 @@
           <div id="widget-operations-preserving" style="width: 100%; height: 500px; position: relative;"></div>
         </div>
 
-        <h3>5.12 Standard Epigraph Modeling Patterns (The Compiler)</h3>
+        <h3>7.3 Standard Epigraph Modeling Patterns</h3>
         <p>This section provides the exact "compiler rules" to translate mathematical expressions into standard LP/SOCP/SDP atoms. These are not heuristics; they are exact algebraic equivalences.</p>
 
         <div class="example-box">
@@ -1889,8 +1899,8 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-6">
-        <h2>6. Standard Convex Function Library</h2>
+      <section class="section-card" id="section-8">
+        <h2>8. Standard Convex Function Library</h2>
         <p>Recognizing these atoms instantly is the key to efficient modeling. The meta-rule is: <b>know the domain</b> and <b>know the cone</b>.</p>
 
         <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
@@ -2018,8 +2028,8 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-7">
-        <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
+      <section class="section-card" id="section-9">
+        <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
 
         <div class="problem">
           <h3>P5.1 — Convexity of Basic Functions</h3>
@@ -2512,8 +2522,8 @@
 
       </section>
 
-      <section class="section-card" id="section-8">
-        <h2>8. Recap &amp; What's Next</h2>
+      <section class="section-card" id="section-10">
+        <h2>10. Recap &amp; What's Next</h2>
         <div class="recap-box">
           <ul style="margin: 0 0 0 20px;">
             <li><b>Definition-first mindset:</b> convexity is Jensen's inequality plus a convex domain.</li>

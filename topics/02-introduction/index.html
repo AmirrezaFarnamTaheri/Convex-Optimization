@@ -77,23 +77,12 @@
         Today, we understand that the "great watershed" in optimization is not between linearity and nonlinearity, but between <b>convexity</b> and <b>nonconvexity</b> (Rockafellar).</p>
 
         <h3>1.2 The Landscape of Optimization</h3>
-        <p>Optimization is the mathematical discipline of finding the "best" solution from a set of alternatives. In the vast landscape of optimization problems, there exists a fundamental divide between two classes:</p>
+        <p>Optimization is the mathematical discipline of finding the "best" solution from a set of alternatives. The fundamental divide is not between linear and nonlinear, but between <b>convex</b> and <b>nonconvex</b>:</p>
         <ul>
-          <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality.</li>
-          <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no polynomial-time guarantees.</li>
+          <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality (polynomial-time algorithms).</li>
+          <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no worst-case guarantees.</li>
         </ul>
-        <p>This distinction is not merely academic—it determines whether a real-world problem can be solved reliably at scale.</p>
-
-        <div class="insight">
-          <h4>Why Convexity is the Watershed Moment</h4>
-          <p>For decades, the optimization world was divided into "Linear" vs "Nonlinear". This was a mistake. The true dividing line is <b>Convexity</b>.
-          <br><b>Why?</b> Because in a convex world, <b>local information predicts global behavior</b>.
-          <ul>
-            <li>If you are at a point where the gradient is zero (local property), you are at the global minimum (global property).</li>
-            <li>If you have a separating hyperplane locally, it separates the sets globally.</li>
-          </ul>
-          <p>This local-to-global correspondence—where local conditions imply global structure—is what makes convex problems solvable in polynomial time. Once you lose convexity, local information no longer predicts global behavior.</p>
-        </div>
+        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure. We formalize this in <a href="#section-2">Section 2.1</a>.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
@@ -207,8 +196,20 @@
       <section class="section-card" id="section-2">
         <h2>2. The Fundamental Theorem: Local = Global</h2>
 
-        <h3>2.1 Global Optimality</h3>
-        <p>In general (nonconvex) optimization, algorithms can get stuck in <b>local minima</b>—points that are optimal within a small neighborhood but not globally. For convex problems, this pathology cannot occur:</p>
+        <h3>2.1 Global Optimality: Why Convexity is the Watershed</h3>
+        <p>In general (nonconvex) optimization, algorithms can get stuck in <b>local minima</b>—points that are optimal within a small neighborhood but not globally. For convex problems, this pathology cannot occur.</p>
+
+        <div class="insight">
+          <h4>The Local-to-Global Principle</h4>
+          <p>For decades, optimization was divided into "Linear" vs. "Nonlinear"—the wrong dichotomy. The true watershed is <b>convexity</b>.
+          <br><b>Why?</b> Because in convex problems, <b>local information predicts global structure</b>:
+          <ul>
+            <li>Gradient zero locally → global minimum</li>
+            <li>Local descent direction → points toward global optimum</li>
+            <li>Local constraint separation → global geometric structure</li>
+          </ul>
+          This local-to-global correspondence enables polynomial-time algorithms. Once you lose convexity, local information no longer guarantees global behavior.</p>
+        </div>
 
         <div class="insight">
           <h4>⚠️ Common Misconception: Unimodal vs. Convex</h4>

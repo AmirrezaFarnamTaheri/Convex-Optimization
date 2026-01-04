@@ -1363,12 +1363,154 @@
     <!-- SECTION 7: Reformulation -->
     <section class="section-card" id="section-8">
       <h2>8. Problem Reformulation</h2>
+
+      <p>Problem reformulation is the art of transforming an optimization problem into an equivalent form that is easier to solve, reveals structure, or fits the input requirements of a standard solver. Mastering reformulation techniques is essential for practical optimization, as most real-world problems don't arrive in standard form.</p>
+
       <h3>8.1 Equivalent Problems</h3>
-      <p>Two optimization problems are equivalent if the solution of one can be readily obtained from the solution of the other, and vice versa. Common techniques include:</p>
+
+      <div class="definition-box">
+        <h4>Definition: Equivalent Problems</h4>
+        <p>Two optimization problems are <b>equivalent</b> if:</p>
+        <ol>
+          <li>The solution of one can be readily obtained from the solution of the other, and vice versa</li>
+          <li>The optimal values are either equal or related by a known transformation</li>
+        </ol>
+        <p>Formally, problems $P_1$ and $P_2$ with variables $x$ and $y$ are equivalent if there exist mappings $\phi: x \to y$ and $\psi: y \to x$ such that $x^*$ is optimal for $P_1$ if and only if $\phi(x^*)$ is optimal for $P_2$.</p>
+      </div>
+
+      <h3>8.2 Common Reformulation Techniques</h3>
+
+      <h4>1. Change of Variables</h4>
+      <p>Replace the optimization variable $x$ with a new variable $y$ via $x = \phi(y)$, where $\phi$ is a bijection (invertible map). This is useful for:</p>
       <ul>
-        <li><strong>Change of variables:</strong> $x = \phi(y)$.</li>
-        <li><strong>Slack variables:</strong> $f(x) \le t \to f(x) + s = t, s \ge 0$.</li>
-        <li><strong>Eliminating equality constraints:</strong> $x = x_0 + Zz$.</li>
+        <li><b>Enforcing constraints implicitly:</b> If $x \in C$ is complex, choose $y$ such that $\phi(y) \in C$ for all $y$</li>
+        <li><b>Revealing hidden structure:</b> A nonconvex problem in $x$ may become convex in $y$</li>
+      </ul>
+
+      <div class="example-box">
+        <h4>Example: Geometric Programming via Log Transform</h4>
+        <p>A <b>geometric program</b> (GP) in standard form is:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & f_0(x) = \sum_{k=1}^{K_0} c_k x_1^{a_{1k}} x_2^{a_{2k}} \cdots x_n^{a_{nk}} \\
+        \text{subject to} \quad & f_i(x) = \sum_{k=1}^{K_i} c_{ik} x_1^{a_{i1k}} x_2^{a_{i2k}} \cdots x_n^{a_{ink}} \le 1, \quad i=1,\ldots,m \\
+        & x > 0
+        \end{aligned}
+        $$
+        where $c_k > 0$. This is <b>not convex</b> in $x$.
+        <br><br>
+        <b>Change of variables:</b> Let $y_i = \log x_i$ (so $x_i = e^{y_i}$). Then:
+        $$
+        f_0(x) = \sum_{k} c_k e^{a_{1k}y_1 + a_{2k}y_2 + \cdots + a_{nk}y_n}
+        $$
+        Taking the logarithm of the objective and constraints transforms the GP into a <b>convex problem</b>:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & \log\left(\sum_{k} c_k e^{a^\top_k y}\right) \quad \text{(log-sum-exp, convex)} \\
+        \text{subject to} \quad & \log\left(\sum_{k} c_{ik} e^{a^\top_{ik} y}\right) \le 0, \quad i=1,\ldots,m
+        \end{aligned}
+        $$
+        This is now solvable by standard convex optimization tools.</p>
+      </div>
+
+      <h4>2. Introducing Slack Variables</h4>
+      <p>Convert inequalities into equalities by adding slack variables $s \ge 0$:
+      $$ f(x) \le t \quad \longleftrightarrow \quad f(x) + s = t, \quad s \ge 0 $$
+      This is useful for:</p>
+      <ul>
+        <li>Deriving the dual problem (Lagrange multipliers require equality constraints)</li>
+        <li>Writing problems in standard form for specific solvers</li>
+        <li>Making the constraint active set explicit in interior-point methods</li>
+      </ul>
+
+      <h4>3. Eliminating Equality Constraints</h4>
+      <p>If the problem has linear equality constraints $Ax = b$, eliminate them by parameterizing the solution space:</p>
+      <ul>
+        <li>Find a particular solution $x_0$ satisfying $Ax_0 = b$</li>
+        <li>Find a matrix $Z$ whose columns span the nullspace of $A$: $AZ = 0$</li>
+        <li>Parameterize: $x = x_0 + Zz$, where $z \in \mathbb{R}^k$ is the new variable (with $k = n - \mathrm{rank}(A)$)</li>
+      </ul>
+      <p>The equality constraint is now <b>eliminated</b>, and the problem becomes unconstrained (or has fewer constraints) in the variable $z$.</p>
+
+      <div class="example-box">
+        <h4>Example: Portfolio Optimization with Budget Constraint</h4>
+        <p>Consider:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & \frac{1}{2} x^\top \Sigma x \\
+        \text{subject to} \quad & \mathbf{1}^\top x = 1, \quad x \ge 0
+        \end{aligned}
+        $$
+        where $\mathbf{1} = (1,\ldots,1)^\top$. The budget constraint $\mathbf{1}^\top x = 1$ is affine.</p>
+        <p><b>Elimination approach:</b> Express $x_n = 1 - \sum_{i=1}^{n-1} x_i$ and substitute into the objective:
+        $$
+        \min_{x_1,\ldots,x_{n-1}} \frac{1}{2} x^\top \Sigma x \quad \text{subject to} \quad x_i \ge 0, \quad \sum_{i=1}^{n-1} x_i \le 1
+        $$
+        This reduces the problem dimension from $n$ to $n-1$.</p>
+      </div>
+
+      <h4>4. Epigraph Form (Lifting)</h4>
+      <p>Convert the problem $\min f_0(x)$ subject to $f_i(x) \le 0$ into epigraph form by introducing an auxiliary variable $t$:
+      $$
+      \begin{aligned}
+      \text{minimize} \quad & t \\
+      \text{subject to} \quad & f_0(x) \le t \\
+      & f_i(x) \le 0
+      \end{aligned}
+      $$
+      This is always equivalent (if $x^*$ is optimal for the original, then $(x^*, f_0(x^*))$ is optimal for the epigraph form).
+      <br><br>
+      <b>Why is this useful?</b> It converts the objective into a simple linear function $t$, allowing conic solvers that require linear objectives (LP, SOCP, SDP) to handle nonlinear convex objectives.</p>
+
+      <h4>5. Partial Minimization</h4>
+      <p>If the problem has a special structure in some variables, minimize over them first:
+      $$
+      \min_{x,y} f(x,y) \quad \longleftrightarrow \quad \min_x \left( \min_y f(x,y) \right) = \min_x g(x)
+      $$
+      where $g(x) = \inf_y f(x,y)$ is the <b>partially minimized objective</b>.</p>
+
+      <div class="example-box">
+        <h4>Example: Least Squares with Regularization</h4>
+        <p>Consider the problem:
+        $$
+        \min_{x,r} \frac{1}{2}\|r\|_2^2 + \frac{\lambda}{2}\|x\|_2^2 \quad \text{subject to} \quad r = Ax - b
+        $$
+        Minimize over $r$ first (holding $x$ fixed):
+        $$
+        \min_r \left( \frac{1}{2}\|r\|_2^2 : r = Ax - b \right) = \frac{1}{2}\|Ax - b\|_2^2
+        $$
+        The problem reduces to the familiar ridge regression:
+        $$
+        \min_x \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2
+        $$
+        </p>
+      </div>
+
+      <h3>8.3 Reformulation Strategies</h3>
+
+      <div class="insight">
+        <h4>When and How to Reformulate</h4>
+        <p><b>Goals of reformulation:</b></p>
+        <ul>
+          <li><b>Match solver requirements:</b> Solvers expect problems in specific forms (standard LP, conic form, etc.)</li>
+          <li><b>Improve numerical conditioning:</b> Eliminate badly scaled variables or ill-conditioned matrices</li>
+          <li><b>Exploit structure:</b> Reveal sparsity, separability, or decomposability for faster algorithms</li>
+          <li><b>Restore convexity:</b> Transform a non-convex problem into a convex one (when possible)</li>
+        </ul>
+        <p><b>General approach:</b></p>
+        <ol>
+          <li>Identify the problem class (LP, QP, SOCP, SDP, GP, etc.)</li>
+          <li>Check if it's already in standard form for that class</li>
+          <li>If not, apply transformations (change of variables, epigraph, etc.) to match the standard form</li>
+          <li>Verify equivalence: Can you recover the original solution from the reformulated solution?</li>
+        </ol>
+      </div>
+
+      <h3>8.4 Common Pitfalls</h3>
+      <ul>
+        <li><b>Losing equivalence:</b> Not all transformations preserve optimality. For example, squaring the objective $f(x)$ to get $f(x)^2$ changes the problem unless $f(x) \ge 0$.</li>
+        <li><b>Introducing nonconvexity:</b> A change of variables $x = \phi(y)$ may make a convex problem nonconvex if $\phi$ is not affine.</li>
+        <li><b>Numerical issues:</b> Some reformulations introduce ill-conditioning (e.g., forming $A^\top A$ in normal equations).</li>
       </ul>
 
       <!-- Widget 6: Problem Reformulation Tool -->
@@ -1379,6 +1521,7 @@
           <!-- Widget will be rendered here -->
         </div>
       </div>
+
     </section>
 
     <!-- SECTION 8: EXERCISES -->

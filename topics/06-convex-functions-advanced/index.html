@@ -301,7 +301,21 @@
       <section class="section-card" id="section-3">
       <h2>3. The Convex Conjugate (Fenchel Conjugate)</h2>
 
-      <h3>3.1 Definition and Geometric Meaning</h3>
+      <div class="insight">
+        <h4>Roadmap for This Section</h4>
+        <p>The conjugate is one of the most powerful tools in convex analysis. This section covers:</p>
+        <ul>
+          <li><b>§3.1:</b> What is the conjugate? (Definition, intuition, geometry)</li>
+          <li><b>§3.2:</b> Core properties (always convex, Fenchel inequality, biconjugate)</li>
+          <li><b>§3.3:</b> How to compute conjugates (worked examples)</li>
+          <li><b>§3.4:</b> Algebraic rules (operations that preserve conjugacy)</li>
+          <li><b>§3.5:</b> Advanced topics (Legendre transform, duality connections)</li>
+        </ul>
+      </div>
+
+      <h3>3.1 Definition and Fundamental Intuition</h3>
+
+      <h4>Formal Definition</h4>
       <p>Start with a function $f : \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. Allowing $+\infty$ is a standard way of encoding hard constraints ("$\mathbf{x}$ not allowed"). The <a href="#" class="definition-link" data-term="convex conjugate">Fenchel conjugate</a> is defined as:</p>
       $$
       \boxed{f^*(\mathbf{y}) := \sup_{\mathbf{x}\in\mathrm{dom} f} \big( \mathbf{y}^\top \mathbf{x} - f(\mathbf{x}) \big), \quad \mathbf{y}\in\mathbb{R}^n}
@@ -314,20 +328,7 @@
         <figcaption><i>Animation:</i> The conjugate $f^*(y)$ is the maximum vertical distance between the linear function $y^\top x$ and the function $f(x)$. Varying $y$ changes the slope of the line, and $f^*(y)$ records the intercept of the supporting hyperplane.</figcaption>
       </figure>
 
-      <div class="insight">
-        <h4>The "Supremum of Linear Family" Intuition</h4>
-        <p>You can think of the conjugate as trying to <b>explain the function $f$ using lines</b>.
-        <br>For a fixed slope $y$, we want to find the best linear lower bound $y^\top x - c \le f(x)$.
-        <br>This requires $c \ge y^\top x - f(x)$ for all $x$. The tightest (smallest) such constant is $c = \sup_x (y^\top x - f(x)) = f^*(y)$.
-        <br>Thus, $f^*$ records the optimal intercepts for every possible slope $y$. This construction guarantees that $f^*$ is always convex, because it is a pointwise supremum of affine functions of $y$ (specifically $g_x(y) = x^\top y - f(x)$).</p>
-      </div>
-
-      <div class="interpretation-box">
-        <p><b>Economic Interpretation (Prices & Profit):</b> Imagine $\mathbf{x}$ is a production plan and $f(\mathbf{x})$ is the cost of production. If the market price vector is $\mathbf{y}$, then the revenue is $\mathbf{y}^\top \mathbf{x}$. The term $\mathbf{y}^\top \mathbf{x} - f(\mathbf{x})$ represents the <b>net profit</b>.
-        <br>The conjugate $f^*(\mathbf{y})$ is the <b>maximum possible profit</b> achievable given prices $\mathbf{y}$. This explains why $f^*$ is convex: profit is the pointwise supremum of linear functions (revenue minus fixed cost) as prices vary.</p>
-      </div>
-
-      <h3>Supporting Hyperplane Viewpoint</h3>
+      <h4>Supporting Hyperplane Viewpoint</h4>
       <p>Fix $\mathbf{y} \in \mathbb{R}^n$. Consider affine functions of $\mathbf{x}$ with slope $\mathbf{y}$:
       $$ \ell_{\mathbf{y}}(\mathbf{x}) = \mathbf{y}^\top \mathbf{x} - c, \quad c \in \mathbb{R} $$
       We want $\ell_{\mathbf{y}}$ to lie <b>below</b> $f$ everywhere:
@@ -337,16 +338,28 @@
       Thus, the tightest affine lower bound with slope $\mathbf{y}$ is:
       $$ \ell_{\mathbf{y}}(\mathbf{x}) = \mathbf{y}^\top \mathbf{x} - f^*(\mathbf{y}) $$</p>
 
+      <h4>Three Complementary Views</h4>
+
       <div class="insight">
-        <h4>Geometric Intuition</h4>
+        <p><b>1. Supremum of Linear Family:</b> You can think of the conjugate as trying to <b>explain the function $f$ using lines</b>. For a fixed slope $y$, we want to find the best linear lower bound $y^\top x - c \le f(x)$. This requires $c \ge y^\top x - f(x)$ for all $x$. The tightest (smallest) such constant is $c = \sup_x (y^\top x - f(x)) = f^*(y)$. Thus, $f^*$ records the optimal intercepts for every possible slope $y$.</p>
+      </div>
+
+      <div class="insight">
+        <p><b>2. Geometric View:</b></p>
         <ul>
             <li><b>Epigraph View:</b> The epigraph $\mathrm{epi} f$ is supported by the hyperplane $H = \{(x,t) \mid t = y^\top x - f^*(y)\}$. The conjugate $f^*$ encodes all non-vertical supporting hyperplanes of the epigraph.</li>
             <li><b>Gap View (1D):</b> For a fixed slope $y$, the quantity $yx - f(x)$ is the vertical gap between the line through the origin with slope $y$ and the graph of $f$. $f^*(y)$ is the <b>maximum vertical gap</b>.</li>
         </ul>
       </div>
 
+      <div class="interpretation-box">
+        <p><b>3. Economic Interpretation (Prices & Profit):</b> Imagine $\mathbf{x}$ is a production plan and $f(\mathbf{x})$ is the cost of production. If the market price vector is $\mathbf{y}$, then the revenue is $\mathbf{y}^\top \mathbf{x}$. The term $\mathbf{y}^\top \mathbf{x} - f(\mathbf{x})$ represents the <b>net profit</b>. The conjugate $f^*(\mathbf{y})$ is the <b>maximum possible profit</b> achievable given prices $\mathbf{y}$.</p>
+      </div>
 
-      <h3>3.2 Why $f^*$ is Always Convex</h3>
+
+      <h3>3.2 Core Properties</h3>
+
+      <h4>Property 1: $f^*$ is Always Convex</h4>
       <p>A crucial property is that $f^*$ is convex <b>regardless</b> of whether $f$ is convex.</p>
       <div class="proof-box">
         <h4>Proof</h4>
@@ -366,51 +379,29 @@
         Thus, $f^*$ is convex for <b>any</b> $f$. The conjugate lives in the "convex world" even if $f$ doesn't.</p>
       </div>
 
-        <div class="theorem-box">
-            <h4>Deep Dive: Biconjugate and Convex Hulls</h4>
-            <p>While $f^*$ is always convex, $f^{**}$ (the conjugate of the conjugate) relates back to $f$ in a special way.
-            $$ f^{**}(x) = \text{cl}(\text{conv}(f))(x) $$
-            The biconjugate is the <b>closed convex envelope</b> of $f$. It is the largest lower semicontinuous convex function that is less than or equal to $f$.
-            <br><b>Consequence:</b> $f^{**} = f$ if and only if $f$ is closed and convex. This is the <b>Fenchel-Moreau Theorem</b>.</p>
-        </div>
-        
-        <div class="proof-box">
-            <h4>Key Identity: Conjugate of Max is Entropy-Regularized</h4>
-            <p>The conjugate of the max function connects to log-sum-exp and entropy. This is fundamental for smooth optimization:</p>
-            <div class="proof-step">
-              <strong>Variational Representation of Log-Sum-Exp:</strong>
-              $$ \log\left(\sum_{i=1}^m e^{u_i}\right) = \max_{\lambda \in \Delta} \left( \lambda^\top u - \sum_{i=1}^m \lambda_i \log \lambda_i \right) $$
-              where $\Delta = \{\lambda \ge 0 : \sum_i \lambda_i = 1\}$ is the probability simplex.
-            </div>
-            <div class="proof-step">
-              <strong>Interpretation:</strong> The log-sum-exp function is the <b>conjugate</b> of the negative entropy function restricted to the simplex.
-              <br>The maximizer is the <b>softmax</b>: $\lambda_i^* = e^{u_i} / \sum_j e^{u_j}$.
-            </div>
-            <div class="proof-step">
-              <strong>Connection to Smoothing:</strong> This explains why log-sum-exp is a "smooth max": it replaces the non-smooth max with an entropy-regularized objective. The regularization spreads probability across indices rather than concentrating on the maximum.
-            </div>
-        </div>
-        
-        <div class="theorem-box">
-          <h4>The Master Identity: Infimum via Conjugate</h4>
-          <p>For any function $f$ and vector $a$, we have the fundamental identity:</p>
-          $$ \inf_x \big( f(x) + a^\top x \big) = -f^*(-a) $$
-          <div class="proof-box">
-            <h4>Proof</h4>
-            <div class="proof-step">
-              <strong>Algebra:</strong> $\inf_x (f(x) + a^\top x) = -\sup_x (-f(x) - a^\top x) = -\sup_x ((-a)^\top x - f(x))$.
-            </div>
-            <div class="proof-step">
-              <strong>By definition:</strong> $\sup_x ((-a)^\top x - f(x)) = f^*(-a)$.
-            </div>
-            <div class="proof-step">
-              <strong>Result:</strong> $\inf_x (f(x) + a^\top x) = -f^*(-a)$.
-            </div>
-          </div>
-          <p><b>Why this matters:</b> This identity is how the conjugate enters Lagrangian duality. When computing $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$, factoring out $\lambda$ and applying this identity gives $g(\lambda) = -\lambda f^*(-c/\lambda)$.</p>
-        </div>
+      <h4>Property 2: Fenchel's Inequality</h4>
+      <p>From the definition $f^*(y) \ge y^\top x - f(x)$, we immediately get <b>Fenchel's Inequality</b>:</p>
+      $$ \boxed{ f(x) + f^*(y) \ge x^\top y } $$
+      <p>Equality holds exactly when $y \in \partial f(x)$ (for convex $f$). This is the foundation for optimality conditions in convex optimization.</p>
 
-      <h3>3.3 1D Examples in Detail</h3>
+      <h4>Property 3: The Biconjugate Theorem</h4>
+      <p>The conjugate of the conjugate is $f^{**}(x) = \sup_y (x^\top y - f^*(y))$.</p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Fenchel-Moreau Biconjugate Theorem</h4>
+        <p>For any function $f$:</p>
+        <ol>
+          <li>$f^{**} \le f$ always holds</li>
+          <li>$f^{**}(x) = \text{cl}(\text{conv}(f))(x)$ — the <b>closed convex envelope</b> of $f$</li>
+          <li>$f^{**} = f$ if and only if $f$ is closed and convex</li>
+        </ol>
+        <p><b>Geometric Intuition:</b> $\mathrm{epi}(f^{**})$ is the closed convex hull of $\mathrm{epi}(f)$. Conjugation encodes all supporting hyperplanes; taking it again reconstructs the convex envelope from these planes.</p>
+      </div>
+
+
+      <h3>3.3 Computing Conjugates: Examples</h3>
+
+      <h4>3.3.1 One-Dimensional Functions</h4>
 
       <div class="example">
         <h4>(a) Affine function $f(x) = ax + b$</h4>
@@ -473,7 +464,7 @@
         <p><b>Result:</b> $f^*(y) = -2\sqrt{-y}$ for $y \le 0$ (with value 0 at $y=0$), else $\infty$. Domain $(-\infty, 0]$.</p>
       </div>
 
-      <h3>3.4 Quadratic and Matrix Examples</h3>
+      <h4>3.3.2 Quadratic and Matrix Functions</h4>
 
       <div class="example">
         <h4>(a) Quadratic: $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$</h4>
@@ -551,9 +542,11 @@
         <br><b>Result:</b> $f^*(y) = \delta_D(y)$. Since $D$ is a convex set (superlevel set of a concave geometric mean), $f$ is convex.
       </div>
 
-      <h3>3.5 Algebra Rules for Conjugates</h3>
+      <h3>3.4 Algebraic Rules for Conjugates</h3>
 
-      <h4>(a) Scaling and Vertical Shift</h4>
+      <p>The conjugate operation has nice algebraic properties that allow us to build complex conjugates from simpler ones.</p>
+
+      <h4>Rule 1: Scaling and Vertical Shift</h4>
       <p>Let $g(x) = a f(x) + b$ with $a > 0, b \in \mathbb{R}$.
       $$
       \begin{aligned}
@@ -565,7 +558,7 @@
       $$
       So $\boxed{(af+b)^*(y) = a f^*(y/a) - b}$.</p>
 
-      <h4>(b) Affine Precomposition</h4>
+      <h4>Rule 2: Affine Precomposition</h4>
       <p>Let $g(x) = f(Ax + b)$.
       $$ g^*(y) = \sup_x (y^\top x - f(Ax+b)) $$
       Let $z = Ax+b$. If $A$ is invertible, $x = A^{-1}(z-b)$.
@@ -581,7 +574,7 @@
       If $A$ is invertible, $z$ is uniquely determined as $z = A^{-\top}y$, and the infimum collapses to the simple substitution:
       $$ \boxed{ g^*(y) = f^*(A^{-\top}y) - y^\top A^{-1}b } \quad (\text{invertible case}) $$</p>
 
-      <h4>(c) Sum of Independent Functions</h4>
+      <h4>Rule 3: Sum of Independent Functions</h4>
       <p>Let $f(x, z) = f_1(x) + f_2(z)$.
       $$
       \begin{aligned}
@@ -592,17 +585,9 @@
       $$
       So $\boxed{(f_1 \oplus f_2)^* = f_1^* \oplus f_2^*}$. This separation is key in duality.</p>
 
-      <h3>3.6 Fenchel Inequality and Biconjugate</h3>
-      <p>From the definition $f^*(y) \ge y^\top x - f(x)$, we immediately get <b>Fenchel's Inequality</b>:</p>
-      $$ \boxed{ f(x) + f^*(y) \ge x^\top y } $$
-      <p>Equality holds exactly when $y \in \partial f(x)$ (for convex $f$).</p>
+      <h3>3.5 Advanced Topics</h3>
 
-      <h4>The Biconjugate $f^{**}$</h4>
-      <p>The conjugate of the conjugate is $f^{**}(x) = \sup_y (x^\top y - f^*(y))$.
-      <br><b>Theorem:</b> $f^{**} \le f$ always. If $f$ is closed and convex, then $f^{**} = f$.
-      <br><i>Geometric Intuition:</i> $\mathrm{epi}(f^{**})$ is the closed convex hull of $\mathrm{epi}(f)$. Conjugation encodes all supporting hyperplanes; taking it again reconstructs the convex envelope from these planes.</p>
-
-      <h3>3.7 Legendre Transform: Smooth Case</h3>
+      <h4>3.5.1 The Legendre Transform (Smooth Case)</h4>
       <p>Assume $f$ is strictly convex and differentiable everywhere. The optimizer $x^*$ in the definition of $f^*(y)$ is characterized by:
       $$ \nabla_x (y^\top x - f(x)) = y - \nabla f(x) = 0 \implies y = \nabla f(x^*) $$
       Thus $x^* = (\nabla f)^{-1}(y)$. We can write:
@@ -615,6 +600,46 @@
           <li>At the optimum, Fenchel's inequality holds with equality: $f(x) + f^*(y) = x^\top y$ where $y = \nabla f(x)$.</li>
       </ul>
       This transformation connects Lagrangian and Hamiltonian mechanics.</p>
+
+      <h4>3.5.2 The Master Identity: Infimum via Conjugate</h4>
+
+      <div class="theorem-box">
+        <h4>Fundamental Identity for Duality</h4>
+        <p>For any function $f$ and vector $a$, we have:</p>
+        $$ \boxed{\inf_x \big( f(x) + a^\top x \big) = -f^*(-a)} $$
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <div class="proof-step">
+            <strong>Algebra:</strong> $\inf_x (f(x) + a^\top x) = -\sup_x (-f(x) - a^\top x) = -\sup_x ((-a)^\top x - f(x))$.
+          </div>
+          <div class="proof-step">
+            <strong>By definition:</strong> $\sup_x ((-a)^\top x - f(x)) = f^*(-a)$.
+          </div>
+          <div class="proof-step">
+            <strong>Result:</strong> $\inf_x (f(x) + a^\top x) = -f^*(-a)$.
+          </div>
+        </div>
+        <p><b>Why this matters:</b> This identity is how the conjugate enters Lagrangian duality. When computing $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$, factoring out $\lambda$ and applying this identity gives $g(\lambda) = -\lambda f^*(-c/\lambda)$. This is the foundation for dual problem formulations in <a href="../09-duality/index.html">Lecture 09</a>.</p>
+      </div>
+
+      <h4>3.5.3 Entropy and Log-Sum-Exp Connection</h4>
+
+      <div class="theorem-box">
+        <h4>Conjugate of Max is Entropy-Regularized</h4>
+        <p>The conjugate of the max function connects to log-sum-exp and entropy. This is fundamental for smooth optimization:</p>
+        <div class="proof-step">
+          <strong>Variational Representation of Log-Sum-Exp:</strong>
+          $$ \log\left(\sum_{i=1}^m e^{u_i}\right) = \max_{\lambda \in \Delta} \left( \lambda^\top u - \sum_{i=1}^m \lambda_i \log \lambda_i \right) $$
+          where $\Delta = \{\lambda \ge 0 : \sum_i \lambda_i = 1\}$ is the probability simplex.
+        </div>
+        <div class="proof-step">
+          <strong>Interpretation:</strong> The log-sum-exp function is the <b>conjugate</b> of the negative entropy function restricted to the simplex (see Example 3.3.2(e) above). The maximizer is the <b>softmax</b>: $\lambda_i^* = e^{u_i} / \sum_j e^{u_j}$.
+        </div>
+        <div class="proof-step">
+          <strong>Connection to Smoothing:</strong> This explains why log-sum-exp is a "smooth max": it replaces the non-smooth max with an entropy-regularized objective. The regularization spreads probability across indices rather than concentrating on the maximum.
+        </div>
+        <p><b>Applications:</b> This connection underpins logistic regression, softmax classification, and interior-point methods for linear programming.</p>
+      </div>
     </section>
 
     <section class="section-card" id="section-4">

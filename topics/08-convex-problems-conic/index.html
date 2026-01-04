@@ -169,7 +169,8 @@
       <b>Applications:</b></p>
       <ul>
           <li><b>Hyperbolic constraints:</b> $w^2 \le xy \iff (x, y/2, w) \in \mathcal{Q}_r^3$.</li>
-          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.
+              <br><em>Real-world use:</em> Models energy-to-power ratios, variance-to-mean relations, and power allocation efficiency.</li>
           <li><b>Vector Q-over-L:</b> $\|x\|_2^2/y \le t \iff (t, y/2, x) \in \mathcal{Q}_r^{n+2}$.</li>
       </ul>
       
@@ -179,24 +180,6 @@
       </div>
       <div class="warning-box">
           <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
-      </div>
-      
-      <div class="proof-box">
-        <h4>Converting RSOC ↔ Standard SOC</h4>
-        <p>If your solver only supports standard SOC, use this identity:</p>
-        <div class="proof-step">
-          <strong>Algebraic Identity:</strong> Define $t = u + v$ and $s = u - v$. Then:
-          $$ t^2 - s^2 = (u+v)^2 - (u-v)^2 = 4uv $$
-        </div>
-        <div class="proof-step">
-          <strong>Equivalence:</strong>
-          $$ uv \ge \|w\|_2^2, \ u,v \ge 0 \iff \|(u-v, 2w)\|_2 \le u+v $$
-          The right side is a standard SOC constraint.
-        </div>
-        <div class="proof-step">
-          <strong>Proof:</strong> $\|(u-v, 2w)\|_2 \le u+v$ squares to $(u-v)^2 + 4\|w\|^2 \le (u+v)^2$.
-          <br>Rearranging: $4\|w\|^2 \le (u+v)^2 - (u-v)^2 = 4uv$, i.e., $\|w\|^2 \le uv$.
-        </div>
       </div>
 
       <h3>1.3 Key Properties</h3>
@@ -282,19 +265,16 @@
       <p>Note: The inequality constraints must define a convex set, so we typically require $f_i$ to be convex, not merely quasiconvex (since sublevel sets of individual quasiconvex functions are convex, but their intersection might not have nice properties without stronger assumptions, though technically intersection of convex sets is convex. Standard form usually requires convex constraints).</p>
       <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{L}^{n+1}$.</p>
 
-    </section>
-
-    <!-- Section 2: Robust Linear Programming -->
-    <section class="section-card" id="section-2">
-      <h2>2. Robust Optimization: The "Dual Norm" Lemma</h2>
+      <h3>1.5 Application: Robust Optimization via Dual Norms</h3>
+      <p>Robust optimization addresses optimization under uncertainty by requiring constraints to hold for all possible parameter values. When uncertainty sets are norm balls, robustification leads naturally to SOCP formulations through the dual norm lemma.</p>
       <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
-      <h3>Phase 5.5: Robustness via Dual Norms</h3>
+      <h4>The Robustification Framework</h4>
       <p>Consider the constraint $a_i^\top x \le b_i$. If $a_i$ is uncertain ($a_i = \bar{a}_i + u$, with $u \in \mathcal{U}$), the robust constraint is:</p>
       $$ \sup_{u \in \mathcal{U}} (\bar{a}_i + u)^\top x \le b_i \iff \bar{a}_i^\top x + \sigma_{\mathcal{U}}(x) \le b_i $$
       <p>where $\sigma_{\mathcal{U}}(x) = \sup_{u \in \mathcal{U}} u^\top x$ is the <b>support function</b> of the uncertainty set.</p>
 
-      <h4>2.1 Deterministic Robust LP</h4>
+      <h4>Deterministic Robust LP (Ellipsoidal Uncertainty)</h4>
       <p>Suppose $\mathcal{U}$ is an ellipsoid: $\mathcal{U} = \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$.
       <br>Here $\bar{a}_i$ is the nominal value and $P_i$ shapes the uncertainty.</p>
 
@@ -398,11 +378,11 @@
       <p><strong>Conclusion:</strong> Both deterministic (worst-case) and stochastic (Gaussian) robustifications of LP lead to SOCP formulations.</p>
     </section>
 
-    <!-- Section 3: Semidefinite Programs (SDP) -->
-    <section class="section-card" id="section-3">
-      <h2>3. Semidefinite Programs (SDP): Matrix Geometry</h2>
+    <!-- Section 2: Semidefinite Programs (SDP) -->
+    <section class="section-card" id="section-2">
+      <h2>2. Semidefinite Programs (SDP): Matrix Geometry</h2>
 
-      <h3>3.1 Definition: Linear Matrix Inequalities</h3>
+      <h3>2.1 Definition: Linear Matrix Inequalities</h3>
       <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
@@ -428,14 +408,14 @@
       <p>The constraint $F(x) \succeq 0$ is a <b>Linear Matrix Inequality (LMI)</b>. It requires that the symmetric matrix $F(x)$ be Positive Semidefinite.
       <br><b>Key Insight:</b> This is an infinite set of linear constraints: $v^\top F(x) v \ge 0$ for all $v \in \mathbb{R}^k$. The LMI packages all these directional curvature checks into one convex constraint.</p>
 
-      <h3>3.2 The PSD Cone</h3>
+      <h3>2.2 The PSD Cone</h3>
       <p>The constraint $F(x) \succeq 0$ means $F(x)$ lies in the cone of positive semidefinite matrices:</p>
       <p style="text-align: center;">
         $ \mathbb{S}_+^m = \{X \in \mathbb{S}^m \mid X \succeq 0\} $
       </p>
       <p>Recall from Lecture 04 that $\mathbb{S}_+^m$ is a proper cone (convex, closed, pointed, solid).</p>
 
-      <h3>3.3 The Schur Complement: The Absolute Value of SDP</h3>
+      <h3>2.3 The Schur Complement: The Absolute Value of SDP</h3>
       <p>Just as $|x| \le t \iff -t \le x \le t$ allows us to linearize absolute values, the <b>Schur Complement Lemma</b> allows us to linearize quadratic and rational matrix functions.</p>
 
       <div class="theorem-box">
@@ -505,7 +485,7 @@
         <p>Thus: $\text{LP} \subseteq \text{QP} \subseteq \text{SOCP} \subseteq \text{SDP}$.</p>
       </div>
 
-      <h3>3.4 Key Properties</h3>
+      <h3>2.4 Key Properties</h3>
       <ul>
         <li><strong>Generality:</strong> SDP subsumes LP, QP, and SOCP</li>
         <li><strong>Complexity:</strong> Polynomial-time solvable using interior-point methods</li>
@@ -513,7 +493,7 @@
         <li><strong>Applications:</strong> Combinatorial optimization relaxations, control theory (LMI), matrix completion</li>
       </ul>
 
-      <h3>3.5 Core SDP Modeling Templates (Phase 5.6 & 5.7)</h3>
+      <h3>2.5 Core SDP Modeling Templates (Phase 5.6 & 5.7)</h3>
       <p>SDP power comes from two main sources: the Schur Complement (handling inverses) and the Variational Characterization of eigenvalues.</p>
 
       <div class="example-box">
@@ -532,7 +512,7 @@
           <br><b>Spectral Norm:</b> $\|X\|_2 \le t \iff \begin{bmatrix} tI & X \\ X^\top & tI \end{bmatrix} \succeq 0$. (Equivalent to $\sigma_{\max}(X) \le t$).</p>
       </div>
 
-      <h3>3.6 Standard SDP Examples</h3>
+      <h3>2.6 Standard SDP Examples</h3>
 
             <h4>Example 3.1: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
@@ -670,24 +650,6 @@
         <p>This bound depends only on the number of points $m$ and dimension $n$, providing a worst-case guarantee that the simple covariance-type ellipsoid is never catastrophically worse than optimal.</p>
       </div>
 
-      <h4>Phase 5.4: Rotated SOC and the Product Cone</h4>
-      <p>Constraints of the form $w^2 \le xy$ (with $x, y \ge 0$) arise frequently. These are handled by the <b>Rotated Second-Order Cone</b>.</p>
-
-      <div class="proof-box">
-        <h4>Conversion: Rotated SOC $\leftrightarrow$ Standard SOC</h4>
-        <p>The standard definition is $\mathcal{Q}_r = \{(x, y, w) \mid \|w\|_2^2 \le 2xy, x \ge 0, y \ge 0\}$.
-        <br><b>Identity:</b> Let $u = x+y, v = x-y$. Then $u^2 - v^2 = (x+y)^2 - (x-y)^2 = 4xy$.
-        <br>Thus $2xy \ge \|w\|^2 \iff \frac{1}{2}(u^2 - v^2) \ge \|w\|^2 \iff u^2 \ge v^2 + 2\|w\|^2$.
-        <br>Taking square roots (since $u = x+y \ge 0$): $u \ge \sqrt{v^2 + 2\|w\|^2} = \|(v, \sqrt{2}w)\|_2$.
-        <br><b>Result:</b> $(x, y, w) \in \mathcal{Q}_r \iff (x+y, x-y, \sqrt{2}w) \in \mathcal{Q}$ (standard SOC).</p>
-      </div>
-
-      <div class="example-box">
-        <h4>Application: Quadratic-Over-Linear</h4>
-        <p>The constraint $\frac{\|w\|^2}{x} \le y$ (for $x > 0$) is equivalent to $\|w\|^2 \le xy$, which is $(x/2, y, w) \in \mathcal{Q}_r$.
-        <br>This allows convex modeling of energy-to-power ratios and variance-to-mean relations.</p>
-      </div>
-
       <h4>Phase 5.6: The Matrix Inverse Atom</h4>
       <p>Constraints like $x^\top Y^{-1} x \le t$ (for $Y \succ 0$) are convex. We model them using the <b>Schur Complement</b> into an SDP constraint (Linear Matrix Inequality).</p>
 
@@ -697,7 +659,7 @@
         <p>This "lifts" the nonlinear inverse into a linear constraint on the positive semidefinite cone.</p>
       </div>
 
-      <h3>3.6 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
+      <h3>2.7 The Hierarchy: LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</h3>
       <p>The standard convex problem classes form a strict hierarchy of expressiveness. Understanding this hierarchy helps in selecting the most efficient solver for a given problem.</p>
 
       <div class="insight">
@@ -743,8 +705,8 @@
 
     <!-- Section 4: Exponential Cone Programming -->
 
-    <section class="section-card" id="section-4">
-      <h2>4. Exponential Cone Programming</h2>
+    <section class="section-card" id="section-3">
+      <h2>3. Exponential Cone Programming</h2>
 
       <h3>4.1 The Exponential Cone</h3>
       <p>The <strong>exponential cone</strong> $K_{\text{exp}}$ is a three-dimensional cone defined as:</p>
@@ -758,6 +720,20 @@
       <div class="intuition-box">
         <h4>Geometric Interpretation</h4>
         <p>The exponential cone is a non-symmetric cone that allows us to express exponential and logarithmic constraints. Unlike the second-order cone or PSD cone, it is not self-dual, but it plays a crucial role in modeling problems involving entropy, logarithms, and exponentials.</p>
+      </div>
+
+      <div class="insight">
+        <h4>Why This Matters: Unlocking Exponential and Logarithmic Functions</h4>
+        <p>The exponential cone is <b>essential for modern convex optimization</b> because it enables efficient modeling and solution of problems involving <b>non-polynomial nonlinearities</b>. Here's why you should care:</p>
+        <ul>
+          <li><b>Powers Logistic Regression and Classification:</b> Logistic regression minimizes $\sum_i \log(1 + e^{-y_i (w^\top x_i + b)})$. The log-sum-exp function is convex and can be expressed exactly using exponential cone constraints. Without the exponential cone, logistic regression would require general nonlinear solvers (slower, less reliable). With it, we get interior-point solver performance (fast, robust).</li>
+          <li><b>Enables Maximum Likelihood Estimation:</b> Many statistical models (Poisson regression, exponential family distributions) involve log-likelihood functions with exponential terms. The exponential cone allows these to be formulated as conic programs, enabling provably optimal parameter estimation with convergence guarantees.</li>
+          <li><b>Unlocks Geometric Mean and Relative Entropy:</b> The geometric mean $(\prod x_i)^{1/n}$ (used in portfolio optimization and control theory) and relative entropy $\sum x_i \log(x_i/y_i)$ (Kullback-Leibler divergence in information theory and ML) are not quadratic or norm-based, but they ARE representable via exponential cone constraints. This makes problems like D-optimal experiment design and minimum KL divergence solvable by conic solvers.</li>
+          <li><b>Generalizes Geometric Programming:</b> Geometric programs (GP) model problems in circuit design, optical systems, and structural engineering. After log-transformation, GPs become exponential cone programs. Modern GP solvers (like CVX, CVXPY with MOSEK) use the exponential cone under the hood.</li>
+        </ul>
+        <p><b>Real-World Impact:</b> Companies like Google (optimal experiment design for A/B testing), pharmaceutical firms (dose-response modeling), and chip manufacturers (circuit optimization) rely on exponential cone solvers. The exponential cone bridges the gap between "simple" conic forms (LP, SOCP, SDP) and "complex" nonlinear functions, making previously intractable problems solvable at scale.</p>
+        <p><b>Solver Support:</b> Modern solvers (MOSEK, ECOS, SCS) natively support exponential cone constraints. CVXPY automatically detects atoms like <code>log</code>, <code>exp</code>, <code>entr</code>, <code>kl_div</code> and compiles them to exponential cone form.</p>
+        <p><b>Takeaway:</b> If your problem involves $e^x$, $\log x$, entropy, or geometric means, the exponential cone is your gateway to efficient convex optimization.</p>
       </div>
 
       <h3>4.2 Exponential Cone Programs</h3>
@@ -833,8 +809,8 @@
     <!-- Section 5: Quasiconvex Optimization -->
 
 
-      <section class="section-card" id="section-5">
-      <h2>5. Quasiconvex Optimization</h2>
+      <section class="section-card" id="section-4">
+      <h2>4. Quasiconvex Optimization</h2>
 
        <h3>5.1 Quasiconvex Functions</h3>
       <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{\mathbf{x} \mid f(\mathbf{x}) \le \alpha\}$ are convex.</p>
@@ -882,14 +858,150 @@
       </div>
     </section>
 
-    <section class="section-card" id="section-6">
-      <h2>6. Disciplined Convex Programming (Recap)</h2>
-      <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVXPY to verify convexity automatically.
-      <br>While this lecture focused on the raw "conic form" (how the solver sees the problem), in practice, you rarely write raw conic constraints. You use DCP-compliant expressions (like <code>norm(x) <= t</code>) and the software compiles them into the standard cones (SOC, Exp, PSD) we studied here.</p>
+    <section class="section-card" id="section-5">
+      <h2>5. Disciplined Convex Programming (Recap)</h2>
+
+      <div class="insight">
+        <h4>DCP Encounter #3: Under the Hood</h4>
+        <p>This is the <b>third and final DCP encounter</b>. In <a href="../02-introduction/index.html#section-7">Lecture 02</a>, you saw <i>why</i> DCP matters (automatic verification, solver independence). In <a href="../07-convex-problems-standard/index.html#section-8">Lecture 07</a>, you learned <i>how</i> to reformulate problems to fit DCP rules. Here, we reveal the <b>implementation machinery</b>: how DCP atoms map to conic constraints that solvers actually understand.</p>
+      </div>
+
+      <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia) to verify convexity automatically. DCP provides a composable library of "atoms" (functions with known convexity properties) and a set of <b>composition rules</b> that preserve convexity.</p>
+
+      <h3>5.1 The Bridge from High-Level to Conic Form</h3>
+      <p>While this lecture focused on the raw "conic form" (how the solver sees the problem), in practice, you <b>rarely write raw conic constraints</b>. Instead, you write high-level DCP-compliant expressions, and the modeling framework automatically compiles them into the standard cones (SOC, Exp, PSD) we studied. This two-layer architecture separates:</p>
+      <ul>
+        <li><b>The modeling layer (DCP):</b> User-friendly expressions like <code>norm(x) <= t</code>, <code>quad_form(x, P)</code>, <code>log_sum_exp(x)</code></li>
+        <li><b>The solver layer (Conic form):</b> Standard cones recognized by interior-point solvers (ECOS, MOSEK, SCS)</li>
+      </ul>
+
+      <div class="example-box">
+        <h4>Example: From DCP to SOC</h4>
+        <p>Consider the DCP expression in CVXPY:
+        <pre><code>minimize(norm(A @ x - b, 2) + gamma * norm(x, 2))</code></pre>
+        The framework automatically recognizes this as an SOCP and reformulates it:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & t_1 + \gamma t_2 \\
+        \text{subject to} \quad & \|Ax - b\|_2 \le t_1 \quad \text{(SOC constraint)} \\
+        & \|x\|_2 \le t_2 \quad \text{(SOC constraint)}
+        \end{aligned}
+        $$
+        The user never sees this reformulation—it happens transparently during compilation.</p>
+      </div>
+
+      <h3>5.2 Common Atom-to-Cone Mappings</h3>
+
+      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint. This is the "canonicalize" step in the solver pipeline.</p>
+
+      <p>Here are key examples of how DCP atoms map to the conic forms studied in this lecture:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <th style="text-align: left; padding: 8px;"><b>DCP Atom</b></th>
+          <th style="text-align: left; padding: 8px;"><b>Conic Form</b></th>
+          <th style="text-align: left; padding: 8px;"><b>Cone Type</b></th>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>norm(x, 2) <= t</code></td>
+          <td style="padding: 8px;">$(t, x) \in \mathcal{Q}^{n+1}$</td>
+          <td style="padding: 8px;">Second-order cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>quad_form(x, P)</code> for $P \succ 0$</td>
+          <td style="padding: 8px;">$(t, x) \in \mathcal{Q}^{n+1}$ via Cholesky $P = L^\top L$</td>
+          <td style="padding: 8px;">Second-order cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>log_sum_exp(x)</code></td>
+          <td style="padding: 8px;">Exponential cone constraints</td>
+          <td style="padding: 8px;">Exponential cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>entr(x)</code> (entropy $-x \log x$)</td>
+          <td style="padding: 8px;">$(x, 1, t) \in K_{\text{exp}}$</td>
+          <td style="padding: 8px;">Exponential cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>X >> 0</code> (PSD constraint)</td>
+          <td style="padding: 8px;">$X \in \mathbb{S}_+^n$</td>
+          <td style="padding: 8px;">PSD cone</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;"><code>lambda_max(X)</code> (max eigenvalue)</td>
+          <td style="padding: 8px;">$tI - X \succeq 0$</td>
+          <td style="padding: 8px;">PSD cone (LMI)</td>
+        </tr>
+      </table>
+
+      <h3>5.3 Why DCP Matters for Conic Programming</h3>
+      <div class="insight">
+        <h4>Automatic Problem Classification</h4>
+        <p>DCP's power is that it <b>automatically classifies</b> your problem into the appropriate conic class:</p>
+        <ul>
+          <li>If your problem uses only <code>norm</code>, <code>quad_form</code>, and affine atoms → Compiled to <b>SOCP</b></li>
+          <li>If it includes <code>log</code>, <code>exp</code>, <code>entr</code>, <code>kl_div</code> → Compiled to <b>Exponential Cone Program</b></li>
+          <li>If it uses PSD constraints <code>X >> 0</code> or <code>lambda_max</code> → Compiled to <b>SDP</b></li>
+          <li>If it mixes all of the above → Compiled to a <b>mixed conic program</b> combining multiple cone types</li>
+        </ul>
+        <p>This classification determines which solver to use (ECOS for SOC+Exp, MOSEK for mixed, SCS for everything) and enables the framework to choose the most efficient algorithm.</p>
+      </div>
+
+      <h3>5.4 The DCP Verification Process</h3>
+      <p>When you define a problem in CVXPY, the framework performs these steps:</p>
+      <ol>
+        <li><b>Parse the expression tree:</b> Break down <code>norm(A @ x - b)</code> into atoms and operations</li>
+        <li><b>Verify DCP compliance:</b> Check that each atom is used correctly (e.g., <code>norm</code> appears in a convex position)</li>
+        <li><b>Infer curvature:</b> Propagate convexity/concavity labels up the expression tree using composition rules</li>
+        <li><b>Canonicalize:</b> Transform the high-level problem into standard conic form</li>
+        <li><b>Invoke solver:</b> Pass the conic form to an interior-point solver</li>
+      </ol>
+
+      <p>If DCP verification fails (e.g., you wrote <code>exp(norm(x))</code>, which is neither convex nor concave), the framework rejects the problem <i>before</i> calling the solver, saving you from silently getting wrong answers.</p>
+
+      <div class="example-box">
+        <h4>Example: Portfolio Optimization with DCP</h4>
+        <p>A classic Markowitz portfolio problem in CVXPY:
+        <pre><code>import cvxpy as cp
+import numpy as np
+
+# Data: expected returns mu, covariance Sigma
+mu = np.array([0.10, 0.08, 0.12])
+Sigma = np.array([[0.04, 0.01, 0.02],
+                  [0.01, 0.03, 0.01],
+                  [0.02, 0.01, 0.05]])
+gamma = 1.0  # risk aversion
+
+# Variables
+w = cp.Variable(3)  # portfolio weights
+
+# Objective: maximize return - risk
+objective = cp.Maximize(mu @ w - gamma * cp.quad_form(w, Sigma))
+
+# Constraints
+constraints = [cp.sum(w) == 1,  # budget
+               w >= 0]           # long-only
+
+# Solve
+problem = cp.Problem(objective, constraints)
+problem.solve()</code></pre>
+        Behind the scenes, CVXPY:
+        <ul>
+          <li>Recognizes <code>quad_form(w, Sigma)</code> as convex (since $\Sigma \succeq 0$)</li>
+          <li>Transforms the quadratic form into an SOC constraint via Cholesky decomposition</li>
+          <li>Converts the maximization into minimization: $\min (-\mu^\top w + \gamma w^\top \Sigma w)$</li>
+          <li>Compiles to an SOCP and calls an SOC solver (e.g., ECOS)</li>
+        </ul>
+        All of this happens automatically—you write intuitive mathematical expressions, and DCP handles the conic compilation.</p>
+      </div>
+
+      <h3>5.5 Key Takeaway</h3>
+      <p><b>DCP is the compiler for convex optimization.</b> Just as a C compiler translates high-level code into machine instructions, DCP translates high-level mathematical expressions into the low-level conic forms that solvers understand. This separation of concerns—modeling vs. solving—has made convex optimization accessible to thousands of practitioners who never need to understand interior-point methods or cone geometry.</p>
+
     </section>
 
-    <section class="section-card" id="section-7">
-      <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
+    <section class="section-card" id="section-6">
+      <h2><i data-feather="edit-3"></i> 6. Exercises</h2>
       <p>These problems consolidate the lecture material and provide practice in problem classification, formulation, and reformulation.</p>
 
       <!-- Problem 4.1 -->
@@ -1673,8 +1785,8 @@
 
     </section>
 
-<section class="section-card" id="section-8">
-      <h2>8. Review & Cheat Sheet</h2>
+<section class="section-card" id="section-7">
+      <h2>7. Review & Cheat Sheet</h2>
 
 
       <h3>Meta-Patterns: Convexification Recipes</h3>

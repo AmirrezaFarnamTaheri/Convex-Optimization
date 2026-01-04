@@ -228,74 +228,30 @@
       </ul>
       This space contains the missing dimensions.</p>
 
-      <h4>4) The Jordan Block: The Atomic Failure Unit</h4>
-      <p>The simplest non-diagonalizable behavior occurs in a <b>Jordan block</b>. A Jordan block $J_k(\lambda)$ of size $k$ is:</p>
-      $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} $$
-      <p><b>Properties:</b>
-      <ul>
-        <li>Diagonal entries are $\lambda$ (pure scaling).</li>
-        <li>Superdiagonal entries are $1$ (coupling/drift).</li>
-        <li>Geometric multiplicity is $1$ (only one true eigenvector $e_1$). Algebraic multiplicity is $k$.</li>
-      </ul>
-      This is the irreducible unit of defect.</p>
-
-      <h4>5) Jordan Chains</h4>
-      <p>A basis for the generalized eigenspace is built from <b>Jordan chains</b>:
-      $$ (A-\lambda I)\mathbf{v}_1 = 0 \quad (\text{eigenvector}) $$
-      $$ (A-\lambda I)\mathbf{v}_2 = \mathbf{v}_1 $$
-      $$ \vdots $$
-      $$ (A-\lambda I)\mathbf{v}_k = \mathbf{v}_{k-1} $$
-      In this basis, the matrix takes the Jordan block form.</p>
+      <h4>4) Jordan Form: Handling Non-Diagonalizable Matrices</h4>
+      <p>When a matrix lacks a full set of eigenvectors, it cannot be diagonalized. The <b>Jordan Canonical Form</b> provides the next-best structure.</p>
 
       <div class="theorem-box">
-        <h4>6) The Jordan Canonical Form Theorem</h4>
-        <p>Let $A \in \mathbb{C}^{n \times n}$. There exists an invertible matrix $P$ such that:
-        $$ \boxed{ A = P J P^{-1} } $$
-        where $J$ is block diagonal:
+        <h4>Jordan Canonical Form Theorem</h4>
+        <p>Every matrix $A \in \mathbb{C}^{n \times n}$ can be written as $A = P J P^{-1}$ where $J$ is block diagonal:
         $$ J = \operatorname{diag}(J_{k_1}(\lambda_1), \dots, J_{k_r}(\lambda_r)) $$
-        <b>Uniqueness:</b> The form is unique up to the ordering of blocks.
-        <br><b>Structure:</b>
-        <ul>
-            <li>The total size of blocks for $\lambda$ equals $m_\lambda$.</li>
-            <li>The number of blocks for $\lambda$ equals $g_\lambda$.</li>
-        </ul>
+        Each <b>Jordan block</b> $J_k(\lambda)$ has $\lambda$ on the diagonal and $1$ on the superdiagonal:
+        $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 & \dots \\ 0 & \lambda & 1 & \dots \\ \vdots & \ddots & \ddots & 1 \\ 0 & \dots & 0 & \lambda \end{bmatrix} $$
+        <b>Key insight:</b> The form is unique up to block ordering. Block sizes measure "defectiveness" (geometric vs. algebraic multiplicity gap).
         </p>
       </div>
 
-      <h4>7) Decomposition: Scaling + Nilpotent</h4>
-      <p>Jordan form decomposes a linear map into $A = S + N$, where:
-      <ul>
-        <li>$S = P \operatorname{diag}(\lambda_i) P^{-1}$ is <b>diagonalizable</b> (semisimple).</li>
-        <li>$N$ is <b>nilpotent</b> ($N^n = 0$).</li>
-        <li>$S$ and $N$ commute ($SN = NS$).</li>
-      </ul>
-      Diagonalizable matrices are exactly those where $N=0$. The nilpotent part $N$ measures the "defect".</p>
-
-      <h4>8) Dynamics: Why Blocks Matter</h4>
-      <p>Consider the discrete system $x_{t+1} = A x_t$. For a Jordan block:
-      $$ J_k(\lambda)^t \approx \lambda^t \begin{bmatrix} 1 & t & t^2/2 & \dots \\ 0 & 1 & t & \dots \\ \vdots & & \ddots & \\ 0 & \dots & 0 & 1 \end{bmatrix} $$
-      Even if $|\lambda| < 1$, the polynomial terms ($t, t^2$) cause <b>transient growth</b> before asymptotic decay. This explains why stability analysis based solely on eigenvalues ($\rho(A) < 1$) can miss short-term instabilities ("humps").</p>
-
-      <h4>9) Invariants Preserved</h4>
-      <p>Jordan form preserves all algebraic invariants: eigenvalues, algebraic/geometric multiplicities, and the minimal polynomial. However, it does <b>not</b> preserve geometric properties like orthogonality or singular values. It is an algebraic classification, not a geometric one.</p>
-
       <div class="insight">
-        <h4>10) Real vs. Complex Fields</h4>
-        <p>Over $\mathbb{C}$, Jordan form always exists. Over $\mathbb{R}$, if eigenvalues are complex, we get $2 \times 2$ rotation blocks instead of diagonal entries. This is why Spectral Theory (symmetric matrices) is so powerful: it guarantees real eigenvalues and orthogonal diagonalization, avoiding these complications.</p>
+        <h4>Key Insights: Jordan Form in Practice</h4>
+        <p><b>Semisimple + Nilpotent Decomposition:</b> Jordan form reveals $A = S + N$ where $S$ is diagonalizable (semisimple), $N$ is nilpotent ($N^k = 0$), and they commute. The nilpotent part $N$ measures the "defect" from diagonalizability.</p>
+        <ul>
+          <li><b>Algebraic classification:</b> Preserves eigenvalues and multiplicities, but not geometry (orthogonality, singular values).</li>
+          <li><b>Dynamics insight:</b> Even if $|\lambda| < 1$, Jordan blocks cause transient growth ($\sim \lambda^t t^k$ terms) before decay. Stability requires more than $\rho(A) < 1$.</li>
+          <li><b>Numerical instability:</b> Jordan form is discontinuous—infinitesimal perturbations break blocks. For computation, use <b>Schur Decomposition</b> or SVD instead.</li>
+          <li><b>Real vs. Complex:</b> Over $\mathbb{R}$, complex eigenvalues yield $2 \times 2$ rotation blocks. This is why symmetric matrices (Spectral Theorem) are powerful—real eigenvalues + orthogonal bases.</li>
+        </ul>
+        <p><b>The Big Picture:</b> <i>Spectral Theorem</i> = perfect geometry (self-adjoint). <i>Jordan Form</i> = perfect algebra (similarity classification). <i>SVD</i> = perfect geometry for all matrices.</p>
       </div>
-
-      <h4>11) Numerical Instability</h4>
-      <p>Jordan form is <b>discontinuous</b> with respect to matrix entries. An arbitrarily small perturbation can break a Jordan block into distinct eigenvalues (diagonalizable). Thus, Jordan form is a theoretical tool, not a computational one. For numerics, we use <b>Schur Decomposition</b> (unitary triangularization) or SVD.</p>
-
-      <h4>12) Conceptual Summary</h4>
-      <p><b>Diagonalization</b> fails when eigenvectors are insufficient. <b>Jordan form</b> shows that the failure is controlled: each eigenvalue carries a nilpotent "defect" measuring how far the map is from being diagonal.</p>
-
-      <h4>13) The Big Picture</h4>
-      <ul>
-        <li><b>Spectral Theorem:</b> Perfect geometry (Self-Adjoint).</li>
-        <li><b>Jordan Form:</b> Perfect algebra (Similarity classification).</li>
-        <li><b>SVD:</b> Perfect geometry for <i>all</i> matrices.</li>
-      </ul>
 
       <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $T$ is <b>self-adjoint</b> ($T = T^*$), then:
@@ -454,6 +410,116 @@
         <li><b>Full QR ($Q \in \mathbb{R}^{m \times m}$):</b> Extends $Q$ to a basis for the entire space $\mathbb{R}^m$. $A = [Q_1 \ Q_2] \begin{bmatrix} R \\ 0 \end{bmatrix}$. $Q_2$ forms a basis for the left nullspace $\mathcal{N}(A^\top)$.</li>
       </ul>
       </p>
+
+      <h3>4.4 Householder Reflections: The Algorithmic Implementation</h3>
+
+      <div class="insight">
+        <h4>Why Not Gram-Schmidt in Practice?</h4>
+        <p>The Gram-Schmidt algorithm described in Section 4.1 is conceptually elegant but <b>numerically unstable</b>. When vectors are nearly collinear, the computed $q_k$ vectors progressively lose orthogonality due to rounding errors. Modified Gram-Schmidt improves this somewhat, but the gold standard for computing QR is <b>Householder reflections</b> - a method that achieves backward stability.</p>
+      </div>
+
+      <p>The <b>Householder reflection</b> is a linear transformation that reflects a vector across a hyperplane. It provides a systematic way to "zero out" entries below the diagonal, column by column, transforming $A$ into upper triangular form $R$ while building $Q$ implicitly.</p>
+
+      <h4>Definition: Householder Matrix</h4>
+      <p>Given a unit vector $\mathbf{u} \in \mathbb{R}^m$ (the normal to the hyperplane), the <b>Householder matrix</b> is:
+      $$ H = I - 2 \mathbf{u} \mathbf{u}^\top $$
+      This matrix has three key properties:</p>
+      <ul>
+        <li><b>Symmetric:</b> $H^\top = H$ (since $\mathbf{u}\mathbf{u}^\top$ is symmetric)</li>
+        <li><b>Orthogonal:</b> $H^\top H = H^2 = I$ (reflections applied twice return to the original)</li>
+        <li><b>Reflection:</b> For any $\mathbf{x}$, $H\mathbf{x}$ is the reflection of $\mathbf{x}$ across the hyperplane $\{\mathbf{v} \mid \mathbf{u}^\top \mathbf{v} = 0\}$</li>
+      </ul>
+
+      <div class="proof-box">
+        <h4>Verification of Orthogonality</h4>
+        <p>
+        $$ H^2 = (I - 2\mathbf{u}\mathbf{u}^\top)^2 = I - 4\mathbf{u}\mathbf{u}^\top + 4\mathbf{u}\mathbf{u}^\top \mathbf{u}\mathbf{u}^\top $$
+        Since $\mathbf{u}$ is a unit vector, $\mathbf{u}^\top \mathbf{u} = 1$, so:
+        $$ H^2 = I - 4\mathbf{u}\mathbf{u}^\top + 4\mathbf{u}\mathbf{u}^\top = I $$
+        </p>
+      </div>
+
+      <h4>The Householder QR Algorithm</h4>
+      <p>The algorithm constructs a sequence of Householder matrices $H_1, H_2, \ldots, H_n$ such that:
+      $$ H_n \cdots H_2 H_1 A = R $$
+      where $R$ is upper triangular. Since each $H_k$ is orthogonal and symmetric, we have:
+      $$ A = (H_1 H_2 \cdots H_n) R = Q R $$
+      with $Q = H_1 H_2 \cdots H_n$ orthogonal.</p>
+
+      <div class="subsection">
+        <h5>Step k: Zeroing the k-th Column</h5>
+        <p>At step $k$, we've already zeroed columns $1, \ldots, k-1$. The matrix looks like:
+        $$
+        A^{(k-1)} = \begin{bmatrix}
+        R_{1:k-1, 1:k-1} & * & \cdots & * \\
+        0 & x_k & \cdots & * \\
+        \vdots & x_{k+1} & & \vdots \\
+        0 & x_m & \cdots & *
+        \end{bmatrix}
+        $$
+        We want to choose $H_k$ to transform the $k$-th column below the diagonal into zeros.
+        <br><br>
+        Let $\mathbf{x} = (x_k, x_{k+1}, \ldots, x_m)^\top \in \mathbb{R}^{m-k+1}$ be the subvector below the diagonal. We seek a reflection that maps $\mathbf{x}$ to $\|\mathbf{x}\| \mathbf{e}_1 = (\|\mathbf{x}\|, 0, \ldots, 0)^\top$.
+        <br><br>
+        The normal vector $\mathbf{u}$ to the reflecting hyperplane is:
+        $$ \mathbf{u} = \frac{\mathbf{x} - \|\mathbf{x}\| \mathbf{e}_1}{\|\mathbf{x} - \|\mathbf{x}\| \mathbf{e}_1\|} $$
+        In practice, we choose the sign to avoid cancellation:
+        $$ \mathbf{u} = \frac{\mathbf{x} + \mathrm{sign}(x_k) \|\mathbf{x}\| \mathbf{e}_1}{\|\mathbf{x} + \mathrm{sign}(x_k) \|\mathbf{x}\| \mathbf{e}_1\|} $$
+        </p>
+      </div>
+
+      <div class="example-box">
+        <h4>Example: QR via Householder for a 3×2 Matrix</h4>
+        <p>Consider $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{bmatrix}$.
+        <br><br>
+        <b>Step 1:</b> Zero out the first column below the diagonal.
+        <br>$\mathbf{x} = (1, 1, 0)^\top$, $\|\mathbf{x}\| = \sqrt{2}$.
+        <br>$\mathbf{v} = \mathbf{x} + \sqrt{2} \mathbf{e}_1 = (1+\sqrt{2}, 1, 0)^\top$.
+        <br>Normalize: $\mathbf{u} = \frac{\mathbf{v}}{\|\mathbf{v}\|}$.
+        <br>$H_1 = I - 2\mathbf{u}\mathbf{u}^\top$ transforms the first column to $(\sqrt{2}, 0, 0)^\top$.
+        <br><br>
+        <b>Step 2:</b> Apply $H_1$ to entire matrix, then construct $H_2$ to zero out the second column below diagonal (in the $2 \times 2$ submatrix).
+        <br><br>
+        <b>Result:</b> $A = QR$ where $Q = H_1 H_2$ and $R$ is upper triangular.
+        </p>
+      </div>
+
+      <h4>Why Householder is Superior</h4>
+      <div class="insight">
+        <h4>Numerical Stability Comparison</h4>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <th style="text-align: left; padding: 8px;"><b>Method</b></th>
+            <th style="text-align: left; padding: 8px;"><b>Stability</b></th>
+            <th style="text-align: left; padding: 8px;"><b>Cost</b></th>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 8px;">Classical Gram-Schmidt</td>
+            <td style="padding: 8px;">❌ Unstable (loss of orthogonality)</td>
+            <td style="padding: 8px;">$2mn^2$ flops</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 8px;">Modified Gram-Schmidt</td>
+            <td style="padding: 8px;">⚠️ Better, but still issues</td>
+            <td style="padding: 8px;">$2mn^2$ flops</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;"><b>Householder Reflections</b></td>
+            <td style="padding: 8px;">✅ <b>Backward stable</b></td>
+            <td style="padding: 8px;">$2mn^2 - \frac{2}{3}n^3$ flops</td>
+          </tr>
+        </table>
+        <p><b>Backward stability</b> means the computed $\hat{Q}$, $\hat{R}$ satisfy $\hat{Q}\hat{R} = A + E$ where $\|E\| = O(\epsilon_{\text{machine}} \|A\|)$. The algorithm computes the <i>exact</i> QR of a nearby matrix.</p>
+      </div>
+
+      <h4>Connection to Optimization</h4>
+      <p>Householder reflections appear in several optimization contexts:</p>
+      <ul>
+        <li><b>Interior-point methods:</b> Forming and factoring the KKT system requires stable QR factorization</li>
+        <li><b>Trust region methods:</b> The Steihaug-Toint conjugate gradient algorithm uses Householder to maintain orthogonality of search directions</li>
+        <li><b>Constrained least squares:</b> Equality constraints $C\mathbf{x} = \mathbf{d}$ are handled by QR factorization of $C^\top$, yielding a reduced unconstrained problem</li>
+      </ul>
+
     </section>
 
     <!-- SECTION 7: SVD -->
@@ -615,9 +681,8 @@
       $$ \sum_{i=1}^N \|\mathbf{x}_i - \text{proj}_k(\mathbf{x}_i)\|^2 $$
       PCA is not just a heuristic; it is the <b>optimal</b> linear compression scheme.</p>
     </section>
-    </section>
 
-    <!-- SECTION 8: PSEUDOINVERSE -->
+    <!-- SECTION 6: PSEUDOINVERSE -->
     <section class="section-card" id="section-pseudoinverse">
       <h2>6. The Pseudoinverse and Condition Number</h2>
 

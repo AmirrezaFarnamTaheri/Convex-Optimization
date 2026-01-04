@@ -1003,12 +1003,80 @@
       </div>
 
       <h3>3.5 Spectral Shift</h3>
-      <p>Adding a multiple of the identity shifts the eigenvalues but preserves eigenvectors.
-      If $A\mathbf{x} = \lambda \mathbf{x}$, then:
-      $$ (A + tI)\mathbf{x} = A\mathbf{x} + tI\mathbf{x} = (\lambda + t)\mathbf{x}. $$
-      Thus, the eigenvalues of $A+tI$ are $\{\lambda_i + t\}$.
-      <br><b>Warning:</b> In general, $\det(A+B) \neq \det(A) + \det(B)$. For example, $\det(I+I) = 2^n \neq 1+1$.
-      </p>
+
+      <p>Adding a scalar multiple of the identity to a matrix shifts all eigenvalues uniformly while preserving eigenvectors and their multiplicities. This simple operation has profound consequences for conditioning, positive definiteness, and algorithm design.</p>
+
+      <div class="theorem-box">
+        <h4>Theorem: Spectral Shift Formula</h4>
+        <p>If $A\mathbf{x} = \lambda \mathbf{x}$, then:
+        $$ (A + tI)\mathbf{x} = A\mathbf{x} + tI\mathbf{x} = (\lambda + t)\mathbf{x} $$
+        Thus, the eigenvalues of $A+tI$ are $\{\lambda_i(A) + t\}_{i=1}^n$, and the eigenvectors remain unchanged.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Proof via Characteristic Polynomial</h4>
+        <p>The characteristic polynomial of $A+tI$ is:
+        $$ \det((A+tI) - \mu I) = \det(A - (\mu - t)I) $$
+        Setting this equal to zero gives the same roots as $\det(A - \lambda I) = 0$ but shifted: $\mu = \lambda + t$.</p>
+      </div>
+
+      <h4>Applications and Consequences</h4>
+
+      <div class="subsection">
+        <h5>1. Ensuring Positive Definiteness</h5>
+        <p>If $A$ is symmetric with minimum eigenvalue $\lambda_{\min}(A)$, then $A + tI$ is positive definite iff:
+        $$ t > -\lambda_{\min}(A) $$
+        This gives a simple way to "regularize" an indefinite or singular matrix. For example, <b>ridge regression</b> replaces $X^\top X$ (which may be singular) with $X^\top X + \lambda I$ (always invertible for $\lambda > 0$).</p>
+
+        <div class="example-box">
+          <h4>Example: Making a Gram Matrix Invertible</h4>
+          <p>Consider the Gram matrix $G = X^\top X$ where $X \in \mathbb{R}^{m \times n}$ has $m < n$ (tall matrix). Then $\mathrm{rank}(G) \le m < n$, so $G$ is singular.
+          <br><br>
+          Adding $\lambda I$ shifts all eigenvalues: if $\lambda_i(G) \ge 0$, then $\lambda_i(G + \lambda I) = \lambda_i(G) + \lambda \ge \lambda > 0$ for all $i$. The zero eigenvalues become $\lambda$, making $G + \lambda I$ invertible. This is the foundation of <b>Tikhonov regularization</b>.</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h5>2. Controlling Condition Number</h5>
+        <p>The <b>condition number</b> $\kappa(A) = \frac{\lambda_{\max}}{\lambda_{\min}}$ measures numerical stability. Adding $tI$ modifies the condition number:
+        $$ \kappa(A + tI) = \frac{\lambda_{\max}(A) + t}{\lambda_{\min}(A) + t} $$
+        For $t > 0$, this <b>reduces</b> the condition number (bringing eigenvalues closer together), improving numerical stability at the cost of changing the problem.</p>
+
+        <div class="example-box">
+          <h4>Example: Improving Conditioning</h4>
+          <p>Suppose $A$ has $\lambda_{\max} = 100$ and $\lambda_{\min} = 0.01$, so $\kappa(A) = 10{,}000$ (very ill-conditioned).
+          <br>Adding $t = 10$: $\kappa(A + 10I) = \frac{110}{10.01} \approx 11$ (well-conditioned).</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h5>3. Proximal Algorithms and Augmented Lagrangians</h5>
+        <p>In optimization, the <b>proximal operator</b> for a quadratic function $f(x) = \frac{1}{2}x^\top A x + b^\top x$ is:
+        $$ \mathrm{prox}_{t f}(y) = \arg\min_x \left( f(x) + \frac{1}{2t}\|x - y\|^2 \right) $$
+        Setting the gradient to zero gives $(A + \frac{1}{t}I)x = \frac{1}{t}y - b$. The spectral shift $A \to A + \frac{1}{t}I$ ensures the inverse exists and controls the step size.</p>
+      </div>
+
+      <div class="insight">
+        <h4>Key Insight: Why Spectral Shift is Special</h4>
+        <p>Unlike arbitrary matrix addition, $A + tI$ preserves:</p>
+        <ul>
+          <li><b>Eigenvectors:</b> The geometric structure (principal axes) remains unchanged</li>
+          <li><b>Symmetry:</b> If $A \in \mathbb{S}^n$, then $A + tI \in \mathbb{S}^n$</li>
+          <li><b>Positive semidefiniteness:</b> If $A \succeq 0$ and $t \ge 0$, then $A + tI \succeq 0$</li>
+          <li><b>Simplicity:</b> The transformation $\lambda \to \lambda + t$ is trivial to analyze</li>
+        </ul>
+        <p>This makes spectral shift a "surgery with no side effects" - you can adjust eigenvalues without disturbing the eigen-structure.</p>
+      </div>
+
+      <h4>Warning: Eigenvalue Addition is Not Matrix Addition</h4>
+      <p>The spectral shift property $\lambda(A+tI) = \lambda(A) + t$ does <b>not</b> generalize to arbitrary matrices:</p>
+      <ul>
+        <li>$\det(A+B) \neq \det(A) + \det(B)$ in general. (Example: $\det(I+I) = 2^n \neq 1+1 = 2$)</li>
+        <li>$\lambda(A+B) \neq \lambda(A) + \lambda(B)$ in general. (The eigenvalues of a sum do not equal the sum of eigenvalues)</li>
+        <li>Eigenvectors of $A+B$ generally differ from those of $A$ and $B$</li>
+      </ul>
+      <p>The identity matrix $I$ is the <b>unique</b> matrix that commutes with all matrices, making $A + tI$ preserve eigenvectors.</p>
+
     </section>
 
 
@@ -1486,40 +1554,18 @@
       3. <b>Scaling:</b> If $v \in W^\perp$, $\langle \alpha v, w \rangle = \alpha \langle v, w \rangle = 0$.
       </p>
 
-      <h3>5.2 Orthogonal Projection: The Closest Point</h3>
-      <p>This is the central problem of approximation theory: Given $x \in V$ and a subspace $W$, find the vector $p \in W$ that is closest to $x$.
-      $$ \min_{w \in W} \|x - w\| $$
-      <b>The Solution (Orthogonal Decomposition):</b> Every vector $x$ can be uniquely decomposed as $x = p + z$, where $p \in W$ and $z \in W^\perp$.
-      <br>The vector $p$ is called the <b>orthogonal projection</b> of $x$ onto $W$, denoted $\operatorname{proj}_W(x)$.</p>
+      <h3>5.2 Orthogonal Projection: Preview</h3>
+      <p>Orthogonal projection is the central problem of approximation theory: given a vector $\mathbf{x}$ and a subspace $W$, find the closest point $\mathbf{p} \in W$ to $\mathbf{x}$. This minimization problem underlies least squares, constraint handling, and iterative optimization algorithms. The complete theory of projections—including formulas for subspaces, affine sets, and general convex sets—is developed comprehensively in <b>Section 8: Projections onto Subspaces and Affine Sets</b> (see below), where we derive explicit formulas and explore connections to optimization.</p>
 
-      <div class="proof-box">
-        <h4>Proof: Optimality of the Projection</h4>
-        <p>Why is the projection the minimizer?
-        <br>Suppose we have the decomposition $x = p + z$ with $p \in W, z \in W^\perp$. Let $w' \in W$ be any candidate.
-        <br>We can write the error vector as:
-        $$ x - w' = (p + z) - w' = (p - w') + z $$
-        Since $p, w' \in W$, their difference $(p-w') \in W$. By definition, $z \in W^\perp$. Thus $(p-w') \perp z$.
-        <br>Applying the Pythagorean Theorem:
-        $$ \|x - w'\|^2 = \|(p-w') + z\|^2 = \|p-w'\|^2 + \|z\|^2 $$
-        The term $\|z\|^2$ is fixed (depends only on $x$). To minimize the error, we must minimize $\|p-w'\|^2$. Since norms are non-negative, the minimum occurs exactly when $\|p - w'\| = 0$, i.e., $w' = p$.
-        <br><b>Conclusion:</b> The unique closest point is the orthogonal projection $p$.</p>
-      </div>
-
-      <p><b>Linearity:</b> The map $P: x \mapsto \operatorname{proj}_W(x)$ is a linear operator. It satisfies $P^2=P$ (idempotent) and $P^\top=P$ (self-adjoint).</p>
-
-      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
-        <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="assets/layer2_21_dot_product_projection.gif"
-               alt="Dot product as projection onto a direction"
-               style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
-          <figcaption><i>Animation:</i> The dot product $\mathbf{x}^\top \mathbf{u} = \|\mathbf{u}\| \times (\text{signed shadow length of } \mathbf{x} \text{ on } \mathbf{u})$.</figcaption>
-        </figure>
-        <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="assets/layer2_23_orthogonality_projection.gif"
-               alt="Projection decomposition: v = proj + residual"
-               style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
-          <figcaption><i>Animation:</i> The decomposition $\mathbf{v} = \mathrm{proj}_\mathbf{u}(\mathbf{v}) + \text{residual}$, where the residual is always orthogonal to $\mathbf{u}$.</figcaption>
-        </figure>
+      <div class="insight">
+        <h4>Why Projections Matter for Optimization</h4>
+        <p>Every constrained optimization problem involves finding a point that balances two competing objectives: minimizing a cost function while staying inside a feasible region. When the feasible region is a subspace or convex set, the solution often involves computing orthogonal projections. This geometric operation appears in:
+        <ul style="margin-top: 0.5rem;">
+          <li><b>Least Squares:</b> Projecting the target vector $\mathbf{b}$ onto the column space $\mathcal{R}(A)$ (Section 9).</li>
+          <li><b>Constrained Optimization:</b> Projected gradient descent methods that enforce constraints by projecting iterates back onto the feasible set.</li>
+          <li><b>Duality Theory:</b> The geometry of the Karush-Kuhn-Tucker (KKT) conditions involves decomposing gradients into components normal and tangent to constraint surfaces.</li>
+        </ul>
+        </p>
       </div>
 
       <h3>5.3 Orthonormal Bases: Geometry-Compatible Coordinates</h3>
@@ -2212,15 +2258,77 @@
       </div>
 
       <h3>8.2 Orthogonal Projection onto a General Subspace</h3>
-      <p>Let $\mathcal{S} \subseteq \mathbb{R}^m$ be a subspace and $\mathbf{b} \in \mathbb{R}^m$. The <b>orthogonal projection</b> $\mathbf{p} \in \mathcal{S}$ of $\mathbf{b}$ is the unique vector in $\mathcal{S}$ minimizing $\|b - p\|_2$. It is characterized by the condition that the residual is orthogonal to the entire subspace:
-      $$ \mathbf{b} - \mathbf{p} \perp \mathcal{S} \quad \iff \quad \mathbf{v}^\top(\mathbf{b} - \mathbf{p}) = 0 \ \ \forall \mathbf{v} \in \mathcal{S} $$</p>
+      <p>Let $\mathcal{S} \subseteq \mathbb{R}^m$ be a subspace and $\mathbf{b} \in \mathbb{R}^m$. The <b>orthogonal projection</b> $\mathbf{p} \in \mathcal{S}$ of $\mathbf{b}$ is the unique vector in $\mathcal{S}$ minimizing $\|\mathbf{b} - \mathbf{p}\|_2$.</p>
 
-      <h3>Projection via a Basis</h3>
+      <h4>The Orthogonal Decomposition Theorem</h4>
+      <p>Every vector $\mathbf{x} \in \mathbb{R}^n$ can be uniquely decomposed as:
+      $$ \mathbf{x} = \mathbf{p} + \mathbf{z} $$
+      where $\mathbf{p} \in W$ (the projection onto subspace $W$) and $\mathbf{z} \in W^\perp$ (the component orthogonal to $W$). This decomposition is unique and provides the solution to the closest-point problem:
+      $$ \operatorname{proj}_W(\mathbf{x}) = \arg\min_{\mathbf{w} \in W} \|\mathbf{x} - \mathbf{w}\|_2 $$
+      </p>
+
+      <div class="proof-box">
+        <h4>Proof: Optimality via the Pythagorean Theorem</h4>
+        <div class="proof-step">
+          <strong>Setup:</strong> Assume we have the orthogonal decomposition $\mathbf{x} = \mathbf{p} + \mathbf{z}$ with $\mathbf{p} \in W$ and $\mathbf{z} \in W^\perp$. We must show that $\mathbf{p}$ minimizes the distance $\|\mathbf{x} - \mathbf{w}\|_2$ over all $\mathbf{w} \in W$.
+        </div>
+        <div class="proof-step">
+          <strong>Key Observation:</strong> Let $\mathbf{w} \in W$ be any candidate. The error vector decomposes as:
+          $$ \mathbf{x} - \mathbf{w} = (\mathbf{p} + \mathbf{z}) - \mathbf{w} = (\mathbf{p} - \mathbf{w}) + \mathbf{z} $$
+          Since $\mathbf{p}, \mathbf{w} \in W$, their difference $(\mathbf{p} - \mathbf{w}) \in W$ (subspaces are closed under vector addition). By definition, $\mathbf{z} \in W^\perp$, so $(\mathbf{p} - \mathbf{w}) \perp \mathbf{z}$.
+        </div>
+        <div class="proof-step">
+          <strong>Apply Pythagorean Theorem:</strong> For orthogonal vectors, the squared norm of the sum equals the sum of squared norms:
+          $$ \|\mathbf{x} - \mathbf{w}\|_2^2 = \|(\mathbf{p} - \mathbf{w}) + \mathbf{z}\|_2^2 = \|\mathbf{p} - \mathbf{w}\|_2^2 + \|\mathbf{z}\|_2^2 $$
+        </div>
+        <div class="proof-step">
+          <strong>Conclusion:</strong> The term $\|\mathbf{z}\|_2^2$ is fixed (depends only on $\mathbf{x}$, not on our choice of $\mathbf{w}$). To minimize the total error, we must minimize $\|\mathbf{p} - \mathbf{w}\|_2^2$. Since norms are non-negative, the minimum value of $\|\mathbf{p} - \mathbf{w}\|_2^2$ is zero, achieved when $\mathbf{w} = \mathbf{p}$.
+          <br><b>Result:</b> The unique closest point in $W$ to $\mathbf{x}$ is the orthogonal projection $\mathbf{p} = \operatorname{proj}_W(\mathbf{x})$.
+        </div>
+      </div>
+
+      <h4>Characterization via Orthogonality</h4>
+      <p>The projection is characterized by the condition that the residual is orthogonal to the entire subspace:
+      $$ \mathbf{b} - \mathbf{p} \perp \mathcal{S} \quad \iff \quad \mathbf{v}^\top(\mathbf{b} - \mathbf{p}) = 0 \ \ \forall \mathbf{v} \in \mathcal{S} $$
+      This is the <b>normal equations</b> condition that appears throughout optimization theory.</p>
+
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/layer2_21_dot_product_projection.gif"
+               alt="Dot product as projection onto a direction"
+               style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+          <figcaption><i>Animation:</i> The dot product $\mathbf{x}^\top \mathbf{u} = \|\mathbf{u}\| \times (\text{signed shadow length of } \mathbf{x} \text{ on } \mathbf{u})$. Projection is fundamentally about measuring "how much" of one vector lies along another.</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/layer2_23_orthogonality_projection.gif"
+               alt="Projection decomposition: v = proj + residual"
+               style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+          <figcaption><i>Animation:</i> The orthogonal decomposition $\mathbf{v} = \operatorname{proj}_\mathbf{u}(\mathbf{v}) + \text{residual}$. The residual is always perpendicular to $\mathbf{u}$, which is the geometric signature of optimality.</figcaption>
+        </figure>
+      </div>
+
+      <h3>8.2.1 Projection via a Basis</h3>
       <p>If $Q \in \mathbb{R}^{m \times k}$ has orthonormal columns spanning $\mathcal{S}$, the projector is:
       $$ P = QQ^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} = QQ^\top \mathbf{b} $$
-      Check: $P^2 = P$ (idempotent) and $P^\top = P$ (symmetric)—that's what makes it an <b>orthogonal</b> projector.</p>
+      </p>
 
-      <h3>Projection onto $\mathcal{R}(A)$ using $A$</h3>
+      <h4>Fundamental Properties of Projection Operators</h4>
+      <p>The orthogonal projection map $P_W: \mathbf{x} \mapsto \operatorname{proj}_W(\mathbf{x})$ is a <b>linear operator</b> with special algebraic properties:</p>
+      <ul>
+        <li><b>Linearity:</b> $P_W(\alpha \mathbf{x} + \beta \mathbf{y}) = \alpha P_W(\mathbf{x}) + \beta P_W(\mathbf{y})$ for all scalars $\alpha, \beta$ and vectors $\mathbf{x}, \mathbf{y}$.</li>
+        <li><b>Idempotence:</b> $P_W^2 = P_W$. Projecting twice is the same as projecting once (you're already in the subspace after the first projection).</li>
+        <li><b>Self-Adjointness (Symmetry):</b> $P_W^\top = P_W$. The projection operator is symmetric with respect to the standard inner product.</li>
+      </ul>
+      <p>These properties characterize orthogonal projection matrices. Conversely, any matrix $P$ satisfying $P^2 = P$ and $P^\top = P$ is the orthogonal projector onto its column space $\mathcal{R}(P)$.</p>
+
+      <div class="insight">
+        <h4>Geometric Meaning of Idempotence</h4>
+        <p>The property $P^2 = P$ has a beautiful geometric interpretation: if you project a vector $\mathbf{x}$ onto a subspace $W$ to get $\mathbf{p}$, then projecting $\mathbf{p}$ again onto $W$ simply returns $\mathbf{p}$ itself. Mathematically:
+        $$ P(P\mathbf{x}) = P\mathbf{p} = \mathbf{p} = P\mathbf{x} $$
+        This is because $\mathbf{p}$ already lives in $W$, so the closest point in $W$ to $\mathbf{p}$ is just $\mathbf{p}$ itself. Idempotence says that projection is a "stabilizing" operation: once you're in the target subspace, you stay there.</p>
+      </div>
+
+      <h3>8.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
       <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank:
       $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
       </p>

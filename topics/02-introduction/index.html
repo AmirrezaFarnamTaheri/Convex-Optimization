@@ -42,7 +42,7 @@
       <div class="lecture-summary">
         <p>This lecture introduces convex optimization by defining what makes a problem "convex" and proving the fundamental theorem that any local minimum is also global. We examine the canonical problem families (LP, QP, SOCP, SDP), present the "loss + regularizer + constraints" modeling framework, and develop practical techniques for reformulating problems into standard convex forms. We also discuss why convexity is the watershed between tractable and intractable problems in optimization.</p>
         <p><strong>Prerequisites:</strong> <a href="../00-linear-algebra-basics/index.html">Lecture 00: Linear Algebra Basics</a> and <a href="../01-linear-algebra-advanced/index.html">Lecture 01: Linear Algebra Advanced</a> are recommended, particularly projections, PSD matrices, norms, and the fundamental subspaces.</p>
-        <p><strong>Forward Connections:</strong> The definition of convex problems relies on convex functions and sets (Lectures 03-06). The modeling techniques introduced here are used throughout the course. Duality theory (Lecture 13) generalizes the optimality conditions proven here.</p>
+        <p><strong>Forward Connections:</strong> The definition of convex problems relies on convex functions and sets (Lectures 03-06). The modeling techniques introduced here are used throughout the course. Duality theory (Lecture 09) generalizes the optimality conditions proven here.</p>
       </div>
     </header>
 
@@ -77,23 +77,12 @@
         Today, we understand that the "great watershed" in optimization is not between linearity and nonlinearity, but between <b>convexity</b> and <b>nonconvexity</b> (Rockafellar).</p>
 
         <h3>1.2 The Landscape of Optimization</h3>
-        <p>Optimization is the mathematical discipline of finding the "best" solution from a set of alternatives. In the vast landscape of optimization problems, there exists a fundamental divide between two classes:</p>
+        <p>Optimization is the mathematical discipline of finding the "best" solution from a set of alternatives. The fundamental divide is not between linear and nonlinear, but between <b>convex</b> and <b>nonconvex</b>:</p>
         <ul>
-          <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality.</li>
-          <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no polynomial-time guarantees.</li>
+          <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality (polynomial-time algorithms).</li>
+          <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no worst-case guarantees.</li>
         </ul>
-        <p>This distinction is not merely academic—it determines whether a real-world problem can be solved reliably at scale.</p>
-
-        <div class="insight">
-          <h4>Why Convexity is the Watershed Moment</h4>
-          <p>For decades, the optimization world was divided into "Linear" vs "Nonlinear". This was a mistake. The true dividing line is <b>Convexity</b>.
-          <br><b>Why?</b> Because in a convex world, <b>local information predicts global behavior</b>.
-          <ul>
-            <li>If you are at a point where the gradient is zero (local property), you are at the global minimum (global property).</li>
-            <li>If you have a separating hyperplane locally, it separates the sets globally.</li>
-          </ul>
-          <p>This local-to-global correspondence—where local conditions imply global structure—is what makes convex problems solvable in polynomial time. Once you lose convexity, local information no longer predicts global behavior.</p>
-        </div>
+        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure. We formalize this in <a href="#section-2">Section 2.1</a>.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
@@ -207,8 +196,20 @@
       <section class="section-card" id="section-2">
         <h2>2. The Fundamental Theorem: Local = Global</h2>
 
-        <h3>2.1 Global Optimality</h3>
-        <p>In general (nonconvex) optimization, algorithms can get stuck in <b>local minima</b>—points that are optimal within a small neighborhood but not globally. For convex problems, this pathology cannot occur:</p>
+        <h3>2.1 Global Optimality: Why Convexity is the Watershed</h3>
+        <p>In general (nonconvex) optimization, algorithms can get stuck in <b>local minima</b>—points that are optimal within a small neighborhood but not globally. For convex problems, this pathology cannot occur.</p>
+
+        <div class="insight">
+          <h4>The Local-to-Global Principle</h4>
+          <p>For decades, optimization was divided into "Linear" vs. "Nonlinear"—the wrong dichotomy. The true watershed is <b>convexity</b>.
+          <br><b>Why?</b> Because in convex problems, <b>local information predicts global structure</b>:
+          <ul>
+            <li>Gradient zero locally → global minimum</li>
+            <li>Local descent direction → points toward global optimum</li>
+            <li>Local constraint separation → global geometric structure</li>
+          </ul>
+          This local-to-global correspondence enables polynomial-time algorithms. Once you lose convexity, local information no longer guarantees global behavior.</p>
+        </div>
 
         <div class="insight">
           <h4>⚠️ Common Misconception: Unimodal vs. Convex</h4>
@@ -486,7 +487,7 @@
           <h4>Properties and Characteristics</h4>
           <ul>
             <li><b>Level sets:</b> Ellipsoids (when $Q \succ 0$).</li>
-            <li><b>Optimality:</b> Characterized by KKT conditions (covered in <a href="../09-duality/index.html">Lecture 13</a>).</li>
+            <li><b>Optimality:</b> Characterized by KKT conditions (covered in <a href="../09-duality/index.html">Lecture 09</a>).</li>
             <li><b>Algorithms:</b> Active-set methods, Interior-point methods.</li>
             <li><b>Complexity:</b> Polynomial time.</li>
             <li><b>Special case:</b> When $Q = I$ and no inequality constraints are present, this reduces to unconstrained least squares.</li>
@@ -1130,10 +1131,32 @@
       </section>
 
       <section class="section-card" id="section-7">
-        <h2>7. Disciplined Convex Programming (DCP)</h2>
+        <h2>7. Disciplined Convex Programming (DCP): First Encounter</h2>
+
+        <div class="insight">
+          <h4>The DCP Trilogy</h4>
+          <p>This is the <b>first of three DCP encounters</b> in this course, each with a distinct pedagogical role:</p>
+          <ul>
+            <li><b>Lecture 02 (here)</b>: <i>Motivation and philosophy</i> — Why use DCP? What problem does it solve?</li>
+            <li><b><a href="../07-convex-problems-standard/index.html#section-8">Lecture 07, §8</a></b>: <i>Reformulation techniques</i> — How to transform problems to fit DCP rules</li>
+            <li><b><a href="../08-convex-problems-conic/index.html#section-5">Lecture 08, §5</a></b>: <i>Under-the-hood machinery</i> — How DCP atoms map to conic constraints</li>
+          </ul>
+          <p>Think of these as: <b>Why</b> → <b>How (reformulate)</b> → <b>How (implement)</b>.</p>
+        </div>
 
         <h3>7.1 The DCP Philosophy</h3>
         <p><b>Disciplined Convex Programming</b> is a methodology for constructing convex optimization problems by combining basic building blocks using a set of rules that preserve convexity. This approach underlies modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia).</p>
+
+        <div class="insight">
+          <h4>Why DCP Matters</h4>
+          <p>Manually verifying convexity (checking Hessians, applying composition rules) is tedious and error-prone. DCP automates this process:</p>
+          <ul>
+            <li><b>Automatic verification</b>: The modeling language checks convexity at problem construction time</li>
+            <li><b>Expressive syntax</b>: Write optimization problems in natural mathematical notation</li>
+            <li><b>Solver independence</b>: DCP frameworks automatically select and invoke appropriate solvers (LP, SOCP, SDP)</li>
+            <li><b>Wide adoption</b>: Used in finance, machine learning, signal processing, control theory, and more</li>
+          </ul>
+        </div>
 
         <h3>7.2 DCP Rules</h3>
 
@@ -1161,6 +1184,81 @@
             </li>
             <li><b>Pointwise maximum:</b> $\max\{f_1, \ldots, f_m\}$ is convex if all $f_i$ are convex.</li>
           </ul>
+        </div>
+
+        <h3>7.3 A First Example: Portfolio Optimization</h3>
+
+        <div class="example-box">
+          <h4>Example: Minimum Variance Portfolio</h4>
+          <p>Consider the problem of allocating wealth across $n$ assets to minimize risk while achieving a target return:</p>
+          <p>
+            $$
+            \begin{aligned}
+            \text{minimize} \quad & w^\top \Sigma w \\
+            \text{subject to} \quad & \mu^\top w \ge r_{\text{target}} \\
+            & \mathbf{1}^\top w = 1 \\
+            & w \ge 0
+            \end{aligned}
+            $$
+          </p>
+          <p>where $w \in \mathbb{R}^n$ are portfolio weights, $\Sigma \succ 0$ is the covariance matrix, and $\mu \in \mathbb{R}^n$ are expected returns.</p>
+
+          <p><b>DCP Verification</b>:</p>
+          <ul>
+            <li><b>Objective</b>: $w^\top \Sigma w$ is a <i>quadratic form</i> with $\Sigma \succ 0$, hence <b>convex</b></li>
+            <li><b>Constraint 1</b>: $\mu^\top w \ge r_{\text{target}}$ is affine in $w$ (valid for convex problems)</li>
+            <li><b>Constraint 2</b>: $\mathbf{1}^\top w = 1$ is affine (equality constraints must be affine)</li>
+            <li><b>Constraint 3</b>: $w \ge 0$ is componentwise affine</li>
+          </ul>
+
+          <p><b>CVXPY Implementation</b>:</p>
+          <pre><code>import cvxpy as cp
+import numpy as np
+
+# Problem data
+n = 10
+Sigma = np.random.randn(n, n)
+Sigma = Sigma.T @ Sigma + 0.1 * np.eye(n)  # Ensure PSD
+mu = np.random.randn(n) * 0.1 + 0.05
+r_target = 0.07
+
+# DCP formulation
+w = cp.Variable(n)
+objective = cp.Minimize(cp.quad_form(w, Sigma))
+constraints = [
+    mu @ w >= r_target,
+    cp.sum(w) == 1,
+    w >= 0
+]
+problem = cp.Problem(objective, constraints)
+
+# Solve (CVXPY automatically selects QP solver)
+problem.solve()
+print(f"Optimal risk: {problem.value:.4f}")
+print(f"Optimal weights: {w.value}")</code></pre>
+
+          <p><b>Key insight</b>: CVXPY <i>automatically verified</i> that this problem is convex (a quadratic program). If we had mistakenly written a non-convex objective, CVXPY would raise a <code>DCPError</code> at construction time.</p>
+        </div>
+
+        <h3>7.4 When DCP Isn't Enough</h3>
+
+        <p>DCP is <b>conservative</b>: it may reject problems that are convex but don't fit the ruleset. For example:</p>
+        <ul>
+          <li><b>Geometric programming</b>: $\sum_i c_i x_1^{a_{1i}} x_2^{a_{2i}} \cdots x_n^{a_{ni}}$ (convex after log transform, but not in DCP form)</li>
+          <li><b>Custom atoms</b>: Novel functions that are convex but not in the standard library</li>
+          <li><b>Implicit constraints</b>: Convexity that depends on problem structure (e.g., hidden convexity)</li>
+        </ul>
+
+        <p>In such cases, you may need to:</p>
+        <ol>
+          <li><b>Reformulate</b>: Transform the problem into DCP-compliant form (see <a href="../07-convex-problems-standard/index.html#section-8">Lecture 07, Section 8: Problem Reformulation</a>)</li>
+          <li><b>Manual verification</b>: Prove convexity and use a general-purpose solver directly</li>
+          <li><b>Extend DCP</b>: Add custom atoms to the DCP library (advanced, requires understanding solver transformations)</li>
+        </ol>
+
+        <div class="insight">
+          <h4>Looking Ahead: DCP in Practice</h4>
+          <p>This section provided a high-level introduction to DCP. For a deeper dive into how DCP systems work <i>under the hood</i>—including how atoms map to conic constraints, automatic problem classification, and the verification pipeline—see <a href="../08-convex-problems-conic/index.html#section-5">Lecture 08, Section 5: DCP Recap</a>.</p>
         </div>
       </section>
 

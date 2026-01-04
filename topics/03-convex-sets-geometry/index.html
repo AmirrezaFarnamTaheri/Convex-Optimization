@@ -818,6 +818,17 @@
           <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
         </figure>
 
+        <div class="insight">
+          <h4>Why This Matters: Three Foundational Applications</h4>
+          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
+          <ol>
+            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
+            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
+            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
+          </ol>
+          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
+        </div>
+
         <h4>Strict vs. Non-Strict Separation</h4>
         <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
         <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
@@ -992,10 +1003,87 @@
           <figcaption><i>Figure 24:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
         </figure>
 
-        <h3>3.7 Cartesian Product</h3>
-        <p>The product of convex sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is convex in $\mathbb{R}^{n+m}$:</p>
-        $$ C \times D = \{(x, y) \mid x \in C, y \in D\} $$
-        <p>This follows because component-wise convex combinations preserve membership in $C$ and $D$ respectively.</p>
+        <h3>3.7 Cartesian Product: Building Higher-Dimensional Convex Sets</h3>
+
+        <div class="definition-box">
+          <h4>Definition: Cartesian Product</h4>
+          <p>The <b>Cartesian product</b> of two sets $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ is the set of all ordered pairs:
+          $$ C \times D = \{(\mathbf{x}, \mathbf{y}) \in \mathbb{R}^{n+m} \mid \mathbf{x} \in C, \ \mathbf{y} \in D\} $$
+          Geometrically, $C \times D$ lives in the $(n+m)$-dimensional product space $\mathbb{R}^n \times \mathbb{R}^m \cong \mathbb{R}^{n+m}$, where the first $n$ coordinates come from $C$ and the last $m$ coordinates come from $D$.</p>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem: Cartesian Product Preserves Convexity</h4>
+          <p>If $C \subseteq \mathbb{R}^n$ and $D \subseteq \mathbb{R}^m$ are convex sets, then their Cartesian product $C \times D \subseteq \mathbb{R}^{n+m}$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <div class="proof-step">
+            <strong>Setup:</strong> Let $(\mathbf{x}_1, \mathbf{y}_1), (\mathbf{x}_2, \mathbf{y}_2) \in C \times D$ be two arbitrary points in the product. By definition, this means $\mathbf{x}_1, \mathbf{x}_2 \in C$ and $\mathbf{y}_1, \mathbf{y}_2 \in D$. We must show that for any $\theta \in [0,1]$, the convex combination
+            $$ \theta (\mathbf{x}_1, \mathbf{y}_1) + (1-\theta)(\mathbf{x}_2, \mathbf{y}_2) $$
+            also lies in $C \times D$.
+          </div>
+          <div class="proof-step">
+            <strong>Component-wise Convex Combination:</strong> The convex combination in the product space decomposes into separate convex combinations in each coordinate block:
+            $$ \theta (\mathbf{x}_1, \mathbf{y}_1) + (1-\theta)(\mathbf{x}_2, \mathbf{y}_2) = \left( \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \right) $$
+          </div>
+          <div class="proof-step">
+            <strong>Apply Convexity of $C$ and $D$:</strong> Since $C$ is convex and $\mathbf{x}_1, \mathbf{x}_2 \in C$, we have:
+            $$ \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2 \in C $$
+            Similarly, since $D$ is convex and $\mathbf{y}_1, \mathbf{y}_2 \in D$, we have:
+            $$ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \in D $$
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> By definition of the Cartesian product, if the first $n$ coordinates lie in $C$ and the last $m$ coordinates lie in $D$, then the combined point $(\mathbf{x}, \mathbf{y})$ lies in $C \times D$. Thus:
+            $$ \left( \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2, \ \theta \mathbf{y}_1 + (1-\theta)\mathbf{y}_2 \right) \in C \times D $$
+            This proves that $C \times D$ is convex.
+          </div>
+        </div>
+
+        <h4>Examples</h4>
+
+        <div class="example">
+          <h4>Example 1: Product of Intervals</h4>
+          <p>Consider two closed intervals on the real line: $C = [a, b] \subseteq \mathbb{R}$ and $D = [c, d] \subseteq \mathbb{R}$. Their Cartesian product is:
+          $$ C \times D = [a, b] \times [c, d] = \{(x, y) \in \mathbb{R}^2 \mid a \le x \le b, \ c \le y \le d\} $$
+          This is a <b>rectangle</b> (or "box") in $\mathbb{R}^2$ with corners at $(a, c), (a, d), (b, c), (b, d)$. Since intervals are convex (in fact, they are line segments), the theorem guarantees that this rectangle is convex—which is geometrically obvious.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 2: Box in $\mathbb{R}^n$</h4>
+          <p>Generalizing the rectangle, the product of $n$ intervals:
+          $$ \prod_{i=1}^n [a_i, b_i] = [a_1, b_1] \times [a_2, b_2] \times \cdots \times [a_n, b_n] $$
+          is an $n$-dimensional <b>hyperrectangle</b> or <b>box</b> in $\mathbb{R}^n$. This is the set of all points $\mathbf{x} = (x_1, \dots, x_n)$ satisfying $a_i \le x_i \le b_i$ for each $i$. Boxes are fundamental in optimization for defining simple bound constraints.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 3: Product of Simplices</h4>
+          <p>Let $\Delta_n = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} \ge 0, \ \sum x_i = 1\}$ be the standard $(n-1)$-simplex (the probability simplex) in $\mathbb{R}^n$. The product of two simplices:
+          $$ \Delta_2 \times \Delta_3 \subseteq \mathbb{R}^5 $$
+          consists of all pairs $(\mathbf{p}, \mathbf{q})$ where $\mathbf{p} = (p_1, p_2) \in \Delta_2$ (a probability distribution over 2 outcomes) and $\mathbf{q} = (q_1, q_2, q_3) \in \Delta_3$ (a probability distribution over 3 outcomes). This higher-dimensional convex set arises in multi-stage decision problems or probabilistic models with multiple independent random variables.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Connection to Separable Optimization Problems</h4>
+          <p>Cartesian products naturally arise in <b>separable</b> or <b>decomposable</b> optimization problems where variables can be partitioned into independent groups. Consider the problem:
+          $$ \min_{\mathbf{x} \in C, \mathbf{y} \in D} f(\mathbf{x}) + g(\mathbf{y}) $$
+          Here, the objective function is the sum of two functions, each depending on disjoint variable sets. The feasible region is the Cartesian product $C \times D$. Such problems can often be solved by decomposition: optimize over $\mathbf{x} \in C$ and $\mathbf{y} \in D$ <i>separately</i>, then combine the solutions. This is the foundation of <b>block coordinate descent</b> and <b>alternating minimization</b> algorithms.</p>
+        </div>
+
+        <h4>Generalization to Multiple Sets</h4>
+        <p>The Cartesian product extends naturally to any finite number of sets. If $C_1, C_2, \dots, C_k$ are convex sets in spaces $\mathbb{R}^{n_1}, \mathbb{R}^{n_2}, \dots, \mathbb{R}^{n_k}$ respectively, then:
+        $$ C_1 \times C_2 \times \cdots \times C_k = \{(\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_k) \mid \mathbf{x}_i \in C_i \ \forall i\} \subseteq \mathbb{R}^{n_1 + n_2 + \cdots + n_k} $$
+        is convex. The proof follows the same component-wise argument: convex combinations are taken independently in each coordinate block, and since each $C_i$ is convex, the componentwise convex combinations remain inside each $C_i$.</p>
+
+        <div class="example">
+          <h4>Example 4: Polyhedra as Products</h4>
+          <p>In optimization, box constraints like:
+          $$ 0 \le x_1 \le 5, \quad -2 \le x_2 \le 3, \quad 1 \le x_3 \le 4 $$
+          define the feasible region as the Cartesian product:
+          $$ [0, 5] \times [-2, 3] \times [1, 4] \subseteq \mathbb{R}^3 $$
+          This is a rectangular box in 3D space. Many optimization solvers exploit this product structure for efficient constraint handling.</p>
+        </div>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Laboratory: Convex Geometry</h3>
@@ -1080,12 +1168,69 @@
 
         <h3>4.3 Why Relative Interior Matters</h3>
 
-        <p>Relative interior is crucial for:</p>
-        <ul>
-          <li><b>Constraint qualifications:</b> Slater's condition for strong duality (Lecture 09) requires a point in $\mathrm{ri}(\mathrm{dom}(f_0))$</li>
-          <li><b>Optimality conditions:</b> KKT conditions require regularity at boundary points</li>
-          <li><b>Interior-point methods:</b> Algorithms that approach optimality from the relative interior</li>
-        </ul>
+        <div class="insight">
+          <h4>The Problem with Ordinary Interior</h4>
+          <p>Many convex sets in optimization problems have <b>empty ordinary interior</b>. Consider:</p>
+          <ul>
+            <li>A line segment in $\mathbb{R}^2$: $\{(t, 0) \mid 0 \le t \le 1\}$ has $\mathrm{int}(C) = \emptyset$.</li>
+            <li>The unit simplex $\Delta^n = \{x \in \mathbb{R}^{n+1} \mid \sum x_i = 1, x \ge 0\}$ lives in a hyperplane, so $\mathrm{int}(\Delta^n) = \emptyset$ in $\mathbb{R}^{n+1}$.</li>
+            <li>The epigraph of a function $f: \mathbb{R}^n \to \mathbb{R}$ lives in $\mathbb{R}^{n+1}$ but often sits on a lower-dimensional surface.</li>
+          </ul>
+          <p>If we require points in the ordinary interior for theorems, they would fail for these fundamental sets. Relative interior <b>rescues</b> these theorems by restricting attention to the affine hull.</p>
+        </div>
+
+        <p>Relative interior is crucial in three major areas:</p>
+
+        <div class="subsection">
+          <h4>1. Constraint Qualifications (Slater's Condition)</h4>
+          <p>The cornerstone result in convex duality is <b>Slater's theorem</b> (Lecture 09): <i>if there exists a strictly feasible point</i>, then strong duality holds (primal optimal value equals dual optimal value). But what does "strictly feasible" mean?</p>
+
+          <p>For a convex problem $\min f_0(x)$ subject to $f_i(x) \le 0$ and $Ax = b$, a point $\tilde{x}$ is <b>strictly feasible</b> (satisfies Slater's condition) if:
+          $$ f_i(\tilde{x}) < 0 \text{ for all } i, \quad A\tilde{x} = b, \quad \tilde{x} \in \mathrm{ri}(\mathrm{dom}(f_0)) $$
+          The requirement $\tilde{x} \in \mathrm{ri}(\mathrm{dom}(f_0))$ (not $\mathrm{int}(\mathrm{dom}(f_0))$) is essential because the domain may be lower-dimensional.</p>
+
+          <div class="example-box">
+            <h4>Example: Portfolio Optimization with Budget Constraint</h4>
+            <p>Consider the problem:
+            $$ \min \frac{1}{2} x^\top \Sigma x \quad \text{subject to} \quad \sum_{i=1}^n x_i = 1, \quad x \ge 0 $$
+            The feasible set is the simplex $\Delta^n$, which has <b>empty ordinary interior</b> in $\mathbb{R}^n$ (it lives in the hyperplane $\sum x_i = 1$).
+            <br><br>
+            However, $\mathrm{ri}(\Delta^n) = \{x \mid \sum x_i = 1, x > 0\}$ (strictly positive entries) is nonempty. A strictly feasible point is any $\tilde{x}$ with $\tilde{x}_i > 0$ for all $i$ and $\sum \tilde{x}_i = 1$ (e.g., $\tilde{x} = (1/n, \ldots, 1/n)$). Slater's condition is satisfied, guaranteeing strong duality.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h4>2. Subdifferential Calculus and Optimality Conditions</h4>
+          <p>The <b>subdifferential</b> $\partial f(x)$ of a convex function $f$ at $x$ is well-behaved when $x \in \mathrm{ri}(\mathrm{dom}(f))$. Key results include:</p>
+          <ul>
+            <li><b>Nonemptiness:</b> If $f$ is convex and $x \in \mathrm{ri}(\mathrm{dom}(f))$, then $\partial f(x) \neq \emptyset$. (This fails at boundary points!)</li>
+            <li><b>Sum rule:</b> $\partial (f+g)(x) = \partial f(x) + \partial g(x)$ holds <i>when</i> $\mathrm{ri}(\mathrm{dom}(f)) \cap \mathrm{ri}(\mathrm{dom}(g)) \neq \emptyset$.</li>
+            <li><b>Optimality:</b> For an unconstrained problem $\min f(x)$, the condition $0 \in \partial f(x^*)$ is necessary <i>and sufficient</i> for optimality if $x^* \in \mathrm{ri}(\mathrm{dom}(f))$.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h4>3. Interior-Point Methods</h4>
+          <p>Modern convex optimization solvers (CVX, MOSEK, ECOS) rely on <b>primal-dual interior-point methods</b> that:</p>
+          <ul>
+            <li>Start from a point in the <b>relative interior</b> of the feasible set</li>
+            <li>Follow the <b>central path</b> $\{x(\tau) \mid \nabla f_0(x) + \sum \tau_i \nabla f_i(x) = 0, f_i(x) < 0\}$ as $\tau \to 0$</li>
+            <li>Stay in $\mathrm{ri}(C)$ throughout, approaching the boundary only at convergence</li>
+          </ul>
+          <p>For problems with equality constraints $Ax = b$ (e.g., standard form LP), the central path lives in a <b>lower-dimensional affine subspace</b>. The algorithm operates in $\mathrm{ri}(\{x \mid Ax = b\})$, not $\mathrm{int}(\{x \mid Ax = b\}) = \emptyset$.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Key Takeaway: Relative Interior = "Interior Where It Counts"</h4>
+          <p>The relative interior generalizes the intuitive notion of "points strictly inside the set" to lower-dimensional sets. It is the <b>right</b> notion of interior for:</p>
+          <ul>
+            <li>Constraint qualifications (Slater's condition)</li>
+            <li>Subdifferential calculus (nonemptiness, sum rules)</li>
+            <li>Interior-point algorithms (feasibility and strict decrease)</li>
+          </ul>
+          <p>Whenever you see $\mathrm{ri}(C)$ in a theorem, it's rescuing a result that would fail with $\mathrm{int}(C)$ due to empty interiors.</p>
+        </div>
+
       </section>
 
 
@@ -1107,6 +1252,52 @@
           <li>Perspective function ($P(x,t) = x/t$)</li>
           <li>Linear-fractional function ($f(x) = \frac{Ax+b}{c^\top x+d}$)</li>
         </ul>
+      </section>
+
+      <!-- SECTION 5.5: LOOKING AHEAD -->
+      <section class="section-card">
+        <h3>5.1 Looking Ahead: From Sets to Operations to Functions</h3>
+
+        <div class="insight">
+          <h4>The Convexity Trifecta: A Three-Lecture Arc</h4>
+          <p>This lecture (Lecture 03) introduced <b>convex sets</b>—the geometric objects that form the foundation of convex optimization. We answered: <b>WHAT are convex sets?</b> We saw cones, polyhedra, ellipsoids, and norm balls.</p>
+
+          <p>But convex optimization is not just about sets—it's about <b>operations</b> and <b>functions</b>. The next two lectures complete the "convexity trifecta":</p>
+
+          <ol>
+            <li><b><a href="../04-convex-sets-cones/index.html">Lecture 04 (Cones and Operations)</a>:</b> What OPERATIONS preserve convexity?
+              <ul style="margin-top: 0.5rem;">
+                <li>We'll study cones—sets with special algebraic structure ($x \in K \implies \lambda x \in K$)</li>
+                <li>Cones enable duality theory (polar cones, dual cones)</li>
+                <li>Key operations: proper cones, second-order cone, PSD cone</li>
+                <li><i>Why cones matter:</i> They're the building blocks for conic programming (SOCP, SDP) in <a href="../08-convex-problems-conic/index.html">Lecture 08</a></li>
+              </ul>
+            </li>
+
+            <li><b><a href="../05-convex-functions-basics/index.html">Lecture 05 (Convex Functions)</a>:</b> What FUNCTIONS have convex graphs (epigraphs)?
+              <ul style="margin-top: 0.5rem;">
+                <li>We'll define convex functions via Jensen's inequality and the epigraph</li>
+                <li>We'll verify convexity using first-order (gradient) and second-order (Hessian) conditions</li>
+                <li>We'll build complex convex functions from simple ones using composition rules</li>
+                <li><i>Why functions matter:</i> They're the objectives and constraints in <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (standard problems) and beyond</li>
+              </ul>
+            </li>
+          </ol>
+
+          <p><b>The Arc:</b> <b>Sets</b> (L03: geometry) → <b>Cones</b> (L04: algebra + duality) → <b>Functions</b> (L05: analysis + calculus) → <b>Problems</b> (L07-09: optimization)</p>
+
+          <p><b>Key Insight:</b> Every convex function defines a convex set (its epigraph). Every convex set can be described by convex inequality constraints. This interplay between sets and functions is the DNA of convex optimization.</p>
+        </div>
+
+        <h4>Preview of Key Connections</h4>
+        <ul>
+          <li><b>Separation theorems (§3.3):</b> Will underpin Lagrangian duality in <a href="../09-duality/index.html">Lecture 09</a></li>
+          <li><b>Cones (L04):</b> Enable the second-order cone (SOCP) and semidefinite cone (SDP) problem classes</li>
+          <li><b>Epigraph characterization:</b> The bridge from sets (L03) to functions (L05)</li>
+          <li><b>Convexity-preserving operations (L05):</b> Let you construct all DCP-compatible functions</li>
+        </ul>
+
+        <p style="margin-top: 1.5rem;"><b>What's Next:</b> In <a href="../04-convex-sets-cones/index.html">Lecture 04</a>, we'll study cones—sets that close under positive scaling. Cones have rich algebraic structure (duals, polars) and enable powerful duality theories. Then in <a href="../05-convex-functions-basics/index.html">Lecture 05</a>, we'll shift from geometry to calculus, studying convex functions via gradients and Hessians.</p>
       </section>
 
       <!-- SECTION 7: EXERCISES -->

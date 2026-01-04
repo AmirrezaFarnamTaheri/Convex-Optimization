@@ -134,18 +134,122 @@
         <p>Subgradients are essential for duality theory. In <a href="../09-duality/index.html">Lecture 09</a>, we will see that optimal Lagrange multipliers are subgradients of the dual function. The subdifferential provides a complete characterization of optimality without requiring differentiability.</p>
       </div>
 
-      <h3>1.5 Calculus Rules</h3>
-      <p><b>Sum Rule:</b> If $f_1, f_2$ are convex, then:
-      $$ \partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x) $$
-      (Minkowski sum of sets)</p>
+      <h3>1.5 Calculus Rules for Subdifferentials</h3>
 
-      <p><b>Scalar Multiplication:</b> For $\alpha > 0$:
-      $$ \partial (\alpha f)(x) = \alpha \partial f(x) $$
-      </p>
+      <p>The subdifferential has algebraic properties that mirror those of ordinary derivatives, but with important caveats. These rules are fundamental for computing subdifferentials of composite functions and for deriving optimality conditions in complex problems.</p>
 
-      <p><b>Affine Composition:</b> If $f$ is convex and $A$ is a matrix, then:
-      $$ \partial (f \circ A)(x) = A^\top \partial f(Ax) $$
-      </p>
+      <h4>1. Sum Rule</h4>
+      <div class="theorem-box">
+        <h4>Theorem: Sum Rule (Always Valid)</h4>
+        <p>If $f_1, f_2$ are convex, then:
+        $$ \partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x) $$
+        where the right-hand side is the <b>Minkowski sum</b> of sets:
+        $$ \partial f_1(x) + \partial f_2(x) = \{g_1 + g_2 \mid g_1 \in \partial f_1(x), g_2 \in \partial f_2(x)\} $$
+        </p>
+      </div>
+      <p><b>Key insight:</b> The sum rule for subdifferentials holds <i>without any regularity conditions</i>, unlike many other calculus rules. This is one of the major advantages of subdifferential calculus over smooth calculus.</p>
+
+      <h4>2. Scalar Multiplication</h4>
+      <p>For $\alpha > 0$:
+      $$ \partial (\alpha f)(x) = \alpha \partial f(x) = \{\alpha g \mid g \in \partial f(x)\} $$
+      For $\alpha = 0$: $\partial (0 \cdot f)(x) = \{0\}$ (constant function has zero subdifferential).
+      <br>For $\alpha < 0$: This doesn't apply directly since $\alpha f$ is concave, not convex. Use $\partial(-f)(x) = -\partial f(x)$ for concave $f$.</p>
+
+      <h4>3. Affine Composition</h4>
+      <div class="theorem-box">
+        <h4>Theorem: Affine Composition Rule</h4>
+        <p>If $f: \mathbb{R}^m \to \mathbb{R}$ is convex and $g(x) = f(Ax + b)$ where $A \in \mathbb{R}^{m \times n}$, then:
+        $$ \partial g(x) = A^\top \partial f(Ax + b) = \{A^\top v \mid v \in \partial f(Ax + b)\} $$
+        </p>
+      </div>
+
+      <div class="example-box">
+        <h4>Example: Ridge Regression Subdifferential</h4>
+        <p>Consider $f(x) = \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$.
+        <br><b>Step 1:</b> Subdifferential of $h(r) = \frac{1}{2}\|r\|_2^2$ is $\partial h(r) = \{r\}$ (since $h$ is differentiable).
+        <br><b>Step 2:</b> By affine composition with $r = Ax - b$:
+        $$ \partial \left(\frac{1}{2}\|Ax - b\|_2^2\right) = A^\top (Ax - b) $$
+        <b>Step 3:</b> By sum rule:
+        $$ \partial f(x) = A^\top(Ax - b) + \lambda x $$
+        Setting $0 \in \partial f(x)$ gives the normal equations: $(A^\top A + \lambda I)x = A^\top b$.</p>
+      </div>
+
+      <h4>4. Pointwise Maximum</h4>
+      <div class="theorem-box">
+        <h4>Theorem: Max Rule</h4>
+        <p>Let $f(x) = \max\{f_1(x), \ldots, f_m(x)\}$ where each $f_i$ is convex. Then:
+        $$ \partial f(x) = \mathrm{conv}\left(\bigcup_{i \in I(x)} \partial f_i(x)\right) $$
+        where $I(x) = \{i \mid f_i(x) = f(x)\}$ is the set of <b>active</b> functions at $x$, and $\mathrm{conv}$ denotes the convex hull.</p>
+      </div>
+      <p><b>Interpretation:</b> The subdifferential is the convex hull of the subdifferentials of the active functions. If only one function is active (say $f_1(x) > f_i(x)$ for $i \neq 1$), then $\partial f(x) = \partial f_1(x)$.</p>
+
+      <div class="example-box">
+        <h4>Example: Hinge Loss</h4>
+        <p>The hinge loss $f(z) = \max\{0, 1-z\}$ is used in SVMs. Let $f_1(z) = 0$ and $f_2(z) = 1-z$.
+        <br><b>Case 1:</b> $z > 1$. Then $f(z) = 0$ (only $f_1$ active), so $\partial f(z) = \{0\}$.
+        <br><b>Case 2:</b> $z < 1$. Then $f(z) = 1-z$ (only $f_2$ active), so $\partial f(z) = \{-1\}$.
+        <br><b>Case 3:</b> $z = 1$. Both active! $\partial f_1(1) = \{0\}$, $\partial f_2(1) = \{-1\}$. Thus:
+        $$ \partial f(1) = \mathrm{conv}\{0, -1\} = [-1, 0] $$
+        The subdifferential is an entire interval at the kink.</p>
+      </div>
+
+      <h4>5. Composition with Monotone Functions (Chain Rule)</h4>
+      <div class="theorem-box">
+        <h4>Theorem: Chain Rule for Subdifferentials</h4>
+        <p>Let $f: \mathbb{R}^n \to \mathbb{R}$ and $h: \mathbb{R} \to \mathbb{R}$. Define $g(x) = h(f(x))$.
+        <ul>
+          <li>If $h$ is <b>convex nondecreasing</b> and $f$ is <b>convex</b>, then:
+          $$ \partial g(x) \supseteq \{v \cdot w \mid v \in \partial h(f(x)), w \in \partial f(x)\} $$
+          Equality holds when $\mathrm{int}(\mathrm{dom}\, h) \cap \mathrm{range}(f) \neq \emptyset$.</li>
+          <li>If $h$ is <b>convex nonincreasing</b> and $f$ is <b>concave</b>, the same holds.</li>
+        </ul>
+        </p>
+      </div>
+      <p><b>Warning:</b> The chain rule for subdifferentials requires monotonicity of the outer function $h$. Unlike smooth calculus, $\partial (h \circ f)$ does NOT always equal $h'(f(x)) \cdot \partial f(x)$ for general $h$.</p>
+
+      <h4>6. Conditions for Sum Rule Equality</h4>
+      <p>While the sum rule $\partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x)$ always holds, many other rules require <b>qualification conditions</b>:</p>
+      <ul>
+        <li><b>Relative Interior Condition:</b> $\mathrm{ri}(\mathrm{dom}(f_1)) \cap \mathrm{ri}(\mathrm{dom}(f_2)) \neq \emptyset$</li>
+        <li>This ensures that the domains "overlap sufficiently" for the calculus to behave well</li>
+        <li>When this fails, inclusions may be strict (e.g., $\partial (h \circ f)(x) \supsetneq$ the chain rule formula)</li>
+      </ul>
+
+      <h4>7. Indicator Function Calculus</h4>
+      <p>The <b>indicator function</b> $I_C(x) = 0$ if $x \in C$, else $+\infty$, has subdifferential:
+      $$ \partial I_C(x) = \begin{cases} N_C(x) & \text{if } x \in C \\ \emptyset & \text{if } x \notin C \end{cases} $$
+      where $N_C(x) = \{g \mid g^\top (y - x) \le 0 \text{ for all } y \in C\}$ is the <b>normal cone</b>.
+      <br><br>
+      <b>Application:</b> For constrained optimization $\min f(x)$ subject to $x \in C$, the optimality condition is:
+      $$ 0 \in \partial f(x^*) + N_C(x^*) $$
+      This unifies KKT conditions for smooth problems and subdifferential optimality for nonsmooth ones.</p>
+
+      <div class="insight">
+        <h4>Summary: When Do Subdifferential Rules Hold?</h4>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <th style="text-align: left; padding: 8px;"><b>Rule</b></th>
+            <th style="text-align: left; padding: 8px;"><b>Conditions</b></th>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 8px;">Sum: $\partial (f_1 + f_2) = \partial f_1 + \partial f_2$</td>
+            <td style="padding: 8px;">✅ Always (no conditions needed)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 8px;">Max: $\partial \max\{f_i\} = \mathrm{conv}(\bigcup_{i \in I(x)} \partial f_i)$</td>
+            <td style="padding: 8px;">✅ Always</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 8px;">Affine composition: $\partial (f \circ A) = A^\top \partial f(Ax)$</td>
+            <td style="padding: 8px;">✅ Always</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Chain rule: $\partial (h \circ f)$</td>
+            <td style="padding: 8px;">⚠️ Requires monotonicity of $h$ + qualification</td>
+          </tr>
+        </table>
+      </div>
+
     </section>
 
       <section class="section-card" id="section-strong-convexity">

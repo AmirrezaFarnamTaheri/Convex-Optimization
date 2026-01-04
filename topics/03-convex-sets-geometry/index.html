@@ -1157,12 +1157,69 @@
 
         <h3>4.3 Why Relative Interior Matters</h3>
 
-        <p>Relative interior is crucial for:</p>
-        <ul>
-          <li><b>Constraint qualifications:</b> Slater's condition for strong duality (Lecture 09) requires a point in $\mathrm{ri}(\mathrm{dom}(f_0))$</li>
-          <li><b>Optimality conditions:</b> KKT conditions require regularity at boundary points</li>
-          <li><b>Interior-point methods:</b> Algorithms that approach optimality from the relative interior</li>
-        </ul>
+        <div class="insight">
+          <h4>The Problem with Ordinary Interior</h4>
+          <p>Many convex sets in optimization problems have <b>empty ordinary interior</b>. Consider:</p>
+          <ul>
+            <li>A line segment in $\mathbb{R}^2$: $\{(t, 0) \mid 0 \le t \le 1\}$ has $\mathrm{int}(C) = \emptyset$.</li>
+            <li>The unit simplex $\Delta^n = \{x \in \mathbb{R}^{n+1} \mid \sum x_i = 1, x \ge 0\}$ lives in a hyperplane, so $\mathrm{int}(\Delta^n) = \emptyset$ in $\mathbb{R}^{n+1}$.</li>
+            <li>The epigraph of a function $f: \mathbb{R}^n \to \mathbb{R}$ lives in $\mathbb{R}^{n+1}$ but often sits on a lower-dimensional surface.</li>
+          </ul>
+          <p>If we require points in the ordinary interior for theorems, they would fail for these fundamental sets. Relative interior <b>rescues</b> these theorems by restricting attention to the affine hull.</p>
+        </div>
+
+        <p>Relative interior is crucial in three major areas:</p>
+
+        <div class="subsection">
+          <h4>1. Constraint Qualifications (Slater's Condition)</h4>
+          <p>The cornerstone result in convex duality is <b>Slater's theorem</b> (Lecture 09): <i>if there exists a strictly feasible point</i>, then strong duality holds (primal optimal value equals dual optimal value). But what does "strictly feasible" mean?</p>
+
+          <p>For a convex problem $\min f_0(x)$ subject to $f_i(x) \le 0$ and $Ax = b$, a point $\tilde{x}$ is <b>strictly feasible</b> (satisfies Slater's condition) if:
+          $$ f_i(\tilde{x}) < 0 \text{ for all } i, \quad A\tilde{x} = b, \quad \tilde{x} \in \mathrm{ri}(\mathrm{dom}(f_0)) $$
+          The requirement $\tilde{x} \in \mathrm{ri}(\mathrm{dom}(f_0))$ (not $\mathrm{int}(\mathrm{dom}(f_0))$) is essential because the domain may be lower-dimensional.</p>
+
+          <div class="example-box">
+            <h4>Example: Portfolio Optimization with Budget Constraint</h4>
+            <p>Consider the problem:
+            $$ \min \frac{1}{2} x^\top \Sigma x \quad \text{subject to} \quad \sum_{i=1}^n x_i = 1, \quad x \ge 0 $$
+            The feasible set is the simplex $\Delta^n$, which has <b>empty ordinary interior</b> in $\mathbb{R}^n$ (it lives in the hyperplane $\sum x_i = 1$).
+            <br><br>
+            However, $\mathrm{ri}(\Delta^n) = \{x \mid \sum x_i = 1, x > 0\}$ (strictly positive entries) is nonempty. A strictly feasible point is any $\tilde{x}$ with $\tilde{x}_i > 0$ for all $i$ and $\sum \tilde{x}_i = 1$ (e.g., $\tilde{x} = (1/n, \ldots, 1/n)$). Slater's condition is satisfied, guaranteeing strong duality.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h4>2. Subdifferential Calculus and Optimality Conditions</h4>
+          <p>The <b>subdifferential</b> $\partial f(x)$ of a convex function $f$ at $x$ is well-behaved when $x \in \mathrm{ri}(\mathrm{dom}(f))$. Key results include:</p>
+          <ul>
+            <li><b>Nonemptiness:</b> If $f$ is convex and $x \in \mathrm{ri}(\mathrm{dom}(f))$, then $\partial f(x) \neq \emptyset$. (This fails at boundary points!)</li>
+            <li><b>Sum rule:</b> $\partial (f+g)(x) = \partial f(x) + \partial g(x)$ holds <i>when</i> $\mathrm{ri}(\mathrm{dom}(f)) \cap \mathrm{ri}(\mathrm{dom}(g)) \neq \emptyset$.</li>
+            <li><b>Optimality:</b> For an unconstrained problem $\min f(x)$, the condition $0 \in \partial f(x^*)$ is necessary <i>and sufficient</i> for optimality if $x^* \in \mathrm{ri}(\mathrm{dom}(f))$.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h4>3. Interior-Point Methods</h4>
+          <p>Modern convex optimization solvers (CVX, MOSEK, ECOS) rely on <b>primal-dual interior-point methods</b> that:</p>
+          <ul>
+            <li>Start from a point in the <b>relative interior</b> of the feasible set</li>
+            <li>Follow the <b>central path</b> $\{x(\tau) \mid \nabla f_0(x) + \sum \tau_i \nabla f_i(x) = 0, f_i(x) < 0\}$ as $\tau \to 0$</li>
+            <li>Stay in $\mathrm{ri}(C)$ throughout, approaching the boundary only at convergence</li>
+          </ul>
+          <p>For problems with equality constraints $Ax = b$ (e.g., standard form LP), the central path lives in a <b>lower-dimensional affine subspace</b>. The algorithm operates in $\mathrm{ri}(\{x \mid Ax = b\})$, not $\mathrm{int}(\{x \mid Ax = b\}) = \emptyset$.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Key Takeaway: Relative Interior = "Interior Where It Counts"</h4>
+          <p>The relative interior generalizes the intuitive notion of "points strictly inside the set" to lower-dimensional sets. It is the <b>right</b> notion of interior for:</p>
+          <ul>
+            <li>Constraint qualifications (Slater's condition)</li>
+            <li>Subdifferential calculus (nonemptiness, sum rules)</li>
+            <li>Interior-point algorithms (feasibility and strict decrease)</li>
+          </ul>
+          <p>Whenever you see $\mathrm{ri}(C)$ in a theorem, it's rescuing a result that would fail with $\mathrm{int}(C)$ due to empty interiors.</p>
+        </div>
+
       </section>
 
 

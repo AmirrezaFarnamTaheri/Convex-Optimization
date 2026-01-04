@@ -801,49 +801,7 @@
             </figure>
         </div>
 
-        <h3>3.3 The Separating Hyperplane Theorem</h3>
-        <p>A central result in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
-
-        <div class="theorem-box">
-          <h4>Theorem (Separating Hyperplane)</h4>
-          <p>Let $C$ and $D$ be two convex sets such that $C \cap D = \emptyset$. Then there exists a hyperplane that separates them. That is, there exist $a \neq 0$ and $b$ such that:</p>
-          $$ a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top x \ge b \quad \forall x \in D $$
-          <p>Geometrically, this means we can slide a flat sheet of paper between any two disjoint convex shapes.</p>
-        </div>
-
-        <figure style="text-align: center; margin: 24px 0;">
-          <img src="assets/separating-hyperplane.png"
-               alt="A hyperplane separating two disjoint convex sets"
-               style="max-width: 60%; height: auto; border-radius: 8px;" />
-          <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
-        </figure>
-
-        <div class="insight">
-          <h4>Why This Matters: Three Foundational Applications</h4>
-          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
-          <ol>
-            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
-            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
-            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
-          </ol>
-          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
-        </div>
-
-        <h4>Strict vs. Non-Strict Separation</h4>
-        <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
-        <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
-        <br><i>Counter-example:</i> Consider $C = \{(x,y) \mid xy \ge 1, x > 0\}$ and $D = \{(x,y) \mid x \le 0\}$. They are disjoint closed convex sets, but the only separating hyperplane is the y-axis ($x=0$), which touches the boundary of $D$. They cannot be strictly separated.</p>
-
-        <div class="insight">
-          <h4>Why this matters for Duality</h4>
-          <p>In optimization, we often ask: "Does there exist a solution with cost $< \gamma$?" This defines a set of desired outcomes. If this set is disjoint from the set of <i>feasible</i> outcomes, the separating hyperplane theorem provides a vector $a$ (Lagrange multipliers) that certifies this disjointness. This is the geometric origin of dual certificates.</p>
-        </div>
-
-        <h4>Supporting Hyperplanes</h4>
-        <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
-        <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
-
-        <h3>3.4 Perspective and Linear-Fractional Functions</h3>
+        <h3>3.3 Perspective and Linear-Fractional Functions</h3>
 
         <p>The <b>perspective function</b> $P : \mathbb{R}^{n+1} \to \mathbb{R}^n$ is defined by:</p>
         $$
@@ -945,7 +903,7 @@
              </figure>
         </div>
 
-        <h3>3.5 Minkowski Sum</h3>
+        <h3>3.4 Minkowski Sum</h3>
         <p>The <a href="#" class="definition-link">Minkowski sum</a> of two sets $C, D \subseteq \mathbb{R}^n$ is the set of all vector sums:</p>
         $$ C + D = \{x + y \mid x \in C, y \in D\} $$
 
@@ -974,7 +932,7 @@
           <p>Since $C$ is convex, the first bracket is in $C$. Since $D$ is convex, the second is in $D$. Thus the sum is in $C+D$.</p>
         </div>
 
-        <h3>3.6 Minkowski Difference (Erosion)</h3>
+        <h3>3.5 Minkowski Difference (Erosion)</h3>
         <p>There is a related operation that “shrinks” a set. The <b>Minkowski difference</b> (also called <b>erosion</b>) of $C$ by $D$ is defined as:</p>
         $$
         C \ominus D := \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} + D \subseteq C\}
@@ -1003,7 +961,7 @@
           <figcaption><i>Figure 24:</i> Left: Minkowski sum $S_1+S_2$ “adds” shapes by combining all pointwise sums. Right: Minkowski difference $S_1\ominus S_2$ keeps the points where a translated copy of $S_2$ still fits inside $S_1$.</figcaption>
         </figure>
 
-        <h3>3.7 Cartesian Product: Building Higher-Dimensional Convex Sets</h3>
+        <h3>3.6 Cartesian Product: Building Higher-Dimensional Convex Sets</h3>
 
         <div class="definition-box">
           <h4>Definition: Cartesian Product</h4>
@@ -1099,12 +1057,59 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-4">
-        <h2>4. Topological Toolkit: Closure, Interior, Relative Interior</h2>
+
+    <section class="section-card" id="section-4">
+      <h2>4. Separation and Supporting Hyperplanes</h2>
+      <h3>4.1 The Separating Hyperplane Theorem</h3>
+        <p>A central result in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
+
+        <div class="theorem-box">
+          <h4>Theorem (Separating Hyperplane)</h4>
+          <p>Let $C$ and $D$ be two convex sets such that $C \cap D = \emptyset$. Then there exists a hyperplane that separates them. That is, there exist $a \neq 0$ and $b$ such that:</p>
+          $$ a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top x \ge b \quad \forall x \in D $$
+          <p>Geometrically, this means we can slide a flat sheet of paper between any two disjoint convex shapes.</p>
+        </div>
+
+        <figure style="text-align: center; margin: 24px 0;">
+          <img src="assets/separating-hyperplane.png"
+               alt="A hyperplane separating two disjoint convex sets"
+               style="max-width: 60%; height: auto; border-radius: 8px;" />
+          <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
+        </figure>
+
+        <div class="insight">
+          <h4>Why This Matters: Three Foundational Applications</h4>
+          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
+          <ol>
+            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
+            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
+            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
+          </ol>
+          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
+        </div>
+
+        <h4>Strict vs. Non-Strict Separation</h4>
+        <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
+        <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
+        <br><i>Counter-example:</i> Consider $C = \{(x,y) \mid xy \ge 1, x > 0\}$ and $D = \{(x,y) \mid x \le 0\}$. They are disjoint closed convex sets, but the only separating hyperplane is the y-axis ($x=0$), which touches the boundary of $D$. They cannot be strictly separated.</p>
+
+        <div class="insight">
+          <h4>Why this matters for Duality</h4>
+          <p>In optimization, we often ask: "Does there exist a solution with cost $< \gamma$?" This defines a set of desired outcomes. If this set is disjoint from the set of <i>feasible</i> outcomes, the separating hyperplane theorem provides a vector $a$ (Lagrange multipliers) that certifies this disjointness. This is the geometric origin of dual certificates.</p>
+        </div>
+
+        <h4>Supporting Hyperplanes</h4>
+        <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
+        <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
+
+
+    </section>
+<section class="section-card" id="section-5">
+        <h2>5. Topological Toolkit: Closure, Interior, Relative Interior</h2>
 
         <p>To work precisely with convex sets and optimality conditions, we need clear notions of "inside," "edge," and "outside."</p>
 
-        <h3>4.1 Basic Topological Definitions</h3>
+        <h3>5.1 Basic Topological Definitions</h3>
 
         <p>Let $C \subseteq \mathbb{R}^n$ be any set.</p>
 
@@ -1147,7 +1152,7 @@
           </ul>
         </div>
 
-        <h3>4.2 Key Properties for Convex Sets</h3>
+        <h3>5.2 Key Properties for Convex Sets</h3>
 
         <div class="theorem-box">
           <h4>Facts About Convex Sets</h4>
@@ -1166,7 +1171,7 @@
           </ol>
         </div>
 
-        <h3>4.3 Why Relative Interior Matters</h3>
+        <h3>5.3 Why Relative Interior Matters</h3>
 
         <div class="insight">
           <h4>The Problem with Ordinary Interior</h4>
@@ -1236,7 +1241,7 @@
 
       <!-- SECTION 6: REVIEW -->
       <section class="section-card" id="section-review">
-        <h2>5. Review & Cheat Sheet</h2>
+        <h2>6. Review & Cheat Sheet</h2>
         <h3>Key Definitions</h3>
         <ul>
           <li><b>Affine Set:</b> Contains the line through any two points. ($C = x_0 + V$)</li>
@@ -1256,7 +1261,7 @@
 
       <!-- SECTION 5.5: LOOKING AHEAD -->
       <section class="section-card">
-        <h3>5.1 Looking Ahead: From Sets to Operations to Functions</h3>
+        <h3>6.1 Looking Ahead: From Sets to Operations to Functions</h3>
 
         <div class="insight">
           <h4>The Convexity Trifecta: A Three-Lecture Arc</h4>
@@ -1301,8 +1306,8 @@
       </section>
 
       <!-- SECTION 7: EXERCISES -->
-      <section class="section-card" id="section-6">
-        <h2><i data-feather="edit-3"></i> 6. Exercises</h2>
+      <section class="section-card" id="section-7">
+        <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
 
         <div class="problem">
           <h3>P3.1 — Voronoi Regions</h3>
@@ -1876,8 +1881,8 @@
 
       </section>
 
-      <section class="section-card" id="section-7">
-        <h2>7. Recap &amp; What's Next</h2>
+      <section class="section-card" id="section-8">
+        <h2>8. Recap &amp; What's Next</h2>
         <div class="recap-box">
           <ul style="margin: 0 0 0 20px;">
             <li><b>Affine vs. convex:</b> affine sets contain whole lines; convex sets contain line segments.</li>

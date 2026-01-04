@@ -382,6 +382,15 @@
     <section class="section-card" id="section-2">
       <h2>2. Semidefinite Programs (SDP): Matrix Geometry</h2>
 
+      <div class="insight">
+        <h4>Industry Application</h4>
+        <p>SDP is rapidly growing in industrial relevance:
+        <br>• <b>Quantum Computing:</b> Quantum state tomography and entanglement verification.
+        <br>• <b>Control Theory:</b> Lyapunov stability analysis via LMIs (Linear Matrix Inequalities).
+        <br>• <b>Combinatorial Optimization:</b> High-quality relaxations for Max-Cut, Graph Coloring, and TSP.
+        <br>• <b>Signal Processing:</b> Phase retrieval and sensor network localization.</p>
+      </div>
+
       <h3>2.1 Definition: Linear Matrix Inequalities</h3>
       <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
 
@@ -863,7 +872,7 @@
 
       <div class="insight">
         <h4>DCP Encounter #3: Under the Hood</h4>
-        <p>This is the <b>third and final DCP encounter</b>. In <a href="../02-introduction/index.html#section-7">Lecture 02</a>, you saw <i>why</i> DCP matters (automatic verification, solver independence). In <a href="../07-convex-problems-standard/index.html#section-8">Lecture 07</a>, you learned <i>how</i> to reformulate problems to fit DCP rules. Here, we reveal the <b>implementation machinery</b>: how DCP atoms map to conic constraints that solvers actually understand.</p>
+        <p>This is the <b>third and final DCP encounter</b>. In <a href="../02-introduction/index.html#section-7">Lecture 02</a>, you saw <i>why</i> DCP matters (automatic verification, solver independence). In <a href="../07-convex-problems-standard/index.html#section-2">Lecture 07</a>, you learned <i>how</i> to reformulate problems to fit DCP rules. Here, we reveal the <b>implementation machinery</b>: how DCP atoms map to conic constraints that solvers actually understand.</p>
       </div>
 
       <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia) to verify convexity automatically. DCP provides a composable library of "atoms" (functions with known convexity properties) and a set of <b>composition rules</b> that preserve convexity.</p>
@@ -892,7 +901,13 @@
 
       <h3>5.2 Common Atom-to-Cone Mappings</h3>
 
-      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint. This is the "canonicalize" step in the solver pipeline.</p>
+      <div class="insight">
+        <h4>The Solver Pipeline: Step 3 (Canonicalize)</h4>
+        <p>In <a href="../02-introduction/index.html#section-9">Lecture 02</a>, we outlined the solver pipeline: Model → Transform → <b>Canonicalize</b> → Solve.
+        <br><b>This table is the dictionary for Step 3.</b> It shows exactly how the high-level atoms you use in modeling (Step 1) and transforming (Step 2) are translated into the low-level conic constraints that solvers understand.</p>
+      </div>
+
+      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint.</p>
 
       <p>Here are key examples of how DCP atoms map to the conic forms studied in this lecture:</p>
 

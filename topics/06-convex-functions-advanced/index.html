@@ -55,6 +55,14 @@
       <h2>1. Subgradients and Subdifferentials</h2>
 
       <h3>1.1 Definition of Subgradient</h3>
+
+      <div class="warning-box">
+        <h4>⚠️ Common Pitfall: |x| is NOT Differentiable</h4>
+        <p>A classic mistake is to try to compute $\nabla |x|$ at $x=0$. It does not exist.
+        <br>Instead, we use the <b>subdifferential</b>: $\partial |x|$ at $x=0$ is the interval $[-1, 1]$.
+        <br><b>Rule:</b> If a function has a "kink", you must use subgradients, not gradients.</p>
+      </div>
+
       <p>A vector $g \in \mathbb{R}^n$ is a <a href="#" class="definition-link" data-term="subgradient">subgradient</a> of a convex function $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ at a point $x \in \mathrm{dom}\, f$ if:</p>
       $$
       f(y) \ge f(x) + g^\top (y - x) \quad \text{for all } y \in \mathrm{dom}\, f
@@ -328,6 +336,12 @@
 
       <h3>3.1 Definition and Fundamental Intuition</h3>
 
+      <div class="warning-box">
+        <h4>⚠️ Notation Alert</h4>
+        <p>The notation $f^*$ refers to the <b>Conjugate Function</b>. It is NOT $1/f$ (reciprocal) and NOT $\bar{f}$ (complex conjugate).
+        <br>Also, $f^{**}$ is the biconjugate (conjugate of the conjugate), which is the convex envelope of $f$.</p>
+      </div>
+
       <h4>Formal Definition</h4>
       <p>Start with a function $f : \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$. Allowing $+\infty$ is a standard way of encoding hard constraints ("$\mathbf{x}$ not allowed"). The <a href="#" class="definition-link" data-term="convex conjugate">Fenchel conjugate</a> is defined as:</p>
       $$
@@ -444,6 +458,25 @@
         <p><b>Result:</b> $f^*(y) = -1 - \log(-y)$ for $y < 0$. Domain $(-\infty, 0)$.</p>
       </div>
 
+      <h4>3.3.2 Two-Dimensional Examples (Visualizing Scaling)</h4>
+      <p>Before jumping to matrices, let's see how scaling affects the conjugate in 2D.</p>
+
+      <div class="example">
+        <h4>(a) Isotropic Quadratic: $f(x) = \frac{1}{2}(x_1^2 + x_2^2)$</h4>
+        <p>This separates into $f_1(x_1) + f_2(x_2)$.
+        <br>$f^*(y) = \sup (y_1 x_1 - x_1^2/2) + \sup (y_2 x_2 - x_2^2/2) = \frac{1}{2}y_1^2 + \frac{1}{2}y_2^2 = \frac{1}{2}\|y\|_2^2$.
+        <br><b>Lesson:</b> The conjugate of a standard quadratic is itself.</p>
+      </div>
+
+      <div class="example">
+        <h4>(b) Scaled Quadratic: $f(x) = \frac{1}{2}(x_1^2 + 10x_2^2)$</h4>
+        <p>Here $x_2$ is "steep" (high curvature).
+        <br>Conjugate: $f^*(y) = \frac{1}{2}y_1^2 + \frac{1}{2(10)}y_2^2 = \frac{1}{2}y_1^2 + \frac{1}{20}y_2^2$.
+        <br><b>Lesson:</b> High curvature in primal ($\lambda=10$) becomes low curvature in dual ($1/\lambda=0.1$). Steep valleys become shallow hills.</p>
+      </div>
+
+      <h4>3.3.3 Matrix and Vector Examples</h4>
+
       <div class="example">
         <h4>(c) Exponential: $f(x) = e^x$ on $\mathbb{R}$</h4>
         <p>We compute $f^*(y) = \sup_{x} (yx - e^x)$. Let $\phi(x) = yx - e^x$.</p>
@@ -457,6 +490,8 @@
         </ol>
         <p><b>Result:</b> $f^*(y) = y \log y - y$ for $y \ge 0$, else $\infty$. Domain $[0, \infty)$.</p>
       </div>
+
+
 
       <div class="example">
         <h4>(d) Reciprocal: $f(x) = 1/x$ on $(0,\infty)$</h4>

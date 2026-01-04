@@ -239,6 +239,11 @@
         <h3>1.5 Jensen's Inequality: The General Form</h3>
         <p>The basic definition involving two points generalizes to any number of points and even to integrals (expectations).</p>
 
+        <div class="insight">
+          <h4>Historical Note</h4>
+          <p>Johan Jensen (1906) proved this inequality for continuous functions. It has since become the cornerstone of information theory (Shannon 1948), economics (Atkinson 1970), and machine learning (Variational Inference/ELBO). It is arguably the most useful inequality in analysis.</p>
+        </div>
+
         <h4>Finite Form</h4>
         <p>If $f$ is convex, $x_1, \dots, x_k \in \mathrm{dom}\, f$, and $\theta_1, \dots, \theta_k \ge 0$ with $\sum \theta_i = 1$, then:</p>
         $$
@@ -539,7 +544,8 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-2">
+
+<section class="section-card" id="section-2">
         <h2>2. Epigraph Characterization</h2>
 
         <h3>2.1 The Epigraph: Function as a Set</h3>
@@ -696,10 +702,1011 @@
 
       </section>
 
-      <section class="section-card" id="section-3">
-        <h2>3. First-Order Conditions (Tangent Line Property)</h2>
 
-        <h3>3.1 The First-Order Characterization</h3>
+<section class="section-card" id="section-3">
+        <h2>3. Standard Convex Function Library</h2>
+        <p>Recognizing these atoms instantly is the key to efficient modeling. The meta-rule is: <b>know the domain</b> and <b>know the cone</b>.</p>
+
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+          <thead>
+            <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
+              <th style="padding: 12px; text-align: left;">Function</th>
+              <th style="padding: 12px; text-align: left;">Domain</th>
+              <th style="padding: 12px; text-align: left;">Epigraph (Modeling)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Affine</b> $a^\top x + b$</td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Halfspace (Linear Constraint)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Quadratic</b> $\frac{1}{2}x^\top Q x + c^\top x$ ($Q \succeq 0$)</td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Rotated SOC ($x^\top x \le t$) or LMI</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>$\ell_2$ Norm</b> $\|x\|_2$</td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Second-Order Cone (SOC): $(t, x) \in \mathcal{Q}$</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>$\ell_1$ / $\ell_\infty$</b></td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Linear Constraints (LP)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Log-Sum-Exp</b> $\log(\sum e^{x_i})$</td>
+              <td>$\mathbb{R}^n$</td>
+              <td>Exponential Cone</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Neg-Log</b> $-\log x$</td>
+              <td>$\mathbb{R}_{++}$</td>
+              <td>Exponential Cone</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Entropy</b> $x \log x$</td>
+              <td>$\mathbb{R}_{++}$</td>
+              <td>Exponential Cone</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b>Quad-over-Lin</b> $x^2/y$</td>
+              <td>$y > 0$</td>
+              <td>Rotated SOC: $x^2 \le ty$</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>3.1 Deep Dive: Norms (The Archetype)</h3>
+        <p>Norms are the "size" functions of linear space. They are the single most important class of convex functions because they bridge geometry (balls) and algebra (inequalities).</p>
+
+        <h4>The Mental Model: What structure are norms capturing?</h4>
+        <div class="example-box">
+            <p>A norm measures size in a way compatible with scaling and addition:</p>
+            <ul>
+                <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> $\|\alpha x\| = |\alpha|\|x\|$. Scaling the vector scales its size.</li>
+                <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. No shortcuts via intermediate points. This is the engine of convexity.</li>
+                <li><b>Non-degeneracy $\Rightarrow$ Definiteness:</b> $\|x\|=0 \iff x=0$. No invisible non-zero vectors.</li>
+            </ul>
+        </div>
+
+        <h4>Tiny Lemmas (Reusable Templates)</h4>
+        <div class="proof-box">
+            <p><b>Lemma 1: Symmetry.</b> $\|x\| = \|-x\|$. (Follows from homogeneity with $\alpha=-1$).</p>
+            <p><b>Lemma 2: Reverse Triangle Inequality.</b> $\big| \|x\| - \|y\| \big| \le \|x-y\|$.
+            <br><i>Interpretation:</i> The norm function is 1-Lipschitz. It cannot change faster than the distance.</p>
+            <p><b>Lemma 3: Two-point Jensen.</b> $\|\theta x + (1-\theta)y\| \le \theta\|x\| + (1-\theta)\|y\|$.
+            <br><i>Proof:</i> Triangle inequality + Homogeneity. This proves all norms are convex.</p>
+        </div>
+
+        <h4>Examples with Proof Content</h4>
+        <div class="example-box">
+            <ul>
+                <li><b>$\ell_1$ Norm:</b> $\|x\|_1 = \sum |x_i|$. Convexity follows from $|a+b| \le |a|+|b|$.
+                <br><i>Engineering Hook:</i> $\ell_1$ minimization promotes sparsity (corners of the unit ball).</li>
+                <li><b>$\ell_\infty$ Norm:</b> $\|x\|_\infty = \max |x_i|$. Convexity follows from $\max(a+b) \le \max(a) + \max(b)$.
+                <br><i>Engineering Hook:</i> Represents "worst-case" or box constraints.</li>
+                <li><b>Euclidean ($\ell_2$) Norm:</b> Convexity follows from Cauchy-Schwarz ($x^\top y \le \|x\|\|y\|$).
+                <br><i>Engineering Hook:</i> Rotational invariance, smooth dependence.</li>
+            </ul>
+            <p><b>Failure Mode:</b> Forgetting that $\|x\|_2^2$ is convex but $\|x\|_2 \ge t$ is <b>non-convex</b> (exterior of ball). Norms are convex, so sublevel sets are convex bodies; superlevel sets are holey.</p>
+        </div>
+
+        <h3>3.2 Other Standard Atoms</h3>
+
+        <div class="example-box">
+            <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
+            <p><b>Proof:</b> Hessian is $\text{diag}(p) - pp^\top$ (covariance matrix), hence PSD.</p>
+            <p><b>Engineering Hook:</b> Used as a smooth approximation of $\max(x)$.
+            <br>$\text{lse}(x) \le t$ is representable using $n$ exponential cones.</p>
+            <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
+        </div>
+
+        <div class="example-box">
+            <h4>3. Quadratic-over-Linear ($x^\top x / y$)</h4>
+            <p><b>Domain:</b> $y > 0$ (Crucial!). Not defined at $y=0$ (unless 0/0=0 convention) and non-convex for $y < 0$.</p>
+            <p><b>Engineering Hook:</b>
+            $$ x^\top x / y \le t \iff x^\top x \le ty, \ y > 0, \ t \ge 0 $$
+            This is a <b>Rotated Second-Order Cone</b> constraint $x^\top x \le 2uv$ (with $u=y/2, v=t$).</p>
+        </div>
+
+        <div class="example-box">
+            <h4>4. Power Functions ($x^p$)</h4>
+            <p><b>Domain:</b> $x > 0$.</p>
+            <ul>
+                <li>$p \ge 1$: Convex.</li>
+                <li>$0 \le p \le 1$: Concave.</li>
+                <li>$p \le 0$: Convex (e.g., $1/x$).</li>
+            </ul>
+            <p><b>Failure Mode:</b> Applying $x^3$ on all of $\mathbb{R}$. It is only convex on $\mathbb{R}_+$. On $\mathbb{R}$, $x^3$ changes curvature at 0.</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>Common Failure Modes Across the Library</h4>
+            <ol>
+                <li><b>Domain Amnesia:</b> Using $-\log(1 - x^\top x)$ without enforcing $\|x\| < 1$. The solver might step out of domain and crash (or return garbage) if implicit constraints aren't made explicit.</li>
+                <li><b>Constraint Direction:</b> $\max(x_i) \le t$ is convex (intersection of halfspaces). $\max(x_i) \ge t$ is non-convex (union of halfspaces). Always check if your constraint carves out a convex set.</li>
+            </ol>
+        </div>
+      </section>
+
+
+<section class="section-card" id="section-4">
+
+        <h2>4. Operations Preserving Convexity</h2>
+
+        <p>One of the most powerful aspects of convex analysis is that complex convex functions can be built from simpler ones using operations that preserve convexity. This enables sophisticated modeling without sacrificing tractability.</p>
+
+        <h3>4.0 The Meta-Rule: How to Think About Preservation</h3>
+        <p>Convexity preservation always stems from one of two geometric principles:</p>
+        <ol>
+            <li><b>Epigraph Geometry:</b> If an operation transforms epigraphs via intersection, affine mapping, projection, or Minkowski sum, convexity is preserved.</li>
+            <li><b>Line Restriction:</b> If the function restricted to every line is convex (1D convexity), the original function is convex.</li>
+        </ol>
+        <p>Every rule below can be justified by one of these two principles. Nothing is magic.</p>
+
+        <h3>4.1 Nonnegative Weighted Sum</h3>
+        <p><b>Rule:</b> The sum of convex functions (with non-negative weights) is convex.</p>
+
+        <div class="example-box">
+          <h4>Example: Sum of Norms</h4>
+          <p>Let $f(x) = 3x^2 + 5|x|$.
+          <br>Since $f_1(x) = x^2$ is convex and $f_2(x) = |x|$ is convex, and weights $3, 5 \ge 0$, the sum is convex.</p>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>If $f_1, \ldots, f_m$ are convex functions and $w_1, \ldots, w_m \ge 0$, then:</p>
+          $$
+          f(x) = \sum_{i=1}^m w_i f_i(x)
+          $$
+          <p>is convex. This extends to infinite sums and integrals (provided they converge).</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p>For any $x, y$ and $\theta \in [0, 1]$:</p>
+          $$
+          \begin{aligned}
+          f(\theta x + (1-\theta)y) &= \sum_{i=1}^m w_i f_i(\theta x + (1-\theta)y) \\
+          &\le \sum_{i=1}^m w_i \big( \theta f_i(x) + (1-\theta)f_i(y) \big) \quad \text{(convexity of } f_i, \ w_i \ge 0\text{)} \\
+          &= \theta \sum_{i=1}^m w_i f_i(x) + (1-\theta) \sum_{i=1}^m w_i f_i(y) \\
+          &= \theta f(x) + (1-\theta) f(y)
+          \end{aligned}
+          $$
+        </div>
+
+        <h3>4.2 Pointwise Maximum of Convex Functions</h3>
+        <p><b>Rule:</b> The pointwise maximum of any number of convex functions is convex.</p>
+
+        <div class="example-box">
+          <h4>Example: Max of Power and Absolute Value</h4>
+          <p>Let $f(x) = \max\{x^2, |x|\}$.
+          <br>Since $f_1(x) = x^2$ and $f_2(x) = |x|$ are both convex, their pointwise maximum is convex.
+          <br><i>Visual Check:</i> Graph both functions. The region "above both" (epigraph) is the intersection of two convex regions (bowls), which is still a convex region.</p>
+        </div>
+
+        <p>Let $f_1, \dots, f_m: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ be convex functions. Define their <b>pointwise maximum</b>:</p>
+        $$
+        f(x) = \max_{i=1,\dots,m} f_i(x)
+        $$
+
+        <div class="theorem-box">
+          <h4>Claim</h4>
+          <p>The pointwise maximum function $f$ is convex.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Intuition</h4>
+          <p>Take several convex curves; at each $x$ keep the one that lies highest. The upper envelope still bends "upwards"; you never get a concave dip by taking a max of convex curves. Geometrically, the epigraph is the intersection of epigraphs.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Algebraic Proof</h4>
+          <div class="proof-step">
+            <strong>Step 1: Definition.</strong>
+            Let $x, y \in \mathbb{R}^n$ and $0 \le \theta \le 1$. We need to show $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y)$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Convexity of components.</strong>
+            For each fixed $i$, convexity of $f_i$ gives:
+            $$ f_i(\theta x + (1-\theta)y) \le \theta f_i(x) + (1-\theta) f_i(y) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Max over both sides.</strong>
+            $$ \max_i f_i(\theta x + (1-\theta)y) \le \max_i \big( \theta f_i(x) + (1-\theta) f_i(y) \big) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Inequality for max.</strong>
+            Use the inequality $\max_i (\theta a_i + (1-\theta)b_i) \le \theta \max_i a_i + (1-\theta)\max_i b_i$.
+            $$ \max_i \big( \theta f_i(x) + (1-\theta) f_i(y) \big) \le \theta \max_i f_i(x) + (1-\theta)\max_i f_i(y) = \theta f(x) + (1-\theta) f(y) $$
+          </div>
+          <div class="proof-step">
+            <strong>Conclusion:</strong> $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y)$.
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Geometric Proof (Epigraph)</h4>
+          <p>The epigraph of the max is the intersection of the epigraphs:
+          $$ \mathrm{epi}\, f = \bigcap_{i=1}^m \mathrm{epi}\, f_i $$
+          Since a point $(x,t)$ satisfies $t \ge \max_i f_i(x)$ if and only if $t \ge f_i(x)$ for all $i$.
+          The intersection of convex sets is convex, so $\mathrm{epi}\, f$ is convex.</p>
+        </div>
+
+        <h4>Examples of Pointwise Maxima</h4>
+        <div class="example">
+          <h4>Example 1: Piecewise-Linear (Max of Affine Functions)</h4>
+          <p>Let $\ell_i(x) = a_i^\top x + b_i$ for $i=1,\dots,m$. Define:</p>
+          $$ f(x) = \max_{1\le i\le m} (a_i^\top x + b_i) $$
+          <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).
+          <br><b>Application:</b> This function arises in minimizing the $\ell_\infty$ norm residual $\min \|Ax-b\|_\infty$ (which is $\max_i |a_i^\top x - b_i|$).</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 2: The $\ell_p$-type Mean ($p < 1$)</h4>
+          <p>Consider the function $f(x) = \left(\sum x_i^p\right)^{1/p}$ for $0 < p < 1$ on $\mathbb{R}^n_{++}$.
+          <br>This function is <b>concave</b>.
+          <br><i>Note:</i> For $p \ge 1$, this is the $\ell_p$ norm, which is convex. The switch in curvature for $p < 1$ is a subtle but important distinction. The proof involves checking the Hessian or using a variation of Minkowski's inequality.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 3: Sum of the $r$ Largest Components (Ky Fan Norm)</h4>
+          <p>For $x \in \mathbb{R}^n$, let $x_{[1]} \ge x_{[2]} \ge \dots \ge x_{[n]}$ denote components sorted in descending order. Define:
+          $$ f(x) = \sum_{k=1}^r x_{[k]} $$
+          This function is convex and coordinate-wise nondecreasing.</p>
+
+          <div class="proof-box">
+            <h4>Detailed Proof: Representation as Max of Linear Functionals</h4>
+            <p>Consider the convex set of weights:
+            $$ C_r = \{ \lambda \in \mathbb{R}^n \mid 0 \le \lambda_i \le 1, \sum_{i=1}^n \lambda_i = r \} $$
+            We claim that $f(x) = \max_{\lambda \in C_r} \sum_{i=1}^n \lambda_i x_i$.
+            <br><b>Step 1: Variational Argument.</b> Take any feasible $\lambda \in C_r$. Suppose we have indices $j, l$ such that $x_j > x_l$ but $\lambda_j < 1$ and $\lambda_l > 0$.
+            <br>We can shift a small weight $\delta > 0$ from $l$ to $j$: $\lambda'_j = \lambda_j + \delta$, $\lambda'_l = \lambda_l - \delta$.
+            <br>The change in the objective is $\delta x_j - \delta x_l = \delta(x_j - x_l) > 0$.
+            <br>Thus, to maximize the sum, we must shift mass from smaller components to larger components until we hit the constraints $\lambda_i \in [0, 1]$.
+            <br><b>Step 2: Optimal Solution.</b> The process terminates when $\lambda_i = 1$ for the $r$ largest components and $0$ for the rest.
+            $$ \max_{\lambda \in C_r} \lambda^\top x = \sum_{i=1}^r x_{[i]} = f(x) $$
+            <b>Conclusion:</b> $f(x)$ is the pointwise maximum of the family of linear functions $\{g_\lambda(x) = \lambda^\top x \mid \lambda \in C_r\}$. Since the pointwise maximum of convex (linear) functions is convex, $f$ is convex.
+            <br><b>Monotonicity:</b> Increasing any coordinate $x_j$ increases the sum $\lambda^\top x$ (since $\lambda \ge 0$), thus increasing the maximum. So $f$ is nondecreasing.</p>
+          </div>
+        </div>
+
+        <h3>4.3 Pointwise Supremum over an Index Set</h3>
+        <p>The "max of finitely many" generalizes to the supremum over an arbitrary index set $\mathcal{A}$.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>Let $\mathcal{A}$ be any index set. For each $y \in \mathcal{A}$, let $f(\cdot, y)$ be convex in $\mathbf{x}$. Define:</p>
+          $$ g(\mathbf{x}) = \sup_{y \in \mathcal{A}} f(\mathbf{x}, y) $$
+          <p>Then $g(\mathbf{x})$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Proof</h4>
+          <p>Let $x_1, x_2 \in \mathbb{R}^n$ and $\theta \in [0, 1]$.
+          $$ g(\theta x_1 + (1-\theta)x_2) = \sup_y f(\theta x_1 + (1-\theta)x_2, y) $$
+          $$ \le \sup_y \big( \theta f(x_1, y) + (1-\theta) f(x_2, y) \big) $$
+          $$ \le \theta \sup_y f(x_1, y) + (1-\theta) \sup_y f(x_2, y) = \theta g(x_1) + (1-\theta) g(x_2) $$
+          Geometrically, $\mathrm{epi}\, g = \bigcap_{y \in \mathcal{A}} \mathrm{epi}\, f(\cdot, y)$, which is an intersection of convex sets.</p>
+        </div>
+
+        <h4>Examples of Pointwise Supremum</h4>
+        <div class="example">
+          <h4>1. Support Function</h4>
+          <p>For any set $C \subset \mathbb{R}^n$, the support function $S_C(\mathbf{x}) = \sup_{\mathbf{y} \in C} \mathbf{y}^\top \mathbf{x}$ is the pointwise supremum of linear functions $\mathbf{x} \mapsto \mathbf{y}^\top \mathbf{x}$ indexed by $\mathbf{y} \in C$. Thus $S_C$ is always convex, regardless of whether $C$ is convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>2. Distance to Farthest Point</h4>
+          <p>Let $C \subset \mathbb{R}^n$. The function $f(\mathbf{x}) = \sup_{\mathbf{y} \in C} \|\mathbf{x} - \mathbf{y}\|$ (distance to the farthest point in $C$) is convex, because for each fixed $\mathbf{y}$, $\mathbf{x} \mapsto \|\mathbf{x} - \mathbf{y}\|$ is convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>3. Maximum Eigenvalue</h4>
+          <p>For $X \in \mathbb{S}^n$, the maximum eigenvalue $\lambda_{\max}(X)$ is convex. We use its variational representation:</p>
+          $$ f(X) = \lambda_{\max}(X) = \sup_{\|y\|_2=1} y^\top X y $$
+          <p>For any fixed unit vector $y$, define $g_y(X) = y^\top X y$. Note that:
+          $$ g_y(X) = \mathrm{tr}(y^\top X y) = \mathrm{tr}(X y y^\top) = \langle X, yy^\top \rangle $$
+          This shows $g_y(X)$ is a <b>linear function</b> of the matrix $X$.
+          <br>Since $f(X) = \sup_{\|y\|=1} g_y(X)$ is the pointwise supremum of a family of convex (linear) functions, $f(X)$ is convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>4. Induced Matrix Norms</h4>
+          <p>Let $\|X\|_{a,b} = \sup_{\|v\|_b=1} \|Xv\|_a$ be the operator norm induced by vector norms $\|\cdot\|_a$ and $\|\cdot\|_b$.
+          <br>Using the definition of the dual norm $\|\cdot\|_{a^*}$, we can write $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
+          $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top X v \right) = \sup_{\|v\|_b=1, \ \|u\|_{a^*} \le 1} u^\top X v $$
+          For fixed $u, v$, the function $X \mapsto u^\top X v = \langle X, uv^\top \rangle$ is linear in $X$.
+          Thus, the induced norm is a supremum of linear functions, hence convex.</p>
+        </div>
+
+        <h3>4.4 Partial Minimization</h3>
+        <p>We now look at minimizing over some coordinates: $g(x) = \inf_{y \in C} f(x, y)$.</p>
+
+        <div class="theorem-box">
+          <h4>Theorem</h4>
+          <p>If $f(x, y)$ is <b>jointly convex</b> in $(x, y)$ and $C$ is a convex set, then:</p>
+          $$ g(x) = \inf_{y \in C} f(x, y) $$
+          <p>is convex (provided $g(x) > -\infty$).</p>
+        </div>
+
+        <div class="insight">
+          <h4>Geometric Picture</h4>
+          <p>The epigraph of $g$ is the <b>projection</b> of the epigraph of $f$ onto the $(x, t)$ space (projecting out $y$). Since the projection of a convex set is convex, $g$ is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Algebraic Proof</h4>
+          <p>Let $x_1, x_2$ and $\theta \in [0, 1]$. We want $g(x_\theta) \le \theta g(x_1) + (1-\theta)g(x_2)$.
+          <br>Write the infimum redundantly: $g(x_\theta) = \inf_{y_1, y_2 \in C} f(x_\theta, \theta y_1 + (1-\theta)y_2)$.
+          <br>By joint convexity: $f(x_\theta, \theta y_1 + (1-\theta)y_2) \le \theta f(x_1, y_1) + (1-\theta) f(x_2, y_2)$.
+          <br>Taking infimum over $y_1, y_2$:
+          $$ g(x_\theta) \le \theta \inf_{y_1} f(x_1, y_1) + (1-\theta) \inf_{y_2} f(x_2, y_2) = \theta g(x_1) + (1-\theta) g(x_2) $$
+          </p>
+        </div>
+
+        <h4>Examples of Partial Minimization</h4>
+        <div class="example">
+          <h4>1. Distance to a Convex Set</h4>
+          <p>For a convex set $S$, $d(x, S) = \inf_{y \in S} \|x - y\|$.
+          <br>Here $f(x, y) = \|x - y\|$ is convex in $(x, y)$ and $S$ is convex. Thus $d(x, S)$ is convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>2. Schur Complement via Quadratic Minimization</h4>
+          <p>Let $f(x, y) = x^\top A x + 2x^\top B y + y^\top C y$ with $C \succ 0$. We want to find $g(x) = \inf_y f(x, y)$.
+          <br>We "complete the square" in $y$. Let $u = y + C^{-1}B^\top x$. Then $y = u - C^{-1}B^\top x$.
+          $$ y^\top C y = (u - C^{-1}B^\top x)^\top C (u - C^{-1}B^\top x) = u^\top C u - 2x^\top B u + x^\top B C^{-1} B^\top x $$
+          $$ 2x^\top B y = 2x^\top B(u - C^{-1}B^\top x) = 2x^\top B u - 2x^\top B C^{-1} B^\top x $$
+          Summing terms, the cross terms involving $u$ cancel:
+          $$ f(x, y) = x^\top A x + u^\top C u - x^\top B C^{-1} B^\top x = u^\top C u + x^\top (A - B C^{-1} B^\top) x $$
+          Since $C \succ 0$, $u^\top C u \ge 0$ is minimized at $u=0$ (i.e., $y = -C^{-1}B^\top x$).
+          $$ g(x) = x^\top (A - B C^{-1} B^\top) x $$
+          Since partial minimization preserves convexity, if the original matrix is PSD, the Schur complement is PSD.</p>
+        </div>
+
+        <div class="example">
+          <h4>3. Infimum over an Affine Constraint (Example 3.17)</h4>
+          <p>Let $f(x) = \inf \{ h(y) \mid Ay = x \}$, where $h$ is a convex function.
+          <br>This can be viewed as partial minimization of the function $F(x, y) = h(y) + \delta_{\{Ay=x\}}(x,y)$.
+          <br>The set $\{(x, y) \mid Ay=x\}$ is an affine subspace, so its indicator function is convex.
+          <br>Thus $F$ is convex (sum of convex functions), and $f$ is convex (partial minimization of $F$).</p>
+          <p><b>Alternative Proof (Epigraph Projection):</b>
+          <br>This proof relies on the fact that the epigraph of $g(x) = \inf \{ h(y) \mid Ay=x \}$ is a linear projection of a higher-dimensional convex set.</p>
+          <div class="proof-box">
+            <h4>Detailed Epigraph Construction</h4>
+            <div class="proof-step">
+              <strong>Step 1: Characterize the Epigraph.</strong>
+              $(x,t) \in \text{epi } g \iff g(x) \le t$.
+              By definition of infimum, this means there exists some $y$ such that $Ay=x$ and $h(y) \le t$.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Lift to Higher Dimension.</strong>
+              Consider the set $C = \{ (x,y,t) \mid Ay=x, \ h(y) \le t \}$.
+              This set is the intersection of:
+              <ul>
+                <li>The cylinder $\{(x,y,t) \mid (y,t) \in \text{epi } h\}$, which is convex because $h$ is convex.</li>
+                <li>The affine subspace $\{(x,y,t) \mid Ay=x\}$, which is convex.</li>
+              </ul>
+              Thus, $C$ is a convex set in $(x,y,t)$-space.
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Project.</strong>
+              The condition from Step 1 says that $(x,t) \in \text{epi } g$ if and only if there exists $y$ such that $(x,y,t) \in C$.
+              This means $\text{epi } g$ is exactly the projection of the convex set $C$ onto the $(x,t)$ coordinates.
+              Since linear projections preserve convexity, $\text{epi } g$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Alternative Proof: Distance to Convex Set (Epsilon-Delta)</h4>
+          <p>Let $S$ be convex and $d(x) = \inf_{y \in S} \|x-y\|$. We show $d(\theta x_1 + (1-\theta)x_2) \le \theta d(x_1) + (1-\theta)d(x_2)$.
+          <br>Let $\varepsilon > 0$. By definition of infimum, there exist $y_1, y_2 \in S$ such that:
+          $$ \|x_1 - y_1\| \le d(x_1) + \varepsilon, \quad \|x_2 - y_2\| \le d(x_2) + \varepsilon $$
+          Let $y_\theta = \theta y_1 + (1-\theta)y_2$. Since $S$ is convex, $y_\theta \in S$.
+          $$ d(x_\theta) \le \|x_\theta - y_\theta\| = \|(\theta x_1 + (1-\theta)x_2) - (\theta y_1 + (1-\theta)y_2)\| $$
+          $$ = \|\theta(x_1 - y_1) + (1-\theta)(x_2 - y_2)\| $$
+          By the triangle inequality and homogeneity:
+          $$ \le \theta \|x_1 - y_1\| + (1-\theta)\|x_2 - y_2\| $$
+          $$ \le \theta(d(x_1) + \varepsilon) + (1-\theta)(d(x_2) + \varepsilon) = \theta d(x_1) + (1-\theta)d(x_2) + \varepsilon $$
+          Since $\varepsilon$ is arbitrary, the result follows.</p>
+        </div>
+
+        <h3>4.5 Infimal Convolution</h3>
+        <p>A sophisticated operation related to partial minimization is <b>infimal convolution</b>. Given two convex functions $f, g: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, their infimal convolution is defined as:</p>
+        $$ (f \square g)(x) = \inf_{y \in \mathbb{R}^n} \big( f(y) + g(x-y) \big) $$
+        <p>This operation is convex.
+        <br><i>Proof:</i> Consider the function $F(x, y) = f(y) + g(x-y)$. Since $y \mapsto f(y)$ is convex, and $(x, y) \mapsto x-y$ is affine, $g(x-y)$ is jointly convex in $(x,y)$. The sum $F(x,y)$ is thus jointly convex. Minimizing $F$ over $y$ yields $f \square g$, which is convex by the partial minimization rule.</p>
+        <p>This operation appears in regularization (e.g., Moreau envelope) and smoothing.</p>
+
+        <h4>The Matrix-Fractional Function</h4>
+      <p>The function $f(x, Y) = x^\top Y^{-1} x$ is defined for $x \in \mathbb{R}^n$ and $Y \in \mathbb{S}^n_{++}$. It is <b>jointly convex</b> in $x$ and $Y$.</p>
+
+      <h4>Derivation: Epigraph via Schur Complement</h4>
+      <p>The epigraph condition is $t \ge x^\top Y^{-1} x$ with $Y \succ 0$.
+      <br>Using the <a href="../00-linear-algebra-basics/index.html#section-5">Schur Complement Lemma</a>, this is equivalent to the Linear Matrix Inequality (LMI):
+      $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
+      Since the PSD cone is convex, and $M$ depends linearly on $(x, Y, t)$, the epigraph is convex.</p>
+
+      <div class="proof-box">
+        <h4>Check via Quadratic Forms</h4>
+        <p>Let's verify $M \succeq 0 \iff t \ge x^\top Y^{-1} x$.
+        <br>Take an arbitrary vector $z = [v^\top, \alpha]^\top$. $M \succeq 0$ means $z^\top M z \ge 0$ for all $z$.
+        $$ z^\top M z = v^\top Y v + 2\alpha x^\top v + \alpha^2 t $$
+        View this as a quadratic in $\alpha$: $q(\alpha) = t\alpha^2 + 2(x^\top v)\alpha + (v^\top Y v)$.
+        <br>For $q(\alpha) \ge 0$ for all $\alpha$, we need $t \ge 0$ and discriminant $\le 0$:
+        $$ 4(x^\top v)^2 - 4t(v^\top Y v) \le 0 \implies (x^\top v)^2 \le t (v^\top Y v) $$
+        Let $w = Y^{1/2}v$. Then $v^\top Y v = \|w\|^2$ and $x^\top v = x^\top Y^{-1/2} w$.
+        $$ (x^\top Y^{-1/2} w)^2 \le t \|w\|^2 $$
+        By Cauchy-Schwarz, the maximum of the LHS over $\|w\|=1$ is $\|Y^{-1/2}x\|^2 = x^\top Y^{-1} x$.
+        <br>Thus, the condition holds for all $w$ (and hence all $v$) if and only if $t \ge x^\top Y^{-1} x$.</p>
+      </div>
+
+      <div class="insight">
+        <h4>Triangle of Equivalence</h4>
+        <p>The matrix fractional function connects three concepts via the Schur Complement:</p>
+        $$
+        \boxed{
+        t\ge x^\top Y^{-1}x
+        \iff
+        \begin{bmatrix}
+        Y & x\\
+        x^\top & t
+        \end{bmatrix}\succeq 0
+        \iff
+        tY - xx^\top \succeq 0
+        }
+        $$
+        <ul>
+          <li><b>Scalar:</b> Quadratic-over-linear inequality.</li>
+          <li><b>Block Matrix:</b> LMI form, useful for SDPs.</li>
+          <li><b>Rank-1 Update:</b> $tY \succeq xx^\top$. Derived by setting $\alpha=1$ in the quadratic form argument above: $(x^\top v)^2 \le t v^\top Y v \iff v^\top (tY - xx^\top) v \ge 0$.</li>
+        </ul>
+        <p><b>Determinant Identity:</b> We can derive this using a specific block elimination matrix. Let $M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix}$. Define the elimination matrix:
+        $$ R = \begin{bmatrix} I & -Y^{-1}x \\ 0 & 1 \end{bmatrix} $$
+        Compute the product $MR$:
+        <ul>
+            <li>Top-left: $Y \cdot I + x \cdot 0 = Y$.</li>
+            <li>Top-right: $Y(-Y^{-1}x) + x \cdot 1 = -x + x = 0$.</li>
+            <li>Bottom-left: $x^\top \cdot I + t \cdot 0 = x^\top$.</li>
+            <li>Bottom-right: $x^\top(-Y^{-1}x) + t \cdot 1 = t - x^\top Y^{-1}x$.</li>
+        </ul>
+        So $MR = \begin{bmatrix} Y & 0 \\ x^\top & t - x^\top Y^{-1}x \end{bmatrix}$. This is block lower-triangular.
+        <br>Thus $\det(MR) = \det(Y)(t - x^\top Y^{-1}x)$. Since $\det(R)=1$, we have:
+        $$ \boxed{ \det \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} = (\det Y)(t - x^\top Y^{-1}x) } $$
+        </p>
+      </div>
+
+      <div class="insight">
+        <h4>Alternative View: Variational Form (Detailed)</h4>
+        <p>We can also express $f(x, Y) = x^\top Y^{-1} x$ as a supremum of affine functions, giving a direct proof of joint convexity without block matrices.
+        <br><b>Identity:</b> $x^\top Y^{-1}x = \sup_{z \in \mathbb{R}^n} (2z^\top x - z^\top Y z)$.
+        <br><b>Derivation:</b> Fix $x$ and $Y \succ 0$. Consider the function $g(z) = 2z^\top x - z^\top Y z$.
+        <br>This is a strictly concave quadratic in $z$. We find the maximum by setting the gradient to zero:
+        $$ \nabla_z g(z) = 2x - 2Yz = 0 \implies Yz = x \implies z^* = Y^{-1}x $$
+        Plug this optimal $z^*$ back into the expression:
+        $$ g(z^*) = 2(Y^{-1}x)^\top x - (Y^{-1}x)^\top Y (Y^{-1}x) = 2x^\top Y^{-1} x - x^\top Y^{-1} Y Y^{-1} x = x^\top Y^{-1} x $$
+        <b>Convexity Argument:</b>
+        For each fixed $z$, the function $h_z(x, Y) = 2z^\top x - \mathrm{tr}(zz^\top Y)$ is <b>linear</b> in the joint variable $(x, Y)$.
+        Since $f(x, Y) = \sup_z h_z(x, Y)$ is the pointwise supremum of a family of convex (linear) functions, $f$ is jointly convex.</p>
+      </div>
+
+      </section>
+
+
+<section class="section-card" id="section-5">
+        <h2>5. Composition and Transformation Rules</h2>
+        <p>Building complex convex functions from simpler ones through composition and transformations. These rules form the "algebra" of convexity.</p>
+
+        <h3>5.1 Composition with Increasing/Decreasing Functions</h3>
+        <p>Recognizing convexity is often about parsing a function into a composition of atomic convex functions. We use a set of recursive rules.</p>
+
+        <div class="theorem-box">
+          <h4>1. Affine Composition</h4>
+          <p>If $f: \mathbb{R}^k \to \mathbb{R}$ is convex, and $x \mapsto Ax + b$ is an affine map, then the composition $g(x) = f(Ax + b)$ is convex.</p>
+
+          <div class="example-box">
+            <h4>Example: Least Squares</h4>
+            <p>Let $f(z) = \|z\|_2^2$ (convex). Let $z = Ax - b$ (affine).
+            <br>Then $g(x) = \|Ax - b\|_2^2$ is convex.</p>
+          </div>
+
+          <p><b>Proof:</b>
+          $$
+          \begin{aligned}
+          g(\theta x + (1-\theta)y) &= f(A(\theta x + (1-\theta)y) + b) \\
+          &= f(\theta(Ax+b) + (1-\theta)(Ay+b)) \\
+          &\le \theta f(Ax+b) + (1-\theta)f(Ay+b) \\
+          &= \theta g(x) + (1-\theta)g(y)
+          \end{aligned}
+          $$
+          </p>
+          <p><b>Examples:</b></p>
+          <ul>
+            <li><b>Log-Barrier:</b> $f(x) = -\sum \log(b_i - a_i^\top x)$. Inner: affine $b-a^\top x$. Outer: $-\log(\cdot)$ convex. Sum of convex is convex.</li>
+            <li><b>Norm of Affine:</b> $\|Ax - b\|$ is convex.</li>
+          </ul>
+        </div>
+
+        <div class="theorem-box">
+          <h4>2. Scalar Composition Rule ($f=h\circ g$) in Depth</h4>
+          <p>Let $g: \mathbb{R}^n \to \mathbb{R}$ and $h: \mathbb{R} \to \mathbb{R}$. Then $f(x) = h(g(x))$ is convex if:</p>
+
+          <div class="example-box">
+            <h4>Example: Exponential of a Convex Function</h4>
+            <p>Let $f(x) = e^{x^2}$.
+            <br>Inner: $g(x) = x^2$ is convex.
+            <br>Outer: $h(u) = e^u$ is convex and <b>non-decreasing</b>.
+            <br>Result: $f$ is convex (Rule 1).</p>
+          </div>
+
+          <div class="example-box">
+            <h4>Example: Reciprocal of a Concave Function</h4>
+            <p>Let $f(x) = \frac{1}{1-x^2}$ on $(-1, 1)$.
+            <br>Inner: $g(x) = 1-x^2$ is concave.
+            <br>Outer: $h(u) = 1/u$ is convex and <b>non-increasing</b> (for $u > 0$).
+            <br>Result: $f$ is convex (Rule 2).</p>
+          </div>
+
+          <ol>
+            <li>$g$ is <b>convex</b>, and $h$ is <b>convex</b> and <b>non-decreasing</b>.</li>
+            <li>$g$ is <b>concave</b>, and $h$ is <b>convex</b> and <b>non-increasing</b>.</li>
+            <li>$g$ is <b>affine</b>, and $h$ is <b>convex</b> (monotonicity not required).</li>
+          </ol>
+
+          <div class="intuition-box">
+            <h4>Calculus Intuition (Chain Rule)</h4>
+            <p>For smooth functions on $\mathbb{R}$, we can derive these rules from the second derivative:
+            $$ f'(x) = h'(g(x)) g'(x) $$
+            $$ f''(x) = h''(g(x)) [g'(x)]^2 + h'(g(x)) g''(x) $$
+            We need $f''(x) \ge 0$.
+            <ul>
+                <li>The first term $h'' (g')^2$ is always non-negative if $h$ is convex ($h'' \ge 0$).</li>
+                <li>The second term $h' g''$ sign depends on the product.
+                    <ul>
+                        <li>If $h$ is increasing ($h' \ge 0$) and $g$ is convex ($g'' \ge 0$), the product is $\ge 0$.</li>
+                        <li>If $h$ is decreasing ($h' \le 0$) and $g$ is concave ($g'' \le 0$), the product is $(-) \cdot (-) = (+)$.</li>
+                    </ul>
+                </li>
+            </ul>
+            This 1D intuition perfectly maps to the general vector rules.</p>
+          </div>
+
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
+            <figure style="flex: 1; min-width: 300px; text-align: center;">
+              <img src="assets/convex_composition_case1.png"
+                   alt="Composition Case 1: Convex inner + Convex Increasing outer"
+                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
+              <figcaption><i>Figure 1:</i> Case 1. The convex inner function "curves up". The increasing outer function preserves this order, and its own convexity amplifies the curvature.</figcaption>
+            </figure>
+            <figure style="flex: 1; min-width: 300px; text-align: center;">
+              <img src="assets/convex_composition_case2.png"
+                   alt="Composition Case 2: Concave inner + Convex Decreasing outer"
+                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
+              <figcaption><i>Figure 2:</i> Case 2. The concave inner function "curves down". The decreasing outer function flips this to "curve up", and its own convexity reinforces the result.</figcaption>
+            </figure>
+          </div>
+
+          <div class="proof-box">
+            <h4>Proof: Scalar Composition Rules</h4>
+            <p>We prove the two most critical cases rigorously.</p>
+
+            <h5>Case 1: Outer Convex & Non-decreasing, Inner Convex</h5>
+            <p>Assume $g$ is convex, and $h$ is convex and <b>non-decreasing</b> on the range of $g$.</p>
+            <div class="proof-step">
+              <strong>Step 1: Inner Convexity.</strong>
+              Take arbitrary $x, y \in \mathbb{R}^n$ and $\theta \in [0,1]$. By convexity of $g$:
+              $$ g(\theta x + (1-\theta) y) \le \theta g(x) + (1-\theta) g(y) $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Apply Monotonicity.</strong>
+              Apply $h$ to both sides. Since $h$ is <b>non-decreasing</b>, the inequality direction is maintained:
+              $$ h\big(g(\theta x + (1-\theta) y)\big) \le h\big(\theta g(x) + (1-\theta) g(y)\big) $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Apply Outer Convexity.</strong>
+              Now use the convexity of $h$ on the argument $\theta g(x) + (1-\theta) g(y)$:
+              $$ h\big(\theta g(x) + (1-\theta) g(y)\big) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
+            </div>
+            <div class="proof-step">
+              <strong>Combine:</strong>
+              $$ f(\theta x + (1-\theta)y) = h(g(\theta x + (1-\theta)y)) \le \theta f(x) + (1-\theta) f(y) $$
+              Thus $f$ is convex.
+            </div>
+
+            <hr style="border-top: 1px dashed var(--border); margin: 16px 0;">
+
+            <h5>Case 2: Outer Convex & Non-increasing, Inner Concave</h5>
+            <p>Assume $g$ is concave, and $h$ is convex and <b>non-increasing</b>.</p>
+            <div class="proof-step">
+              <strong>Step 1: Inner Concavity.</strong>
+              $$ g(\theta x + (1-\theta)y) \ge \theta g(x) + (1-\theta) g(y) $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Apply Monotonicity (Flip).</strong>
+              Because $h$ is <b>non-increasing</b>, applying it flips the inequality:
+              $$ h\big(g(\theta x + (1-\theta)y)\big) \le h\big( \theta g(x) + (1-\theta)g(y)\big) $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Apply Outer Convexity.</strong>
+              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta)h(g(y)) $$
+            </div>
+            <div class="proof-step">
+              <strong>Conclusion:</strong>
+              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y) $$
+              Thus $f$ is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4>Example: Log-Log-Sum-Exp (Step-by-Step Analysis)</h4>
+          <p>Consider the function $f(x) = -\log(-\log(\sum_{i=1}^m e^{a_i^\top x + b_i}))$. We verify convexity by decomposing it into layers:</p>
+
+          <div class="proof-box">
+            <div class="proof-step">
+              <strong>Layer 1: The Inner Sum (Affine + Exp).</strong>
+              Let $z_i(x) = e^{a_i^\top x + b_i}$.
+              Since $a_i^\top x + b_i$ is affine and $e^u$ is convex, $z_i(x)$ is convex.
+              The sum $S(x) = \sum z_i(x)$ is convex (sum of convex functions).
+            </div>
+
+            <div class="proof-step">
+              <strong>Layer 2: First Log (Log-Sum-Exp).</strong>
+              Let $g(x) = \log S(x) = \log(\sum e^{a_i^\top x + b_i})$.
+              This is the composition of the convex log-sum-exp function with affine maps. Thus $g(x)$ is <b>convex</b>.
+              (Note: domain requires the sum < 1 for the next log to be defined, so $g(x) < 0$).
+            </div>
+
+            <div class="proof-step">
+              <strong>Layer 3: Outer Log (Composition Rule).</strong>
+              Now $f(x) = h(g(x))$ where $h(u) = -\log(-u)$ for $u < 0$.
+              Check properties of $h(u)$:
+              <ul>
+                <li><b>Convexity:</b> $h'(u) = -1/u$, $h''(u) = 1/u^2 > 0$. So $h$ is convex.</li>
+                <li><b>Monotonicity:</b> $h'(u) = -1/u$. Since $u < 0$, $-1/u > 0$. So $h$ is <b>non-decreasing</b>.</li>
+              </ul>
+            </div>
+
+            <div class="proof-step">
+              <strong>Conclusion:</strong>
+              We have $f(x) = h(g(x))$ where $g$ is convex and $h$ is convex and non-decreasing.
+              By the scalar composition rule, <b>$f(x)$ is convex</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="theorem-box">
+          <h4>3. Vector Composition Rule ($f=h\circ g$) in Depth</h4>
+          <p>Let $g: \mathbb{R}^n \to \mathbb{R}^k$ and $h: \mathbb{R}^k \to \mathbb{R}$. Then $f(x) = h(g_1(x), \dots, g_k(x))$ is convex if $h$ is convex and for each $i \in \{1, \dots, k\}$:</p>
+          <ul>
+            <li>$g_i$ is <b>convex</b> and $h$ is <b>non-decreasing</b> in the $i$-th argument.</li>
+            <li>$g_i$ is <b>concave</b> and $h$ is <b>non-increasing</b> in the $i$-th argument.</li>
+            <li>$g_i$ is <b>affine</b> (monotonicity in $i$-th argument not required).</li>
+          </ul>
+
+          <div class="proof-box">
+            <h4>Proof (Convex + Non-decreasing Case)</h4>
+            <p>We prove the case where each $g_i$ is convex and $h$ is convex and non-decreasing in each coordinate.</p>
+            <div class="proof-step">
+              <strong>Step 1: Vector Jensen Inequality.</strong>
+              Since each $g_i$ is convex, for $\theta \in [0,1]$:
+              $$ g(\theta x + (1-\theta)y) \le \theta g(x) + (1-\theta)g(y) \quad \text{(componentwise)} $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Monotonicity.</strong>
+              Since $h$ is non-decreasing in every coordinate, applying it preserves the inequality:
+              $$ h(g(\theta x + (1-\theta)y)) \le h(\theta g(x) + (1-\theta)g(y)) $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Convexity of Outer Function.</strong>
+              By convexity of $h$:
+              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
+            </div>
+            <div class="proof-step">
+              <strong>Conclusion.</strong> Combining these:
+              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4>Example 1: Sum of Logs (Concave)</h4>
+          <p>Let $u(x) = \sum_{i=1}^m \log g_i(x)$ where each $g_i$ is concave and positive.</p>
+          <ul>
+            <li>Inner map: $g(x) = (g_1(x), \dots, g_m(x))$ is concave.</li>
+            <li>Outer map: $h(y) = \sum \log y_i$. Since $\log$ is concave and increasing, $h$ is concave and increasing.</li>
+            <li>Result: $u$ is concave.</li>
+          </ul>
+        </div>
+
+        <div class="example">
+          <h4>Example 2: Log-Sum-Exp of Convex Functions (Detailed Check)</h4>
+          <p>Let $f(x) = \log\left(\sum_{i=1}^m \exp(g_i(x))\right)$ where each $g_i$ is convex. We verify the vector composition rule conditions:</p>
+          <ol>
+            <li><b>Convexity of Outer Function $h$:</b> $h(z) = \log(\sum e^{z_i})$ is convex (Log-Sum-Exp).
+            <br><i>Proof:</i> Using Hölder's inequality on $h(\theta z + (1-\theta)w) \le \theta h(z) + (1-\theta)h(w)$.</li>
+            <li><b>Monotonicity of Outer Function:</b> $h$ is non-decreasing in each argument.
+            <br><i>Proof:</i> $\frac{\partial h}{\partial z_j} = \frac{e^{z_j}}{\sum e^{z_k}} > 0$. Increasing any $z_j$ increases the sum, thus increasing the log-sum.</li>
+            <li><b>Convexity of Inner Functions:</b> Each $g_i(x)$ is convex (given).</li>
+          </ol>
+          <p><b>Conclusion:</b> Since $h$ is convex and non-decreasing, and $g_i$ are convex, the composition $f(x) = h(g_1(x), \dots, g_m(x))$ is convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example 3: $p$-Means ($h(z) = (\sum z_i^p)^{1/p}$)</h4>
+          <p>Consider $f(x) = (\sum_{i=1}^k g_i(x)^p)^{1/p}$ where $g_i(x) \ge 0$. We rely on the convexity/concavity and monotonicity of the outer function $h(z) = (\sum z_i^p)^{1/p}$.</p>
+          <ul>
+            <li><b>Case $p \ge 1$ (Convex):</b>
+            <br><i>Convexity:</i> By the Minkowski inequality (triangle inequality for $p$-norm), $h$ is convex.
+            <br><i>Monotonicity:</i> $\frac{\partial h}{\partial z_j} \propto z_j^{p-1} \ge 0$ for $z \ge 0$.
+            <br><b>Result:</b> Since $h$ is convex and non-decreasing, if $g_i$ are convex and non-negative, $f$ is convex.</li>
+
+            <li><b>Case $0 < p \le 1$ (Concave):</b>
+            <br><i>Concavity:</i> By the Reverse Minkowski inequality (or Hessian analysis), $h$ is concave on $\mathbb{R}_{++}^k$.
+            <br><i>Monotonicity:</i> $\frac{\partial h}{\partial z_j} \propto z_j^{p-1} > 0$ for $z > 0$.
+            <br><b>Result:</b> Since $h$ is concave and non-decreasing, if $g_i$ are concave and positive, $f$ is concave.</li>
+          </ul>
+        </div>
+
+        <div class="example">
+          <h4>Example 4: Geometric Mean ($h(z) = (\prod z_i)^{1/k}$)</h4>
+          <p>Consider $f(x) = (\prod_{i=1}^k g_i(x))^{1/k}$ where $g_i(x) > 0$.
+          <br>The outer function $h(z) = (\prod z_i)^{1/k}$ is <b>concave</b> and <b>non-decreasing</b> on $\mathbb{R}_{++}^k$.
+          <br><b>Proof check:</b>
+          <ul>
+              <li><b>Monotonicity:</b> $\frac{\partial h}{\partial z_j} = \frac{1}{k} \left(\prod_{i \ne j} z_i\right)^{1/k} z_j^{1/k-1} > 0$.</li>
+              <li><b>Concavity:</b> $\nabla^2 h \preceq 0$ (see Section 4 for deep dive). Alternatively, $h$ is log-concave and 1-homogeneous.</li>
+          </ul>
+          <b>Result:</b> If $g_i$ are concave and positive, then the geometric mean $f(x)$ is concave.</p>
+        </div>
+
+        <h3>5.2 Perspective Function (The Modeling Engine)</h3>
+        <p>The perspective transformation is more than a convexity property; it is a <b>modeling engine</b>. It allows you to remove denominators (fractions) by "absorbing" them into new variables, transforming fractional expressions into convex ones in a higher dimension.</p>
+
+        <div class="theorem-box">
+          <h4>Definition and Theorem</h4>
+          <p>If $f: \mathbb{R}^n \to \mathbb{R}$ is convex, then its <b>perspective</b> $g: \mathbb{R}^{n+1} \to \mathbb{R}$ defined by:</p>
+          $$
+          g(x, t) = t f(x/t), \quad t > 0
+          $$
+          <p>is convex on $\mathrm{dom}\, g = \{(x, t) \mid x/t \in \mathrm{dom}\, f, \ t > 0\}$.</p>
+          <p><b>Geometric Intuition (Cone over Epigraph):</b></p>
+          <p>The epigraph of the perspective function is the <b>conic hull</b> of the epigraph of $f$ (lifted to $t=1$).
+          <br>Specifically, $(x, t, s) \in \mathrm{epi}(\tilde{f}) \iff t > 0 \text{ and } (x/t, s/t) \in \mathrm{epi}(f)$.
+          <br>Since the conic hull of a convex set is convex, the perspective is convex.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Direct Proof of Convexity (The $\lambda$ trick)</h4>
+          <p>We show $g(x,t) = t f(x/t)$ is convex by direct definition.</p>
+          <div class="proof-step">
+            <strong>Step 1: Setup.</strong>
+            Take any $(x_1, t_1), (x_2, t_2)$ with $t_1, t_2 > 0$, and $\theta \in [0, 1]$.
+            Define $(x, t) = \theta(x_1, t_1) + (1-\theta)(x_2, t_2)$.
+            We must show $g(x, t) \le \theta g(x_1, t_1) + (1-\theta)g(x_2, t_2)$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Express $x/t$ as convex combination.</strong>
+            This is the key step. We need to write $x/t$ as a mixture of $x_1/t_1$ and $x_2/t_2$.
+            $$ \frac{x}{t} = \frac{\theta x_1 + (1-\theta)x_2}{\theta t_1 + (1-\theta)t_2} $$
+            Define weights $\lambda_1 = \frac{\theta t_1}{t}$ and $\lambda_2 = \frac{(1-\theta)t_2}{t}$.
+            Note that $\lambda_1, \lambda_2 \ge 0$ and $\lambda_1 + \lambda_2 = \frac{\theta t_1 + (1-\theta)t_2}{t} = 1$.
+            We can rewrite the fraction as:
+            $$ \frac{x}{t} = \lambda_1 \frac{x_1}{t_1} + \lambda_2 \frac{x_2}{t_2} $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Apply Convexity of $f$.</strong>
+            $$ f\left(\frac{x}{t}\right) \le \lambda_1 f\left(\frac{x_1}{t_1}\right) + \lambda_2 f\left(\frac{x_2}{t_2}\right) $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Multiply by $t$.</strong>
+            $$ g(x, t) = t f(x/t) \le t \lambda_1 f(x_1/t_1) + t \lambda_2 f(x_2/t_2) $$
+            Substitute back $t \lambda_1 = \theta t_1$ and $t \lambda_2 = (1-\theta)t_2$:
+            $$ g(x, t) \le \theta t_1 f(x_1/t_1) + (1-\theta) t_2 f(x_2/t_2) = \theta g(x_1, t_1) + (1-\theta) g(x_2, t_2) $$
+            Done: perspective is convex.
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Alternative Proof: Epigraph Mapping</h4>
+          <p>We can prove convexity by relating the epigraph of $g$ to the epigraph of $f$ via a linear map.
+          <br>Define the mapping $\Phi: \{(x,t,s) \mid t>0\} \to \mathbb{R}^{n+1}$ by $\Phi(x,t,s) = (x/t, s/t)$.
+          <br>The epigraph of $g$ is defined by $g(x,t) \le s \iff t f(x/t) \le s \iff f(x/t) \le s/t$.
+          <br>Thus $(x,t,s) \in \text{epi } g \iff t > 0 \text{ and } (x/t, s/t) \in \text{epi } f$.
+          <br>We can express this explicitly as:
+          $$ \mathrm{epi}\, g = \Phi^{-1}(\mathrm{epi}\, f) \cap \{(x, t, s) \mid t > 0\} $$
+          where $\Phi$ is the linear map defined on homogeneous coordinates. Since the inverse image of a convex set under a linear map is convex, and the intersection with a halfspace ($t>0$) is convex, $\mathrm{epi}\, g$ is convex.
+          <br>More simply: $\text{epi } g$ is the conic hull of $\text{epi } f$ (embedded at $t=1$). The conic hull of a convex set is convex.</p>
+        </div>
+
+        <h4>The Modeling Engine: Removing Denominators</h4>
+        <p>The perspective transform allows us to solve problems involving ratios with positive denominators by <b>linearizing</b> the denominator into a variable $t$.</p>
+
+        <div class="example">
+          <h4>Template: Linear-Fractional Programming</h4>
+          <p>Minimize $\frac{a^\top x + b}{c^\top x + d}$ subject to $c^\top x + d > 0$ and convex constraints $x \in C$.
+          <br><b>Substitution:</b> Let $t = \frac{1}{c^\top x + d}$ and $y = tx$.
+          <br><b>Constraints:</b>
+          <ul>
+              <li>$t > 0$.</li>
+              <li>Normalization: $c^\top y + dt = 1$ (since $1/t = c^\top(y/t) + d$).</li>
+              <li>$y/t \in C \iff \tilde{I}_C(y, t) \le 0$ (Perspective of indicator). If $C=\{Ax \le b\}$, this becomes $Ay \le bt$.</li>
+          </ul>
+          <b>Objective:</b> $t(a^\top (y/t) + b) = a^\top y + bt$.
+          <br><b>Result:</b> An LP (or convex problem) in $(y,t)$. No bisection needed.</p>
+        </div>
+
+        <div class="example">
+          <h4>Template: Norm-Ratio Minimization</h4>
+          <p>Minimize $\frac{\|Ax - b\|_2}{c^\top x + d}$.
+          <br><b>Substitution:</b> $t = \frac{1}{c^\top x + d}$, $y = tx$.
+          <br><b>Objective:</b> $t \|A(y/t) - b\|_2 = \|Ay - bt\|_2$.
+          <br><b>Result:</b> $\min \|Ay - bt\|_2$ s.t. $c^\top y + dt = 1$, $t > 0$.
+          <br>This transforms a complex ratio into a standard SOCP problem (minimizing a norm).</p>
+        </div>
+
+        <div class="example">
+          <h4>Example: Relative Entropy</h4>
+          <p>Let $f(u) = -\log u$, which is convex. Its perspective is:
+          $$ g(x, t) = t f(x/t) = -t \log(x/t) = t \log t - t \log x $$
+          This is related to the relative entropy function $x \log(x/y)$, which is jointly convex.</p>
+        </div>
+
+        <div class="example">
+          <h4>Example: Power-over-Linear (Deconstruction)</h4>
+          <p>The function $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ (where $p > 1, t > 0$) is convex. Here is how to recognize it:</p>
+          <div class="proof-box">
+            <div class="proof-step">
+              <strong>Step 1: Identify homogeneity.</strong>
+              If we scale $(x,t)$ by $\alpha$, we get $\frac{\|\alpha x\|^p}{(\alpha t)^{p-1}} = \frac{\alpha^p \|x\|^p}{\alpha^{p-1} t^{p-1}} = \alpha f(x,t)$.
+              Since $f$ is 1-homogeneous, it is likely a perspective function.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Factor out $t$ (The Perspective Trick).</strong>
+              Rewrite the expression to isolate $x/t$:
+              $$ f(x,t) = \frac{\|x\|_p^p}{t^{p-1}} = t \cdot \frac{\|x\|_p^p}{t^p} = t \left\| \frac{x}{t} \right\|_p^p $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Identify the base function.</strong>
+              This matches the form $t g(x/t)$ where $g(u) = \|u\|_p^p$.
+              Since $p \ge 1$, $g(u)$ is convex (power of a norm).
+            </div>
+            <div class="proof-step">
+              <strong>Conclusion:</strong> $f$ is the perspective of a convex function, so it is convex.
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4>Example: Quadratic-over-Linear</h4>
+          <p>The function $f(x, y) = \frac{x^2}{y}$ for $y > 0$ is convex (Perspective of $x^2$).
+          <br>More generally, $f(x) = \frac{\|Ax+b\|_2^2}{c^\top x + d}$ is convex (Affine composition of perspective).</p>
+        </div>
+
+        <h3>5.3 Power Functions and Homogeneity</h3>
+
+        <p>Power functions are a rich source of examples and inequalities.</p>
+
+        <h4>Convexity of $x^p$</h4>
+        <p>The function $f(x) = x^p$ on $\mathbb{R}_{++}$ is:</p>
+        <ul>
+            <li><b>Convex</b> for $p \ge 1$ or $p \le 0$ ($f''(x) = p(p-1)x^{p-2} \ge 0$).</li>
+            <li><b>Concave</b> for $0 \le p \le 1$ ($f''(x) \le 0$).</li>
+        </ul>
+
+        <h4>Homogeneity and Inequalities</h4>
+        <p>For $p \ge 1$, $f(x) = x^p$ is convex. Using the tangent line inequality at $x=1$ ($f(x) \ge f(1) + f'(1)(x-1)$):</p>
+        $$ x^p \ge 1 + p(x-1) $$
+        <p>This can be used to prove that for $x, y \ge 0$ and $p \ge 1$:</p>
+        $$ \boxed{ x^p + y^p \ge x + y \quad \text{for } x,y \in [0,1] } $$
+        <p>Also, due to homogeneity ($(\lambda x)^p = \lambda^p x^p$), we can scale inequalities. For example, the function $f(x, y) = \frac{x^2}{y}$ arises from the homogeneity of quadratics.</p>
+
+        <div class="proof-box">
+          <h4>Theorem: Log-Concavity + Homogeneity $\implies$ Concavity</h4>
+          <p>Let $f: \mathbb{R}^n_+ \to \mathbb{R}_+$ be a function that is:
+          <ol>
+            <li><b>Log-Concave:</b> $f(\theta x + (1-\theta)y) \ge f(x)^\theta f(y)^{1-\theta}$.</li>
+            <li><b>Positively Homogeneous (degree 1):</b> $f(\alpha x) = \alpha f(x)$ for $\alpha > 0$.</li>
+          </ol>
+          Then $f$ is <b>concave</b>: $f(\theta x + (1-\theta)y) \ge \theta f(x) + (1-\theta) f(y)$.</p>
+          <div class="proof-step">
+            <strong>Proof Idea:</strong> Normalize to the level set.
+            Let $x, y$ be points such that $f(x) = \alpha, f(y) = \beta$.
+            Define normalized vectors $\tilde{x} = x/\alpha, \tilde{y} = y/\beta$, so $f(\tilde{x})=f(\tilde{y})=1$.
+            Let $z = \theta x + (1-\theta)y = \theta \alpha \tilde{x} + (1-\theta) \beta \tilde{y}$.
+            Let $\gamma = \theta \alpha + (1-\theta)\beta$. Rewrite $z = \gamma (\lambda \tilde{x} + (1-\lambda)\tilde{y})$ where $\lambda = \theta \alpha / \gamma$.
+            By homogeneity: $f(z) = \gamma f(\lambda \tilde{x} + (1-\lambda)\tilde{y})$.
+            By log-concavity: $f(\lambda \tilde{x} + (1-\lambda)\tilde{y}) \ge f(\tilde{x})^\lambda f(\tilde{y})^{1-\lambda} = 1^\lambda 1^{1-\lambda} = 1$.
+            Thus $f(z) \ge \gamma \cdot 1 = \theta f(x) + (1-\theta)f(y)$.
+          </div>
+          <div class="proof-step">
+            <strong>Application: Geometric Mean.</strong>
+            $g(x) = (\prod x_i)^{1/n}$.
+            1. Homogeneous? $g(\alpha x) = (\alpha^n \prod x_i)^{1/n} = \alpha g(x)$. Yes.
+            2. Log-concave? $\log g(x) = \frac{1}{n}\sum \log x_i$ is a sum of concave functions. Yes.
+            Therefore, $g(x)$ is concave. This offers a conceptual alternative to the Hessian proof.
+          </div>
+        </div>
+
+        <h3>5.4 The Minkowski Functional</h3>
+        <p>The Minkowski functional generalizes the notion of a norm using a convex set. Let $C \subset \mathbb{R}^n$ be a convex set containing the origin. We define for each $x$:</p>
+        $$
+        M_C(x) = \inf \{ t > 0 \mid t^{-1} x \in C \}
+        $$
+
+        <div class="insight">
+          <h4>Domain & Interpretation</h4>
+          <p>Consider the ray $R_x = \{s x \mid s \ge 0\}$. The value $M_C(x)$ is determined by where this ray exits the set $C$.
+          <br>Specifically, the set of scaling factors is $\{t > 0 \mid t^{-1} x \in C\} = \{1/s \mid s > 0, s x \in C\}$.
+          <br>Thus, $M_C(x)$ is finite if and only if the ray intersects $C$ at some positive multiple.
+          <br>If $x \in C$, then $t=1$ is feasible, so $M_C(x) \le 1$.
+          <br>Geometrically, $M_C(x)$ represents the "inverse distance" to the boundary along the direction $x$. $M_C(x) = 1$ means $x$ is on the "unit sphere" of the geometry defined by $C$.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Properties: Homogeneity and Convexity</h4>
+
+          <div class="proof-step">
+            <strong>1. Positive Homogeneity.</strong>
+            Let $\alpha > 0$. We compute $M_C(\alpha x) = \inf \{ t > 0 \mid t^{-1} \alpha x \in C \}$.
+            <br>Let $s = t/\alpha$ (so $t = \alpha s$). The condition becomes $s^{-1} x \in C$.
+            $$ M_C(\alpha x) = \inf \{ \alpha s \mid s > 0, s^{-1} x \in C \} = \alpha \inf \{ s > 0 \mid s^{-1} x \in C \} = \alpha M_C(x) $$
+            For $\alpha=0$, since $0 \in C$, $M_C(0)=0$. Thus homogeneity holds for all $\alpha \ge 0$.
+          </div>
+
+          <div class="proof-step">
+            <strong>2. Convexity.</strong>
+            We show $M_C(\theta x + (1-\theta)y) \le \theta M_C(x) + (1-\theta) M_C(y)$.
+            <br>Fix $\varepsilon > 0$. Since $M_C(x)$ is an infimum, there exists $a > 0$ such that $a^{-1}x \in C$ and $a \le M_C(x) + \varepsilon$.
+            <br>Similarly, there exists $b > 0$ such that $b^{-1}y \in C$ and $b \le M_C(y) + \varepsilon$.
+            <br>By convexity of $C$, the combination $\theta a^{-1}x + (1-\theta)b^{-1}y$ is not necessarily in $C$ directly, but we form a convex combination of points in $C$.
+            <br>Consider $z = \theta x + (1-\theta)y$. Let $t = \theta a + (1-\theta)b$.
+            We check the point $t^{-1}z$:
+            $$ \frac{z}{t} = \frac{\theta x + (1-\theta)y}{\theta a + (1-\theta)b} = \frac{\theta a (a^{-1}x) + (1-\theta)b (b^{-1}y)}{\theta a + (1-\theta)b} $$
+            This is a convex combination (weights $\lambda_1 = \theta a/t, \lambda_2 = (1-\theta)b/t$ sum to 1).
+            Since $a^{-1}x \in C$ and $b^{-1}y \in C$, and $C$ is convex, $t^{-1}z \in C$.
+            <br>Therefore, $M_C(z) \le t = \theta a + (1-\theta)b \le \theta M_C(x) + (1-\theta)M_C(y) + \varepsilon$.
+            <br>Letting $\varepsilon \to 0$ proves convexity.
+          </div>
+        </div>
+
+        <div class="theorem-box">
+          <h4>When is $M_C$ a Norm?</h4>
+          <p>We require three conditions on $C$: <b>Closed, Bounded, Symmetric</b> ($x \in C \implies -x \in C$), and <b>$0 \in \text{int } C$</b>.</p>
+          <div class="proof-step">
+            <strong>1. Positivity ($M_C(x) \ge 0$).</strong> Obvious from definition ($t>0$).
+          </div>
+          <div class="proof-step">
+            <strong>2. Symmetry ($M_C(-x) = M_C(x)$).</strong>
+            $$ M_C(-x) = \inf \{ t > 0 \mid t^{-1}(-x) \in C \} = \inf \{ t > 0 \mid -(t^{-1}x) \in C \} $$
+            Since $C$ is symmetric, $u \in C \iff -u \in C$. Thus the condition is equivalent to $t^{-1}x \in C$, so $M_C(-x)=M_C(x)$.
+          </div>
+          <div class="proof-step">
+            <strong>3. Non-degeneracy (Strict Positivity).</strong>
+            We must show $M_C(x)=0 \iff x=0$.
+            Suppose $M_C(x)=0$ for some $x \ne 0$.
+            By definition, this means for every $\varepsilon > 0$, there exists $t \in (0, \varepsilon)$ such that $t^{-1}x \in C$.
+            As $t \to 0^+$, the norm $\|t^{-1}x\| = t^{-1}\|x\| \to \infty$.
+            This implies $C$ contains points of arbitrarily large norm, which contradicts the assumption that $C$ is <b>bounded</b>.
+            Thus, if $C$ is bounded, $M_C(x)=0$ implies $x=0$.
+          </div>
+        </div>
+
+      </section>
+
+
+<section class="section-card" id="section-6">
+        <h2>6. First-Order Conditions (Tangent Line Property)</h2>
+
+        <h3>6.1 The First-Order Characterization</h3>
         <div class="theorem-box">
           <h4>Theorem (First-Order Condition for Convexity)</h4>
           <p>Suppose $f: \mathbb{R}^n \to \mathbb{R}$ is differentiable. Then $f$ is convex <b>if and only if</b> $\mathrm{dom}\, f$ is convex and for all $x, y \in \mathrm{dom}\, f$:</p>
@@ -772,7 +1779,7 @@
           </div>
         </div>
 
-        <h3>3.2 Monotonicity of the Gradient</h3>
+        <h3>6.2 Monotonicity of the Gradient</h3>
         <p>Another powerful first-order characterization involves the change in gradients. A differentiable function $f$ is convex <b>if and only if</b> its gradient is a <a href="#" class="definition-link">monotone operator</a>:</p>
         $$
         (\nabla f(x) - \nabla f(y))^\top (x - y) \ge 0 \quad \forall x, y \in \mathrm{dom}\, f
@@ -802,7 +1809,7 @@
             </div>
         </div>
 
-        <h3>3.3 Consequences and Applications</h3>
+        <h3>6.3 Consequences and Applications</h3>
 
         <div class="example">
           <h4>Application 1: Proving a Function is Convex</h4>
@@ -850,10 +1857,11 @@
 
       </section>
 
-      <section class="section-card" id="section-4">
-        <h2>4. Second-Order Conditions (Hessian Test)</h2>
 
-        <h3>4.1 The Second-Order Characterization</h3>
+<section class="section-card" id="section-7">
+        <h2>7. Second-Order Conditions (Hessian Test)</h2>
+
+        <h3>7.1 The Second-Order Characterization</h3>
 
         <p>For twice-differentiable functions, curvature is measured by the Hessian matrix.</p>
 
@@ -907,7 +1915,7 @@
           </div>
         </div>
 
-        <h3>4.2 Practical Verification</h3>
+        <h3>7.2 Practical Verification</h3>
 
         <div class="proof-box">
           <h4>Example 1: Quadratic Function $f(x) = \|Ax - b\|_2^2$</h4>
@@ -1080,9 +2088,9 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-5">
 
-        <div class="example-box">
+
+<div class="example-box">
           <h4>Example: Log Barrier Hessian</h4>
           <p>Consider $f(x) = -\sum \log(b_i - a_i^\top x)$. The domain is the open polyhedron $\{x \mid Ax < b\}$.</p>
           <p>Gradient: $\nabla f(x) = \sum \frac{a_i}{b_i - a_i^\top x}$.</p>
@@ -1090,792 +2098,14 @@
           <p>Since each term $a_i a_i^\top$ is a rank-1 PSD matrix and coefficients are positive, the sum is PSD. Thus $f$ is convex.</p>
         </div>
 
-        <h2>5. Operations Preserving Convexity</h2>
 
-        <p>One of the most powerful aspects of convex analysis is that complex convex functions can be built from simpler ones using operations that preserve convexity. This enables sophisticated modeling without sacrificing tractability.</p>
-
-        <h3>5.0 The Meta-Rule: How to Think About Preservation</h3>
-        <p>Convexity preservation always stems from one of two geometric principles:</p>
-        <ol>
-            <li><b>Epigraph Geometry:</b> If an operation transforms epigraphs via intersection, affine mapping, projection, or Minkowski sum, convexity is preserved.</li>
-            <li><b>Line Restriction:</b> If the function restricted to every line is convex (1D convexity), the original function is convex.</li>
-        </ol>
-        <p>Every rule below can be justified by one of these two principles. Nothing is magic.</p>
-
-        <h3>5.1 Nonnegative Weighted Sum</h3>
-        <div class="theorem-box">
-          <h4>Theorem</h4>
-          <p>If $f_1, \ldots, f_m$ are convex functions and $w_1, \ldots, w_m \ge 0$, then:</p>
-          $$
-          f(x) = \sum_{i=1}^m w_i f_i(x)
-          $$
-          <p>is convex. This extends to infinite sums and integrals (provided they converge).</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Proof</h4>
-          <p>For any $x, y$ and $\theta \in [0, 1]$:</p>
-          $$
-          \begin{aligned}
-          f(\theta x + (1-\theta)y) &= \sum_{i=1}^m w_i f_i(\theta x + (1-\theta)y) \\
-          &\le \sum_{i=1}^m w_i \big( \theta f_i(x) + (1-\theta)f_i(y) \big) \quad \text{(convexity of } f_i, \ w_i \ge 0\text{)} \\
-          &= \theta \sum_{i=1}^m w_i f_i(x) + (1-\theta) \sum_{i=1}^m w_i f_i(y) \\
-          &= \theta f(x) + (1-\theta) f(y)
-          \end{aligned}
-          $$
-        </div>
-
-        <h3>5.2 Pointwise Maximum of Convex Functions</h3>
-        <p>Let $f_1, \dots, f_m: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$ be convex functions. Define their <b>pointwise maximum</b>:</p>
-        $$
-        f(x) = \max_{i=1,\dots,m} f_i(x)
-        $$
-
-        <div class="theorem-box">
-          <h4>Claim</h4>
-          <p>The pointwise maximum function $f$ is convex.</p>
-        </div>
-
-        <div class="insight">
-          <h4>Intuition</h4>
-          <p>Take several convex curves; at each $x$ keep the one that lies highest. The upper envelope still bends "upwards"; you never get a concave dip by taking a max of convex curves. Geometrically, the epigraph is the intersection of epigraphs.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Algebraic Proof</h4>
-          <div class="proof-step">
-            <strong>Step 1: Definition.</strong>
-            Let $x, y \in \mathbb{R}^n$ and $0 \le \theta \le 1$. We need to show $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y)$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Convexity of components.</strong>
-            For each fixed $i$, convexity of $f_i$ gives:
-            $$ f_i(\theta x + (1-\theta)y) \le \theta f_i(x) + (1-\theta) f_i(y) $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Max over both sides.</strong>
-            $$ \max_i f_i(\theta x + (1-\theta)y) \le \max_i \big( \theta f_i(x) + (1-\theta) f_i(y) \big) $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 4: Inequality for max.</strong>
-            Use the inequality $\max_i (\theta a_i + (1-\theta)b_i) \le \theta \max_i a_i + (1-\theta)\max_i b_i$.
-            $$ \max_i \big( \theta f_i(x) + (1-\theta) f_i(y) \big) \le \theta \max_i f_i(x) + (1-\theta)\max_i f_i(y) = \theta f(x) + (1-\theta) f(y) $$
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion:</strong> $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y)$.
-          </div>
-        </div>
-
-        <div class="proof-box">
-          <h4>Geometric Proof (Epigraph)</h4>
-          <p>The epigraph of the max is the intersection of the epigraphs:
-          $$ \mathrm{epi}\, f = \bigcap_{i=1}^m \mathrm{epi}\, f_i $$
-          Since a point $(x,t)$ satisfies $t \ge \max_i f_i(x)$ if and only if $t \ge f_i(x)$ for all $i$.
-          The intersection of convex sets is convex, so $\mathrm{epi}\, f$ is convex.</p>
-        </div>
-
-        <h4>Examples of Pointwise Maxima</h4>
-        <div class="example">
-          <h4>Example 1: Piecewise-Linear (Max of Affine Functions)</h4>
-          <p>Let $\ell_i(x) = a_i^\top x + b_i$ for $i=1,\dots,m$. Define:</p>
-          $$ f(x) = \max_{1\le i\le m} (a_i^\top x + b_i) $$
-          <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).
-          <br><b>Application:</b> This function arises in minimizing the $\ell_\infty$ norm residual $\min \|Ax-b\|_\infty$ (which is $\max_i |a_i^\top x - b_i|$).</p>
-        </div>
-
-        <div class="example">
-          <h4>Example 2: The $\ell_p$-type Mean ($p < 1$)</h4>
-          <p>Consider the function $f(x) = \left(\sum x_i^p\right)^{1/p}$ for $0 < p < 1$ on $\mathbb{R}^n_{++}$.
-          <br>This function is <b>concave</b>.
-          <br><i>Note:</i> For $p \ge 1$, this is the $\ell_p$ norm, which is convex. The switch in curvature for $p < 1$ is a subtle but important distinction. The proof involves checking the Hessian or using a variation of Minkowski's inequality.</p>
-        </div>
-
-        <div class="example">
-          <h4>Example 3: Sum of the $r$ Largest Components (Ky Fan Norm)</h4>
-          <p>For $x \in \mathbb{R}^n$, let $x_{[1]} \ge x_{[2]} \ge \dots \ge x_{[n]}$ denote components sorted in descending order. Define:
-          $$ f(x) = \sum_{k=1}^r x_{[k]} $$
-          This function is convex and coordinate-wise nondecreasing.</p>
-
-          <div class="proof-box">
-            <h4>Detailed Proof: Representation as Max of Linear Functionals</h4>
-            <p>Consider the convex set of weights:
-            $$ C_r = \{ \lambda \in \mathbb{R}^n \mid 0 \le \lambda_i \le 1, \sum_{i=1}^n \lambda_i = r \} $$
-            We claim that $f(x) = \max_{\lambda \in C_r} \sum_{i=1}^n \lambda_i x_i$.
-            <br><b>Step 1: Variational Argument.</b> Take any feasible $\lambda \in C_r$. Suppose we have indices $j, l$ such that $x_j > x_l$ but $\lambda_j < 1$ and $\lambda_l > 0$.
-            <br>We can shift a small weight $\delta > 0$ from $l$ to $j$: $\lambda'_j = \lambda_j + \delta$, $\lambda'_l = \lambda_l - \delta$.
-            <br>The change in the objective is $\delta x_j - \delta x_l = \delta(x_j - x_l) > 0$.
-            <br>Thus, to maximize the sum, we must shift mass from smaller components to larger components until we hit the constraints $\lambda_i \in [0, 1]$.
-            <br><b>Step 2: Optimal Solution.</b> The process terminates when $\lambda_i = 1$ for the $r$ largest components and $0$ for the rest.
-            $$ \max_{\lambda \in C_r} \lambda^\top x = \sum_{i=1}^r x_{[i]} = f(x) $$
-            <b>Conclusion:</b> $f(x)$ is the pointwise maximum of the family of linear functions $\{g_\lambda(x) = \lambda^\top x \mid \lambda \in C_r\}$. Since the pointwise maximum of convex (linear) functions is convex, $f$ is convex.
-            <br><b>Monotonicity:</b> Increasing any coordinate $x_j$ increases the sum $\lambda^\top x$ (since $\lambda \ge 0$), thus increasing the maximum. So $f$ is nondecreasing.</p>
-          </div>
-        </div>
-
-        <h3>5.3 Pointwise Supremum over an Index Set</h3>
-        <p>The "max of finitely many" generalizes to the supremum over an arbitrary index set $\mathcal{A}$.</p>
-
-        <div class="theorem-box">
-          <h4>Theorem</h4>
-          <p>Let $\mathcal{A}$ be any index set. For each $y \in \mathcal{A}$, let $f(\cdot, y)$ be convex in $\mathbf{x}$. Define:</p>
-          $$ g(\mathbf{x}) = \sup_{y \in \mathcal{A}} f(\mathbf{x}, y) $$
-          <p>Then $g(\mathbf{x})$ is convex.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Proof</h4>
-          <p>Let $x_1, x_2 \in \mathbb{R}^n$ and $\theta \in [0, 1]$.
-          $$ g(\theta x_1 + (1-\theta)x_2) = \sup_y f(\theta x_1 + (1-\theta)x_2, y) $$
-          $$ \le \sup_y \big( \theta f(x_1, y) + (1-\theta) f(x_2, y) \big) $$
-          $$ \le \theta \sup_y f(x_1, y) + (1-\theta) \sup_y f(x_2, y) = \theta g(x_1) + (1-\theta) g(x_2) $$
-          Geometrically, $\mathrm{epi}\, g = \bigcap_{y \in \mathcal{A}} \mathrm{epi}\, f(\cdot, y)$, which is an intersection of convex sets.</p>
-        </div>
-
-        <h4>Examples of Pointwise Supremum</h4>
-        <div class="example">
-          <h4>1. Support Function</h4>
-          <p>For any set $C \subset \mathbb{R}^n$, the support function $S_C(\mathbf{x}) = \sup_{\mathbf{y} \in C} \mathbf{y}^\top \mathbf{x}$ is the pointwise supremum of linear functions $\mathbf{x} \mapsto \mathbf{y}^\top \mathbf{x}$ indexed by $\mathbf{y} \in C$. Thus $S_C$ is always convex, regardless of whether $C$ is convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>2. Distance to Farthest Point</h4>
-          <p>Let $C \subset \mathbb{R}^n$. The function $f(\mathbf{x}) = \sup_{\mathbf{y} \in C} \|\mathbf{x} - \mathbf{y}\|$ (distance to the farthest point in $C$) is convex, because for each fixed $\mathbf{y}$, $\mathbf{x} \mapsto \|\mathbf{x} - \mathbf{y}\|$ is convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>3. Maximum Eigenvalue</h4>
-          <p>For $X \in \mathbb{S}^n$, the maximum eigenvalue $\lambda_{\max}(X)$ is convex. We use its variational representation:</p>
-          $$ f(X) = \lambda_{\max}(X) = \sup_{\|y\|_2=1} y^\top X y $$
-          <p>For any fixed unit vector $y$, define $g_y(X) = y^\top X y$. Note that:
-          $$ g_y(X) = \mathrm{tr}(y^\top X y) = \mathrm{tr}(X y y^\top) = \langle X, yy^\top \rangle $$
-          This shows $g_y(X)$ is a <b>linear function</b> of the matrix $X$.
-          <br>Since $f(X) = \sup_{\|y\|=1} g_y(X)$ is the pointwise supremum of a family of convex (linear) functions, $f(X)$ is convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>4. Induced Matrix Norms</h4>
-          <p>Let $\|X\|_{a,b} = \sup_{\|v\|_b=1} \|Xv\|_a$ be the operator norm induced by vector norms $\|\cdot\|_a$ and $\|\cdot\|_b$.
-          <br>Using the definition of the dual norm $\|\cdot\|_{a^*}$, we can write $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
-          $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top X v \right) = \sup_{\|v\|_b=1, \ \|u\|_{a^*} \le 1} u^\top X v $$
-          For fixed $u, v$, the function $X \mapsto u^\top X v = \langle X, uv^\top \rangle$ is linear in $X$.
-          Thus, the induced norm is a supremum of linear functions, hence convex.</p>
-        </div>
-
-        <h3>5.4 Partial Minimization</h3>
-        <p>We now look at minimizing over some coordinates: $g(x) = \inf_{y \in C} f(x, y)$.</p>
-
-        <div class="theorem-box">
-          <h4>Theorem</h4>
-          <p>If $f(x, y)$ is <b>jointly convex</b> in $(x, y)$ and $C$ is a convex set, then:</p>
-          $$ g(x) = \inf_{y \in C} f(x, y) $$
-          <p>is convex (provided $g(x) > -\infty$).</p>
-        </div>
-
-        <div class="insight">
-          <h4>Geometric Picture</h4>
-          <p>The epigraph of $g$ is the <b>projection</b> of the epigraph of $f$ onto the $(x, t)$ space (projecting out $y$). Since the projection of a convex set is convex, $g$ is convex.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Algebraic Proof</h4>
-          <p>Let $x_1, x_2$ and $\theta \in [0, 1]$. We want $g(x_\theta) \le \theta g(x_1) + (1-\theta)g(x_2)$.
-          <br>Write the infimum redundantly: $g(x_\theta) = \inf_{y_1, y_2 \in C} f(x_\theta, \theta y_1 + (1-\theta)y_2)$.
-          <br>By joint convexity: $f(x_\theta, \theta y_1 + (1-\theta)y_2) \le \theta f(x_1, y_1) + (1-\theta) f(x_2, y_2)$.
-          <br>Taking infimum over $y_1, y_2$:
-          $$ g(x_\theta) \le \theta \inf_{y_1} f(x_1, y_1) + (1-\theta) \inf_{y_2} f(x_2, y_2) = \theta g(x_1) + (1-\theta) g(x_2) $$
-          </p>
-        </div>
-
-        <h4>Examples of Partial Minimization</h4>
-        <div class="example">
-          <h4>1. Distance to a Convex Set</h4>
-          <p>For a convex set $S$, $d(x, S) = \inf_{y \in S} \|x - y\|$.
-          <br>Here $f(x, y) = \|x - y\|$ is convex in $(x, y)$ and $S$ is convex. Thus $d(x, S)$ is convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>2. Schur Complement via Quadratic Minimization</h4>
-          <p>Let $f(x, y) = x^\top A x + 2x^\top B y + y^\top C y$ with $C \succ 0$. We want to find $g(x) = \inf_y f(x, y)$.
-          <br>We "complete the square" in $y$. Let $u = y + C^{-1}B^\top x$. Then $y = u - C^{-1}B^\top x$.
-          $$ y^\top C y = (u - C^{-1}B^\top x)^\top C (u - C^{-1}B^\top x) = u^\top C u - 2x^\top B u + x^\top B C^{-1} B^\top x $$
-          $$ 2x^\top B y = 2x^\top B(u - C^{-1}B^\top x) = 2x^\top B u - 2x^\top B C^{-1} B^\top x $$
-          Summing terms, the cross terms involving $u$ cancel:
-          $$ f(x, y) = x^\top A x + u^\top C u - x^\top B C^{-1} B^\top x = u^\top C u + x^\top (A - B C^{-1} B^\top) x $$
-          Since $C \succ 0$, $u^\top C u \ge 0$ is minimized at $u=0$ (i.e., $y = -C^{-1}B^\top x$).
-          $$ g(x) = x^\top (A - B C^{-1} B^\top) x $$
-          Since partial minimization preserves convexity, if the original matrix is PSD, the Schur complement is PSD.</p>
-        </div>
-
-        <div class="example">
-          <h4>3. Infimum over an Affine Constraint (Example 3.17)</h4>
-          <p>Let $f(x) = \inf \{ h(y) \mid Ay = x \}$, where $h$ is a convex function.
-          <br>This can be viewed as partial minimization of the function $F(x, y) = h(y) + \delta_{\{Ay=x\}}(x,y)$.
-          <br>The set $\{(x, y) \mid Ay=x\}$ is an affine subspace, so its indicator function is convex.
-          <br>Thus $F$ is convex (sum of convex functions), and $f$ is convex (partial minimization of $F$).</p>
-          <p><b>Alternative Proof (Epigraph Projection):</b>
-          <br>This proof relies on the fact that the epigraph of $g(x) = \inf \{ h(y) \mid Ay=x \}$ is a linear projection of a higher-dimensional convex set.</p>
-          <div class="proof-box">
-            <h4>Detailed Epigraph Construction</h4>
-            <div class="proof-step">
-              <strong>Step 1: Characterize the Epigraph.</strong>
-              $(x,t) \in \text{epi } g \iff g(x) \le t$.
-              By definition of infimum, this means there exists some $y$ such that $Ay=x$ and $h(y) \le t$.
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Lift to Higher Dimension.</strong>
-              Consider the set $C = \{ (x,y,t) \mid Ay=x, \ h(y) \le t \}$.
-              This set is the intersection of:
-              <ul>
-                <li>The cylinder $\{(x,y,t) \mid (y,t) \in \text{epi } h\}$, which is convex because $h$ is convex.</li>
-                <li>The affine subspace $\{(x,y,t) \mid Ay=x\}$, which is convex.</li>
-              </ul>
-              Thus, $C$ is a convex set in $(x,y,t)$-space.
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Project.</strong>
-              The condition from Step 1 says that $(x,t) \in \text{epi } g$ if and only if there exists $y$ such that $(x,y,t) \in C$.
-              This means $\text{epi } g$ is exactly the projection of the convex set $C$ onto the $(x,t)$ coordinates.
-              Since linear projections preserve convexity, $\text{epi } g$ is convex.
-            </div>
-          </div>
-        </div>
-
-        <div class="proof-box">
-          <h4>Alternative Proof: Distance to Convex Set (Epsilon-Delta)</h4>
-          <p>Let $S$ be convex and $d(x) = \inf_{y \in S} \|x-y\|$. We show $d(\theta x_1 + (1-\theta)x_2) \le \theta d(x_1) + (1-\theta)d(x_2)$.
-          <br>Let $\varepsilon > 0$. By definition of infimum, there exist $y_1, y_2 \in S$ such that:
-          $$ \|x_1 - y_1\| \le d(x_1) + \varepsilon, \quad \|x_2 - y_2\| \le d(x_2) + \varepsilon $$
-          Let $y_\theta = \theta y_1 + (1-\theta)y_2$. Since $S$ is convex, $y_\theta \in S$.
-          $$ d(x_\theta) \le \|x_\theta - y_\theta\| = \|(\theta x_1 + (1-\theta)x_2) - (\theta y_1 + (1-\theta)y_2)\| $$
-          $$ = \|\theta(x_1 - y_1) + (1-\theta)(x_2 - y_2)\| $$
-          By the triangle inequality and homogeneity:
-          $$ \le \theta \|x_1 - y_1\| + (1-\theta)\|x_2 - y_2\| $$
-          $$ \le \theta(d(x_1) + \varepsilon) + (1-\theta)(d(x_2) + \varepsilon) = \theta d(x_1) + (1-\theta)d(x_2) + \varepsilon $$
-          Since $\varepsilon$ is arbitrary, the result follows.</p>
-        </div>
-
-        <h3>5.5 Infimal Convolution</h3>
-        <p>A sophisticated operation related to partial minimization is <b>infimal convolution</b>. Given two convex functions $f, g: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, their infimal convolution is defined as:</p>
-        $$ (f \square g)(x) = \inf_{y \in \mathbb{R}^n} \big( f(y) + g(x-y) \big) $$
-        <p>This operation is convex.
-        <br><i>Proof:</i> Consider the function $F(x, y) = f(y) + g(x-y)$. Since $y \mapsto f(y)$ is convex, and $(x, y) \mapsto x-y$ is affine, $g(x-y)$ is jointly convex in $(x,y)$. The sum $F(x,y)$ is thus jointly convex. Minimizing $F$ over $y$ yields $f \square g$, which is convex by the partial minimization rule.</p>
-        <p>This operation appears in regularization (e.g., Moreau envelope) and smoothing.</p>
-
-        <h4>The Matrix-Fractional Function</h4>
-      <p>The function $f(x, Y) = x^\top Y^{-1} x$ is defined for $x \in \mathbb{R}^n$ and $Y \in \mathbb{S}^n_{++}$. It is <b>jointly convex</b> in $x$ and $Y$.</p>
-
-      <h4>Derivation: Epigraph via Schur Complement</h4>
-      <p>The epigraph condition is $t \ge x^\top Y^{-1} x$ with $Y \succ 0$.
-      <br>Using the <a href="../00-linear-algebra-basics/index.html#section-5">Schur Complement Lemma</a>, this is equivalent to the Linear Matrix Inequality (LMI):
-      $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
-      Since the PSD cone is convex, and $M$ depends linearly on $(x, Y, t)$, the epigraph is convex.</p>
-
-      <div class="proof-box">
-        <h4>Check via Quadratic Forms</h4>
-        <p>Let's verify $M \succeq 0 \iff t \ge x^\top Y^{-1} x$.
-        <br>Take an arbitrary vector $z = [v^\top, \alpha]^\top$. $M \succeq 0$ means $z^\top M z \ge 0$ for all $z$.
-        $$ z^\top M z = v^\top Y v + 2\alpha x^\top v + \alpha^2 t $$
-        View this as a quadratic in $\alpha$: $q(\alpha) = t\alpha^2 + 2(x^\top v)\alpha + (v^\top Y v)$.
-        <br>For $q(\alpha) \ge 0$ for all $\alpha$, we need $t \ge 0$ and discriminant $\le 0$:
-        $$ 4(x^\top v)^2 - 4t(v^\top Y v) \le 0 \implies (x^\top v)^2 \le t (v^\top Y v) $$
-        Let $w = Y^{1/2}v$. Then $v^\top Y v = \|w\|^2$ and $x^\top v = x^\top Y^{-1/2} w$.
-        $$ (x^\top Y^{-1/2} w)^2 \le t \|w\|^2 $$
-        By Cauchy-Schwarz, the maximum of the LHS over $\|w\|=1$ is $\|Y^{-1/2}x\|^2 = x^\top Y^{-1} x$.
-        <br>Thus, the condition holds for all $w$ (and hence all $v$) if and only if $t \ge x^\top Y^{-1} x$.</p>
-      </div>
-
-      <div class="insight">
-        <h4>Triangle of Equivalence</h4>
-        <p>The matrix fractional function connects three concepts via the Schur Complement:</p>
-        $$
-        \boxed{
-        t\ge x^\top Y^{-1}x
-        \iff
-        \begin{bmatrix}
-        Y & x\\
-        x^\top & t
-        \end{bmatrix}\succeq 0
-        \iff
-        tY - xx^\top \succeq 0
-        }
-        $$
-        <ul>
-          <li><b>Scalar:</b> Quadratic-over-linear inequality.</li>
-          <li><b>Block Matrix:</b> LMI form, useful for SDPs.</li>
-          <li><b>Rank-1 Update:</b> $tY \succeq xx^\top$. Derived by setting $\alpha=1$ in the quadratic form argument above: $(x^\top v)^2 \le t v^\top Y v \iff v^\top (tY - xx^\top) v \ge 0$.</li>
-        </ul>
-        <p><b>Determinant Identity:</b> We can derive this using a specific block elimination matrix. Let $M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix}$. Define the elimination matrix:
-        $$ R = \begin{bmatrix} I & -Y^{-1}x \\ 0 & 1 \end{bmatrix} $$
-        Compute the product $MR$:
-        <ul>
-            <li>Top-left: $Y \cdot I + x \cdot 0 = Y$.</li>
-            <li>Top-right: $Y(-Y^{-1}x) + x \cdot 1 = -x + x = 0$.</li>
-            <li>Bottom-left: $x^\top \cdot I + t \cdot 0 = x^\top$.</li>
-            <li>Bottom-right: $x^\top(-Y^{-1}x) + t \cdot 1 = t - x^\top Y^{-1}x$.</li>
-        </ul>
-        So $MR = \begin{bmatrix} Y & 0 \\ x^\top & t - x^\top Y^{-1}x \end{bmatrix}$. This is block lower-triangular.
-        <br>Thus $\det(MR) = \det(Y)(t - x^\top Y^{-1}x)$. Since $\det(R)=1$, we have:
-        $$ \boxed{ \det \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} = (\det Y)(t - x^\top Y^{-1}x) } $$
-        </p>
-      </div>
-
-      <div class="insight">
-        <h4>Alternative View: Variational Form (Detailed)</h4>
-        <p>We can also express $f(x, Y) = x^\top Y^{-1} x$ as a supremum of affine functions, giving a direct proof of joint convexity without block matrices.
-        <br><b>Identity:</b> $x^\top Y^{-1}x = \sup_{z \in \mathbb{R}^n} (2z^\top x - z^\top Y z)$.
-        <br><b>Derivation:</b> Fix $x$ and $Y \succ 0$. Consider the function $g(z) = 2z^\top x - z^\top Y z$.
-        <br>This is a strictly concave quadratic in $z$. We find the maximum by setting the gradient to zero:
-        $$ \nabla_z g(z) = 2x - 2Yz = 0 \implies Yz = x \implies z^* = Y^{-1}x $$
-        Plug this optimal $z^*$ back into the expression:
-        $$ g(z^*) = 2(Y^{-1}x)^\top x - (Y^{-1}x)^\top Y (Y^{-1}x) = 2x^\top Y^{-1} x - x^\top Y^{-1} Y Y^{-1} x = x^\top Y^{-1} x $$
-        <b>Convexity Argument:</b>
-        For each fixed $z$, the function $h_z(x, Y) = 2z^\top x - \mathrm{tr}(zz^\top Y)$ is <b>linear</b> in the joint variable $(x, Y)$.
-        Since $f(x, Y) = \sup_z h_z(x, Y)$ is the pointwise supremum of a family of convex (linear) functions, $f$ is jointly convex.</p>
-      </div>
-
-      </section>
-
-      <section class="section-card" id="section-6">
-        <h2>6. Composition and Transformation Rules</h2>
-        <p>Building complex convex functions from simpler ones through composition and transformations. These rules form the "algebra" of convexity.</p>
-
-        <h3>6.1 Composition with Increasing/Decreasing Functions</h3>
-        <p>Recognizing convexity is often about parsing a function into a composition of atomic convex functions. We use a set of recursive rules.</p>
-
-        <div class="theorem-box">
-          <h4>1. Affine Composition</h4>
-          <p>If $f: \mathbb{R}^k \to \mathbb{R}$ is convex, and $x \mapsto Ax + b$ is an affine map, then the composition $g(x) = f(Ax + b)$ is convex.</p>
-          <p><b>Proof:</b>
-          $$
-          \begin{aligned}
-          g(\theta x + (1-\theta)y) &= f(A(\theta x + (1-\theta)y) + b) \\
-          &= f(\theta(Ax+b) + (1-\theta)(Ay+b)) \\
-          &\le \theta f(Ax+b) + (1-\theta)f(Ay+b) \\
-          &= \theta g(x) + (1-\theta)g(y)
-          \end{aligned}
-          $$
-          </p>
-          <p><b>Examples:</b></p>
-          <ul>
-            <li><b>Log-Barrier:</b> $f(x) = -\sum \log(b_i - a_i^\top x)$. Inner: affine $b-a^\top x$. Outer: $-\log(\cdot)$ convex. Sum of convex is convex.</li>
-            <li><b>Norm of Affine:</b> $\|Ax - b\|$ is convex.</li>
-          </ul>
-        </div>
-
-        <div class="theorem-box">
-          <h4>2. Scalar Composition Rule ($f=h\circ g$) in Depth</h4>
-          <p>Let $g: \mathbb{R}^n \to \mathbb{R}$ and $h: \mathbb{R} \to \mathbb{R}$. Then $f(x) = h(g(x))$ is convex if:</p>
-          <ol>
-            <li>$g$ is <b>convex</b>, and $h$ is <b>convex</b> and <b>non-decreasing</b>.</li>
-            <li>$g$ is <b>concave</b>, and $h$ is <b>convex</b> and <b>non-increasing</b>.</li>
-            <li>$g$ is <b>affine</b>, and $h$ is <b>convex</b> (monotonicity not required).</li>
-          </ol>
-
-          <div class="intuition-box">
-            <h4>Calculus Intuition (Chain Rule)</h4>
-            <p>For smooth functions on $\mathbb{R}$, we can derive these rules from the second derivative:
-            $$ f'(x) = h'(g(x)) g'(x) $$
-            $$ f''(x) = h''(g(x)) [g'(x)]^2 + h'(g(x)) g''(x) $$
-            We need $f''(x) \ge 0$.
-            <ul>
-                <li>The first term $h'' (g')^2$ is always non-negative if $h$ is convex ($h'' \ge 0$).</li>
-                <li>The second term $h' g''$ sign depends on the product.
-                    <ul>
-                        <li>If $h$ is increasing ($h' \ge 0$) and $g$ is convex ($g'' \ge 0$), the product is $\ge 0$.</li>
-                        <li>If $h$ is decreasing ($h' \le 0$) and $g$ is concave ($g'' \le 0$), the product is $(-) \cdot (-) = (+)$.</li>
-                    </ul>
-                </li>
-            </ul>
-            This 1D intuition perfectly maps to the general vector rules.</p>
-          </div>
-
-          <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
-            <figure style="flex: 1; min-width: 300px; text-align: center;">
-              <img src="assets/convex_composition_case1.png"
-                   alt="Composition Case 1: Convex inner + Convex Increasing outer"
-                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
-              <figcaption><i>Figure 1:</i> Case 1. The convex inner function "curves up". The increasing outer function preserves this order, and its own convexity amplifies the curvature.</figcaption>
-            </figure>
-            <figure style="flex: 1; min-width: 300px; text-align: center;">
-              <img src="assets/convex_composition_case2.png"
-                   alt="Composition Case 2: Concave inner + Convex Decreasing outer"
-                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
-              <figcaption><i>Figure 2:</i> Case 2. The concave inner function "curves down". The decreasing outer function flips this to "curve up", and its own convexity reinforces the result.</figcaption>
-            </figure>
-          </div>
-
-          <div class="proof-box">
-            <h4>Proof: Scalar Composition Rules</h4>
-            <p>We prove the two most critical cases rigorously.</p>
-
-            <h5>Case 1: Outer Convex & Non-decreasing, Inner Convex</h5>
-            <p>Assume $g$ is convex, and $h$ is convex and <b>non-decreasing</b> on the range of $g$.</p>
-            <div class="proof-step">
-              <strong>Step 1: Inner Convexity.</strong>
-              Take arbitrary $x, y \in \mathbb{R}^n$ and $\theta \in [0,1]$. By convexity of $g$:
-              $$ g(\theta x + (1-\theta) y) \le \theta g(x) + (1-\theta) g(y) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Apply Monotonicity.</strong>
-              Apply $h$ to both sides. Since $h$ is <b>non-decreasing</b>, the inequality direction is maintained:
-              $$ h\big(g(\theta x + (1-\theta) y)\big) \le h\big(\theta g(x) + (1-\theta) g(y)\big) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Apply Outer Convexity.</strong>
-              Now use the convexity of $h$ on the argument $\theta g(x) + (1-\theta) g(y)$:
-              $$ h\big(\theta g(x) + (1-\theta) g(y)\big) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Combine:</strong>
-              $$ f(\theta x + (1-\theta)y) = h(g(\theta x + (1-\theta)y)) \le \theta f(x) + (1-\theta) f(y) $$
-              Thus $f$ is convex.
-            </div>
-
-            <hr style="border-top: 1px dashed var(--border); margin: 16px 0;">
-
-            <h5>Case 2: Outer Convex & Non-increasing, Inner Concave</h5>
-            <p>Assume $g$ is concave, and $h$ is convex and <b>non-increasing</b>.</p>
-            <div class="proof-step">
-              <strong>Step 1: Inner Concavity.</strong>
-              $$ g(\theta x + (1-\theta)y) \ge \theta g(x) + (1-\theta) g(y) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Apply Monotonicity (Flip).</strong>
-              Because $h$ is <b>non-increasing</b>, applying it flips the inequality:
-              $$ h\big(g(\theta x + (1-\theta)y)\big) \le h\big( \theta g(x) + (1-\theta)g(y)\big) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Apply Outer Convexity.</strong>
-              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta)h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Conclusion:</strong>
-              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y) $$
-              Thus $f$ is convex.
-            </div>
-          </div>
-        </div>
-
-        <div class="example">
-          <h4>Example: Log-Log-Sum-Exp</h4>
-          <p>Consider $f(x) = -\log(-\log(\sum e^{a_i^\top x + b_i}))$.</p>
-          <ul>
-            <li>Inner: $g(x) = \log(\sum e^{y_i})$ is Convex (Log-Sum-Exp).</li>
-            <li>Outer: $h(u) = -\log(-u)$ is Convex and Non-decreasing (for $u < 0$).</li>
-            <li>Result: Convex.</li>
-          </ul>
-        </div>
-
-        <div class="theorem-box">
-          <h4>3. Vector Composition Rule ($f=h\circ g$) in Depth</h4>
-          <p>Let $g: \mathbb{R}^n \to \mathbb{R}^k$ and $h: \mathbb{R}^k \to \mathbb{R}$. Then $f(x) = h(g_1(x), \dots, g_k(x))$ is convex if $h$ is convex and for each $i \in \{1, \dots, k\}$:</p>
-          <ul>
-            <li>$g_i$ is <b>convex</b> and $h$ is <b>non-decreasing</b> in the $i$-th argument.</li>
-            <li>$g_i$ is <b>concave</b> and $h$ is <b>non-increasing</b> in the $i$-th argument.</li>
-            <li>$g_i$ is <b>affine</b> (monotonicity in $i$-th argument not required).</li>
-          </ul>
-
-          <div class="proof-box">
-            <h4>Proof (Convex + Non-decreasing Case)</h4>
-            <p>We prove the case where each $g_i$ is convex and $h$ is convex and non-decreasing in each coordinate.</p>
-            <div class="proof-step">
-              <strong>Step 1: Vector Jensen Inequality.</strong>
-              Since each $g_i$ is convex, for $\theta \in [0,1]$:
-              $$ g(\theta x + (1-\theta)y) \le \theta g(x) + (1-\theta)g(y) \quad \text{(componentwise)} $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Monotonicity.</strong>
-              Since $h$ is non-decreasing in every coordinate, applying it preserves the inequality:
-              $$ h(g(\theta x + (1-\theta)y)) \le h(\theta g(x) + (1-\theta)g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Convexity of Outer Function.</strong>
-              By convexity of $h$:
-              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Conclusion.</strong> Combining these:
-              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
-            </div>
-          </div>
-        </div>
-
-        <div class="example">
-          <h4>Example 1: Sum of Logs (Concave)</h4>
-          <p>Let $u(x) = \sum_{i=1}^m \log g_i(x)$ where each $g_i$ is concave and positive.</p>
-          <ul>
-            <li>Inner map: $g(x) = (g_1(x), \dots, g_m(x))$ is concave.</li>
-            <li>Outer map: $h(y) = \sum \log y_i$. Since $\log$ is concave and increasing, $h$ is concave and increasing.</li>
-            <li>Result: $u$ is concave.</li>
-          </ul>
-        </div>
-
-        <div class="example">
-          <h4>Example 2: Log-Sum-Exp of Convex Functions (Detailed Check)</h4>
-          <p>Let $f(x) = \log\left(\sum_{i=1}^m \exp(g_i(x))\right)$ where each $g_i$ is convex. We verify the vector composition rule conditions:</p>
-          <ol>
-            <li><b>Convexity of Outer Function $h$:</b> $h(z) = \log(\sum e^{z_i})$ is convex (Log-Sum-Exp).
-            <br><i>Proof:</i> Using Hölder's inequality on $h(\theta z + (1-\theta)w) \le \theta h(z) + (1-\theta)h(w)$.</li>
-            <li><b>Monotonicity of Outer Function:</b> $h$ is non-decreasing in each argument.
-            <br><i>Proof:</i> $\frac{\partial h}{\partial z_j} = \frac{e^{z_j}}{\sum e^{z_k}} > 0$. Increasing any $z_j$ increases the sum, thus increasing the log-sum.</li>
-            <li><b>Convexity of Inner Functions:</b> Each $g_i(x)$ is convex (given).</li>
-          </ol>
-          <p><b>Conclusion:</b> Since $h$ is convex and non-decreasing, and $g_i$ are convex, the composition $f(x) = h(g_1(x), \dots, g_m(x))$ is convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>Example 3: $p$-Means ($h(z) = (\sum z_i^p)^{1/p}$)</h4>
-          <p>Consider $f(x) = (\sum_{i=1}^k g_i(x)^p)^{1/p}$ where $g_i(x) \ge 0$. We rely on the convexity/concavity and monotonicity of the outer function $h(z) = (\sum z_i^p)^{1/p}$.</p>
-          <ul>
-            <li><b>Case $p \ge 1$ (Convex):</b>
-            <br><i>Convexity:</i> By the Minkowski inequality (triangle inequality for $p$-norm), $h$ is convex.
-            <br><i>Monotonicity:</i> $\frac{\partial h}{\partial z_j} \propto z_j^{p-1} \ge 0$ for $z \ge 0$.
-            <br><b>Result:</b> Since $h$ is convex and non-decreasing, if $g_i$ are convex and non-negative, $f$ is convex.</li>
-
-            <li><b>Case $0 < p \le 1$ (Concave):</b>
-            <br><i>Concavity:</i> By the Reverse Minkowski inequality (or Hessian analysis), $h$ is concave on $\mathbb{R}_{++}^k$.
-            <br><i>Monotonicity:</i> $\frac{\partial h}{\partial z_j} \propto z_j^{p-1} > 0$ for $z > 0$.
-            <br><b>Result:</b> Since $h$ is concave and non-decreasing, if $g_i$ are concave and positive, $f$ is concave.</li>
-          </ul>
-        </div>
-
-        <div class="example">
-          <h4>Example 4: Geometric Mean ($h(z) = (\prod z_i)^{1/k}$)</h4>
-          <p>Consider $f(x) = (\prod_{i=1}^k g_i(x))^{1/k}$ where $g_i(x) > 0$.
-          <br>The outer function $h(z) = (\prod z_i)^{1/k}$ is <b>concave</b> and <b>non-decreasing</b> on $\mathbb{R}_{++}^k$.
-          <br><b>Proof check:</b>
-          <ul>
-              <li><b>Monotonicity:</b> $\frac{\partial h}{\partial z_j} = \frac{1}{k} \left(\prod_{i \ne j} z_i\right)^{1/k} z_j^{1/k-1} > 0$.</li>
-              <li><b>Concavity:</b> $\nabla^2 h \preceq 0$ (see Section 4 for deep dive). Alternatively, $h$ is log-concave and 1-homogeneous.</li>
-          </ul>
-          <b>Result:</b> If $g_i$ are concave and positive, then the geometric mean $f(x)$ is concave.</p>
-        </div>
-
-        <h3>6.2 Perspective Function (The Modeling Engine)</h3>
-        <p>The perspective transformation is more than a convexity property; it is a <b>modeling engine</b>. It allows you to remove denominators (fractions) by "absorbing" them into new variables, transforming fractional expressions into convex ones in a higher dimension.</p>
-
-        <div class="theorem-box">
-          <h4>Definition and Theorem</h4>
-          <p>If $f: \mathbb{R}^n \to \mathbb{R}$ is convex, then its <b>perspective</b> $g: \mathbb{R}^{n+1} \to \mathbb{R}$ defined by:</p>
-          $$
-          g(x, t) = t f(x/t), \quad t > 0
-          $$
-          <p>is convex on $\mathrm{dom}\, g = \{(x, t) \mid x/t \in \mathrm{dom}\, f, \ t > 0\}$.</p>
-          <p><b>Geometric Intuition (Cone over Epigraph):</b></p>
-          <p>The epigraph of the perspective function is the <b>conic hull</b> of the epigraph of $f$ (lifted to $t=1$).
-          <br>Specifically, $(x, t, s) \in \mathrm{epi}(\tilde{f}) \iff t > 0 \text{ and } (x/t, s/t) \in \mathrm{epi}(f)$.
-          <br>Since the conic hull of a convex set is convex, the perspective is convex.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Direct Proof of Convexity (The $\lambda$ trick)</h4>
-          <p>We show $g(x,t) = t f(x/t)$ is convex by direct definition.</p>
-          <div class="proof-step">
-            <strong>Step 1: Setup.</strong>
-            Take any $(x_1, t_1), (x_2, t_2)$ with $t_1, t_2 > 0$, and $\theta \in [0, 1]$.
-            Define $(x, t) = \theta(x_1, t_1) + (1-\theta)(x_2, t_2)$.
-            We must show $g(x, t) \le \theta g(x_1, t_1) + (1-\theta)g(x_2, t_2)$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Express $x/t$ as convex combination.</strong>
-            This is the key step. We need to write $x/t$ as a mixture of $x_1/t_1$ and $x_2/t_2$.
-            $$ \frac{x}{t} = \frac{\theta x_1 + (1-\theta)x_2}{\theta t_1 + (1-\theta)t_2} $$
-            Define weights $\lambda_1 = \frac{\theta t_1}{t}$ and $\lambda_2 = \frac{(1-\theta)t_2}{t}$.
-            Note that $\lambda_1, \lambda_2 \ge 0$ and $\lambda_1 + \lambda_2 = \frac{\theta t_1 + (1-\theta)t_2}{t} = 1$.
-            We can rewrite the fraction as:
-            $$ \frac{x}{t} = \lambda_1 \frac{x_1}{t_1} + \lambda_2 \frac{x_2}{t_2} $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Apply Convexity of $f$.</strong>
-            $$ f\left(\frac{x}{t}\right) \le \lambda_1 f\left(\frac{x_1}{t_1}\right) + \lambda_2 f\left(\frac{x_2}{t_2}\right) $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: Multiply by $t$.</strong>
-            $$ g(x, t) = t f(x/t) \le t \lambda_1 f(x_1/t_1) + t \lambda_2 f(x_2/t_2) $$
-            Substitute back $t \lambda_1 = \theta t_1$ and $t \lambda_2 = (1-\theta)t_2$:
-            $$ g(x, t) \le \theta t_1 f(x_1/t_1) + (1-\theta) t_2 f(x_2/t_2) = \theta g(x_1, t_1) + (1-\theta) g(x_2, t_2) $$
-            Done: perspective is convex.
-          </div>
-        </div>
-
-        <div class="proof-box">
-          <h4>Alternative Proof: Epigraph Mapping</h4>
-          <p>We can prove convexity by relating the epigraph of $g$ to the epigraph of $f$ via a linear map.
-          <br>Define the mapping $\Phi: \{(x,t,s) \mid t>0\} \to \mathbb{R}^{n+1}$ by $\Phi(x,t,s) = (x/t, s/t)$.
-          <br>The epigraph of $g$ is defined by $g(x,t) \le s \iff t f(x/t) \le s \iff f(x/t) \le s/t$.
-          <br>Thus $(x,t,s) \in \text{epi } g \iff t > 0 \text{ and } (x/t, s/t) \in \text{epi } f$.
-          <br>We can express this explicitly as:
-          $$ \mathrm{epi}\, g = \Phi^{-1}(\mathrm{epi}\, f) \cap \{(x, t, s) \mid t > 0\} $$
-          where $\Phi$ is the linear map defined on homogeneous coordinates. Since the inverse image of a convex set under a linear map is convex, and the intersection with a halfspace ($t>0$) is convex, $\mathrm{epi}\, g$ is convex.
-          <br>More simply: $\text{epi } g$ is the conic hull of $\text{epi } f$ (embedded at $t=1$). The conic hull of a convex set is convex.</p>
-        </div>
-
-        <h4>The Modeling Engine: Removing Denominators</h4>
-        <p>The perspective transform allows us to solve problems involving ratios with positive denominators by <b>linearizing</b> the denominator into a variable $t$.</p>
-
-        <div class="example">
-          <h4>Template: Linear-Fractional Programming</h4>
-          <p>Minimize $\frac{a^\top x + b}{c^\top x + d}$ subject to $c^\top x + d > 0$ and convex constraints $x \in C$.
-          <br><b>Substitution:</b> Let $t = \frac{1}{c^\top x + d}$ and $y = tx$.
-          <br><b>Constraints:</b>
-          <ul>
-              <li>$t > 0$.</li>
-              <li>Normalization: $c^\top y + dt = 1$ (since $1/t = c^\top(y/t) + d$).</li>
-              <li>$y/t \in C \iff \tilde{I}_C(y, t) \le 0$ (Perspective of indicator). If $C=\{Ax \le b\}$, this becomes $Ay \le bt$.</li>
-          </ul>
-          <b>Objective:</b> $t(a^\top (y/t) + b) = a^\top y + bt$.
-          <br><b>Result:</b> An LP (or convex problem) in $(y,t)$. No bisection needed.</p>
-        </div>
-
-        <div class="example">
-          <h4>Template: Norm-Ratio Minimization</h4>
-          <p>Minimize $\frac{\|Ax - b\|_2}{c^\top x + d}$.
-          <br><b>Substitution:</b> $t = \frac{1}{c^\top x + d}$, $y = tx$.
-          <br><b>Objective:</b> $t \|A(y/t) - b\|_2 = \|Ay - bt\|_2$.
-          <br><b>Result:</b> $\min \|Ay - bt\|_2$ s.t. $c^\top y + dt = 1$, $t > 0$.
-          <br>This transforms a complex ratio into a standard SOCP problem (minimizing a norm).</p>
-        </div>
-
-        <div class="example">
-          <h4>Example: Relative Entropy</h4>
-          <p>Let $f(u) = -\log u$, which is convex. Its perspective is:
-          $$ g(x, t) = t f(x/t) = -t \log(x/t) = t \log t - t \log x $$
-          This is related to the relative entropy function $x \log(x/y)$, which is jointly convex.</p>
-        </div>
-
-        <div class="example">
-          <h4>Example: Power-over-Linear</h4>
-          <p>The function $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ for $p > 1, t > 0$ is convex.
-          <br><i>Derivation:</i> Factor out $t$: $f(x,t) = t \frac{\|x\|_p^p}{t^p} = t \|x/t\|_p^p$. This is the perspective of the convex function $h(u) = \|u\|_p^p$.</p>
-        </div>
-
-        <div class="example">
-          <h4>Example: Quadratic-over-Linear</h4>
-          <p>The function $f(x, y) = \frac{x^2}{y}$ for $y > 0$ is convex (Perspective of $x^2$).
-          <br>More generally, $f(x) = \frac{\|Ax+b\|_2^2}{c^\top x + d}$ is convex (Affine composition of perspective).</p>
-        </div>
-
-        <h3>6.3 Power Functions and Homogeneity</h3>
-
-        <p>Power functions are a rich source of examples and inequalities.</p>
-
-        <h4>Convexity of $x^p$</h4>
-        <p>The function $f(x) = x^p$ on $\mathbb{R}_{++}$ is:</p>
-        <ul>
-            <li><b>Convex</b> for $p \ge 1$ or $p \le 0$ ($f''(x) = p(p-1)x^{p-2} \ge 0$).</li>
-            <li><b>Concave</b> for $0 \le p \le 1$ ($f''(x) \le 0$).</li>
-        </ul>
-
-        <h4>Homogeneity and Inequalities</h4>
-        <p>For $p \ge 1$, $f(x) = x^p$ is convex. Using the tangent line inequality at $x=1$ ($f(x) \ge f(1) + f'(1)(x-1)$):</p>
-        $$ x^p \ge 1 + p(x-1) $$
-        <p>This can be used to prove that for $x, y \ge 0$ and $p \ge 1$:</p>
-        $$ \boxed{ x^p + y^p \ge x + y \quad \text{for } x,y \in [0,1] } $$
-        <p>Also, due to homogeneity ($(\lambda x)^p = \lambda^p x^p$), we can scale inequalities. For example, the function $f(x, y) = \frac{x^2}{y}$ arises from the homogeneity of quadratics.</p>
-
-        <div class="proof-box">
-          <h4>Theorem: Log-Concavity + Homogeneity $\implies$ Concavity</h4>
-          <p>Let $f: \mathbb{R}^n_+ \to \mathbb{R}_+$ be a function that is:
-          <ol>
-            <li><b>Log-Concave:</b> $f(\theta x + (1-\theta)y) \ge f(x)^\theta f(y)^{1-\theta}$.</li>
-            <li><b>Positively Homogeneous (degree 1):</b> $f(\alpha x) = \alpha f(x)$ for $\alpha > 0$.</li>
-          </ol>
-          Then $f$ is <b>concave</b>: $f(\theta x + (1-\theta)y) \ge \theta f(x) + (1-\theta) f(y)$.</p>
-          <div class="proof-step">
-            <strong>Proof Idea:</strong> Normalize to the level set.
-            Let $x, y$ be points such that $f(x) = \alpha, f(y) = \beta$.
-            Define normalized vectors $\tilde{x} = x/\alpha, \tilde{y} = y/\beta$, so $f(\tilde{x})=f(\tilde{y})=1$.
-            Let $z = \theta x + (1-\theta)y = \theta \alpha \tilde{x} + (1-\theta) \beta \tilde{y}$.
-            Let $\gamma = \theta \alpha + (1-\theta)\beta$. Rewrite $z = \gamma (\lambda \tilde{x} + (1-\lambda)\tilde{y})$ where $\lambda = \theta \alpha / \gamma$.
-            By homogeneity: $f(z) = \gamma f(\lambda \tilde{x} + (1-\lambda)\tilde{y})$.
-            By log-concavity: $f(\lambda \tilde{x} + (1-\lambda)\tilde{y}) \ge f(\tilde{x})^\lambda f(\tilde{y})^{1-\lambda} = 1^\lambda 1^{1-\lambda} = 1$.
-            Thus $f(z) \ge \gamma \cdot 1 = \theta f(x) + (1-\theta)f(y)$.
-          </div>
-          <div class="proof-step">
-            <strong>Application: Geometric Mean.</strong>
-            $g(x) = (\prod x_i)^{1/n}$.
-            1. Homogeneous? $g(\alpha x) = (\alpha^n \prod x_i)^{1/n} = \alpha g(x)$. Yes.
-            2. Log-concave? $\log g(x) = \frac{1}{n}\sum \log x_i$ is a sum of concave functions. Yes.
-            Therefore, $g(x)$ is concave. This offers a conceptual alternative to the Hessian proof.
-          </div>
-        </div>
-
-        <h3>6.4 The Minkowski Functional</h3>
-        <p>The Minkowski functional generalizes the notion of a norm using a convex set. Let $C \subset \mathbb{R}^n$ be a convex set containing the origin. We define for each $x$:</p>
-        $$
-        M_C(x) = \inf \{ t > 0 \mid t^{-1} x \in C \}
-        $$
-
-        <div class="insight">
-          <h4>Domain & Interpretation</h4>
-          <p>Consider the ray $R_x = \{s x \mid s \ge 0\}$. The value $M_C(x)$ is determined by where this ray exits the set $C$.
-          <br>Specifically, the set of scaling factors is $\{t > 0 \mid t^{-1} x \in C\} = \{1/s \mid s > 0, s x \in C\}$.
-          <br>Thus, $M_C(x)$ is finite if and only if the ray intersects $C$ at some positive multiple.
-          <br>If $x \in C$, then $t=1$ is feasible, so $M_C(x) \le 1$.
-          <br>Geometrically, $M_C(x)$ represents the "inverse distance" to the boundary along the direction $x$. $M_C(x) = 1$ means $x$ is on the "unit sphere" of the geometry defined by $C$.</p>
-        </div>
-
-        <div class="proof-box">
-          <h4>Properties: Homogeneity and Convexity</h4>
-
-          <div class="proof-step">
-            <strong>1. Positive Homogeneity.</strong>
-            Let $\alpha > 0$. We compute $M_C(\alpha x) = \inf \{ t > 0 \mid t^{-1} \alpha x \in C \}$.
-            <br>Let $s = t/\alpha$ (so $t = \alpha s$). The condition becomes $s^{-1} x \in C$.
-            $$ M_C(\alpha x) = \inf \{ \alpha s \mid s > 0, s^{-1} x \in C \} = \alpha \inf \{ s > 0 \mid s^{-1} x \in C \} = \alpha M_C(x) $$
-            For $\alpha=0$, since $0 \in C$, $M_C(0)=0$. Thus homogeneity holds for all $\alpha \ge 0$.
-          </div>
-
-          <div class="proof-step">
-            <strong>2. Convexity.</strong>
-            We show $M_C(\theta x + (1-\theta)y) \le \theta M_C(x) + (1-\theta) M_C(y)$.
-            <br>Fix $\varepsilon > 0$. Since $M_C(x)$ is an infimum, there exists $a > 0$ such that $a^{-1}x \in C$ and $a \le M_C(x) + \varepsilon$.
-            <br>Similarly, there exists $b > 0$ such that $b^{-1}y \in C$ and $b \le M_C(y) + \varepsilon$.
-            <br>By convexity of $C$, the combination $\theta a^{-1}x + (1-\theta)b^{-1}y$ is not necessarily in $C$ directly, but we form a convex combination of points in $C$.
-            <br>Consider $z = \theta x + (1-\theta)y$. Let $t = \theta a + (1-\theta)b$.
-            We check the point $t^{-1}z$:
-            $$ \frac{z}{t} = \frac{\theta x + (1-\theta)y}{\theta a + (1-\theta)b} = \frac{\theta a (a^{-1}x) + (1-\theta)b (b^{-1}y)}{\theta a + (1-\theta)b} $$
-            This is a convex combination (weights $\lambda_1 = \theta a/t, \lambda_2 = (1-\theta)b/t$ sum to 1).
-            Since $a^{-1}x \in C$ and $b^{-1}y \in C$, and $C$ is convex, $t^{-1}z \in C$.
-            <br>Therefore, $M_C(z) \le t = \theta a + (1-\theta)b \le \theta M_C(x) + (1-\theta)M_C(y) + \varepsilon$.
-            <br>Letting $\varepsilon \to 0$ proves convexity.
-          </div>
-        </div>
-
-        <div class="theorem-box">
-          <h4>When is $M_C$ a Norm?</h4>
-          <p>We require three conditions on $C$: <b>Closed, Bounded, Symmetric</b> ($x \in C \implies -x \in C$), and <b>$0 \in \text{int } C$</b>.</p>
-          <div class="proof-step">
-            <strong>1. Positivity ($M_C(x) \ge 0$).</strong> Obvious from definition ($t>0$).
-          </div>
-          <div class="proof-step">
-            <strong>2. Symmetry ($M_C(-x) = M_C(x)$).</strong>
-            $$ M_C(-x) = \inf \{ t > 0 \mid t^{-1}(-x) \in C \} = \inf \{ t > 0 \mid -(t^{-1}x) \in C \} $$
-            Since $C$ is symmetric, $u \in C \iff -u \in C$. Thus the condition is equivalent to $t^{-1}x \in C$, so $M_C(-x)=M_C(x)$.
-          </div>
-          <div class="proof-step">
-            <strong>3. Non-degeneracy (Strict Positivity).</strong>
-            We must show $M_C(x)=0 \iff x=0$.
-            Suppose $M_C(x)=0$ for some $x \ne 0$.
-            By definition, this means for every $\varepsilon > 0$, there exists $t \in (0, \varepsilon)$ such that $t^{-1}x \in C$.
-            As $t \to 0^+$, the norm $\|t^{-1}x\| = t^{-1}\|x\| \to \infty$.
-            This implies $C$ contains points of arbitrarily large norm, which contradicts the assumption that $C$ is <b>bounded</b>.
-            Thus, if $C$ is bounded, $M_C(x)=0$ implies $x=0$.
-          </div>
-        </div>
-
-      </section>
-
-      <section class="section-card" id="section-7">
-        <h2>7. Summary and Modeling Patterns</h2>
+<section class="section-card" id="section-8">
+        <h2>8. Summary and Modeling Patterns</h2>
         <p>A comprehensive summary of convexity-preserving operations, pitfalls to avoid, and standard modeling patterns.</p>
 
-        <h3>7.0 When to Use Which Convexity Verification Method</h3>
+        <h3>8.0 When to Use Which Convexity Verification Method</h3>
 
-        <p>Sections 1–4 introduced three characterizations of convexity. Each has different requirements and trade-offs. Here's a practical guide for <b>which tool to use when</b>:</p>
+        <p>This lecture introduced three characterizations of convexity. Each has different requirements and trade-offs. Here's a practical guide for <b>which tool to use when</b>:</p>
 
         <div class="insight">
           <h4>The Three Characterizations Compared</h4>
@@ -1909,7 +2139,7 @@
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 12px;"><b>First-Order</b> (§3)<br><span style="font-size: 0.9em;">$f(y) \ge f(x) + \nabla f(x)^\top (y-x)$</span></td>
+                <td style="padding: 12px;"><b>First-Order</b> (§6)<br><span style="font-size: 0.9em;">$f(y) \ge f(x) + \nabla f(x)^\top (y-x)$</span></td>
                 <td style="padding: 12px;">Differentiable on open convex domain</td>
                 <td style="padding: 12px;">
                   • Geometric intuition ("tangent underestimates")<br>
@@ -1927,7 +2157,7 @@
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 12px;"><b>Second-Order</b> (§4)<br><span style="font-size: 0.9em;">$\nabla^2 f(x) \succeq 0$ for all $x$</span></td>
+                <td style="padding: 12px;"><b>Second-Order</b> (§7)<br><span style="font-size: 0.9em;">$\nabla^2 f(x) \succeq 0$ for all $x$</span></td>
                 <td style="padding: 12px;">Twice differentiable on open convex domain</td>
                 <td style="padding: 12px;">
                   • <b>Easiest to check in practice</b><br>
@@ -2006,7 +2236,7 @@
           <p><b>Lesson:</b> Even for twice-differentiable functions, composition rules (§5) can be faster than Hessian computation.</p>
         </div>
 
-        <h3>7.1 Pitfalls and Illegal Moves</h3>
+        <h3>8.1 Pitfalls and Illegal Moves</h3>
         <p>A common pitfall is to assume the <b>minimum</b> of convex functions is convex. It is generally <b>not</b>.</p>
         <div class="insight">
           <h4>Counterexample</h4>
@@ -2025,7 +2255,7 @@
           </ul>
         </div>
 
-        <h3>7.2 Summary: A Complete "Legal Moves Checklist"</h3>
+        <h3>8.2 Summary: A Complete "Legal Moves Checklist"</h3>
         <p>When you build or analyze a function, follow this "compiler" checklist. If your function passes, it is certified convex.</p>
         <ul>
             <li>Is it an <b>atom</b> from the standard library? (See Section 6).</li>
@@ -2069,7 +2299,7 @@
           <div id="widget-operations-preserving" style="width: 100%; height: 500px; position: relative;"></div>
         </div>
 
-        <h3>7.3 Standard Epigraph Modeling Patterns</h3>
+        <h3>8.3 Standard Epigraph Modeling Patterns</h3>
         <p>This section provides the exact "compiler rules" to translate mathematical expressions into standard LP/SOCP/SDP atoms. These are not heuristics; they are exact algebraic equivalences.</p>
 
         <div class="example-box">
@@ -2117,136 +2347,8 @@
         </div>
       </section>
 
-      <section class="section-card" id="section-8">
-        <h2>8. Standard Convex Function Library</h2>
-        <p>Recognizing these atoms instantly is the key to efficient modeling. The meta-rule is: <b>know the domain</b> and <b>know the cone</b>.</p>
 
-        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-          <thead>
-            <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
-              <th style="padding: 12px; text-align: left;">Function</th>
-              <th style="padding: 12px; text-align: left;">Domain</th>
-              <th style="padding: 12px; text-align: left;">Epigraph (Modeling)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Affine</b> $a^\top x + b$</td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Halfspace (Linear Constraint)</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Quadratic</b> $\frac{1}{2}x^\top Q x + c^\top x$ ($Q \succeq 0$)</td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Rotated SOC ($x^\top x \le t$) or LMI</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>$\ell_2$ Norm</b> $\|x\|_2$</td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Second-Order Cone (SOC): $(t, x) \in \mathcal{Q}$</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>$\ell_1$ / $\ell_\infty$</b></td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Linear Constraints (LP)</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Log-Sum-Exp</b> $\log(\sum e^{x_i})$</td>
-              <td>$\mathbb{R}^n$</td>
-              <td>Exponential Cone</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Neg-Log</b> $-\log x$</td>
-              <td>$\mathbb{R}_{++}$</td>
-              <td>Exponential Cone</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Entropy</b> $x \log x$</td>
-              <td>$\mathbb{R}_{++}$</td>
-              <td>Exponential Cone</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 12px;"><b>Quad-over-Lin</b> $x^2/y$</td>
-              <td>$y > 0$</td>
-              <td>Rotated SOC: $x^2 \le ty$</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>6.1 Deep Dive: Norms (The Archetype)</h3>
-        <p>Norms are the "size" functions of linear space. They are the single most important class of convex functions because they bridge geometry (balls) and algebra (inequalities).</p>
-
-        <h4>The Mental Model: What structure are norms capturing?</h4>
-        <div class="example-box">
-            <p>A norm measures size in a way compatible with scaling and addition:</p>
-            <ul>
-                <li><b>Scaling sanity $\Rightarrow$ Homogeneity:</b> $\|\alpha x\| = |\alpha|\|x\|$. Scaling the vector scales its size.</li>
-                <li><b>Addition sanity $\Rightarrow$ Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. No shortcuts via intermediate points. This is the engine of convexity.</li>
-                <li><b>Non-degeneracy $\Rightarrow$ Definiteness:</b> $\|x\|=0 \iff x=0$. No invisible non-zero vectors.</li>
-            </ul>
-        </div>
-
-        <h4>Tiny Lemmas (Reusable Templates)</h4>
-        <div class="proof-box">
-            <p><b>Lemma 1: Symmetry.</b> $\|x\| = \|-x\|$. (Follows from homogeneity with $\alpha=-1$).</p>
-            <p><b>Lemma 2: Reverse Triangle Inequality.</b> $\big| \|x\| - \|y\| \big| \le \|x-y\|$.
-            <br><i>Interpretation:</i> The norm function is 1-Lipschitz. It cannot change faster than the distance.</p>
-            <p><b>Lemma 3: Two-point Jensen.</b> $\|\theta x + (1-\theta)y\| \le \theta\|x\| + (1-\theta)\|y\|$.
-            <br><i>Proof:</i> Triangle inequality + Homogeneity. This proves all norms are convex.</p>
-        </div>
-
-        <h4>Examples with Proof Content</h4>
-        <div class="example-box">
-            <ul>
-                <li><b>$\ell_1$ Norm:</b> $\|x\|_1 = \sum |x_i|$. Convexity follows from $|a+b| \le |a|+|b|$.
-                <br><i>Engineering Hook:</i> $\ell_1$ minimization promotes sparsity (corners of the unit ball).</li>
-                <li><b>$\ell_\infty$ Norm:</b> $\|x\|_\infty = \max |x_i|$. Convexity follows from $\max(a+b) \le \max(a) + \max(b)$.
-                <br><i>Engineering Hook:</i> Represents "worst-case" or box constraints.</li>
-                <li><b>Euclidean ($\ell_2$) Norm:</b> Convexity follows from Cauchy-Schwarz ($x^\top y \le \|x\|\|y\|$).
-                <br><i>Engineering Hook:</i> Rotational invariance, smooth dependence.</li>
-            </ul>
-            <p><b>Failure Mode:</b> Forgetting that $\|x\|_2^2$ is convex but $\|x\|_2 \ge t$ is <b>non-convex</b> (exterior of ball). Norms are convex, so sublevel sets are convex bodies; superlevel sets are holey.</p>
-        </div>
-
-        <h3>6.2 Other Standard Atoms</h3>
-
-        <div class="example-box">
-            <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
-            <p><b>Proof:</b> Hessian is $\text{diag}(p) - pp^\top$ (covariance matrix), hence PSD.</p>
-            <p><b>Engineering Hook:</b> Used as a smooth approximation of $\max(x)$.
-            <br>$\text{lse}(x) \le t$ is representable using $n$ exponential cones.</p>
-            <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
-        </div>
-
-        <div class="example-box">
-            <h4>3. Quadratic-over-Linear ($x^\top x / y$)</h4>
-            <p><b>Domain:</b> $y > 0$ (Crucial!). Not defined at $y=0$ (unless 0/0=0 convention) and non-convex for $y < 0$.</p>
-            <p><b>Engineering Hook:</b>
-            $$ x^\top x / y \le t \iff x^\top x \le ty, \ y > 0, \ t \ge 0 $$
-            This is a <b>Rotated Second-Order Cone</b> constraint $x^\top x \le 2uv$ (with $u=y/2, v=t$).</p>
-        </div>
-
-        <div class="example-box">
-            <h4>4. Power Functions ($x^p$)</h4>
-            <p><b>Domain:</b> $x > 0$.</p>
-            <ul>
-                <li>$p \ge 1$: Convex.</li>
-                <li>$0 \le p \le 1$: Concave.</li>
-                <li>$p \le 0$: Convex (e.g., $1/x$).</li>
-            </ul>
-            <p><b>Failure Mode:</b> Applying $x^3$ on all of $\mathbb{R}$. It is only convex on $\mathbb{R}_+$. On $\mathbb{R}$, $x^3$ changes curvature at 0.</p>
-        </div>
-
-        <div class="warning-box">
-            <h4>Common Failure Modes Across the Library</h4>
-            <ol>
-                <li><b>Domain Amnesia:</b> Using $-\log(1 - x^\top x)$ without enforcing $\|x\| < 1$. The solver might step out of domain and crash (or return garbage) if implicit constraints aren't made explicit.</li>
-                <li><b>Constraint Direction:</b> $\max(x_i) \le t$ is convex (intersection of halfspaces). $\max(x_i) \ge t$ is non-convex (union of halfspaces). Always check if your constraint carves out a convex set.</li>
-            </ol>
-        </div>
-      </section>
-
-      <section class="section-card" id="section-9">
+<section class="section-card" id="section-9">
         <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
 
         <div class="problem">

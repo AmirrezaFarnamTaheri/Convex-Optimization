@@ -299,6 +299,15 @@
         $$ \boxed{ d^* \le p^* } $$
         <p>This holds for <b>any</b> optimization problem. The difference $p^* - d^*$ is called the <b>duality gap</b>.</p>
 
+        <div class="insight">
+          <h4>Bridge to Algorithms: The Stopping Criterion</h4>
+          <p>The duality gap is the <b>universal speedometer</b> for optimization algorithms.
+          <br>If you have a feasible primal point $x$ and a feasible dual point $(\lambda, \nu)$, then:
+          $$ f_0(x) - g(\lambda, \nu) \ge p^* - d^* \ge 0 $$
+          The quantity $f_0(x) - g(\lambda, \nu)$ is an upper bound on the suboptimality $f_0(x) - p^*$.
+          <br><b>Algorithm Strategy:</b> Primal-dual algorithms (like Interior Point Methods) maintain feasible $x$ and $(\lambda, \nu)$ and iterate until the gap drops below a tolerance $\epsilon$. This provides a <b>certifiable guarantee</b> of near-optimality.</p>
+        </div>
+
         <div style="margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
           <iframe src="widgets/primal_dual_1d.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
         </div>
@@ -398,12 +407,13 @@
         </div>
 
         <div class="insight">
-          <h4>Preview: KKT Conditions as the Algorithm's Goal</h4>
-          <p>Most convex optimization algorithms are just different ways of finding a point that satisfies the KKT conditions:</p>
+          <h4>The Grand Unification: KKT as the Algorithm's Goal</h4>
+          <p>The entire journey from Lagrangian $\to$ Dual Function $\to$ Dual Problem culminates here. The KKT conditions are the <b>necessary and sufficient conditions</b> for optimality in convex problems. This means solving an optimization problem is equivalent to solving the KKT system of equations.</p>
+          <p>Most algorithms are just different ways of hunting for a KKT point:</p>
           <ul>
-            <li><b>Unconstrained Problems:</b> KKT reduces to $\nabla f_0(x) = 0$. <b>Gradient Descent</b> tries to find this point iteratively.</li>
-            <li><b>Equality Constrained (QP/Linear):</b> KKT becomes a system of linear equations. <b>Newton's Method</b> solves this system directly (or iteratively).</li>
-            <li><b>Inequality Constrained:</b> The complementary slackness condition $\lambda_i f_i(x) = 0$ is hard (combinatorial). <b>Interior-Point Methods</b> replace it with a perturbed condition $\lambda_i f_i(x) = -1/t$ and solve the sequence of smooth approximations as $t \to \infty$.</li>
+            <li><b>Gradient Descent</b> hunts for Stationarity ($\nabla f_0 = 0$) in unconstrained problems.</li>
+            <li><b>Simplex Method</b> maintains Stationarity and Feasibility while fixing Complementary Slackness, iteratively improving the objective.</li>
+            <li><b>Interior-Point Methods</b> attack Complementary Slackness ($\lambda_i f_i(x) = 0$) directly. They replace the "hard zero" with a "soft target" $\lambda_i f_i(x) = -1/t$ (Central Path) and drive $t \to \infty$. This smooths the KKT system into something Newton's method can solve.</li>
           </ul>
         </div>
 

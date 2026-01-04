@@ -1344,13 +1344,40 @@
         </div>
 
         <div class="example">
-          <h4>Example: Log-Log-Sum-Exp</h4>
-          <p>Consider $f(x) = -\log(-\log(\sum e^{a_i^\top x + b_i}))$.</p>
-          <ul>
-            <li>Inner: $g(x) = \log(\sum e^{y_i})$ is Convex (Log-Sum-Exp).</li>
-            <li>Outer: $h(u) = -\log(-u)$ is Convex and Non-decreasing (for $u < 0$).</li>
-            <li>Result: Convex.</li>
-          </ul>
+          <h4>Example: Log-Log-Sum-Exp (Step-by-Step Analysis)</h4>
+          <p>Consider the function $f(x) = -\log(-\log(\sum_{i=1}^m e^{a_i^\top x + b_i}))$. We verify convexity by decomposing it into layers:</p>
+
+          <div class="proof-box">
+            <div class="proof-step">
+              <strong>Layer 1: The Inner Sum (Affine + Exp).</strong>
+              Let $z_i(x) = e^{a_i^\top x + b_i}$.
+              Since $a_i^\top x + b_i$ is affine and $e^u$ is convex, $z_i(x)$ is convex.
+              The sum $S(x) = \sum z_i(x)$ is convex (sum of convex functions).
+            </div>
+
+            <div class="proof-step">
+              <strong>Layer 2: First Log (Log-Sum-Exp).</strong>
+              Let $g(x) = \log S(x) = \log(\sum e^{a_i^\top x + b_i})$.
+              This is the composition of the convex log-sum-exp function with affine maps. Thus $g(x)$ is <b>convex</b>.
+              (Note: domain requires the sum < 1 for the next log to be defined, so $g(x) < 0$).
+            </div>
+
+            <div class="proof-step">
+              <strong>Layer 3: Outer Log (Composition Rule).</strong>
+              Now $f(x) = h(g(x))$ where $h(u) = -\log(-u)$ for $u < 0$.
+              Check properties of $h(u)$:
+              <ul>
+                <li><b>Convexity:</b> $h'(u) = -1/u$, $h''(u) = 1/u^2 > 0$. So $h$ is convex.</li>
+                <li><b>Monotonicity:</b> $h'(u) = -1/u$. Since $u < 0$, $-1/u > 0$. So $h$ is <b>non-decreasing</b>.</li>
+              </ul>
+            </div>
+
+            <div class="proof-step">
+              <strong>Conclusion:</strong>
+              We have $f(x) = h(g(x))$ where $g$ is convex and $h$ is convex and non-decreasing.
+              By the scalar composition rule, <b>$f(x)$ is convex</b>.
+            </div>
+          </div>
         </div>
 
         <div class="theorem-box">
@@ -1534,9 +1561,28 @@
         </div>
 
         <div class="example">
-          <h4>Example: Power-over-Linear</h4>
-          <p>The function $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ for $p > 1, t > 0$ is convex.
-          <br><i>Derivation:</i> Factor out $t$: $f(x,t) = t \frac{\|x\|_p^p}{t^p} = t \|x/t\|_p^p$. This is the perspective of the convex function $h(u) = \|u\|_p^p$.</p>
+          <h4>Example: Power-over-Linear (Deconstruction)</h4>
+          <p>The function $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ (where $p > 1, t > 0$) is convex. Here is how to recognize it:</p>
+          <div class="proof-box">
+            <div class="proof-step">
+              <strong>Step 1: Identify homogeneity.</strong>
+              If we scale $(x,t)$ by $\alpha$, we get $\frac{\|\alpha x\|^p}{(\alpha t)^{p-1}} = \frac{\alpha^p \|x\|^p}{\alpha^{p-1} t^{p-1}} = \alpha f(x,t)$.
+              Since $f$ is 1-homogeneous, it is likely a perspective function.
+            </div>
+            <div class="proof-step">
+              <strong>Step 2: Factor out $t$ (The Perspective Trick).</strong>
+              Rewrite the expression to isolate $x/t$:
+              $$ f(x,t) = \frac{\|x\|_p^p}{t^{p-1}} = t \cdot \frac{\|x\|_p^p}{t^p} = t \left\| \frac{x}{t} \right\|_p^p $$
+            </div>
+            <div class="proof-step">
+              <strong>Step 3: Identify the base function.</strong>
+              This matches the form $t g(x/t)$ where $g(u) = \|u\|_p^p$.
+              Since $p \ge 1$, $g(u)$ is convex (power of a norm).
+            </div>
+            <div class="proof-step">
+              <strong>Conclusion:</strong> $f$ is the perspective of a convex function, so it is convex.
+            </div>
+          </div>
         </div>
 
         <div class="example">

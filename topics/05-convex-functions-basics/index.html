@@ -50,6 +50,91 @@
       </ul>
     </section>
 
+    <!-- TRIFECTA NARRATIVE -->
+    <section class="section-card">
+      <h2><i data-feather="check-circle"></i> The Completion of the Trifecta</h2>
+
+      <div class="insight">
+        <h4>From Sets to Cones to Functions: The Convexity Trifecta</h4>
+        <p>This lecture completes a three-lecture arc through the <b>mathematical foundations</b> of convex optimization:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem;">
+          <thead>
+            <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
+              <th style="padding: 12px; text-align: left;">Lecture</th>
+              <th style="padding: 12px; text-align: left;">Topic</th>
+              <th style="padding: 12px; text-align: left;">Key Question</th>
+              <th style="padding: 12px; text-align: left;">Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b><a href="../03-convex-sets-geometry/index.html">L03</a></b></td>
+              <td style="padding: 12px;">Convex Sets</td>
+              <td style="padding: 12px;"><i>What are convex sets?</i></td>
+              <td style="padding: 12px;">Geometry, separation theorems, projections</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 12px;"><b><a href="../04-convex-sets-cones/index.html">L04</a></b></td>
+              <td style="padding: 12px;">Cones & Operations</td>
+              <td style="padding: 12px;"><i>What operations preserve convexity?</i></td>
+              <td style="padding: 12px;">Dual cones, generalized inequalities, duality theory</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border); background: var(--surface-2);">
+              <td style="padding: 12px;"><b>L05</b> (here)</td>
+              <td style="padding: 12px;">Convex Functions</td>
+              <td style="padding: 12px;"><i>What functions have convex epigraphs?</i></td>
+              <td style="padding: 12px;">Jensen's inequality, gradients, Hessians, composition rules</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><b>The Arc:</b> <b>Sets</b> (geometric objects) → <b>Cones</b> (algebraic structure) → <b>Functions</b> (analytical properties) → <b>Problems</b> (optimization)</p>
+
+        <p><b>The Bridge:</b> Every convex function $f$ defines a convex set—its <b>epigraph</b> epi $f = \{(x, t) : f(x) \le t\}$. This is the bridge from <b>functions</b> (what this lecture studies) to <b>sets</b> (what Lectures 03-04 studied). When we minimize $f(x)$, we're really finding the lowest point in epi $f$.</p>
+      </div>
+
+      <h3>Why Convex Functions Matter for Optimization</h3>
+      <p>Convex functions are <b>the objectives and constraints</b> in convex optimization problems. Here's why they're special:</p>
+
+      <ol>
+        <li><b>Local Minimum = Global Minimum:</b> Unlike nonconvex functions (which may have many local minima), a convex function has the property that <i>any local minimum is a global minimum</i>. This makes optimization tractable—gradient descent won't get stuck!</li>
+
+        <li><b>Efficient Verification Tools:</b> This lecture gives you three ways to verify convexity:
+          <ul style="margin-top: 0.5rem;">
+            <li><b>Definition</b> (§1): Check Jensen's inequality directly (works for any function)</li>
+            <li><b>First-order condition</b> (§3): Check that the gradient defines a global underestimator (requires differentiability)</li>
+            <li><b>Second-order condition</b> (§4): Check that the Hessian is PSD (requires twice-differentiability, easiest in practice!)</li>
+          </ul>
+          You'll learn when to use each method in §7.0.
+        </li>
+
+        <li><b>Composition Rules</b> (§5): You can <i>build</i> complex convex functions from simple ones using operations that preserve convexity (sums, compositions, pointwise maxima). This is the foundation of <b>Disciplined Convex Programming (DCP)</b> in tools like CVXPY.</li>
+
+        <li><b>Foundation for Standard Problem Classes:</b> The convex functions you'll see in this lecture (norms, quadratic forms, log-sum-exp, etc.) are the building blocks for:
+          <ul style="margin-top: 0.5rem;">
+            <li><b>Linear Programs (LP):</b> Minimize/maximize a linear function</li>
+            <li><b>Quadratic Programs (QP):</b> Minimize a quadratic function</li>
+            <li><b>Geometric Programs (GP):</b> Minimize posynomials (after log transform)</li>
+            <li><b>Conic Programs (SOCP, SDP):</b> Constraints defined by norms and matrix inequalities</li>
+          </ul>
+          You'll see these in <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (standard forms) and <a href="../08-convex-problems-conic/index.html">Lecture 08</a> (conic forms).
+        </li>
+      </ol>
+
+      <div class="insight">
+        <h4>What's Next: From Theory to Practice</h4>
+        <p>After this lecture, you'll have completed the <b>theoretical core</b> of convex optimization:</p>
+        <ul>
+          <li>✓ You understand <b>convex sets</b> (geometry)</li>
+          <li>✓ You understand <b>cones and dual cones</b> (algebra and duality)</li>
+          <li>✓ You understand <b>convex functions</b> (analysis and calculus)</li>
+        </ul>
+        <p>In <a href="../06-convex-functions-advanced/index.html">Lecture 06</a>, we'll study advanced function properties (subdifferentials, conjugates, strong convexity). Then in <a href="../07-convex-problems-standard/index.html">Lectures 07-09</a>, we'll apply everything to <b>solve real optimization problems</b>—LP, QP, GP, SOCP, SDP, and duality theory.</p>
+        <p><b>The Payoff:</b> With the foundations from L03-05, you'll be able to recognize convex problems in the wild, reformulate them into standard forms, and solve them efficiently with off-the-shelf solvers. That's the power of convex optimization!</p>
+      </div>
+    </section>
+
     <article>
       <section class="section-card" id="section-1">
         <h2>1. Definition and Basic Properties</h2>
@@ -1787,6 +1872,139 @@
       <section class="section-card" id="section-7">
         <h2>7. Summary and Modeling Patterns</h2>
         <p>A comprehensive summary of convexity-preserving operations, pitfalls to avoid, and standard modeling patterns.</p>
+
+        <h3>7.0 When to Use Which Convexity Verification Method</h3>
+
+        <p>Sections 1–4 introduced three characterizations of convexity. Each has different requirements and trade-offs. Here's a practical guide for <b>which tool to use when</b>:</p>
+
+        <div class="insight">
+          <h4>The Three Characterizations Compared</h4>
+          <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
+                <th style="padding: 12px; text-align: left;">Method</th>
+                <th style="padding: 12px; text-align: left;">Requirements</th>
+                <th style="padding: 12px; text-align: left;">Pros</th>
+                <th style="padding: 12px; text-align: left;">Cons</th>
+                <th style="padding: 12px; text-align: left;">When to Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px;"><b>Definition</b> (§1.2)<br><span style="font-size: 0.9em;">$f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$</span></td>
+                <td style="padding: 12px;">None<br>(works for any function)</td>
+                <td style="padding: 12px;">
+                  • Always applicable<br>
+                  • Direct from first principles<br>
+                  • Works for non-smooth functions
+                </td>
+                <td style="padding: 12px;">
+                  • Tedious algebra<br>
+                  • No geometric insight<br>
+                  • Hard to check all $\theta, x, y$
+                </td>
+                <td style="padding: 12px;">
+                  <b>Use when:</b> Function is not differentiable<br>
+                  <b>Example:</b> $f(x) = |x|$, $f(x) = \max\{g_1(x), g_2(x)\}$
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px;"><b>First-Order</b> (§3)<br><span style="font-size: 0.9em;">$f(y) \ge f(x) + \nabla f(x)^\top (y-x)$</span></td>
+                <td style="padding: 12px;">Differentiable on open convex domain</td>
+                <td style="padding: 12px;">
+                  • Geometric intuition ("tangent underestimates")<br>
+                  • Good for analysis<br>
+                  • Connects to optimization (gradient descent)
+                </td>
+                <td style="padding: 12px;">
+                  • Requires differentiability<br>
+                  • Still need to verify for all $x, y$<br>
+                  • Can be algebraically messy
+                </td>
+                <td style="padding: 12px;">
+                  <b>Use when:</b> Function is differentiable but Hessian is hard to compute<br>
+                  <b>Example:</b> Implicitly defined $f$, composite functions
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px;"><b>Second-Order</b> (§4)<br><span style="font-size: 0.9em;">$\nabla^2 f(x) \succeq 0$ for all $x$</span></td>
+                <td style="padding: 12px;">Twice differentiable on open convex domain</td>
+                <td style="padding: 12px;">
+                  • <b>Easiest to check in practice</b><br>
+                  • Reduces to eigenvalue problem<br>
+                  • Clear linear algebra connection
+                </td>
+                <td style="padding: 12px;">
+                  • Requires twice-differentiability<br>
+                  • Computing Hessian can be tedious<br>
+                  • Eigenvalue check needed for $n > 2$
+                </td>
+                <td style="padding: 12px;">
+                  <b>Use when:</b> Function is twice differentiable<br>
+                  <b>Example:</b> $f(x) = x^\top Q x$, $f(x) = e^x$, $f(x) = -\log x$<br>
+                  <b>Rule of thumb:</b> <i>Try this first for smooth functions!</i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Decision Tree: Which Method Should I Use?</h4>
+        <div class="recap-box" style="background: var(--surface-2); border: 1px dashed var(--primary-300); padding: 16px; border-radius: 8px; margin-top: 16px;">
+          <ol style="margin-top: 0.5rem; line-height: 1.8;">
+            <li><b>Is $f$ twice differentiable?</b>
+              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
+                <li>✓ <b>Yes</b> → Use <b>Second-Order Condition</b> (Hessian $\nabla^2 f(x) \succeq 0$). Easiest option!</li>
+                <li>✗ <b>No</b> → Go to step 2.</li>
+              </ul>
+            </li>
+            <li><b>Is $f$ differentiable (but not twice)?</b>
+              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
+                <li>✓ <b>Yes</b> → Use <b>First-Order Condition</b> (tangent underestimates). Good for analysis.</li>
+                <li>✗ <b>No</b> → Go to step 3.</li>
+              </ul>
+            </li>
+            <li><b>Function is non-smooth or complex?</b>
+              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
+                <li>→ Try <b>Composition Rules</b> (§5) if $f$ is built from known convex functions.</li>
+                <li>→ Otherwise, fall back to <b>Definition</b> (check Jensen's inequality directly).</li>
+              </ul>
+            </li>
+          </ol>
+          <p style="margin-top: 1rem; margin-bottom: 0;"><b>Pro Tip:</b> In practice, most textbook functions are twice differentiable, so the Hessian test (second-order) is your workhorse. For real-world ML/optimization, functions are often non-smooth (e.g., $\ell_1$ regularization, hinge loss), so composition rules (§5) become essential.</p>
+        </div>
+
+        <h4>Examples: Applying the Decision Tree</h4>
+        <div class="example-box" style="margin-top: 16px;">
+          <p><b>Example 1:</b> $f(x) = |x|$ on $\mathbb{R}$</p>
+          <ul>
+            <li><b>Step 1:</b> Is $f$ twice differentiable? No (not even differentiable at $x=0$).</li>
+            <li><b>Step 2:</b> Is $f$ differentiable? No.</li>
+            <li><b>Step 3:</b> Use <b>definition</b> or recognize $|x| = \max\{x, -x\}$ (pointwise max of convex functions).</li>
+          </ul>
+          <p><b>Verification via definition:</b> For $x, y \in \mathbb{R}$ and $\theta \in [0,1]$:
+          $$ |\theta x + (1-\theta)y| \le |\theta x| + |(1-\theta)y| = \theta|x| + (1-\theta)|y| $$
+          by the triangle inequality. ✓ Convex.</p>
+        </div>
+
+        <div class="example-box" style="margin-top: 16px;">
+          <p><b>Example 2:</b> $f(x) = x^2$ on $\mathbb{R}$</p>
+          <ul>
+            <li><b>Step 1:</b> Is $f$ twice differentiable? Yes.</li>
+            <li><b>Use second-order condition:</b> $\nabla^2 f(x) = 2 > 0$ for all $x$. ✓ Convex (in fact, strictly convex).</li>
+          </ul>
+          <p><b>Why this is easier:</b> Computing the Hessian took one line. Verifying the definition would require showing $(\theta x + (1-\theta)y)^2 \le \theta x^2 + (1-\theta)y^2$ for all $\theta, x, y$ (doable, but more algebra).</p>
+        </div>
+
+        <div class="example-box" style="margin-top: 16px;">
+          <p><b>Example 3:</b> $f(x) = e^{x^\top Q x}$ where $Q \succeq 0$ (implicitly defined via exponentiation of quadratic)</p>
+          <ul>
+            <li><b>Step 1:</b> Is $f$ twice differentiable? Yes.</li>
+            <li><b>But:</b> Computing the Hessian of $e^{x^\top Q x}$ is tedious (chain rule + product rule).</li>
+            <li><b>Alternative:</b> Use <b>composition rules</b> (§5). Note $f = h \circ g$ where $g(x) = x^\top Q x$ (convex since $Q \succeq 0$) and $h(u) = e^u$ (convex and non-decreasing). By composition rule, $f$ is convex. ✓</li>
+          </ul>
+          <p><b>Lesson:</b> Even for twice-differentiable functions, composition rules (§5) can be faster than Hessian computation.</p>
+        </div>
 
         <h3>7.1 Pitfalls and Illegal Moves</h3>
         <p>A common pitfall is to assume the <b>minimum</b> of convex functions is convex. It is generally <b>not</b>.</p>

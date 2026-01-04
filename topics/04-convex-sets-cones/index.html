@@ -45,6 +45,68 @@
       </ul>
     </section>
 
+    <!-- TRIFECTA NARRATIVE -->
+    <section class="section-card">
+      <h2><i data-feather="map"></i> The Arc from Sets to Functions</h2>
+
+      <div class="insight">
+        <h4>Where We Are in the Convexity Trifecta</h4>
+        <p>In <a href="../03-convex-sets-geometry/index.html">Lecture 03</a>, we answered: <b>"WHAT are convex sets?"</b> We saw convex sets as geometric objects (polyhedra, ellipsoids, cones) and studied their properties (separating hyperplanes, projections).</p>
+
+        <p>This lecture (Lecture 04) asks: <b>"What OPERATIONS preserve convexity?"</b> Specifically, we introduce <b>cones</b>—sets with special algebraic structure that enable <b>generalized inequalities</b> and <b>duality theory</b>.</p>
+
+        <p>Next, <a href="../05-convex-functions-basics/index.html">Lecture 05</a> will ask: <b>"What FUNCTIONS have convex epigraphs?"</b> There, we'll shift from geometry (sets) to analysis (functions), verifying convexity via gradients and Hessians.</p>
+      </div>
+
+      <h3>Why Cones Matter for Optimization</h3>
+      <p>Cones are not just geometric curiosities—they're <b>fundamental to three pillars</b> of convex optimization:</p>
+
+      <ol>
+        <li><b>Generalized Inequalities:</b> Just as $\mathbb{R}_+$ (nonnegative reals) defines the inequality $x \ge 0$, any proper cone $K$ defines a partial ordering $x \succeq_K y$ if $x - y \in K$. Examples:
+          <ul style="margin-top: 0.5rem;">
+            <li>$K = \mathbb{R}^n_+$ (nonnegative orthant) → componentwise inequality $x \ge y$</li>
+            <li>$K = \mathcal{S}^n_+$ (PSD cone) → matrix inequality $X \succeq Y$ (positive semidefinite ordering)</li>
+            <li>$K = \mathcal{Q}$ (second-order cone) → $\|x\|_2 \le t$ constraints in SOCP</li>
+          </ul>
+          These generalized inequalities are the constraints in <b>conic programs</b> (<a href="../08-convex-problems-conic/index.html">Lecture 08</a>).
+        </li>
+
+        <li><b>Duality Theory:</b> Every cone $K$ has a <b>dual cone</b> $K^* = \{y : x^\top y \ge 0 \ \forall x \in K\}$. The dual cone is the geometric foundation for:
+          <ul style="margin-top: 0.5rem;">
+            <li><b>Lagrange multipliers:</b> The dual variables in Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>) live in the dual cone</li>
+            <li><b>Strong duality theorems:</b> Conditions for primal and dual problems to have the same optimal value</li>
+            <li><b>Separation theorems:</b> Dual cones provide the separating hyperplanes (from Lecture 03)</li>
+          </ul>
+        </li>
+
+        <li><b>Conic Optimization (SOCP, SDP):</b> Modern optimization solvers work with conic programs. A conic program is:
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & c^\top x \\
+          \text{subject to} \quad & Ax + b \in K \\
+          & Fx = g
+          \end{aligned}
+          $$
+          where $K$ is a cone. Choosing different cones gives different problem classes:
+          <ul style="margin-top: 0.5rem;">
+            <li>$K = \mathbb{R}^n_+$ → Linear Programming (LP)</li>
+            <li>$K = \mathcal{Q}$ (second-order cone) → Second-Order Cone Programming (SOCP)</li>
+            <li>$K = \mathcal{S}^n_+$ (PSD cone) → Semidefinite Programming (SDP)</li>
+          </ul>
+          You'll see these in <a href="../08-convex-problems-conic/index.html">Lecture 08</a>.
+        </li>
+      </ol>
+
+      <div class="insight">
+        <h4>The Convexity Trifecta Roadmap</h4>
+        <p><b>Lecture 03 (Sets):</b> Geometric foundations — what convex sets look like, separation theorems, projections.</p>
+        <p><b>Lecture 04 (Cones):</b> Algebraic structure — operations that preserve convexity, dual cones, generalized inequalities.</p>
+        <p><b>Lecture 05 (Functions):</b> Analytical tools — gradients, Hessians, composition rules, verifying convexity via calculus.</p>
+        <p><b>Lectures 07-09 (Problems):</b> Putting it all together — standard forms (LP, QP, GP), conic forms (SOCP, SDP), and duality.</p>
+        <p><b>The Thread:</b> Every convex function $f$ defines a convex set (its epigraph epi $f$). Every convex optimization problem can be viewed as minimizing over a convex set. <b>Cones</b> are the bridge between these perspectives—they enable both geometric (separation) and algebraic (duality) reasoning.</p>
+      </div>
+    </section>
+
     <article>
       <section class="section-card" id="section-1">
         <h2>1. Cones, Proper Cones, and Dual Cones</h2>

@@ -818,6 +818,17 @@
           <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
         </figure>
 
+        <div class="insight">
+          <h4>Why This Matters: Three Foundational Applications</h4>
+          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
+          <ol>
+            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
+            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
+            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
+          </ol>
+          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
+        </div>
+
         <h4>Strict vs. Non-Strict Separation</h4>
         <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
         <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
@@ -1241,6 +1252,52 @@
           <li>Perspective function ($P(x,t) = x/t$)</li>
           <li>Linear-fractional function ($f(x) = \frac{Ax+b}{c^\top x+d}$)</li>
         </ul>
+      </section>
+
+      <!-- SECTION 5.5: LOOKING AHEAD -->
+      <section class="section-card">
+        <h3>5.1 Looking Ahead: From Sets to Operations to Functions</h3>
+
+        <div class="insight">
+          <h4>The Convexity Trifecta: A Three-Lecture Arc</h4>
+          <p>This lecture (Lecture 03) introduced <b>convex sets</b>—the geometric objects that form the foundation of convex optimization. We answered: <b>WHAT are convex sets?</b> We saw cones, polyhedra, ellipsoids, and norm balls.</p>
+
+          <p>But convex optimization is not just about sets—it's about <b>operations</b> and <b>functions</b>. The next two lectures complete the "convexity trifecta":</p>
+
+          <ol>
+            <li><b><a href="../04-convex-sets-cones/index.html">Lecture 04 (Cones and Operations)</a>:</b> What OPERATIONS preserve convexity?
+              <ul style="margin-top: 0.5rem;">
+                <li>We'll study cones—sets with special algebraic structure ($x \in K \implies \lambda x \in K$)</li>
+                <li>Cones enable duality theory (polar cones, dual cones)</li>
+                <li>Key operations: proper cones, second-order cone, PSD cone</li>
+                <li><i>Why cones matter:</i> They're the building blocks for conic programming (SOCP, SDP) in <a href="../08-convex-problems-conic/index.html">Lecture 08</a></li>
+              </ul>
+            </li>
+
+            <li><b><a href="../05-convex-functions-basics/index.html">Lecture 05 (Convex Functions)</a>:</b> What FUNCTIONS have convex graphs (epigraphs)?
+              <ul style="margin-top: 0.5rem;">
+                <li>We'll define convex functions via Jensen's inequality and the epigraph</li>
+                <li>We'll verify convexity using first-order (gradient) and second-order (Hessian) conditions</li>
+                <li>We'll build complex convex functions from simple ones using composition rules</li>
+                <li><i>Why functions matter:</i> They're the objectives and constraints in <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (standard problems) and beyond</li>
+              </ul>
+            </li>
+          </ol>
+
+          <p><b>The Arc:</b> <b>Sets</b> (L03: geometry) → <b>Cones</b> (L04: algebra + duality) → <b>Functions</b> (L05: analysis + calculus) → <b>Problems</b> (L07-09: optimization)</p>
+
+          <p><b>Key Insight:</b> Every convex function defines a convex set (its epigraph). Every convex set can be described by convex inequality constraints. This interplay between sets and functions is the DNA of convex optimization.</p>
+        </div>
+
+        <h4>Preview of Key Connections</h4>
+        <ul>
+          <li><b>Separation theorems (§3.3):</b> Will underpin Lagrangian duality in <a href="../09-duality/index.html">Lecture 09</a></li>
+          <li><b>Cones (L04):</b> Enable the second-order cone (SOCP) and semidefinite cone (SDP) problem classes</li>
+          <li><b>Epigraph characterization:</b> The bridge from sets (L03) to functions (L05)</li>
+          <li><b>Convexity-preserving operations (L05):</b> Let you construct all DCP-compatible functions</li>
+        </ul>
+
+        <p style="margin-top: 1.5rem;"><b>What's Next:</b> In <a href="../04-convex-sets-cones/index.html">Lecture 04</a>, we'll study cones—sets that close under positive scaling. Cones have rich algebraic structure (duals, polars) and enable powerful duality theories. Then in <a href="../05-convex-functions-basics/index.html">Lecture 05</a>, we'll shift from geometry to calculus, studying convex functions via gradients and Hessians.</p>
       </section>
 
       <!-- SECTION 7: EXERCISES -->

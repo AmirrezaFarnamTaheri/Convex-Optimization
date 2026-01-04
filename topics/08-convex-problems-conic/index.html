@@ -722,6 +722,20 @@
         <p>The exponential cone is a non-symmetric cone that allows us to express exponential and logarithmic constraints. Unlike the second-order cone or PSD cone, it is not self-dual, but it plays a crucial role in modeling problems involving entropy, logarithms, and exponentials.</p>
       </div>
 
+      <div class="insight">
+        <h4>Why This Matters: Unlocking Exponential and Logarithmic Functions</h4>
+        <p>The exponential cone is <b>essential for modern convex optimization</b> because it enables efficient modeling and solution of problems involving <b>non-polynomial nonlinearities</b>. Here's why you should care:</p>
+        <ul>
+          <li><b>Powers Logistic Regression and Classification:</b> Logistic regression minimizes $\sum_i \log(1 + e^{-y_i (w^\top x_i + b)})$. The log-sum-exp function is convex and can be expressed exactly using exponential cone constraints. Without the exponential cone, logistic regression would require general nonlinear solvers (slower, less reliable). With it, we get interior-point solver performance (fast, robust).</li>
+          <li><b>Enables Maximum Likelihood Estimation:</b> Many statistical models (Poisson regression, exponential family distributions) involve log-likelihood functions with exponential terms. The exponential cone allows these to be formulated as conic programs, enabling provably optimal parameter estimation with convergence guarantees.</li>
+          <li><b>Unlocks Geometric Mean and Relative Entropy:</b> The geometric mean $(\prod x_i)^{1/n}$ (used in portfolio optimization and control theory) and relative entropy $\sum x_i \log(x_i/y_i)$ (Kullback-Leibler divergence in information theory and ML) are not quadratic or norm-based, but they ARE representable via exponential cone constraints. This makes problems like D-optimal experiment design and minimum KL divergence solvable by conic solvers.</li>
+          <li><b>Generalizes Geometric Programming:</b> Geometric programs (GP) model problems in circuit design, optical systems, and structural engineering. After log-transformation, GPs become exponential cone programs. Modern GP solvers (like CVX, CVXPY with MOSEK) use the exponential cone under the hood.</li>
+        </ul>
+        <p><b>Real-World Impact:</b> Companies like Google (optimal experiment design for A/B testing), pharmaceutical firms (dose-response modeling), and chip manufacturers (circuit optimization) rely on exponential cone solvers. The exponential cone bridges the gap between "simple" conic forms (LP, SOCP, SDP) and "complex" nonlinear functions, making previously intractable problems solvable at scale.</p>
+        <p><b>Solver Support:</b> Modern solvers (MOSEK, ECOS, SCS) natively support exponential cone constraints. CVXPY automatically detects atoms like <code>log</code>, <code>exp</code>, <code>entr</code>, <code>kl_div</code> and compiles them to exponential cone form.</p>
+        <p><b>Takeaway:</b> If your problem involves $e^x$, $\log x$, entropy, or geometric means, the exponential cone is your gateway to efficient convex optimization.</p>
+      </div>
+
       <h3>4.2 Exponential Cone Programs</h3>
       <p>An <strong>Exponential Cone Program (ECP)</strong> is a convex optimization problem with constraints involving the exponential cone:</p>
       <p style="text-align: center;">
@@ -847,6 +861,11 @@
     <section class="section-card" id="section-5">
       <h2>5. Disciplined Convex Programming (Recap)</h2>
 
+      <div class="insight">
+        <h4>DCP Encounter #3: Under the Hood</h4>
+        <p>This is the <b>third and final DCP encounter</b>. In <a href="../02-introduction/index.html#section-7">Lecture 02</a>, you saw <i>why</i> DCP matters (automatic verification, solver independence). In <a href="../07-convex-problems-standard/index.html#section-8">Lecture 07</a>, you learned <i>how</i> to reformulate problems to fit DCP rules. Here, we reveal the <b>implementation machinery</b>: how DCP atoms map to conic constraints that solvers actually understand.</p>
+      </div>
+
       <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia) to verify convexity automatically. DCP provides a composable library of "atoms" (functions with known convexity properties) and a set of <b>composition rules</b> that preserve convexity.</p>
 
       <h3>5.1 The Bridge from High-Level to Conic Form</h3>
@@ -872,6 +891,9 @@
       </div>
 
       <h3>5.2 Common Atom-to-Cone Mappings</h3>
+
+      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint. This is the "canonicalize" step in the solver pipeline.</p>
+
       <p>Here are key examples of how DCP atoms map to the conic forms studied in this lecture:</p>
 
       <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">

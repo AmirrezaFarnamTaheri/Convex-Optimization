@@ -110,7 +110,8 @@
       </div>
 
       <h4>Handling Domains</h4>
-      <p>The epigraph form handles domains implicitly. If $f_0(x)$ is defined as $+\infty$ outside its domain, the constraint $f_0(x) \le t$ is impossible for finite $t$ when $x \notin \mathrm{dom} f_0$. Thus, implicit constraints become explicit feasibility requirements.</p>
+      <p>The epigraph form handles domains implicitly. If $f_0(x)$ is defined as $+\infty$ outside its domain, the constraint $f_0(x) \le t$ is impossible for finite $t$ when $x \notin \mathrm{dom} f_0$. Thus, implicit constraints become explicit feasibility requirements.
+      <br><b>Pronunciation Note:</b> "Epigraph" is pronounced /ˈɛpɪɡræf/, like "paragraph". From Greek <i>epi-</i> (above) + <i>graphein</i> (to write). Literally "written above".</p>
 
       <h4>Key Pattern: Minimizing a Maximum (The Modeling Workhorse)</h4>
       <p>The most common application of the epigraph transformation is minimizing the maximum of several functions:</p>
@@ -838,6 +839,21 @@
     <!-- Section 4: Quadratic Programs (QP) -->
     <section class="section-card" id="section-4">
       <h2>4. Quadratic Programs (QP): The Language of Curvature</h2>
+
+      <div class="insight">
+        <h4>Industry Application</h4>
+        <p>Quadratic Programming is the engine behind <b>$1T+ industries</b>. It powers:
+        <br>• <b>Finance:</b> Markowitz portfolio optimization (minimize risk subject to return).
+        <br>• <b>Robotics:</b> Quadratic cost control (LQR/MPC) for smooth motion.
+        <br>• <b>Machine Learning:</b> Support Vector Machines (SVM) dual problem.
+        <br>• <b>Energy:</b> Optimal power flow in electrical grids.</p>
+      </div>
+
+      <div class="insight">
+        <h4>Complexity</h4>
+        <p>Solving a QP with $m$ constraints and $n$ variables takes roughly $O(mn^2 + n^3)$ operations (active-set) or $O(mn \log(1/\epsilon))$ (interior-point).
+        <br><b>Rule of Thumb:</b> QP is only slightly harder than LP. If you can solve an LP, you can likely solve a QP of similar size.</p>
+      </div>
 
       <h3>4.1 Definition and the PSD Condition</h3>
       <p>A <strong>Quadratic Program (QP)</strong> has a quadratic objective and linear constraints:</p>

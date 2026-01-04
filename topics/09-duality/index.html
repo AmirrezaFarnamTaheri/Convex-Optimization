@@ -75,6 +75,17 @@
     <section class="section-card" id="section-2">
         <h2>2. The Lagrangian</h2>
 
+        <div class="insight">
+          <h4>The Duality Story Arc</h4>
+          <p>We are about to build a machine that converts "constraints" into "prices". Here is the logical chain:</p>
+          <ol>
+            <li><b>The Lagrangian</b> (§2): We "soften" hard constraints by turning them into linear penalties (prices/taxes).</li>
+            <li><b>The Dual Function</b> (§3): By optimizing out the primal variables, we find the <i>best possible</i> lower bound on the optimal value for a given set of prices.</li>
+            <li><b>The Dual Problem</b> (§4): We search for the <i>optimal prices</i> that give the tightest lower bound.</li>
+            <li><b>KKT Conditions</b> (§5): At optimality, the forces balance perfectly—the gradient of the objective is exactly cancelled by the gradient of the constraints weighted by their optimal prices.</li>
+          </ol>
+        </div>
+
         <h3>2.1 Standard Form Primal Problem</h3>
         <p>We consider an optimization problem in standard form (not necessarily convex):</p>
         <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
@@ -384,6 +395,16 @@
           <p>The stationarity condition $0 \in \nabla f_0(x^*) + \sum \lambda_i \nabla f_i(x^*) + \sum \nu_j \nabla h_j(x^*)$ has a deep geometric meaning:
           $$ -\nabla f_0(x^*) \in N_{\mathcal{F}}(x^*) $$
           The negative gradient of the objective must lie in the <b>normal cone</b> of the feasible set at the optimal point. KKT simply expresses this normal vector as a linear combination of constraint gradients, provided a constraint qualification (like Slater's) holds.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Preview: KKT Conditions as the Algorithm's Goal</h4>
+          <p>Most convex optimization algorithms are just different ways of finding a point that satisfies the KKT conditions:</p>
+          <ul>
+            <li><b>Unconstrained Problems:</b> KKT reduces to $\nabla f_0(x) = 0$. <b>Gradient Descent</b> tries to find this point iteratively.</li>
+            <li><b>Equality Constrained (QP/Linear):</b> KKT becomes a system of linear equations. <b>Newton's Method</b> solves this system directly (or iteratively).</li>
+            <li><b>Inequality Constrained:</b> The complementary slackness condition $\lambda_i f_i(x) = 0$ is hard (combinatorial). <b>Interior-Point Methods</b> replace it with a perturbed condition $\lambda_i f_i(x) = -1/t$ and solve the sequence of smooth approximations as $t \to \infty$.</li>
+          </ul>
         </div>
 
         <div class="proof-box">

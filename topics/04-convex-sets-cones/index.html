@@ -540,6 +540,13 @@
       <p>These theorems form the geometric backbone of duality theory. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
 
       <h3>2.1 The Separating Hyperplane Theorem (Recap & Strict Separation)</h3>
+
+      <div class="insight">
+        <h4>Geometric Duality vs. Lagrangian Duality</h4>
+        <p>The "dual cone" $K^*$ is <b>GEOMETRIC duality</b>—sets related by inner products. This is distinct from (but related to!) the <b>LAGRANGIAN duality</b> you'll see in <a href="../09-duality/index.html">Lecture 09</a>, where primal/dual are optimization problems.
+        <br>The connection: <b>separation theorems</b> (geometric) underlie <b>strong duality theorems</b> (optimization). Every time you use a Lagrange multiplier, you are implicitly finding a separating hyperplane.</p>
+      </div>
+
       <p>As introduced in <a href="../03-convex-sets-geometry/index.html">Lecture 03</a>, any two disjoint convex sets can be separated by a hyperplane. In this lecture, we deepen this result by focusing on <b>strict separation</b>, which is the engine behind strong duality.</p>
 
       <div class="theorem-box">

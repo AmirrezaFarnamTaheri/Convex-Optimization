@@ -846,8 +846,136 @@
 
     <section class="section-card" id="section-5">
       <h2>5. Disciplined Convex Programming (Recap)</h2>
-      <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVXPY to verify convexity automatically.
-      <br>While this lecture focused on the raw "conic form" (how the solver sees the problem), in practice, you rarely write raw conic constraints. You use DCP-compliant expressions (like <code>norm(x) <= t</code>) and the software compiles them into the standard cones (SOC, Exp, PSD) we studied here.</p>
+
+      <p>As introduced in <a href="../02-introduction/index.html">Lecture 02</a>, <b>Disciplined Convex Programming (DCP)</b> is the rule-based system that allows modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia) to verify convexity automatically. DCP provides a composable library of "atoms" (functions with known convexity properties) and a set of <b>composition rules</b> that preserve convexity.</p>
+
+      <h3>5.1 The Bridge from High-Level to Conic Form</h3>
+      <p>While this lecture focused on the raw "conic form" (how the solver sees the problem), in practice, you <b>rarely write raw conic constraints</b>. Instead, you write high-level DCP-compliant expressions, and the modeling framework automatically compiles them into the standard cones (SOC, Exp, PSD) we studied. This two-layer architecture separates:</p>
+      <ul>
+        <li><b>The modeling layer (DCP):</b> User-friendly expressions like <code>norm(x) <= t</code>, <code>quad_form(x, P)</code>, <code>log_sum_exp(x)</code></li>
+        <li><b>The solver layer (Conic form):</b> Standard cones recognized by interior-point solvers (ECOS, MOSEK, SCS)</li>
+      </ul>
+
+      <div class="example-box">
+        <h4>Example: From DCP to SOC</h4>
+        <p>Consider the DCP expression in CVXPY:
+        <pre><code>minimize(norm(A @ x - b, 2) + gamma * norm(x, 2))</code></pre>
+        The framework automatically recognizes this as an SOCP and reformulates it:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & t_1 + \gamma t_2 \\
+        \text{subject to} \quad & \|Ax - b\|_2 \le t_1 \quad \text{(SOC constraint)} \\
+        & \|x\|_2 \le t_2 \quad \text{(SOC constraint)}
+        \end{aligned}
+        $$
+        The user never sees this reformulation—it happens transparently during compilation.</p>
+      </div>
+
+      <h3>5.2 Common Atom-to-Cone Mappings</h3>
+      <p>Here are key examples of how DCP atoms map to the conic forms studied in this lecture:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 12px 0;">
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <th style="text-align: left; padding: 8px;"><b>DCP Atom</b></th>
+          <th style="text-align: left; padding: 8px;"><b>Conic Form</b></th>
+          <th style="text-align: left; padding: 8px;"><b>Cone Type</b></th>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>norm(x, 2) <= t</code></td>
+          <td style="padding: 8px;">$(t, x) \in \mathcal{Q}^{n+1}$</td>
+          <td style="padding: 8px;">Second-order cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>quad_form(x, P)</code> for $P \succ 0$</td>
+          <td style="padding: 8px;">$(t, x) \in \mathcal{Q}^{n+1}$ via Cholesky $P = L^\top L$</td>
+          <td style="padding: 8px;">Second-order cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>log_sum_exp(x)</code></td>
+          <td style="padding: 8px;">Exponential cone constraints</td>
+          <td style="padding: 8px;">Exponential cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>entr(x)</code> (entropy $-x \log x$)</td>
+          <td style="padding: 8px;">$(x, 1, t) \in K_{\text{exp}}$</td>
+          <td style="padding: 8px;">Exponential cone</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px;"><code>X >> 0</code> (PSD constraint)</td>
+          <td style="padding: 8px;">$X \in \mathbb{S}_+^n$</td>
+          <td style="padding: 8px;">PSD cone</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;"><code>lambda_max(X)</code> (max eigenvalue)</td>
+          <td style="padding: 8px;">$tI - X \succeq 0$</td>
+          <td style="padding: 8px;">PSD cone (LMI)</td>
+        </tr>
+      </table>
+
+      <h3>5.3 Why DCP Matters for Conic Programming</h3>
+      <div class="insight">
+        <h4>Automatic Problem Classification</h4>
+        <p>DCP's power is that it <b>automatically classifies</b> your problem into the appropriate conic class:</p>
+        <ul>
+          <li>If your problem uses only <code>norm</code>, <code>quad_form</code>, and affine atoms → Compiled to <b>SOCP</b></li>
+          <li>If it includes <code>log</code>, <code>exp</code>, <code>entr</code>, <code>kl_div</code> → Compiled to <b>Exponential Cone Program</b></li>
+          <li>If it uses PSD constraints <code>X >> 0</code> or <code>lambda_max</code> → Compiled to <b>SDP</b></li>
+          <li>If it mixes all of the above → Compiled to a <b>mixed conic program</b> combining multiple cone types</li>
+        </ul>
+        <p>This classification determines which solver to use (ECOS for SOC+Exp, MOSEK for mixed, SCS for everything) and enables the framework to choose the most efficient algorithm.</p>
+      </div>
+
+      <h3>5.4 The DCP Verification Process</h3>
+      <p>When you define a problem in CVXPY, the framework performs these steps:</p>
+      <ol>
+        <li><b>Parse the expression tree:</b> Break down <code>norm(A @ x - b)</code> into atoms and operations</li>
+        <li><b>Verify DCP compliance:</b> Check that each atom is used correctly (e.g., <code>norm</code> appears in a convex position)</li>
+        <li><b>Infer curvature:</b> Propagate convexity/concavity labels up the expression tree using composition rules</li>
+        <li><b>Canonicalize:</b> Transform the high-level problem into standard conic form</li>
+        <li><b>Invoke solver:</b> Pass the conic form to an interior-point solver</li>
+      </ol>
+
+      <p>If DCP verification fails (e.g., you wrote <code>exp(norm(x))</code>, which is neither convex nor concave), the framework rejects the problem <i>before</i> calling the solver, saving you from silently getting wrong answers.</p>
+
+      <div class="example-box">
+        <h4>Example: Portfolio Optimization with DCP</h4>
+        <p>A classic Markowitz portfolio problem in CVXPY:
+        <pre><code>import cvxpy as cp
+import numpy as np
+
+# Data: expected returns mu, covariance Sigma
+mu = np.array([0.10, 0.08, 0.12])
+Sigma = np.array([[0.04, 0.01, 0.02],
+                  [0.01, 0.03, 0.01],
+                  [0.02, 0.01, 0.05]])
+gamma = 1.0  # risk aversion
+
+# Variables
+w = cp.Variable(3)  # portfolio weights
+
+# Objective: maximize return - risk
+objective = cp.Maximize(mu @ w - gamma * cp.quad_form(w, Sigma))
+
+# Constraints
+constraints = [cp.sum(w) == 1,  # budget
+               w >= 0]           # long-only
+
+# Solve
+problem = cp.Problem(objective, constraints)
+problem.solve()</code></pre>
+        Behind the scenes, CVXPY:
+        <ul>
+          <li>Recognizes <code>quad_form(w, Sigma)</code> as convex (since $\Sigma \succeq 0$)</li>
+          <li>Transforms the quadratic form into an SOC constraint via Cholesky decomposition</li>
+          <li>Converts the maximization into minimization: $\min (-\mu^\top w + \gamma w^\top \Sigma w)$</li>
+          <li>Compiles to an SOCP and calls an SOC solver (e.g., ECOS)</li>
+        </ul>
+        All of this happens automatically—you write intuitive mathematical expressions, and DCP handles the conic compilation.</p>
+      </div>
+
+      <h3>5.5 Key Takeaway</h3>
+      <p><b>DCP is the compiler for convex optimization.</b> Just as a C compiler translates high-level code into machine instructions, DCP translates high-level mathematical expressions into the low-level conic forms that solvers understand. This separation of concerns—modeling vs. solving—has made convex optimization accessible to thousands of practitioners who never need to understand interior-point methods or cone geometry.</p>
+
     </section>
 
     <section class="section-card" id="section-6">

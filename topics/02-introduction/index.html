@@ -1136,6 +1136,17 @@
         <h3>7.1 The DCP Philosophy</h3>
         <p><b>Disciplined Convex Programming</b> is a methodology for constructing convex optimization problems by combining basic building blocks using a set of rules that preserve convexity. This approach underlies modeling languages like CVX (MATLAB), CVXPY (Python), and Convex.jl (Julia).</p>
 
+        <div class="insight">
+          <h4>Why DCP Matters</h4>
+          <p>Manually verifying convexity (checking Hessians, applying composition rules) is tedious and error-prone. DCP automates this process:</p>
+          <ul>
+            <li><b>Automatic verification</b>: The modeling language checks convexity at problem construction time</li>
+            <li><b>Expressive syntax</b>: Write optimization problems in natural mathematical notation</li>
+            <li><b>Solver independence</b>: DCP frameworks automatically select and invoke appropriate solvers (LP, SOCP, SDP)</li>
+            <li><b>Wide adoption</b>: Used in finance, machine learning, signal processing, control theory, and more</li>
+          </ul>
+        </div>
+
         <h3>7.2 DCP Rules</h3>
 
         <div class="subsection">
@@ -1162,6 +1173,81 @@
             </li>
             <li><b>Pointwise maximum:</b> $\max\{f_1, \ldots, f_m\}$ is convex if all $f_i$ are convex.</li>
           </ul>
+        </div>
+
+        <h3>7.3 A First Example: Portfolio Optimization</h3>
+
+        <div class="example-box">
+          <h4>Example: Minimum Variance Portfolio</h4>
+          <p>Consider the problem of allocating wealth across $n$ assets to minimize risk while achieving a target return:</p>
+          <p>
+            $$
+            \begin{aligned}
+            \text{minimize} \quad & w^\top \Sigma w \\
+            \text{subject to} \quad & \mu^\top w \ge r_{\text{target}} \\
+            & \mathbf{1}^\top w = 1 \\
+            & w \ge 0
+            \end{aligned}
+            $$
+          </p>
+          <p>where $w \in \mathbb{R}^n$ are portfolio weights, $\Sigma \succ 0$ is the covariance matrix, and $\mu \in \mathbb{R}^n$ are expected returns.</p>
+
+          <p><b>DCP Verification</b>:</p>
+          <ul>
+            <li><b>Objective</b>: $w^\top \Sigma w$ is a <i>quadratic form</i> with $\Sigma \succ 0$, hence <b>convex</b></li>
+            <li><b>Constraint 1</b>: $\mu^\top w \ge r_{\text{target}}$ is affine in $w$ (valid for convex problems)</li>
+            <li><b>Constraint 2</b>: $\mathbf{1}^\top w = 1$ is affine (equality constraints must be affine)</li>
+            <li><b>Constraint 3</b>: $w \ge 0$ is componentwise affine</li>
+          </ul>
+
+          <p><b>CVXPY Implementation</b>:</p>
+          <pre><code>import cvxpy as cp
+import numpy as np
+
+# Problem data
+n = 10
+Sigma = np.random.randn(n, n)
+Sigma = Sigma.T @ Sigma + 0.1 * np.eye(n)  # Ensure PSD
+mu = np.random.randn(n) * 0.1 + 0.05
+r_target = 0.07
+
+# DCP formulation
+w = cp.Variable(n)
+objective = cp.Minimize(cp.quad_form(w, Sigma))
+constraints = [
+    mu @ w >= r_target,
+    cp.sum(w) == 1,
+    w >= 0
+]
+problem = cp.Problem(objective, constraints)
+
+# Solve (CVXPY automatically selects QP solver)
+problem.solve()
+print(f"Optimal risk: {problem.value:.4f}")
+print(f"Optimal weights: {w.value}")</code></pre>
+
+          <p><b>Key insight</b>: CVXPY <i>automatically verified</i> that this problem is convex (a quadratic program). If we had mistakenly written a non-convex objective, CVXPY would raise a <code>DCPError</code> at construction time.</p>
+        </div>
+
+        <h3>7.4 When DCP Isn't Enough</h3>
+
+        <p>DCP is <b>conservative</b>: it may reject problems that are convex but don't fit the ruleset. For example:</p>
+        <ul>
+          <li><b>Geometric programming</b>: $\sum_i c_i x_1^{a_{1i}} x_2^{a_{2i}} \cdots x_n^{a_{ni}}$ (convex after log transform, but not in DCP form)</li>
+          <li><b>Custom atoms</b>: Novel functions that are convex but not in the standard library</li>
+          <li><b>Implicit constraints</b>: Convexity that depends on problem structure (e.g., hidden convexity)</li>
+        </ul>
+
+        <p>In such cases, you may need to:</p>
+        <ol>
+          <li><b>Reformulate</b>: Transform the problem into DCP-compliant form (see <a href="../07-convex-problems-standard/index.html#section-8">Lecture 07, Section 8: Problem Reformulation</a>)</li>
+          <li><b>Manual verification</b>: Prove convexity and use a general-purpose solver directly</li>
+          <li><b>Extend DCP</b>: Add custom atoms to the DCP library (advanced, requires understanding solver transformations)</li>
+        </ol>
+
+        <div class="insight">
+          <h4>Looking Ahead: DCP in Practice</h4>
+          <p>This section provided a high-level introduction to DCP. For a deeper dive into how DCP systems work <i>under the hood</i>—including how atoms map to conic constraints, automatic problem classification, and the verification pipeline—see <a href="../08-convex-problems-conic/index.html#section-5">Lecture 08, Section 5: DCP Recap</a>.</p>
         </div>
       </section>
 

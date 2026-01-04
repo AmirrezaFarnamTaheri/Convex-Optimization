@@ -554,20 +554,177 @@
 
       <section class="section-card" id="section-7">
         <h2>8. Generalized Inequalities and Conic Duality</h2>
-        <p>Duality extends to proper cones $K$.
-        <br>Primal constraint: $g(x) \preceq_K 0$ (i.e., $g(x) \in -K$).
-        <br>Lagrangian term: $\lambda^\top g(x)$ where $\lambda \in K^*$ (dual cone).
-        <br>Dual constraint: $\lambda \succeq_{K^*} 0$.
-        <br>Complementary slackness: $\lambda^\top g(x) = 0$.</p>
+
+        <div class="insight">
+          <h4>Why Conic Duality Matters</h4>
+          <p>The componentwise inequality $x \le 0$ (meaning $x \in -\mathbb{R}_+^n$) is just one special case of a <b>generalized inequality</b> $x \preceq_K 0$ (meaning $x \in -K$) where $K$ is a proper cone. Conic duality theory shows that <b>all convex optimization problems</b>—linear, quadratic, second-order cone, semidefinite, and beyond—are instances of the same unified framework. This unification yields:</p>
+          <ul>
+            <li>A single duality theorem that covers LP, SOCP, and SDP</li>
+            <li>Elegant complementary slackness conditions via inner products</li>
+            <li>Efficient interior-point methods that exploit cone geometry</li>
+          </ul>
+        </div>
+
+        <h3>8.1 Proper Cones and Dual Cones: A Quick Review</h3>
+        <p>Recall from Lecture 04 that a <b>proper cone</b> $K \subseteq \mathbb{R}^n$ is a closed, convex, pointed cone with nonempty interior. The <b>dual cone</b> is:
+        $$ K^* = \{ y \mid x^\top y \ge 0 \text{ for all } x \in K \} $$
+        The dual cone encodes which directions have nonnegative inner product with all elements of $K$.</p>
+
+        <div class="example-box">
+          <h4>Standard Proper Cones and Their Duals</h4>
+          <ul>
+            <li><b>Nonnegative Orthant:</b> $\mathbb{R}_+^n = \{x \mid x_i \ge 0\}$. Self-dual: $(\mathbb{R}_+^n)^* = \mathbb{R}_+^n$.</li>
+            <li><b>Second-Order Cone (Lorentz Cone):</b> $\mathcal{Q}^n = \{(t, x) \in \mathbb{R} \times \mathbb{R}^{n-1} \mid \|x\|_2 \le t\}$. Self-dual: $(\mathcal{Q}^n)^* = \mathcal{Q}^n$.</li>
+            <li><b>Positive Semidefinite Cone:</b> $\mathbb{S}_+^n = \{X \in \mathbb{S}^n \mid X \succeq 0\}$. Self-dual: $(\mathbb{S}_+^n)^* = \mathbb{S}_+^n$ (under trace inner product).</li>
+          </ul>
+        </div>
+
+        <h3>8.2 The Generalized Lagrangian</h3>
+        <p>Consider the primal problem with generalized inequality constraints:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & f_0(x) \\
+        \text{subject to} \quad & f_i(x) \preceq_{K_i} 0, \quad i=1,\ldots,m \\
+        & h_j(x) = 0, \quad j=1,\ldots,p
+        \end{aligned}
+        $$
+        where $f_i: \mathbb{R}^n \to \mathbb{R}^{k_i}$ and $K_i \subseteq \mathbb{R}^{k_i}$ is a proper cone.</p>
+
+        <p>The <b>generalized Lagrangian</b> replaces componentwise products with inner products:
+        $$ L(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i^\top f_i(x) + \sum_{j=1}^p \nu_j h_j(x) $$
+        where $\lambda_i \in K_i^*$ (the dual cone) ensures $\lambda_i^\top f_i(x) \le 0$ when $f_i(x) \preceq_{K_i} 0$.</p>
+
+        <div class="theorem-box">
+          <h4>Conic Duality: Dual Variables Live in the Dual Cone</h4>
+          <p>For the Lagrangian to satisfy weak duality, we require $\lambda_i \in K_i^*$. This generalizes the constraint $\lambda_i \ge 0$ for componentwise inequalities:
+          <ul>
+            <li>If $K = \mathbb{R}_+$, then $\lambda \in K^* = \mathbb{R}_+$ means $\lambda \ge 0$ (standard LP).</li>
+            <li>If $K = \mathcal{Q}^n$, then $\lambda \in K^* = \mathcal{Q}^n$ (SOCP).</li>
+            <li>If $K = \mathbb{S}_+^n$, then $\lambda \in K^* = \mathbb{S}_+^n$ means $\lambda \succeq 0$ (SDP).</li>
+          </ul>
+          </p>
+        </div>
 
         <div style="margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
           <iframe src="widgets/soc_dual_cone.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
         </div>
 
-        <h3>8.1 The Standard Conic Form</h3>
-        <p>Primal: $\min c^\top x$ s.t. $Ax=b, x \in K$.
-        <br>Dual: $\max b^\top y$ s.t. $c - A^\top y = s, s \in K^*$.
-        <br>This unifies LP ($K=\mathbb{R}_+$), SOCP ($K=\mathcal{Q}$), and SDP ($K=\mathbb{S}_+$).</p>
+        <h3>8.3 The Standard Conic Form</h3>
+        <p>All conic programs can be written in a canonical form that makes the duality symmetric. The <b>primal</b> is:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & c^\top x \\
+        \text{subject to} \quad & Ax = b \\
+        & x \in K
+        \end{aligned}
+        $$
+        The <b>dual</b> is:
+        $$
+        \begin{aligned}
+        \text{maximize} \quad & b^\top y \\
+        \text{subject to} \quad & c - A^\top y = s \\
+        & s \in K^*
+        \end{aligned}
+        $$
+        This unifies <b>LP</b> ($K=\mathbb{R}_+^n$), <b>SOCP</b> ($K = \mathcal{Q}^{n_1} \times \cdots \times \mathcal{Q}^{n_k}$), and <b>SDP</b> ($K=\mathbb{S}_+^n$).</p>
+
+        <div class="proof-box">
+          <h4>Derivation of the Standard Conic Dual</h4>
+          <p>The Lagrangian for the primal is:
+          $$ L(x, y, s) = c^\top x + y^\top (b - Ax) = b^\top y + (c - A^\top y)^\top x $$
+          The dual function is:
+          $$ g(y, s) = \inf_{x \in K} L(x, y, s) = b^\top y + \inf_{x \in K} s^\top x $$
+          where $s = c - A^\top y$. The infimum $\inf_{x \in K} s^\top x$ is:
+          <ul>
+            <li>$0$ if $s^\top x \ge 0$ for all $x \in K$ (i.e., $s \in K^*$)</li>
+            <li>$-\infty$ otherwise (we can pick $x \in K$ with $s^\top x < 0$ and scale arbitrarily)</li>
+          </ul>
+          Thus, the dual problem maximizes $b^\top y$ subject to $s = c - A^\top y \in K^*$.</p>
+        </div>
+
+        <h3>8.4 Example: Second-Order Cone Programming (SOCP)</h3>
+        <p>Consider the SOCP problem:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & c^\top x \\
+        \text{subject to} \quad & \|A_i x + b_i\|_2 \le c_i^\top x + d_i, \quad i=1,\ldots,m \\
+        & Fx = g
+        \end{aligned}
+        $$
+        Each SOC constraint can be written as $(c_i^\top x + d_i, A_i x + b_i) \in \mathcal{Q}^{n_i+1}$.</p>
+
+        <div class="example-box">
+          <h4>SOCP Dual: Robust Least Squares</h4>
+          <p>For the robust least squares problem:
+          $$
+          \text{minimize} \quad \|Ax - b\|_2 + \gamma \|x\|_2
+          $$
+          we can reformulate as an SOCP:
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & t + \gamma s \\
+          \text{subject to} \quad & \|Ax - b\|_2 \le t \\
+          & \|x\|_2 \le s
+          \end{aligned}
+          $$
+          which is equivalent to $(t, Ax - b) \in \mathcal{Q}$ and $(s, x) \in \mathcal{Q}$.</p>
+
+          <p>The <b>dual problem</b> (derived using the standard conic form) is:
+          $$
+          \begin{aligned}
+          \text{maximize} \quad & -b^\top u \\
+          \text{subject to} \quad & A^\top u + v = 0 \\
+          & \|u\|_2 \le 1, \quad \|v\|_2 \le \gamma
+          \end{aligned}
+          $$
+          The dual multipliers $(1, u)$ and $(\gamma, v)$ live in the dual cone $\mathcal{Q}^* = \mathcal{Q}$ (self-dual!).</p>
+        </div>
+
+        <h3>8.5 Example: Semidefinite Programming (SDP) Revisited</h3>
+        <p>Recall from Section 7.3 that the SDP primal-dual pair is:
+        $$
+        \begin{aligned}
+        \text{Primal:} \quad & \min \mathrm{tr}(CX) \text{ s.t. } \mathrm{tr}(A_i X) = b_i, \, X \succeq 0 \\
+        \text{Dual:} \quad & \max b^\top \nu \text{ s.t. } \sum \nu_i A_i \preceq C
+        \end{aligned}
+        $$
+        This fits the standard conic form with $K = \mathbb{S}_+^n$ and inner product $\langle X, Y \rangle = \mathrm{tr}(X^\top Y)$.</p>
+
+        <div class="insight">
+          <h4>Why SDP is Self-Dual</h4>
+          <p>The positive semidefinite cone $\mathbb{S}_+^n$ is self-dual under the trace inner product: $(\mathbb{S}_+^n)^* = \mathbb{S}_+^n$. This means:
+          $$ \mathrm{tr}(XY) \ge 0 \text{ for all } X \succeq 0 \iff Y \succeq 0 $$
+          This beautiful symmetry mirrors the self-duality of $\mathbb{R}_+$ and $\mathcal{Q}$ and is the foundation of primal-dual interior-point methods for SDP.</p>
+        </div>
+
+        <h3>8.6 Complementary Slackness for Conic Programs</h3>
+        <p>For the standard conic form, complementary slackness states:
+        $$ s^\top x = 0 $$
+        where $x \in K$ (primal feasible) and $s \in K^*$ (dual feasible). This generalizes to:
+        <ul>
+          <li><b>LP:</b> $\lambda_i (c_i - a_i^\top y) = 0$ for each component (componentwise product).</li>
+          <li><b>SOCP:</b> $\lambda^\top x = 0$ where $\lambda, x \in \mathcal{Q}$ (inner product in the cone).</li>
+          <li><b>SDP:</b> $\mathrm{tr}(SX) = 0$ where $S, X \succeq 0$ (trace inner product). Equivalently, $SX = 0$ (zero matrix product).</li>
+        </ul>
+        </p>
+
+        <div class="example-box">
+          <h4>Geometric Interpretation: Orthogonal Complementarity</h4>
+          <p>Since $x \in K$ and $s \in K^*$, we always have $s^\top x \ge 0$ (by definition of dual cone). Complementary slackness $s^\top x = 0$ means the vectors are <b>orthogonal</b> despite both being "nonnegative" in their respective cones.
+          <br><br>For SDP: If $X \succeq 0$ and $S \succeq 0$, then $\mathrm{tr}(SX) = 0$ implies that $S$ and $X$ have <b>complementary support</b>: whenever $X$ has a positive eigenvalue in direction $v$, $S$ must have zero component in that direction, and vice versa. This gives $SX = XS = 0$.</p>
+        </div>
+
+        <h3>8.7 Applications: Why Conic Duality is Powerful</h3>
+        <div class="insight">
+          <h4>Practical Impact</h4>
+          <ul>
+            <li><b>Interior-Point Methods:</b> Modern solvers (MOSEK, SeDuMi, CVXOPT) use primal-dual path-following algorithms that exploit the symmetric structure of conic duality. The central path $\{(x, s) \mid xs = \tau e, x \in K, s \in K^*\}$ guides the solver to optimality.</li>
+            <li><b>Approximation Algorithms:</b> SDP relaxations of combinatorial problems (Max-Cut, graph coloring) derive approximation guarantees from the duality gap and rounding schemes.</li>
+            <li><b>Robust Optimization:</b> Uncertainty sets defined by cones (ellipsoidal, polyhedral) lead to tractable robust counterparts via conic duality.</li>
+            <li><b>Control Theory:</b> Lyapunov stability conditions (LMIs) are SDPs; the dual variables provide certificates of stability.</li>
+          </ul>
+        </div>
+
       </section>
 
       <section class="section-card" id="section-8">

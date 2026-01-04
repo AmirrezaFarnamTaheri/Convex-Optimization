@@ -149,8 +149,37 @@
         <br>5. <b>Homogeneity:</b> $x \preceq_K y \implies \alpha x \preceq_K \alpha y$ for $\alpha \ge 0$.</p>
 
         <h4>Vector Optimization (Pareto Optimality)</h4>
-        <p>This partial order allows us to define optimization for vector-valued functions. A point $\mathbf{x}^*$ is <b>Pareto optimal</b> (or efficient) with respect to a cone $K$ if there is no feasible $\mathbf{y}$ such that $f(\mathbf{y}) \preceq_K f(\mathbf{x}^*)$ and $f(\mathbf{y}) \neq f(\mathbf{x}^*)$. In other words, you cannot improve any component of the objective (in the cone sense) without degrading another.
-        <br>For $K = \mathbb{R}^n_+$, this recovers standard multi-objective optimization.</p>
+        <p>This partial order allows us to define optimization for vector-valued functions, leading to the fundamental concept of <b>Pareto optimality</b> in multi-objective optimization.</p>
+
+        <div class="theorem-box">
+          <h4>Definition: Pareto Optimal Point</h4>
+          <p>Given a vector-valued objective $f: \mathbb{R}^n \to \mathbb{R}^m$ and feasible set $\mathcal{X}$, a point $\mathbf{x}^* \in \mathcal{X}$ is <b>Pareto optimal</b> (or <b>efficient</b>) with respect to cone $K$ if there is no feasible $\mathbf{y} \in \mathcal{X}$ such that:
+          $$ f(\mathbf{y}) \preceq_K f(\mathbf{x}^*) \quad \text{and} \quad f(\mathbf{y}) \neq f(\mathbf{x}^*) $$
+          <b>Intuition:</b> You cannot improve any objective component (in the $K$ sense) without degrading at least one other component. The point is "undominated."
+          </p>
+        </div>
+
+        <div class="example-box">
+          <h4>Example: Portfolio Optimization (Risk vs. Return)</h4>
+          <p>Consider minimizing $f(x) = (\text{risk}(x), -\text{return}(x))$ where $x$ is a portfolio allocation.
+          <br>Using $K = \mathbb{R}^2_+$ (component-wise ordering):
+          <ul>
+            <li>Point $A$: Low risk, low return</li>
+            <li>Point $B$: High risk, high return</li>
+            <li>Point $C$: Medium risk, medium return (on Pareto frontier)</li>
+          </ul>
+          If $C$ is Pareto optimal, you cannot find another portfolio with <i>both</i> lower risk and higher return than $C$. You can reduce risk by moving to $A$, but you sacrifice return. You can increase return by moving to $B$, but you accept higher risk.
+          <br><b>The Pareto frontier</b> is the set of all Pareto optimal points—the "efficient frontier" in finance.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Dominated vs. Pareto Optimal Points</h4>
+          <p>A point $\mathbf{x}$ is <b>dominated</b> if there exists $\mathbf{y}$ with $f(\mathbf{y}) \preceq_K f(\mathbf{x})$ and $f(\mathbf{y}) \neq f(\mathbf{x})$. Dominated points are strictly worse—they can be improved in all objectives simultaneously (or at least some, without degrading others).
+          <br><b>Pareto optimal points are precisely the non-dominated points.</b>
+          <br>In practice, when objectives conflict (reduce cost vs. increase quality), the decision-maker must choose a point on the Pareto frontier based on preferences or trade-off weights.</p>
+        </div>
+
+        <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \geq 0$) produces Pareto optimal points by varying weights.</p>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
              <figure style="text-align: center; flex: 1;">
@@ -485,14 +514,62 @@
         $$
         a^\top x \le a^\top x_0 \quad \forall x \in C
         $$
-        <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$.</p>
+        <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$. Geometrically, the hyperplane "touches" the set at $x_0$ without cutting through it.</p>
+      </div>
+
+      <div class="proof-box">
+        <h4>Proof Sketch</h4>
+        <div class="proof-step">
+          <strong>Step 1: Approximation by Exterior Points.</strong>
+          Since $x_0 \in \partial C$ (boundary), there exists a sequence of points $\{y_k\}$ outside $C$ converging to $x_0$. For each $y_k$, the Separating Hyperplane Theorem (Section 2.1) guarantees a hyperplane separating $y_k$ from $C$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Normal Vectors.</strong>
+          For each $k$, let $a_k$ be the normal vector satisfying $a_k^\top x < a_k^\top y_k$ for all $x \in C$. Normalize: $\|a_k\|_2 = 1$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Compactness.</strong>
+          The unit sphere is compact. Extract a convergent subsequence $a_{k_j} \to a$ with $\|a\|_2 = 1$ (nonzero).
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Limiting Inequality.</strong>
+          Taking the limit as $y_{k_j} \to x_0$:
+          $$ a^\top x \le \lim_{j\to\infty} a_{k_j}^\top y_{k_j} = a^\top x_0 $$
+          for all $x \in C$. This is the supporting hyperplane at $x_0$.
+        </div>
+      </div>
+
+      <div class="insight">
+        <h4>Geometric Intuition: The "Tangent Plane" Generalization</h4>
+        <p>For smooth convex sets, the supporting hyperplane is the tangent hyperplane. For non-smooth sets (like polyhedra), supporting hyperplanes exist at corners and edges even without differentiability.
+        <br><b>Key insight:</b> Convexity guarantees that at every boundary point, you can find a "best linear approximation" that stays below the set. This is why optimization over convex sets is tractable—local information (gradient/normal) gives global certificates.</p>
+      </div>
+
+      <div class="example-box">
+        <h4>Example: Supporting Hyperplanes of the Unit Ball</h4>
+        <p>Consider $C = \{x \mid \|x\|_2 \le 1\}$ (unit ball). For any $x_0$ with $\|x_0\|_2 = 1$, the supporting hyperplane is:
+        $$ \{x \mid x_0^\top x = 1\} $$
+        <b>Normal vector:</b> $a = x_0$. This hyperplane is perpendicular to the radius at $x_0$ and tangent to the sphere.
+        <br><b>Verification:</b> For any $x \in C$, by Cauchy-Schwarz: $x_0^\top x \le \|x_0\|_2 \|x\|_2 \le 1 \cdot 1 = 1$.
+        </p>
+      </div>
+
+      <div class="insight">
+        <h4>Applications in Optimization</h4>
+        <ul>
+          <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
+          <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
+          $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
+          where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
+          <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
+        </ul>
       </div>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/supporting-hyperplane-tangent.png"
              alt="Illustration of the Supporting Hyperplane Theorem"
              style="max-width: 80%; height: auto; border-radius: 8px;" />
-        <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary.</figcaption>
+        <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
       <h3>2.3 Normal Cones and Optimality</h3>

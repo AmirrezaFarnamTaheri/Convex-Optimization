@@ -892,7 +892,13 @@
 
       <h3>5.2 Common Atom-to-Cone Mappings</h3>
 
-      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint. This is the "canonicalize" step in the solver pipeline.</p>
+      <div class="insight">
+        <h4>The Solver Pipeline: Step 3 (Canonicalize)</h4>
+        <p>In <a href="../02-introduction/index.html#section-9">Lecture 02</a>, we outlined the solver pipeline: Model → Transform → <b>Canonicalize</b> → Solve.
+        <br><b>This table is the dictionary for Step 3.</b> It shows exactly how the high-level atoms you use in modeling (Step 1) and transforming (Step 2) are translated into the low-level conic constraints that solvers understand.</p>
+      </div>
+
+      <p><b>Recall from <a href="../07-convex-problems-standard/index.html#section-1">Lecture 07, Section 1</a>:</b> The epigraph transformation converts minimize f₀(x) → minimize t subject to f₀(x) ≤ t. Each row in the table below shows how an atom's <b>epigraph</b> is expressed as a conic constraint.</p>
 
       <p>Here are key examples of how DCP atoms map to the conic forms studied in this lecture:</p>
 

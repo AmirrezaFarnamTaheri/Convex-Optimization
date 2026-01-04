@@ -50,6 +50,22 @@
       </ul>
     </section>
 
+    <section class="section-card">
+      <h2><i data-feather="book-open"></i> The Story of Duality</h2>
+      <div class="insight">
+        <h4>The Narrative Arc: From Lower Bounds to Optimality</h4>
+        <p>This lecture follows a single, continuous narrative thread. Don't get lost in the algebra—keep this roadmap in mind:</p>
+        <ol>
+          <li><b>The Lagrangian (§2):</b> We want to solve a constrained problem. We start by softening the constraints, turning them into penalties (prices) $\lambda, \nu$. This gives us the <i>Lagrangian function</i> $L(x, \lambda, \nu)$.</li>
+          <li><b>The Dual Function (§3):</b> For any fixed prices, minimizing $L$ over $x$ gives a <i>lower bound</i> on the optimal value $p^*$. This best-case scenario for fixed prices is the <i>dual function</i> $g(\lambda, \nu)$.</li>
+          <li><b>The Dual Problem (§4):</b> We want the tightest possible lower bound. So we maximize $g(\lambda, \nu)$ over valid prices. This is the <i>dual problem</i>. <b>Weak Duality</b> says this bound is always $\le p^*$.</li>
+          <li><b>Strong Duality (§4.3):</b> Under convexity and mild conditions (Slater's condition), the gap closes ($d^* = p^*$). The prices perfectly price the constraints.</li>
+          <li><b>KKT Conditions (§5):</b> If the gap is zero, the primal and dual solutions must satisfy specific alignment conditions (stationarity, complementary slackness). These <i>KKT conditions</i> become the necessary and sufficient check for optimality.</li>
+        </ol>
+        <p><b>The Payoff:</b> This journey gives us two powerful tools: <b>Certificates</b> (dual bounds prove optimality) and <b>Sensitivities</b> (dual variables tell us how hard constraints are biting).</p>
+      </div>
+    </section>
+
     <article>
       <section class="section-card" id="section-1">
       <h2>1. The Engine of Duality: Conjugates (Recap)</h2>
@@ -430,6 +446,20 @@
             <li>If $x_i = 0$, then $\alpha_i = 1/(\nu-\lambda_i)$. Since $\lambda_i \ge 0$, $\nu - \lambda_i \le \nu$, so $1/(\nu-\lambda_i) \ge 1/\nu$. Thus $\alpha_i \ge 1/\nu$.</li>
           </ul>
           Result: $x_i = \max(0, 1/\nu - \alpha_i)$. This is "water-filling" on the levels $\alpha_i$. We solve for $\nu$ such that $\sum x_i = 1$.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Looking Ahead: How Algorithms Use KKT</h4>
+          <p>The KKT conditions are not just theoretical artifacts—they are the <b>blueprint for solvers</b>. Nearly all modern convex optimization algorithms can be viewed as "KKT seekers":</p>
+          <ul>
+            <li><b>Interior-Point Methods (Newton's Method):</b> They solve the KKT system directly!
+              <br>They apply Newton's method to find a root of the KKT equations $R(x, \lambda, \nu) = 0$.
+              <br><i>Twist:</i> To handle the inequality complementary slackness ($\lambda_i f_i = 0$), they relax it to $\lambda_i f_i = -1/t$ (the "central path") and drive $t \to \infty$. This keeps iterates strictly feasible (interior).</li>
+            <li><b>Gradient Descent & Proximal Methods:</b> These can be viewed as finding fixed points of KKT operators.
+              <br>For constrained problems, projecting onto the feasible set is equivalent to solving a sub-problem that satisfies the KKT conditions locally.</li>
+            <li><b>Dual Ascent / ADMM:</b> These methods iteratively update the dual variables $\lambda, \nu$ to satisfy the stationarity condition, then update primal variables to satisfy feasibility. They climb the dual hill to find the KKT point.</li>
+          </ul>
+          <p><b>Takeaway:</b> When you run `cvxpy.solve()`, the computer is frantically trying to find a set of $(x, \lambda, \nu)$ that satisfies the four KKT bullets.</p>
         </div>
       </section>
 

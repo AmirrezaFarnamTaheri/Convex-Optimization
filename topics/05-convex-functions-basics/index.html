@@ -1112,6 +1112,12 @@
           <p>is convex. This extends to infinite sums and integrals (provided they converge).</p>
         </div>
 
+        <div class="example-box">
+            <p><b>Example:</b> $f(x) = x^2 + 2e^x$.
+            <br>Here $f_1(x)=x^2$ (convex), $f_2(x)=e^x$ (convex), $w_1=1 \ge 0$, $w_2=2 \ge 0$.
+            <br>Thus $f(x)$ is convex.</p>
+        </div>
+
         <div class="proof-box">
           <h4>Proof</h4>
           <p>For any $x, y$ and $\theta \in [0, 1]$:</p>
@@ -1130,6 +1136,11 @@
         $$
         f(x) = \max_{i=1,\dots,m} f_i(x)
         $$
+
+        <div class="example-box">
+            <p><b>Example:</b> $f(x) = \max(x, -x, x^2 - 1)$.
+            <br>The functions $x$, $-x$, and $x^2-1$ are all convex. Thus the combined function (which looks like a "W" shape with curved sides) is convex.</p>
+        </div>
 
         <div class="theorem-box">
           <h4>Claim</h4>
@@ -1470,6 +1481,12 @@
             <li>$g$ is <b>concave</b>, and $h$ is <b>convex</b> and <b>non-increasing</b>.</li>
             <li>$g$ is <b>affine</b>, and $h$ is <b>convex</b> (monotonicity not required).</li>
           </ol>
+
+          <div class="example-box">
+            <p><b>Example:</b> $f(x) = e^{x^2}$.
+            <br>Inner: $g(x) = x^2$ (convex). Outer: $h(u) = e^u$ (convex and non-decreasing).
+            <br>Rule 1 applies: $f$ is convex.</p>
+          </div>
 
           <div class="intuition-box">
             <h4>Calculus Intuition (Chain Rule)</h4>

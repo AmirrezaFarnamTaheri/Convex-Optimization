@@ -82,7 +82,7 @@
           <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality (polynomial-time algorithms).</li>
           <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no worst-case guarantees.</li>
         </ul>
-        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure. We formalize this in <a href="#section-2">Section 2.1</a>.</p>
+        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure. We formalize this in <a href="#section-3">Section 3.1</a>.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
@@ -194,9 +194,98 @@
       </section>
 
       <section class="section-card" id="section-2">
-        <h2>2. The Fundamental Theorem: Local = Global</h2>
+        <h2>2. Why Convexity Matters: Practical Implications</h2>
 
-        <h3>2.1 Global Optimality: Why Convexity is the Watershed</h3>
+        <h3>2.1 Computational Complexity</h3>
+        <p>The distinction between convex and nonconvex problems is not merely about ease of solution—it reflects fundamental differences in computational complexity:</p>
+
+        <table class="data-table" style="width: 100%; margin-top: 16px;">
+          <colgroup>
+              <col style="width: 25%;">
+              <col style="width: 37.5%;">
+              <col style="width: 37.5%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Convex Problems</th>
+              <th>Nonconvex Problems</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Complexity class</b></td>
+              <td>Polynomial time (P)</td>
+              <td>Generally NP-hard</td>
+            </tr>
+            <tr>
+              <td><b>Local vs. global</b></td>
+              <td>Local = Global (proven)</td>
+              <td>Local ≠ Global (local minima exist)</td>
+            </tr>
+            <tr>
+              <td><b>Solver guarantees</b></td>
+              <td>Provably converge to global optimum</td>
+              <td>May get stuck in local minima</td>
+            </tr>
+            <tr>
+              <td><b>Initialization</b></td>
+              <td>Any feasible point works</td>
+              <td>Critical—affects final solution</td>
+            </tr>
+            <tr>
+              <td><b>Duality gap</b></td>
+              <td>Zero at optimum (strong duality)</td>
+              <td>May have duality gap</td>
+            </tr>
+            <tr>
+              <td><b>Scalability</b></td>
+              <td>Millions of variables routine</td>
+              <td>Limited to smaller instances</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>2.2 Real-World Impact</h3>
+        <div class="example">
+          <h4>Example: Large-Scale Machine Learning</h4>
+          <p>Modern machine learning relies heavily on convex optimization:</p>
+          <ul>
+            <li><b>Support Vector Machines (SVM):</b> Formulated as a convex QP, SVMs are solved reliably for millions of training examples.</li>
+            <li><b>Logistic Regression:</b> Convex likelihood maximization ensures unique global optimum.</li>
+            <li><b>LASSO Regression:</b> $\ell_1$-regularized least squares is convex, enabling sparse feature selection at scale.</li>
+            <li><b>Deep Learning (first-order phase):</b> Even though neural networks are nonconvex, the convex optimization techniques (SGD, Adam) dominate the field.</li>
+          </ul>
+        </div>
+
+        <h3>2.3 When Convexity is Lost</h3>
+        <p>Certain problem features immediately destroy convexity. Recognizing these structural obstacles saves time:</p>
+        <ul>
+          <li><b>Integer constraints:</b> $x_i \in \{0,1\}$.
+            <br><i>Why?</i> The set $\{0, 1\}$ is not convex (doesn't contain the interval $[0,1]$). This turns the problem into a combinatorial one (NP-hard).</li>
+          <li><b>Equality constraints with nonlinear functions:</b> $h(x) = 0$ where $h$ is convex but not affine.
+            <br><i>Why?</i> The set $x^2 = 1$ consists of two points $\{-1, 1\}$. It is the boundary of the convex set $x^2 \le 1$. Boundaries of convex sets are generally non-convex.</li>
+          <li><b>Maximizing a convex function:</b> $\max \|x\|_2$.
+            <br><i>Why?</i> The maximum is achieved at the boundary, not the interior. We want to find the point <i>furthest</i> from the center, which is a global search problem.</li>
+          <li><b>Products of variables:</b> $x \cdot y \ge 1$.
+            <br><i>Why?</i> The set $\{(x,y) \mid xy \ge 1\}$ (hyperbola) is non-convex. Its Hessian $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ has eigenvalues $\pm 1$ (indefinite).</li>
+        </ul>
+
+        <div class="insight">
+          <h4>⚠️ Convex Relaxations</h4>
+          <p>When faced with a nonconvex problem, a common strategy is <b>convex relaxation</b>—replacing non-convex constraints with convex approximations. The solution to the relaxed problem provides:</p>
+          <ul>
+            <li>A <b>lower bound</b> on the optimal value (for minimization).</li>
+            <li>Often a <b>high-quality approximate solution</b>.</li>
+            <li>A starting point for local refinement methods.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section-card" id="section-3">
+        <h2>3. The Fundamental Theorem: Local = Global</h2>
+
+        <h3>3.1 Global Optimality: Why Convexity is the Watershed</h3>
         <p>In general (nonconvex) optimization, algorithms can get stuck in <b>local minima</b>—points that are optimal within a small neighborhood but not globally. For convex problems, this pathology cannot occur.</p>
 
         <div class="insight">
@@ -266,7 +355,7 @@
           </div>
         </div>
 
-        <h3>2.2 Practical Implications</h3>
+        <h3>3.2 Practical Implications</h3>
         <div class="insight">
           <h4>Why This Matters</h4>
           <ul>
@@ -316,95 +405,6 @@
           </ul>
           <p><i>Convergence guarantees:</i> For strongly convex problems, gradient descent achieves linear convergence: $f(x_k) - f(x^*) \le (1-\mu/L)^k (f(x_0) - f(x^*))$ where $\mu$ is the strong convexity parameter and $L$ is the Lipschitz constant.</p>
           <div id="widget-convergence-comparison" style="width: 100%; height: 450px; position: relative;"></div>
-        </div>
-      </section>
-
-      <section class="section-card" id="section-3">
-        <h2>3. Why Convexity Matters: Practical Implications</h2>
-
-        <h3>3.1 Computational Complexity</h3>
-        <p>The distinction between convex and nonconvex problems is not merely about ease of solution—it reflects fundamental differences in computational complexity:</p>
-
-        <table class="data-table" style="width: 100%; margin-top: 16px;">
-          <colgroup>
-              <col style="width: 25%;">
-              <col style="width: 37.5%;">
-              <col style="width: 37.5%;">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>Convex Problems</th>
-              <th>Nonconvex Problems</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><b>Complexity class</b></td>
-              <td>Polynomial time (P)</td>
-              <td>Generally NP-hard</td>
-            </tr>
-            <tr>
-              <td><b>Local vs. global</b></td>
-              <td>Local = Global (proven)</td>
-              <td>Local ≠ Global (local minima exist)</td>
-            </tr>
-            <tr>
-              <td><b>Solver guarantees</b></td>
-              <td>Provably converge to global optimum</td>
-              <td>May get stuck in local minima</td>
-            </tr>
-            <tr>
-              <td><b>Initialization</b></td>
-              <td>Any feasible point works</td>
-              <td>Critical—affects final solution</td>
-            </tr>
-            <tr>
-              <td><b>Duality gap</b></td>
-              <td>Zero at optimum (strong duality)</td>
-              <td>May have duality gap</td>
-            </tr>
-            <tr>
-              <td><b>Scalability</b></td>
-              <td>Millions of variables routine</td>
-              <td>Limited to smaller instances</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>3.2 Real-World Impact</h3>
-        <div class="example">
-          <h4>Example: Large-Scale Machine Learning</h4>
-          <p>Modern machine learning relies heavily on convex optimization:</p>
-          <ul>
-            <li><b>Support Vector Machines (SVM):</b> Formulated as a convex QP, SVMs are solved reliably for millions of training examples.</li>
-            <li><b>Logistic Regression:</b> Convex likelihood maximization ensures unique global optimum.</li>
-            <li><b>LASSO Regression:</b> $\ell_1$-regularized least squares is convex, enabling sparse feature selection at scale.</li>
-            <li><b>Deep Learning (first-order phase):</b> Even though neural networks are nonconvex, the convex optimization techniques (SGD, Adam) dominate the field.</li>
-          </ul>
-        </div>
-
-        <h3>3.3 When Convexity is Lost</h3>
-        <p>Certain problem features immediately destroy convexity. Recognizing these structural obstacles saves time:</p>
-        <ul>
-          <li><b>Integer constraints:</b> $x_i \in \{0,1\}$.
-            <br><i>Why?</i> The set $\{0, 1\}$ is not convex (doesn't contain the interval $[0,1]$). This turns the problem into a combinatorial one (NP-hard).</li>
-          <li><b>Equality constraints with nonlinear functions:</b> $h(x) = 0$ where $h$ is convex but not affine.
-            <br><i>Why?</i> The set $x^2 = 1$ consists of two points $\{-1, 1\}$. It is the boundary of the convex set $x^2 \le 1$. Boundaries of convex sets are generally non-convex.</li>
-          <li><b>Maximizing a convex function:</b> $\max \|x\|_2$.
-            <br><i>Why?</i> The maximum is achieved at the boundary, not the interior. We want to find the point <i>furthest</i> from the center, which is a global search problem.</li>
-          <li><b>Products of variables:</b> $x \cdot y \ge 1$.
-            <br><i>Why?</i> The set $\{(x,y) \mid xy \ge 1\}$ (hyperbola) is non-convex. Its Hessian $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ has eigenvalues $\pm 1$ (indefinite).</li>
-        </ul>
-
-        <div class="insight">
-          <h4>⚠️ Convex Relaxations</h4>
-          <p>When faced with a nonconvex problem, a common strategy is <b>convex relaxation</b>—replacing non-convex constraints with convex approximations. The solution to the relaxed problem provides:</p>
-          <ul>
-            <li>A <b>lower bound</b> on the optimal value (for minimization).</li>
-            <li>Often a <b>high-quality approximate solution</b>.</li>
-            <li>A starting point for local refinement methods.</li>
-          </ul>
         </div>
       </section>
 

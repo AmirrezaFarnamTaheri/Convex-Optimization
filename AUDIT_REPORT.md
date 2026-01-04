@@ -295,8 +295,8 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
 8. ✅ **Lecture 07**: Consolidate epigraph transformation content (40 lines removed)
 9. ✅ **Lecture 08**: Restructure Section 2 as SOCP subsection (8 sections → 7, better organization)
 
-### Phase 3: Content Enrichment (7 of 10 complete) 🎯
-**Estimated effort**: 12-16 hours | **Actual time**: ~8 hours
+### Phase 3: Content Enrichment (8 of 10 complete) 🎯
+**Estimated effort**: 12-16 hours | **Actual time**: ~9 hours
 
 1. ✅ **Lecture 00**: Spectral Shift expanded (7 → 74 lines, applications to ridge regression, condition number, proximal algorithms)
 2. ✅ **Lecture 01**: QR Decomposition expanded (38 → 148 lines, Householder reflections, numerical stability, optimization connections)
@@ -305,7 +305,7 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
 5. ✅ **Lecture 04**: Pareto Optimality (3 → 35 lines) + Supporting Hyperplane (16 → 65 lines)
 6. ✅ **Lecture 05**: Concave Functions section already comprehensive (~60 lines)
 7. **Lecture 06**: Expand Subdifferential Calculus, Smoothness sections
-8. **Lecture 07**: Expand Section 8 (Reformulation)
+8. ✅ **Lecture 07**: Problem Reformulation expanded (17 → 160 lines, change of variables, GP via log transform, slack variables, elimination, epigraph, partial minimization)
 9. ✅ **Lecture 08**: DCP Recap expanded (4 → 130 lines, atom-to-cone mappings, verification process, portfolio example)
 10. ✅ **Lecture 09**: Conic Duality expanded (16 → 172 lines, SOCP/SDP examples, complementary slackness)
 
@@ -340,7 +340,7 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
 **Progress**:
 - **Phase 1 Critical**: 15 of 15 issues fixed (100%) ✅
 - **Phase 2 High Priority**: 8 of 9 tasks complete (89%) 🎯
-- **Phase 3 Content Enrichment**: 7 of 10 sections expanded (70%) 📈
+- **Phase 3 Content Enrichment**: 8 of 10 sections expanded (80%) 📈
 
 ---
 
@@ -358,7 +358,7 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
   - **Lecture 07**: Epigraph transformation consolidated (40 lines removed)
   - **Lecture 08**: Section 2 restructured as SOCP subsection (8 → 7 sections)
 
-- **Phase 3 (70%)**: 7 sections significantly expanded with proofs, examples, and applications
+- **Phase 3 (80%)**: 8 sections significantly expanded with proofs, examples, and applications
   - **Lecture 00**: Spectral Shift (7 → 74 lines)
     * Ridge regression and Tikhonov regularization examples
     * Condition number control with numerical examples
@@ -380,6 +380,13 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
   - **Lecture 05**: Concave Functions (already comprehensive, ~60 lines)
     * Definition, examples, characterizations already present
     * Economic applications, preservation rules documented
+  - **Lecture 07**: Problem Reformulation (17 → 160 lines)
+    * Formal definition of equivalent problems
+    * 5 common techniques: change of variables, slack variables, eliminating equalities, epigraph, partial minimization
+    * Geometric programming via log transform example
+    * Portfolio optimization with budget constraint example
+    * Least squares with regularization example
+    * Reformulation strategies and common pitfalls
   - **Lecture 08**: DCP Recap (4 → 130 lines)
     * Bridge from high-level to conic form (modeling vs. solver layers)
     * Atom-to-cone mappings table (6 key examples)
@@ -397,15 +404,15 @@ The following HIGH-PRIORITY issues have been fixed and pushed:
 
 ### 🔄 In Progress / Pending
 - **Phase 2**: 1 task pending (Lecture 06 conjugate reorganization - requires detailed hierarchy specification)
-- **Phase 3**: 3 sections remaining (Lectures 02, 06, 07)
+- **Phase 3**: 2 sections remaining (Lectures 02, 06)
 - **Phase 4**: Writing quality and polish (6 categories)
 
 ### Summary Statistics
 - **Total issues addressed**: 23 of 24 high-priority items (96%)
 - **Phase 1**: 15 critical issues fixed (100%)
 - **Phase 2**: 8 of 9 consolidations complete (89%)
-- **Phase 3**: 7 of 10 sections expanded (70%)
-- **Lines of new content added**: ~650 lines (Phase 3)
+- **Phase 3**: 8 of 10 sections expanded (80%)
+- **Lines of new content added**: ~800 lines (Phase 3)
 - **Lines consolidated/improved**: ~330+ lines (Phases 1-2)
 - **Lectures significantly improved**: All 10 lectures touched (100%)
 - **Navigation/structure fixes**: 100% complete

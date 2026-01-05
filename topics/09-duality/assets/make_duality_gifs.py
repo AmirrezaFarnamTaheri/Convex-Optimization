@@ -3,197 +3,257 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
+import os
 
-# ------------------------------
-# GIF 1: 2D KKT geometry
-# Primal: min x^2+y^2  s.t. x+y >= 1   (equiv f1=1-x-y<=0)
-# L(x,y,λ)=x^2+y^2 + λ(1-x-y), λ>=0
-# argmin: (λ/2, λ/2)
-# g(λ)=λ-λ^2/2, max at λ*=1 with value 1/2
-# ------------------------------
-lam_frames = np.linspace(0.0, 2.0, 31)
+# Ensure assets directory exists
+os.makedirs("assets", exist_ok=True)
 
-def g2(lam):
-    return lam - 0.5*lam**2
+# Common settings for "slow motion"
+FPS = 8
+INTERVAL = 120
 
-xx = np.linspace(-0.2, 1.6, 140)
-yy = np.linspace(-0.2, 1.6, 140)
+print("Generating duality_lagrangian_demo.gif...")
+# 1. Lagrangian Demo
+# Primal: min (x-2)^2 s.t. x <= 1
+x = np.linspace(-1.0, 3.0, 600)
+f0 = (x - 2.0) ** 2
+lams = np.linspace(0.0, 4.0, 61) # More frames for smoothness
+
+def g(lam):
+    return lam - (lam**2)/4.0
+
+fig, ax = plt.subplots(figsize=(7.2, 4.6))
+ax.set_title("Duality demo: L(x, λ) lower-bounds the constrained optimum (x ≤ 1)")
+ax.set_xlabel("x")
+ax.set_ylabel("value")
+
+(line_f0,) = ax.plot(x, f0, label="f0(x)=(x-2)^2", color="blue", alpha=0.6)
+(line_L,)  = ax.plot(x, f0 + lams[0]*(x-1), label="L(x,λ)=f0(x)+λ(x-1)", color="red")
+ax.axvline(1.0, linestyle="--", color="black", label="constraint x=1")
+
+# primal optimum
+ax.plot([1.0], [(1.0-2.0)**2], marker="o", color="gold", linestyle="", label="primal optimum")
+
+# minimizer of L
+point_star, = ax.plot([], [], marker="o", color="red", linestyle="")
+txt = ax.text(0.02, 0.95, "", transform=ax.transAxes, va="top")
+
+ax.set_ylim(-0.5, 7.0)
+ax.legend(loc="upper right")
+
+def update_lag(i):
+    lam = float(lams[i])
+    L = (x - 2.0)**2 + lam*(x - 1.0)
+    line_L.set_ydata(L)
+    x_star = 2.0 - lam/2.0
+    y_star = (x_star - 2.0)**2 + lam*(x_star - 1.0)
+    point_star.set_data([x_star], [y_star])
+    txt.set_text(f"λ={lam:.2f}\nargmin L = {x_star:.2f}\ng(λ)={g(lam):.3f}")
+    return line_L, point_star, txt
+
+anim = FuncAnimation(fig, update_lag, frames=len(lams), interval=INTERVAL, blit=True)
+anim.save("assets/duality_lagrangian_demo.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
+
+
+print("Generating duality_saddle_path.gif...")
+# 2. Saddle Path (Enhanced)
+def f0_sp(x): return (x - 2.0)**2
+def g_sp(lam): return lam - (lam**2)/4.0
+
+x_grid = np.linspace(-0.5, 2.5, 220)
+lam_grid = np.linspace(0.0, 4.0, 220)
+X, Lam = np.meshgrid(x_grid, lam_grid)
+L_grid = (X - 2.0)**2 + Lam*(X - 1.0)
+
+# Iterates
+alpha, beta = 0.2, 0.25 # Slower learning rate for smoother path
+x_curr, lam_curr = 2.4, 0.0
+xs, lams_list = [x_curr], [lam_curr]
+for _ in range(60):
+    grad_x = 2.0*(x_curr - 2.0) + lam_curr
+    x_curr = min(x_curr - alpha * grad_x, 1.0) # Projection
+    lam_curr = max(0.0, lam_curr + beta*(x_curr - 1.0))
+    xs.append(x_curr); lams_list.append(lam_curr)
+
+fig, ax = plt.subplots(figsize=(6.8, 5.0))
+ax.set_title("Saddle-point dynamics: min_x max_λ L(x,λ)")
+ax.set_xlabel("x (primal)"); ax.set_ylabel("λ (dual)")
+ax.set_xlim(-0.5, 2.5); ax.set_ylim(0.0, 4.0)
+
+cntr = ax.contour(X, Lam, L_grid, levels=20, cmap="viridis", alpha=0.5)
+ax.axvline(1.0, linestyle="--", color="k", label="Feasible x≤1")
+ax.plot([1.0], [2.0], marker="*", markersize=15, color="gold", label="Saddle (1, 2)")
+
+(path_line,) = ax.plot([], [], 'r-', linewidth=2, label="Iterates")
+(pt_now,) = ax.plot([], [], 'ro')
+txt = ax.text(0.02, 0.98, "", transform=ax.transAxes, va="top")
+ax.legend(loc="lower left")
+
+def update_saddle(i):
+    path_line.set_data(xs[:i+1], lams_list[:i+1])
+    pt_now.set_data([xs[i]], [lams_list[i]])
+    txt.set_text(f"Step {i}\nx={xs[i]:.2f}\nλ={lams_list[i]:.2f}")
+    return path_line, pt_now, txt
+
+anim = FuncAnimation(fig, update_saddle, frames=len(xs), interval=INTERVAL, blit=True)
+anim.save("assets/duality_saddle_path.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
+
+
+print("Generating duality_gap_convergence.gif...")
+# 3. Gap Convergence
+ks = np.arange(len(xs))
+f_vals = np.array([f0_sp(v) for v in xs])
+g_vals = np.array([g_sp(v) for v in lams_list])
+gap = f_vals - g_vals
+
+fig, ax = plt.subplots(figsize=(6.8, 4.8))
+ax.set_title("Duality Gap Convergence")
+ax.set_xlabel("Iteration")
+ax.set_ylabel("Value")
+ax.set_xlim(0, len(xs)-1)
+ax.set_ylim(min(g_vals.min(), f_vals.min())-0.5, max(f_vals.max(), 1.2)+0.5)
+
+(line_f,) = ax.plot([], [], 'b-', linewidth=2, label="Primal f0(x)")
+(line_g,) = ax.plot([], [], 'r-', linewidth=2, label="Dual g(λ)")
+(line_gap,) = ax.plot([], [], 'g--', linewidth=2, label="Gap")
+ax.axhline(1.0, color='k', linestyle=':', label="Optimal=1")
+txt = ax.text(0.5, 0.5, "", transform=ax.transAxes, ha="center")
+ax.legend()
+
+def update_gap(i):
+    line_f.set_data(ks[:i+1], f_vals[:i+1])
+    line_g.set_data(ks[:i+1], g_vals[:i+1])
+    line_gap.set_data(ks[:i+1], gap[:i+1])
+    txt.set_text(f"Gap: {gap[i]:.4f}")
+    return line_f, line_g, line_gap, txt
+
+anim = FuncAnimation(fig, update_gap, frames=len(ks), interval=INTERVAL, blit=True)
+anim.save("assets/duality_gap_convergence.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
+
+
+print("Generating duality_kkt_2d_fast.gif...")
+# 4. KKT 2D
+lam_frames = np.linspace(0.0, 2.0, 41)
+xx = np.linspace(-0.2, 1.6, 100)
+yy = np.linspace(-0.2, 1.6, 100)
 X, Y = np.meshgrid(xx, yy)
 F0 = X**2 + Y**2
 
 fig, ax = plt.subplots(figsize=(6.6, 4.8))
-ax.set_title("2D KKT: argmin of L(x,y,λ) moves; hits boundary at λ*=1")
-ax.set_xlabel("x"); ax.set_ylabel("y")
-ax.set_xlim(-0.2, 1.6); ax.set_ylim(-0.2, 1.6)
-
-ax.contour(X, Y, F0, levels=np.linspace(0.1, 2.0, 8))
-ax.plot([0, 1.8], [1, -0.8], linestyle="--", label="x+y=1")
-ax.plot([0.5], [0.5], marker="o", linestyle="", label="primal optimum (0.5,0.5)")
-pt, = ax.plot([0.0], [0.0], marker="o", linestyle="")
+ax.set_title("KKT Stationarity: argmin L(x,λ) meets boundary")
+ax.contour(X, Y, F0, levels=10, cmap="Blues")
+ax.plot([0, 1.8], [1, -0.8], 'k--', label="x+y=1")
+ax.plot([0.5], [0.5], 'g*', markersize=10, label="Optimum")
+pt, = ax.plot([], [], 'ro', label="argmin L")
 txt = ax.text(0.02, 0.98, "", transform=ax.transAxes, va="top")
-ax.legend(loc="lower right")
+ax.legend(loc="upper right")
 
 def update_kkt(i):
-    lam = float(lam_frames[i])
+    lam = lam_frames[i]
     xs = lam/2.0; ys = lam/2.0
     pt.set_data([xs], [ys])
-    txt.set_text(
-        f"λ = {lam:.2f}\n"
-        f"argmin L = (λ/2, λ/2)=({xs:.2f},{ys:.2f})\n"
-        f"g(λ)=inf L = {g2(lam):.3f}\n"
-        f"p* = 0.500"
-    )
+    txt.set_text(f"λ={lam:.2f}\nargmin L=({xs:.2f},{ys:.2f})")
     return pt, txt
 
-anim1 = FuncAnimation(fig, update_kkt, frames=len(lam_frames), interval=90, blit=True)
-anim1.save("topics/09-duality/assets/duality_kkt_2d_fast.gif", writer=PillowWriter(fps=10))
+anim = FuncAnimation(fig, update_kkt, frames=len(lam_frames), interval=INTERVAL, blit=True)
+anim.save("assets/duality_kkt_2d_fast.gif", writer=PillowWriter(fps=FPS))
 plt.close(fig)
 
-# ------------------------------
-# GIF 2: Sensitivity / supporting line
-# p(u)=min (x-2)^2 s.t. x<=1+u
-# p(u)=(1-u)^2 for u<=1, else 0
-# supporting line: ℓ_λ(u)=1-λu; true λ*=2
-# ------------------------------
+
+print("Generating duality_comp_slack_switch.gif...")
+# 5. Comp Slack
+u_frames = np.linspace(-0.5, 1.5, 61)
+x_plot = np.linspace(-0.5, 2.5, 500)
+f_plot = (x_plot - 2.0)**2
+
+fig, ax = plt.subplots(figsize=(6.8, 4.8))
+ax.set_title("Complementary Slackness: λ drops to 0 when inactive")
+ax.plot(x_plot, f_plot, 'b-', label="f0(x)")
+(bound_line,) = ax.plot([], [], 'k--', label="x <= 1+u")
+(pt,) = ax.plot([], [], 'ro')
+txt = ax.text(0.02, 0.98, "", transform=ax.transAxes, va="top")
+ax.set_ylim(-0.5, 6.5)
+ax.legend()
+
+def update_cs(i):
+    u = u_frames[i]
+    xb = 1.0 + u
+    bound_line.set_data([xb, xb], [-0.5, 6.5])
+    xs = min(2.0, xb)
+    pt.set_data([xs], [(xs-2)**2])
+    lam = 2*(1-u) if u < 1 else 0
+    state = "Active" if u < 1 else "Inactive"
+    txt.set_text(f"u={u:.2f}\nλ*={lam:.2f} ({state})")
+    return bound_line, pt, txt
+
+anim = FuncAnimation(fig, update_cs, frames=len(u_frames), interval=INTERVAL, blit=True)
+anim.save("assets/duality_comp_slack_switch.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
+
+
+print("Generating duality_sensitivity_supporting_line_fast.gif...")
+# 6. Sensitivity
 u = np.linspace(-1.0, 2.0, 500)
 p_u = np.where(u <= 1.0, (1.0 - u)**2, 0.0)
 lam_frames2 = np.linspace(0.0, 4.0, 41)
 
-fig2, ax2 = plt.subplots(figsize=(6.6, 4.6))
-ax2.set_title("Sensitivity: p(u) and ℓ_λ(u)=1-λu (true λ*=2)")
-ax2.set_xlabel("u (relax constraint: x ≤ 1+u)")
-ax2.set_ylabel("p(u)")
-ax2.plot(u, p_u, label="p(u)")
-ax2.axvline(0.0, linestyle="--", label="u0=0")
-ax2.axvline(1.0, linestyle="--", label="kink u=1")
-lineL, = ax2.plot(u, 1.0 - lam_frames2[0]*u, label="ℓ_λ(u)=1-λu")
-txt2 = ax2.text(0.02, 0.98, "", transform=ax2.transAxes, va="top")
-ax2.set_ylim(-1.0, 3.2)
-ax2.legend(loc="upper right")
+fig, ax = plt.subplots(figsize=(6.6, 4.6))
+ax.set_title("Sensitivity: Dual variable is slope of p(u)")
+ax.plot(u, p_u, 'b-', label="p(u)")
+(lineL,) = ax.plot([], [], 'r--', label="Support")
+txt = ax.text(0.02, 0.98, "", transform=ax.transAxes, va="top")
+ax.set_ylim(-1.0, 3.5)
+ax.legend()
 
 def update_sens(i):
-    lam = float(lam_frames2[i])
-    lineL.set_ydata(1.0 - lam*u)
-    txt2.set_text(f"λ = {lam:.2f}\nline: ℓ_λ(u)=1-λu\n(subgradient at u=0 is λ*=2)")
-    return lineL, txt2
+    lam = lam_frames2[i]
+    lineL.set_data(u, 1.0 - lam*u)
+    txt.set_text(f"λ={lam:.2f}\nSlope = -{lam:.2f}")
+    return lineL, txt
 
-anim2 = FuncAnimation(fig2, update_sens, frames=len(lam_frames2), interval=90, blit=True)
-anim2.save("topics/09-duality/assets/duality_sensitivity_supporting_line_fast.gif", writer=PillowWriter(fps=10))
-plt.close(fig2)
-
-# ------------------------------
-# GIF 3: Farkas Certificate (Redesigned)
-# Infeasible System: x+y <= 0 AND x+y >= 1
-# Certificate: y_vec >= 0 s.t. A^T y = 0, b^T y < 0.
-# A = [[1, 1], [-1, -1]], b = [0, -1]
-# Cert y = [1, 1] -> A^T y = [0, 0], b^T y = -1 < 0.
-# Animation: Rotate a vector 'v' and check if it separates the sets or certifies infeasibility.
-# Actually, let's visualize the "Theorem of Alternatives" geometry.
-# The set {Ax | x} is a subspace (line x=y). The set {z | z <= b} is a shifted quadrant.
-# They don't intersect. The certificate is the separating hyperplane normal.
-# ------------------------------
-
-fig3, ax3 = plt.subplots(figsize=(6.0, 5.0))
-ax3.set_title("Farkas' Lemma: Separating Hyperplane Certificate")
-ax3.set_xlim(-2, 2)
-ax3.set_ylim(-2, 2)
-ax3.grid(True, alpha=0.3)
-
-# Draw the two conflicting halfspaces in primal space (x, y)
-# 1. x + y <= 0
-x_vals = np.linspace(-2, 2, 100)
-ax3.fill_between(x_vals, -2, -x_vals, color='blue', alpha=0.1, label="x+y <= 0")
-# 2. x + y >= 1  =>  -x - y <= -1
-ax3.fill_between(x_vals, 1-x_vals, 2, color='red', alpha=0.1, label="x+y >= 1")
-
-# Draw the separating hyperplane (certificate)
-# Normal vector c = (1, 1).
-# We want to show a vector 'y' that proves disjointness.
-# In Farkas for Ax <= b, the cert y >= 0 proves b^T y < 0 while A^T y = 0.
-# Here, primal x is unconstrained sign? No, standard Farkas is usually x >= 0 or Ax=b.
-# Let's stick to the specific constraints visual:
-# The gap is between the lines x+y=0 and x+y=1.
-# A separating line is x+y = 0.5.
-line_sep, = ax3.plot(x_vals, 0.5 - x_vals, 'k--', linewidth=2, label="Separator")
-
-txt3 = ax3.text(0.02, 0.95, "", transform=ax3.transAxes, va="top", fontsize=10)
-# No real animation needed for the static geometry, but let's rotate the normal to show ONLY (1,1) works.
-
-angles = np.linspace(0, 2*np.pi, 60)
-
-# Use a line for the animating vector
-vec_line, = ax3.plot([], [], 'g-', linewidth=2)
-
-def update_farkas_safe(i):
-    angle = angles[i]
-    dx = np.cos(angle)
-    dy = np.sin(angle)
-
-    is_separating = abs(angle - np.pi/4) < 0.2
-
-    # Update vector line from (0,0.5) to (dx, dy) scaled
-    vec_line.set_data([0, dx], [0.5, 0.5+dy])
-    vec_line.set_color('green' if is_separating else 'gray')
-
-    txt3.set_text(f"Normal direction: {np.degrees(angle):.0f}°\n" +
-                  ("CERTIFICATE FOUND (y >= 0, separates)" if is_separating else "Invalid direction"))
-
-    return txt3, vec_line
-
-anim3 = FuncAnimation(fig3, update_farkas_safe, frames=len(angles), interval=50, blit=True)
-anim3.save("topics/09-duality/assets/duality_farkas_xy_infeasible.gif", writer=PillowWriter(fps=15))
-plt.close(fig3)
+anim = FuncAnimation(fig, update_sens, frames=len(lam_frames2), interval=INTERVAL, blit=True)
+anim.save("assets/duality_sensitivity_supporting_line_fast.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
 
 
-# ------------------------------
-# GIF 4: Saddle Point Path (Enhanced)
-# Primal: min (x-1)^2 s.t. x <= 0. (Optimum x*=0, p*=1)
-# Lagrangian L(x,λ) = (x-1)^2 + λx.
-# Saddle point at x*=0, λ*=2.
-# ------------------------------
-x_min, x_max = -1.5, 1.5
-lam_min, lam_max = 0, 4
-X_grid, Lam_grid = np.meshgrid(np.linspace(x_min, x_max, 50), np.linspace(lam_min, lam_max, 50))
-L_grid = (X_grid - 1)**2 + Lam_grid * X_grid
+print("Generating duality_farkas_xy_infeasible.gif...")
+# 7. Farkas (Enhanced Visuals)
+# System: x+y <= 0, x+y >= 1.
+# Farkas vector y connects the two separated sets.
+t_frames = np.linspace(0.0, 2.0, 61)
+xv = np.linspace(-2, 2, 400)
 
-fig4, ax4 = plt.subplots(figsize=(6, 5))
-ax4.set_title("Primal-Dual Dynamics -> Saddle Point (0, 2)")
-ax4.set_xlabel("Primal x")
-ax4.set_ylabel("Dual λ")
-contour = ax4.contour(X_grid, Lam_grid, L_grid, levels=20, cmap='viridis', alpha=0.5)
-ax4.plot(0, 2, 'r*', markersize=15, label="Saddle Point (0,2)")
+fig, ax = plt.subplots(figsize=(6.8, 4.8))
+ax.set_title("Farkas Certificate: Separating Hyperplane Normal")
+ax.set_xlim(-2, 2); ax.set_ylim(-2, 2)
+ax.set_xlabel("x"); ax.set_ylabel("y")
 
-# Gradient flow path
-# dx/dt = -dL/dx = -(2(x-1) + λ)
-# dλ/dt = +dL/dλ = x  (projected to λ>=0)
-path_x = [1.0]
-path_lam = [0.0]
-dt = 0.05
-for _ in range(100):
-    curr_x = path_x[-1]
-    curr_lam = path_lam[-1]
+# Feasible regions (empty intersection)
+# Region 1: x+y <= 0
+ax.fill_between(xv, -2, -xv, color='blue', alpha=0.1, label="x+y <= 0")
+ax.plot(xv, -xv, 'b--')
+# Region 2: x+y >= 1
+ax.fill_between(xv, 1-xv, 2, color='red', alpha=0.1, label="x+y >= 1")
+ax.plot(xv, 1-xv, 'r--')
 
-    dx = - (2*(curr_x - 1) + curr_lam)
-    dlam = curr_x
+(vec,) = ax.plot([], [], 'k-', linewidth=2, marker='>')
+txt = ax.text(0.02, 0.98, "", transform=ax.transAxes, va="top")
+ax.legend(loc="lower right")
 
-    new_x = curr_x + dt * dx
-    new_lam = max(0, curr_lam + dt * dlam) # Projection
+def update_farkas(i):
+    t = t_frames[i]
+    # The certificate vector y is normal to the hyperplanes
+    # In this case y = (t, t).
+    # It demonstrates the direction of contradiction.
+    vec.set_data([0, t], [0, t])
+    txt.set_text(f"Certificate y = ({t:.1f}, {t:.1f})\n Proves separation")
+    return vec, txt
 
-    path_x.append(new_x)
-    path_lam.append(new_lam)
+anim = FuncAnimation(fig, update_farkas, frames=len(t_frames), interval=INTERVAL, blit=True)
+anim.save("assets/duality_farkas_xy_infeasible.gif", writer=PillowWriter(fps=FPS))
+plt.close(fig)
 
-line_path, = ax4.plot([], [], 'k.-', linewidth=1, markersize=3, label="Uzawa Iteration")
-point_head, = ax4.plot([], [], 'ko', markersize=6)
-txt4 = ax4.text(0.02, 0.95, "", transform=ax4.transAxes)
-
-ax4.legend()
-
-def update_saddle(i):
-    line_path.set_data(path_x[:i], path_lam[:i])
-    point_head.set_data([path_x[i]], [path_lam[i]])
-    txt4.set_text(f"Iter {i}: x={path_x[i]:.2f}, λ={path_lam[i]:.2f}")
-    return line_path, point_head, txt4
-
-anim4 = FuncAnimation(fig4, update_saddle, frames=len(path_x), interval=50, blit=True)
-anim4.save("topics/09-duality/assets/duality_saddle_path.gif", writer=PillowWriter(fps=15))
-plt.close(fig4)
+print("All GIFs generated successfully.")

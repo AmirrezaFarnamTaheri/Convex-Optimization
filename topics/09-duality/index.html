@@ -266,8 +266,9 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Introducing the Conjugate.</strong>
-            Recall $f^*(y) = \sup_x (y^\top x - f(x))$.
-            For $\lambda > 0$:
+            We rewrite the infimum using the conjugate $f^*(y) = \sup_x (y^\top x - f(x))$.
+            Recall the key identity: $\inf_x (f(x) + a^\top x) = -f^*(-a)$.
+            <br>For $\lambda > 0$:
             $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = \lambda \left[ -f^*\left(-\frac{c}{\lambda}\right) \right] $$
             For $\lambda = 0$: $g(0) = \inf c^\top x = -\infty$ (since $c \ne 0$).
           </div>
@@ -297,14 +298,13 @@
           $$
           <div class="proof-box">
             <h4>Proof (3 lines)</h4>
-            <p>For any feasible $\tilde{x}$ and any $\lambda \succeq 0$:</p>
-            $$
-            \begin{aligned}
-            g(\lambda, \nu) &= \inf_x \mathcal{L}(x, \lambda, \nu) \le \mathcal{L}(\tilde{x}, \lambda, \nu) \quad \text{(infimum is } \le \text{ value at } \tilde{x}) \\
-            &\le f_0(\tilde{x}) \quad \text{(by the Lower Bound Property from §2.2)}
-            \end{aligned}
-            $$
-            <p>Since this holds for <i>every</i> feasible $\tilde{x}$, it holds for the infimum of the right side: $g(\lambda, \nu) \le \inf \{f_0(\tilde{x})\} = p^\star$.</p>
+            <p>Let $x^*$ be an optimal feasible solution. By definition of the infimum:
+            $$ g(\lambda, \nu) = \inf_x L(x, \lambda, \nu) \le L(x^*, \lambda, \nu) $$
+            Expanding the Lagrangian at the optimal point:
+            $$ L(x^*, \lambda, \nu) = f_0(x^*) + \sum_{i=1}^m \lambda_i f_i(x^*) + \sum_{j=1}^p \nu_j h_j(x^*) $$
+            Since $x^*$ is feasible, $h_j(x^*) = 0$ for all $j$. Also $f_i(x^*) \le 0$. Given $\lambda_i \ge 0$, we have $\lambda_i f_i(x^*) \le 0$. Thus:
+            $$ L(x^*, \lambda, \nu) \le f_0(x^*) + 0 + 0 = p^* $$
+            Combining the inequalities gives $g(\lambda, \nu) \le p^*$.</p>
           </div>
         </div>
 
@@ -312,27 +312,35 @@
         <p>Calculating the dual function means solving an unconstrained minimization problem parameterized by $\lambda, \nu$. There are three main patterns:</p>
 
         <div class="example">
-          <h4>Template 1: Linear / Affine (Equality Constraints)</h4>
-          <p>Lagrangian is linear in $x$: $L(x) = (c - A^\top \lambda)^\top x$.
-          <br>$\inf_x L(x) = -\infty$ unless the slope is zero.
-          <br><b>Result:</b> $g(\lambda) = \text{constant}$ if slope is 0, else $-\infty$.
-          <br>This generates <b>dual equality constraints</b>.</p>
+          <h4>1. Least Squares (Quadratic)</h4>
+          <p>Primal: $\min x^\top x$ subject to $Ax = b$.
+          <br>Lagrangian: $L(x, \nu) = x^\top x + \nu^\top (Ax - b)$.
+          <br>Minimize over $\mathbf{x}$: $\nabla_{\mathbf{x}} L = 2\mathbf{x} + A^\top \nu = 0 \implies \mathbf{x} = -A^\top \nu / 2$.
+          <br>Substitute back:
+          $$ g(\nu) = L(-A^\top \nu / 2, \nu) = \frac{1}{4} \nu^\top A A^\top \nu + \nu^\top (A(-A^\top \nu / 2) - b) $$
+          $$ = \frac{1}{4} \|\nu^\top A\|^2 - \frac{1}{2} \|\nu^\top A\|^2 - \nu^\top b = -\frac{1}{4} \nu^\top A A^\top \nu - b^\top \nu $$
+          This is a concave quadratic function of $\nu$.
+          <br>Dual Problem: Maximize $g(\nu)$. Unconstrained quadratic maximization.</p>
         </div>
 
         <div class="example">
-          <h4>Template 2: Quadratic (Completing the Square)</h4>
-          <p>Lagrangian is quadratic in $x$: $L(x) = \frac{1}{2}x^\top P x + q(\lambda)^\top x + r(\lambda)$ with $P \succ 0$.
-          <br>Minimum occurs at $\nabla L = 0 \implies Px = -q(\lambda)$.
-          <br><b>Result:</b> $g(\lambda) = -\frac{1}{2} q(\lambda)^\top P^{-1} q(\lambda) + r(\lambda)$.
-          <br>This generates <b>dual quadratic objectives</b>.</p>
+          <h4>2. Linear Program (Standard Form)</h4>
+          <p>Primal: $\min c^\top x$ s.t. $Ax = b, x \ge 0$.
+          <br>Constraints: $h(x) = Ax - b$, $f(x) = -x$.
+          <br>Lagrangian: $L(x, \lambda, \nu) = c^\top x - \sum \lambda_i x_i + \nu^\top (Ax - b) = -b^\top \nu + (c + A^\top \nu - \lambda)^\top x$.
+          <br>Dual function:
+          $$ g(\lambda, \nu) = \inf_{x} L(x, \lambda, \nu) = \begin{cases} -b^\top \nu & \text{if } c + A^\top \nu - \lambda = 0 \\ -\infty & \text{otherwise} \end{cases} $$
+          Dual Problem: Maximize $-b^\top \nu$ subject to $A^\top \nu + c = \lambda, \lambda \ge 0$.
+          <br>Eliminating $\lambda$: Maximize $-b^\top \nu$ subject to $A^\top \nu + c \ge 0$ (i.e., $A^\top (-\nu) \le c$).
+          <br>Usually written with $y = -\nu$: Maximize $b^\top y$ s.t. $A^\top y \le c$. Standard LP dual.</p>
         </div>
 
         <div class="example">
-          <h4>Template 3: Conjugate Functions</h4>
-          <p>Lagrangian form: $L(x) = f(x) + y(\lambda)^\top x$.
-          <br>$\inf_x (f(x) + y^\top x) = -\sup_x ((-y)^\top x - f(x)) = -f^*(-y)$.
-          <br><b>Result:</b> $g(\lambda) = -f^*(-y(\lambda))$.
-          <br>This is the general tool for non-quadratic problems (norms, exp, log).</p>
+          <h4>3. Conjugate Functions</h4>
+          <p>Primal: $\min f(x)$ subject to $x = 0$ (constraint $x=0$).
+          <br>Lagrangian: $L(x, \nu) = f(x) + \nu^\top x$.
+          <br>Dual function: $g(\nu) = \inf_x (f(x) + \nu^\top x) = -\sup_x ((-\nu)^\top x - f(x)) = -f^*(-\nu)$.
+          <br>Here, the dual function is directly related to the <b>convex conjugate</b>.</p>
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
@@ -438,15 +446,30 @@
             <strong>Step 1: The Set of Achievable Values $\mathcal{A}$.</strong>
             Consider the set of triplets $(u, v, t)$ that are "worse" than some feasible point $\mathbf{x}$:
             $$ \mathcal{A} = \{ (u, v, t) \mid \exists x \in \mathcal{D}, f_i(x) \le u_i, h_j(x) = v_j, f_0(x) \le t \} $$
-            This set is convex.
+            This set is convex (it's the projection of the epigraph of the problem).
           </div>
           <div class="proof-step">
             <strong>Step 2: Separation.</strong>
-            The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$. By the <a href="../03-convex-sets-geometry/index.html#section-3">Separating Hyperplane Theorem</a>, there exists a hyperplane separating $(0, 0, p^*)$ from $\mathcal{A}$. The normal vector gives the multipliers $(\lambda, \nu)$.
+            The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$. The set $\mathcal{A}$ does not contain any point with $u \le 0, v=0, t < p^*$.
+            By the <a href="../03-convex-sets-geometry/index.html#section-3">Separating Hyperplane Theorem</a>, there exists a non-zero vector $(\lambda, \nu, \mu)$ such that for all $(u, v, t) \in \mathcal{A}$:
+            $$ \lambda^\top u + \nu^\top v + \mu t \ge \lambda^\top 0 + \nu^\top 0 + \mu p^* = \mu p^* $$
+            Analyzing directions $u \to \infty$ and $t \to \infty$ implies $\lambda \succeq 0$ and $\mu \ge 0$.
           </div>
           <div class="proof-step">
-            <strong>Step 3: Slater's Condition.</strong>
-            Slater's condition ensures the hyperplane is not vertical (i.e., it depends on the objective value $t$), which allows us to interpret it as a valid dual function lower bound.
+            <strong>Step 3: Slater's Condition implies Non-Verticality ($\mu > 0$).</strong>
+            Suppose $\mu = 0$. The inequality becomes $\sum \lambda_i f_i(\mathbf{x}) + \sum \nu_j h_j(\mathbf{x}) \ge 0$ for all $\mathbf{x}$.
+            Applying this to the Slater point $\tilde{x}$ (where $f_i(\tilde{x}) < 0$):
+            $$ \sum \lambda_i \underbrace{f_i(\tilde{x})}_{< 0} + 0 \ge 0 $$
+            Since $\lambda_i \ge 0$, this forces $\lambda = 0$.
+            If $\lambda=0, \mu=0$, then $\nu^\top (A\mathbf{x}-\mathbf{b}) \ge 0$ for all $\mathbf{x}$, which implies $A^\top \nu = 0$. If $A$ is full rank, $\nu=0$.
+            This contradicts $(\lambda, \nu, \mu) \ne 0$. Thus $\mu > 0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Recovering Strong Duality.</strong>
+            Divide the separation inequality by $\mu$. Let $\tilde{\lambda} = \lambda/\mu, \tilde{\nu} = \nu/\mu$.
+            $$ f_0(x) + \sum \tilde{\lambda}_i f_i(x) + \sum \tilde{\nu}_j h_j(x) \ge p^* \quad \forall x \in \mathcal{D} $$
+            Taking the infimum over $\mathbf{x}$, we get $g(\tilde{\lambda}, \tilde{\nu}) \ge p^*$.
+            Thus the dual optimal value $d^*$ is at least $p^*$. Since $d^* \le p^*$ always (weak duality), we conclude $d^* = p^*$.
           </div>
         </div>
 
@@ -483,10 +506,10 @@
           $$
           \begin{aligned}
           d^* &= g(\lambda^*, \nu^*) \quad \text{(Dual Optimal Value)} \\
-          &= \inf_x \mathcal{L}(x, \lambda^*, \nu^*) \quad \text{(Def of } g \text{)} \\
-          &\le \mathcal{L}(x^*, \lambda^*, \nu^*) \quad \text{(Infimum is } \le \text{ value at } x^*) \\
-          &\le f_0(x^*) \quad \text{(Lagrangian } \le \text{ Objective on feasible points)} \\
-          &= p^* \quad \text{(Primal Optimal Value)}
+          &= \inf_x \left( f_0(x) + \sum \lambda_i^* f_i(x) + \sum \nu_j^* h_j(x) \right) \quad \text{(Definition of Dual Function)} \\
+          &\le f_0(x^*) + \sum \lambda_i^* f_i(x^*) + \sum \nu_j^* h_j(x^*) \quad \text{(Infimum is } \le \text{ value at } x^*) \\
+          &\le f_0(x^*) \quad \text{(Since } \lambda^* \ge 0 \text{ and } f_i(x^*) \le 0 \text{, the sum is } \le 0) \\
+          &= p^* \quad \text{(Definition of Primal Optimal)}
           \end{aligned}
           $$
           <p>Since $d^* = p^*$, the entire chain collapses into equalities. Because Strong Duality holds ($d^* = p^*$), the start and end of this chain are equal. This forces <b>every inequality in the middle to be an equality</b>.</p>
@@ -562,6 +585,19 @@
           <figcaption><i>Animation:</i> The dual variable $\lambda$ defines the slope of a supporting line to the value function $p(u)$. At optimality, this line is tangent (or supporting) at $u=0$.</figcaption>
         </figure>
 
+        <div class="theorem-box">
+          <h4>Theorem: Optimal Multipliers as Subgradients</h4>
+          <p>The inequality derived above is exactly the definition of a subgradient for the convex function $p^*(u, v)$ at $(0, 0)$. Thus:</p>
+          $$ \boxed{ (-\lambda^*, -\nu^*) \in \partial p^*(0, 0) } $$
+          <p><b>Shadow Price Interpretation:</b>
+          <ul>
+            <li>Since $p^*(u, v)$ is convex, a subgradient gives a global lower bound.</li>
+            <li>$\lambda_i^* \ge 0$. Relaxing constraint $i$ ($u_i > 0$) lowers the optimal value. $\lambda_i^*$ is the rate of this improvement.</li>
+            <li>If $p^*$ is differentiable, then $\frac{\partial p^*}{\partial u_i} = -\lambda_i^*$ and $\frac{\partial p^*}{\partial v_j} = -\nu_j^*$. The Lagrange multipliers are exactly the <strong>sensitivity</strong> of the optimal value to constraint perturbations.</li>
+          </ul>
+          </p>
+        </div>
+
         <h3>7.3 Local Sensitivity</h3>
         <p>If $p^*(u, v)$ is differentiable, then:
         $$ \frac{\partial p^*(0, 0)}{\partial u_i} = -\lambda_i^*, \quad \frac{\partial p^*(0, 0)}{\partial v_j} = -\nu_j^* $$
@@ -598,6 +634,8 @@
         <div class="example">
           <h4>1. Linear Programming (LP)</h4>
           <p>Primal: $\min c^\top x$ s.t. $Ax = b, x \ge 0$.
+          <br>Dual: $\max -b^\top \lambda$ s.t. $A^\top \lambda + c = 0, \lambda \ge 0$.
+          <br>Derivation: $\inf_x (c + A^\top \lambda)^\top x$ is $-\infty$ unless coefficient is 0.
           <br>Constraints: $h(x) = Ax - b$, $f(x) = -x$.
           <br>Lagrangian: $L(x, \lambda, \nu) = c^\top x - \sum \lambda_i x_i + \nu^\top (Ax - b) = -b^\top \nu + (c + A^\top \nu - \lambda)^\top x$.
           <br>Dual function:
@@ -637,6 +675,122 @@
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
           <iframe src="widgets/psd_cone_2x2.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+        </div>
+
+        <h3>8.3 The Standard Conic Form</h3>
+        <p>All conic programs can be written in a canonical form that makes the duality symmetric. The <b>primal</b> is:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & c^\top x \\
+        \text{subject to} \quad & Ax = b \\
+        & x \in K
+        \end{aligned}
+        $$
+        The <b>dual</b> is:
+        $$
+        \begin{aligned}
+        \text{maximize} \quad & b^\top y \\
+        \text{subject to} \quad & c - A^\top y = s \\
+        & s \in K^*
+        \end{aligned}
+        $$
+        This unifies <b>LP</b> ($K=\mathbb{R}_+^n$), <b>SOCP</b> ($K = \mathcal{Q}^{n_1} \times \cdots \times \mathcal{Q}^{n_k}$), and <b>SDP</b> ($K=\mathbb{S}_+^n$).</p>
+
+        <div class="proof-box">
+          <h4>Derivation of the Standard Conic Dual</h4>
+          <p>The Lagrangian for the primal is:
+          $$ L(x, y, s) = c^\top x + y^\top (b - Ax) = b^\top y + (c - A^\top y)^\top x $$
+          The dual function is:
+          $$ g(y, s) = \inf_{x \in K} L(x, y, s) = b^\top y + \inf_{x \in K} s^\top x $$
+          where $s = c - A^\top y$. The infimum $\inf_{x \in K} s^\top x$ is:
+          <ul>
+            <li>$0$ if $s^\top x \ge 0$ for all $x \in K$ (i.e., $s \in K^*$)</li>
+            <li>$-\infty$ otherwise (we can pick $x \in K$ with $s^\top x < 0$ and scale arbitrarily)</li>
+          </ul>
+          Thus, the dual problem maximizes $b^\top y$ subject to $s = c - A^\top y \in K^*$.</p>
+        </div>
+
+        <h3>8.4 Example: Second-Order Cone Programming (SOCP)</h3>
+        <p>Consider the SOCP problem:
+        $$
+        \begin{aligned}
+        \text{minimize} \quad & c^\top x \\
+        \text{subject to} \quad & \|A_i x + b_i\|_2 \le c_i^\top x + d_i, \quad i=1,\ldots,m \\
+        & Fx = g
+        \end{aligned}
+        $$
+        Each SOC constraint can be written as $(c_i^\top x + d_i, A_i x + b_i) \in \mathcal{Q}^{n_i+1}$.</p>
+
+        <div class="example-box">
+          <h4>SOCP Dual: Robust Least Squares</h4>
+          <p>For the robust least squares problem:
+          $$
+          \text{minimize} \quad \|Ax - b\|_2 + \gamma \|x\|_2
+          $$
+          we can reformulate as an SOCP:
+          $$
+          \begin{aligned}
+          \text{minimize} \quad & t + \gamma s \\
+          \text{subject to} \quad & \|Ax - b\|_2 \le t \\
+          & \|x\|_2 \le s
+          \end{aligned}
+          $$
+          which is equivalent to $(t, Ax - b) \in \mathcal{Q}$ and $(s, x) \in \mathcal{Q}$.</p>
+
+          <p>The <b>dual problem</b> (derived using the standard conic form) is:
+          $$
+          \begin{aligned}
+          \text{maximize} \quad & -b^\top u \\
+          \text{subject to} \quad & A^\top u + v = 0 \\
+          & \|u\|_2 \le 1, \quad \|v\|_2 \le \gamma
+          \end{aligned}
+          $$
+          The dual multipliers $(1, u)$ and $(\gamma, v)$ live in the dual cone $\mathcal{Q}^* = \mathcal{Q}$ (self-dual!).</p>
+        </div>
+
+        <h3>8.5 Example: Semidefinite Programming (SDP) Revisited</h3>
+        <p>Recall from Section 7.3 that the SDP primal-dual pair is:
+        $$
+        \begin{aligned}
+        \text{Primal:} \quad & \min \mathrm{tr}(CX) \text{ s.t. } \mathrm{tr}(A_i X) = b_i, \, X \succeq 0 \\
+        \text{Dual:} \quad & \max b^\top \nu \text{ s.t. } \sum \nu_i A_i \preceq C
+        \end{aligned}
+        $$
+        This fits the standard conic form with $K = \mathbb{S}_+^n$ and inner product $\langle X, Y \rangle = \mathrm{tr}(X^\top Y)$.</p>
+
+        <div class="insight">
+          <h4>Why SDP is Self-Dual</h4>
+          <p>The positive semidefinite cone $\mathbb{S}_+^n$ is self-dual under the trace inner product: $(\mathbb{S}_+^n)^* = \mathbb{S}_+^n$. This means:
+          $$ \mathrm{tr}(XY) \ge 0 \text{ for all } X \succeq 0 \iff Y \succeq 0 $$
+          This beautiful symmetry mirrors the self-duality of $\mathbb{R}_+$ and $\mathcal{Q}$ and is the foundation of primal-dual interior-point methods for SDP.</p>
+        </div>
+
+        <h3>8.6 Complementary Slackness for Conic Programs</h3>
+        <p>For the standard conic form, complementary slackness states:
+        $$ s^\top x = 0 $$
+        where $x \in K$ (primal feasible) and $s \in K^*$ (dual feasible). This generalizes to:
+        <ul>
+          <li><b>LP:</b> $\lambda_i (c_i - a_i^\top y) = 0$ for each component (componentwise product).</li>
+          <li><b>SOCP:</b> $\lambda^\top x = 0$ where $\lambda, x \in \mathcal{Q}$ (inner product in the cone).</li>
+          <li><b>SDP:</b> $\mathrm{tr}(SX) = 0$ where $S, X \succeq 0$ (trace inner product). Equivalently, $SX = 0$ (zero matrix product).</li>
+        </ul>
+        </p>
+
+        <div class="example-box">
+          <h4>Geometric Interpretation: Orthogonal Complementarity</h4>
+          <p>Since $x \in K$ and $s \in K^*$, we always have $s^\top x \ge 0$ (by definition of dual cone). Complementary slackness $s^\top x = 0$ means the vectors are <b>orthogonal</b> despite both being "nonnegative" in their respective cones.
+          <br><br>For SDP: If $X \succeq 0$ and $S \succeq 0$, then $\mathrm{tr}(SX) = 0$ implies that $S$ and $X$ have <b>complementary support</b>: whenever $X$ has a positive eigenvalue in direction $v$, $S$ must have zero component in that direction, and vice versa. This gives $SX = XS = 0$.</p>
+        </div>
+
+        <h3>8.7 Applications: Why Conic Duality is Powerful</h3>
+        <div class="insight">
+          <h4>Practical Impact</h4>
+          <ul>
+            <li><b>Interior-Point Methods:</b> Modern solvers (MOSEK, SeDuMi, CVXOPT) use primal-dual path-following algorithms that exploit the symmetric structure of conic duality. The central path $\{(x, s) \mid xs = \tau e, x \in K, s \in K^*\}$ guides the solver to optimality.</li>
+            <li><b>Approximation Algorithms:</b> SDP relaxations of combinatorial problems (Max-Cut, graph coloring) derive approximation guarantees from the duality gap and rounding schemes.</li>
+            <li><b>Robust Optimization:</b> Uncertainty sets defined by cones (ellipsoidal, polyhedral) lead to tractable robust counterparts via conic duality.</li>
+            <li><b>Control Theory:</b> Lyapunov stability conditions (LMIs) are SDPs; the dual variables provide certificates of stability.</li>
+          </ul>
         </div>
       </section>
 
@@ -681,6 +835,18 @@
           <h3>P9.5 — Water-filling (Channel Capacity)</h3>
           <p>Problem: $\min -\sum \log(\alpha_i + x_i)$ subject to $x \ge 0, \sum x_i = 1$.
           <br>Derive the KKT conditions and show the solution is $x_i = \max(0, 1/\nu - \alpha_i)$. Interpret this as water-filling.</p>
+          <div class="example">
+          <h4>Application: Water-Filling (Channel Capacity)</h4>
+          <p>Problem: $\min -\sum \log(\alpha_i + x_i)$ subject to $x \ge 0, \sum x_i = 1$.
+          <br>Lagrangian: $L = -\sum \log(\alpha_i + x_i) - \sum \lambda_i x_i + \nu (\sum x_i - 1)$.
+          <br>Stationarity: $\frac{-1}{\alpha_i + x_i} - \lambda_i + \nu = 0 \implies \alpha_i + x_i = \frac{1}{\nu - \lambda_i}$.
+          <br>Complementary Slackness: $\lambda_i x_i = 0$.
+          <ul>
+            <li>If $x_i > 0$, then $\lambda_i = 0 \implies \alpha_i + x_i = 1/\nu$.</li>
+            <li>If $x_i = 0$, then $\alpha_i = 1/(\nu-\lambda_i)$. Since $\lambda_i \ge 0$, $\nu - \lambda_i \le \nu$, so $1/(\nu-\lambda_i) \ge 1/\nu$. Thus $\alpha_i \ge 1/\nu$.</li>
+          </ul>
+          Result: $x_i = \max(0, 1/\nu - \alpha_i)$. This is "water-filling" on the levels $\alpha_i$. We solve for $\nu$ such that $\sum x_i = 1$.</p>
+        </div>
         </div>
 
         <div class="problem">

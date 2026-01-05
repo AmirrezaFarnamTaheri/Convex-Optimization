@@ -2,10 +2,10 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>Primal vs Dual 1D Widget</title>
+  <title>Primal-Dual Gap 1D</title>
   <style>
     body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
-    .wrap{max-width:950px;margin:20px auto;padding:0 14px}
+    .wrap{max-width:800px;margin:20px auto;padding:0 14px}
     .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
     canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
     label{display:block;margin-top:10px;color:#aab3c8}
@@ -15,11 +15,13 @@
 </head>
 <body>
 <div class="wrap">
-  <h2>Primal vs Dual: Minimax Visualization</h2>
+  <h2>Primal-Dual Gap Visualization</h2>
   <div class="card">
-    <canvas id="c" width="860" height="420"></canvas>
-    <label>Move Dual Variable λ</label>
-    <input id="lam" type="range" min="0" max="4" step="0.01" value="0.0">
+    <canvas id="c" width="760" height="400"></canvas>
+    <label>Primal variable x</label>
+    <input id="x" type="range" min="-0.5" max="2.5" step="0.01" value="1.5">
+    <label>Dual variable λ</label>
+    <input id="lam" type="range" min="0" max="3" step="0.01" value="0.5">
     <div class="mono" id="info"></div>
   </div>
 </div>
@@ -28,79 +30,92 @@
 (() => {
   const c = document.getElementById("c");
   const ctx = c.getContext("2d");
-  const s = document.getElementById("lam");
+  const xS = document.getElementById("x");
+  const lamS = document.getElementById("lam");
   const info = document.getElementById("info");
 
-  // Problem: min x^2 s.t. x <= -1
-  // p* = 1 (at x=-1).
-  // L(x, lam) = x^2 + lam(x+1).
-  // g(lam) = min_x (x^2 + lam x + lam) => x* = -lam/2 => -lam^2/4 + lam.
-  // d* = max (-lam^2/4 + lam) => lam=2 => d*=1.
-
-  // Plot x range [-3, 2], y range [-2, 5]
-  const xMin=-3.5, xMax=1.5, yMin=-2, yMax=5;
-
-  function mapX(x){ return 60 + (x-xMin)*(c.width-90)/(xMax-xMin); }
-  function mapY(y){ return (c.height-60) - (y-yMin)*(c.height-100)/(yMax-yMin); }
+  // Problem: min x^2 s.t. x >= 1  (f0(x)=x^2, f1(x)=1-x<=0)
+  // p* = 1 at x*=1
+  // L(x,λ) = x^2 + λ(1-x)
+  // g(λ) = λ - λ^2/4
+  // d* = 1 at λ*=2
 
   function f0(x){ return x*x; }
-  function fi(x){ return x+1; } // constraint x+1 <= 0
-  function L(x,lam){ return x*x + lam*(x+1); }
+  function g(lam){ return lam - lam*lam/4; }
+  function L(x, lam){ return x*x + lam*(1-x); }
+
+  function mapX(x){ return 60 + (x - (-0.5))*(c.width-90)/(3.0); }
+  function mapY(y){ return (c.height-60) - (y - (-0.5))*(c.height-100)/(4.5); }
 
   function render(){
-    const lam = parseFloat(s.value);
+    const x = parseFloat(xS.value);
+    const lam = parseFloat(lamS.value);
+
     ctx.clearRect(0,0,c.width,c.height);
 
-    // Axes
-    ctx.strokeStyle="rgba(255,255,255,0.2)"; ctx.lineWidth=1;
+    // axes
+    ctx.strokeStyle="rgba(255,255,255,0.2)";
     ctx.beginPath();
-    ctx.moveTo(mapX(0),40); ctx.lineTo(mapX(0),c.height-50); // y-axis
-    ctx.moveTo(50, mapY(0)); ctx.lineTo(c.width-30, mapY(0)); // x-axis
+    ctx.moveTo(mapX(-0.5), mapY(0)); ctx.lineTo(mapX(2.5), mapY(0));
+    ctx.moveTo(mapX(0), mapY(-0.5)); ctx.lineTo(mapX(0), mapY(4.0));
     ctx.stroke();
 
-    // Draw f0(x) = x^2
-    ctx.beginPath(); ctx.strokeStyle="#4ade80"; ctx.lineWidth=3;
-    for(let i=0;i<600;i++){
-      let x = xMin + (xMax-xMin)*i/599;
-      let y = f0(x);
-      if(i==0) ctx.moveTo(mapX(x),mapY(y)); else ctx.lineTo(mapX(x),mapY(y));
+    // Constraint region x >= 1
+    ctx.fillStyle="rgba(60,255,60,0.05)";
+    ctx.fillRect(mapX(1), 0, mapX(2.5)-mapX(1), c.height);
+    ctx.strokeStyle="rgba(60,255,60,0.3)";
+    ctx.beginPath(); ctx.moveTo(mapX(1), 0); ctx.lineTo(mapX(1), c.height); ctx.stroke();
+
+    // f0(x)
+    ctx.strokeStyle="rgba(255,255,255,0.9)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let i=0; i<=300; i++){
+      let xv = -0.5 + 3.0*i/300;
+      let yv = f0(xv);
+      if(i==0) ctx.moveTo(mapX(xv), mapY(yv)); else ctx.lineTo(mapX(xv), mapY(yv));
     }
     ctx.stroke();
 
-    // Draw Lagrangian L(x, lam)
-    ctx.beginPath(); ctx.strokeStyle="#60a5fa"; ctx.lineWidth=2; ctx.setLineDash([5,5]);
-    let minL = 1e9, minLx = 0;
-    for(let i=0;i<600;i++){
-      let x = xMin + (xMax-xMin)*i/599;
-      let y = L(x,lam);
-      if(y<minL){ minL=y; minLx=x; }
-      if(i==0) ctx.moveTo(mapX(x),mapY(y)); else ctx.lineTo(mapX(x),mapY(y));
+    // current x point
+    let feasible = x >= 1;
+    ctx.fillStyle = feasible ? "#4ade80" : "#ef4444";
+    ctx.beginPath(); ctx.arc(mapX(x), mapY(f0(x)), 6, 0, 6.28); ctx.fill();
+
+    // dual bound line (horizontal) at g(lam)
+    let dualVal = g(lam);
+    ctx.strokeStyle="#60a5fa";
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    ctx.moveTo(mapX(-0.5), mapY(dualVal));
+    ctx.lineTo(mapX(2.5), mapY(dualVal));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Gap visualization
+    if(feasible){
+        ctx.strokeStyle="rgba(255,255,255,0.5)";
+        ctx.beginPath();
+        ctx.moveTo(mapX(x), mapY(f0(x)));
+        ctx.lineTo(mapX(x), mapY(dualVal));
+        ctx.stroke();
+
+        ctx.fillStyle="#fff";
+        ctx.font="12px monospace";
+        ctx.fillText(`Gap: ${(f0(x)-dualVal).toFixed(3)}`, mapX(x)+10, mapY((f0(x)+dualVal)/2));
     }
-    ctx.stroke(); ctx.setLineDash([]);
 
-    // Draw Feasible Region (x <= -1)
-    ctx.fillStyle="rgba(74, 222, 128, 0.1)";
-    ctx.fillRect(mapX(xMin), 40, mapX(-1)-mapX(xMin), c.height-90);
-
-    // Draw g(lam) point
-    ctx.fillStyle="#60a5fa"; ctx.beginPath();
-    ctx.arc(mapX(minLx), mapY(minL), 6, 0, Math.PI*2); ctx.fill();
-
-    // Draw Constraint Boundary x=-1
-    ctx.strokeStyle="rgba(255,100,100,0.5)"; ctx.beginPath();
-    ctx.moveTo(mapX(-1), 40); ctx.lineTo(mapX(-1), c.height-50); ctx.stroke();
-
-    info.innerHTML =
-      `<div class="mono">
-        Primal: min x² s.t. x ≤ -1. p* = 1.<br/>
-        λ = ${lam.toFixed(2)}<br/>
-        Lagrangian L(x,λ) = x² + λ(x+1) (Dashed Blue)<br/>
-        Dual Function g(λ) = minₓ L = ${minL.toFixed(3)} (at x=${minLx.toFixed(2)})<br/>
-        Weak Duality: g(λ) ≤ p* (${minL.toFixed(3)} ≤ 1.00) is <b>${minL<=1.001?"TRUE":"FALSE"}</b>
-       </div>`;
+    info.innerHTML = `
+      x = ${x.toFixed(2)} (${feasible ? "Feasible" : "Infeasible"})<br>
+      f₀(x) = ${f0(x).toFixed(3)}<br>
+      λ = ${lam.toFixed(2)}<br>
+      g(λ) = ${dualVal.toFixed(3)} (Lower Bound)<br>
+      p* = 1.000
+    `;
   }
 
-  s.oninput = render;
+  xS.oninput = render;
+  lamS.oninput = render;
   render();
 })();
 </script>

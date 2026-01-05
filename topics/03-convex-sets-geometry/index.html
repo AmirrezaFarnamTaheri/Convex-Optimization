@@ -338,13 +338,21 @@
           </ul>
         </div>
 
-        <h4>Supporting Hyperplanes</h4>
-        <p>A hyperplane $H = \{x \mid a^\top x = b\}$ supports a set $C$ at a point $x_0$ if:
-        <ol>
-            <li>$x_0$ lies on the hyperplane ($a^\top x_0 = b$).</li>
-            <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le b$ for all $x \in C$).</li>
-        </ol>
-        Supporting hyperplanes are the geometric realization of <b>subgradients</b> (which we will meet in Lecture 05). For a convex set, every boundary point has at least one supporting hyperplane.</p>
+        <h4>Phase 1.2 — Supporting Hyperplanes (The Skeleton)</h4>
+        <p>This is the deep geometric backbone of optimization.</p>
+        <div class="theorem-box">
+            <h4>Supporting Hyperplane Theorem</h4>
+            <p>A hyperplane $H = \{x \mid a^\top x = \alpha\}$ <b>supports</b> a set $C$ at a point $x_0 \in \partial C$ if:
+            <ol>
+                <li>$x_0$ lies on the hyperplane ($a^\top x_0 = \alpha$).</li>
+                <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le \alpha$ for all $x \in C$).</li>
+            </ol>
+            <b>Key Fact:</b> If $C$ is convex, then <i>every</i> point on its boundary has at least one supporting hyperplane.</p>
+        </div>
+        <p><b>Optimality Connection:</b> In optimization, we usually minimize $f_0(x)$ over a convex set $\mathcal{F}$.
+        <br>At the optimal point $x^\star$, the level set $\{x \mid f_0(x) \le p^\star\}$ and the feasible set $\mathcal{F}$ touch but do not overlap (their interiors are disjoint).
+        <br>Thus, there exists a <b>separating hyperplane</b> between them. This hyperplane supports both sets at $x^\star$.
+        <br><b>Internalize:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
 
         <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
         $$
@@ -352,10 +360,19 @@
         $$
         <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
 
-        <h4>Normal Cones (Geometry at the Boundary)</h4>
-        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions at $\mathbf{x}$. It is defined as:</p>
+        <h4>Phase 1.1 — Constraints as Geometry (Normal Cones)</h4>
+        <p>This phase explains <i>why</i> Lagrange multipliers exist.</p>
+        <p><b>Constraint Geometry:</b>
+        <ul>
+            <li>Inequality constraints $f_i(x) \le 0$ define curved regions (sublevel sets).</li>
+            <li>Equality constraints $h_j(x) = 0$ define manifolds (surfaces).</li>
+            <li><b>Active constraints</b> define the boundary where the optimum lives.</li>
+        </ul>
+        </p>
+        <p><b>Normal Cone Definition:</b> For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions that are blocked by the boundary.
         $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
-        <p>If $\mathbf{x}$ is in the interior of $C$, then $N_C(\mathbf{x}) = \{0\}$. If $\mathbf{x}$ is on the boundary, $N_C(\mathbf{x})$ contains the normal vectors to all supporting hyperplanes at $\mathbf{x}$. This geometric object is fundamental to optimality conditions: $\mathbf{x}^*$ minimizes a differentiable function $f$ over $C$ if and only if $-\nabla f(\mathbf{x}^*) \in N_C(\mathbf{x}^*)$.</p>
+        <b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$.
+        <br>This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
 
         <div class="proof-box">
           <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
@@ -1101,6 +1118,19 @@
         <h4>Supporting Hyperplanes</h4>
         <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
         <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
+
+        <div class="insight">
+            <h4>The Geometric Skeleton of Optimality</h4>
+            <p>Why do we care about supporting hyperplanes? Because <b>optimality is a geometric tangency condition</b>.
+            <br>Consider minimizing $f_0(x)$ over a convex set $C$.
+            <ul>
+                <li>The optimal point $x^*$ lies on the boundary of the feasible set (usually).</li>
+                <li>The level set of the objective $\{x \mid f_0(x) \le p^*\}$ touches the feasible set $C$ at $x^*$.</li>
+                <li>Because they touch but don't overlap (interior disjoint), there exists a <b>separating hyperplane</b> between them.</li>
+            </ul>
+            This hyperplane supports both the feasible set and the objective level set. Its normal vector gives the Lagrange multipliers.
+            <br><b>Mantra:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
+        </div>
 
 
     </section>

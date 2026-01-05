@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Separation of Two Convex Sets (Two Disks)</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:1000px;margin:20px auto;padding:0 14px}
+    .row{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Separation theorem (visual): disjoint convex sets ⇒ separating hyperplane</h2>
+  <div class="row">
+    <div class="card">
+      <canvas id="c" width="880" height="520"></canvas>
+      <div class="mono" id="info" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <div class="mono">
+        Two disks (convex sets). If they are disjoint, we build an explicit separating line
+        with normal u = (c2-c1)/||c2-c1||.
+      </div>
+
+      <label>Disk 1 center x</label><input id="x1" type="range" min="-2" max="2" step="0.01" value="-0.6">
+      <label>Disk 1 center y</label><input id="y1" type="range" min="-2" max="2" step="0.01" value="0.0">
+      <label>Disk 1 radius r1</label><input id="r1" type="range" min="0.1" max="1.6" step="0.01" value="0.7">
+
+      <label>Disk 2 center x</label><input id="x2" type="range" min="-2" max="2" step="0.01" value="1.0">
+      <label>Disk 2 center y</label><input id="y2" type="range" min="-2" max="2" step="0.01" value="0.3">
+      <label>Disk 2 radius r2</label><input id="r2" type="range" min="0.1" max="1.6" step="0.01" value="0.6">
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const c = document.getElementById("c");
+  const ctx = c.getContext("2d");
+  const info = document.getElementById("info");
+  const sliders = ["x1","y1","r1","x2","y2","r2"].map(id => document.getElementById(id));
+
+  const vMin=-2.4, vMax=2.4;
+  const mapX = x => 60 + (x-vMin)*(c.width-90)/(vMax-vMin);
+  const mapY = y => (c.height-60) - (y-vMin)*(c.height-100)/(vMax-vMin);
+
+  function drawCircle(center, r, stroke, fill){
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(mapX(center.x), mapY(center.y), r*(c.width-90)/(vMax-vMin), 0, Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function render(){
+    const [x1,y1,r1,x2,y2,r2] = sliders.map(s => parseFloat(s.value));
+    const c1={x:x1,y:y1}, c2={x:x2,y:y2};
+    const dx=c2.x-c1.x, dy=c2.y-c1.y;
+    const dist=Math.hypot(dx,dy);
+    const disjoint = dist > (r1+r2) + 1e-9;
+
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.strokeRect(50,40,c.width-80,c.height-90);
+
+    // axes
+    ctx.strokeStyle="rgba(255,255,255,0.20)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(vMin), mapY(0)); ctx.lineTo(mapX(vMax), mapY(0));
+    ctx.moveTo(mapX(0), mapY(vMin)); ctx.lineTo(mapX(0), mapY(vMax));
+    ctx.stroke();
+
+    drawCircle(c1, r1, "rgba(255,255,255,0.85)", "rgba(60,120,255,0.12)");
+    drawCircle(c2, r2, "rgba(255,255,255,0.85)", "rgba(255,220,140,0.10)");
+
+    // centers
+    ctx.fillStyle="rgba(170,220,255,1)";
+    ctx.beginPath(); ctx.arc(mapX(c1.x),mapY(c1.y),5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="rgba(255,220,140,1)";
+    ctx.beginPath(); ctx.arc(mapX(c2.x),mapY(c2.y),5,0,Math.PI*2); ctx.fill();
+
+    // connecting line
+    ctx.strokeStyle="rgba(255,255,255,0.30)";
+    ctx.setLineDash([6,6]);
+    ctx.beginPath();
+    ctx.moveTo(mapX(c1.x),mapY(c1.y));
+    ctx.lineTo(mapX(c2.x),mapY(c2.y));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    let msg = "";
+    msg += `dist(c1,c2)=${dist.toFixed(3)}, r1+r2=${(r1+r2).toFixed(3)}<br/>`;
+    msg += `Disjoint? <b>${disjoint ? "YES" : "NO (they overlap/touch)"}<\/b><br/>`;
+
+    if(disjoint){
+      const ux=dx/dist, uy=dy/dist;                // separating normal direction
+      const p1 = {x: c1.x + r1*ux, y: c1.y + r1*uy}; // closest point on disk1 to disk2
+      const p2 = {x: c2.x - r2*ux, y: c2.y - r2*uy}; // closest point on disk2 to disk1
+      const m  = {x: (p1.x+p2.x)/2, y: (p1.y+p2.y)/2}; // midpoint between closest points
+
+      // separating line: u·x = u·m, with disk1 on ≤ side and disk2 on ≥ side
+      const b = ux*m.x + uy*m.y;
+
+      // Draw separating line by intersecting with box
+      const box=vMax;
+      const hits=[];
+      function add(x,y){
+        if(isFinite(x)&&isFinite(y)&&x>=-box&&x<=box&&y>=-box&&y<=box) hits.push({x,y});
+      }
+      if(Math.abs(uy)>1e-9){
+        add( box, (b-ux* box)/uy);
+        add(-box, (b-ux*-box)/uy);
+      }
+      if(Math.abs(ux)>1e-9){
+        add((b-uy* box)/ux,  box);
+        add((b-uy*-box)/ux, -box);
+      }
+      if(hits.length>=2){
+        ctx.strokeStyle="rgba(170,220,255,0.95)";
+        ctx.lineWidth=2;
+        ctx.beginPath();
+        ctx.moveTo(mapX(hits[0].x),mapY(hits[0].y));
+        ctx.lineTo(mapX(hits[1].x),mapY(hits[1].y));
+        ctx.stroke();
+      }
+
+      // Draw closest points and midpoint
+      ctx.fillStyle="rgba(170,220,255,1)";
+      ctx.beginPath(); ctx.arc(mapX(p1.x),mapY(p1.y),5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="rgba(255,220,140,1)";
+      ctx.beginPath(); ctx.arc(mapX(p2.x),mapY(p2.y),5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="rgba(255,255,255,0.85)";
+      ctx.beginPath(); ctx.arc(mapX(m.x),mapY(m.y),4,0,Math.PI*2); ctx.fill();
+
+      // Certificate margins:
+      // max_{x in disk1} u·x = u·c1 + r1
+      // min_{x in disk2} u·x = u·c2 - r2
+      const left  = ux*c1.x + uy*c1.y + r1;
+      const right = ux*c2.x + uy*c2.y - r2;
+      const gap = right - left;
+
+      msg += `Separator: u=( ${(ux).toFixed(3)}, ${(uy).toFixed(3)} ),  b=u·m=${b.toFixed(3)}<br/>`;
+      msg += `Disk1 satisfies u·x ≤ ${b.toFixed(3)} (max is ${left.toFixed(3)})<br/>`;
+      msg += `Disk2 satisfies u·x ≥ ${b.toFixed(3)} (min is ${right.toFixed(3)})<br/>`;
+      msg += `Separation margin (right-left) = ${gap.toFixed(3)} (positive ⇒ strict separation)`;
+    } else {
+      msg += `No separating hyperplane exists when sets intersect (convex + intersect ⇒ cannot separate).`;
+    }
+
+    info.innerHTML = `<div class="mono">${msg}</div>`;
+  }
+
+  sliders.forEach(s => s.oninput = render);
+  render();
+})();
+</script>
+</body>
+</html>

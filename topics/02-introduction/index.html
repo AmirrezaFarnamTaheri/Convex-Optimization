@@ -206,6 +206,21 @@
         <br><b>Sets (0.2):</b> A set defines feasibility. An inequality $g(x) \le 0$ is really a membership test $x \in \{z \mid g(z) \le 0\}$. Feasibility is the <b>intersection</b> of sets defined by each constraint. If any set is empty, the problem is infeasible.
         <br><b>Functions (0.3):</b> A function $f: D \to Y$ is a rule assigning outputs to inputs. In optimization, domains are <b>laws</b>. If $f(x) = \log(x)$, the domain $x > 0$ is a hard constraint. Ignoring domains leads to undefined operations and invalid proofs.</p>
 
+        <div class="theorem-box">
+          <h4>Phase 0.1 — Optimization problem as an object</h4>
+          <p>You must be fluent with the components:</p>
+          <ul>
+            <li><b>Decision variable</b> $x \in \mathbb{R}^n$: The "knob" you turn. It is not an "unknown" to be solved for algebraically, but a choice to be made.</li>
+            <li><b>Objective</b> $f_0(x)$: The cost function mapping choices to values in $\mathbb{R} \cup \{+\infty\}$.</li>
+            <li><b>Constraints:</b> $f_i(x) \le 0$ (inequality) and $h_j(x) = 0$ (equality). These define the <b>feasible set</b> $\mathcal{F}$.</li>
+          </ul>
+          <p><b>Optimal Value Definition:</b> The primary mathematical object is the optimal value $p^\star$, defined as an <b>infimum</b>:</p>
+          $$ p^\star = \inf_{x \in \mathcal{F}} f_0(x) $$
+          <p>Why infimum? Because a minimum might not be attained (e.g., $\min e^{-x}$). The infimum always exists in the extended reals.
+          <br><b>Infeasibility:</b> If $\mathcal{F} = \emptyset$, then $p^\star = +\infty$ (infimum over empty set).
+          <br><b>Unboundedness:</b> If we can drive $f_0$ to $-\infty$ inside $\mathcal{F}$, then $p^\star = -\infty$.</p>
+        </div>
+
         <div class="insight">
           <h4>Why Inequality $\le 0$ and Equality $Ax=b$?</h4>
           <p>The standard form is not arbitrary; it is designed to ensure the <b>feasible set</b> is convex.</p>
@@ -267,11 +282,31 @@
         <br>Optimization uses affine maps because constraints like $Ax=b$ define <b>affine sets</b> (shifted subspaces), not just subspaces. Affine preimages preserve convexity, which is why linear inequality constraints define convex sets.</p>
 
         <h3>2.6 Optimal Value and Optimal Points</h3>
-        <ul>
-          <li><b>Optimal value:</b> $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$ (can be $-\infty$ if unbounded, $+\infty$ if infeasible).</li>
-          <li><b>Optimal point (solution):</b> $x^* \in \mathcal{F}$ is optimal if $f_0(x^*) = p^*$.</li>
-          <li><b>$\varepsilon$-suboptimal:</b> $\mathbf{x}$ is $\varepsilon$-suboptimal if $f_0(\mathbf{x}) \le p^* + \varepsilon$.</li>
-        </ul>
+        <p>The primary mathematical object in optimization is the <b>optimal value</b>. The optimizer (solution) is secondary and may not even exist.</p>
+
+        <h4>The Optimal Value $p^\star$ and Attainment</h4>
+        <p>We formally define the optimal value $p^\star$ as the <b>infimum</b> of the objective function over the feasible set:</p>
+        $$
+        p^\star = \inf \{f_0(x) \mid x \in \mathcal{F}\}
+        $$
+        <p><b>Minimum vs. Infimum:</b> A number $a$ is a minimum only if it is attained by some feasible $x$. An infimum is a generalized minimum that captures the "best possible" value even if it is only approachable (e.g., $f(x)=e^{-x}$ on $\mathbb{R}$).
+        <br><b>Extended Real-Valued Functions (Phase 0.2):</b> We treat $f_0$ as a function into $\mathbb{R} \cup \{+\infty\}$.
+        <br>We can rewrite the constrained problem $\min f_0(x)$ s.t. $x \in \mathcal{F}$ as an unconstrained problem using the <b>indicator function</b> $I_\mathcal{F}(x)$ (which is $0$ if $x \in \mathcal{F}$ and $+\infty$ otherwise):
+        $$ \min_{x \in \mathbb{R}^n} (f_0(x) + I_\mathcal{F}(x)) $$
+        This perspective unifies constraints and objectives into a single function, a concept essential for duality.</p>
+
+        <h4>Three Fundamental States</h4>
+        <p>Every optimization problem falls into one of three categories:</p>
+        <ol>
+            <li><b>Infeasible:</b> $\mathcal{F} = \emptyset \implies p^\star = +\infty$.</li>
+            <li><b>Unbounded Below:</b> Feasible, but $p^\star = -\infty$.</li>
+            <li><b>Feasible with Finite Optimum:</b> $p^\star \in \mathbb{R}$. This subdivides into:
+                <ul>
+                    <li><b>Attained:</b> Optimal set $X^\star \neq \emptyset$.</li>
+                    <li><b>Not Attained:</b> $X^\star = \emptyset$ (e.g., $\min 1/x$ for $x \ge 1$).</li>
+                </ul>
+            </li>
+        </ol>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Visualizer: Convex Hull Explorer</h3>

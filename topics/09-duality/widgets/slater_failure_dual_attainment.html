@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Slater failure and dual attainment (1D)</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:1000px;margin:20px auto;padding:0 14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Slater vs dual attainment: min x s.t. x² ≤ ε</h2>
+
+  <div class="card">
+    <div class="mono">
+      Primal: minimize x subject to x² ≤ ε (convex).<br/>
+      If ε>0: strict feasibility exists (Slater holds). If ε=0: only x=0 feasible (Slater fails).<br/><br/>
+      L(x,λ)= x + λ(x²−ε), λ≥0.<br/>
+      Dual g(λ)=inf_x L = -λε - 1/(4λ) for λ>0. (concave in λ)<br/>
+      For ε>0, maximizer is λ* = 1/(2√ε) (finite). For ε=0, λ*→∞ (no attainment).
+    </div>
+
+    <label>ε (toggle Slater by pushing ε→0)</label>
+    <input id="eps" type="range" min="0" max="1" step="0.001" value="0.25">
+
+    <label>λ (dual variable)</label>
+    <input id="lam" type="range" min="0.02" max="20" step="0.01" value="1.0">
+
+    <div class="grid" style="margin-top:12px">
+      <div class="card">
+        <canvas id="cp" width="820" height="340"></canvas>
+        <div class="mono" id="pinfo"></div>
+      </div>
+      <div class="card">
+        <canvas id="cd" width="820" height="340"></canvas>
+        <div class="mono" id="dinfo"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const epsS=document.getElementById("eps");
+  const lamS=document.getElementById("lam");
+  const cp=document.getElementById("cp"), cd=document.getElementById("cd");
+  const ctxP=cp.getContext("2d"), ctxD=cd.getContext("2d");
+  const pinfo=document.getElementById("pinfo");
+  const dinfo=document.getElementById("dinfo");
+
+  function g(lam, eps){
+    // lam>0
+    return -lam*eps - 1/(4*lam);
+  }
+
+  function render(){
+    const eps=parseFloat(epsS.value);
+    const lam=parseFloat(lamS.value);
+
+    const slater = eps>0;
+    const xStar = -Math.sqrt(eps);        // primal min x over [-sqrt eps, sqrt eps]
+    const pStar = xStar;                 // objective is x
+
+    // dual optimum
+    let lamStar = Infinity;
+    let dStar = 0;
+    if(eps>0){
+      lamStar = 1/(2*Math.sqrt(eps));
+      dStar = g(lamStar, eps);
+    } else {
+      // eps=0 => g(lam)= -1/(4lam), max is 0 as lam→∞ (no attainment)
+      dStar = 0;
+    }
+
+    // ----- Primal plot: feasible interval + objective
+    ctxP.clearRect(0,0,cp.width,cp.height);
+    ctxP.strokeStyle="rgba(255,255,255,0.18)";
+    ctxP.strokeRect(50,40,cp.width-80,cp.height-90);
+
+    const xMin=-1.2, xMax=1.2;
+    const mapXP = x => 60 + (x-xMin)*(cp.width-90)/(xMax-xMin);
+    const mapYP = y => (cp.height-60) - (y-(-1.2))*(cp.height-100)/(1.4-(-1.2)); // y is value
+    // feasible interval
+    const a=-Math.sqrt(eps), b=Math.sqrt(eps);
+    ctxP.fillStyle="rgba(60,120,255,0.10)";
+    ctxP.fillRect(mapXP(a), 40, mapXP(b)-mapXP(a), cp.height-90);
+
+    // objective line y=x
+    ctxP.strokeStyle="rgba(255,255,255,0.70)";
+    ctxP.setLineDash([6,6]);
+    ctxP.beginPath();
+    ctxP.moveTo(mapXP(xMin), mapYP(xMin));
+    ctxP.lineTo(mapXP(xMax), mapYP(xMax));
+    ctxP.stroke();
+    ctxP.setLineDash([]);
+
+    // mark x*
+    ctxP.fillStyle="rgba(255,220,140,0.95)";
+    ctxP.beginPath();
+    ctxP.arc(mapXP(xStar), mapYP(pStar), 6, 0, Math.PI*2);
+    ctxP.fill();
+
+    pinfo.innerHTML =
+      `<div class="mono">
+        ε=${eps.toFixed(3)}  ⇒ feasible set [-√ε, √ε]=[${a.toFixed(3)}, ${b.toFixed(3)}]<br/>
+        Slater (∃x with x²<ε)? <b>${slater ? "YES" : "NO"}<\/b><br/>
+        primal optimum: x*=-√ε=${xStar.toFixed(4)},  p*=x*=${pStar.toFixed(4)}
+      </div>`;
+
+    // ----- Dual plot: g(λ)
+    ctxD.clearRect(0,0,cd.width,cd.height);
+    ctxD.strokeStyle="rgba(255,255,255,0.18)";
+    ctxD.strokeRect(50,40,cd.width-80,cd.height-90);
+
+    const lamMin=0.02, lamMax=20.0;
+    const gMin=-6.0, gMax=0.5;
+    const mapXD = L => 60 + (L-lamMin)*(cd.width-90)/(lamMax-lamMin);
+    const mapYD = v => (cd.height-60) - (v-gMin)*(cd.height-100)/(gMax-gMin);
+
+    // curve
+    ctxD.strokeStyle="rgba(255,255,255,0.85)";
+    ctxD.lineWidth=2;
+    ctxD.beginPath();
+    for(let i=0;i<800;i++){
+      const L = lamMin + (lamMax-lamMin)*i/799;
+      const val = g(L, eps);
+      const px=mapXD(L), py=mapYD(val);
+      if(i===0) ctxD.moveTo(px,py); else ctxD.lineTo(px,py);
+    }
+    ctxD.stroke();
+
+    // mark current λ
+    ctxD.fillStyle="rgba(170,220,255,1)";
+    ctxD.beginPath();
+    ctxD.arc(mapXD(lam), mapYD(g(lam,eps)), 6, 0, Math.PI*2);
+    ctxD.fill();
+
+    // show λ* if finite
+    if(isFinite(lamStar) && lamStar>=lamMin && lamStar<=lamMax){
+      ctxD.strokeStyle="rgba(255,220,140,0.75)";
+      ctxD.setLineDash([6,6]);
+      ctxD.beginPath();
+      ctxD.moveTo(mapXD(lamStar), 40);
+      ctxD.lineTo(mapXD(lamStar), cd.height-50);
+      ctxD.stroke();
+      ctxD.setLineDash([]);
+    }
+
+    // show p* horizontal
+    ctxD.strokeStyle="rgba(255,255,255,0.35)";
+    ctxD.setLineDash([6,6]);
+    ctxD.beginPath();
+    ctxD.moveTo(60, mapYD(pStar));
+    ctxD.lineTo(cd.width-30, mapYD(pStar));
+    ctxD.stroke();
+    ctxD.setLineDash([]);
+
+    const cur = g(lam, eps);
+    dinfo.innerHTML =
+      `<div class="mono">
+        g(λ)= -λε - 1/(4λ)  (λ>0)<br/>
+        current λ=${lam.toFixed(2)} ⇒ g(λ)=${cur.toFixed(5)}<br/>
+        dual optimum d*=${dStar.toFixed(5)}<br/>
+        λ*=${isFinite(lamStar) ? lamStar.toFixed(4) : "∞ (not attained)"}<br/>
+        Note: at ε=0, strong duality still gives p*=d*=0, but the max is only approached as λ→∞.
+      </div>`;
+  }
+
+  epsS.oninput=render;
+  lamS.oninput=render;
+  render();
+})();
+</script>
+</body>
+</html>

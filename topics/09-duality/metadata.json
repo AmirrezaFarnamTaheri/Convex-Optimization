@@ -1,0 +1,21 @@
+{
+  "title": "09. Duality",
+  "description": "Lagrange dual function, weak and strong duality, Slater's condition, KKT conditions, sensitivity analysis, and canonical dual problems.",
+  "difficulty": "Advanced",
+  "duration": "90 min",
+  "keywords": ["duality", "lagrangian", "KKT", "slater", "sensitivity", "shadow price", "farkas"],
+  "prerequisites": ["04-convex-sets-cones", "06-convex-functions-advanced"],
+  "exercises": ["P9.1", "P9.2", "P9.3", "P9.4", "P9.5", "P9.6", "P9.7", "P9.8", "P9.9", "P9.10", "P9.11", "P9.12", "P9.13", "P9.14"],
+  "interactive_elements": [
+    "widgets/conjugate_function.html",
+    "widgets/primal_dual_1d.html",
+    "widgets/slater_failure_dual_attainment.html",
+    "widgets/separation_two_disks.html",
+    "widgets/kkt_vector_balance.html",
+    "widgets/value_function_support.html",
+    "widgets/equality_dual_projection_2d.html",
+    "widgets/logsumexp_conjugate_widget.html",
+    "widgets/soc_dual_cone.html",
+    "widgets/psd_cone_2x2.html"
+  ]
+}

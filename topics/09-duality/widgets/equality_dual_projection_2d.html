@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Equality constraint dual (projection onto a line)</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:1000px;margin:20px auto;padding:0 14px}
+    .row{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    button{margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+           background:#1a2444;color:#e9eefc;cursor:pointer}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Equality constraint dual: projection min ½||x−a||² s.t. 1ᵀx=1</h2>
+  <div class="row">
+    <div class="card">
+      <canvas id="c" width="880" height="520"></canvas>
+      <div class="mono" id="info" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <div class="mono">
+        Primal: minimize ½||x-a||² subject to x1+x2=1.<br/>
+        L(x,ν)=½||x-a||² + ν(x1+x2-1).<br/>
+        Minimizing over x gives x(ν)=a-ν·(1,1).<br/>
+        Dual: g(ν)= -½·2·ν² + ν( (1ᵀa)-1 ) = -ν² + ν( (a1+a2)-1 ).
+      </div>
+      <label>a1</label><input id="a1" type="range" min="-1.5" max="2.0" step="0.01" value="1.40">
+      <label>a2</label><input id="a2" type="range" min="-1.5" max="2.0" step="0.01" value="-0.10">
+      <label>ν</label><input id="nu" type="range" min="-2.5" max="2.5" step="0.01" value="0.00">
+      <button id="setOpt">Set ν = ν*</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const c=document.getElementById("c");
+  const ctx=c.getContext("2d");
+  const a1S=document.getElementById("a1");
+  const a2S=document.getElementById("a2");
+  const nuS=document.getElementById("nu");
+  const info=document.getElementById("info");
+  const btn=document.getElementById("setOpt");
+
+  const vMin=-1.8, vMax=2.2;
+  const mapX = x => 60 + (x-vMin)*(c.width-90)/(vMax-vMin);
+  const mapY = y => (c.height-60) - (y-vMin)*(c.height-100)/(vMax-vMin);
+
+  function g(nu, a1, a2){
+    const s = (a1+a2)-1;
+    return -nu*nu + nu*s;
+  }
+
+  function render(){
+    const a1=parseFloat(a1S.value), a2=parseFloat(a2S.value);
+    const nu=parseFloat(nuS.value);
+    const s=(a1+a2)-1;
+
+    // primal minimizer for given nu: x(nu)=a - nu*(1,1)
+    const xnu={x:a1-nu, y:a2-nu};
+
+    // primal optimum corresponds to choosing nu so that x1+x2=1:
+    // (a1-nu)+(a2-nu)=1 -> nu* = (a1+a2-1)/2
+    const nuStar = s/2;
+    const xStar={x:a1-nuStar, y:a2-nuStar};
+
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.strokeRect(50,40,c.width-80,c.height-90);
+
+    // axes
+    ctx.strokeStyle="rgba(255,255,255,0.20)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(vMin),mapY(0)); ctx.lineTo(mapX(vMax),mapY(0));
+    ctx.moveTo(mapX(0),mapY(vMin)); ctx.lineTo(mapX(0),mapY(vMax));
+    ctx.stroke();
+
+    // constraint line x1+x2=1  (y = 1 - x)
+    ctx.strokeStyle="rgba(255,255,255,0.65)";
+    ctx.setLineDash([6,6]);
+    ctx.beginPath();
+    ctx.moveTo(mapX(vMin), mapY(1 - vMin));
+    ctx.lineTo(mapX(vMax), mapY(1 - vMax));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // draw a and the two points
+    ctx.fillStyle="rgba(255,220,140,0.95)";
+    ctx.beginPath(); ctx.arc(mapX(a1),mapY(a2),6,0,Math.PI*2); ctx.fill();
+    ctx.fillText("a", mapX(a1)+10, mapY(a2)-8);
+
+    ctx.fillStyle="rgba(170,220,255,1)";
+    ctx.beginPath(); ctx.arc(mapX(xnu.x),mapY(xnu.y),6,0,Math.PI*2); ctx.fill();
+    ctx.fillText("x(ν)", mapX(xnu.x)+10, mapY(xnu.y)-8);
+
+    ctx.fillStyle="rgba(255,255,255,0.90)";
+    ctx.beginPath(); ctx.arc(mapX(xStar.x),mapY(xStar.y),5,0,Math.PI*2); ctx.fill();
+    ctx.fillText("x*", mapX(xStar.x)+10, mapY(xStar.y)-8);
+
+    // draw segment a -> x(nu) to show movement along normal (1,1)
+    ctx.strokeStyle="rgba(170,220,255,0.60)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(a1),mapY(a2));
+    ctx.lineTo(mapX(xnu.x),mapY(xnu.y));
+    ctx.stroke();
+
+    const primalVal = 0.5*((xStar.x-a1)**2 + (xStar.y-a2)**2);
+    const dualVal = g(nuStar,a1,a2); // equals -||nu*1||^2/2 + nu*(1^Ta-1); here g concave
+    const curDual = g(nu,a1,a2);
+
+    info.innerHTML =
+      `<div class="mono">
+        a=(${a1.toFixed(2)}, ${a2.toFixed(2)})<br/>
+        constraint: x1+x2=1 (equality ⇒ ν is unrestricted)<br/>
+        ν* = (a1+a2-1)/2 = ${nuStar.toFixed(4)}<br/>
+        x* = a - ν*(1,1) = (${xStar.x.toFixed(4)}, ${xStar.y.toFixed(4)})<br/>
+        primal optimum p* = ½||x*-a||² = ${primalVal.toFixed(6)}<br/>
+        dual g(ν) = -ν² + ν((a1+a2)-1); current g(ν)=${curDual.toFixed(6)}
+      </div>`;
+  }
+
+  btn.onclick = () => {
+    const a1=parseFloat(a1S.value), a2=parseFloat(a2S.value);
+    const nuStar=((a1+a2)-1)/2;
+    nuS.value = Math.max(-2.5, Math.min(2.5, nuStar)).toFixed(3);
+    render();
+  };
+
+  [a1S,a2S,nuS].forEach(s => s.oninput=render);
+  render();
+})();
+</script>
+</body>
+</html>

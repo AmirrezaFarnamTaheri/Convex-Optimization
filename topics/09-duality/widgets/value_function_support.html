@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Value Function + Supporting Line</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:950px;margin:20px auto;padding:0 14px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Shadow price as a supporting line of p(u)</h2>
+  <div class="card">
+    <canvas id="c" width="860" height="420"></canvas>
+    <label>λ (support line slope is -λ)</label>
+    <input id="lam" type="range" min="0" max="4" step="0.01" value="2.00">
+    <div class="mono" id="info"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Problem family:
+  // p(u) = min (x-2)^2  s.t. x <= 1+u
+  // => p(u) = (1-u)^2 for u<=1, else 0
+  // Supporting line at u0=0: ℓ(u) = p(0) - λ u = 1 - λ u
+  const c = document.getElementById("c");
+  const ctx = c.getContext("2d");
+  const s = document.getElementById("lam");
+  const info = document.getElementById("info");
+
+  const uMin=-1.0, uMax=2.0;
+  const pMin=-1.0, pMax=3.2;
+
+  function p(u){ return (u<=1) ? (1-u)*(1-u) : 0; }
+  function ell(u,lam){ return 1 - lam*u; }
+
+  function mapX(u){ return 60 + (u-uMin)*(c.width-90)/(uMax-uMin); }
+  function mapY(v){ return (c.height-60) - (v-pMin)*(c.height-100)/(pMax-pMin); }
+
+  function render(){
+    const lam = parseFloat(s.value);
+    ctx.clearRect(0,0,c.width,c.height);
+
+    // frame
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.strokeRect(50,40,c.width-80,c.height-90);
+
+    // axes-ish ticks
+    ctx.fillStyle="rgba(255,255,255,0.50)";
+    ctx.font="12px ui-monospace,Menlo,Consolas,monospace";
+    for(const u of [-1,0,1,2]) ctx.fillText(u.toFixed(0), mapX(u)-6, c.height-30);
+    for(const v of [0,1,2,3]) ctx.fillText(v.toFixed(0), 18, mapY(v)+4);
+
+    // p(u)
+    ctx.strokeStyle="rgba(255,255,255,0.85)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let i=0;i<700;i++){
+      const u = uMin + (uMax-uMin)*i/699;
+      const y = p(u);
+      const px=mapX(u), py=mapY(y);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+
+    // supporting line
+    ctx.strokeStyle="rgba(170,220,255,0.95)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let i=0;i<700;i++){
+      const u = uMin + (uMax-uMin)*i/699;
+      const y = ell(u,lam);
+      const px=mapX(u), py=mapY(y);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+
+    // mark u0=0
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle="rgba(255,255,255,0.5)";
+    ctx.beginPath();
+    ctx.moveTo(mapX(0),40); ctx.lineTo(mapX(0),c.height-50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // check if line is a global lower bound: ell(u) <= p(u) for all u in range
+    let ok=true, worst=0, worstU=0;
+    for(let i=0;i<700;i++){
+      const u = uMin + (uMax-uMin)*i/699;
+      const diff = ell(u,lam) - p(u);
+      if(diff > worst){ worst=diff; worstU=u; }
+      if(diff > 1e-3) ok=false;
+    }
+
+    info.innerHTML =
+      `<div class="mono">
+        λ = ${lam.toFixed(2)} ⇒ line ℓ(u)=1-λu has slope ${(-lam).toFixed(2)}<br/>
+        Is ℓ(u) ≤ p(u) over u∈[${uMin},${uMax}]? <b>${ok ? "YES" : "NO"}</b><br/>
+        Worst violation (ℓ-p) ≈ ${worst.toFixed(3)} at u≈${worstU.toFixed(2)}<br/>
+        True supporting slope at u=0 is -λ* = -2.
+      </div>`;
+  }
+
+  s.oninput = render;
+  render();
+})();
+</script>
+</body>
+</html>

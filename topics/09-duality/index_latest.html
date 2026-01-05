@@ -474,78 +474,20 @@
         <div class="problem">
           <h3>Problem 1: Least Squares (Residual Form)</h3>
           <p><b>Primal:</b> $\min \frac{1}{2} \|Ax - b\|_2^2$. Rewrite as $\min \frac{1}{2}\|y\|_2^2$ s.t. $y = Ax - b$.
-          <br><b>Lagrangian:</b> $L(y, \nu) = \frac{1}{2}\|y\|^2 + \nu^\top (Ax - b - y)$.
           <br><b>Dual:</b> $\max -\frac{1}{2}\|\nu\|^2 - b^\top \nu$ s.t. $A^\top \nu = 0$.</p>
         </div>
 
         <div class="problem">
             <h3>Problem 2: Linear Program</h3>
             <p><b>Primal:</b> $\min c^\top x$ s.t. $Ax \le b$.
-            <br><b>Lagrangian:</b> $L(x, \lambda) = c^\top x + \lambda^\top (Ax - b) = (c + A^\top \lambda)^\top x - b^\top \lambda$.
             <br><b>Dual:</b> $\max -b^\top \lambda$ s.t. $A^\top \lambda + c = 0, \lambda \ge 0$.</p>
         </div>
 
         <div class="problem">
-            <h3>Problem 3: Quadratic Program (General)</h3>
-            <p><b>Primal:</b> $\min \frac{1}{2} x^\top P x + q^\top x$ s.t. $Ax \le b$. ($P \succeq 0$).
-            <br><b>Lagrangian:</b> $L(x, \lambda) = \frac{1}{2} x^\top P x + (q + A^\top \lambda)^\top x - b^\top \lambda$.
-            <br><b>Dual:</b> $\max -\frac{1}{2} (q + A^\top \lambda)^\top P^\dagger (q + A^\top \lambda) - b^\top \lambda$ s.t. $\lambda \ge 0$. (Constraint $(q+A^\top \lambda) \in \mathcal{R}(P)$ implied).</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 4: Equality Constrained Norm Minimization</h3>
-            <p><b>Primal:</b> $\min \|x\|$ s.t. $Ax=b$.
-            <br><b>Lagrangian:</b> $L(x, \nu) = \|x\| + \nu^\top (b - Ax) = \|x\| - (A^\top \nu)^\top x + b^\top \nu$.
-            <br><b>Minimizing $x$:</b> $\inf_x (\|x\| - y^\top x) = 0$ if $\|y\|_* \le 1$, else $-\infty$.
-            <br><b>Dual:</b> $\max b^\top \nu$ s.t. $\|A^\top \nu\|_* \le 1$. (Where $\|\cdot\|_*$ is the dual norm).</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 5: Entropy Maximization</h3>
-            <p><b>Primal:</b> $\min \sum x_i \log x_i$ s.t. $Ax=b, \mathbf{1}^\top x = 1$.
-            <br><b>Dual:</b> The conjugate of entropy is $\log \sum e^{y_i}$. The dual is a Log-Sum-Exp problem.
-            <br><b>Result:</b> $\max -b^\top \nu - \log(\sum_{i=1}^n e^{-a_i^\top \nu})$.</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 6: Minimum Volume Ellipsoid (Log-Det)</h3>
-            <p><b>Primal:</b> $\min -\log \det X$ s.t. $\mathrm{tr}(A_i X) \le b_i$.
-            <br><b>Dual:</b> The conjugate of $-\log \det X$ is $-\log \det (-Y) - n$.
-            <br><b>Result:</b> $\max \log \det (\sum \lambda_i A_i) - \sum \lambda_i b_i + n$ s.t. $\lambda \ge 0$.</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 7: SOCP (Second-Order Cone)</h3>
-            <p><b>Primal:</b> $\min f^\top x$ s.t. $\|A_i x + b_i\|_2 \le c_i^\top x + d_i$.
-            <br><b>Dual:</b> Involves dual variables $(u_i, v_i)$ in the second-order cone.
-            <br><b>Result:</b> A standard SOCP dual form (maximization over dual cones).</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 8: SDP (Semidefinite Program)</h3>
-            <p><b>Primal:</b> $\min \mathrm{tr}(CX)$ s.t. $\mathrm{tr}(A_i X) = b_i, X \succeq 0$.
-            <br><b>Lagrangian:</b> $L(X, y, S) = \mathrm{tr}(CX) + \sum y_i (b_i - \mathrm{tr}(A_i X)) - \mathrm{tr}(SX)$.
-            <br><b>Dual:</b> $\max b^\top y$ s.t. $\sum y_i A_i + S = C, S \succeq 0$.</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 9: Matrix Norm Minimization (Spectral Norm)</h3>
-            <p><b>Primal:</b> $\min \|X\|_2$ (spectral norm) s.t. $\mathcal{A}(X)=b$.
-            <br><b>Dual:</b> $\max b^\top y$ s.t. $\|\mathcal{A}^*(y)\|_* \le 1$, where the dual of the spectral norm is the Nuclear Norm (sum of singular values).</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 10: LASSO</h3>
+            <h3>Problem 3: LASSO</h3>
             <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1$.
             <br><b>Dual:</b> $\max -b^\top \nu - \frac{1}{2}\|\nu\|^2$ s.t. $\|A^\top \nu\|_\infty \le \lambda$.
             <br>The dual constraint corresponds to the dual norm of the L1 penalty.</p>
-        </div>
-
-        <div class="problem">
-            <h3>Problem 11: SVM (Hinge Loss)</h3>
-            <p><b>Primal:</b> $\min \frac{1}{2}\|w\|^2 + C \sum \max(0, 1 - y_i(w^\top x_i + b))$.
-            <br><b>Dual:</b> $\max \sum \alpha_i - \frac{1}{2} \sum \sum \alpha_i \alpha_j y_i y_j (x_i^\top x_j)$ s.t. $0 \le \alpha_i \le C, \sum \alpha_i y_i = 0$.
-            <br>This is the famous kernelizable dual.</p>
         </div>
       </section>
 
@@ -558,54 +500,6 @@
         <div class="problem">
             <h3>P9.2 — Water-filling</h3>
             <p>Derive the KKT conditions for $\min -\sum \log(\alpha_i + x_i)$ s.t. $x \ge 0, \mathbf{1}^\top x = 1$. Interpret the Lagrange multiplier $\nu$ as a water level.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.3 — Minimum Volume Ellipsoid</h3>
-            <p>Derive the dual of the minimum volume ellipsoid problem covering a set of points $\{x_1, \dots, x_m\}$. Show that the dual variables correspond to weights on the points.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.4 — Matrix Games</h3>
-            <p>Consider a zero-sum matrix game with payoff matrix $A$. Formulate the optimal strategy problems for both players as LPs. Show that the strong duality theorem implies the Minimax Theorem.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.5 — Trust Region Subproblem</h3>
-            <p>The problem $\min x^\top Q x + q^\top x$ s.t. $\|x\|^2 \le 1$ is non-convex if $Q$ is not PSD. However, show that strong duality still holds (S-procedure). Derive the dual and show it is an SDP (or SOCP).</p>
-        </div>
-        <div class="problem">
-            <h3>P9.6 — Analytic Center</h3>
-            <p>Derive the dual of the analytic center problem: $\min -\sum \log(b_i - a_i^\top x)$. Show that the Newton step for the primal is related to the least-squares solution of a dual system.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.7 — Boolean LP Relaxation</h3>
-            <p>To minimize $c^\top x$ s.t. $Ax \le b, x_i \in \{0, 1\}$, we relax to $0 \le x_i \le 1$. Construct the dual of this relaxation. What does the weak duality gap tell you about the integer solution?</p>
-        </div>
-        <div class="problem">
-            <h3>P9.8 — KKT for Non-Smooth Problems</h3>
-            <p>Formulate the KKT conditions for $\min \|x\|_1$ s.t. $Ax=b$ using subdifferentials. Show that the stationarity condition $\mathbf{0} \in \partial \|x\|_1 + A^\top \nu$ matches the dual constraints.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.9 — The "Gap Cookbook"</h3>
-            <p>Given a primal feasible $x$ and a dual feasible $\lambda$, the duality gap is $f_0(x) - g(\lambda)$. Write a small program (in Python or Matlab) that solves a QP iteratively and plots the gap vs iteration count.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.10 — Robust LP</h3>
-            <p>Consider $\min c^\top x$ s.t. $a_i^\top x \le b_i$ for all $a_i \in \mathcal{E}_i$ (ellipsoid uncertainty). Formulate this as an SOCP using duality.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.11 — Channel Capacity</h3>
-            <p>Derive the dual for the channel capacity problem $C = \max_{p} I(X; Y)$ where $I$ is mutual information. Show that the KKT conditions imply the "water-filling" in the spectral domain.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.12 — Utility Maximization</h3>
-            <p>In network flow control, users maximize utility $U(x_i)$ subject to capacity constraints $Rx \le C$. Show that the dual variables on the links can be interpreted as "congestion prices".</p>
-        </div>
-        <div class="problem">
-            <h3>P9.13 — Phase Retrieval</h3>
-            <p>Formulate the Phase Retrieval problem as a rank-minimization problem. Relax it to a nuclear norm minimization (PhaseLift). Write the dual SDP.</p>
-        </div>
-        <div class="problem">
-            <h3>P9.14 — Geometric Programming</h3>
-            <p>Convert a geometric program (posynomial constraints) to convex form using $y_i = \log x_i$. Derive the dual and show it is linearly constrained entropy maximization.</p>
         </div>
       </section>
 

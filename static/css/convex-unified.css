@@ -164,6 +164,43 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Media Resets - Fixes for broken UI/UX */
+img, video, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Removes bottom space for inline elements */
+}
+
+iframe {
+  max-width: 100%;
+  display: block;
+}
+
+/* SVGs need constraint but should preserve inline behavior for icons */
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Specific fix for iframes to avoid height collapse if width changes */
+iframe {
+  border: 0;
+}
+
+/* Figure styling */
+figure {
+  margin: var(--space-6) 0;
+  text-align: center;
+  width: 100%;
+}
+
+figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
 body {
   background: var(--bg-body);
   color: var(--text-primary);

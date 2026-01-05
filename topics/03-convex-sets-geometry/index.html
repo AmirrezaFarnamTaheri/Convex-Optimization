@@ -1102,6 +1102,19 @@
         <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
         <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
 
+        <div class="insight">
+            <h4>The Geometric Skeleton of Optimality</h4>
+            <p>Why do we care about supporting hyperplanes? Because <b>optimality is a geometric tangency condition</b>.
+            <br>Consider minimizing $f_0(x)$ over a convex set $C$.
+            <ul>
+                <li>The optimal point $x^*$ lies on the boundary of the feasible set (usually).</li>
+                <li>The level set of the objective $\{x \mid f_0(x) \le p^*\}$ touches the feasible set $C$ at $x^*$.</li>
+                <li>Because they touch but don't overlap (interior disjoint), there exists a <b>separating hyperplane</b> between them.</li>
+            </ul>
+            This hyperplane supports both the feasible set and the objective level set. Its normal vector gives the Lagrange multipliers.
+            <br><b>Mantra:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
+        </div>
+
 
     </section>
 <section class="section-card" id="section-5">

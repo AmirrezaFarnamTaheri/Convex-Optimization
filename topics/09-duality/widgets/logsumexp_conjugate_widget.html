@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>log-sum-exp conjugate / entropy dual</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
+    .wrap{max-width:980px;margin:20px auto;padding:0 14px}
+    .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+    label{display:block;margin-top:10px;color:#aab3c8}
+    input{width:100%}
+    button{margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+           background:#1a2444;color:#e9eefc;cursor:pointer}
+    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Fenchel duality example: f(x)=log(∑exp xᵢ) and f*(y)=∑ yᵢ log yᵢ on the simplex</h2>
+
+  <div class="card">
+    <div class="mono">
+      x∈R³, y∈Δ = {y≥0, ∑y=1}. Fenchel–Young: f(x)+f*(y) ≥ y·x, equality when y=softmax(x).
+    </div>
+
+    <label>x1</label><input id="x1" type="range" min="-3" max="3" step="0.01" value="0.80">
+    <label>x2</label><input id="x2" type="range" min="-3" max="3" step="0.01" value="0.10">
+    <label>x3</label><input id="x3" type="range" min="-3" max="3" step="0.01" value="-0.30">
+
+    <label>y1 (simplex coordinate)</label><input id="y1" type="range" min="0" max="1" step="0.001" value="0.50">
+    <label>y2 (simplex coordinate)</label><input id="y2" type="range" min="0" max="1" step="0.001" value="0.30">
+
+    <button id="setSoftmax">Set y = softmax(x)</button>
+
+    <div class="mono" id="out" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const ids=["x1","x2","x3","y1","y2"];
+  const el=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
+  const out=document.getElementById("out");
+  const btn=document.getElementById("setSoftmax");
+
+  function logSumExp(x){
+    const m=Math.max(...x);
+    const s = x.reduce((acc,xi)=>acc+Math.exp(xi-m),0);
+    return m + Math.log(s);
+  }
+
+  function softmax(x){
+    const m=Math.max(...x);
+    const ex=x.map(xi=>Math.exp(xi-m));
+    const s=ex.reduce((a,b)=>a+b,0);
+    return ex.map(e=>e/s);
+  }
+
+  function entropyTerm(y){
+    // sum y_i log y_i, with 0 log 0 := 0
+    let s=0;
+    for(const yi of y){
+      if(yi>0) s += yi*Math.log(yi);
+    }
+    return s;
+  }
+
+  function render(){
+    const x=[parseFloat(el.x1.value), parseFloat(el.x2.value), parseFloat(el.x3.value)];
+    const y1=parseFloat(el.y1.value), y2=parseFloat(el.y2.value);
+    const y3=1-y1-y2;
+    const y=[y1,y2,y3];
+
+    const feasible = (y1>=-1e-12 && y2>=-1e-12 && y3>=-1e-12);
+    const f = logSumExp(x);
+
+    let fstar = Infinity;
+    if(feasible){
+      fstar = entropyTerm(y); // this is the conjugate value on simplex
+    }
+
+    const dot = x[0]*y[0] + x[1]*y[1] + x[2]*y[2];
+    const gap = (isFinite(fstar) ? (f + fstar - dot) : Infinity);
+
+    const sm = softmax(x);
+
+    out.innerHTML =
+      `<div class="mono">
+        x=(${x.map(v=>v.toFixed(2)).join(", ")})<br/>
+        f(x)=log(∑exp xᵢ) = ${f.toFixed(5)}<br/><br/>
+        y=(${y.map(v=>v.toFixed(3)).join(", ")})<br/>
+        simplex-feasible? <b>${feasible ? "YES" : "NO (y3<0)"}<\/b><br/>
+        f*(y) = ${isFinite(fstar) ? fstar.toFixed(5) : "∞"}<br/>
+        y·x = ${dot.toFixed(5)}<br/>
+        Fenchel gap f(x)+f*(y)-y·x = ${isFinite(gap) ? gap.toFixed(6) : "∞"} (should be ≥0)<br/><br/>
+        softmax(x)=(${sm.map(v=>v.toFixed(3)).join(", ")}) (this is the equality case)
+      </div>`;
+  }
+
+  btn.onclick = () => {
+    const x=[parseFloat(el.x1.value), parseFloat(el.x2.value), parseFloat(el.x3.value)];
+    const sm=softmax(x);
+    el.y1.value = sm[0].toFixed(3);
+    el.y2.value = sm[1].toFixed(3);
+    render();
+  };
+
+  Object.values(el).forEach(e => e.oninput = render);
+  render();
+})();
+</script>
+</body>
+</html>

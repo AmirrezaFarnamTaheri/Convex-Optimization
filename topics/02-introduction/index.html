@@ -267,11 +267,41 @@
         <br>Optimization uses affine maps because constraints like $Ax=b$ define <b>affine sets</b> (shifted subspaces), not just subspaces. Affine preimages preserve convexity, which is why linear inequality constraints define convex sets.</p>
 
         <h3>2.6 Optimal Value and Optimal Points</h3>
+        <p>The primary mathematical object in optimization is the <b>optimal value</b>. The optimizer (solution) is secondary and may not even exist.</p>
+
+        <h4>The Optimal Value $p^*$</h4>
+        <p>We define the optimal value $p^*$ as the <b>infimum</b> of the objective function over the feasible set:</p>
+        $$
+        p^* = \inf \{f_0(x) \mid x \in \mathcal{F}\}
+        $$
+        <p>This definition is robust because the infimum always exists (in the extended real number line $\mathbb{R} \cup \{-\infty, +\infty\}$), whereas a minimum might not.</p>
+
+        <h4>Infimum vs. Minimum</h4>
+        <p>It is crucial to distinguish between <i>approaching</i> a value and <i>attaining</i> it.</p>
         <ul>
-          <li><b>Optimal value:</b> $p^* = \inf\{f_0(x) \mid x \in \mathcal{F}\}$ (can be $-\infty$ if unbounded, $+\infty$ if infeasible).</li>
-          <li><b>Optimal point (solution):</b> $x^* \in \mathcal{F}$ is optimal if $f_0(x^*) = p^*$.</li>
-          <li><b>$\varepsilon$-suboptimal:</b> $\mathbf{x}$ is $\varepsilon$-suboptimal if $f_0(\mathbf{x}) \le p^* + \varepsilon$.</li>
+            <li><b>Infimum (Greatest Lower Bound):</b> A number $a$ is the infimum if no number greater than $a$ is a lower bound. It represents the best performance we can arbitrarily approach.</li>
+            <li><b>Minimum (Attained Infimum):</b> A number $a$ is the minimum if it is the infimum <b>AND</b> there exists a feasible point $x^*$ such that $f_0(x^*) = a$.</li>
         </ul>
+        <div class="example">
+            <p><b>Example:</b> $\min 1/x$ subject to $x \ge 1$. The optimal value is $0$, but no finite $x$ achieves it. The infimum is $0$, but the minimum does not exist.</p>
+        </div>
+
+        <h4>Three Fundamental States</h4>
+        <p>Every optimization problem falls into one of three categories:</p>
+        <ol>
+            <li><b>Infeasible:</b> $\mathcal{F} = \emptyset$. By convention, $p^* = +\infty$ (we minimize over an empty set of options, so the "best" we can do is infinitely bad).</li>
+            <li><b>Unbounded Below:</b> The constraints allow $f_0(x)$ to go to $-\infty$. Then $p^* = -\infty$.</li>
+            <li><b>Feasible with Finite Optimum:</b> $p^* \in \mathbb{R}$. This subdivides into:
+                <ul>
+                    <li><b>Attained:</b> An optimal point $x^*$ exists (Solvable).</li>
+                    <li><b>Not Attained:</b> No point achieves $p^*$, but we can get arbitrarily close (e.g., $f(x)=e^{-x}$).</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h4>Extended Real-Valued Functions</h4>
+        <p>To unify theory, we often treat the objective $f_0$ as an <b>extended real-valued function</b> $f_0: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$.
+        <br>We define $f_0(x) = +\infty$ for all $x \notin \mathcal{F}$. This absorbs the constraints into the objective function (using the "indicator function" concept), allowing us to treat constrained problems as unconstrained minimization of a function that is infinite outside the feasible set.</p>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Visualizer: Convex Hull Explorer</h3>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linear Algebra Animations — Batch 2</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#0b0f14; color:#d8e1ea; }
+    .wrap { display:grid; grid-template-columns: 420px 1fr; gap: 12px; height:100vh; }
+    .panel { padding:14px; border-right: 1px solid #17212b; overflow:auto; }
+    .panel h1 { font-size:16px; margin:0 0 8px 0; }
+    .panel h2 { font-size:13px; margin:14px 0 8px 0; color:#b7c7d8; }
+    .row { display:flex; gap:10px; align-items:center; margin: 8px 0; }
+    .row label { width:56px; color:#b7c7d8; font-size:12px; }
+    input[type="range"] { width: 100%; }
+    input[type="number"] { width:84px; background:#0f1620; border:1px solid #223244; color:#d8e1ea; padding:6px; border-radius:8px; }
+    .seg { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0; }
+    .btn {
+      background:#0f1620; border:1px solid #223244; color:#d8e1ea;
+      padding:8px 10px; border-radius:10px; cursor:pointer; user-select:none;
+      font-size:12px;
+    }
+    .btn:hover { border-color:#3a5872; }
+    .btn.active { background:#142233; border-color:#6aa2d8; }
+    .note { font-size:12px; color:#b7c7d8; line-height:1.35; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+    canvas { width:100%; height:100%; display:block; background: radial-gradient(1200px 700px at 60% 40%, #0f1620 0%, #0b0f14 55%, #070a0e 100%); }
+    .small { font-size:11px; color:#9fb0c2; }
+    .divider { margin: 10px 0; height:1px; background:#17212b; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <h1>Linear Algebra Animations — Batch 2</h1>
+    <div class="note">
+      Four new visual machines: kernel/column space + projection, Gram–Schmidt, power iteration, and best rank-1 SVD approximation.
+      Everything runs locally in one HTML file.
+    </div>
+
+    <h2>Mode</h2>
+    <div class="seg">
+      <div id="mKernel" class="btn active">Kernel + Projection</div>
+      <div id="mGS" class="btn">Gram–Schmidt</div>
+      <div id="mPower" class="btn">Power Iteration</div>
+      <div id="mRank1" class="btn">Rank-1 SVD</div>
+    </div>
+
+    <h2>Playback</h2>
+    <div class="seg">
+      <div id="btnPlay" class="btn active">Play</div>
+      <div id="btnStep" class="btn">Step</div>
+      <div id="btnReset" class="btn">Reset</div>
+    </div>
+    <div class="row">
+      <label>Speed</label>
+      <input id="speed" type="range" min="0" max="100" value="45"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>Parameters</h2>
+    <div class="small">Matrix sliders are reused across modes. Some modes use symmetric \(A\).</div>
+
+    <div id="rowA" class="row">
+      <label>a</label>
+      <input id="a" type="range" min="-3" max="3" step="0.01" value="1.2"/>
+      <input id="aN" type="number" step="0.01" value="1.2"/>
+    </div>
+    <div id="rowB" class="row">
+      <label>b</label>
+      <input id="b" type="range" min="-3" max="3" step="0.01" value="0.9"/>
+      <input id="bN" type="number" step="0.01" value="0.9"/>
+    </div>
+    <div id="rowC" class="row">
+      <label>c</label>
+      <input id="c" type="range" min="-3" max="3" step="0.01" value="-0.6"/>
+      <input id="cN" type="number" step="0.01" value="-0.6"/>
+    </div>
+    <div id="rowD" class="row">
+      <label>d</label>
+      <input id="d" type="range" min="-3" max="3" step="0.01" value="1.0"/>
+      <input id="dN" type="number" step="0.01" value="1.0"/>
+    </div>
+
+    <div id="gsControls" style="display:none;">
+      <div class="divider"></div>
+      <h2>Gram–Schmidt vectors</h2>
+      <div class="row">
+        <label>u₁</label>
+        <input id="u1" type="range" min="-2" max="2" step="0.01" value="1.3"/>
+        <input id="u1N" type="number" step="0.01" value="1.3"/>
+      </div>
+      <div class="row">
+        <label>u₂</label>
+        <input id="u2" type="range" min="-2" max="2" step="0.01" value="0.4"/>
+        <input id="u2N" type="number" step="0.01" value="0.4"/>
+      </div>
+      <div class="row">
+        <label>v₁</label>
+        <input id="v1" type="range" min="-2" max="2" step="0.01" value="0.6"/>
+        <input id="v1N" type="number" step="0.01" value="0.6"/>
+      </div>
+      <div class="row">
+        <label>v₂</label>
+        <input id="v2" type="range" min="-2" max="2" step="0.01" value="1.1"/>
+        <input id="v2N" type="number" step="0.01" value="1.1"/>
+      </div>
+    </div>
+
+    <h2>Readout</h2>
+    <div id="readout" class="note mono"></div>
+
+    <div class="divider"></div>
+    <div class="small">
+      Tips:
+      <br/>• Kernel mode: make \(A\) rank-1 by setting rows proportional (e.g. c≈(a)*k and d≈(b)*k), then the nullspace line appears.
+      <br/>• Power iteration: works best for symmetric \(A\) with \(|λ₁| &gt; |λ₂|\).
+      <br/>• Rank-1: watch σ₂ and the error shrink when \(A\) is nearly rank-1.
+    </div>
+  </div>
+
+  <div style="position:relative;">
+    <canvas id="cv"></canvas>
+  </div>
+</div>
+
+<script>
+/* ============================
+   Small linear algebra helpers
+   ============================ */
+const EPS = 1e-10;
+
+function mat2(a,b,c,d){ return {a,b,c,d}; }              // [[a,b],[c,d]]
+function mat2T(M){ return mat2(M.a, M.c, M.b, M.d); }    // transpose
+function mat2Mul(A,B){
+  return mat2(
+    A.a*B.a + A.b*B.c,  A.a*B.b + A.b*B.d,
+    A.c*B.a + A.d*B.c,  A.c*B.b + A.d*B.d
+  );
+}
+function mat2Vec(M,x,y){ return [M.a*x + M.b*y, M.c*x + M.d*y]; }
+
+function dot(u,v){ return u[0]*v[0] + u[1]*v[1]; }
+function norm(v){ return Math.hypot(v[0], v[1]); }
+function add(u,v){ return [u[0]+v[0], u[1]+v[1]]; }
+function sub(u,v){ return [u[0]-v[0], u[1]-v[1]]; }
+function scale(v,s){ return [v[0]*s, v[1]*s]; }
+function ortho(v){ return [-v[1], v[0]]; }
+function normalize(v){
+  const n = norm(v);
+  if (n < EPS) return [1,0];
+  return [v[0]/n, v[1]/n];
+}
+function clamp(x,lo,hi){ return Math.max(lo, Math.min(hi, x)); }
+function fmt(x){
+  if (!isFinite(x)) return "NaN";
+  const s = x.toFixed(4);
+  return s.replace(/\.?0+$/,'');
+}
+
+/* Eigen for symmetric 2x2 [[a,b],[b,d]] */
+function eigSym2(a,b,d){
+  const t = 0.5*(a+d);
+  const delta = 0.5*(a-d);
+  const s = Math.sqrt(delta*delta + b*b);
+  const l1 = t + s;
+  const l2 = t - s;
+
+  function eigvec(lambda){
+    let v = [b, lambda - a];
+    if (norm(v) < EPS) v = [lambda - d, b];
+    if (norm(v) < EPS) v = [1,0];
+    return normalize(v);
+  }
+  const v1 = eigvec(l1);
+  const v2 = normalize(ortho(v1));
+  return { l1, l2, v1, v2 };
+}
+
+/* SVD for 2x2 via eigen of A^T A */
+function svd2(A){
+  const AT = mat2T(A);
+  const G = mat2Mul(AT, A); // symmetric PSD
+  const g11 = G.a, g12 = G.b, g22 = G.d;
+  const { l1, l2, v1, v2 } = eigSym2(g11, g12, g22);
+
+  let s1 = Math.sqrt(Math.max(0, l1));
+  let s2 = Math.sqrt(Math.max(0, l2));
+
+  let V1=v1, V2=v2;
+  if (s2 > s1 + 1e-12){
+    [s1,s2] = [s2,s1];
+    [V1,V2] = [V2,V1];
+  }
+
+  let U1, U2;
+  if (s1 > EPS){
+    const Av1 = mat2Vec(A, V1[0], V1[1]);
+    U1 = normalize(scale(Av1, 1/s1));
+  } else {
+    U1 = [1,0];
+  }
+
+  if (s2 > EPS){
+    const Av2 = mat2Vec(A, V2[0], V2[1]);
+    U2 = normalize(scale(Av2, 1/s2));
+    // orthonormalize
+    const proj = dot(U2,U1);
+    U2 = normalize(sub(U2, scale(U1, proj)));
+  } else {
+    U2 = normalize(ortho(U1));
+  }
+
+  const U = mat2(U1[0], U2[0], U1[1], U2[1]);    // cols u1,u2
+  const V = mat2(V1[0], V2[0], V1[1], V2[1]);    // cols v1,v2
+  const VT = mat2T(V);
+  const Sigma = mat2(s1,0,0,s2);
+
+  return { U, Sigma, V, VT, s1, s2, u1:U1, u2:U2, v1:V1, v2:V2 };
+}
+
+/* pseudoinverse from SVD: A^+ = V Σ^+ U^T */
+function pinv2(A){
+  const { U, V, s1, s2 } = svd2(A);
+  const UT = mat2T(U);
+  const Vmat = V;
+
+  const inv1 = (s1 > 1e-8) ? 1/s1 : 0;
+  const inv2 = (s2 > 1e-8) ? 1/s2 : 0;
+  const SigPlus = mat2(inv1,0,0,inv2);
+
+  // A+ = V * Σ+ * U^T
+  return mat2Mul(mat2Mul(Vmat, SigPlus), UT);
+}
+
+/* ============================
+   Canvas + drawing
+   ============================ */
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(canvas.clientWidth * dpr);
+  canvas.height = Math.floor(canvas.clientHeight * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+function clear(){
+  ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+}
+
+function makeView(cx, cy, scalePx){
+  return { w: canvas.clientWidth, h: canvas.clientHeight, cx, cy, scalePx };
+}
+function toScreen(view, p){
+  return [view.cx + view.scalePx*p[0], view.cy - view.scalePx*p[1]];
+}
+function drawGrid(view){
+  ctx.save();
+  ctx.globalAlpha = 0.10;
+  ctx.strokeStyle = "#9fb0c2";
+  ctx.lineWidth = 1;
+  const step = view.scalePx/2;
+  for(let x = view.cx % step; x < view.w; x += step){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,view.h); ctx.stroke();
+  }
+  for(let y = view.cy % step; y < view.h; y += step){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(view.w,y); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawAxes(view){
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.strokeStyle = "#9fb0c2";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, view.cy); ctx.lineTo(view.w, view.cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(view.cx, 0); ctx.lineTo(view.cx, view.h); ctx.stroke();
+  ctx.restore();
+}
+function drawArrow(view, from, to, color="#d8e1ea", alpha=1, lw=2){
+  const a = toScreen(view, from);
+  const b = toScreen(view, to);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  ctx.moveTo(a[0], a[1]);
+  ctx.lineTo(b[0], b[1]);
+  ctx.stroke();
+  const dx = b[0]-a[0], dy = b[1]-a[1];
+  const L = Math.hypot(dx,dy);
+  if (L > 1e-6){
+    const ux = dx/L, uy = dy/L;
+    const size = 10;
+    const left = [b[0] - size*(ux*0.9 - uy*0.4), b[1] - size*(uy*0.9 + ux*0.4)];
+    const right= [b[0] - size*(ux*0.9 + uy*0.4), b[1] - size*(uy*0.9 - ux*0.4)];
+    ctx.beginPath();
+    ctx.moveTo(b[0], b[1]);
+    ctx.lineTo(left[0], left[1]);
+    ctx.lineTo(right[0], right[1]);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+function drawPoint(view, p, color="#d8e1ea", r=4, alpha=1){
+  const s = toScreen(view, p);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(s[0], s[1], r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+function drawLineThroughOrigin(view, dir, color, alpha=0.9, lw=2){
+  const v = normalize(dir);
+  const L = 3.0;
+  drawArrow(view, [0,0], scale(v,  L), color, alpha, lw);
+  drawArrow(view, [0,0], scale(v, -L), color, alpha, lw);
+}
+function drawPolyline(view, pts, stroke="#d8e1ea", alpha=1, lw=2, closed=true){
+  if (!pts.length) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  const p0 = toScreen(view, pts[0]);
+  ctx.moveTo(p0[0], p0[1]);
+  for(let i=1;i<pts.length;i++){
+    const p = toScreen(view, pts[i]);
+    ctx.lineTo(p[0], p[1]);
+  }
+  if (closed) ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function circlePoints(N=240){
+  const pts = [];
+  for(let i=0;i<N;i++){
+    const t = (i/N)*Math.PI*2;
+    pts.push([Math.cos(t), Math.sin(t)]);
+  }
+  return pts;
+}
+const UNIT = circlePoints();
+
+/* ============================
+   UI state
+   ============================ */
+let mode = "kernel"; // kernel | gs | power | rank1
+let playing = true;
+let phase = 0;
+let stepOnce = false;
+
+/* power iteration internal */
+let powerX = normalize([0.7, 0.2]);
+let powerTrail = [];
+let powerAccum = 0;
+let powerStepCount = 0;
+
+/* ============================
+   DOM wiring
+   ============================ */
+const dom = {
+  cv: canvas,
+  a: document.getElementById('a'), aN: document.getElementById('aN'),
+  b: document.getElementById('b'), bN: document.getElementById('bN'),
+  c: document.getElementById('c'), cN: document.getElementById('cN'),
+  d: document.getElementById('d'), dN: document.getElementById('dN'),
+  speed: document.getElementById('speed'),
+  readout: document.getElementById('readout'),
+  gsControls: document.getElementById('gsControls'),
+  mKernel: document.getElementById('mKernel'),
+  mGS: document.getElementById('mGS'),
+  mPower: document.getElementById('mPower'),
+  mRank1: document.getElementById('mRank1'),
+  btnPlay: document.getElementById('btnPlay'),
+  btnStep: document.getElementById('btnStep'),
+  btnReset: document.getElementById('btnReset'),
+
+  u1: document.getElementById('u1'), u1N: document.getElementById('u1N'),
+  u2: document.getElementById('u2'), u2N: document.getElementById('u2N'),
+  v1: document.getElementById('v1'), v1N: document.getElementById('v1N'),
+  v2: document.getElementById('v2'), v2N: document.getElementById('v2N'),
+};
+
+function linkSlider(sl, num, onChange){
+  const syncFromSlider = () => { num.value = sl.value; onChange?.(); };
+  const syncFromNum = () => {
+    const v = clamp(parseFloat(num.value), parseFloat(sl.min), parseFloat(sl.max));
+    sl.value = v; num.value = v; onChange?.();
+  };
+  sl.addEventListener('input', syncFromSlider);
+  num.addEventListener('change', syncFromNum);
+}
+function updateReadout(){ /* filled later */ }
+
+linkSlider(dom.a, dom.aN, updateReadout);
+linkSlider(dom.b, dom.bN, updateReadout);
+linkSlider(dom.c, dom.cN, updateReadout);
+linkSlider(dom.d, dom.dN, updateReadout);
+linkSlider(dom.u1, dom.u1N, updateReadout);
+linkSlider(dom.u2, dom.u2N, updateReadout);
+linkSlider(dom.v1, dom.v1N, updateReadout);
+linkSlider(dom.v2, dom.v2N, updateReadout);
+
+function setMode(m){
+  mode = m;
+  dom.mKernel.classList.toggle('active', m==="kernel");
+  dom.mGS.classList.toggle('active', m==="gs");
+  dom.mPower.classList.toggle('active', m==="power");
+  dom.mRank1.classList.toggle('active', m==="rank1");
+  dom.gsControls.style.display = (m==="gs") ? "block" : "none";
+  // c slider only meaningful for general matrix modes:
+  // kernel + rank1 use general A; power uses symmetric; gs ignores A.
+  document.getElementById('rowC').style.display = (m==="power") ? "none" : "flex";
+
+  resetState();
+  updateReadout();
+}
+dom.mKernel.onclick = () => setMode("kernel");
+dom.mGS.onclick = () => setMode("gs");
+dom.mPower.onclick = () => setMode("power");
+dom.mRank1.onclick = () => setMode("rank1");
+
+dom.btnPlay.onclick = () => {
+  playing = !playing;
+  dom.btnPlay.classList.toggle('active', playing);
+  dom.btnPlay.textContent = playing ? "Play" : "Paused";
+};
+dom.btnStep.onclick = () => { stepOnce = true; };
+dom.btnReset.onclick = () => { resetState(); };
+
+function currentA(){
+  const a = parseFloat(dom.a.value);
+  const b = parseFloat(dom.b.value);
+  const c = parseFloat(dom.c.value);
+  const d = parseFloat(dom.d.value);
+  if (mode==="power"){
+    return mat2(a,b,b,d); // symmetric
+  }
+  return mat2(a,b,c,d);   // general
+}
+function gsVectors(){
+  const u = [parseFloat(dom.u1.value), parseFloat(dom.u2.value)];
+  const v = [parseFloat(dom.v1.value), parseFloat(dom.v2.value)];
+  return {u, v};
+}
+
+function resetState(){
+  phase = 0;
+  // power iteration reset
+  powerX = normalize([Math.random()*2-1, Math.random()*2-1]);
+  powerTrail = [powerX];
+  powerAccum = 0;
+  powerStepCount = 0;
+}
+
+/* ============================
+   Readout text
+   ============================ */
+function updateReadout(){
+  if (mode==="kernel"){
+    const A = currentA();
+    const { s1, s2, u1, v1, v2 } = svd2(A);
+    const rank = (s1>1e-8) + (s2>1e-8);
+    const nDir = (s2 <= 1e-8) ? v2 : null; // nullspace direction when rank<2
+    dom.readout.textContent =
+      `Kernel + Projection mode\n` +
+      `A = [[${fmt(A.a)}, ${fmt(A.b)}],[${fmt(A.c)}, ${fmt(A.d)}]]\n` +
+      `σ1=${fmt(s1)}, σ2=${fmt(s2)}  (rank≈${rank})\n` +
+      (nDir ? `null direction (≈ker A): v₂=(${fmt(nDir[0])}, ${fmt(nDir[1])})\n` : `null direction: none (full rank)\n`) +
+      `Projection: p = AA⁺ b is orthogonal projection of b onto Col(A).\n` +
+      `Least squares: x* = A⁺ b minimizes ||Ax - b||.`;
+  } else if (mode==="gs"){
+    const {u,v} = gsVectors();
+    const q1 = normalize(u);
+    const proj = dot(q1, v);
+    const vperp = sub(v, scale(q1, proj));
+    const vperpN = norm(vperp);
+    const q2 = (vperpN > 1e-8) ? normalize(vperp) : normalize(ortho(q1));
+    dom.readout.textContent =
+      `Gram–Schmidt mode\n` +
+      `u=(${fmt(u[0])}, ${fmt(u[1])}), v=(${fmt(v[0])}, ${fmt(v[1])})\n` +
+      `q1 = u/||u|| = (${fmt(q1[0])}, ${fmt(q1[1])})\n` +
+      `proj_{q1}(v) = (q1ᵀv) q1,  q1ᵀv = ${fmt(proj)}\n` +
+      `v⊥ = v - proj = (${fmt(vperp[0])}, ${fmt(vperp[1])})\n` +
+      `q2 = v⊥/||v⊥|| = (${fmt(q2[0])}, ${fmt(q2[1])})`;
+  } else if (mode==="power"){
+    const A = currentA();
+    const { l1, l2, v1 } = eigSym2(A.a, A.b, A.d);
+    dom.readout.textContent =
+      `Power Iteration mode (symmetric A)\n` +
+      `A = [[${fmt(A.a)}, ${fmt(A.b)}],[${fmt(A.b)}, ${fmt(A.d)}]]\n` +
+      `eigs: λ1=${fmt(l1)}, λ2=${fmt(l2)}\n` +
+      `dominant eigenvector direction v1≈(${fmt(v1[0])}, ${fmt(v1[1])})\n` +
+      `iter: x_{k+1} = A x_k / ||A x_k||   (k=${powerStepCount})`;
+  } else {
+    const A = currentA();
+    const { s1, s2, u1, v1 } = svd2(A);
+    // best rank-1 approximation A1 = σ1 u1 v1^T
+    const A1 = mat2(
+      s1*u1[0]*v1[0], s1*u1[0]*v1[1],
+      s1*u1[1]*v1[0], s1*u1[1]*v1[1]
+    );
+    // Frobenius error for 2x2: ||A-A1||_F
+    const E = mat2(A.a-A1.a, A.b-A1.b, A.c-A1.c, A.d-A1.d);
+    const fro = Math.sqrt(E.a*E.a + E.b*E.b + E.c*E.c + E.d*E.d);
+    dom.readout.textContent =
+      `Rank-1 SVD mode\n` +
+      `A = [[${fmt(A.a)}, ${fmt(A.b)}],[${fmt(A.c)}, ${fmt(A.d)}]]\n` +
+      `σ1=${fmt(s1)}, σ2=${fmt(s2)}\n` +
+      `best rank-1: A1 = σ1 u1 v1ᵀ\n` +
+      `||A - A1||_F ≈ ${fmt(fro)}  (for 2×2, equals σ2 up to norm conventions when A is rank-2)`;
+  }
+}
+
+/* ============================
+   Mode renderers
+   ============================ */
+
+function drawTitle(txt){
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.92;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(txt, 18, 22);
+  ctx.restore();
+}
+
+function drawKernelProjection(A, t){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const scalePx = Math.min(w,h)*0.22;
+
+  // Two side-by-side coordinate systems
+  const left  = makeView(0.30*w, 0.55*h, scalePx);
+  const right = makeView(0.73*w, 0.55*h, scalePx);
+
+  drawGrid(left); drawGrid(right);
+  drawAxes(left); drawAxes(right);
+
+  // Separator line
+  ctx.save();
+  ctx.strokeStyle = "#17212b";
+  ctx.globalAlpha = 0.9;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0.515*w, 0);
+  ctx.lineTo(0.515*w, h);
+  ctx.stroke();
+  ctx.restore();
+
+  // rotating x in domain
+  const ang = 2*Math.PI*t;
+  const x = [Math.cos(ang), Math.sin(ang)];
+  const Ax = mat2Vec(A, x[0], x[1]);
+
+  // b in codomain (a moving target)
+  const b = [1.2*Math.cos(2*Math.PI*(t+0.17)), 1.2*Math.sin(2*Math.PI*(t+0.17))];
+
+  // pseudoinverse projection
+  const Aplus = pinv2(A);
+  const xStar = mat2Vec(Aplus, b[0], b[1]);      // x* = A+ b (min-norm LS)
+  const p = mat2Vec(A, xStar[0], xStar[1]);      // p = A x* = AA+ b
+  const r = sub(b, p);
+
+  const { s1, s2, u1, u2, v1, v2 } = svd2(A);
+  const rank = (s1>1e-8) + (s2>1e-8);
+  const hasNull = (rank < 2);
+
+  // Domain: show nullspace line if exists (v2)
+  if (hasNull){
+    drawLineThroughOrigin(left, v2, "#ffd166", 0.95, 2.5);
+  }
+
+  // Codomain: show column space line if rank=1 (u1)
+  if (rank === 1){
+    drawLineThroughOrigin(right, u1, "#06d6a0", 0.85, 2.5);
+  }
+
+  // Draw x and Ax
+  drawArrow(left, [0,0], x, "#f1fa8c", 0.95, 2.5);
+  drawPoint(left, x, "#f1fa8c", 4.5, 1);
+
+  drawArrow(right, [0,0], Ax, "#ff6b6b", 0.9, 2.5);
+  drawPoint(right, Ax, "#ff6b6b", 4.5, 1);
+
+  // Draw b, projection p, and residual r = b-p
+  drawArrow(right, [0,0], b, "#9fb0c2", 0.75, 2.2);
+  drawPoint(right, b, "#9fb0c2", 4.2, 1);
+
+  drawArrow(right, [0,0], p, "#6aa2d8", 0.95, 2.8);
+  drawPoint(right, p, "#6aa2d8", 4.8, 1);
+
+  drawArrow(right, p, b, "#ff6b6b", 0.65, 2.0); // residual
+  drawPoint(right, add(p, scale(r, 0.5)), "#ff6b6b", 3.5, 0.5);
+
+  // Show x* in domain
+  drawArrow(left, [0,0], xStar, "#6aa2d8", 0.95, 2.8);
+  drawPoint(left, xStar, "#6aa2d8", 4.8, 1);
+
+  // Labels
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.9;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`Domain (x)`, 18, 44);
+  ctx.fillText(`Codomain (Ax)`, 0.56*w, 44);
+  ctx.fillText(`x (yellow) → Ax (red)`, 18, 62);
+  ctx.fillText(`b (gray), p=proj(b) (blue), r=b-p (red)`, 0.56*w, 62);
+  ctx.fillText(`σ1=${fmt(s1)} σ2=${fmt(s2)} rank≈${rank}`, 18, 80);
+  if (hasNull) ctx.fillText(`ker(A) shown as yellow line (≈ v₂)`, 18, 98);
+  if (rank===1) ctx.fillText(`Col(A) shown as green line (≈ u₁)`, 0.56*w, 98);
+  ctx.restore();
+}
+
+function drawGramSchmidt(t){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const view = makeView(0.52*w, 0.55*h, Math.min(w,h)*0.24);
+  drawGrid(view); drawAxes(view);
+
+  const {u,v} = gsVectors();
+
+  const q1 = normalize(u);
+  const alpha = dot(q1, v);
+  const proj = scale(q1, alpha);
+  const vperp = sub(v, proj);
+
+  // Animate the subtraction v -> vperp
+  // v(t) = v - s*proj where s goes 0..1 in part of the cycle
+  const s = 0.5 - 0.5*Math.cos(2*Math.PI*t); // smooth 0..1..0
+  const vAnim = sub(v, scale(proj, s));
+
+  const vperpN = norm(vperp);
+  const q2 = (vperpN > 1e-8) ? normalize(vperp) : normalize(ortho(q1));
+
+  // Draw original vectors u, v
+  drawArrow(view, [0,0], u, "#f1fa8c", 0.85, 2.5);
+  drawArrow(view, [0,0], v, "#9fb0c2", 0.65, 2.5);
+
+  // Draw proj component and the animated subtraction
+  drawArrow(view, [0,0], proj, "#6aa2d8", 0.9, 2.5);
+  drawArrow(view, [0,0], vAnim, "#ffd166", 0.95, 3.0);
+
+  // Draw orthonormal basis directions q1, q2 as lines
+  drawLineThroughOrigin(view, q1, "#f1fa8c", 0.55, 2.0);
+  drawLineThroughOrigin(view, q2, "#06d6a0", 0.55, 2.0);
+
+  // Draw vperp final (when s=1)
+  drawArrow(view, [0,0], vperp, "#06d6a0", 0.65, 2.5);
+
+  drawTitle("Gram–Schmidt: v⊥ = v − proj_{q1}(v), then q2 = v⊥/||v⊥||");
+}
+
+function stepPowerIteration(A){
+  const y = mat2Vec(A, powerX[0], powerX[1]);
+  const yn = norm(y);
+  if (yn < EPS){
+    powerX = normalize([Math.random()*2-1, Math.random()*2-1]);
+  } else {
+    powerX = scale(y, 1/yn);
+  }
+  powerTrail.push(powerX);
+  if (powerTrail.length > 60) powerTrail.shift();
+  powerStepCount += 1;
+}
+
+function drawPowerIteration(A, dt, t){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const view = makeView(0.52*w, 0.55*h, Math.min(w,h)*0.24);
+  drawGrid(view); drawAxes(view);
+
+  const { l1, l2, v1, v2 } = eigSym2(A.a, A.b, A.d);
+
+  // Step the iteration periodically based on speed
+  const sp = parseFloat(dom.speed.value)/100;
+  const stepsPerSec = 1.0 + 6.0*sp; // 1..7 steps/sec
+  powerAccum += dt;
+  while (powerAccum >= 1/stepsPerSec){
+    powerAccum -= 1/stepsPerSec;
+    stepPowerIteration(A);
+  }
+
+  // Draw eigenvectors
+  drawLineThroughOrigin(view, v1, "#ffd166", 0.9, 2.5);
+  drawLineThroughOrigin(view, v2, "#06d6a0", 0.55, 2.0);
+
+  // Draw trail of iterates
+  for (let i=0;i<powerTrail.length;i++){
+    const alpha = (i+1)/powerTrail.length;
+    drawArrow(view, [0,0], scale(powerTrail[i], 1.6), "#6aa2d8", 0.12 + 0.65*alpha, 2);
+  }
+
+  // Current iterate
+  drawArrow(view, [0,0], scale(powerX, 1.8), "#ff6b6b", 0.95, 3.0);
+  drawPoint(view, scale(powerX, 1.8), "#ff6b6b", 4.5, 1);
+
+  // Convergence hint
+  const ratio = (Math.abs(l1) > EPS) ? (Math.abs(l2)/Math.abs(l1)) : NaN;
+
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.92;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`Power iteration: x_{k+1} = A x_k / ||A x_k||`, 18, 22);
+  ctx.fillText(`λ1=${fmt(l1)} λ2=${fmt(l2)}  | |λ2/λ1|≈${fmt(ratio)}`, 18, 40);
+  ctx.fillText(`Yellow line = dominant eigenvector direction`, 18, 58);
+  ctx.restore();
+}
+
+function drawRank1SVD(A, t){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const view = makeView(0.52*w, 0.55*h, Math.min(w,h)*0.24);
+  drawGrid(view); drawAxes(view);
+
+  const { s1, s2, u1, v1 } = svd2(A);
+
+  // Best rank-1 matrix A1 = σ1 u1 v1^T
+  const A1 = mat2(
+    s1*u1[0]*v1[0], s1*u1[0]*v1[1],
+    s1*u1[1]*v1[0], s1*u1[1]*v1[1]
+  );
+
+  // Animate blend between A1 and A
+  const s = 0.5 - 0.5*Math.cos(2*Math.PI*t); // 0..1..0
+  const M = mat2(
+    (1-s)*A1.a + s*A.a, (1-s)*A1.b + s*A.b,
+    (1-s)*A1.c + s*A.c, (1-s)*A1.d + s*A.d
+  );
+
+  // Draw images of the unit circle
+  const ellA  = UNIT.map(p => mat2Vec(A,  p[0], p[1]));
+  const ellA1 = UNIT.map(p => mat2Vec(A1, p[0], p[1]));
+  const ellM  = UNIT.map(p => mat2Vec(M,  p[0], p[1]));
+
+  drawPolyline(view, UNIT, "#9fb0c2", 0.25, 2.0, true);
+  drawPolyline(view, ellA,  "#6aa2d8", 0.35, 2.2, true);
+  drawPolyline(view, ellA1, "#06d6a0", 0.45, 2.2, true);
+  drawPolyline(view, ellM,  "#ffd166", 0.95, 3.0, true);
+
+  // Track one vector
+  const ang = 2*Math.PI*t;
+  const x = [Math.cos(ang), Math.sin(ang)];
+  const yA = mat2Vec(A,  x[0], x[1]);
+  const y1 = mat2Vec(A1, x[0], x[1]);
+  const yM = mat2Vec(M,  x[0], x[1]);
+
+  drawArrow(view, [0,0], x,  "#f1fa8c", 0.8, 2.0);
+  drawArrow(view, [0,0], yM, "#ffd166", 0.95, 3.0);
+  drawPoint(view, yM, "#ffd166", 4.8, 1);
+
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.92;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`Rank-1 SVD: A1 = σ1 u1 v1ᵀ`, 18, 22);
+  ctx.fillText(`σ1=${fmt(s1)} σ2=${fmt(s2)}  (σ2 is the “leftover” rank-2 part)`, 18, 40);
+  ctx.fillText(`Green ellipse: A1(circle)  | Blue ellipse: A(circle)  | Yellow: blend`, 18, 58);
+  ctx.restore();
+}
+
+/* ============================
+   Animation loop
+   ============================ */
+updateReadout();
+let last = performance.now();
+
+function tick(now){
+  const dt = Math.min(0.05, (now-last)/1000);
+  last = now;
+
+  const sp = parseFloat(dom.speed.value)/100;
+  const omega = 0.10 + 0.90*sp;
+
+  if (playing){
+    phase = (phase + omega*dt) % 1;
+  } else if (stepOnce){
+    phase = (phase + 0.02) % 1;
+    stepOnce = false;
+  }
+
+  clear();
+
+  const A = currentA();
+
+  if (mode==="kernel"){
+    drawKernelProjection(A, phase);
+  } else if (mode==="gs"){
+    drawGramSchmidt(phase);
+  } else if (mode==="power"){
+    drawPowerIteration(A, dt, phase);
+  } else {
+    drawRank1SVD(A, phase);
+  }
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* URL Param Logic */
+try {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('mode');
+  if(m) setMode(m);
+} catch(e){}
+</script>
+</body>
+</html>

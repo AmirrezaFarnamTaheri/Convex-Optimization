@@ -645,15 +645,15 @@
       <br><b>Applications:</b> Image compression, PCA, Denoising.</p>
 
       <div class="widget-container" style="margin: 24px 0;">
-        <h3 style="margin-top: 0;">Interactive Demo: SVD for Image Compression</h3>
-        <p><b>The Power of Low-Rank Approximation:</b> An image can be viewed as a matrix of pixel intensities. By computing its SVD and keeping only the largest singular values, we can reconstruct the image with far less data.</p>
-        <div id="widget-svd-approximator" style="width: 100%; height: 400px; position: relative;"></div>
+        <h3 style="margin-top: 0;">Interactive Demo: Rank-1 SVD Approximation</h3>
+        <p><b>The Power of Low-Rank Approximation:</b> See how a rank-1 matrix $A_1 = \sigma_1 u_1 v_1^\top$ approximates a general matrix. This is the core principle behind PCA and image compression.</p>
+        <iframe src="widgets/la_batch2.html?mode=rank1" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
-        <h3 style="margin-top: 0;">Interactive Demo: SVD Geometry</h3>
-        <p>Visualize the SVD decomposition $A = U \Sigma V^\top$ as a sequence of three geometric transformations: rotation ($V^\top$), axis-aligned scaling ($\Sigma$), and rotation ($U$).</p>
-        <div id="widget-svd-geometry" style="width: 100%; height: 400px; position: relative;"></div>
+        <h3 style="margin-top: 0;">Interactive Demo: 3D SVD Geometry</h3>
+        <p>Visualize the SVD decomposition $A = U \Sigma V^\top$ in 3D as a sequence of three geometric transformations: rotation ($V^\top$), axis-aligned scaling ($\Sigma$), and rotation ($U$).</p>
+        <iframe src="widgets/la_batch3.html?mode=svd3" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <h3>5.4 The Schur Complement: Block Elimination</h3>
@@ -685,9 +685,9 @@
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
-        <h3 style="margin-top: 0;">Interactive Demo: Schur Complement</h3>
-        <p>Visualize the quadratic form of a block matrix. See how the Schur complement condition $s = a - b^2/d \ge 0$ determines positive semidefiniteness. The line $y = -(b/d)x$ corresponds to minimizing the quadratic over $y$ for a fixed $x$, which is the geometric operation underlying the Schur complement.</p>
-        <div id="widget-schur-complement" style="width: 100%; height: 400px; position: relative;"></div>
+        <h3 style="margin-top: 0;">Interactive Demo: Schur Complement Feasibility</h3>
+        <p>Explore the feasible region of the parameter $t$ that makes the block matrix PSD. The threshold $t^*$ is exactly the Schur complement condition.</p>
+        <iframe src="widgets/la_batch3.html?mode=schur" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <h3>5.5 Application: PCA as SVD of Data</h3>
@@ -857,8 +857,8 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive: Condition Number & Stability</h3>
-        <p><b>Visualize Ill-Conditioning:</b> Compare solving $A\mathbf{x}=\mathbf{b}$ for a well-conditioned matrix versus an ill-conditioned one. In the ill-conditioned case, the "ellipse" of the matrix is very skinny. A small change in the target vector $\mathbf{b}$ (moving the target slightly off the major axis) requires a massive change in $\mathbf{x}$ to compensate.</p>
-        <div id="widget-condition-number" style="width: 100%; height: 400px; position: relative;"></div>
+        <p><b>Visualize Ill-Conditioning:</b> Compare solving $A\mathbf{x}=\mathbf{b}$ for a well-conditioned versus ill-conditioned matrix. See how small noise in $\mathbf{b}$ amplifies into large errors in $\mathbf{x}$.</p>
+        <iframe src="widgets/la_batch3.html?mode=cond" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <h3>6.3 Regularization: Controlled Bias for Stability</h3>
@@ -1297,19 +1297,6 @@
   </script>
 
   <!-- Widget Loaders -->
-  <script type="module">
-    import { initSvdApproximator } from './widgets/js/svd-approximator.js';
-    initSvdApproximator('widget-svd-approximator');
-  </script>
-  <script type="module">
-    import { initConditionNumber } from './widgets/js/condition-number.js';
-    initConditionNumber('widget-condition-number');
-  </script>
-  <script type="module">
-    import { initAdvancedLaDemos } from './widgets/js/advanced-la-demos.js';
-    initAdvancedLaDemos('widget-svd-geometry', 'svd');
-    initAdvancedLaDemos('widget-schur-complement', 'schur');
-  </script>
   <script src="../../static/js/glossary-loader.js"></script>
 </body>
 </html>

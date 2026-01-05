@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linear Algebra Animations — Batch 3 (3D + Schur + Conditioning)</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#0b0f14; color:#d8e1ea; }
+    .wrap { display:grid; grid-template-columns: 440px 1fr; gap: 12px; height:100vh; }
+    .panel { padding:14px; border-right: 1px solid #17212b; overflow:auto; }
+    .panel h1 { font-size:16px; margin:0 0 8px 0; }
+    .panel h2 { font-size:13px; margin:14px 0 8px 0; color:#b7c7d8; }
+    .row { display:flex; gap:10px; align-items:center; margin: 8px 0; }
+    .row label { width:80px; color:#b7c7d8; font-size:12px; }
+    input[type="range"] { width: 100%; }
+    input[type="number"] { width:90px; background:#0f1620; border:1px solid #223244; color:#d8e1ea; padding:6px; border-radius:8px; }
+    .seg { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0; }
+    .btn {
+      background:#0f1620; border:1px solid #223244; color:#d8e1ea;
+      padding:8px 10px; border-radius:10px; cursor:pointer; user-select:none;
+      font-size:12px;
+    }
+    .btn:hover { border-color:#3a5872; }
+    .btn.active { background:#142233; border-color:#6aa2d8; }
+    .note { font-size:12px; color:#b7c7d8; line-height:1.35; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+    canvas { width:100%; height:100%; display:block; background: radial-gradient(1200px 700px at 60% 40%, #0f1620 0%, #0b0f14 55%, #070a0e 100%); }
+    .small { font-size:11px; color:#9fb0c2; }
+    .divider { margin: 10px 0; height:1px; background:#17212b; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <h1>Linear Algebra Animations — Batch 3</h1>
+    <div class="note">
+      3D eigen ellipsoid + 3D SVD pipeline, plus Schur complement feasibility and conditioning sensitivity.
+      Uses a simple software 3D projection (no WebGL).
+    </div>
+
+    <h2>Mode</h2>
+    <div class="seg">
+      <div id="mEig3" class="btn active">3D Eigen Ellipsoid</div>
+      <div id="mSVD3" class="btn">3D SVD Sphere</div>
+      <div id="mSchur" class="btn">Schur Feasibility</div>
+      <div id="mCond" class="btn">Conditioning</div>
+    </div>
+
+    <h2>Playback</h2>
+    <div class="seg">
+      <div id="btnPlay" class="btn active">Play</div>
+      <div id="btnStep" class="btn">Step</div>
+      <div id="btnReset" class="btn">Reset</div>
+    </div>
+    <div class="row">
+      <label>Speed</label>
+      <input id="speed" type="range" min="0" max="100" value="45"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>3D Rotations</h2>
+    <div class="small">3D modes use Euler angles for a rotation matrix \(R\) or \(U,V\).</div>
+    <div class="row"><label>yaw</label><input id="yaw" type="range" min="-3.14" max="3.14" step="0.01" value="0.6"/><input id="yawN" type="number" step="0.01" value="0.6"/></div>
+    <div class="row"><label>pitch</label><input id="pitch" type="range" min="-3.14" max="3.14" step="0.01" value="0.7"/><input id="pitchN" type="number" step="0.01" value="0.7"/></div>
+    <div class="row"><label>roll</label><input id="roll" type="range" min="-3.14" max="3.14" step="0.01" value="0.0"/><input id="rollN" type="number" step="0.01" value="0.0"/></div>
+
+    <div id="eigVals">
+      <div class="divider"></div>
+      <h2>Eigenvalues (3D eigen mode)</h2>
+      <div class="row"><label>λ1</label><input id="l1" type="range" min="0.05" max="3" step="0.01" value="2.2"/><input id="l1N" type="number" step="0.01" value="2.2"/></div>
+      <div class="row"><label>λ2</label><input id="l2" type="range" min="0.05" max="3" step="0.01" value="1.1"/><input id="l2N" type="number" step="0.01" value="1.1"/></div>
+      <div class="row"><label>λ3</label><input id="l3" type="range" min="0.05" max="3" step="0.01" value="0.4"/><input id="l3N" type="number" step="0.01" value="0.4"/></div>
+    </div>
+
+    <div id="svdVals" style="display:none;">
+      <div class="divider"></div>
+      <h2>Singular values (3D SVD mode)</h2>
+      <div class="row"><label>σ1</label><input id="s1" type="range" min="0.05" max="3" step="0.01" value="2.0"/><input id="s1N" type="number" step="0.01" value="2.0"/></div>
+      <div class="row"><label>σ2</label><input id="s2" type="range" min="0.05" max="3" step="0.01" value="1.0"/><input id="s2N" type="number" step="0.01" value="1.0"/></div>
+      <div class="row"><label>σ3</label><input id="s3" type="range" min="0.05" max="3" step="0.01" value="0.5"/><input id="s3N" type="number" step="0.01" value="0.5"/></div>
+
+      <div class="small">Also set a second rotation (V) via offset angles:</div>
+      <div class="row"><label>yaw(V)</label><input id="yawv" type="range" min="-3.14" max="3.14" step="0.01" value="-0.4"/><input id="yawvN" type="number" step="0.01" value="-0.4"/></div>
+      <div class="row"><label>pitch(V)</label><input id="pitchv" type="range" min="-3.14" max="3.14" step="0.01" value="0.5"/><input id="pitchvN" type="number" step="0.01" value="0.5"/></div>
+      <div class="row"><label>roll(V)</label><input id="rollv" type="range" min="-3.14" max="3.14" step="0.01" value="0.2"/><input id="rollvN" type="number" step="0.01" value="0.2"/></div>
+    </div>
+
+    <div id="schurVals" style="display:none;">
+      <div class="divider"></div>
+      <h2>Schur complement block matrix</h2>
+      <div class="note small mono">
+        Consider M(t) = [[A, b],[bᵀ, t]] with A SPD (2×2) and b∈R².
+        PSD iff t - bᵀ A^{-1} b ≥ 0. Slider is t.
+      </div>
+      <div class="row"><label>A11</label><input id="a11" type="range" min="0.2" max="3" step="0.01" value="1.3"/><input id="a11N" type="number" step="0.01" value="1.3"/></div>
+      <div class="row"><label>A12</label><input id="a12" type="range" min="-1.5" max="1.5" step="0.01" value="0.4"/><input id="a12N" type="number" step="0.01" value="0.4"/></div>
+      <div class="row"><label>A22</label><input id="a22" type="range" min="0.2" max="3" step="0.01" value="1.6"/><input id="a22N" type="number" step="0.01" value="1.6"/></div>
+      <div class="row"><label>b1</label><input id="b1" type="range" min="-2" max="2" step="0.01" value="0.8"/><input id="b1N" type="number" step="0.01" value="0.8"/></div>
+      <div class="row"><label>b2</label><input id="b2" type="range" min="-2" max="2" step="0.01" value="-0.6"/><input id="b2N" type="number" step="0.01" value="-0.6"/></div>
+      <div class="row"><label>t</label><input id="tt" type="range" min="-1" max="5" step="0.01" value="1.0"/><input id="ttN" type="number" step="0.01" value="1.0"/></div>
+    </div>
+
+    <div id="condVals" style="display:none;">
+      <div class="divider"></div>
+      <h2>Conditioning (2×2)</h2>
+      <div class="note small mono">
+        We build A = U diag(σ1,σ2) Vᵀ in 2D and solve x* = argmin ||Ax-b||.
+        Then perturb b slightly and show how x* moves.
+      </div>
+      <div class="row"><label>σ1</label><input id="cs1" type="range" min="0.2" max="3" step="0.01" value="2.2"/><input id="cs1N" type="number" step="0.01" value="2.2"/></div>
+      <div class="row"><label>σ2</label><input id="cs2" type="range" min="0.02" max="3" step="0.01" value="0.25"/><input id="cs2N" type="number" step="0.01" value="0.25"/></div>
+      <div class="row"><label>θ(U)</label><input id="thu" type="range" min="-3.14" max="3.14" step="0.01" value="0.7"/><input id="thuN" type="number" step="0.01" value="0.7"/></div>
+      <div class="row"><label>θ(V)</label><input id="thv" type="range" min="-3.14" max="3.14" step="0.01" value="-0.4"/><input id="thvN" type="number" step="0.01" value="-0.4"/></div>
+      <div class="row"><label>noise</label><input id="noise" type="range" min="0" max="1" step="0.01" value="0.25"/><input id="noiseN" type="number" step="0.01" value="0.25"/></div>
+    </div>
+
+    <h2>Readout</h2>
+    <div id="readout" class="note mono"></div>
+
+    <div class="divider"></div>
+    <div class="small">
+      Tips:
+      <br/>• Eigen 3D: change λ’s to see ellipsoid axes lengths. Rotation angles change eigenvectors (principal axes).
+      <br/>• SVD 3D: animate Vᵀ → Σ → U on a sphere. Try σ3 very small for near-rank-2.
+      <br/>• Schur: move t across the threshold t* = bᵀA^{-1}b and watch PSD flip.
+      <br/>• Conditioning: make σ2 tiny and see small b-noise cause big x-noise.
+    </div>
+  </div>
+
+  <div style="position:relative;">
+    <canvas id="cv"></canvas>
+  </div>
+</div>
+
+<script>
+/* ============================
+   Utilities
+   ============================ */
+const EPS = 1e-10;
+function clamp(x,lo,hi){ return Math.max(lo, Math.min(hi, x)); }
+function fmt(x){
+  if (!isFinite(x)) return "NaN";
+  const s = x.toFixed(4);
+  return s.replace(/\.?0+$/,'');
+}
+function lerp(a,b,t){ return (1-t)*a + t*b; }
+
+/* 2D */
+function mat2(a,b,c,d){ return {a,b,c,d}; }
+function mat2T(M){ return mat2(M.a, M.c, M.b, M.d); }
+function mat2Mul(A,B){
+  return mat2(
+    A.a*B.a + A.b*B.c,  A.a*B.b + A.b*B.d,
+    A.c*B.a + A.d*B.c,  A.c*B.b + A.d*B.d
+  );
+}
+function mat2Vec(M,x,y){ return [M.a*x + M.b*y, M.c*x + M.d*y]; }
+function dot2(u,v){ return u[0]*v[0] + u[1]*v[1]; }
+function norm2(v){ return Math.hypot(v[0], v[1]); }
+function add2(u,v){ return [u[0]+v[0], u[1]+v[1]]; }
+function sub2(u,v){ return [u[0]-v[0], u[1]-v[1]]; }
+function scale2(v,s){ return [v[0]*s, v[1]*s]; }
+function normalize2(v){
+  const n = norm2(v);
+  if (n < EPS) return [1,0];
+  return [v[0]/n, v[1]/n];
+}
+function rot2(theta){
+  const c = Math.cos(theta), s = Math.sin(theta);
+  return mat2(c,-s,s,c);
+}
+
+/* 3D: vector + matrix */
+function v3(x,y,z){ return [x,y,z]; }
+function add3(a,b){ return [a[0]+b[0], a[1]+b[1], a[2]+b[2]]; }
+function sub3(a,b){ return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+function scale3(a,s){ return [a[0]*s, a[1]*s, a[2]*s]; }
+function dot3(a,b){ return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]; }
+function norm3(a){ return Math.hypot(a[0],a[1],a[2]); }
+function normalize3(a){
+  const n = norm3(a);
+  if (n < EPS) return [1,0,0];
+  return [a[0]/n, a[1]/n, a[2]/n];
+}
+function mat3(m){ return m; } // 3x3 as array[9] row-major
+function mat3Mul(A,B){
+  const C = new Array(9).fill(0);
+  for(let r=0;r<3;r++){
+    for(let c=0;c<3;c++){
+      let s=0;
+      for(let k=0;k<3;k++) s += A[3*r+k]*B[3*k+c];
+      C[3*r+c]=s;
+    }
+  }
+  return C;
+}
+function mat3T(A){
+  return [
+    A[0],A[3],A[6],
+    A[1],A[4],A[7],
+    A[2],A[5],A[8],
+  ];
+}
+function mat3Vec(A, x){
+  return [
+    A[0]*x[0] + A[1]*x[1] + A[2]*x[2],
+    A[3]*x[0] + A[4]*x[1] + A[5]*x[2],
+    A[6]*x[0] + A[7]*x[1] + A[8]*x[2],
+  ];
+}
+function diag3(a,b,c){
+  return [a,0,0, 0,b,0, 0,0,c];
+}
+
+/* Euler rotation: yaw (z), pitch (y), roll (x) */
+function rotZ(a){
+  const c=Math.cos(a), s=Math.sin(a);
+  return [c,-s,0, s,c,0, 0,0,1];
+}
+function rotY(a){
+  const c=Math.cos(a), s=Math.sin(a);
+  return [c,0,s, 0,1,0, -s,0,c];
+}
+function rotX(a){
+  const c=Math.cos(a), s=Math.sin(a);
+  return [1,0,0, 0,c,-s, 0,s,c];
+}
+function euler(yaw, pitch, roll){
+  // R = Rz(yaw) * Ry(pitch) * Rx(roll)
+  return mat3Mul(mat3Mul(rotZ(yaw), rotY(pitch)), rotX(roll));
+}
+
+/* ============================
+   Canvas
+   ============================ */
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(canvas.clientWidth * dpr);
+  canvas.height = Math.floor(canvas.clientHeight * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+function clear(){
+  ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+}
+function drawText(lines){
+  ctx.save();
+  ctx.fillStyle="#d8e1ea";
+  ctx.globalAlpha=0.92;
+  ctx.font="12px ui-monospace, Menlo, Consolas, monospace";
+  let y=22;
+  for(const line of lines){
+    ctx.fillText(line, 18, y);
+    y+=18;
+  }
+  ctx.restore();
+}
+
+/* 2D view helpers */
+function makeView(cx, cy, scalePx){
+  return { w: canvas.clientWidth, h: canvas.clientHeight, cx, cy, scalePx };
+}
+function toScreen(view, p){
+  return [view.cx + view.scalePx*p[0], view.cy - view.scalePx*p[1]];
+}
+function drawGrid(view){
+  ctx.save();
+  ctx.globalAlpha=0.10;
+  ctx.strokeStyle="#9fb0c2";
+  ctx.lineWidth=1;
+  const step=view.scalePx/2;
+  for(let x=view.cx%step; x<view.w; x+=step){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,view.h); ctx.stroke();
+  }
+  for(let y=view.cy%step; y<view.h; y+=step){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(view.w,y); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawAxes(view){
+  ctx.save();
+  ctx.globalAlpha=0.35;
+  ctx.strokeStyle="#9fb0c2";
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,view.cy); ctx.lineTo(view.w,view.cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(view.cx,0); ctx.lineTo(view.cx,view.h); ctx.stroke();
+  ctx.restore();
+}
+function drawArrow2(view, from, to, color="#d8e1ea", alpha=1, lw=2){
+  const a=toScreen(view, from), b=toScreen(view, to);
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.strokeStyle=color;
+  ctx.fillStyle=color;
+  ctx.lineWidth=lw;
+  ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  const dx=b[0]-a[0], dy=b[1]-a[1];
+  const L=Math.hypot(dx,dy);
+  if(L>1e-6){
+    const ux=dx/L, uy=dy/L;
+    const size=10;
+    const left=[b[0]-size*(ux*0.9-uy*0.4), b[1]-size*(uy*0.9+ux*0.4)];
+    const right=[b[0]-size*(ux*0.9+uy*0.4), b[1]-size*(uy*0.9-ux*0.4)];
+    ctx.beginPath();
+    ctx.moveTo(b[0],b[1]);
+    ctx.lineTo(left[0],left[1]);
+    ctx.lineTo(right[0],right[1]);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+function drawPoint2(view, p, color="#d8e1ea", r=4, alpha=1){
+  const s=toScreen(view,p);
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.arc(s[0],s[1],r,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+function drawPolyline2(view, pts, stroke="#d8e1ea", alpha=1, lw=2, closed=true){
+  if(!pts.length) return;
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.strokeStyle=stroke;
+  ctx.lineWidth=lw;
+  ctx.beginPath();
+  const p0=toScreen(view,pts[0]);
+  ctx.moveTo(p0[0],p0[1]);
+  for(let i=1;i<pts.length;i++){
+    const p=toScreen(view,pts[i]);
+    ctx.lineTo(p[0],p[1]);
+  }
+  if(closed) ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* 3D projection */
+function project3(p, cam){
+  // simple camera: rotate by cam.R, then perspective
+  const pr = mat3Vec(cam.R, p);
+  const z = pr[2] + cam.dist;  // move forward
+  const s = cam.fov / z;
+  return [cam.cx + s*pr[0], cam.cy - s*pr[1], z];
+}
+function drawPoint3(p2, color="#d8e1ea", r=2.5, alpha=1){
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.fillStyle=color;
+  ctx.beginPath();
+  ctx.arc(p2[0], p2[1], r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+function drawLine3(a2,b2,color="#d8e1ea",alpha=1,lw=2){
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.strokeStyle=color;
+  ctx.lineWidth=lw;
+  ctx.beginPath();
+  ctx.moveTo(a2[0],a2[1]);
+  ctx.lineTo(b2[0],b2[1]);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* Sphere mesh points */
+function spherePoints(Ntheta=20, Nphi=40){
+  const pts=[];
+  for(let i=0;i<=Ntheta;i++){
+    const th = (i/Ntheta)*Math.PI; // 0..pi
+    for(let j=0;j<Nphi;j++){
+      const ph = (j/Nphi)*2*Math.PI; // 0..2pi
+      const x=Math.sin(th)*Math.cos(ph);
+      const y=Math.sin(th)*Math.sin(ph);
+      const z=Math.cos(th);
+      pts.push([x,y,z]);
+    }
+  }
+  return pts;
+}
+const SPHERE = spherePoints();
+
+/* ============================
+   Mode + UI
+   ============================ */
+let mode="eig3"; // eig3 | svd3 | schur | cond
+let playing=true;
+let phase=0;
+let stepOnce=false;
+
+const dom = {
+  mEig3: document.getElementById('mEig3'),
+  mSVD3: document.getElementById('mSVD3'),
+  mSchur: document.getElementById('mSchur'),
+  mCond: document.getElementById('mCond'),
+  btnPlay: document.getElementById('btnPlay'),
+  btnStep: document.getElementById('btnStep'),
+  btnReset: document.getElementById('btnReset'),
+  speed: document.getElementById('speed'),
+  readout: document.getElementById('readout'),
+
+  yaw: document.getElementById('yaw'), yawN: document.getElementById('yawN'),
+  pitch: document.getElementById('pitch'), pitchN: document.getElementById('pitchN'),
+  roll: document.getElementById('roll'), rollN: document.getElementById('rollN'),
+
+  l1: document.getElementById('l1'), l1N: document.getElementById('l1N'),
+  l2: document.getElementById('l2'), l2N: document.getElementById('l2N'),
+  l3: document.getElementById('l3'), l3N: document.getElementById('l3N'),
+
+  s1: document.getElementById('s1'), s1N: document.getElementById('s1N'),
+  s2: document.getElementById('s2'), s2N: document.getElementById('s2N'),
+  s3: document.getElementById('s3'), s3N: document.getElementById('s3N'),
+  yawv: document.getElementById('yawv'), yawvN: document.getElementById('yawvN'),
+  pitchv: document.getElementById('pitchv'), pitchvN: document.getElementById('pitchvN'),
+  rollv: document.getElementById('rollv'), rollvN: document.getElementById('rollvN'),
+
+  a11: document.getElementById('a11'), a11N: document.getElementById('a11N'),
+  a12: document.getElementById('a12'), a12N: document.getElementById('a12N'),
+  a22: document.getElementById('a22'), a22N: document.getElementById('a22N'),
+  b1: document.getElementById('b1'), b1N: document.getElementById('b1N'),
+  b2: document.getElementById('b2'), b2N: document.getElementById('b2N'),
+  tt: document.getElementById('tt'), ttN: document.getElementById('ttN'),
+
+  cs1: document.getElementById('cs1'), cs1N: document.getElementById('cs1N'),
+  cs2: document.getElementById('cs2'), cs2N: document.getElementById('cs2N'),
+  thu: document.getElementById('thu'), thuN: document.getElementById('thuN'),
+  thv: document.getElementById('thv'), thvN: document.getElementById('thvN'),
+  noise: document.getElementById('noise'), noiseN: document.getElementById('noiseN'),
+
+  eigVals: document.getElementById('eigVals'),
+  svdVals: document.getElementById('svdVals'),
+  schurVals: document.getElementById('schurVals'),
+  condVals: document.getElementById('condVals'),
+};
+
+function linkSlider(sl, num, onChange){
+  const syncFromSlider = () => { num.value = sl.value; onChange?.(); };
+  const syncFromNum = () => {
+    const v = clamp(parseFloat(num.value), parseFloat(sl.min), parseFloat(sl.max));
+    sl.value=v; num.value=v; onChange?.();
+  };
+  sl.addEventListener('input', syncFromSlider);
+  num.addEventListener('change', syncFromNum);
+}
+
+function updateReadout(){
+  if(mode==="eig3"){
+    const l1=parseFloat(dom.l1.value), l2=parseFloat(dom.l2.value), l3=parseFloat(dom.l3.value);
+    dom.readout.textContent =
+      `3D Eigen Ellipsoid\n`+
+      `A = R diag(λ1,λ2,λ3) Rᵀ  (R from yaw/pitch/roll)\n`+
+      `λ1=${fmt(l1)} λ2=${fmt(l2)} λ3=${fmt(l3)}\n`+
+      `Unit sphere points map to ellipsoid points under A.\n`+
+      `Eigenvectors are columns of R (principal axes).`;
+  } else if(mode==="svd3"){
+    const s1=parseFloat(dom.s1.value), s2=parseFloat(dom.s2.value), s3=parseFloat(dom.s3.value);
+    dom.readout.textContent =
+      `3D SVD Sphere\n`+
+      `A = U diag(σ1,σ2,σ3) Vᵀ  (U from yaw/pitch/roll, V from yaw(V)/pitch(V)/roll(V))\n`+
+      `σ1=${fmt(s1)} σ2=${fmt(s2)} σ3=${fmt(s3)}\n`+
+      `Animation stages: apply Vᵀ → Σ → U to a sphere.`;
+  } else if(mode==="schur"){
+    const a11=parseFloat(dom.a11.value), a12=parseFloat(dom.a12.value), a22=parseFloat(dom.a22.value);
+    const b1=parseFloat(dom.b1.value), b2=parseFloat(dom.b2.value), t=parseFloat(dom.tt.value);
+    // b^T A^{-1} b for 2x2
+    const det = a11*a22 - a12*a12;
+    let thresh = NaN;
+    if(det > 1e-10){
+      const inv = [
+        a22/det, -a12/det,
+        -a12/det, a11/det
+      ];
+      thresh = b1*(inv[0]*b1 + inv[1]*b2) + b2*(inv[2]*b1 + inv[3]*b2);
+    }
+    dom.readout.textContent =
+      `Schur Feasibility\n`+
+      `M(t) = [[A,b],[bᵀ,t]] with A=[[${fmt(a11)},${fmt(a12)}],[${fmt(a12)},${fmt(a22)}]], b=(${fmt(b1)},${fmt(b2)})\n`+
+      `Schur: M(t) ⪰ 0  ⇔  A ⪰ 0 and  t - bᵀA^{-1}b ≥ 0\n`+
+      `threshold t* = bᵀA^{-1}b ≈ ${fmt(thresh)}\n`+
+      `current t=${fmt(t)}  ⇒  margin m=t-t* ≈ ${fmt(t-thresh)}`;
+  } else {
+    const s1=parseFloat(dom.cs1.value), s2=parseFloat(dom.cs2.value);
+    const k = s1/Math.max(1e-12, s2);
+    dom.readout.textContent =
+      `Conditioning\n`+
+      `A = U diag(σ1,σ2) Vᵀ, κ(A)=σ1/σ2\n`+
+      `σ1=${fmt(s1)} σ2=${fmt(s2)}  κ≈${fmt(k)}\n`+
+      `Small noise in b can cause big changes in x* when κ is large.`;
+  }
+}
+
+function setMode(m){
+  mode=m;
+  dom.mEig3.classList.toggle('active', m==="eig3");
+  dom.mSVD3.classList.toggle('active', m==="svd3");
+  dom.mSchur.classList.toggle('active', m==="schur");
+  dom.mCond.classList.toggle('active', m==="cond");
+
+  dom.eigVals.style.display = (m==="eig3") ? "block" : "none";
+  dom.svdVals.style.display = (m==="svd3") ? "block" : "none";
+  dom.schurVals.style.display = (m==="schur") ? "block" : "none";
+  dom.condVals.style.display = (m==="cond") ? "block" : "none";
+
+  phase=0;
+  updateReadout();
+}
+dom.mEig3.onclick=()=>setMode("eig3");
+dom.mSVD3.onclick=()=>setMode("svd3");
+dom.mSchur.onclick=()=>setMode("schur");
+dom.mCond.onclick=()=>setMode("cond");
+
+dom.btnPlay.onclick=()=>{
+  playing=!playing;
+  dom.btnPlay.classList.toggle('active', playing);
+  dom.btnPlay.textContent = playing ? "Play" : "Paused";
+};
+dom.btnStep.onclick=()=>{ stepOnce=true; };
+dom.btnReset.onclick=()=>{ phase=0; };
+
+[
+  ["yaw","yawN"],["pitch","pitchN"],["roll","rollN"],
+  ["l1","l1N"],["l2","l2N"],["l3","l3N"],
+  ["s1","s1N"],["s2","s2N"],["s3","s3N"],
+  ["yawv","yawvN"],["pitchv","pitchvN"],["rollv","rollvN"],
+  ["a11","a11N"],["a12","a12N"],["a22","a22N"],["b1","b1N"],["b2","b2N"],["tt","ttN"],
+  ["cs1","cs1N"],["cs2","cs2N"],["thu","thuN"],["thv","thvN"],["noise","noiseN"],
+].forEach(([s,n])=>{
+  linkSlider(dom[s], dom[n], updateReadout);
+});
+
+updateReadout();
+
+/* ============================
+   Drawing: 3D modes
+   ============================ */
+function draw3DAxes(cam, len=1.6){
+  // axes in 3D: X red-ish, Y green-ish, Z blue-ish (no explicit colors requested; use alpha differences only)
+  const O = project3([0,0,0], cam);
+  const X = project3([len,0,0], cam);
+  const Y = project3([0,len,0], cam);
+  const Z = project3([0,0,len], cam);
+  drawLine3(O,X,"#d8e1ea",0.55,2);
+  drawLine3(O,Y,"#d8e1ea",0.40,2);
+  drawLine3(O,Z,"#d8e1ea",0.30,2);
+}
+
+function drawPointCloud(points3, cam, color, alphaBase=0.85, r=2.0){
+  // depth-sort for nicer look
+  const proj = points3.map(p=>{
+    const q=project3(p,cam);
+    return {x:q[0], y:q[1], z:q[2]};
+  }).sort((a,b)=>b.z-a.z);
+
+  for(const q of proj){
+    // fade with depth
+    const a = alphaBase * clamp(1.6/(q.z), 0.25, 1.0);
+    drawPoint3([q.x,q.y], color, r, a);
+  }
+}
+
+function drawEig3(t){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  const cam = {
+    cx: 0.52*w, cy: 0.55*h,
+    fov: Math.min(w,h)*0.70,
+    dist: 3.4,
+    // camera rotation: we also rotate the scene a bit over time for animation
+    R: euler(0.4 + 0.9*t*2*Math.PI, 0.6, 0.1)
+  };
+
+  // User-chosen eigenbasis rotation R (principal axes)
+  const yaw=parseFloat(dom.yaw.value), pitch=parseFloat(dom.pitch.value), roll=parseFloat(dom.roll.value);
+  const R = euler(yaw, pitch, roll);
+  const RT = mat3T(R);
+
+  const l1=parseFloat(dom.l1.value), l2=parseFloat(dom.l2.value), l3=parseFloat(dom.l3.value);
+  const D = diag3(l1,l2,l3);
+
+  // A = R D R^T
+  const A = mat3Mul(mat3Mul(R, D), RT);
+
+  // Map sphere points under A
+  const sphere = SPHERE;
+  const ell = sphere.map(p => mat3Vec(A, p));
+
+  clear();
+  // axes
+  draw3DAxes(cam, 1.7);
+
+  // draw sphere faint and ellipsoid bright
+  drawPointCloud(sphere, cam, "#9fb0c2", 0.22, 1.4);
+  drawPointCloud(ell, cam, "#ffd166", 0.85, 1.9);
+
+  // Draw principal axes vectors: columns of R scaled by λ
+  const e1 = [R[0],R[3],R[6]];
+  const e2 = [R[1],R[4],R[7]];
+  const e3 = [R[2],R[5],R[8]];
+
+  const O = project3([0,0,0], cam);
+  const A1 = project3(scale3(e1, l1*0.9), cam);
+  const A2 = project3(scale3(e2, l2*0.9), cam);
+  const A3 = project3(scale3(e3, l3*0.9), cam);
+
+  drawLine3(O,A1,"#d8e1ea",0.85,2.5);
+  drawLine3(O,A2,"#d8e1ea",0.65,2.5);
+  drawLine3(O,A3,"#d8e1ea",0.45,2.5);
+
+  drawText([
+    "3D Eigen Ellipsoid: sphere → A(sphere) = ellipsoid",
+    `A = R diag(λ1,λ2,λ3) Rᵀ  with λ1=${fmt(l1)} λ2=${fmt(l2)} λ3=${fmt(l3)}`
+  ]);
+}
+
+function drawSVD3(t){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  const cam = {
+    cx: 0.52*w, cy: 0.55*h,
+    fov: Math.min(w,h)*0.70,
+    dist: 3.4,
+    R: euler(0.3 + 0.8*t*2*Math.PI, 0.55, 0.15)
+  };
+
+  // U from yaw/pitch/roll
+  const yaw=parseFloat(dom.yaw.value), pitch=parseFloat(dom.pitch.value), roll=parseFloat(dom.roll.value);
+  const U = euler(yaw, pitch, roll);
+  const UT = mat3T(U);
+
+  // V from offset angles
+  const yv=parseFloat(dom.yawv.value), pv=parseFloat(dom.pitchv.value), rv=parseFloat(dom.rollv.value);
+  const V = euler(yv, pv, rv);
+  const VT = mat3T(V);
+
+  const s1=parseFloat(dom.s1.value), s2=parseFloat(dom.s2.value), s3=parseFloat(dom.s3.value);
+  const S = diag3(s1,s2,s3);
+
+  // animation stages: V^T -> Σ -> U
+  const seg=1/3;
+  let stage=Math.floor(t/seg);
+  stage=clamp(stage,0,2);
+  const local=(t-stage*seg)/seg;
+
+  // compute transformed sphere for each stage endpoints
+  const sphere = SPHERE;
+  const P0 = sphere;
+  const P1 = sphere.map(p => mat3Vec(VT, p));
+  const P2 = P1.map(p => mat3Vec(S, p));
+  const P3 = P2.map(p => mat3Vec(U, p));
+
+  function blend(A,B,a){ return A.map((p,i)=> [lerp(p[0],B[i][0],a), lerp(p[1],B[i][1],a), lerp(p[2],B[i][2],a)]); }
+
+  let P, title;
+  if(stage===0){ P=blend(P0,P1,local); title="Apply Vᵀ (input rotation)"; }
+  else if(stage===1){ P=blend(P1,P2,local); title="Apply Σ (axis scaling by σ's)"; }
+  else { P=blend(P2,P3,local); title="Apply U (output rotation)"; }
+
+  clear();
+  draw3DAxes(cam, 1.7);
+
+  // draw final faint, current bright
+  drawPointCloud(P0, cam, "#9fb0c2", 0.12, 1.3);
+  drawPointCloud(P3, cam, "#6aa2d8", 0.22, 1.5);
+  drawPointCloud(P,  cam, "#ffd166", 0.85, 1.9);
+
+  drawText([
+    "3D SVD Sphere: A = U Σ Vᵀ as rotate → scale → rotate",
+    `${title} | σ1=${fmt(s1)} σ2=${fmt(s2)} σ3=${fmt(s3)}`
+  ]);
+}
+
+/* ============================
+   Drawing: Schur feasibility
+   ============================ */
+function inv2x2(a11,a12,a22){
+  const det=a11*a22-a12*a12;
+  if(det<=1e-10) return null;
+  return [
+    a22/det, -a12/det,
+    -a12/det, a11/det
+  ];
+}
+
+function drawSchur(tAnim){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  const view = makeView(0.52*w, 0.55*h, Math.min(w,h)*0.23);
+  drawGrid(view); drawAxes(view);
+
+  const a11=parseFloat(dom.a11.value), a12=parseFloat(dom.a12.value), a22=parseFloat(dom.a22.value);
+  const b1=parseFloat(dom.b1.value), b2=parseFloat(dom.b2.value), tt=parseFloat(dom.tt.value);
+
+  const invA = inv2x2(a11,a12,a22);
+  let thresh=NaN;
+  let okA=false;
+  if(invA){
+    okA=true;
+    thresh = b1*(invA[0]*b1 + invA[1]*b2) + b2*(invA[2]*b1 + invA[3]*b2);
+  }
+  const margin = tt - thresh;
+  const psd = okA && margin >= -1e-12;
+
+  // Visual: plot threshold line in a 1D gauge on the canvas, plus a simple contour of q(x,z) = [x;z]^T M [x;z]
+  // Here M is 3x3, but we can't plot 3D; we show a slice with z fixed and see quadratic form in x.
+  // We'll instead show a “minimal t needed” gauge and a moving dot.
+
+  // gauge bar
+  const gx0=18, gy=h-70, gw=w-36, gh=10;
+  ctx.save();
+  ctx.globalAlpha=0.8;
+  ctx.fillStyle="#0f1620";
+  ctx.strokeStyle="#223244";
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(gx0,gy,gw,gh,6); ctx.fill(); ctx.stroke();
+
+  // map t range [-1,5] to bar
+  const tmin=-1, tmax=5;
+  const xThresh = gx0 + gw*(clamp((thresh-tmin)/(tmax-tmin),0,1));
+  const xT = gx0 + gw*(clamp((tt-tmin)/(tmax-tmin),0,1));
+
+  // threshold marker
+  ctx.globalAlpha=0.9;
+  ctx.strokeStyle="#ffd166";
+  ctx.beginPath(); ctx.moveTo(xThresh,gy-8); ctx.lineTo(xThresh,gy+gh+8); ctx.stroke();
+
+  // t marker
+  ctx.strokeStyle= psd ? "#06d6a0" : "#ff6b6b";
+  ctx.beginPath(); ctx.moveTo(xT,gy-12); ctx.lineTo(xT,gy+gh+12); ctx.stroke();
+
+  // labels
+  ctx.fillStyle="#d8e1ea";
+  ctx.font="12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`t*=${fmt(thresh)} (threshold)`, gx0, gy-18);
+  ctx.fillText(`t=${fmt(tt)}  margin=${fmt(margin)}  => ${psd?"PSD":"not PSD"}`, gx0, gy+gh+28);
+  ctx.restore();
+
+  drawText([
+    "Schur feasibility: M(t) = [[A,b],[bᵀ,t]] ⪰ 0  ⇔  A ⪰ 0 and t ≥ bᵀA^{-1}b",
+    `A=[[${fmt(a11)},${fmt(a12)}],[${fmt(a12)},${fmt(a22)}]]  b=(${fmt(b1)},${fmt(b2)})`
+  ]);
+
+  // Draw A-ellipse (x^T A x = 1) and b direction, as intuition.
+  if(okA){
+    // ellipse points for x^T A x = 1: param via unit circle mapped by A^{-1/2} (hard without eig), so approximate:
+    // sample angles and solve for radius r such that (r u)^T A (r u)=1 => r = 1/sqrt(u^T A u)
+    const pts=[];
+    for(let i=0;i<240;i++){
+      const th=(i/240)*2*Math.PI;
+      const u=[Math.cos(th), Math.sin(th)];
+      const uAu = a11*u[0]*u[0] + 2*a12*u[0]*u[1] + a22*u[1]*u[1];
+      const r = (uAu>EPS) ? 1/Math.sqrt(uAu) : 0;
+      pts.push(scale2(u, r));
+    }
+    drawPolyline2(view, pts, "#6aa2d8", 0.6, 2.2, true);
+    drawArrow2(view, [0,0], [b1,b2], "#ffd166", 0.75, 2.3);
+    drawPoint2(view, [b1,b2], "#ffd166", 4.2, 0.9);
+  }
+}
+
+/* ============================
+   Conditioning demo (2D)
+   ============================ */
+function drawConditioning(t){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  const left  = makeView(0.30*w, 0.55*h, Math.min(w,h)*0.22);
+  const right = makeView(0.73*w, 0.55*h, Math.min(w,h)*0.22);
+
+  drawGrid(left); drawGrid(right);
+  drawAxes(left); drawAxes(right);
+
+  // build A = U diag(s1,s2) V^T in 2D
+  const s1=parseFloat(dom.cs1.value), s2=parseFloat(dom.cs2.value);
+  const thU=parseFloat(dom.thu.value), thV=parseFloat(dom.thv.value);
+  const U=rot2(thU), V=rot2(thV), VT=mat2T(V);
+  const S=mat2(s1,0,0,s2);
+  const A=mat2Mul(mat2Mul(U,S), VT);
+
+  // Choose b and perturbed b̃
+  const baseB = [1.2*Math.cos(2*Math.PI*(t+0.2)), 1.2*Math.sin(2*Math.PI*(t+0.2))];
+  const noiseAmp=parseFloat(dom.noise.value);
+  const n = [noiseAmp*0.25*Math.cos(2*Math.PI*(t+0.53)), noiseAmp*0.25*Math.sin(2*Math.PI*(t+0.11))];
+  const bT = add2(baseB, n);
+
+  // Solve min ||Ax-b|| with pseudoinverse in 2D using SVD formula (since we constructed it, invert directly):
+  // A^+ = V diag(1/s1,1/s2) U^T (with care if s2 tiny)
+  const UT = mat2T(U);
+  const inv1 = 1/Math.max(1e-12,s1);
+  const inv2 = 1/Math.max(1e-12,s2);
+  const Splus = mat2(inv1,0,0,inv2);
+  const Aplus = mat2Mul(mat2Mul(V,Splus), UT);
+
+  const x  = mat2Vec(Aplus, baseB[0], baseB[1]);
+  const xT = mat2Vec(Aplus, bT[0], bT[1]);
+
+  const p  = mat2Vec(A, x[0], x[1]);
+  const pT = mat2Vec(A, xT[0], xT[1]);
+
+  // Visual: domain (x) on left, codomain (Ax) on right
+  // show x, x~; show b, b~; show projections p, p~
+  drawArrow2(left, [0,0], x,  "#6aa2d8", 0.95, 2.8);
+  drawArrow2(left, [0,0], xT, "#ffd166", 0.95, 2.8);
+  drawPoint2(left, x, "#6aa2d8", 4.5, 1);
+  drawPoint2(left, xT, "#ffd166", 4.5, 1);
+
+  drawArrow2(right, [0,0], baseB, "#9fb0c2", 0.75, 2.2);
+  drawArrow2(right, [0,0], bT,    "#9fb0c2", 0.75, 2.2);
+  drawPoint2(right, baseB, "#9fb0c2", 4.2, 1);
+  drawPoint2(right, bT, "#9fb0c2", 4.2, 1);
+
+  drawArrow2(right, [0,0], p,  "#6aa2d8", 0.95, 2.8);
+  drawArrow2(right, [0,0], pT, "#ffd166", 0.95, 2.8);
+  drawPoint2(right, p, "#6aa2d8", 4.5, 1);
+  drawPoint2(right, pT, "#ffd166", 4.5, 1);
+
+  // residuals
+  drawArrow2(right, p,  baseB, "#ff6b6b", 0.55, 2.0);
+  drawArrow2(right, pT, bT,    "#ff6b6b", 0.55, 2.0);
+
+  const k = s1/Math.max(1e-12,s2);
+  const dx = norm2(sub2(xT,x));
+  const db = norm2(sub2(bT,baseB));
+
+  drawText([
+    "Conditioning: small Δb can cause big Δx when κ=σ1/σ2 is large",
+    `σ1=${fmt(s1)} σ2=${fmt(s2)} κ≈${fmt(k)} | ||Δb||=${fmt(db)} ||Δx||=${fmt(dx)}`
+  ]);
+
+  // divider line between views
+  ctx.save();
+  ctx.strokeStyle="#17212b";
+  ctx.globalAlpha=0.9;
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(0.515*w, 0);
+  ctx.lineTo(0.515*w, h);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ============================
+   Main loop
+   ============================ */
+let last = performance.now();
+function tick(now){
+  const dt = Math.min(0.05, (now-last)/1000);
+  last = now;
+
+  const sp = parseFloat(dom.speed.value)/100;
+  const omega = 0.08 + 0.92*sp;
+
+  if(playing){
+    phase = (phase + omega*dt) % 1;
+  } else if(stepOnce){
+    phase = (phase + 0.02) % 1;
+    stepOnce=false;
+  }
+
+  if(mode==="eig3") drawEig3(phase);
+  else if(mode==="svd3") drawSVD3(phase);
+  else if(mode==="schur") { clear(); drawSchur(phase); }
+  else { clear(); drawConditioning(phase); }
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// init
+try {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('mode');
+  if(m) setMode(m);
+} catch(e){}
+</script>
+</body>
+</html>

@@ -1637,6 +1637,60 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation)</h3>
+  <p><strong>Context:</strong> We seek the minimum-volume ellipsoid $\mathcal{E}(X) = \{x \in \mathbb{R}^n \mid x^\top X x \le 1\}$ centered at the origin that contains a set of points $a_1, \dots, a_m \in \mathbb{R}^n$ (which span $\mathbb{R}^n$).
+  <br>This is formulated as the convex problem:
+  $$ \min_{X \in \mathbb{S}_{++}^n} \log \det(X^{-1}) \quad \text{s.t.} \quad a_i^\top X a_i \le 1, \quad i=1,\dots,m $$
+  Consider the simple candidate solution $X_{\text{sim}} = \left(\sum_{k=1}^m a_k a_k^\top\right)^{-1}$.
+  <br><strong>(a)</strong> Prove that $X_{\text{sim}}$ is feasible (contains all points).
+  <br><strong>(b)</strong> Use the dual problem to prove that the volume of $\mathcal{E}(X_{\text{sim}})$ is at most $(\frac{m}{n})^{n/2}$ times the optimal volume.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Geometric Approximation:</b> This result shows that a simple statistical estimate (covariance-based) provides a guaranteed approximation to the optimal geometric shape.</li>
+        <li><b>Schur Complements:</b> The feasibility proof relies on "lifting" the problem into a higher-dimensional block matrix to prove a quadratic inequality via Schur complements.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 0: Preliminaries.</strong>
+      Define $S = \sum_{k=1}^m a_k a_k^\top$. Since the points $a_k$ span $\mathbb{R}^n$, for any vector $v \ne 0$, $v^\top S v = \sum (a_k^\top v)^2 > 0$. Thus $S \succ 0$ and its inverse $X_{\text{sim}} = S^{-1}$ is well-defined.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 1: Feasibility (Part a).</strong>
+      We must show $a_i^\top S^{-1} a_i \le 1$ for all $i$.
+      Consider the block matrix $M_i = \begin{bmatrix} S & a_i \\ a_i^\top & 1 \end{bmatrix}$.
+      We can write $M_i$ as a sum of PSD outer products:
+      $$ M_i = \sum_{k \ne i} \begin{bmatrix} a_k \\ 0 \end{bmatrix} \begin{bmatrix} a_k \\ 0 \end{bmatrix}^\top + \begin{bmatrix} a_i \\ 1 \end{bmatrix} \begin{bmatrix} a_i \\ 1 \end{bmatrix}^\top \succeq 0 $$
+      Since $M_i \succeq 0$ and $S \succ 0$, by the Schur Complement lemma ($M \succeq 0 \iff \alpha - u^\top S^{-1} u \ge 0$), we have $1 - a_i^\top S^{-1} a_i \ge 0$.
+      Thus $a_i^\top X_{\text{sim}} a_i \le 1$, so $X_{\text{sim}}$ is feasible.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 2: The Dual Bound (Part b).</strong>
+      The dual problem maximizes $d(\lambda) = \log \det(\sum \lambda_i a_i a_i^\top) - \sum \lambda_i + n$ over $\lambda \succeq 0$.
+      We choose a specific dual candidate: $\lambda_i = t$ for all $i$.
+      $$ d(t\mathbf{1}) = \log \det(tS) - mt + n = \log \det S + n \log t - mt + n $$
+      Maximizing over $t > 0$: the derivative is $n/t - m = 0 \implies t^* = n/m$.
+      $$ d(t^*) = \log \det S + n \log(n/m) - n + n = \log \det S - n \log(m/n) $$
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 3: Volume Ratio.</strong>
+      By Weak Duality, $p^* \ge d(t^*)$. The primal objective at $X_{\text{sim}}$ is $f_0(X_{\text{sim}}) = \log \det(S)$.
+      The suboptimality gap is bounded by:
+      $$ f_0(X_{\text{sim}}) - p^* \le \log \det S - (\log \det S - n \log(m/n)) = n \log(m/n) $$
+      Since $\text{Vol}(\mathcal{E}(X)) \propto \det(X)^{-1/2} = \exp(\frac{1}{2} f_0(X))$, the volume ratio is:
+      $$ \frac{\text{Vol}(X_{\text{sim}})}{\text{Vol}(X^*)} = \exp\left( \frac{1}{2}(f_0(X_{\text{sim}}) - p^*) \right) \le \exp\left( \frac{n}{2} \log \frac{m}{n} \right) = \left( \frac{m}{n} \right)^{n/2} $$
+    </div>
+  </div>
+</div>
+
 </section>
     </article>
 

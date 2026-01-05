@@ -146,6 +146,29 @@
           <br>Dual optimal value $d^* = g(1) = 1 - 0.5 = 0.5$.</p>
           <p><b>Result:</b> $p^* = d^* = 0.5$. Strong duality holds.</p>
         </div>
+
+        <h3>2.4 The Minimax (Saddle Point) Interpretation</h3>
+        <p>We can recover the primal problem from the Lagrangian by maximizing over the dual variables. Define the function:</p>
+        $$
+        \sup_{\lambda \succeq 0, \nu} \mathcal{L}(x, \lambda, \nu) = \sup_{\lambda \succeq 0, \nu} \left( f_0(x) + \sum \lambda_i f_i(x) + \sum \nu_j h_j(x) \right)
+        $$
+        <ul>
+          <li><strong>If $\mathbf{x}$ is feasible:</strong> $f_i(\mathbf{x}) \le 0$ and $h_j(\mathbf{x})=0$. To maximize the sum, the best we can do is set $\lambda_i=0$ (since $\lambda_i \ge 0$ and $f_i(\mathbf{x}) \le 0$, any positive $\lambda$ would make the term negative). The $\nu$ term is always 0. Thus, the supremum is $f_0(\mathbf{x})$.</li>
+          <li><strong>If $\mathbf{x}$ is infeasible:</strong>
+            <ul>
+              <li>If $f_i(x) > 0$, we can let $\lambda_i \to \infty$, making the sum $\infty$.</li>
+              <li>If $h_j(x) \ne 0$, we can let $\nu_j \to \text{sign}(h_j(x)) \cdot \infty$, making the sum $\infty$.</li>
+            </ul>
+          </li>
+        </ul>
+        <p>Thus, the unconstrained problem $\min_x \sup_{\lambda \succeq 0, \nu} \mathcal{L}(x, \lambda, \nu)$ is exactly equivalent to the original constrained primal problem.</p>
+        <div class="intuition-box">
+          <p><b>Duality as a Game:</b>
+          <br><b>Primal:</b> $\min_x \max_{\lambda, \nu} \mathcal{L}(x, \lambda, \nu)$ (Minimizer moves first, Maximizer exploits violations).
+          <br><b>Dual:</b> $\max_{\lambda, \nu} \min_x \mathcal{L}(x, \lambda, \nu)$ (Maximizer moves first, setting prices; Minimizer optimizes given prices).
+          <br><b>Weak Duality</b> is simply the max-min inequality: $\max_{\lambda, \nu} \min_x \mathcal{L}(x, \lambda, \nu) \le \min_x \max_{\lambda, \nu} \mathcal{L}(x, \lambda, \nu)$. This inequality holds for <em>any</em> function, not just Lagrangians.
+          <br><b>Strong Duality</b> implies the existence of a <b>Saddle Point</b> where the order of play doesn't matter, i.e., we can swap min and max.</p>
+        </div>
       </section>
 
       <section class="section-card" id="section-3">
@@ -162,6 +185,55 @@
         g(\lambda, \nu) = \inf_{x \in \mathbb{R}^n} \mathcal{L}(x, \lambda, \nu) = \inf_{x \in \mathbb{R}^n} \left( f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x) \right)
         $$
         <p><b>Note:</b> The infimum is over the <i>entire domain</i> of the functions (usually $\mathbb{R}^n$), not the feasible set. We have "relaxed" the constraints.</p>
+
+        <div class="theorem-box">
+          <h4>Key Property: Concavity</h4>
+          <p>The dual function $g(\lambda, \nu)$ is <b>concave</b>, even if the primal problem is not convex.</p>
+          <div class="proof-box">
+            <h4>Proof</h4>
+            <p>For each fixed $\mathbf{x}$, the function $(\lambda, \nu) \mapsto \mathcal{L}(\mathbf{x}, \lambda, \nu)$ is affine in $(\lambda, \nu)$.
+            <br>The dual function $g$ is the pointwise infimum of a family of affine functions.
+            <br>The infimum of concave (linear) functions is concave.</p>
+          </div>
+        </div>
+
+        <div class="insight">
+          <h4>Why the Dual is Always Convex (Even When the Primal is Not)</h4>
+          <p>This is a fundamental fact that deserves emphasis. The dual problem:</p>
+          $$ \max_{\lambda \succeq 0, \nu} g(\lambda, \nu) $$
+          <p>is <b>always a convex optimization problem</b>:</p>
+          <ul>
+            <li>The domain $\{\lambda \succeq 0\}$ is a convex set (the non-negative orthant).</li>
+            <li>Maximizing a concave function is equivalent to minimizing a convex function.</li>
+          </ul>
+          <p><b>Geometric Intuition:</b> For each fixed $x$, the Lagrangian is a "hyperplane" in $(\lambda, \nu)$-space. The dual function is the <b>lower envelope</b> of these hyperplanes. Lower envelopes of affine functions are always concave.</p>
+        </div>
+
+        <div class="proof-box">
+          <h4>Deep Dive: The Dual of a Non-Convex Problem (Exercise 5.3)</h4>
+          <p>We perform a rigorous derivation of the Lagrange dual for the problem $\min c^\top x$ subject to a single inequality $f(x) \le 0$. Crucially, we do <b>not</b> assume $f$ is convex.</p>
+          <div class="proof-step">
+            <strong>Step 1: The Lagrangian.</strong>
+            $\mathcal{L}(x, \lambda) = c^\top x + \lambda f(x)$ with $\lambda \ge 0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: The Dual Function.</strong>
+            $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+            This function $g(\lambda)$ is always concave.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Introducing the Conjugate.</strong>
+            Recall $f^*(y) = \sup_x (y^\top x - f(x))$.
+            For $\lambda > 0$:
+            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = \lambda \left[ -f^*\left(-\frac{c}{\lambda}\right) \right] $$
+            For $\lambda = 0$: $g(0) = \inf c^\top x = -\infty$ (since $c \ne 0$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: The Dual Problem.</strong>
+            Maximize $-\lambda f^*(-c/\lambda)$ subject to $\lambda > 0$.
+            This is a convex problem involving the perspective of the conjugate function.
+          </div>
+        </div>
 
         <h3>3.2 Weak Duality (The Universal Inequality)</h3>
         <p>The fundamental property of the dual function is that it yields lower bounds on the optimal value $p^\star$.</p>
@@ -185,13 +257,7 @@
           </div>
         </div>
 
-        <h3>3.3 Concavity of the Dual Function</h3>
-        <p>The dual function $g(\lambda, \nu)$ is <b>always concave</b>, even if the primal problem is non-convex.</p>
-        <p><b>Reason:</b> For each fixed $x$, the function $(\lambda, \nu) \mapsto \mathcal{L}(x, \lambda, \nu)$ is linear (affine) in the dual variables.
-        <br>Thus, $g$ is the pointwise infimum of a family of affine functions.
-        <br>The pointwise minimum of linear functions is always concave (it looks like a tent).</p>
-
-        <h3>3.4 Computing $g(\lambda, \nu)$: The Templates</h3>
+        <h3>3.3 Computing $g(\lambda, \nu)$: The Templates</h3>
         <p>Calculating the dual function means solving an unconstrained minimization problem parameterized by $\lambda, \nu$. There are three main patterns:</p>
 
         <div class="example">

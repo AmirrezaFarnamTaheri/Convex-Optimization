@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eigen / SVD / Schur — Animated Walkthrough</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#0b0f14; color:#d8e1ea; }
+    .wrap { display:grid; grid-template-columns: 380px 1fr; gap: 12px; height:100vh; }
+    .panel { padding:14px; border-right: 1px solid #17212b; overflow:auto; }
+    .panel h1 { font-size:16px; margin:0 0 8px 0; }
+    .panel h2 { font-size:13px; margin:14px 0 8px 0; color:#b7c7d8; }
+    .row { display:flex; gap:10px; align-items:center; margin: 8px 0; }
+    .row label { width:44px; color:#b7c7d8; font-size:12px; }
+    input[type="range"] { width: 100%; }
+    input[type="number"] { width:80px; background:#0f1620; border:1px solid #223244; color:#d8e1ea; padding:6px; border-radius:8px; }
+    .seg { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0; }
+    .btn, .pill {
+      background:#0f1620; border:1px solid #223244; color:#d8e1ea;
+      padding:8px 10px; border-radius:10px; cursor:pointer; user-select:none;
+      font-size:12px;
+    }
+    .pill { display:flex; align-items:center; gap:8px; }
+    .btn:hover, .pill:hover { border-color:#3a5872; }
+    .btn.active { background:#142233; border-color:#6aa2d8; }
+    .note { font-size:12px; color:#b7c7d8; line-height:1.35; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    canvas { width:100%; height:100%; display:block; background: radial-gradient(1200px 700px at 60% 40%, #0f1620 0%, #0b0f14 55%, #070a0e 100%); }
+    .footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid #17212b; }
+    .small { font-size:11px; color:#9fb0c2; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <h1>Eigen / SVD / Schur — animations</h1>
+    <div class="note">
+      Pick a mode, move sliders, hit Play. This is a “see it happen” companion to the algebra:
+      eigenvectors = invariant directions, SVD = rotate→scale→rotate, Schur = eliminate a block by completing the square.
+    </div>
+
+    <h2>Mode</h2>
+    <div class="seg">
+      <div id="modeEigen" class="btn active">Eigen (symmetric)</div>
+      <div id="modeSVD" class="btn">SVD (general)</div>
+      <div id="modeSchur" class="btn">Schur (quadratic)</div>
+    </div>
+
+    <h2>Controls</h2>
+    <div class="seg">
+      <div id="btnPlay" class="btn active">Play</div>
+      <div id="btnStep" class="btn">Step</div>
+      <div id="btnReset" class="btn">Reset phase</div>
+    </div>
+
+    <div class="row">
+      <label>Speed</label>
+      <input id="speed" type="range" min="0" max="100" value="45"/>
+    </div>
+
+    <h2>Matrix entries</h2>
+    <div class="note small">
+      Eigen + Schur use a symmetric 2×2: <span class="mono">[[a, b],[b, d]]</span>.<br/>
+      SVD uses general 2×2: <span class="mono">[[a, b],[c, d]]</span>.
+    </div>
+
+    <div id="rowA" class="row">
+      <label>a</label>
+      <input id="a" type="range" min="-3" max="3" step="0.01" value="1.2"/>
+      <input id="aN" type="number" step="0.01" value="1.2"/>
+    </div>
+    <div id="rowB" class="row">
+      <label>b</label>
+      <input id="b" type="range" min="-3" max="3" step="0.01" value="0.9"/>
+      <input id="bN" type="number" step="0.01" value="0.9"/>
+    </div>
+    <div id="rowC" class="row">
+      <label>c</label>
+      <input id="c" type="range" min="-3" max="3" step="0.01" value="-0.6"/>
+      <input id="cN" type="number" step="0.01" value="-0.6"/>
+    </div>
+    <div id="rowD" class="row">
+      <label>d</label>
+      <input id="d" type="range" min="-3" max="3" step="0.01" value="1.0"/>
+      <input id="dN" type="number" step="0.01" value="1.0"/>
+    </div>
+
+    <h2>Readouts</h2>
+    <div id="readout" class="note mono"></div>
+
+    <div class="footer">
+      <div class="small">
+        Tip: In Eigen mode, set <span class="mono">b≈0</span> to see axes become eigenvectors. In SVD mode, try a shear
+        (e.g. a=1, b=1.2, c=0, d=1). In Schur mode, watch how PSD needs <span class="mono">d&gt;0</span> and <span class="mono">a-b²/d ≥ 0</span>.
+      </div>
+    </div>
+  </div>
+
+  <div style="position:relative;">
+    <canvas id="cv"></canvas>
+  </div>
+</div>
+
+<script>
+/* ============================
+   Small linear algebra helpers
+   ============================ */
+const EPS = 1e-10;
+
+function mat2(a,b,c,d){ return {a,b,c,d}; } // [[a,b],[c,d]]
+function mat2T(M){ return mat2(M.a, M.c, M.b, M.d); }
+function mat2Mul(A,B){
+  return mat2(
+    A.a*B.a + A.b*B.c,  A.a*B.b + A.b*B.d,
+    A.c*B.a + A.d*B.c,  A.c*B.b + A.d*B.d
+  );
+}
+function mat2Vec(M,x,y){ return [M.a*x + M.b*y, M.c*x + M.d*y]; }
+function dot(x,y){ return x[0]*y[0] + x[1]*y[1]; }
+function norm(x){ return Math.hypot(x[0], x[1]); }
+function scale(v,s){ return [v[0]*s, v[1]*s]; }
+function add(u,v){ return [u[0]+v[0], u[1]+v[1]]; }
+function sub(u,v){ return [u[0]-v[0], u[1]-v[1]]; }
+function normalize(v){
+  const n = norm(v);
+  if (n < EPS) return [1,0];
+  return [v[0]/n, v[1]/n];
+}
+function ortho(v){ return [-v[1], v[0]]; } // rotate +90°
+function clamp(x,lo,hi){ return Math.max(lo, Math.min(hi, x)); }
+
+/* Eigen of symmetric 2x2 [[a,b],[b,d]]:
+   eigenvalues: t±s, where t=(a+d)/2, s=sqrt(((a-d)/2)^2 + b^2)
+   eigenvector for λ can be taken as [b, λ-a] (unless both ~0), else [λ-d, b]
+*/
+function eigSym2(a,b,d){
+  const t = 0.5*(a+d);
+  const delta = 0.5*(a-d);
+  const s = Math.sqrt(delta*delta + b*b);
+  const l1 = t + s;
+  const l2 = t - s;
+
+  function eigvec(lambda){
+    let v = [b, lambda - a];
+    if (norm(v) < EPS) v = [lambda - d, b];
+    if (norm(v) < EPS) v = [1,0];
+    return normalize(v);
+  }
+  const v1 = eigvec(l1);
+  // For symmetric, v2 is orthogonal to v1 (can choose ortho)
+  const v2 = normalize(ortho(v1));
+  return { l1, l2, v1, v2 };
+}
+
+/* SVD for 2x2 via eigen of A^T A.
+   Steps:
+   - Compute G = A^T A (symmetric PSD).
+   - Eigenpairs of G give v_i (right singular vectors) and λ_i=σ_i^2.
+   - σ_i = sqrt(λ_i).
+   - u_i = A v_i / σ_i for σ_i>0, else pick orthonormal completion.
+*/
+function svd2(A){
+  const AT = mat2T(A);
+  const G = mat2Mul(AT, A); // n=2 so 2x2
+  // G is symmetric: [[g11,g12],[g12,g22]]
+  const g11 = G.a, g12 = G.b, g22 = G.d;
+  const { l1, l2, v1, v2 } = eigSym2(g11, g12, g22);
+
+  let s1 = Math.sqrt(Math.max(0, l1));
+  let s2 = Math.sqrt(Math.max(0, l2));
+
+  // Ensure ordering s1 >= s2; if not, swap.
+  let V1=v1, V2=v2;
+  if (s2 > s1 + 1e-12){
+    [s1,s2] = [s2,s1];
+    [V1,V2] = [V2,V1];
+  }
+
+  // Left singulars
+  let U1, U2;
+  if (s1 > EPS){
+    const Av1 = mat2Vec(A, V1[0], V1[1]);
+    U1 = normalize(scale(Av1, 1/s1));
+  } else {
+    U1 = [1,0];
+  }
+  // For second, either compute or complete orthonormally
+  if (s2 > EPS){
+    const Av2 = mat2Vec(A, V2[0], V2[1]);
+    U2 = normalize(scale(Av2, 1/s2));
+    // Make sure orthonormal (numerical cleanup)
+    // Orthogonalize U2 against U1
+    const proj = dot(U2,U1);
+    U2 = normalize(sub(U2, scale(U1, proj)));
+  } else {
+    U2 = normalize(ortho(U1));
+  }
+
+  // Build U and V with columns [u1 u2], [v1 v2]
+  const U = mat2(U1[0], U2[0], U1[1], U2[1]);
+  const V = mat2(V1[0], V2[0], V1[1], V2[1]);
+  const VT = mat2T(V);
+  const Sigma = mat2(s1,0,0,s2);
+
+  return { U, Sigma, V, VT, s1, s2, u1:U1, u2:U2, v1:V1, v2:V2 };
+}
+
+/* ============================
+   Canvas + rendering
+   ============================ */
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(canvas.clientWidth * dpr);
+  canvas.height = Math.floor(canvas.clientHeight * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+function clear(){
+  ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+}
+
+// Coordinate transform: world -> screen
+function makeView(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const cx = 0.52*w, cy = 0.52*h;
+  const scalePx = Math.min(w,h)*0.23;
+  return { w,h,cx,cy,scalePx };
+}
+function toScreen(view, p){
+  return [view.cx + view.scalePx*p[0], view.cy - view.scalePx*p[1]];
+}
+function drawAxes(view){
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.strokeStyle = "#9fb0c2";
+  ctx.lineWidth = 1;
+  // x axis
+  ctx.beginPath();
+  ctx.moveTo(0, view.cy);
+  ctx.lineTo(view.w, view.cy);
+  ctx.stroke();
+  // y axis
+  ctx.beginPath();
+  ctx.moveTo(view.cx, 0);
+  ctx.lineTo(view.cx, view.h);
+  ctx.stroke();
+  ctx.restore();
+}
+function drawGrid(view){
+  ctx.save();
+  ctx.globalAlpha = 0.12;
+  ctx.strokeStyle = "#9fb0c2";
+  ctx.lineWidth = 1;
+  const step = view.scalePx/2;
+  for(let x=view.cx%step; x<view.w; x+=step){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,view.h); ctx.stroke();
+  }
+  for(let y=view.cy%step; y<view.h; y+=step){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(view.w,y); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawPolyline(view, pts, stroke="#d8e1ea", alpha=1, lw=2){
+  if (!pts.length) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  const p0 = toScreen(view, pts[0]);
+  ctx.moveTo(p0[0], p0[1]);
+  for(let i=1;i<pts.length;i++){
+    const p = toScreen(view, pts[i]);
+    ctx.lineTo(p[0], p[1]);
+  }
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawArrow(view, from, to, color="#d8e1ea", alpha=1, lw=2){
+  const a = toScreen(view, from);
+  const b = toScreen(view, to);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = lw;
+  ctx.beginPath();
+  ctx.moveTo(a[0], a[1]);
+  ctx.lineTo(b[0], b[1]);
+  ctx.stroke();
+  // arrowhead
+  const dx = b[0]-a[0], dy = b[1]-a[1];
+  const L = Math.hypot(dx,dy);
+  if (L > 1e-6){
+    const ux = dx/L, uy = dy/L;
+    const size = 10;
+    const left = [b[0] - size*(ux*0.9 - uy*0.4), b[1] - size*(uy*0.9 + ux*0.4)];
+    const right= [b[0] - size*(ux*0.9 + uy*0.4), b[1] - size*(uy*0.9 - ux*0.4)];
+    ctx.beginPath();
+    ctx.moveTo(b[0], b[1]);
+    ctx.lineTo(left[0], left[1]);
+    ctx.lineTo(right[0], right[1]);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawPoint(view, p, color="#d8e1ea", r=4, alpha=1){
+  const s = toScreen(view, p);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(s[0], s[1], r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function circlePoints(N=240){
+  const pts = [];
+  for(let i=0;i<N;i++){
+    const t = (i/N)*Math.PI*2;
+    pts.push([Math.cos(t), Math.sin(t)]);
+  }
+  return pts;
+}
+
+const UNIT = circlePoints();
+
+/* ============================
+   UI state
+   ============================ */
+let mode = "eigen"; // "eigen" | "svd" | "schur"
+let playing = true;
+let phase = 0; // animation phase in [0, 1) looped
+let stepOnce = false;
+
+const dom = {
+  a: document.getElementById('a'), aN: document.getElementById('aN'),
+  b: document.getElementById('b'), bN: document.getElementById('bN'),
+  c: document.getElementById('c'), cN: document.getElementById('cN'),
+  d: document.getElementById('d'), dN: document.getElementById('dN'),
+  speed: document.getElementById('speed'),
+  readout: document.getElementById('readout'),
+  rowC: document.getElementById('rowC'),
+  modeEigen: document.getElementById('modeEigen'),
+  modeSVD: document.getElementById('modeSVD'),
+  modeSchur: document.getElementById('modeSchur'),
+  btnPlay: document.getElementById('btnPlay'),
+  btnStep: document.getElementById('btnStep'),
+  btnReset: document.getElementById('btnReset')
+};
+
+function setMode(m){
+  mode = m;
+  dom.modeEigen.classList.toggle('active', m==="eigen");
+  dom.modeSVD.classList.toggle('active', m==="svd");
+  dom.modeSchur.classList.toggle('active', m==="schur");
+  // show/hide c row for non-general modes
+  dom.rowC.style.display = (m==="svd") ? "flex" : "none";
+  phase = 0;
+  updateReadout();
+}
+dom.modeEigen.onclick = () => setMode("eigen");
+dom.modeSVD.onclick   = () => setMode("svd");
+dom.modeSchur.onclick = () => setMode("schur");
+
+dom.btnPlay.onclick = () => {
+  playing = !playing;
+  dom.btnPlay.classList.toggle('active', playing);
+  dom.btnPlay.textContent = playing ? "Play" : "Paused";
+};
+dom.btnStep.onclick = () => { stepOnce = true; };
+dom.btnReset.onclick = () => { phase = 0; };
+
+function linkSlider(sl, num){
+  const syncFromSlider = () => { num.value = sl.value; updateReadout(); };
+  const syncFromNum = () => {
+    const v = clamp(parseFloat(num.value), parseFloat(sl.min), parseFloat(sl.max));
+    sl.value = v; num.value = v; updateReadout();
+  };
+  sl.addEventListener('input', syncFromSlider);
+  num.addEventListener('change', syncFromNum);
+}
+linkSlider(dom.a, dom.aN);
+linkSlider(dom.b, dom.bN);
+linkSlider(dom.c, dom.cN);
+linkSlider(dom.d, dom.dN);
+
+function currentA(){
+  const a = parseFloat(dom.a.value);
+  const b = parseFloat(dom.b.value);
+  const c = parseFloat(dom.c.value);
+  const d = parseFloat(dom.d.value);
+  if (mode==="svd"){
+    return mat2(a,b,c,d);
+  } else {
+    // symmetric
+    return mat2(a,b,b,d);
+  }
+}
+
+function fmt(x){
+  if (!isFinite(x)) return "NaN";
+  const s = x.toFixed(4);
+  // trim trailing zeros
+  return s.replace(/\.?0+$/,'');
+}
+
+function updateReadout(){
+  const A = currentA();
+  if (mode==="eigen"){
+    const { l1, l2, v1, v2 } = eigSym2(A.a, A.b, A.d);
+    dom.readout.innerHTML =
+      `A = [[${fmt(A.a)}, ${fmt(A.b)}],[${fmt(A.b)}, ${fmt(A.d)}]]\n` +
+      `eigenvalues: λ1=${fmt(l1)}, λ2=${fmt(l2)}\n` +
+      `eigenvectors (unit): v1=(${fmt(v1[0])}, ${fmt(v1[1])}), v2=(${fmt(v2[0])}, ${fmt(v2[1])})\n` +
+      `Rayleigh: R(x)= (xᵀAx)/(xᵀx)`;
+  } else if (mode==="svd"){
+    const { s1, s2, u1, u2, v1, v2 } = svd2(A);
+    dom.readout.innerHTML =
+      `A = [[${fmt(A.a)}, ${fmt(A.b)}],[${fmt(A.c)}, ${fmt(A.d)}]]\n` +
+      `singular values: σ1=${fmt(s1)}, σ2=${fmt(s2)}\n` +
+      `right (V) unit vectors: v1=(${fmt(v1[0])}, ${fmt(v1[1])}), v2=(${fmt(v2[0])}, ${fmt(v2[1])})\n` +
+      `left (U) unit vectors:  u1=(${fmt(u1[0])}, ${fmt(u1[1])}), u2=(${fmt(u2[0])}, ${fmt(u2[1])})\n` +
+      `A = U Σ Vᵀ  (animated as: Vᵀ → Σ → U)`;
+  } else {
+    // Schur: q(x,y)= a x^2 + 2 b x y + d y^2 ; Schur of d: s = a - b^2/d
+    const a = A.a, b = A.b, d = A.d;
+    const s = (Math.abs(d) < EPS) ? NaN : (a - (b*b)/d);
+    const psdHint = (d > 0 && s >= -1e-12) ? "PSD (looks ≥0)" : "NOT PSD (has negative direction)";
+    dom.readout.innerHTML =
+      `q(x,y)= a x² + 2 b x y + d y²\n` +
+      `a=${fmt(a)}, b=${fmt(b)}, d=${fmt(d)}\n` +
+      `complete square: q = d ( y + (b/d) x )² + ( a - b²/d ) x²  (when d≠0)\n` +
+      `Schur complement of d: s = a - b²/d = ${fmt(s)}\n` +
+      `PSD test (when d>0): need d>0 and s≥0  ⇒  ${psdHint}`;
+  }
+}
+updateReadout();
+
+/* ============================
+   Rendering per mode
+   ============================ */
+
+function drawEigen(view, A, t){
+  // rotating unit vector x(t)
+  const ang = 2*Math.PI*t;
+  const x = [Math.cos(ang), Math.sin(ang)];
+  const Ax = mat2Vec(A, x[0], x[1]);
+
+  const { l1, l2, v1, v2 } = eigSym2(A.a, A.b, A.d);
+
+  // Rayleigh quotient for current x
+  const xAx = dot(x, mat2Vec(A, x[0], x[1]));
+  const xx = dot(x,x);
+  const R = xAx/xx;
+
+  // Draw unit circle and ellipse A(circle)
+  const ell = UNIT.map(p => mat2Vec(A, p[0], p[1]));
+
+  drawGrid(view);
+  drawAxes(view);
+
+  drawPolyline(view, UNIT, "#9fb0c2", 0.35, 2); // unit circle
+  drawPolyline(view, ell, "#6aa2d8", 0.75, 2.5); // mapped ellipse
+
+  // Eigenvectors as lines (both directions)
+  const evScale = 1.35;
+  drawArrow(view, [0,0], scale(v1, evScale), "#ffd166", 0.95, 2.5);
+  drawArrow(view, [0,0], scale(v2, evScale), "#06d6a0", 0.95, 2.5);
+
+  // Rotating vector x and its image Ax
+  drawArrow(view, [0,0], x, "#f1fa8c", 0.95, 2.5);
+  drawPoint(view, x, "#f1fa8c", 4.5, 1);
+
+  drawArrow(view, [0,0], Ax, "#ff6b6b", 0.9, 2.5);
+  drawPoint(view, Ax, "#ff6b6b", 4.5, 1);
+
+  // Show labels
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.9;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`Eigen mode (symmetric): A maps circle → ellipse.`, 18, 22);
+  ctx.fillText(`λ1=${fmt(l1)}, λ2=${fmt(l2)}   Rayleigh R(x)=${fmt(R)}`, 18, 40);
+  ctx.fillText(`Yellow/Green = eigen-directions. Pale = x(t), Red = A x(t).`, 18, 58);
+  ctx.restore();
+}
+
+function drawSVD(view, A, t){
+  // Compute SVD
+  const { U, Sigma, VT, s1, s2, u1, u2, v1, v2 } = svd2(A);
+
+  // Stage timing: 3 segments: V^T, then Sigma, then U (each 1/3 of loop)
+  const seg = 1/3;
+  let stage = Math.floor(t/seg); // 0,1,2
+  stage = clamp(stage, 0, 2);
+  const local = (t - stage*seg)/seg; // [0,1)
+
+  // Precompute shapes
+  const X0 = UNIT;
+  const X1 = UNIT.map(p => mat2Vec(VT, p[0], p[1]));
+  const X2 = X1.map(p => mat2Vec(Sigma, p[0], p[1]));
+  const X3 = X2.map(p => mat2Vec(U, p[0], p[1]));
+
+  function lerpPts(P,Q,alpha){
+    const out = [];
+    for(let i=0;i<P.length;i++){
+      out.push([ (1-alpha)*P[i][0] + alpha*Q[i][0], (1-alpha)*P[i][1] + alpha*Q[i][1] ]);
+    }
+    return out;
+  }
+
+  let shape;
+  let title;
+  if (stage===0){
+    shape = lerpPts(X0, X1, local);
+    title = "Apply Vᵀ (rotate/reflect in input space)";
+  } else if (stage===1){
+    shape = lerpPts(X1, X2, local);
+    title = "Apply Σ (axis-aligned scaling by σ₁, σ₂)";
+  } else {
+    shape = lerpPts(X2, X3, local);
+    title = "Apply U (rotate/reflect in output space)";
+  }
+
+  // Also animate a single tracked vector
+  const ang = 2*Math.PI*t;
+  const x0 = [Math.cos(ang), Math.sin(ang)];
+  const x1 = mat2Vec(VT, x0[0], x0[1]);
+  const x2 = mat2Vec(Sigma, x1[0], x1[1]);
+  const x3 = mat2Vec(U, x2[0], x2[1]);
+  let x;
+  if (stage===0) x = add(scale(x0, 1-local), scale(x1, local));
+  else if (stage===1) x = add(scale(x1, 1-local), scale(x2, local));
+  else x = add(scale(x2, 1-local), scale(x3, local));
+
+  drawGrid(view);
+  drawAxes(view);
+
+  // Draw base + current + final
+  drawPolyline(view, X0, "#9fb0c2", 0.22, 2);
+  drawPolyline(view, X3, "#6aa2d8", 0.35, 2.5);
+  drawPolyline(view, shape, "#ffd166", 0.95, 3);
+
+  // Draw singular vectors in input (v's) and output (u's)
+  const vecScale = 1.1;
+  drawArrow(view, [0,0], scale(v1, vecScale), "#f1fa8c", 0.9, 2.5);
+  drawArrow(view, [0,0], scale(v2, vecScale), "#06d6a0", 0.9, 2.5);
+
+  // On output side: show u's scaled by σ (to match A v = σ u)
+  drawArrow(view, [0,0], scale(u1, vecScale), "#ff6b6b", 0.55, 2.5);
+  drawArrow(view, [0,0], scale(u2, vecScale), "#ff6b6b", 0.35, 2.5);
+
+  // tracked point
+  drawArrow(view, [0,0], x, "#ffd166", 0.95, 2.5);
+  drawPoint(view, x, "#ffd166", 4.5, 1);
+
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.92;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`SVD mode: A = U Σ Vᵀ`, 18, 22);
+  ctx.fillText(`${title}`, 18, 40);
+  ctx.fillText(`σ₁=${fmt(s1)}, σ₂=${fmt(s2)} | v's: yellow/green, u's: red`, 18, 58);
+  ctx.restore();
+}
+
+function drawSchur(view, A, t){
+  // Quadratic q(x,y) = a x^2 + 2 b x y + d y^2
+  const a = A.a, b = A.b, d = A.d;
+  const s = (Math.abs(d) < EPS) ? NaN : (a - (b*b)/d);
+
+  drawGrid(view);
+  drawAxes(view);
+
+  // Draw level sets of q as contours (approx)
+  // We'll sample a grid and draw a few contour levels via marching squares-ish light approach:
+  // simpler: draw many points whose q is near certain levels.
+  const levels = [0.2, 0.6, 1.2, 2.0, 3.0];
+  const w = view.w, h = view.h;
+  const step = 10;
+  ctx.save();
+  ctx.globalAlpha = 0.85;
+  ctx.lineWidth = 1;
+
+  for (let li=0; li<levels.length; li++){
+    const L = levels[li];
+    // color gradient-ish by alpha only
+    ctx.strokeStyle = "#6aa2d8";
+    ctx.globalAlpha = 0.16 + 0.08*li;
+    ctx.beginPath();
+    let started = false;
+    for (let px=0; px<w; px+=step){
+      for (let py=0; py<h; py+=step){
+        // inverse screen->world
+        const xw = (px - view.cx)/view.scalePx;
+        const yw = -(py - view.cy)/view.scalePx;
+        const q = a*xw*xw + 2*b*xw*yw + d*yw*yw;
+
+        // near level?
+        if (Math.abs(q - L) < 0.04){
+          if (!started){
+            ctx.moveTo(px,py);
+            started = true;
+          } else {
+            ctx.lineTo(px,py);
+          }
+        }
+      }
+    }
+    if (started) ctx.stroke();
+  }
+  ctx.restore();
+
+  // Show elimination: for each x, minimize over y => y*(x) = -(b/d)x (if d!=0)
+  if (Math.abs(d) > EPS){
+    const pts = [];
+    for (let xw=-2.2; xw<=2.2; xw+=0.02){
+      const ystar = -(b/d)*xw;
+      pts.push([xw, ystar]);
+    }
+    drawPolyline(view, pts, "#ffd166", 0.95, 3); // minimizer line
+  }
+
+  // Animate a moving x and show y*(x) plus q_min = s x^2
+  const xw = 2.0*Math.cos(2*Math.PI*t);
+  let yw = 0;
+  if (Math.abs(d) > EPS) yw = -(b/d)*xw;
+  const qmin = (Math.abs(d) > EPS) ? (s * xw*xw) : NaN;
+
+  drawPoint(view, [xw, yw], "#ffd166", 5, 1);
+  drawArrow(view, [xw, 0], [xw, yw], "#ffd166", 0.8, 2);
+
+  // PSD hint
+  const psd = (d > 0 && isFinite(s) && s >= -1e-12);
+
+  ctx.save();
+  ctx.fillStyle = "#d8e1ea";
+  ctx.globalAlpha = 0.92;
+  ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+  ctx.fillText(`Schur mode: q(x,y)=a x² + 2 b x y + d y²`, 18, 22);
+  ctx.fillText(`complete square: q = d (y + (b/d)x)² + (a - b²/d) x²`, 18, 40);
+  ctx.fillText(`Schur s = a - b²/d = ${fmt(s)}  | d=${fmt(d)}  | PSD needs d>0 and s≥0`, 18, 58);
+  ctx.fillText(`moving point is y*(x)=-(b/d)x, giving q_min(x)= s x² = ${fmt(qmin)}`, 18, 76);
+  ctx.fillStyle = psd ? "#06d6a0" : "#ff6b6b";
+  ctx.fillText(psd ? "PSD-like: contours are ellipses around 0" : "Not PSD: there exists a direction with q<0", 18, 94);
+  ctx.restore();
+}
+
+/* ============================
+   Main animation loop
+   ============================ */
+let last = performance.now();
+function tick(now){
+  const dt = Math.min(0.05, (now-last)/1000);
+  last = now;
+
+  const sp = parseFloat(dom.speed.value)/100; // 0..1
+  const omega = 0.10 + 0.90*sp; // base speed
+
+  if (playing){
+    phase = (phase + omega*dt) % 1;
+  } else if (stepOnce){
+    phase = (phase + 0.02) % 1;
+    stepOnce = false;
+  }
+
+  clear();
+  const view = makeView();
+  const A = currentA();
+
+  if (mode==="eigen"){
+    drawEigen(view, A, phase);
+  } else if (mode==="svd"){
+    drawSVD(view, A, phase);
+  } else {
+    drawSchur(view, A, phase);
+  }
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* URL Param Logic */
+try {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('mode');
+  if(m) setMode(m);
+} catch(e){}
+</script>
+</body>
+</html>

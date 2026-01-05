@@ -402,6 +402,29 @@
       $$ \text{Column } j \text{ of } A = [T(v_j)]_\mathcal{C} $$
       <p>This theorem bridges the abstract definition of linear maps (additivity, homogeneity) with the concrete world of matrix algebra. It implies that every property of matrices (rank, trace, determinant) corresponds to an intrinsic property of linear maps, provided we account for coordinate systems.</p>
 
+      <div class="proof-box">
+        <h4>Proof of Matrix Representation (Step-by-Step)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Express input in basis $\mathcal{B}$.</strong>
+          Any $x \in V$ has unique coordinates $c_j$ such that $x = \sum_{j=1}^n c_j v_j$. Thus $[x]_\mathcal{B} = (c_1, \dots, c_n)^\top$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Apply Linearity.</strong>
+          $$ T(x) = T\left(\sum_{j=1}^n c_j v_j\right) = \sum_{j=1}^n c_j T(v_j) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Coordinate Mapping.</strong>
+          Take coordinates in $\mathcal{C}$ (which is a linear map itself):
+          $$ [T(x)]_\mathcal{C} = \left[ \sum_{j=1}^n c_j T(v_j) \right]_\mathcal{C} = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Matrix Definition.</strong>
+          Let $A$ be the matrix where the $j$-th column is $[T(v_j)]_\mathcal{C}$. Then by definition of matrix-vector multiplication:
+          $$ A [x]_\mathcal{B} = \sum_{j=1}^n c_j (\text{Column } j) = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
+          Comparing with Step 3, we have $[T(x)]_\mathcal{C} = A [x]_\mathcal{B}$.
+        </div>
+      </div>
+
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/linear_map_grid.gif"
              alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"
@@ -562,7 +585,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Kernel and Image</h3>
         <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
-        <div id="widget-kernel-image" style="width: 100%; height: 400px; position: relative;"></div>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
       <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
@@ -799,9 +822,8 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: Rank & Nullspace</h3>
-        <p><b>Explore the Four Fundamental Subspaces:</b> Define a 2×3 or 3×2 matrix and visualize how its column space, row space, nullspace, and left nullspace relate to each other. Try creating rank-deficient matrices (e.g., with linearly dependent columns) to see the Rank-Nullity Theorem in action—observe how the dimensions of the nullspace and column space always sum to the number of columns.</p>
-        <p><i>Key insight:</i> The orthogonality relationships between these subspaces are fundamental to understanding linear transformations and will appear throughout convex optimization.</p>
-        <div id="widget-rank-nullspace" style="width: 100%; height: 400px; position: relative;"></div>
+        <p><b>Explore the Four Fundamental Subspaces:</b> Define a matrix and visualize how its column space, row space, nullspace, and left nullspace relate. The tool shows the orthogonality relationships explicitly.</p>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
     </section>
 
@@ -1596,7 +1618,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Gram-Schmidt Process</h3>
         <p>Watch step-by-step how an orthonormal basis is built. At each step, we subtract the projection onto the previously constructed subspace to get a new orthogonal direction.</p>
-        <div id="widget-gram-schmidt" style="width: 100%; height: 400px; position: relative;"></div>
+        <iframe src="widgets/la_batch2.html?mode=gs" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <div class="insight">
@@ -1646,14 +1668,8 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Orthogonality & Projections</h3>
-        <p><b>Visualize Vector Relationships:</b> Drag two vectors in the 2D plane and observe how their geometric relationships change in real-time. The tool displays:</p>
-        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-          <li><b>Dot product ($\mathbf{x}^\top \mathbf{y}$):</b> Becomes zero when vectors are orthogonal (perpendicular)</li>
-          <li><b>Angle:</b> Computed using $\cos \theta = \frac{\mathbf{x}^\top \mathbf{y}}{\|\mathbf{x}\|_2 \|\mathbf{y}\|_2}$ via the Cauchy-Schwarz inequality</li>
-          <li><b>Orthogonal projection:</b> The shadow of one vector onto another—this is the foundation of least squares!</li>
-        </ul>
-        <p><i>Key concept:</i> Projection is everywhere in optimization—from computing least squares solutions to understanding constraint gradients. The projection of $\mathbf{b}$ onto the column space of $A$ gives us the best least-squares fit.</p>
-        <div id="widget-orthogonality" style="width: 100%; height: 400px; position: relative;"></div>
+        <p><b>Visualize Vector Relationships:</b> Observe how geometric relationships change. The tool displays the orthogonal projection—the shadow of one vector onto another. This is the foundation of least squares.</p>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
     </section>
 
@@ -2184,17 +2200,8 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Matrix Geometry & Definiteness</h3>
-        <p><b>Explore Linear Maps and Quadratic Forms:</b> This interactive tool connects the linear transformation $A\mathbf{x}$ with the quadratic form $\mathbf{x}^\top A\mathbf{x}$. Toggle "Force Symmetric" to explore the specific properties relevant to optimization (Hessians).</p>
-        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-          <li><b>Linear Map:</b> See how the unit circle transforms into an ellipse. The axes of the ellipse correspond to eigenvectors (for symmetric matrices).</li>
-          <li><b>Quadratic Form:</b> Visualize the level sets of $\mathbf{z} = \mathbf{x}^\top A\mathbf{x}$.
-            <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
-              <li><b>Positive Definite:</b> Ellipses (Convex Bowl)</li>
-              <li><b>Indefinite:</b> Hyperbolas (Saddle Point)</li>
-            </ul>
-          </li>
-        </ul>
-        <div id="widget-matrix-geometry" style="width: 100%; position: relative;"></div>
+        <p><b>Explore Linear Maps and Quadratic Forms:</b> This interactive tool connects the linear transformation $A\mathbf{x}$ with the quadratic form $\mathbf{x}^\top A\mathbf{x}$.</p>
+        <iframe src="widgets/la_batch1.html?mode=eigen" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
@@ -2496,8 +2503,8 @@
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: Least Squares Projection</h3>
-        <p><b>See the Geometry in 3D:</b> The solution $A\mathbf{x}^\star$ is the orthogonal projection of the target vector $\mathbf{b}$ onto the subspace spanned by the columns of $A$ (the plane). The residual vector $\mathbf{r} = \mathbf{b} - A\mathbf{x}^\star$ connects the projection to the target and is perpendicular (orthogonal) to the plane.</p>
-        <div id="widget-least-squares" style="width: 100%; height: 500px; position: relative;"></div>
+        <p><b>See the Geometry:</b> The solution $A\mathbf{x}^\star$ is the orthogonal projection of the target vector $\mathbf{b}$ onto the subspace spanned by the columns of $A$. The residual vector $\mathbf{r} = \mathbf{b} - A\mathbf{x}^\star$ is perpendicular (orthogonal) to the subspace.</p>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
       </div>
 
       <h3>Uniqueness of the Solution</h3>
@@ -3331,37 +3338,12 @@
 
   <!-- Widget Loaders -->
   <script type="module">
-    import { initLinearAlgebraDemos } from './widgets/js/linear-algebra-demos.js';
-    initLinearAlgebraDemos('widget-kernel-image', 'kernel');
-    initLinearAlgebraDemos('widget-gram-schmidt', 'gram-schmidt');
-  </script>
-  <script type="module">
     import { initNormGeometryVisualizer } from './widgets/js/norm-geometry-visualizer.js';
     initNormGeometryVisualizer('widget-norm-geometry');
   </script>
   <script type="module">
-    import { initOrthogonality } from './widgets/js/orthogonality.js';
-    initOrthogonality('widget-orthogonality');
-  </script>
-  <script type="module">
-    import { initRankNullspace } from './widgets/js/rank-nullspace.js';
-    initRankNullspace('widget-rank-nullspace');
-  </script>
-  <script type="module">
-    import { initMatrixGeometry } from './widgets/js/matrix-geometry.js';
-    initMatrixGeometry('widget-matrix-geometry');
-  </script>
-  <script type="module">
     import { initHessianLandscapeVisualizer } from './widgets/js/hessian-landscape-visualizer.js';
     initHessianLandscapeVisualizer('widget-hessian-landscape');
-  </script>
-  <script type="module">
-    import { initConditionNumber } from './widgets/js/condition-number.js';
-    initConditionNumber('widget-condition-number');
-  </script>
-  <script type="module">
-    import { initLeastSquaresVisualizer } from './widgets/js/least-squares-visualizer.js';
-    initLeastSquaresVisualizer('widget-least-squares');
   </script>
   <script src="../../static/js/glossary-loader.js"></script>
 </body>

@@ -402,6 +402,29 @@
       $$ \text{Column } j \text{ of } A = [T(v_j)]_\mathcal{C} $$
       <p>This theorem bridges the abstract definition of linear maps (additivity, homogeneity) with the concrete world of matrix algebra. It implies that every property of matrices (rank, trace, determinant) corresponds to an intrinsic property of linear maps, provided we account for coordinate systems.</p>
 
+      <div class="proof-box">
+        <h4>Proof of Matrix Representation (Step-by-Step)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Express input in basis $\mathcal{B}$.</strong>
+          Any $x \in V$ has unique coordinates $c_j$ such that $x = \sum_{j=1}^n c_j v_j$. Thus $[x]_\mathcal{B} = (c_1, \dots, c_n)^\top$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Apply Linearity.</strong>
+          $$ T(x) = T\left(\sum_{j=1}^n c_j v_j\right) = \sum_{j=1}^n c_j T(v_j) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Coordinate Mapping.</strong>
+          Take coordinates in $\mathcal{C}$ (which is a linear map itself):
+          $$ [T(x)]_\mathcal{C} = \left[ \sum_{j=1}^n c_j T(v_j) \right]_\mathcal{C} = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Matrix Definition.</strong>
+          Let $A$ be the matrix where the $j$-th column is $[T(v_j)]_\mathcal{C}$. Then by definition of matrix-vector multiplication:
+          $$ A [x]_\mathcal{B} = \sum_{j=1}^n c_j (\text{Column } j) = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
+          Comparing with Step 3, we have $[T(x)]_\mathcal{C} = A [x]_\mathcal{B}$.
+        </div>
+      </div>
+
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/linear_map_grid.gif"
              alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"

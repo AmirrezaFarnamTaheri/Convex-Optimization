@@ -295,6 +295,36 @@
         </div>
       </div>
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
+
+      <h3>2.6 Generalized Eigenvalues and Whitening</h3>
+      <p>In many optimization problems, we care about the ratio of two quadratic forms. Let $A, B \in \mathbb{S}^n$ with $B \succ 0$. A <b>generalized eigenpair</b> $(\lambda, \mathbf{x})$ satisfies:
+      $$ A\mathbf{x} = \lambda B \mathbf{x}, \quad \mathbf{x} \neq 0 $$
+      This arises when optimizing $\mathbf{x}^\top A \mathbf{x}$ subject to an ellipsoidal constraint $\mathbf{x}^\top B \mathbf{x} = 1$.</p>
+
+      <h4>Reduction to Standard Eigenvalue Problem</h4>
+      <p>Since $B \succ 0$, it has a Cholesky factorization $B = L L^\top$. Let $\mathbf{x} = L^{-\top} \mathbf{y}$.
+      $$ A (L^{-\top} \mathbf{y}) = \lambda B (L^{-\top} \mathbf{y}) = \lambda (L L^\top) L^{-\top} \mathbf{y} = \lambda L \mathbf{y} $$
+      Left-multiplying by $L^{-1}$:
+      $$ (L^{-1} A L^{-\top}) \mathbf{y} = \lambda \mathbf{y} $$
+      Thus, the generalized eigenvalues of $(A, B)$ are the ordinary eigenvalues of the symmetric matrix $C = L^{-1} A L^{-\top}$ (often written $B^{-1/2} A B^{-1/2}$).
+      <br><b>Key Insight:</b> This process is called <b>whitening</b>. It transforms the geometry so that the $B$-norm becomes the Euclidean norm.</p>
+
+      <h4>Generalized Rayleigh Quotient</h4>
+      <p>The generalized Rayleigh quotient is:
+      $$ R_{A,B}(\mathbf{x}) = \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top B \mathbf{x}} $$
+      <b>Variational Theorem:</b>
+      $$ \lambda_{\max}(A, B) = \max_{\mathbf{x} \neq 0} \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top B \mathbf{x}} $$
+      <b>Proof:</b> Substitute $\mathbf{x} = B^{-1/2}\mathbf{y}$. Then $\mathbf{x}^\top B \mathbf{x} = \mathbf{y}^\top \mathbf{y}$ and $\mathbf{x}^\top A \mathbf{x} = \mathbf{y}^\top (B^{-1/2} A B^{-1/2}) \mathbf{y}$.
+      The problem becomes maximizing the standard Rayleigh quotient of $C = B^{-1/2} A B^{-1/2}$.</p>
+
+      <div class="insight">
+        <h4>The "Best Constant" Interpretation (LMI Feasibility)</h4>
+        <p>The generalized maximum eigenvalue is the smallest scalar $t$ such that $tB - A \succeq 0$.
+        <br><i>Proof:</i>
+        $$ tB - A \succeq 0 \iff \mathbf{x}^\top (tB - A) \mathbf{x} \ge 0 \ \forall \mathbf{x} \iff t (\mathbf{x}^\top B \mathbf{x}) \ge \mathbf{x}^\top A \mathbf{x} \iff t \ge \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top B \mathbf{x}} $$
+        The tightest such bound is the maximum of the quotient.
+        <br>This connects spectral theory to <b>Semidefinite Programming</b>: finding generalized eigenvalues is equivalent to determining the feasibility of an LMI.</p>
+      </div>
     </section>
 
     <!-- SECTION 5: INDUCED NORMS -->
@@ -627,16 +657,31 @@
       </div>
 
       <h3>5.4 The Schur Complement: Block Elimination</h3>
-      <p>The <b>Schur Complement</b> arises naturally when solving block linear systems or analyzing positive definiteness of block matrices. It corresponds to Gaussian elimination performed on blocks.</p>
-      <p>Consider a symmetric block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$. If $A$ is invertible, we can eliminate $B^\top$ by multiplying by a block row-operation matrix:
-      $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} = \begin{bmatrix} A & B \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
-      The matrix $S = C - B^\top A^{-1} B$ is the Schur complement of $A$ in $M$.</p>
+      <p>The <b>Schur Complement</b> arises naturally when solving block linear systems or analyzing positive definiteness. While often derived via Gaussian elimination, it has a deeper optimization interpretation: it is the result of <b>minimizing a quadratic form over a subset of variables</b>.</p>
+
+      <div class="insight">
+        <h4>Derivation via "Completing the Square"</h4>
+        <p>Consider the quadratic form associated with a symmetric block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ (where $A \succ 0$):
+        $$ f(x, y) = \begin{bmatrix} x \\ y \end{bmatrix}^\top \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = x^\top A x + 2 x^\top B y + y^\top C y $$
+        We want to determine if $f(x, y) \ge 0$ for all $x, y$.
+        <br>Minimizing with respect to $x$ (for fixed $y$) requires $\nabla_x f = 2Ax + 2By = 0$, so $x^* = -A^{-1}By$.
+        <br>Substituting $x^*$ back into the expression completes the square:
+        $$ f(x^*, y) = (-A^{-1}By)^\top A (-A^{-1}By) + 2 (-A^{-1}By)^\top B y + y^\top C y $$
+        $$ = y^\top (B^\top A^{-1} A A^{-1} B) y - 2 y^\top B^\top A^{-1} B y + y^\top C y $$
+        $$ = y^\top (B^\top A^{-1} B - 2 B^\top A^{-1} B + C) y = y^\top (C - B^\top A^{-1} B) y $$
+        The matrix $S = C - B^\top A^{-1} B$ is the <b>Schur complement</b>.
+        <br>Since $x^*$ minimizes the form, $f(x, y) \ge 0$ for all $x, y$ if and only if the minimum value $y^\top S y \ge 0$ for all $y$. Thus:
+        $$ M \succeq 0 \iff A \succ 0 \text{ and } S \succeq 0 $$
+        </p>
+      </div>
 
       <div class="theorem-box">
         <h4>Theorem: Schur Complement Condition for PSD</h4>
         <p>If $A \succ 0$, then:
-        $$ M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0 $$
-        This converts a block matrix constraint into a scalar (or smaller matrix) constraint involving inverses. This is the key tool for converting rational inequalities into Linear Matrix Inequalities (LMIs) in convex optimization.</p>
+        $$ M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \succeq 0 \iff C - B^\top A^{-1} B \succeq 0 $$
+        This lemma is the "universal translator" for converting rational inequalities into Linear Matrix Inequalities (LMIs). For example:
+        $$ x^\top P^{-1} x \le t \iff \begin{bmatrix} P & x \\ x^\top & t \end{bmatrix} \succeq 0 \quad (\text{for } P \succ 0) $$
+        </p>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">

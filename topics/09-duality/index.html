@@ -964,35 +964,56 @@
         <div class="solution-box">
           <h4>Solution</h4>
           <div class="proof-step">
-            <strong>Step 1: Variational Definition.</strong>
-            $f(x) = \max \{ x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$. The extreme points of this polytope correspond to selecting exactly $r$ coordinates.
-      <div class="intuition-box">
-        <p><b>Why this works (The Swap Argument):</b> Suppose the optimal $y$ puts weight on a smaller component $x_j$ (i.e., $y_j > 0$) while a larger component $x_i$ is not fully selected ($y_i < 1$). We can move mass $\epsilon$ from $j$ to $i$. The objective changes by $\epsilon(x_i - x_j) > 0$. Thus, the optimizer must greedily fill the buckets corresponding to the largest $x_i$'s.</p>
-      </div>
+            <strong>Step 1: The Combinatorial Identity.</strong>
+            First, we establish that $f(x)$ is the maximum sum over all subsets of size $r$:
+            $$ f(x) = \max_{S: |S|=r} \sum_{i \in S} x_i $$
+            <i>Proof:</i> Let $S^\star$ be the set of indices of the $r$ largest components. For any other set $S$ of size $r$, if we sort the elements $x_{i_1} \ge \dots \ge x_{i_r}$, we must have $x_{i_k} \le x_{[k]}$ for all $k$. Summing these inequalities gives $\sum_{i \in S} x_i \le \sum x_{[k]} = f(x)$.
           </div>
+
           <div class="proof-step">
-            <strong>Step 2: Dual of the Inner Maximization.</strong>
-            We want to express $f(x) \le \alpha$. Using LP duality on the inner problem:
-            $$ \max_y \{ x^\top y \mid y \le \mathbf{1}, \mathbf{1}^\top y = r, y \ge 0 \} = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
+            <strong>Step 2: The LP Representation (Continuous Relaxation).</strong>
+            We relax the combinatorial maximization to a linear program over the probability simplex-like set $\mathcal{Y} = \{ y \in \mathbb{R}^n \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$.
+            $$ f(x) = \max_{y} \{ x^\top y \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \} $$
+            <div class="intuition-box">
+              <p><b>Why this is exact (Two Views):</b></p>
+              <ul>
+                <li><b>Extreme Points:</b> The feasible set $\mathcal{Y}$ is a polytope. Its extreme points are exactly the vectors with $r$ ones and $n-r$ zeros (subset indicators). Since linear functions maximize at extreme points, the LP max equals the combinatorial max.</li>
+                <li><b>Exchange Argument:</b> Suppose an optimal $y$ has $y_j > 0$ (small component selected) and $y_i < 1$ (large component ignored) with $x_i > x_j$. We can swap mass $\epsilon$ from $j$ to $i$ to increase the objective by $\epsilon(x_i - x_j)$. Thus, optimal $y$ must fill the "buckets" of the largest $x_i$ first.</li>
+              </ul>
+            </div>
           </div>
+
           <div class="proof-step">
-            <strong>Step 3: Dual of the Inner Maximization.</strong>
-            We want to express $f(x) \le \alpha$. The inner problem is an LP:
-            $$ \max_y \{ x^\top y \mid y \le \mathbf{1}, -y \le 0, \mathbf{1}^\top y = r \} $$
-            Using LP duality (minimizing variables $t$ for equality, $u$ for $y \le \mathbf{1}$):
-            $$ \max_y x^\top y = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
+            <strong>Step 3: Deriving the Dual.</strong>
+            We want to express $f(x) \le \alpha$. We convert the LP to a minimization problem via duality.
+            <br><b>Primal (Minimization form):</b> $\min -x^\top y$ s.t. $y \le \mathbf{1}, -y \le 0, \mathbf{1}^\top y - r = 0$.
+            <br><b>Lagrangian:</b> $L(y, u, v, t) = -x^\top y + u^\top(y-\mathbf{1}) + v^\top(-y) + t(\mathbf{1}^\top y - r)$.
+            <br>Grouping terms by $y$: $L = (-x + u - v + t\mathbf{1})^\top y - \mathbf{1}^\top u - rt$.
+            <br>The dual function is finite only if the coefficient of $y$ vanishes: $u - v + t\mathbf{1} = x$.
+            <br><b>Dual Problem:</b> Minimize $\mathbf{1}^\top u + rt$ subject to $u - v + t\mathbf{1} = x, u \ge 0, v \ge 0$.
+            <br>Eliminating $v$ (using $v = u + t\mathbf{1} - x \ge 0$) gives the compact form:
+            $$ f(x) = \min_{t, u} \{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, u \ge 0 \} $$
           </div>
+
           <div class="proof-step">
-            <strong>Step 4: Deeper Insight - The Threshold Interpretation.</strong>
-            Consider the constraints on the dual variables: $u_i \ge x_i - t$ and $u_i \ge 0$. To minimize the objective $rt + \sum u_i$, we should choose the smallest feasible $u_i$:
-            $$ u_i(t) = \max(0, x_i - t) = (x_i - t)_+ $$
-            Substituting this back, the dual value is $\min_t (rt + \sum_{i=1}^n (x_i - t)_+)$. Here, $t$ acts as a <b>threshold</b>. The optimization automatically finds the $r$-th largest element as the cutoff.
+            <strong>Step 4: Deep Dive - The Threshold Interpretation.</strong>
+            Let's analyze the dual variables. The constraint $u_i \ge x_i - t$ combined with $u_i \ge 0$ implies $u_i \ge \max(0, x_i - t)$. To minimize the objective, we choose the smallest possible $u_i$:
+            $$ u_i^*(t) = (x_i - t)_+ $$
+            Substituting this back, the dual becomes a 1D optimization over $t$:
+            $$ f(x) = \min_{t \in \mathbb{R}} \left( rt + \sum_{i=1}^n (x_i - t)_+ \right) $$
+            Here, $t$ acts as a <b>threshold</b>.
+            <ul>
+                <li>If $x_i > t$, the term $(x_i - t)$ is active, representing the "excess" over the threshold.</li>
+                <li>The term $rt$ balances the threshold level.</li>
+            </ul>
+            At optimality, $t^*$ corresponds to the $r$-th largest element $x_{[r]}$. This formula is widely used in risk management (CVaR).
           </div>
+
           <div class="proof-step">
-            <strong>Step 5: Compact Formulation.</strong>
-            The condition $f(x) \le \alpha$ is satisfied iff there exist $t, u$ such that:
-            $$ rt + \sum u_i \le \alpha, \quad u_i \ge x_i - t, \quad u_i \ge 0 $$
-            This replaces a combinatorial condition ($\binom{n}{r}$ inequalities) with $2n+1$ linear inequalities.
+            <strong>Step 5: Compact Constraints.</strong>
+            Finally, the condition $f(x) \le \alpha$ is equivalent to the existence of dual variables satisfying the dual constraints:
+            $$ \exists t \in \mathbb{R}, u \in \mathbb{R}^n : \quad rt + \mathbf{1}^\top u \le \alpha, \quad u \ge x - t\mathbf{1}, \quad u \ge 0 $$
+            This replaces the $\binom{n}{r}$ subset inequalities with just $2n+1$ linear constraints.
           </div>
         </div>
       </div>
@@ -1002,19 +1023,31 @@
         <p>Add a constraint to the Markowitz problem to ensure "no more than 80% of capital in any 10% of assets".</p>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>Let $r = \lfloor 0.1 n \rfloor$. The diversification constraint is $\sum_{i=1}^r x_{[i]} \le 0.8$.
-          <br>Using the compact representation from Problem 7, we introduce auxiliary variables $t \in \mathbb{R}$ and $u \in \mathbb{R}^n$.
-          <br>The full Markowitz problem becomes:</p>
-          $$
-          \begin{aligned}
-          \text{minimize}_{x, t, u} \quad & x^\top \Sigma x \\
-          \text{subject to} \quad & \bar{p}^\top x \ge r_{\min}, \quad \mathbf{1}^\top x = 1, \quad x \ge 0 \\
-          & rt + \mathbf{1}^\top u \le 0.8 \\
-          & t\mathbf{1} + u \ge x \\
-          & u \ge 0
-          \end{aligned}
-          $$
-          <p>This is a <b>Convex QP</b> because the objective $x^\top \Sigma x$ is convex ($\Sigma \succeq 0$) and all constraints are linear inequalities or equalities in the variables $(x, t, u)$.</p>
+          <p>This real-world constraint protects against concentration risk. We model "top 10% of assets" using the order statistic function $f(x)$.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: Modeling the Constraint.</strong>
+            Let $n$ be the number of assets. Define $r = \lfloor 0.1n \rfloor$.
+            The constraint is that the sum of the largest $r$ weights must not exceed 0.8:
+            $$ \sum_{i=1}^r x_{[i]} \le 0.8 \iff f(x) \le 0.8 $$
+            <i>Sanity Check:</i> In a uniform portfolio, $x_i = 1/n$. The top $r$ sum to $r/n \approx 0.1$, which is well below 0.8. The constraint only kicks in when the portfolio is highly concentrated.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: The Full QP Formulation.</strong>
+            Using the compact dual representation from Problem 8, we augment the standard Markowitz QP with variables $t \in \mathbb{R}, u \in \mathbb{R}^n$:
+            $$
+            \begin{aligned}
+            \text{minimize}_{x, t, u} \quad & x^\top \Sigma x \\
+            \text{subject to} \quad & \bar{p}^\top x \ge r_{\min} & \text{(Return target)} \\
+            & \mathbf{1}^\top x = 1, \quad x \ge 0 & \text{(Budget & Long-only)} \\
+            & rt + \mathbf{1}^\top u \le 0.8 & \text{(Diversification bound)} \\
+            & t\mathbf{1} + u \ge x & \text{(Dual coupling)} \\
+            & u \ge 0 & \text{(Dual feasibility)}
+            \end{aligned}
+            $$
+            <b>Convexity:</b> The objective $x^\top \Sigma x$ is convex ($\Sigma \succeq 0$). All constraints are linear inequalities or equalities. Thus, this is a standard <b>Convex Quadratic Program (QP)</b>, solvable efficiently.
+          </div>
         </div>
       </div>
 

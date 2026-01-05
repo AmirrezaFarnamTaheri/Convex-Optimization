@@ -927,7 +927,7 @@
         <h4>Adding Diversification Constraints</h4>
         <p>To prevent concentration, we might require "no more than 80% in the top 10% of assets." Define $f(x) = \sum_{i=1}^r x_{[i]}$ (sum of $r$ largest weights). Using LP duality, this can be written as linear constraints:</p>
         $$ f(x) \le 0.8 \iff \exists (t, u): \ rt + \mathbf{1}^\top u \le 0.8, \ t\mathbf{1} + u \ge x, \ u \ge 0 $$
-        <p>This adds only $2n + 1$ linear constraints instead of $\binom{n}{r}$ explicit subset constraints.</p>
+        <p>This adds only $2n + 1$ linear constraints instead of $\binom{n}{r}$ explicit subset constraints. (See <a href="../09-duality/index.html#section-10">Lecture 09, Problem 9</a> for the detailed derivation).</p>
       </div>
 
       <h4>Constrained Least-Squares</h4>

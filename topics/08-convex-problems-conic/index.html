@@ -434,6 +434,12 @@
           <p>This lemma is the primary tool for converting nonlinear convex constraints into LMIs.</p>
       </div>
 
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: Schur Complement Feasibility</h3>
+        <p>Explore the feasible region of the parameter $t$ that makes the block matrix PSD. The threshold $t^*$ is exactly the Schur complement condition.</p>
+        <iframe src="../01-linear-algebra-advanced/widgets/la_batch3.html?mode=schur" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+      </div>
+
       <div class="proof-box">
         <h4>Full Proof of the Schur Complement Lemma</h4>
         <div class="proof-step">
@@ -523,7 +529,19 @@
 
       <h3>2.6 Standard SDP Examples</h3>
 
-            <h4>Example 3.1: Eigenvalue Minimization</h4>
+      <h4>Example: Lyapunov Stability Analysis (Control Theory)</h4>
+      <p>A linear dynamical system $\dot{x} = Ax$ is asymptotically stable (all trajectories converge to zero) if and only if there exists a quadratic Lyapunov function $V(x) = x^\top P x$ with $P \succ 0$ such that $\dot{V}(x) < 0$ for all $x \neq 0$.
+      <br>Differentiation gives $\dot{V}(x) = x^\top (A^\top P + PA) x$. The condition becomes an LMI feasibility problem:</p>
+      $$
+      \begin{aligned}
+      \text{find} \quad & P \in \mathbb{S}^n \\
+      \text{subject to} \quad & P \succeq I \quad \text{(strict positivity normalization)} \\
+      & A^\top P + PA \preceq -I \quad \text{(strict decay normalization)}
+      \end{aligned}
+      $$
+      <p>This is a pure feasibility SDP. If a solution $P$ exists, the system is stable.</p>
+
+      <h4>Example: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
       $$ \min_{\mathbf{x}} \lambda_{\max}(A(\mathbf{x})) $$
 
@@ -550,7 +568,7 @@
         </div>
       </div>
 
-            <h4>Example 3.2: Matrix Norm Minimization</h4>
+      <h4>Example: Matrix Norm Minimization</h4>
       <p>Minimize the spectral norm (largest singular value) of $A(x) \in \mathbb{R}^{p \times q}$.</p>
       $$ \min_x \|A(x)\|_2 = \min_x \sqrt{\lambda_{\max}(A(x)^\top A(x))} $$
 
@@ -594,7 +612,7 @@
         </div>
       </div>
 
-      <h4>Example 3.3: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
+      <h4>Example: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
       <p>Given points $a_1, \ldots, a_m \in \mathbb{R}^n$ spanning $\mathbb{R}^n$, find the smallest ellipsoid centered at the origin that contains all points.</p>
       
       <div class="proof-box">

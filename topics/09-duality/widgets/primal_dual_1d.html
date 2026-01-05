@@ -2,10 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>Primal-Dual Gap 1D</title>
+  <title>Primal-Dual 1D Widget</title>
   <style>
     body{margin:0;font-family:system-ui;background:#0b0d12;color:#e9eefc}
-    .wrap{max-width:800px;margin:20px auto;padding:0 14px}
+    .wrap{max-width:1000px;margin:20px auto;padding:0 14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .card{background:#111626;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
     canvas{width:100%;height:auto;display:block;border-radius:10px;background:#0a0f1f}
     label{display:block;margin-top:10px;color:#aab3c8}
@@ -15,108 +16,105 @@
 </head>
 <body>
 <div class="wrap">
-  <h2>Primal-Dual Gap Visualization</h2>
+  <h2>Primal vs Dual Function (1D Example)</h2>
   <div class="card">
-    <canvas id="c" width="760" height="400"></canvas>
-    <label>Primal variable x</label>
-    <input id="x" type="range" min="-0.5" max="2.5" step="0.01" value="1.5">
-    <label>Dual variable λ</label>
-    <input id="lam" type="range" min="0" max="3" step="0.01" value="0.5">
-    <div class="mono" id="info"></div>
+    <div class="mono">
+      Primal: min (x-2)² s.t. x ≤ 1.<br/>
+      Dual g(λ) = λ - λ²/4 (max at λ*=2).
+    </div>
+    <label>Select λ:</label>
+    <input id="lam" type="range" min="0" max="4" step="0.01" value="1.0">
+    <div class="grid" style="margin-top:10px">
+      <div class="card">
+        <canvas id="c1" width="800" height="400"></canvas>
+        <div class="mono" id="inf1"></div>
+      </div>
+      <div class="card">
+        <canvas id="c2" width="800" height="400"></canvas>
+        <div class="mono" id="inf2"></div>
+      </div>
+    </div>
   </div>
 </div>
-
 <script>
 (() => {
-  const c = document.getElementById("c");
-  const ctx = c.getContext("2d");
-  const xS = document.getElementById("x");
-  const lamS = document.getElementById("lam");
-  const info = document.getElementById("info");
+  const lamS=document.getElementById("lam");
+  const c1=document.getElementById("c1"), ctx1=c1.getContext("2d");
+  const c2=document.getElementById("c2"), ctx2=c2.getContext("2d");
+  const i1=document.getElementById("inf1"), i2=document.getElementById("inf2");
 
-  // Problem: min x^2 s.t. x >= 1  (f0(x)=x^2, f1(x)=1-x<=0)
-  // p* = 1 at x*=1
-  // L(x,λ) = x^2 + λ(1-x)
-  // g(λ) = λ - λ^2/4
-  // d* = 1 at λ*=2
+  function f0(x){ return (x-2)**2; }
+  function g(l){ return l - (l*l)/4; }
+  function L(x,l){ return (x-2)**2 + l*(x-1); }
 
-  function f0(x){ return x*x; }
-  function g(lam){ return lam - lam*lam/4; }
-  function L(x, lam){ return x*x + lam*(1-x); }
-
-  function mapX(x){ return 60 + (x - (-0.5))*(c.width-90)/(3.0); }
-  function mapY(y){ return (c.height-60) - (y - (-0.5))*(c.height-100)/(4.5); }
+  function map(v,a,b,A,B){ return A+(v-a)*(B-A)/(b-a); }
 
   function render(){
-    const x = parseFloat(xS.value);
-    const lam = parseFloat(lamS.value);
+    const l = parseFloat(lamS.value);
 
-    ctx.clearRect(0,0,c.width,c.height);
+    // Plot 1: Primal + Lagrangian
+    ctx1.clearRect(0,0,c1.width,c1.height);
+    const xMin=-1, xMax=3, yMin=-1, yMax=5;
+    const mx = x => map(x,xMin,xMax, 40, c1.width-20);
+    const my = y => map(y,yMin,yMax, c1.height-30, 20);
 
     // axes
-    ctx.strokeStyle="rgba(255,255,255,0.2)";
-    ctx.beginPath();
-    ctx.moveTo(mapX(-0.5), mapY(0)); ctx.lineTo(mapX(2.5), mapY(0));
-    ctx.moveTo(mapX(0), mapY(-0.5)); ctx.lineTo(mapX(0), mapY(4.0));
-    ctx.stroke();
+    ctx1.strokeStyle="rgba(255,255,255,0.2)";
+    ctx1.beginPath(); ctx1.moveTo(mx(xMin),my(0)); ctx1.lineTo(mx(xMax),my(0)); ctx1.stroke();
+    ctx1.beginPath(); ctx1.moveTo(mx(0),my(yMin)); ctx1.lineTo(mx(0),my(yMax)); ctx1.stroke();
 
-    // Constraint region x >= 1
-    ctx.fillStyle="rgba(60,255,60,0.05)";
-    ctx.fillRect(mapX(1), 0, mapX(2.5)-mapX(1), c.height);
-    ctx.strokeStyle="rgba(60,255,60,0.3)";
-    ctx.beginPath(); ctx.moveTo(mapX(1), 0); ctx.lineTo(mapX(1), c.height); ctx.stroke();
-
-    // f0(x)
-    ctx.strokeStyle="rgba(255,255,255,0.9)";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    for(let i=0; i<=300; i++){
-      let xv = -0.5 + 3.0*i/300;
-      let yv = f0(xv);
-      if(i==0) ctx.moveTo(mapX(xv), mapY(yv)); else ctx.lineTo(mapX(xv), mapY(yv));
+    // f0
+    ctx1.strokeStyle="rgba(100,150,255,0.8)"; ctx1.lineWidth=2;
+    ctx1.beginPath();
+    for(let i=0;i<100;i++){
+       let x=xMin+(xMax-xMin)*i/99;
+       let y=f0(x);
+       if(i==0) ctx1.moveTo(mx(x),my(y)); else ctx1.lineTo(mx(x),my(y));
     }
-    ctx.stroke();
+    ctx1.stroke();
 
-    // current x point
-    let feasible = x >= 1;
-    ctx.fillStyle = feasible ? "#4ade80" : "#ef4444";
-    ctx.beginPath(); ctx.arc(mapX(x), mapY(f0(x)), 6, 0, 6.28); ctx.fill();
-
-    // dual bound line (horizontal) at g(lam)
-    let dualVal = g(lam);
-    ctx.strokeStyle="#60a5fa";
-    ctx.setLineDash([5,5]);
-    ctx.beginPath();
-    ctx.moveTo(mapX(-0.5), mapY(dualVal));
-    ctx.lineTo(mapX(2.5), mapY(dualVal));
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Gap visualization
-    if(feasible){
-        ctx.strokeStyle="rgba(255,255,255,0.5)";
-        ctx.beginPath();
-        ctx.moveTo(mapX(x), mapY(f0(x)));
-        ctx.lineTo(mapX(x), mapY(dualVal));
-        ctx.stroke();
-
-        ctx.fillStyle="#fff";
-        ctx.font="12px monospace";
-        ctx.fillText(`Gap: ${(f0(x)-dualVal).toFixed(3)}`, mapX(x)+10, mapY((f0(x)+dualVal)/2));
+    // L
+    ctx1.strokeStyle="rgba(255,100,100,0.8)";
+    ctx1.beginPath();
+    for(let i=0;i<100;i++){
+       let x=xMin+(xMax-xMin)*i/99;
+       let y=L(x,l);
+       if(i==0) ctx1.moveTo(mx(x),my(y)); else ctx1.lineTo(mx(x),my(y));
     }
+    ctx1.stroke();
 
-    info.innerHTML = `
-      x = ${x.toFixed(2)} (${feasible ? "Feasible" : "Infeasible"})<br>
-      f₀(x) = ${f0(x).toFixed(3)}<br>
-      λ = ${lam.toFixed(2)}<br>
-      g(λ) = ${dualVal.toFixed(3)} (Lower Bound)<br>
-      p* = 1.000
-    `;
+    // min of L
+    let xstar = 2 - l/2;
+    let ystar = L(xstar,l);
+    ctx1.fillStyle="white"; ctx1.beginPath(); ctx1.arc(mx(xstar),my(ystar),4,0,6.28); ctx1.fill();
+
+    i1.innerHTML = `L(x,${l.toFixed(2)}) min at x=${xstar.toFixed(2)}, val=${ystar.toFixed(2)}`;
+
+    // Plot 2: Dual Function
+    ctx2.clearRect(0,0,c2.width,c2.height);
+    const lMin=0, lMax=4, gMin=-1, gMax=1.5;
+    const ml = x => map(x,lMin,lMax, 40, c2.width-20);
+    const mg = y => map(y,gMin,gMax, c2.height-30, 20);
+
+    // axes
+    ctx2.strokeStyle="rgba(255,255,255,0.2)";
+    ctx2.beginPath(); ctx2.moveTo(ml(lMin),mg(0)); ctx2.lineTo(ml(lMax),mg(0)); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(ml(0),mg(gMin)); ctx2.lineTo(ml(0),mg(gMax)); ctx2.stroke();
+
+    ctx2.strokeStyle="rgba(150,255,150,0.8)"; ctx2.lineWidth=2;
+    ctx2.beginPath();
+    for(let i=0;i<100;i++){
+       let lam=lMin+(lMax-lMin)*i/99;
+       let y=g(lam);
+       if(i==0) ctx2.moveTo(ml(lam),mg(y)); else ctx2.lineTo(ml(lam),mg(y));
+    }
+    ctx2.stroke();
+
+    // current point
+    ctx2.fillStyle="white"; ctx2.beginPath(); ctx2.arc(ml(l),mg(g(l)),4,0,6.28); ctx2.fill();
+    i2.innerHTML = `g(${l.toFixed(2)}) = ${g(l).toFixed(2)}`;
   }
-
-  xS.oninput = render;
-  lamS.oninput = render;
-  render();
+  lamS.oninput=render; render();
 })();
 </script>
 </body>

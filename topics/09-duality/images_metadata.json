@@ -1,30 +1,30 @@
-{
-  "duality_lagrangian_demo.gif": {
-    "description": "Animation showing how the Lagrangian L(x,λ) changes shape as λ varies, providing a lower bound to the primal objective.",
-    "caption": "The Lagrangian as a pointwise lower bound generator."
+[
+  {
+    "id": "duality_lagrangian_demo.gif",
+    "description": "Animation showing L(x,λ) as a lower bound on the objective."
   },
-  "duality_saddle_path.gif": {
-    "description": "Visualizing the primal-dual dynamics seeking the saddle point of the Lagrangian (minimizing over x, maximizing over λ).",
-    "caption": "Saddle point dynamics: seeking the equilibrium."
+  {
+    "id": "duality_saddle_path.gif",
+    "description": "Animation of primal-dual iterates converging to the saddle point."
   },
-  "duality_gap_convergence.gif": {
-    "description": "Plot showing the convergence of the primal value f0(x) and the dual bound g(λ) towards the same optimal value, closing the duality gap.",
-    "caption": "Convergence of Primal and Dual values to optimality."
+  {
+    "id": "duality_kkt_2d_fast.gif",
+    "description": "Visualizing KKT conditions: Lagrangian minimizer hitting the boundary."
   },
-  "duality_kkt_2d_fast.gif": {
-    "description": "2D visualization of the unconstrained minimizer of the Lagrangian moving as λ changes, hitting the constraint boundary exactly at the optimal λ.",
-    "caption": "Geometric interpretation of KKT Stationarity."
+  {
+    "id": "duality_comp_slack_switch.gif",
+    "description": "Complementary slackness: multiplier dropping to zero as constraint becomes inactive."
   },
-  "duality_comp_slack_switch.gif": {
-    "description": "Demonstration of complementary slackness: the Lagrange multiplier drops to zero exactly when the constraint becomes inactive.",
-    "caption": "Complementary Slackness: The multiplier is non-zero only when the constraint binds."
+  {
+    "id": "duality_sensitivity_supporting_line_fast.gif",
+    "description": "Sensitivity analysis: supporting hyperplane to the value function p(u)."
   },
-  "duality_sensitivity_supporting_line_fast.gif": {
-    "description": "Visualizing the dual variable as the slope of the supporting hyperplane to the optimal value function p(u).",
-    "caption": "Sensitivity Analysis: Dual variables as subgradients of the value function."
+  {
+    "id": "duality_farkas_xy_infeasible.gif",
+    "description": "Farkas' Lemma certificate of infeasibility."
   },
-  "duality_farkas_xy_infeasible.gif": {
-    "description": "Geometric visualization of Farkas' Lemma, showing how a dual vector acts as a certificate of infeasibility for a system of inequalities.",
-    "caption": "Farkas' Lemma: A certificate of infeasibility."
+  {
+    "id": "duality_gap_convergence.gif",
+    "description": "Convergence of the duality gap to zero."
   }
-}
+]

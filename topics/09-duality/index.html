@@ -202,25 +202,52 @@
         </div>
         
         <div class="proof-box">
-          <h4>Deep Dive: Deriving the Dual via Conjugates</h4>
-          <p>We derive the dual of $\min c^\top x$ s.t. $f(x) \le 0$ step-by-step.</p>
+          <h4>Deep Dive: The Dual of a Non-Convex Problem (Exercise 5.3)</h4>
+          <p>We perform a rigorous derivation of the Lagrange dual for the problem $\min c^\top x$ subject to a single inequality $f(x) \le 0$. Crucially, we do <b>not</b> assume $f$ is convex.</p>
+
           <div class="proof-step">
-            <strong>1. Lagrangian:</strong> $L(x, \lambda) = c^\top x + \lambda f(x)$. Dual function $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$.
+            <strong>Step 0: The Primal Problem.</strong>
+            Given $c \ne 0$ and $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, we minimize $c^\top x$ subject to $f(x) \le 0$.
+            $$ p^\star = \inf \{ c^\top x \mid f(x) \le 0 \} $$
+            The feasible set might be nonconvex or disconnected.
           </div>
+
           <div class="proof-step">
-            <strong>2. Factor out $\lambda > 0$:</strong>
-            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{1}{\lambda}c^\top x \right) $$
+            <strong>Step 1: The Lagrangian.</strong>
+            We introduce a multiplier $\lambda \ge 0$. The Lagrangian is:
+            $$ L(x, \lambda) = c^\top x + \lambda f(x) $$
+            Since $\lambda \ge 0$, if $f(x) \le 0$, then $\lambda f(x) \le 0$. Thus $L(x, \lambda) \le c^\top x$ for all feasible $x$.
           </div>
+
           <div class="proof-step">
-            <strong>3. Apply Conjugate Identity:</strong>
-            Use the identity $\inf_z (f(z) + y^\top z) = -f^*(-y)$.
-            Here $y = c/\lambda$.
-            $$ \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = -f^*\left(-\frac{c}{\lambda}\right) $$
+            <strong>Step 2: The Dual Function.</strong>
+            The dual function is the best lower bound certified by $\lambda$:
+            $$ g(\lambda) = \inf_x L(x, \lambda) = \inf_x (c^\top x + \lambda f(x)) $$
+            This function $g(\lambda)$ is always concave (pointwise infimum of affine functions), regardless of $f$.
           </div>
+
           <div class="proof-step">
-            <strong>4. Result:</strong>
-            $$ \boxed{g(\lambda) = -\lambda f^*\left(-\frac{c}{\lambda}\right)} $$
-            This is the (negative) perspective of the conjugate function $f^*$. Since $f^*$ is convex, its perspective is convex. Thus $g(\lambda)$ is concave.
+            <strong>Step 3: Introducing the Conjugate.</strong>
+            We rewrite the infimum using the conjugate $f^*(y) = \sup_x (y^\top x - f(x))$.
+            Recall the key identity: $\inf_x (f(x) + a^\top x) = -f^*(-a)$.
+            <br>For $\lambda > 0$:
+            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = \lambda \left[ -f^*\left(-\frac{c}{\lambda}\right) \right] $$
+            For $\lambda = 0$: $g(0) = \inf c^\top x = -\infty$ (since $c \ne 0$).
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: The Dual Problem.</strong>
+            We maximize $g(\lambda)$ over $\lambda > 0$:
+            $$ \boxed{ \text{maximize } -\lambda f^*\left(-\frac{c}{\lambda}\right) \quad \text{subject to } \lambda > 0 } $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 5: Convexity.</strong>
+            Why is this a convex problem?
+            <ul>
+              <li><b>Method A (General):</b> $g(\lambda)$ is the pointwise infimum of affine functions $L(x, \cdot)$, so it is concave.</li>
+              <li><b>Method B (Specific):</b> The function $h(\lambda) = \lambda f^*(-c/\lambda)$ is the perspective transform of the convex function $f^*$, restricted to a line. Thus $h$ is convex, and $g(\lambda) = -h(\lambda)$ is concave.</li>
+            </ul>
           </div>
         </div>
 
@@ -840,7 +867,7 @@
       </div>
 
       <div class="problem">
-        <h3>Problem 4: Basis Pursuit (Problem 5.3)</h3>
+        <h3>Problem 4: Basis Pursuit</h3>
         <p><b>Primal:</b> $\min \|x\|_1$ s.t. $Ax = b$.</p>
         <p><b>Lagrangian:</b> $L(x, \nu) = \|x\|_1 + \nu^\top(b - Ax) = b^\top \nu + (\|x\|_1 - (A^\top \nu)^\top x)$.</p>
         <p><b>Dual Function:</b>
@@ -849,22 +876,6 @@
         <br><b>Dual Problem:</b> $\max b^\top \nu$ s.t. $\|A^\top \nu\|_\infty \le 1$.
         <br><b>KKT Insight:</b> At optimum, $A^\top \nu \in \partial \|x\|_1$. Dual variables certify the support of the sparse solution.
         </p>
-        <div class="proof-box">
-          <h4>Deep Dive: Dual of $\min c^\top x$ s.t. $f(x) \le 0$ via Conjugates</h4>
-          <p>We derive the general dual for a single inequality constraint using conjugates.</p>
-          <div class="proof-step">
-            <strong>1. Lagrangian:</strong> $L(x, \lambda) = c^\top x + \lambda f(x)$ with $\lambda \ge 0$.
-          </div>
-          <div class="proof-step">
-            <strong>2. Dual Function $g(\lambda) = \inf_x L(x, \lambda)$.</strong>
-            If $\lambda = 0$, $\inf c^\top x = -\infty$ unless $c=0$. Assume $\lambda > 0$.
-            $$ g(\lambda) = \lambda \inf_x \left( f(x) + \frac{c^\top x}{\lambda} \right) = -\lambda \sup_x \left( \left(-\frac{c}{\lambda}\right)^\top x - f(x) \right) = -\lambda f^*\left(-\frac{c}{\lambda}\right) $$
-          </div>
-          <div class="proof-step">
-            <strong>3. Convexity.</strong>
-            The function $g(\lambda) = -\lambda f^*(-c/\lambda)$ is concave because it is the perspective of the (negative) conjugate function. Thus the dual problem is convex.
-          </div>
-        </div>
       </div>
 
       <div class="problem">

@@ -138,6 +138,14 @@
   --backdrop-blur: 20px;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* === Layout Variables === */
+  --container-max-width: 1200px;
+  --lecture-max-width: 1600px;
+  --page-padding: var(--space-6);
+  --header-display: flex;
+  --footer-display: block;
+  --sidebar-display: block;
 }
 
 /* ====================
@@ -407,21 +415,22 @@ pre code {
    LAYOUT
    ==================== */
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 var(--page-padding);
   position: relative;
 }
 
 .lecture-container {
   display: flex;
-  max-width: 1600px;
+  max-width: var(--lecture-max-width);
   margin: 0 auto;
-  padding: var(--space-6);
+  padding: var(--page-padding);
   gap: var(--space-8);
 }
 
 .sidebar {
+  display: var(--sidebar-display);
   width: 280px;
   flex-shrink: 0;
   position: sticky;
@@ -441,6 +450,7 @@ pre code {
    HEADER
    ==================== */
 .site-header {
+  display: var(--header-display);
   position: fixed;
   top: 0;
   left: 0;
@@ -1099,6 +1109,7 @@ pre code {
 
 /* Footer */
 .site-footer {
+  display: var(--footer-display);
   margin-top: var(--space-16);
   padding: var(--space-8) 0;
   border-top: 1px solid var(--border-subtle);

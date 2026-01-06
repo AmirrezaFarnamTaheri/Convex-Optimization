@@ -450,10 +450,33 @@
 
       <div class="proof-box">
         <h4>Proof: Preimage Convexity</h4>
-        <p>Let $x_1, x_2 \in f^{-1}(D)$. Then $Ax_1+b \in D$ and $Ax_2+b \in D$.
-        <br>For any $\theta \in [0,1]$:
-        $$ A(\theta x_1 + (1-\theta)x_2) + b = \theta(Ax_1+b) + (1-\theta)(Ax_2+b) $$
-        Since $D$ is convex, this convex combination lies in $D$. Thus $\theta x_1 + (1-\theta)x_2 \in f^{-1}(D)$.</p>
+        <p>We want to show that if $D$ is a convex set, then its preimage $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$ is also convex.</p>
+        <div class="proof-step">
+          <strong>Step 1: Pick two points in the preimage.</strong>
+          Let $x_1, x_2 \in C$. By definition, this means their images map into $D$:
+          $$ y_1 = Ax_1+b \in D \quad \text{and} \quad y_2 = Ax_2+b \in D $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Form a convex combination.</strong>
+          Let $\theta \in [0,1]$. We need to show that $x_\theta = \theta x_1 + (1-\theta)x_2$ is also in $C$.
+          This requires checking if $f(x_\theta) \in D$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Apply the affine map.</strong>
+          $$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b $$
+          Distribute the matrix $A$ (linearity):
+          $$ = \theta A x_1 + (1-\theta) A x_2 + b $$
+          Rewrite $b$ as $\theta b + (1-\theta)b$ (since $\theta + 1 - \theta = 1$):
+          $$ = \theta A x_1 + (1-\theta) A x_2 + \theta b + (1-\theta)b $$
+          Group terms:
+          $$ = \theta (A x_1 + b) + (1-\theta) (A x_2 + b) $$
+          $$ = \theta y_1 + (1-\theta) y_2 $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Use convexity of D.</strong>
+          Since $y_1, y_2 \in D$ and $D$ is convex, the combination $\theta y_1 + (1-\theta) y_2$ must be in $D$.
+          Therefore, $f(x_\theta) \in D$, which implies $x_\theta \in C$.
+        </div>
       </div>
 
       <p><b>Application:</b>
@@ -1820,29 +1843,41 @@
       </table>
 
       <div class="proof-box">
-        <h4>Derivation: Gradient of Quadratic Form</h4>
-        <p>Let $f(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$. We apply the perturbation method.</p>
+        <h4>Derivation: Gradient of Quadratic Form (Detailed)</h4>
+        <p>Let $f(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$. We want to find the vector $\mathbf{g}$ such that $f(\mathbf{x}+h) \approx f(\mathbf{x}) + \mathbf{g}^\top h$.</p>
         <div class="proof-step">
-          <strong>Step 1: Perturb.</strong> Let $\mathbf{x} \to \mathbf{x} + h$.
-          $$ f(\mathbf{x}+h) = (\mathbf{x}+h)^\top A (\mathbf{x}+h) = \mathbf{x}^\top A \mathbf{x} + \mathbf{x}^\top A h + h^\top A \mathbf{x} + h^\top A h $$
+          <strong>Step 1: Perturb the input.</strong>
+          Substitute $\mathbf{x} + h$ into the function:
+          $$ f(\mathbf{x}+h) = (\mathbf{x}+h)^\top A (\mathbf{x}+h) $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Linearize.</strong>
-          Identify terms linear in $h$: $L(h) = \mathbf{x}^\top A h + h^\top A \mathbf{x}$.
-          The term $h^\top A h$ is quadratic (second-order) and vanishes as $h \to 0$.
+          <strong>Step 2: Expand the terms.</strong>
+          Using the distributivity of matrix multiplication:
+          $$ = (\mathbf{x}^\top + h^\top) (A\mathbf{x} + Ah) $$
+          $$ = \mathbf{x}^\top A \mathbf{x} + \mathbf{x}^\top A h + h^\top A \mathbf{x} + h^\top A h $$
         </div>
         <div class="proof-step">
-          <strong>Step 3: Rearrange to Inner Product form.</strong>
-          Recall that a scalar equals its transpose: $h^\top A \mathbf{x} = (h^\top A \mathbf{x})^\top = \mathbf{x}^\top A^\top h$.
-          Thus, $L(h) = \mathbf{x}^\top A h + \mathbf{x}^\top A^\top h = \mathbf{x}^\top (A + A^\top) h$.
-          Rewriting as an inner product:
-          $$ L(h) = \langle (A + A^\top)\mathbf{x}, h \rangle $$
+          <strong>Step 3: Identify the linear part (The Differential).</strong>
+          We separate terms by order of $h$:
+          <ul>
+            <li><b>Constant term:</b> $\mathbf{x}^\top A \mathbf{x} = f(\mathbf{x})$.</li>
+            <li><b>Linear term:</b> $\mathbf{x}^\top A h + h^\top A \mathbf{x}$.</li>
+            <li><b>Higher-order term:</b> $h^\top A h$ (this is $O(\|h\|^2)$, so we ignore it for the gradient).</li>
+          </ul>
         </div>
         <div class="proof-step">
-          <strong>Step 4: Identify Gradient.</strong>
-          By definition, the vector multiplying $h$ in the inner product is the gradient.
-          $$ \nabla f(\mathbf{x}) = (A + A^\top)\mathbf{x} $$
-          If $A$ is symmetric, $A = A^\top$, so $\nabla f(\mathbf{x}) = 2A\mathbf{x}$.
+          <strong>Step 4: Combine the linear terms.</strong>
+          Notice that $h^\top A \mathbf{x}$ is a scalar. A scalar is equal to its own transpose:
+          $$ h^\top A \mathbf{x} = (h^\top A \mathbf{x})^\top = \mathbf{x}^\top A^\top h $$
+          Now the linear part becomes:
+          $$ \mathbf{x}^\top A h + \mathbf{x}^\top A^\top h = \mathbf{x}^\top (A + A^\top) h $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 5: Extract the Gradient.</strong>
+          The definition of the gradient $\nabla f(\mathbf{x})$ is the vector $\mathbf{g}$ satisfying $\text{Linear Part} = \mathbf{g}^\top h$.
+          Comparing $\mathbf{x}^\top (A + A^\top) h$ with $\mathbf{g}^\top h$, we see:
+          $$ \mathbf{g}^\top = \mathbf{x}^\top (A + A^\top) \implies \mathbf{g} = (A + A^\top)\mathbf{x} $$
+          <b>Special Case:</b> If $A$ is symmetric ($A=A^\top$), then $A+A^\top = 2A$, so $\nabla f(\mathbf{x}) = 2A\mathbf{x}$.
         </div>
       </div>
 
@@ -1984,15 +2019,35 @@
       <h4>Why are Eigenvectors of Symmetric Matrices Orthogonal?</h4>
       <p>The Spectral Theorem guarantees orthogonal eigenvectors for symmetric matrices. The proof relies on the adjoint property.</p>
       <div class="proof-box">
-        <h4>Proof of Orthogonality</h4>
-        <p>Let $A$ be symmetric ($A^\top = A$). Let $v_1, v_2$ be eigenvectors with distinct eigenvalues $\lambda_1 \neq \lambda_2$.
-        $$ A v_1 = \lambda_1 v_1, \quad A v_2 = \lambda_2 v_2 $$
-        Consider the inner product $\langle A v_1, v_2 \rangle$. We can evaluate it two ways:</p>
-        <ol>
-          <li>$\langle A v_1, v_2 \rangle = \langle \lambda_1 v_1, v_2 \rangle = \lambda_1 \langle v_1, v_2 \rangle$</li>
-          <li>$\langle A v_1, v_2 \rangle = \langle v_1, A^\top v_2 \rangle = \langle v_1, A v_2 \rangle = \langle v_1, \lambda_2 v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle$</li>
-        </ol>
-        <p>Subtracting gives $(\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0$. Since $\lambda_1 \neq \lambda_2$, we must have $\langle v_1, v_2 \rangle = 0$.</p>
+        <h4>Proof of Orthogonality (Step-by-Step)</h4>
+        <p>We prove that eigenvectors of a symmetric matrix corresponding to distinct eigenvalues are orthogonal.</p>
+        <div class="proof-step">
+          <strong>Step 1: Setup.</strong>
+          Let $A$ be symmetric ($A^\top = A$). Let $v_1, v_2$ be eigenvectors with eigenvalues $\lambda_1 \neq \lambda_2$.
+          $$ A v_1 = \lambda_1 v_1 \quad \text{and} \quad A v_2 = \lambda_2 v_2 $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Evaluate the inner product $\langle A v_1, v_2 \rangle$.</strong>
+          Using the eigenvalue property for $v_1$:
+          $$ (A v_1)^\top v_2 = (\lambda_1 v_1)^\top v_2 = \lambda_1 v_1^\top v_2 = \lambda_1 \langle v_1, v_2 \rangle $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Evaluate the same product using symmetry.</strong>
+          Using the definition of matrix transpose $(AB)^\top = B^\top A^\top$:
+          $$ (A v_1)^\top v_2 = v_1^\top A^\top v_2 $$
+          Since $A$ is symmetric ($A^\top = A$):
+          $$ = v_1^\top A v_2 $$
+          Now use the eigenvalue property for $v_2$:
+          $$ = v_1^\top (\lambda_2 v_2) = \lambda_2 v_1^\top v_2 = \lambda_2 \langle v_1, v_2 \rangle $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Comparison and Conclusion.</strong>
+          We found that the same quantity equals both $\lambda_1 \langle v_1, v_2 \rangle$ and $\lambda_2 \langle v_1, v_2 \rangle$.
+          $$ \lambda_1 \langle v_1, v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
+          $$ (\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0 $$
+          Since we assumed distinct eigenvalues ($\lambda_1 \neq \lambda_2$), the factor $(\lambda_1 - \lambda_2)$ is non-zero.
+          Therefore, the inner product must be zero: $\langle v_1, v_2 \rangle = 0$. The vectors are orthogonal.
+        </div>
       </div>
 
       <p><b>Implication for convexity:</b> The "shape" of a multivariable function (bowl vs. saddle) is entirely determined by the signs of the eigenvalues of its Hessian.</p>
@@ -2562,7 +2617,32 @@
       The projection is $\mathbf{p} = t^\star \mathbf{y}$.
       <br><i>Orthogonality Check:</i> Let the residual be $\mathbf{r} = \mathbf{x} - \mathbf{p}$. Then $\mathbf{y}^\top \mathbf{r} = \mathbf{y}^\top \mathbf{x} - t^\star \mathbf{y}^\top \mathbf{y} = \mathbf{y}^\top \mathbf{x} - \frac{\mathbf{x}^\top \mathbf{y}}{\|\mathbf{y}\|^2} \|\mathbf{y}\|^2 = 0$. The residual is orthogonal to $\mathbf{y}$. This intuition generalizes to subspaces.</p>
 
-      <p>By the Pythagorean theorem, the closest point $\mathbf{p}$ must satisfy a specific geometric condition: the error vector $\mathbf{b} - \mathbf{p}$ must be orthogonal to the subspace $\mathcal{R}(A)$. <b>Think of dropping a perpendicular:</b> The shortest path from a point to a plane (subspace) is the straight line perpendicular to that plane. If the error vector were not orthogonal, we could project it onto the subspace to find a "correction" that brings us closer to $\mathbf{b}$, contradicting the optimality of $\mathbf{p}$. Thus, the optimal $\mathbf{p} = A\mathbf{x}^\star$ is the <b>orthogonal projection</b> of $\mathbf{b}$ onto $\mathcal{R}(A)$.</p>
+      <p>By the Pythagorean theorem, the closest point $\mathbf{p}$ must satisfy a specific geometric condition: the error vector $\mathbf{b} - \mathbf{p}$ must be orthogonal to the subspace $\mathcal{R}(A)$. <b>Think of dropping a perpendicular:</b> The shortest path from a point to a plane (subspace) is the straight line perpendicular to that plane.</p>
+
+      <div class="proof-box">
+        <h4>Proof: Optimality requires Orthogonality</h4>
+        <p>Why must the optimal residual be orthogonal? Let $\mathbf{x}$ be our current guess, producing a point $\mathbf{p} = A\mathbf{x}$ in the column space. Let $\mathbf{r} = \mathbf{b} - \mathbf{p}$ be the residual.</p>
+        <div class="proof-step">
+            <strong>Hypothesis:</strong> Suppose $\mathbf{r}$ is <b>not</b> orthogonal to the column space.
+            Then there exists some direction $\mathbf{v} \in \mathcal{R}(A)$ such that $\langle \mathbf{r}, \mathbf{v} \rangle \neq 0$.
+        </div>
+        <div class="proof-step">
+            <strong>Correction Step:</strong> We can improve our solution by moving a small amount $\epsilon$ in the direction $\mathbf{v}$. Consider the new point $\mathbf{p}' = \mathbf{p} + \epsilon \mathbf{v}$.
+            The new squared error is:
+            $$ \|\mathbf{b} - \mathbf{p}'\|^2 = \|\mathbf{b} - \mathbf{p} - \epsilon \mathbf{v}\|^2 = \|\mathbf{r} - \epsilon \mathbf{v}\|^2 $$
+            Expanding this:
+            $$ \|\mathbf{r}\|^2 - 2\epsilon \langle \mathbf{r}, \mathbf{v} \rangle + \epsilon^2 \|\mathbf{v}\|^2 $$
+        </div>
+        <div class="proof-step">
+            <strong>Descent Argument:</strong> For very small $\epsilon$, the linear term $-2\epsilon \langle \mathbf{r}, \mathbf{v} \rangle$ dominates the quadratic term.
+            If we choose the sign of $\epsilon$ to match the sign of the inner product, the term $-2\epsilon \langle \mathbf{r}, \mathbf{v} \rangle$ will be negative.
+            Thus, for small enough $\epsilon$, the total error decreases: $\|\mathbf{b} - \mathbf{p}'\|^2 < \|\mathbf{r}\|^2$.
+        </div>
+        <div class="proof-step">
+            <strong>Conclusion:</strong> If the residual is not orthogonal, we can always find a better point. Therefore, the optimal point <b>must</b> have a residual orthogonal to every direction in the subspace.
+            $$ \mathbf{b} - A\mathbf{x}^\star \perp \mathcal{R}(A) $$
+        </div>
+      </div>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/least-squares-orthogonal-projection.png"

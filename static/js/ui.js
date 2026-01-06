@@ -274,55 +274,97 @@ function initHeaderFontSize() {
 function initPageSettings() {
     if (document.getElementById('page-settings-panel')) return;
 
-    // 2. Create Panel
     const panel = document.createElement('div');
     panel.id = 'page-settings-panel';
-    panel.className = 'section-card'; // Reusing card style for consistent look
-    panel.style.position = 'fixed';
-    panel.style.bottom = '80px';
-    panel.style.left = '20px';
-    panel.style.width = '300px';
-    panel.style.zIndex = '1032';
-    panel.style.display = 'none';
-    panel.style.padding = 'var(--space-4)';
-    panel.style.margin = '0';
+    panel.className = 'settings-panel';
 
-    panel.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-4); border-bottom:1px solid var(--border-subtle); padding-bottom:var(--space-2);">
-            <h4 style="margin:0; font-size:var(--text-base);">Settings</h4>
-            <button class="btn btn-ghost btn-xs" id="close-settings"><i data-feather="x"></i></button>
-        </div>
+    // Header
+    const header = document.createElement('div');
+    header.className = 'settings-header';
+    header.innerHTML = `<h4>Settings</h4><button class="btn btn-ghost btn-xs" id="close-settings" aria-label="Close Settings"><i data-feather="x"></i></button>`;
+    panel.appendChild(header);
 
-        <div class="control-group" style="margin-bottom: var(--space-4);">
+    // Body
+    const body = document.createElement('div');
+    body.className = 'settings-body';
+
+    // --- Typography Section ---
+    const typeSec = document.createElement('div');
+    typeSec.className = 'settings-section';
+    typeSec.innerHTML = `<span class="settings-title">Typography</span>
+        <div class="settings-row">
             <label>Font Size</label>
             <div style="display:flex; gap:8px;">
-                <button class="btn btn-secondary btn-sm" id="font-dec" style="flex:1;"><i data-feather="minus"></i></button>
-                <button class="btn btn-ghost btn-sm" id="font-reset" style="flex:1;">Reset</button>
-                <button class="btn btn-secondary btn-sm" id="font-inc" style="flex:1;"><i data-feather="plus"></i></button>
+                <button class="btn btn-secondary btn-sm" id="font-dec" aria-label="Decrease Font Size"><i data-feather="minus"></i></button>
+                <span id="font-display" style="font-size:var(--text-sm); line-height:30px; min-width:40px; text-align:center;">100%</span>
+                <button class="btn btn-secondary btn-sm" id="font-inc" aria-label="Increase Font Size"><i data-feather="plus"></i></button>
             </div>
-        </div>
+        </div>`;
+    body.appendChild(typeSec);
 
-        <div class="control-group" style="margin-bottom: var(--space-4);">
-            <label>View Mode</label>
-            <button class="btn btn-secondary btn-sm" id="toggle-fullscreen" style="width: 100%;"><i data-feather="maximize"></i> Full Screen</button>
-        </div>
-
-        <div class="control-group" style="margin-bottom: var(--space-4);">
-            <label>Content Expansion</label>
-            <div style="display:flex; gap:8px;">
-                <button class="btn btn-secondary btn-sm" id="sections-expand" style="flex:1;">Expand All</button>
-                <button class="btn btn-secondary btn-sm" id="sections-collapse" style="flex:1;">Collapse</button>
+    // --- Layout Section ---
+    const layoutSec = document.createElement('div');
+    layoutSec.className = 'settings-section';
+    layoutSec.innerHTML = `<span class="settings-title">Layout</span>
+        <div class="settings-row" style="flex-direction:column; align-items:flex-start;">
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
+                <label>Max Width</label>
+                <span id="width-val" style="font-size:var(--text-xs); color:var(--text-tertiary);">1200px</span>
             </div>
+            <input type="range" id="layout-width" min="800" max="2000" step="50" value="1200" aria-label="Content Width">
         </div>
-    `;
+        <div class="settings-row" style="flex-direction:column; align-items:flex-start;">
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
+                <label>Page Padding</label>
+                <span id="padding-val" style="font-size:var(--text-xs); color:var(--text-tertiary);">Normal</span>
+            </div>
+            <input type="range" id="layout-padding" min="0" max="6" step="0.5" value="1.5" aria-label="Page Padding">
+        </div>`;
+    body.appendChild(layoutSec);
 
-    // Resizable logic could be added here if needed, but fixed width is cleaner for settings
-    
+    // --- Visibility Section ---
+    const visSec = document.createElement('div');
+    visSec.className = 'settings-section';
+    visSec.innerHTML = `<span class="settings-title">Visibility</span>
+        <div class="settings-row">
+            <label>Header</label>
+            <label class="switch">
+                <input type="checkbox" id="toggle-header" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-row">
+            <label>Sidebar</label>
+            <label class="switch">
+                <input type="checkbox" id="toggle-sidebar" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-row">
+            <label>Footer</label>
+            <label class="switch">
+                <input type="checkbox" id="toggle-footer" checked>
+                <span class="slider"></span>
+            </label>
+        </div>`;
+    body.appendChild(visSec);
+
+    // --- Actions Section ---
+    const actionSec = document.createElement('div');
+    actionSec.className = 'settings-section';
+    actionSec.innerHTML = `<span class="settings-title">Actions</span>
+        <button class="btn btn-secondary btn-sm" id="toggle-fullscreen" style="width: 100%; margin-bottom:8px;"><i data-feather="maximize"></i> Full Screen</button>
+        <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary btn-sm" id="sections-expand" style="flex:1;">Expand All</button>
+            <button class="btn btn-secondary btn-sm" id="sections-collapse" style="flex:1;">Collapse</button>
+        </div>`;
+    body.appendChild(actionSec);
+
     document.body.appendChild(panel);
 
-    // 3. Event Listeners
+    // --- Event Logic ---
 
-    // 1. Add Dock Button
+    // Toggle Panel
     let triggerBtn;
     if (window.controlDock) {
         triggerBtn = window.controlDock.addButton(
@@ -330,12 +372,12 @@ function initPageSettings() {
             'settings',
             'Page Settings',
             () => {
-                if (panel.style.display === 'none') {
-                    panel.style.display = 'block';
-                    triggerBtn.classList.add('active');
-                } else {
+                if (panel.style.display === 'block') {
                     panel.style.display = 'none';
                     triggerBtn.classList.remove('active');
+                } else {
+                    panel.style.display = 'block';
+                    triggerBtn.classList.add('active');
                 }
             }
         );
@@ -360,61 +402,94 @@ function initPageSettings() {
         document.body.appendChild(triggerBtn);
 
         triggerBtn.addEventListener('click', () => {
-            if (panel.style.display === 'none') {
-                panel.style.display = 'block';
-                triggerBtn.classList.add('active');
-            } else {
+            if (panel.style.display === 'block') {
                 panel.style.display = 'none';
                 triggerBtn.classList.remove('active');
+            } else {
+                panel.style.display = 'block';
+                triggerBtn.classList.add('active');
             }
         });
     }
 
-    
     document.getElementById('close-settings').addEventListener('click', () => {
         panel.style.display = 'none';
         if (triggerBtn) triggerBtn.classList.remove('active');
     });
 
-    // Font Size Logic
+    // 1. Font Size
     const root = document.documentElement;
     const sizes = ['0.875rem', '0.9375rem', '1rem', '1.125rem', '1.25rem', '1.375rem', '1.5rem'];
-    const defaultIndex = 2; // 1rem
-    let currentIndex = defaultIndex;
-
-    // Load saved font size
-    const savedFont = localStorage.getItem('font-size-index');
-    if (savedFont !== null) {
-        currentIndex = parseInt(savedFont, 10);
-        root.style.setProperty('--text-base', sizes[currentIndex]);
-    }
+    const percentages = ['87.5%', '93.75%', '100%', '112.5%', '125%', '137.5%', '150%'];
+    let fontIndex = parseInt(localStorage.getItem('font-size-index') || '2');
 
     const updateFont = () => {
-        root.style.setProperty('--text-base', sizes[currentIndex]);
-        localStorage.setItem('font-size-index', currentIndex);
-        document.getElementById('font-reset').textContent = (currentIndex === defaultIndex) ? 'Reset' : sizes[currentIndex];
+        root.style.setProperty('--text-base', sizes[fontIndex]);
+        document.getElementById('font-display').textContent = percentages[fontIndex];
+        localStorage.setItem('font-size-index', fontIndex);
     };
+    updateFont(); // Init
 
     document.getElementById('font-dec').addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateFont();
-        }
+        if (fontIndex > 0) { fontIndex--; updateFont(); }
     });
-
     document.getElementById('font-inc').addEventListener('click', () => {
-        if (currentIndex < sizes.length - 1) {
-            currentIndex++;
-            updateFont();
-        }
+        if (fontIndex < sizes.length - 1) { fontIndex++; updateFont(); }
     });
 
-    document.getElementById('font-reset').addEventListener('click', () => {
-        currentIndex = defaultIndex;
-        updateFont();
-    });
+    // 2. Layout
+    const widthInput = document.getElementById('layout-width');
+    const paddingInput = document.getElementById('layout-padding');
+    const widthVal = document.getElementById('width-val');
+    const paddingVal = document.getElementById('padding-val');
 
-    // Fullscreen toggle
+    // Load saved
+    const savedWidth = localStorage.getItem('layout-width') || '1200';
+    const savedPadding = localStorage.getItem('layout-padding') || '1.5';
+
+    const setWidth = (val) => {
+        root.style.setProperty('--container-max-width', val + 'px');
+        root.style.setProperty('--lecture-max-width', (parseInt(val) + 400) + 'px'); // Lecture container wider
+        widthVal.textContent = val + 'px';
+        localStorage.setItem('layout-width', val);
+    };
+
+    const setPadding = (val) => {
+        root.style.setProperty('--page-padding', val + 'rem');
+        paddingVal.textContent = val + 'rem';
+        localStorage.setItem('layout-padding', val);
+    };
+
+    widthInput.value = savedWidth;
+    setWidth(savedWidth);
+    widthInput.addEventListener('input', (e) => setWidth(e.target.value));
+
+    paddingInput.value = savedPadding;
+    setPadding(savedPadding);
+    paddingInput.addEventListener('input', (e) => setPadding(e.target.value));
+
+    // 3. Visibility
+    const toggleHeader = document.getElementById('toggle-header');
+    const toggleSidebar = document.getElementById('toggle-sidebar');
+    const toggleFooter = document.getElementById('toggle-footer');
+
+    const setVisibility = (key, el, cssVar, displayVal = 'block') => {
+        const isVisible = localStorage.getItem(key) !== 'false'; // Default true
+        el.checked = isVisible;
+        root.style.setProperty(cssVar, isVisible ? displayVal : 'none');
+
+        el.addEventListener('change', (e) => {
+            const checked = e.target.checked;
+            root.style.setProperty(cssVar, checked ? displayVal : 'none');
+            localStorage.setItem(key, checked);
+        });
+    };
+
+    setVisibility('show-header', toggleHeader, '--header-display', 'flex');
+    setVisibility('show-sidebar', toggleSidebar, '--sidebar-display', 'block');
+    setVisibility('show-footer', toggleFooter, '--footer-display', 'block');
+
+    // 4. Actions
     const fsBtn = document.getElementById('toggle-fullscreen');
     if (fsBtn) {
         fsBtn.addEventListener('click', () => {
@@ -431,7 +506,6 @@ function initPageSettings() {
         });
     }
 
-    // Global Toggles
     const toggleSections = (expand) => {
         document.querySelectorAll('.hierarchical-section').forEach(sec => {
             const h = sec.querySelector('h2, h3');
@@ -471,6 +545,8 @@ function initPageSettings() {
 
     document.getElementById('sections-expand').addEventListener('click', () => toggleSections(true));
     document.getElementById('sections-collapse').addEventListener('click', () => toggleSections(false));
+
+    if (typeof feather !== 'undefined') feather.replace();
 }
 
 

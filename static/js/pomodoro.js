@@ -36,8 +36,24 @@ class PomodoroWidget {
     createUI() {
         if (document.querySelector('.pomodoro-widget')) return;
 
+        // Add to Dock
+        if (window.controlDock) {
+            window.controlDock.addButton(
+                'pomodoro-trigger',
+                'clock',
+                'Pomodoro Timer',
+                () => {
+                    if (this.container.classList.contains('hidden')) {
+                        this.container.classList.remove('hidden');
+                    } else {
+                        this.container.classList.add('hidden');
+                    }
+                }
+            );
+        }
+
         const container = document.createElement('div');
-        container.className = 'pomodoro-widget glass';
+        container.className = 'pomodoro-widget glass hidden'; // Start hidden
         Object.assign(container.style, {
             position: 'fixed',
             bottom: this.position.bottom,
@@ -57,8 +73,9 @@ class PomodoroWidget {
                     <span class="status-text">${this.mode === 'work' ? 'Focus' : 'Break'}</span>
                 </div>
                 <div class="pomodoro-actions" style="display:flex; gap:4px;">
-                    <button class="btn btn-ghost btn-xs" id="pomo-minimize-btn" title="Minimize" style="padding:2px;"><i data-feather="minus" style="width:14px;"></i></button>
-                    <button class="btn btn-ghost btn-xs" id="pomo-settings-btn" title="Settings" style="padding:2px;"><i data-feather="settings" style="width:14px;"></i></button>
+                    <button class="btn btn-ghost btn-xs" id="pomo-minimize-btn" title="Minimize" aria-label="Minimize" style="padding:2px;"><i data-feather="minus" style="width:14px;"></i></button>
+                    <button class="btn btn-ghost btn-xs" id="pomo-close-btn" title="Close" aria-label="Close" style="padding:2px;"><i data-feather="x" style="width:14px;"></i></button>
+                    <button class="btn btn-ghost btn-xs" id="pomo-settings-btn" title="Settings" aria-label="Settings" style="padding:2px;"><i data-feather="settings" style="width:14px;"></i></button>
                 </div>
             </div>
 
@@ -110,6 +127,7 @@ class PomodoroWidget {
         this.settingsPanel = container.querySelector('.pomodoro-settings');
         this.body = container.querySelector('.pomodoro-body');
         this.minimizeBtn = container.querySelector('#pomo-minimize-btn');
+        this.closeBtn = container.querySelector('#pomo-close-btn');
         this.soundToggle = container.querySelector('#pomo-sound');
 
         // Restore sound pref
@@ -121,6 +139,11 @@ class PomodoroWidget {
         container.querySelector('#pomo-settings-btn').onclick = () => this.toggleSettings();
         container.querySelector('#pomo-save-settings').onclick = () => this.saveSettings();
         this.minimizeBtn.onclick = () => this.toggleMinimize();
+        this.closeBtn.onclick = () => {
+             this.container.classList.add('hidden');
+             const btn = document.getElementById('pomodoro-trigger');
+             if(btn) btn.classList.remove('active');
+        };
         this.soundToggle.onchange = (e) => {
             this.soundEnabled = e.target.checked;
             localStorage.setItem('pomodoro-sound', this.soundEnabled);

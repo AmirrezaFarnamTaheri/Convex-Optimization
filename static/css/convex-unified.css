@@ -106,6 +106,11 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.8;
 
+  /* Customizable Dimensions */
+  --container-width: 1200px;
+  --line-height: var(--leading-normal);
+  --paragraph-spacing: var(--space-4);
+
   /* Legacy */
   --font-size-base: var(--text-base);
 
@@ -294,7 +299,7 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-normal);
+  line-height: var(--line-height);
   min-height: 100vh;
   /* Subtle mesh gradient background (adapted for themes) */
   background-image: 
@@ -333,6 +338,9 @@ h1 {
 }
 
 /* Paper Theme Override for H1 */
+[data-theme="paper"] {
+    --font-sans: 'Crimson Pro', serif; /* Use serif as base for paper theme */
+}
 [data-theme="paper"] h1 {
   background: none;
   -webkit-text-fill-color: var(--primary-600);
@@ -365,7 +373,7 @@ h3 {
 }
 
 p {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--paragraph-spacing);
   max-width: 75ch;
   color: var(--text-secondary);
 }
@@ -415,10 +423,11 @@ pre code {
    LAYOUT
    ==================== */
 .container {
-  max-width: var(--container-max-width);
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 var(--page-padding);
   position: relative;
+  transition: max-width 0.3s ease;
 }
 
 .lecture-container {
@@ -439,6 +448,7 @@ pre code {
   overflow-y: auto;
   padding-right: var(--space-4);
   scrollbar-width: thin;
+  z-index: 10; /* Ensure sidebar is above main content if overlapping */
 }
 
 .lecture-content {
@@ -1098,6 +1108,25 @@ pre code {
 /* ====================
    UTILITIES
    ==================== */
+/* Focus Mode */
+body.focus-mode .site-header,
+body.focus-mode .sidebar,
+body.focus-mode .site-footer {
+    display: none !important;
+}
+body.focus-mode .lecture-content {
+    margin: 0 auto;
+}
+body.focus-mode #main {
+    padding-top: 40px !important;
+}
+
+/* Content Visibility Toggles */
+body.hide-proofs .proof-box { display: none; }
+body.hide-solutions .solution-box { display: none; }
+body.hide-examples .example-box, body.hide-examples .example { display: none; }
+body.hide-theorems .theorem-box { display: none; }
+
 .hidden { display: none !important; }
 
 .glass {
@@ -1198,4 +1227,136 @@ pre code {
   border-left-color: var(--primary-500);
   font-weight: 600;
   background: var(--bg-surface-2);
+}
+
+/* ====================
+   ENHANCED TOC
+   ==================== */
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-item-h2 {
+  margin-top: 8px;
+}
+
+.toc-link {
+  display: block;
+  padding: 6px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border-radius: 0 4px 4px 0;
+  position: relative;
+}
+
+.toc-link:hover {
+  color: var(--primary-500);
+  background: var(--bg-surface-2);
+}
+
+.toc-link.active {
+  color: var(--primary-600);
+  border-left-color: var(--primary-500);
+  background: var(--bg-surface-2);
+  font-weight: 600;
+}
+
+/* Sublist (H3) */
+.toc-sublist {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 4px;
+  border-left: 1px solid var(--border-subtle);
+  margin-left: 12px; /* Indent the line */
+}
+
+.toc-sublist.hidden {
+  display: none;
+}
+
+.toc-item-h3 .toc-link {
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
+
+/* Toggle Icon */
+.toc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: color 0.2s;
+}
+.toc-toggle:hover {
+  color: var(--text-primary);
+}
+.toc-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ====================
+   SIDEBAR ENHANCEMENTS
+   ==================== */
+.sidebar {
+    transition: width 0.1s ease, transform 0.3s ease; /* Fast width for resize, slow transform for mobile */
+    min-width: 0; /* Allow collapse */
+}
+
+/* Resizable Handle Override */
+.resize-e {
+    width: 8px !important;
+    right: -4px !important;
+    background: transparent;
+    transition: background 0.2s;
+}
+.resize-e:hover {
+    background: var(--primary-500);
+}
+
+/* Desktop Collapse State */
+.sidebar.collapsed-desktop {
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+    border: none;
+}
+
+/* Floating Expand Trigger */
+.sidebar-expand-trigger {
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 32px;
+    height: 40px;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 900;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+}
+.sidebar-expand-trigger:hover {
+    background: var(--bg-surface-1);
+    color: var(--primary-500);
+    width: 36px;
+}
+.sidebar-expand-trigger.hidden {
+    transform: translateX(-100%);
 }

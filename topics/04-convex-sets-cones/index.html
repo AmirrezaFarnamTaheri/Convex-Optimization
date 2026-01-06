@@ -123,24 +123,29 @@
         <br>($\Rightarrow$) If $K$ is a convex cone, scaling gives $\alpha x, \beta y \in K$. Convexity gives $\frac{1}{2}(\alpha x + \beta y) \in K$. Scaling by 2 gives $\alpha x + \beta y \in K$.
         <br>($\Leftarrow$) Setting $\beta=0$ gives the cone property. Setting $\alpha=\theta, \beta=1-\theta$ gives convexity.</p>
 
-        <div class="theorem-box">
-          <h4>Deep Dive: Polyhedral Cones and Weyl-Minkowski</h4>
-          <p>A fundamental result in the theory of convex cones is the equivalence between two ways of representing polyhedral cones:</p>
-          <ul>
-            <li><b>V-Representation (Vertex/Generator):</b> A cone is finitely generated if it is the conic hull of a finite set of vectors: $K = \{Ay \mid y \ge 0\}$.</li>
-            <li><b>H-Representation (Halfspace/Intersection):</b> A cone is polyhedral if it is the intersection of finitely many closed halfspaces passing through the origin: $K = \{x \mid Bx \le 0\}$.</li>
-          </ul>
-          <p><b>The Weyl-Minkowski Theorem</b> states that a convex cone is finitely generated if and only if it is polyhedral. This is the conical analog of the vertex-facet equivalence for polytopes. It underpins algorithms like the Simplex method (moving between vertices) and Fourier-Motzkin elimination (projecting H-representations).</p>
-        </div>
+        <h4>The Big Three Cones (The "Atoms" of Conic Programming)</h4>
+        <p>Most practical convex problems (LP, QP, QCQP, SOCP, SDP) can be written using just these three cones. Understanding their geometry is crucial.</p>
 
-        <div class="example">
-            <h4>Examples of Convex Cones</h4>
-            <ul>
-                <li><b>Non-negative orthant:</b> $\mathbb{R}^n_+ = \{x \in \mathbb{R}^n \mid x_i \ge 0\}$</li>
-                <li><b>Second-order cone (Lorentz cone):</b> $\mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$</li>
-                <li><b>Rotated Second-order cone:</b> $\mathcal{Q}_r^{n+2} = \{(x, y, z) \in \mathbb{R}^n \times \mathbb{R} \times \mathbb{R} \mid \|x\|_2^2 \le yz, y \ge 0, z \ge 0\}$</li>
-                <li><b>PSD Cone:</b> $\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}$</li>
-            </ul>
+        <h5>(I) Nonnegative Orthant $\mathbb{R}^n_+$</h5>
+        $$ \mathbb{R}^n_+ = \{x \in \mathbb{R}^n \mid x_i \ge 0 \ \forall i\} $$
+        <p><b>Convexity Proof:</b> If $x_i \ge 0$ and $y_i \ge 0$, then $(\theta x + (1-\theta)y)_i = \theta x_i + (1-\theta)y_i \ge 0$ for $\theta \in [0,1]$.
+        <br><b>Modeling:</b> Encodes linear inequalities $Ax \le b \iff b - Ax \in \mathbb{R}^m_+$.</p>
+
+        <h5>(II) Second-Order Cone (SOC) $\mathcal{Q}^{n+1}$</h5>
+        $$ \mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|x\|_2 \le t\} $$
+        <p><b>Convexity Proof:</b> The norm is convex. $\mathcal{Q}^{n+1}$ is the epigraph of the Euclidean norm function $f(x)=\|x\|_2$. Epigraphs of convex functions are convex sets.
+        <br><b>Modeling:</b> Encodes Euclidean distance constraints and robust linear constraints.</p>
+
+        <h5>(III) Positive Semidefinite (PSD) Cone $\mathbb{S}^n_+$</h5>
+        $$ \mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid z^\top X z \ge 0 \ \forall z \in \mathbb{R}^n\} $$
+        <p><b>Convexity Proof:</b> If $X, Y \succeq 0$, then $z^\top (\theta X + (1-\theta)Y) z = \theta (z^\top X z) + (1-\theta) (z^\top Y z) \ge 0$.
+        <br><b>Modeling:</b> Encodes eigenvalues, ellipses, and covariance matrices. (Warning: PSD is not elementwise non-negativity!).</p>
+
+        <div class="theorem-box">
+          <h4>Unified View: The Conic Program Template</h4>
+          <p>LP, SOCP, and SDP are all instances of the same problem:
+          $$ \min c^\top x \quad \text{s.t.} \quad Ax = b, \quad x \in K $$
+          where $K$ is a product of these "Big Three" cones. Solvers like Mosek/SCS/ECOS are designed to handle exactly this structure efficiently.</p>
         </div>
 
         <div class="insight">
@@ -583,35 +588,33 @@
         $$
         a^\top x \le a^\top x_0 \quad \forall x \in C
         $$
-        <p>The hyperplane $\{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$. Geometrically, the hyperplane "touches" the set at $x_0$ without cutting through it.</p>
+        <p>The hyperplane $H = \{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$. It "kisses" the set without cutting into it.</p>
       </div>
 
       <div class="proof-box">
-        <h4>Proof Sketch</h4>
+        <h4>Constructive Proof via Projection (Separation)</h4>
+        <p>We use the result from 2.1 (Strict Separation) and a limiting argument.</p>
         <div class="proof-step">
-          <strong>Step 1: Approximation by Exterior Points.</strong>
-          Since $x_0 \in \partial C$ (boundary), there exists a sequence of points $\{y_k\}$ outside $C$ converging to $x_0$. For each $y_k$, the Separating Hyperplane Theorem (Section 2.1) guarantees a hyperplane separating $y_k$ from $C$.
+          <strong>Step 1: Exterior Sequence.</strong>
+          Since $x_0 \in \partial C$, there is a sequence of points $y_k \notin C$ such that $y_k \to x_0$.
         </div>
         <div class="proof-step">
-          <strong>Step 2: Normal Vectors.</strong>
-          For each $k$, let $a_k$ be the normal vector satisfying $a_k^\top x < a_k^\top y_k$ for all $x \in C$. Normalize: $\|a_k\|_2 = 1$.
+          <strong>Step 2: Projection & Normal.</strong>
+          Let $x_k = \Pi_C(y_k)$. Since $y_k \notin C$, $x_k \neq y_k$.
+          Define the normal $a_k = \frac{y_k - x_k}{\|y_k - x_k\|}$.
+          By the projection inequality: $a_k^\top (z - x_k) \le 0$ for all $z \in C$.
         </div>
         <div class="proof-step">
-          <strong>Step 3: Compactness.</strong>
-          The unit sphere is compact. Extract a convergent subsequence $a_{k_j} \to a$ with $\|a\|_2 = 1$ (nonzero).
+          <strong>Step 3: Convergence.</strong>
+          The sequence $a_k$ lies on the unit sphere (compact), so there exists a convergent subsequence $a_{k_j} \to a$ with $\|a\|=1$.
+          Also $x_{k_j} \to x_0$ (by continuity of projection).
         </div>
         <div class="proof-step">
-          <strong>Step 4: Limiting Inequality.</strong>
-          Taking the limit as $y_{k_j} \to x_0$:
-          $$ a^\top x \le \lim_{j\to\infty} a_{k_j}^\top y_{k_j} = a^\top x_0 $$
-          for all $x \in C$. This is the supporting hyperplane at $x_0$.
+          <strong>Step 4: Limit.</strong>
+          Taking the limit of $a_k^\top (z - x_k) \le 0$:
+          $$ a^\top (z - x_0) \le 0 \implies a^\top z \le a^\top x_0 $$
+          for all $z \in C$. Thus $a$ defines a supporting hyperplane at $x_0$.
         </div>
-      </div>
-
-      <div class="insight">
-        <h4>Geometric Intuition: The "Tangent Plane" Generalization</h4>
-        <p>For smooth convex sets, the supporting hyperplane is the tangent hyperplane. For non-smooth sets (like polyhedra), supporting hyperplanes exist at corners and edges even without differentiability.
-        <br><b>Key insight:</b> Convexity guarantees that at every boundary point, you can find a "best linear approximation" that stays below the set. This is why optimization over convex sets is tractable—local information (gradient/normal) gives global certificates.</p>
       </div>
 
       <div class="example-box">
@@ -623,17 +626,6 @@
         </p>
       </div>
 
-      <div class="insight">
-        <h4>Applications in Optimization</h4>
-        <ul>
-          <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
-          <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
-          $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
-          where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
-          <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
-        </ul>
-      </div>
-
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/supporting-hyperplane-tangent.png"
              alt="Illustration of the Supporting Hyperplane Theorem"
@@ -641,7 +633,7 @@
         <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
-      <h3>2.3 Normal Cones and Optimality</h3>
+      <h3>2.3 Normal Cones and Optimality Certificates</h3>
       <p>The set of all valid supporting normal vectors at a point $x_0$ forms a cone.</p>
 
       <div class="definition-box">
@@ -652,13 +644,15 @@
             <li>If $x_0 \in \mathrm{int}(C)$, then $N_C(x_0) = \{0\}$.</li>
             <li>If $x_0 \in \partial C$, $N_C(x_0)$ contains the outward normals of all supporting hyperplanes.</li>
         </ul>
+        <p><b>Equivalence:</b> $a \in N_C(x_0) \iff$ the hyperplane $a^\top x = a^\top x_0$ supports $C$ at $x_0$.</p>
       </div>
 
       <div class="insight">
-        <h4>Optimality Condition</h4>
-        <p>A point $x^* \in C$ maximizes the linear function $f(x) = c^\top x$ if and only if $c$ points in the direction of the normal cone:</p>
-        $$ c \in N_C(x^*) $$
-        <p>This geometric condition ($c$ is an outward normal) is the basis of KKT conditions in constrained optimization.</p>
+        <h4>Linear Optimization Viewpoint: Support = Optimality</h4>
+        <p>A point $x_0 \in C$ maximizes the linear function $f(x) = c^\top x$ over $C$ <b>if and only if</b> $c$ is a supporting normal at $x_0$.
+        $$ x_0 \in \arg\max_{x \in C} c^\top x \iff c \in N_C(x_0) $$
+        <p><i>Proof:</i> $c \in N_C(x_0) \iff c^\top(x-x_0) \le 0 \ \forall x \iff c^\top x \le c^\top x_0 \ \forall x$.
+        <br>This is why <b>dual variables</b> (Lagrange multipliers) are geometric normals. They are the certificates that "push back" against the gradient of the objective function to keep it from improving further.</p>
       </div>
 
       <h3>2.4 Theorems of the Alternative (Farkas' Lemma)</h3>

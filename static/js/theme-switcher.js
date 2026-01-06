@@ -83,10 +83,10 @@ class ThemeSwitcher {
         container.className = 'theme-widget';
 
         container.innerHTML = `
-            <button class="theme-btn" id="theme-trigger">
+            <button class="theme-btn" id="theme-trigger" aria-label="Appearance Settings">
                 <i data-feather="sliders"></i> <span>Appearance</span>
             </button>
-            <div class="theme-dropdown-panel hidden" id="theme-panel">
+            <div class="theme-dropdown-panel hidden" id="theme-panel" role="dialog" aria-label="Theme Options">
                 <div class="theme-section">
                     <div class="theme-section-title">Color Theme</div>
                     <div class="theme-grid" id="color-options"></div>

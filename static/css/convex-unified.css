@@ -106,6 +106,11 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.8;
 
+  /* Customizable Dimensions */
+  --container-width: 1200px;
+  --line-height: var(--leading-normal);
+  --paragraph-spacing: var(--space-4);
+
   /* Legacy */
   --font-size-base: var(--text-base);
 
@@ -286,7 +291,7 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-normal);
+  line-height: var(--line-height);
   min-height: 100vh;
   /* Subtle mesh gradient background (adapted for themes) */
   background-image: 
@@ -325,6 +330,9 @@ h1 {
 }
 
 /* Paper Theme Override for H1 */
+[data-theme="paper"] {
+    --font-sans: 'Crimson Pro', serif; /* Use serif as base for paper theme */
+}
 [data-theme="paper"] h1 {
   background: none;
   -webkit-text-fill-color: var(--primary-600);
@@ -357,7 +365,7 @@ h3 {
 }
 
 p {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--paragraph-spacing);
   max-width: 75ch;
   color: var(--text-secondary);
 }
@@ -407,10 +415,11 @@ pre code {
    LAYOUT
    ==================== */
 .container {
-  max-width: 1200px;
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 var(--space-6);
   position: relative;
+  transition: max-width 0.3s ease;
 }
 
 .lecture-container {
@@ -1088,6 +1097,25 @@ pre code {
 /* ====================
    UTILITIES
    ==================== */
+/* Focus Mode */
+body.focus-mode .site-header,
+body.focus-mode .sidebar,
+body.focus-mode .site-footer {
+    display: none !important;
+}
+body.focus-mode .lecture-content {
+    margin: 0 auto;
+}
+body.focus-mode #main {
+    padding-top: 40px !important;
+}
+
+/* Content Visibility Toggles */
+body.hide-proofs .proof-box { display: none; }
+body.hide-solutions .solution-box { display: none; }
+body.hide-examples .example-box, body.hide-examples .example { display: none; }
+body.hide-theorems .theorem-box { display: none; }
+
 .hidden { display: none !important; }
 
 .glass {

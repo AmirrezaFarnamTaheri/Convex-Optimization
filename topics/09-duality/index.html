@@ -888,21 +888,36 @@
             <strong>Step 2: The LP Representation (Primal).</strong>
             We relax the discrete subset choice to a continuous LP. Let $\mathcal{Y} = \{ y \in \mathbb{R}^n \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$.
             $$ f(x) = \max_{y \in \mathcal{Y}} x^\top y $$
-            <b>Proof via Extreme Points:</b> The feasible set $\mathcal{Y}$ is a polytope. Its extreme points are exactly the binary vectors with sum $r$ (see <i>Exercise 02.2</i>). Since the objective is linear, the maximum is attained at an extreme point, which corresponds to selecting a subset of size $r$.
-            <br><b>Proof via Exchange Argument:</b> If a feasible $y$ puts weight on a small entry $x_j$ while a large entry $x_i$ is not saturated ($y_i < 1$), we can move mass from $j$ to $i$ to increase the objective. Thus, the optimal $y$ must saturate the largest entries first.
+            <p>We provide two rigorous proofs for why this relaxation is exact.</p>
+
+            <p><b>Proof 1: Extreme Points (The Geometry).</b></p>
+            <ul>
+              <li>The feasible set $\mathcal{Y}$ is a bounded polyhedron (a polytope). Linearity of the objective implies the maximum is attained at an extreme point (vertex).</li>
+              <li><b>Claim:</b> $\mathrm{ext}(\mathcal{Y}) = \{v \in \{0,1\}^n : \mathbf{1}^\top v = r\}$. (The vertices are exactly the subset indicators).</li>
+              <li><b>Reasoning:</b> Suppose $y \in \mathcal{Y}$ has two fractional components $0 < y_i, y_j < 1$. We can perturb $y$ by adding/subtracting $\epsilon(e_i - e_j)$ while staying feasible. This shows $y$ is the midpoint of two distinct points in $\mathcal{Y}$, so it cannot be a vertex. Thus, vertices have at most one fractional component. But since $\sum y_i = r$ is integer, there cannot be exactly one fractional component. Therefore, all vertices are binary.</li>
+            </ul>
+
+            <p><b>Proof 2: The Exchange Argument (The Mechanics).</b></p>
+            <p>Suppose an optimal $y$ puts positive weight on a "small" entry $x_j$ ($y_j > 0$) while a "large" entry $x_i$ ($x_i > x_j$) is not fully selected ($y_i < 1$).
+            <br>We can define a new vector $y'$ by shifting $\epsilon = \min(y_j, 1-y_i)$ mass from $j$ to $i$.
+            $$ y'_i = y_i + \epsilon, \quad y'_j = y_j - \epsilon $$
+            The change in objective is $\epsilon(x_i - x_j) > 0$. This contradicts optimality. Thus, the optimal $y$ must fill the buckets corresponding to the largest $x_i$'s first.</p>
           </div>
 
           <div class="proof-step">
             <strong>Step 3: Deriving the Dual.</strong>
-            We transform the maximization LP into a minimization problem using duality.
-            <br><b>Primal (P):</b> $\max x^\top y$ s.t. $y \le \mathbf{1}$, $-y \le 0$, $\mathbf{1}^\top y = r$.
-            <br><b>Lagrangian:</b> (Convert to $\min -x^\top y$ to align signs).
+            We transform the maximization LP into a minimization problem to expose the hidden variables.
+            <br><b>Primal (P):</b> $\max x^\top y$ s.t. $y \le \mathbf{1}$, $y \ge 0$, $\mathbf{1}^\top y = r$.
+            <br><b>Lagrangian Construction:</b> To minimize the upper bound, we format as $\min -x^\top y$.
             $$ L(y, u, v, t) = -x^\top y + u^\top(y-\mathbf{1}) + v^\top(-y) + t(\mathbf{1}^\top y - r) $$
-            $$ = (-x + u - v + t\mathbf{1})^\top y - \mathbf{1}^\top u - rt $$
-            Stationarity w.r.t. $y$ requires the gradient to vanish: $u - v + t\mathbf{1} = x$.
-            <br><b>Dual Problem (D):</b> Minimize the constant term subject to constraints.
+            Here $u \ge 0$ handles the upper bound, $v \ge 0$ handles the lower bound, and $t \in \mathbb{R}$ handles the sum.
+            $$ L = (-x + u - v + t\mathbf{1})^\top y - \mathbf{1}^\top u - rt $$
+            <br><b>Dual Function:</b> The infimum over $y$ is finite only if the gradient vanishes (Stationarity):
+            $$ -x + u - v + t\mathbf{1} = 0 \iff u - v + t\mathbf{1} = x $$
+            If this holds, $g(u, v, t) = -\mathbf{1}^\top u - rt$.
+            <br><b>Dual Problem (D):</b> Maximize the dual function (or minimize its negation):
             $$ \min_{t, u, v} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad u - v + t\mathbf{1} = x, \ u, v \ge 0 $$
-            Eliminating $v$ ($v = u + t\mathbf{1} - x \ge 0 \implies u + t\mathbf{1} \ge x$):
+            <b>Simplification:</b> Eliminate $v$. From stationarity, $v = u + t\mathbf{1} - x$. The constraint $v \ge 0$ becomes $u + t\mathbf{1} \ge x$.
             $$ f(x) = \min_{t, u} \left\{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, \ u \ge 0 \right\} $$
           </div>
 
@@ -914,16 +929,18 @@
           </div>
 
           <div class="proof-step">
-            <strong>Step 5: The "Threshold" Interpretation (Deep Insight).</strong>
-            What do $t$ and $u$ mean? The constraint $u_i \ge x_i - t$ combined with $u_i \ge 0$ implies $u_i \ge \max(0, x_i - t)$.
-            Minimizing the objective over $u$ yields:
-            $$ f(x) = \min_{t} \left( rt + \sum_{i=1}^n \max(0, x_i - t) \right) $$
-            The variable $t$ acts as a <b>threshold</b>.
+            <strong>Step 5: The "Threshold" Interpretation via KKT.</strong>
+            The KKT conditions reveal the mechanical role of the dual variables.
+            From stationarity ($u_i - v_i = x_i - t$) and complementary slackness ($u_i(y_i-1)=0, v_iy_i=0$), we can deduce the behavior of the optimal primal $y^*$ based on the threshold $t$:
             <ul>
-                <li>If $x_i > t$, the term is $x_i - t$. Total contribution: $\sum (x_i - t) + rt$.</li>
-                <li>At the optimum, $t^*$ positions itself exactly at the $r$-th largest element (generalized for ties).</li>
-                <li>This formula is related to the <b>CVaR</b> (Conditional Value at Risk) representation.</li>
+                <li><b>Case A ($x_i > t$):</b> Then $u_i - v_i > 0 \implies u_i > 0 \implies y_i = 1$. (Must select).</li>
+                <li><b>Case B ($x_i < t$):</b> Then $u_i - v_i < 0 \implies v_i > 0 \implies y_i = 0$. (Must reject).</li>
+                <li><b>Case C ($x_i = t$):</b> Then $u_i = v_i$. We can have $y_i \in [0, 1]$.</li>
             </ul>
+            <p>Thus, $t^*$ acts as a <b>cutoff value</b>. We select all elements strictly above $t^*$ and fill the remainder of our budget $r$ from the elements equal to $t^*$.</p>
+            <p><b>Connection to Hinge Loss:</b> Minimizing over $u$ explicitly gives $u_i = \max(0, x_i - t)$. The dual problem reduces to a 1D convex minimization:
+            $$ f(x) = \min_{t \in \mathbb{R}} \left( rt + \sum_{i=1}^n \max(0, x_i - t) \right) $$
+            This formula is widely used in risk management (CVaR) and regression (SVR), avoiding the need for sorting in the optimization loop.</p>
           </div>
         </div>
         </div>
@@ -940,6 +957,7 @@
             <strong>Step 1: The Constraint.</strong>
             Let $r = \lfloor 0.1 n \rfloor$. The "top 10% mass" is exactly $f(x) = \sum_{i=1}^r x_{[i]}$.
             The constraint is $f(x) \le 0.8$.
+            <br><i>Sanity Check:</i> Is this feasible? If we invest uniformly ($x_i = 1/n$), the top $r$ sum is $r/n \approx 0.1$, which is well below $0.8$. So the feasible set is non-empty.
           </div>
 
           <div class="proof-step">
@@ -969,6 +987,7 @@
                 <li><b>Constraints:</b> All linear inequalities and equalities.</li>
             </ul>
             This is a standard convex QP. We successfully modeled a complex order-statistic constraint using duality!
+            <br><b>Solver Note:</b> In a standard solver (like OSQP or SCS), the state vector is $z = [x, u, t]^\top$. The $P$ matrix will have $\Sigma$ in the top-left block and zeros elsewhere.
           </div>
         </div>
         </div>

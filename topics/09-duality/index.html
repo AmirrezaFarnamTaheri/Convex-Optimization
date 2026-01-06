@@ -1537,26 +1537,68 @@
 </div>
 
         <div class="problem">
-  <h3>P9.13 — Log-Sum-Exp Smoothing and Entropy</h3>
-  <p>Consider minimizing the piecewise-linear function $f(x) = \max_i (a_i^\top x + b_i)$.
-  <br><strong>(a)</strong> Derive the dual of the smooth approximation $f_{sm}(x) = \log(\sum \exp(a_i^\top x + b_i))$.
-  <br><strong>(b)</strong> Show that the smoothing corresponds to adding an entropy regularization term to the dual.</p>
+  <h3>P9.13 — Case Study: The Geometry of Max-of-Affines</h3>
+  <p>Consider the classic piecewise-linear minimization problem:
+  $$ \min_{x \in \mathbb{R}^n} \; \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
+  This problem is convex but nonsmooth. We analyze it through four different lenses to see how smoothing relates to duality.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Geometric View:</b> The objective is the upper envelope of $m$ hyperplanes. Minimizing it means finding the lowest point on this "bowl".</li>
+        <li><b>Dual Equivalence:</b> The dual can be derived via an "equivalent problem" trick or via standard LP duality. They yield the same result: maximizing a weighted average of intercepts subject to slope equilibrium.</li>
+        <li><b>Smoothing:</b> Approximating the max with Log-Sum-Exp is equivalent to adding <b>entropy regularization</b> to the dual problem.</li>
+    </ul>
+  </div>
 
   <div class="solution-box">
     <h4>Solution</h4>
+
     <div class="proof-step">
-      <strong>(a) Dual Derivation.</strong>
-      Using the conjugate identity $\log(\sum e^{u_i}) = \max_{\lambda \in \Delta} (\lambda^\top u - \sum \lambda_i \log \lambda_i)$.
-      <br>Let $u_i = a_i^\top x + b_i$.
-      $$ \min_x f_{sm}(x) = \min_x \max_{\lambda \in \Delta} \left( \sum \lambda_i (a_i^\top x + b_i) - \sum \lambda_i \log \lambda_i \right) $$
-      Swap min and max (by minimax theorem). The inner min over $x$ is $\min_x (\sum \lambda_i a_i)^\top x$. This is bounded only if $A^\top \lambda = 0$ (weighted slope is zero).
-        </div>
+      <strong>Part (a): Dual via Equivalent Problem (Lagrange).</strong>
+      Rewrite the problem using auxiliary variables $y_i$:
+      $$ \min_{x, y} \max_i y_i \quad \text{s.t.} \quad y_i = a_i^\top x + b_i $$
+      Form the Lagrangian with multipliers $\lambda$:
+      $$ L(x, y, \lambda) = \max_i y_i + \sum \lambda_i (a_i^\top x + b_i - y_i) = (\max_i y_i - \lambda^\top y) + (A\lambda)^\top x + b^\top \lambda $$
+      The dual function is $g(\lambda) = \inf_{x,y} L(x, y, \lambda)$.
+      <ul>
+        <li>Inf over $x$: Finite iff $A\lambda = 0$ (weighted slopes cancel).</li>
+        <li>Inf over $y$: We need $\inf_y (\max_i y_i - \lambda^\top y)$. This is the conjugate of the max function.
+        If $\lambda \succeq 0$ and $\mathbf{1}^\top \lambda = 1$, then $\lambda^\top y \le \max y_i$, so the diff is $\ge 0$ (and 0 for $y=c\mathbf{1}$).
+        Otherwise, we can drive it to $-\infty$. Thus, $\lambda$ must be in the simplex $\Delta$.</li>
+      </ul>
+      <b>Result:</b> $\max b^\top \lambda$ s.t. $A\lambda = 0, \lambda \in \Delta$.
+    </div>
+
     <div class="proof-step">
-      <strong>(b) Entropy Interpretation.</strong>
-      The dual problem becomes:
-      $$ \max_{\lambda} \quad b^\top \lambda - \sum_{i=1}^m \lambda_i \log \lambda_i \quad \text{s.t.} \quad A^\top \lambda = 0, \ \mathbf{1}^\top \lambda = 1, \ \lambda \ge 0 $$
-      Comparing to the dual of the original max-function ($\max b^\top \lambda$ s.t. same constraints), we see the only difference is the term $-\sum \lambda_i \log \lambda_i$.
-      <br>This <b>entropy term</b> regularizes the dual, encouraging the weights $\lambda$ to be uniform rather than sparse (sparse $\lambda$ corresponds to a "hard" max).
+      <strong>Part (b): Dual via LP Formulation.</strong>
+      Standard epigraph form: $\min t$ s.t. $a_i^\top x + b_i \le t$.
+      Lagrangian: $L(x, t, \lambda) = t + \sum \lambda_i(a_i^\top x + b_i - t) = (1-\mathbf{1}^\top \lambda)t + (A\lambda)^\top x + b^\top \lambda$.
+      Minimizing over $t$ yields $\mathbf{1}^\top \lambda = 1$. Minimizing over $x$ yields $A\lambda = 0$.
+      <b>Result:</b> Exactly the same dual problem. The geometry forces the probability simplex constraint regardless of derivation path.
+    </div>
+
+    <div class="proof-step">
+      <strong>Part (c): Dual of Smooth Approximation (Entropy).</strong>
+      Let $f_{sm}(x) = \log(\sum e^{a_i^\top x + b_i})$.
+      Using the variational identity $\log(\sum e^{u_i}) = \max_{\lambda \in \Delta} (\lambda^\top u - \sum \lambda_i \log \lambda_i)$:
+      $$ \min_x f_{sm}(x) = \min_x \max_{\lambda \in \Delta} \left( \lambda^\top(Ax+b) - \sum \lambda_i \log \lambda_i \right) $$
+      Swapping min/max: The inner $\min_x \lambda^\top Ax$ forces $A^\top \lambda = 0$.
+      <b>Result:</b>
+      $$ \max_{\lambda \in \Delta, A^\top \lambda = 0} \left( b^\top \lambda - \sum_{i=1}^m \lambda_i \log \lambda_i \right) $$
+      The dual of the smooth problem is the dual of the nonsmooth problem plus an <b>entropy bonus</b>.
+    </div>
+
+    <div class="proof-step">
+      <strong>Part (d): Approximation Bounds ($\gamma$-scaling).</strong>
+      Define $f_\gamma(x) = \frac{1}{\gamma} \log(\sum e^{\gamma(a_i^\top x + b_i)})$.
+      Using the inequality $\max u_i \le \log \sum e^{u_i} \le \max u_i + \log m$, applied to $\gamma u$:
+      $$ \gamma \max u_i \le \log \sum e^{\gamma u_i} \le \gamma \max u_i + \log m $$
+      Dividing by $\gamma$:
+      $$ f_{pl}(x) \le f_\gamma(x) \le f_{pl}(x) + \frac{\log m}{\gamma} $$
+      Taking infimum over $x$:
+      $$ p^\star_{pl} \le p^\star_\gamma \le p^\star_{pl} + \frac{\log m}{\gamma} $$
+      As $\gamma \to \infty$, the smooth approximation (and its optimal value) converges to the piecewise-linear one. In the dual, this corresponds to the entropy term $\frac{1}{\gamma} H(\lambda)$ vanishing, allowing the dual variables to become sparse (vertices of the simplex).
     </div>
   </div>
 </div>

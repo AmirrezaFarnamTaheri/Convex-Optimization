@@ -801,6 +801,12 @@
             <p><b>Proof:</b> Hessian is $\text{diag}(p) - pp^\top$ (covariance matrix), hence PSD.</p>
             <p><b>Engineering Hook:</b> Used as a smooth approximation of $\max(x)$.
             <br>$\text{lse}(x) \le t$ is representable using $n$ exponential cones.</p>
+            <p><b>Approximation Bounds:</b> For any $x$, we have:
+            $$ \max_i x_i \le \text{lse}(x) \le \max_i x_i + \log n $$
+            <i>Proof:</i> Let $M = \max_i x_i$. Factor out $e^M$:
+            $$ \log\left(\sum e^{x_i}\right) = \log\left(e^M \sum e^{x_i - M}\right) = M + \log\left(\sum e^{x_i - M}\right) $$
+            Since $x_i - M \le 0$, each term $e^{x_i-M} \le 1$. The sum is at least 1 (the max term is $e^0=1$) and at most $n$.
+            Thus $0 \le \log(\sum \dots) \le \log n$. Adding $M$ gives the result.</p>
             <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
         </div>
 

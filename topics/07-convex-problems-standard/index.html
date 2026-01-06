@@ -101,6 +101,19 @@
         <li><b>Exact Equivalence:</b> At optimality, the constraint $f_0(x) \le t$ is tight ($t = f_0(x)$). Minimizing $t$ forces it down to the graph of $f_0$.</li>
       </ol>
 
+      <h4>The "Epigraph Checklist" (Your Automatic Procedure)</h4>
+      <p>Whenever you see a nontrivial objective, follow this mechanical procedure:</p>
+      <ol>
+          <li><b>Introduce $t$:</b> Rewrite $\min f(x)$ as $\min t$.</li>
+          <li><b>Add Constraint:</b> Add $f(x) \le t$.</li>
+          <li><b>Decompose:</b> If $f(x) = \max_i f_i(x)$, split into $f_i(x) \le t$ for all $i$.</li>
+          <li><b>Classify:</b> Ask "Which cone does $f(x) \le t$ belong to?"
+              <br>$\bullet$ Norm $\to$ SOC.
+              <br>$\bullet$ Max/Abs $\to$ Linear (LP).
+              <br>$\bullet$ Quadratic $\to$ LMI/Rotated SOC.
+          </li>
+      </ol>
+
       <div class="proof-box">
         <h4>Proof: $e^\star = p^\star$</h4>
         <p>Let $p^\star = \inf_x f_0(x)$ and $e^\star = \inf_{x,t} \{ t \mid f_0(x) \le t \}$.
@@ -635,6 +648,18 @@
       </p>
       <p>This is a classic example of robust optimization via LP.</p>
 
+      <div class="recap-box">
+          <h4>The LP Pattern Book: Reflexes to Build</h4>
+          <p>You should instantly recognize and rewrite:</p>
+          <ol>
+              <li>$|a^\top x + b| \le t$ $\to$ Two linear inequalities.</li>
+              <li>$\|Ax+b\|_\infty \le t$ $\to$ Componentwise bounds (Box).</li>
+              <li>$\|Ax+b\|_1 \le t$ $\to$ Auxiliary vector $s$, sum constraint (Diamond).</li>
+              <li>$\max_i (a_i^\top x + b_i) \le t$ $\to$ One inequality per term.</li>
+              <li>Piecewise-linear penalties $\to$ Epigraph form with linear cuts.</li>
+          </ol>
+      </div>
+
       <h3>3.4 Piecewise-Linear Minimization</h3>
       <p>Consider minimizing a <strong>maximum of affine functions</strong>:</p>
       $$ \text{minimize} \quad f(x) = \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
@@ -868,12 +893,19 @@
           $
         </p>
       </div>
-      <p><b>Crucial Requirement:</b> For this problem to be convex, we must have $P \succeq 0$ (Positive Semidefinite).
-      <br>If $P$ has even one negative eigenvalue, the objective is non-convex (saddle point or unbounded below), and the problem is generally NP-hard.</p>
+      <p><b>The $\tfrac{1}{2}$ Factor:</b> Pure convention to cancel the 2 in the derivative $\nabla f(x) = Px + q$.</p>
+
+      <div class="theorem-box">
+          <h4>Theorem: Convexity $\iff$ PSD</h4>
+          <p>The quadratic function is convex if and only if $P \succeq 0$.
+          <br><b>Warning:</b> If $P$ has even one negative eigenvalue, the problem is non-convex and NP-hard. Convexity is binary here.</p>
+      </div>
 
       <div class="insight">
-          <h4>Symmetry Assumption</h4>
-          <p>We can always assume $P$ is symmetric ($P=P^\top$). If it isn't, we can replace it with its symmetric part $P_{sym} = (P+P^\top)/2$ because $x^\top P x = x^\top P_{sym} x$ for all vectors $x$. The skew-symmetric part contributes zero to the quadratic form.</p>
+          <h4>Symmetry: Not Optional</h4>
+          <p>We always assume $P = P^\top$.
+          <br><i>Why?</i> Because $x^\top P x = x^\top (\frac{P+P^\top}{2}) x$. The skew-symmetric part of a matrix contributes nothing to the quadratic form ($x^\top P_{skew} x = 0$).
+          <br><b>Rule:</b> Always symmetrize $P$ before checking eigenvalues!</p>
       </div>
 
       <div class="proof-box">
@@ -1133,6 +1165,17 @@
             Combined, $\lambda^* = \max(0, \bar{\lambda})$ where $\bar{\lambda}$ is the root of $\phi(\lambda)=1$.
             This form explains why the constraint acts as <strong>Tikhonov regularization</strong>: it adds a "ridge" $\lambda I$ to the Hessian.
         </div>
+      </div>
+
+      <div class="recap-box">
+          <h4>QCQP Skill Checklist</h4>
+          <p>Given any quadratic constraint, you should be able to:</p>
+          <ul>
+              <li><b>Standardize:</b> Rewrite as $\tfrac12 x^\top P x + q^\top x + r \le 0$.</li>
+              <li><b>Verify:</b> Check $P \succeq 0$. (If $P$ has negative eigenvalues, it's non-convex).</li>
+              <li><b>Geometry:</b> Identify if it's an ellipsoid ($P \succ 0$), cylinder ($P \succeq 0$ singular), or halfspace ($P=0$).</li>
+              <li><b>Classify:</b> Decide if it suggests QP (objective only), QCQP, SOCP (norm form), or SDP (matrix variable).</li>
+          </ul>
       </div>
     </section>
 

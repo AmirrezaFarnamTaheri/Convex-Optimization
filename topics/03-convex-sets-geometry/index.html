@@ -405,7 +405,7 @@
           <figcaption><i>Figure 7:</i> A hyperplane (transparent plane) divides $\mathbb{R}^3$ into two halfspaces. The normal vector $a$ determines the orientation.</figcaption>
         </figure>
 
-        <h3>2.2 Norm Balls and Ellipsoids</h3>
+        <h3>2.2 Norm Balls: The Geometric Machine</h3>
 
         <p>A <a href="#" class="definition-link" data-term="norm ball">norm ball</a> centered at $x_c$ with radius $r$ is:</p>
         $$
@@ -413,45 +413,71 @@
         $$
         <p>where $\|\cdot\|$ is any norm. All norm balls are convex (by the triangle inequality). In fact, the geometry of the unit ball $B = \{x : \|x\| \le 1\}$ completely determines the norm and its optimization properties.</p>
 
-        <h4>The Unit Ball Characterizes the Norm (Minkowski Functional)</h4>
-        <p>There is a fundamental equivalence between norms and certain convex sets. The unit ball characterizes the norm via the <b>Minkowski functional</b> (or gauge):</p>
+        <h4>The Unit Ball Completely Characterizes the Norm</h4>
+        <p>There is a fundamental equivalence between norms and certain convex sets. If I hand you the unit ball $B$, I’ve essentially handed you the norm. You recover $\|x\|$ by asking: "How much must I scale the unit ball to catch the vector $x$?"</p>
+        <p>This is formalized via the <b>Minkowski functional</b> (or gauge):</p>
         $$ \|x\| = \inf\{t > 0 \mid x \in tB\} $$
-        <p>This definition says: "How much must I scale the unit ball to catch the vector $x$?"</p>
 
         <div class="proof-box">
           <h4>Proof: Unit Ball Determines Norm</h4>
+          <p>We prove $\|x\| = \inf\{t > 0 \mid x \in tB\}$ using only the norm axioms.</p>
           <div class="proof-step">
-            <strong>Step 1: Lower Bound.</strong> If $x \in tB$, then $x = tb$ for some $b \in B$ ($\|b\|\le 1$). By homogeneity, $\|x\| = t\|b\| \le t$. Thus every feasible scaling $t$ is at least $\|x\|$.
+            <strong>Step 1: Lower Bound ($t \ge \|x\|$).</strong>
+            Assume $x \in tB$. By definition, $x = tb$ for some $b \in B$ (where $\|b\| \le 1$).
+            Using homogeneity: $\|x\| = \|tb\| = t\|b\| \le t$.
+            Thus, every feasible scaling factor $t$ must be at least $\|x\|$.
           </div>
           <div class="proof-step">
-            <strong>Step 2: Feasibility.</strong> If $x \neq 0$, let $b = x/\|x\|$. Then $\|b\|=1$, so $b \in B$. Thus $x = \|x\| b \in \|x\| B$. So $t=\|x\|$ is feasible.
+            <strong>Step 2: Achievability ($t = \|x\|$ works).</strong>
+            If $x \neq 0$, let $b = x/\|x\|$. Then $\|b\|=1$, so $b \in B$.
+            We can write $x = \|x\| b$, which means $x \in \|x\|B$.
+            So $t=\|x\|$ is a valid scaling factor.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> The infimum is exactly $\|x\|$. This confirms that the shape of $B$ encodes the entire norm function.
+            <strong>Conclusion:</strong> Since $\|x\|$ is a lower bound for the set of valid $t$'s and is itself a valid $t$, the infimum is exactly $\|x\|$.
           </div>
         </div>
 
         <div class="theorem-box">
-          <h4>Theorem: What makes a set a Norm Ball?</h4>
-          <p>A set $B \subset \mathbb{R}^n$ is the unit ball of a norm if and only if it satisfies four geometric properties, which correspond directly to the norm axioms:</p>
+          <h4>Theorem: What Geometric Properties Must a Norm Ball Have?</h4>
+          <p>A set $B \subset \mathbb{R}^n$ is the unit ball of <i>some</i> norm if and only if it satisfies four geometric properties. Each property corresponds to a specific norm axiom:</p>
           <ol>
-            <li><b>Convexity (from Triangle Inequality):</b> $B$ contains the segment between any two points. No dents.</li>
-            <li><b>Central Symmetry (from Homogeneity):</b> $x \in B \iff -x \in B$. The ball is balanced around the origin.</li>
-            <li><b>Absorbing (from Finiteness):</b> For any $x$, there exists $t>0$ such that $x \in tB$. The ball is not "flat" in any subspace; it surrounds the origin.</li>
-            <li><b>Boundedness and Closure (from Definiteness):</b> The ball does not extend to infinity, and contains its boundary.</li>
+            <li><b>Convexity (from Triangle Inequality):</b> $B$ must be convex.
+                <br><i>Why:</i> $\| \theta x + (1-\theta)y \| \le \theta \|x\| + (1-\theta)\|y\| \le \theta(1) + (1-\theta)(1) = 1$. The ball contains the segment between any two points. No dents.</li>
+            <li><b>Central Symmetry (from Homogeneity):</b> $B$ is symmetric around the origin ($x \in B \iff -x \in B$).
+                <br><i>Why:</i> $\|-x\| = |-1|\|x\| = \|x\|$. Every point has an opposite.</li>
+            <li><b>Absorbing (from Finiteness):</b> For any $x$, there exists $t>0$ such that $x \in tB$.
+                <br><i>Why:</i> The ball is "solid" around the origin; it is not trapped in a lower-dimensional subspace.</li>
+            <li><b>Boundedness and Closure (from Definiteness):</b> The ball does not extend to infinity, and contains its boundary.
+                <br><i>Why:</i> Essential for $\|\cdot\|$ to be a valid function on $\mathbb{R}^n$ with $\|x\|=0 \iff x=0$.</li>
           </ol>
+          <p><b>The Inverse:</b> Any set $C$ satisfying these four properties defines a norm via the Minkowski functional $\gamma_C(x) = \inf\{t>0 : x \in tC\}$.</p>
         </div>
 
-        <h4>Geometry of Specific Norms ($\ell_1, \ell_2, \ell_\infty$)</h4>
-        <p>The boundary structure of the unit ball—whether it is smooth, pointy, or flat—predicts how the norm behaves in optimization.</p>
+        <h4>Geometry of Specific Norms: Smooth vs. Pointy vs. Flat</h4>
+        <p>The boundary structure of the unit ball—whether it is smooth, pointy, or flat—predicts how the norm behaves in optimization. This is not folklore; it is geometry.</p>
+
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
+            <figure style="text-align: center; flex: 1;">
+              <img src="assets/norm-balls.png"
+                   alt="Comparison of unit balls for L1, L2, and L-infinity norms"
+                   style="width: 100%; height: auto; border-radius: 8px;" />
+              <figcaption><i>Figure 8:</i> The shapes of unit balls in $\mathbb{R}^2$.</figcaption>
+            </figure>
+        </div>
 
         <ul>
-            <li><b>$\ell_2$ (Euclidean): Circle/Sphere.</b> The ball $\{x : \sum x_i^2 \le 1\}$ is rotationally symmetric and smooth.
-            <br><i>Optimization consequence:</i> Solutions vary continuously with data; there is a unique supporting hyperplane at every boundary point.</li>
-            <li><b>$\ell_\infty$ (Max Norm): Square/Hypercube.</b> The ball $\{x : \max |x_i| \le 1\}$ has flat faces and corners.
-            <br><i>Optimization consequence:</i> Solutions often land on faces, leading to non-uniqueness. Constraints like $\|x\|_\infty \le 1$ decouple into component-wise bounds ("box constraints").</li>
-            <li><b>$\ell_1$ (Sum Norm): Diamond/Cross-Polytope.</b> The ball $\{x : \sum |x_i| \le 1\}$ has sharp corners on the coordinate axes.
-            <br><i>Optimization consequence:</i> <b>Sparsity.</b> When minimizing a linear function over the $\ell_1$ ball, the solution usually snaps to a vertex (where many coordinates are zero). This is the geometric reason for LASSO regression.</li>
+            <li><b>$\ell_2$ (Euclidean): Circle/Sphere.</b>
+            <br><i>Geometry:</i> Rotationally symmetric and <b>smooth</b> everywhere.
+            <br><i>Optimization Consequence:</i> <b>Uniqueness.</b> When minimizing a linear function $c^\top x$ over the $\ell_2$ ball, there is a unique boundary point where the normal vector aligns with $-c$. Solutions vary continuously with data.</li>
+
+            <li><b>$\ell_\infty$ (Max Norm): Square/Box.</b>
+            <br><i>Geometry:</i> <b>Flat faces</b> and corners. The unit ball is the hypercube $\{x : -1 \le x_i \le 1\}$.
+            <br><i>Optimization Consequence:</i> <b>Non-uniqueness.</b> Linear functionals are maximized on entire faces. If the gradient points "mostly" in the $x_1$ direction, the solution is the entire face $x_1=1$. This corresponds to "box constraints" in modeling.</li>
+
+            <li><b>$\ell_1$ (Sum Norm): Diamond/Cross-Polytope.</b>
+            <br><i>Geometry:</i> <b>Pointy corners</b> on the axes. The vertices are $\pm e_i$.
+            <br><i>Optimization Consequence:</i> <b>Sparsity.</b> Because the "pointiest" parts of the ball lie on the coordinate axes, linear optimization tends to land exactly on a vertex (where $n-1$ coordinates are zero). This is the geometric engine behind LASSO and compressed sensing.</li>
         </ul>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -461,52 +487,42 @@
           <figcaption><i>Figure 8:</i> Unit balls for different norms in $\mathbb{R}^2$: $L_1$ (diamond), $L_2$ (circle), and $L_\infty$ (square).</figcaption>
         </figure>
 
-        <h3>2.3 Dual Norms and Supporting Hyperplanes</h3>
+        <h3>2.3 Dual Norms: The Shadow Ruler</h3>
 
-        <p>The <b>dual norm</b> is a fundamental concept in convex analysis. It answers a fundamental question: "If I know a vector $\mathbf{x}$ lies in a unit ball defined by some norm $\|\cdot\|$, what is the worst-case (maximum) dot product it can form with a given vector $\mathbf{u}$?"</p>
+        <p>The <b>dual norm</b> $\|\cdot\|_*$ is defined by maximizing the inner product over the primal unit ball:</p>
+        $$ \boxed{\ \|u\|_* := \sup_{\|x\| \le 1} u^\top x\ } $$
 
-        <p>Formally, let $\|\cdot\|$ be any norm on $\mathbb{R}^n$. The dual norm $\|\cdot\|_*$ is defined as:</p>
-        $$ \|u\|_* := \sup_{\|x\| \le 1} u^\top x $$
-
-        <div class="insight">
-            <h4>Geometric Intuition: The Shadow Ruler</h4>
-            <p>Imagine the unit ball $B = \{x : \|x\| \le 1\}$. The dot product $u^\top x$ measures the "shadow" of $x$ along the direction $u$.
-            <br>The dual norm $\|u\|_*$ is the <b>maximum shadow length</b> that the unit ball can cast in the direction $u$.
-            <br>Geometrically, this corresponds to the distance from the origin to the <b>supporting hyperplane</b> of the unit ball with normal vector $u$. If the hyperplane is $u^\top x = \alpha$, then the maximum value $\alpha$ is exactly $\|u\|_*$.</p>
-        </div>
+        <p><b>What it measures:</b> If the primal norm $\|x\|$ measures the "size" of a vector, the dual norm $\|u\|_*$ measures the "measuring power" of the linear functional $f(x) = u^\top x$. Geometrically, it is the distance to the supporting hyperplane of the unit ball in the direction $u$.</p>
 
         <div class="theorem-box">
             <h4>Theorem: Properties of the Dual Norm</h4>
             <ol>
-                <li><b>Valid Norm:</b> The function $\|\cdot\|_*$ satisfies all three norm axioms (positivity, homogeneity, triangle inequality).</li>
+                <li><b>It is a Norm:</b> $\|\cdot\|_*$ satisfies all three norm axioms (positivity, homogeneity, triangle inequality).</li>
                 <li><b>Generalized Hölder Inequality:</b> For any $u, x$:
                 $$ u^\top x \le \|u\|_* \|x\| $$
-                <i>Proof:</i> If $x=0$, trivial. If $x \ne 0$, scale to the boundary: let $z = x/\|x\|$. Then $\|z\|=1$. By definition of dual norm, $u^\top z \le \|u\|_*$. Multiplying by $\|x\|$ gives $u^\top x \le \|u\|_* \|x\|$.</li>
-                <li><b>Reflexivity:</b> The dual of the dual is the primal norm: $(\|\cdot\|_* )_* = \|\cdot\|$.</li>
+                This is the universal bound for linear functionals.</li>
+                <li><b>Dual of Dual:</b> The dual of the dual is the primal: $(\|\cdot\|_* )_* = \|\cdot\|$.</li>
             </ol>
         </div>
 
         <div class="proof-box">
           <h4>Proof: The Dual Norm is a Valid Norm</h4>
-          <p>We verify the three norm axioms for $\|\cdot\|_*$ defined by $\|u\|_* := \sup_{\|x\| \le 1} u^\top x$.</p>
-
+          <p>We verify the axioms for $\|u\|_* = \sup_{x \in B} u^\top x$.</p>
           <div class="proof-step">
-            <strong>(N1) Positive Definiteness:</strong> $\|u\|_* \ge 0$ and $\|u\|_* = 0 \iff u = 0$.
-            <br><i>Nonnegativity:</i> The feasible set $\{x : \|x\| \le 1\}$ contains $x = 0$, so the supremum includes $u^\top 0 = 0$. Hence $\|u\|_* \ge 0$.
-            <br><i>Definiteness:</i> If $u = 0$, then $u^\top x = 0$ for all $x$, so $\|u\|_* = 0$. Conversely, if $\|u\|_* = 0$, then $u^\top x \le 0$ for all $\|x\| \le 1$. But the unit ball is symmetric: if $x \in B$, then $-x \in B$. So $u^\top x \le 0$ and $u^\top(-x) = -u^\top x \le 0$, implying $u^\top x = 0$ for all $x \in B$. Since the unit ball spans all directions, $u = 0$.
+            <strong>(N1) Definiteness ($u=0 \iff \|u\|_*=0$).</strong>
+            If $u=0$, $\sup 0 = 0$.
+            Conversely, if $\sup_{x \in B} u^\top x = 0$, then $u^\top x \le 0$ for all $x \in B$. Since $B$ is symmetric (contains $-x$), $u^\top (-x) \le 0 \implies u^\top x \ge 0$.
+            Thus $u^\top x = 0$ for all $x \in B$. Since $B$ spans $\mathbb{R}^n$, $u$ must be 0.
           </div>
-
           <div class="proof-step">
-            <strong>(N2) Homogeneity:</strong> $\|\alpha u\|_* = |\alpha| \|u\|_*$ for all $\alpha \in \mathbb{R}$.
-            <br>For $\alpha \ge 0$: $\|\alpha u\|_* = \sup_{\|x\| \le 1} (\alpha u)^\top x = \alpha \sup_{\|x\| \le 1} u^\top x = \alpha \|u\|_*$.
-            <br>For $\alpha < 0$: Write $\alpha = -|\alpha|$. Then $\sup_{\|x\| \le 1} (\alpha u)^\top x = \sup_{\|x\| \le 1} (-|\alpha| u)^\top x = |\alpha| \sup_{\|x\| \le 1} (-u)^\top x$. Since the unit ball is symmetric, $\sup_{\|x\| \le 1} (-u)^\top x = \sup_{\|x\| \le 1} u^\top (-x) = \sup_{\|y\| \le 1} u^\top y = \|u\|_*$. Thus $\|\alpha u\|_* = |\alpha| \|u\|_*$.
+            <strong>(N2) Homogeneity ($\|\alpha u\|_* = |\alpha|\|u\|_*$).</strong>
+            For $\alpha \ge 0$, $\sup (\alpha u)^\top x = \alpha \sup u^\top x$.
+            For $\alpha < 0$, let $\alpha = -|\alpha|$. $\sup (-|\alpha| u)^\top x = |\alpha| \sup u^\top (-x)$.
+            Since $B$ is symmetric ($x \in B \iff -x \in B$), maximizing over $-x$ is the same as maximizing over $x$.
           </div>
-
           <div class="proof-step">
-            <strong>(N3) Triangle Inequality:</strong> $\|u + v\|_* \le \|u\|_* + \|v\|_*$.
-            <br>For any $x$ with $\|x\| \le 1$:
-            $$ (u + v)^\top x = u^\top x + v^\top x \le \sup_{\|y\| \le 1} u^\top y + \sup_{\|z\| \le 1} v^\top z = \|u\|_* + \|v\|_* $$
-            Taking the supremum over all such $x$ gives $\|u + v\|_* \le \|u\|_* + \|v\|_*$.
+            <strong>(N3) Triangle Inequality.</strong>
+            $\|u+v\|_* = \sup_{x \in B} (u+v)^\top x = \sup_{x \in B} (u^\top x + v^\top x) \le \sup_{x \in B} u^\top x + \sup_{x \in B} v^\top x = \|u\|_* + \|v\|_*$.
           </div>
         </div>
 
@@ -522,7 +538,7 @@
             <li><b>$\ell_\infty \leftrightarrow \ell_1$:</b> The dual of $\ell_\infty$ is $\ell_1$.
             <br><i>Reason:</i> We want to maximize $\sum u_i x_i$ subject to $|x_i| \le 1$ for all $i$. To maximize the sum, we should simply match the signs: set $x_i = \mathrm{sign}(u_i)$. Then the sum becomes $\sum u_i \mathrm{sign}(u_i) = \sum |u_i| = \|u\|_1$.</li>
         </ul>
-        
+
         <div class="proof-box">
           <h4>Complete Proof: Dual of $\ell_\infty$ is $\ell_1$</h4>
           <div class="proof-step">
@@ -538,18 +554,42 @@
             Since the upper bound is achievable, it is the supremum.
           </div>
         </div>
-        
-        <div class="insight">
-          <h4>Geometric Meaning: Dual Ball = Polar of Primal Ball</h4>
-          <p>The unit ball of the dual norm is the <b>polar set</b> of the primal unit ball:
-          $$ B_* = \{u : \|u\|_* \le 1\} = \{u : u^\top x \le 1 \ \forall \|x\| \le 1\} = B^\circ $$
-          This duality explains the shape relationships:
-          <ul>
-            <li>The polar of the <b>Diamond</b> ($\ell_1$ ball) is the <b>Square</b> ($\ell_\infty$ ball).</li>
-            <li>The polar of the <b>Square</b> ($\ell_\infty$ ball) is the <b>Diamond</b> ($\ell_1$ ball).</li>
-            <li>The polar of the <b>Sphere</b> ($\ell_2$ ball) is the <b>Sphere</b>.</li>
-          </ul>
-          </p>
+
+        <h4>Geometry: Dual Ball = Polar of Primal Ball</h4>
+        <p>The unit ball of the dual norm is exactly the <b>polar set</b> of the primal unit ball:</p>
+        $$ B_* = \{u : \|u\|_* \le 1\} = \{u : u^\top x \le 1 \ \forall x \in B\} = B^\circ $$
+        <p>This explains the duality of shapes:
+        <ul>
+            <li><b>$\ell_1 \leftrightarrow \ell_\infty$:</b> The polar of the Diamond ($\ell_1$) is the Square ($\ell_\infty$).
+            <br><i>Why:</i> To keep $u^\top x \le 1$ for all axis vertices $\pm e_i$, we need $|u_i| \le 1$ (the box).</li>
+            <li><b>$\ell_2 \leftrightarrow \ell_2$:</b> The polar of the Sphere is the Sphere. ($\ell_2$ is self-dual).</li>
+        </ul>
+        </p>
+
+        <h3>2.4 Robustness: The Support Function View</h3>
+        <p>This is the high-leverage identity for modern optimization (Robust & Stochastic). It turns a "worst-case" supremum over a ball into a deterministic norm.</p>
+
+        <div class="theorem-box">
+            <h4>The "Supremum = Dual Norm" Lemma</h4>
+            <p>For any norm $\|\cdot\|$ and radius $\rho \ge 0$:</p>
+            $$ \boxed{\ \sup_{\|u\| \le \rho} u^\top y = \rho \|y\|_* \ } $$
+            <p><b>Proof:</b> Let $u = \rho v$ where $\|v\| \le 1$.
+            $$ \sup_{\|u\| \le \rho} u^\top y = \sup_{\|v\| \le 1} (\rho v)^\top y = \rho \sup_{\|v\| \le 1} v^\top y = \rho \|y\|_* $$
+            <b>The Rule:</b> The norm on the <i>uncertainty set</i> determines the dual norm on the <i>coefficient vector</i>.
+            <br>$\bullet$ Uncertainty in $\ell_2$ ball $\to$ Dual term is $\ell_2$ norm.
+            <br>$\bullet$ Uncertainty in $\ell_\infty$ box $\to$ Dual term is $\ell_1$ norm.
+            </p>
+        </div>
+
+        <div class="example">
+            <h4>Application: Robust Linear Constraint</h4>
+            <p>Consider a constraint $a^\top x \le b$ where $a$ is uncertain: $a = \bar{a} + u$, with perturbation $\|u\| \le \rho$.
+            We require the constraint to hold for <i>all</i> perturbations:
+            $$ \sup_{\|u\| \le \rho} (\bar{a} + u)^\top x \le b $$
+            Using the lemma ($y=x$ here):
+            $$ \bar{a}^\top x + \sup_{\|u\| \le \rho} u^\top x \le b \iff \bar{a}^\top x + \rho \|x\|_* \le b $$
+            <b>Result:</b> Robustifying a linear constraint adds a <b>dual norm regularization term</b>.
+            <br>This explains why Tikhonov regularization ($\|x\|_2^2$) corresponds to robustness against $\ell_2$ noise.</p>
         </div>
 
         <h3>2.4 Ellipsoids</h3>

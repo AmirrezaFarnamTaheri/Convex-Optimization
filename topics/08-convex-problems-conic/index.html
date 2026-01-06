@@ -182,7 +182,18 @@
           <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
       </div>
 
-      <h3>1.3 Key Properties</h3>
+      <h3>1.3 SOCP Modeling Cookbook</h3>
+      <p>These are the patterns you should recognize instantly.</p>
+      <div class="recap-box">
+          <ul>
+              <li><b>Norm Objective:</b> $\min \|Ax-b\|_2 \to \min t \text{ s.t. } \|Ax-b\|_2 \le t$ (SOC).</li>
+              <li><b>Robust Linear Constraint:</b> $a^\top x + \rho\|x\|_2 \le b$ (SOC).</li>
+              <li><b>Hyperbolic Constraint:</b> $w^2 \le xy, x,y \ge 0$ (Rotated SOC).</li>
+              <li><b>Quadratic-over-Linear:</b> $\frac{\|Fx+g\|_2^2}{a^\top x+b} \le t$ (Rotated SOC).</li>
+          </ul>
+      </div>
+
+      <h3>1.4 Key Properties</h3>
       <ul>
         <li><strong>Generality:</strong> SOCP subsumes LP and QP</li>
         <li><strong>Solvers:</strong> Efficiently solved by interior-point methods</li>
@@ -728,6 +739,16 @@
       </div>
 
       <p><b>Computational Trade-off:</b> While SDP is the most general, its solvers (typically $O(n^6)$ or $O(n^4)$ depending on structure) are significantly slower than dedicated SOCP ($O(n^3)$) or LP/QP solvers. <strong>Rule of Thumb:</strong> Always use the most specific problem class that fits your model.</p>
+
+      <h3>2.8 SDP Skill Checklist</h3>
+      <p>You truly understand SDP if you can:</p>
+      <ul>
+          <li><b>Define PSD:</b> $X \succeq 0 \iff z^\top X z \ge 0 \ \forall z$.</li>
+          <li><b>Prove Convexity:</b> Show the PSD cone is convex.</li>
+          <li><b>Recognize LMIs:</b> Identify $F_0 + \sum x_i F_i \succeq 0$ instantly.</li>
+          <li><b>Apply Schur:</b> Convert $\begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \succeq 0$ to $C - B^\top A^{-1} B \succeq 0$.</li>
+          <li><b>Lift:</b> Convert norms, eigenvalues, and quadratic bounds into LMIs.</li>
+      </ul>
     </section>
 
     <!-- Section 4: Exponential Cone Programming -->

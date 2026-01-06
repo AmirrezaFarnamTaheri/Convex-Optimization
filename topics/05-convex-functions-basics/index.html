@@ -781,6 +781,36 @@
             <br><i>Proof:</i> Triangle inequality + Homogeneity. This proves all norms are convex.</p>
         </div>
 
+        <h4>The Core Theorem: Norms are Convex</h4>
+        <p>Every norm satisfies the convexity inequality. This is not a coincidence; it is a direct consequence of the axioms.</p>
+        <div class="proof-box">
+            <h4>Proof: Triangle + Homogeneity = Convexity</h4>
+            <p>We show $f(x) = \|x\|$ satisfies $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$ for $\theta \in [0,1]$.</p>
+            <div class="proof-step">
+                <strong>Step 1: Triangle Inequality (Subadditivity).</strong>
+                $$ \|\theta x + (1-\theta)y\| \le \|\theta x\| + \|(1-\theta)y\| $$
+            </div>
+            <div class="proof-step">
+                <strong>Step 2: Homogeneity.</strong>
+                Since $\theta \ge 0$ and $1-\theta \ge 0$, we have $\|\alpha z\| = \alpha \|z\|$.
+                $$ \|\theta x\| = \theta \|x\| \quad \text{and} \quad \|(1-\theta)y\| = (1-\theta)\|y\| $$
+            </div>
+            <div class="proof-step">
+                <strong>Conclusion:</strong>
+                $$ \|\theta x + (1-\theta)y\| \le \theta \|x\| + (1-\theta)\|y\| $$
+            </div>
+        </div>
+
+        <h4>Structural Viewpoint: Sublinear Functions</h4>
+        <p>The proof above works for any function that is:</p>
+        <ol>
+            <li><b>Positively Homogeneous:</b> $f(\alpha x) = \alpha f(x)$ for $\alpha \ge 0$.</li>
+            <li><b>Subadditive:</b> $f(x+y) \le f(x) + f(y)$.</li>
+        </ol>
+        <p>Such functions are called <b>sublinear</b>.
+        <br><b>Fact:</b> Every sublinear function is convex.
+        <br><b>Examples:</b> Norms, support functions $S_C(x) = \sup_{y \in C} y^\top x$, and maximum of linear functions.</p>
+
         <h4>Examples with Proof Content</h4>
         <div class="example-box">
             <ul>

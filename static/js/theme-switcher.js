@@ -1,7 +1,7 @@
 /**
  * Theme Switcher Widget
  * Handles:
- * - Color Schemes (Default, Emerald, Amethyst, Sunset, Midnight, Forest)
+ * - Color Schemes (Default, Light, Paper, Emerald, Amethyst, Sunset, Midnight, Forest)
  * - Typography (Inter, Serif, Mono, Lato, Merriweather)
  * - Header Widget Injection
  */
@@ -13,7 +13,9 @@ class ThemeSwitcher {
                 label: 'Theme',
                 icon: 'droplet',
                 options: [
-                    { id: 'default', name: 'Ocean', color: '#1890ff' },
+                    { id: 'default', name: 'Ocean (Dark)', color: '#1890ff' },
+                    { id: 'light', name: 'Clean Light', color: '#f8fafc' },
+                    { id: 'paper', name: 'Book (Paper)', color: '#fdfbf7' },
                     { id: 'emerald', name: 'Emerald', color: '#10b981' },
                     { id: 'amethyst', name: 'Amethyst', color: '#8b5cf6' },
                     { id: 'sunset', name: 'Sunset', color: '#f97316' },
@@ -53,17 +55,17 @@ class ThemeSwitcher {
         style.textContent = `
             .theme-widget { position: relative; margin-left: 16px; }
             .theme-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
-            .theme-btn:hover { background: var(--surface-2); color: var(--text-primary); border-color: var(--primary-500); }
-            .theme-dropdown-panel { position: absolute; top: calc(100% + 8px); right: 0; width: 280px; background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: 12px; z-index: 1100; backdrop-filter: blur(10px); }
+            .theme-btn:hover { background: var(--bg-surface-2); color: var(--text-primary); border-color: var(--primary-500); }
+            .theme-dropdown-panel { position: absolute; top: calc(100% + 8px); right: 0; width: 280px; background: var(--bg-surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: 12px; z-index: 1100; backdrop-filter: blur(10px); }
             .theme-dropdown-panel.hidden { display: none; }
             .theme-section { margin-bottom: 16px; }
             .theme-section:last-child { margin-bottom: 0; }
             .theme-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 8px; font-weight: 600; }
             .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .theme-option-btn { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--border-subtle); background: var(--surface-2); border-radius: var(--radius-md); cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; text-align: left; transition: all 0.1s; }
-            .theme-option-btn:hover { background: var(--surface-3); color: var(--text-primary); }
-            .theme-option-btn.active { border-color: var(--primary-500); background: rgba(24, 144, 255, 0.1); color: var(--primary-500); }
-            .color-preview { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+            .theme-option-btn { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--border-subtle); background: var(--bg-surface-2); border-radius: var(--radius-md); cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; text-align: left; transition: all 0.1s; }
+            .theme-option-btn:hover { background: var(--bg-surface-3); color: var(--text-primary); }
+            .theme-option-btn.active { border-color: var(--primary-500); background: rgba(59, 130, 246, 0.1); color: var(--primary-500); }
+            .color-preview { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
         `;
         document.head.appendChild(style);
     }

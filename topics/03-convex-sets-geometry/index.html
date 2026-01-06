@@ -234,38 +234,53 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof of Carathéodory's Theorem</h4>
+          <h4>Proof of Carathéodory's Theorem (Step-by-Step Reduction)</h4>
+          <p><b>Goal:</b> Show that if a point $\mathbf{x}$ is a convex combination of $k$ points where $k > n+1$, we can rewrite it as a convex combination of $k-1$ points. By repeating this, we stop at $n+1$.</p>
+
           <div class="proof-step">
-            <strong>Step 1: Affine Dependence from Linear Dependence.</strong>
-            Let $\mathbf{x} \in \mathrm{conv}(S)$. By definition, $\mathbf{x}$ is a convex combination of $k$ points $\mathbf{x}_1, \dots, \mathbf{x}_k$ with strictly positive coefficients $\theta_i > 0$. Suppose $k > n+1$.
-            The $k$ points $\mathbf{x}_1, \dots, \mathbf{x}_k$ must be <b>affinely dependent</b> because there are more than $n+1$ of them in $\mathbb{R}^n$.
-            (Recall: $k$ points are affinely dependent iff $k-1$ difference vectors are linearly dependent. Here $k-1 > n$, so dependence is guaranteed).
+            <strong>Step 1: Setup.</strong>
+            Suppose $\mathbf{x} = \sum_{i=1}^k \theta_i \mathbf{x}_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$. Assume $k > n+1$.
+            The $k$ points are <b>affinely dependent</b>. This means we can find coefficients $\alpha_1, \dots, \alpha_k$ (not all zero) that sum to zero, such that the weighted sum of vectors is also zero:
+            $$ \sum_{i=1}^k \alpha_i \mathbf{x}_i = 0, \quad \sum_{i=1}^k \alpha_i = 0 $$
+            Since $\sum \alpha_i = 0$, some $\alpha_i$ must be positive and some negative.
           </div>
+
           <div class="proof-step">
-            <strong>Step 2: Constructing a Zero Sum.</strong>
-            Affine dependence means there exist scalars $\alpha_1, \dots, \alpha_k$, not all zero, such that:
-            $$ \sum_{i=1}^k \alpha_i \mathbf{x}_i = 0 \quad \text{and} \quad \sum_{i=1}^k \alpha_i = 0 $$
-            Since the $\alpha_i$ sum to 0 and are not all zero, at least one must be positive.
+            <strong>Step 2: The Perturbation Strategy.</strong>
+            We want to change the weights $\theta_i$ to eliminate one point while keeping the sum valid.
+            Consider new weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$.
+            <br>Check validity:
+            <ul>
+                <li>Sum: $\sum \theta'_i = \sum \theta_i - \lambda \sum \alpha_i = 1 - 0 = 1$. (Valid affine combination).</li>
+                <li>Value: $\sum \theta'_i \mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - 0 = \mathbf{x}$. (Represent the same point).</li>
+            </ul>
           </div>
+
           <div class="proof-step">
-            <strong>Step 3: Perturbing the Weights.</strong>
-            We want to reduce the number of points in the combination. Consider new weights $\theta'_i = \theta_i - \lambda \alpha_i$.
-            Note that for any $\lambda$:
-            $$ \sum \theta'_i = \sum \theta_i - \lambda \sum \alpha_i = 1 - 0 = 1 $$
-            $$ \sum \theta'_i \mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - 0 = \mathbf{x} $$
-            So $\mathbf{x}$ is still an affine combination. We need to choose $\lambda$ such that all $\theta'_i \ge 0$ and at least one $\theta'_j = 0$.
+            <strong>Step 3: Moving to the Boundary.</strong>
+            We need to choose $\lambda$ so that all $\theta'_i \ge 0$, but at least one becomes exactly 0.
+            <br>The condition $\theta_i - \lambda \alpha_i \ge 0$ means:
+            <ul>
+                <li>If $\alpha_i \le 0$, the weight increases or stays same. No danger of hitting zero.</li>
+                <li>If $\alpha_i > 0$, we must have $\lambda \le \frac{\theta_i}{\alpha_i}$.</li>
+            </ul>
+            To remove a point, we pick the largest possible $\lambda$:
+            $$ \lambda^* = \min_{i : \alpha_i > 0} \frac{\theta_i}{\alpha_i} $$
+            Let $j$ be an index that achieves this minimum.
           </div>
+
           <div class="proof-step">
-            <strong>Step 4: Finding the Step Size.</strong>
-            To ensure $\theta'_i \ge 0$, we need $\theta_i - \lambda \alpha_i \ge 0$, or $\lambda \alpha_i \le \theta_i$.
-            If $\alpha_i \le 0$, this holds for any $\lambda \ge 0$.
-            If $\alpha_i > 0$, we need $\lambda \le \theta_i / \alpha_i$.
-            To eliminate one coefficient, we choose the largest possible $\lambda$:
-            $$ \lambda^* = \min \{ \theta_i / \alpha_i \mid \alpha_i > 0 \} $$
-            Let $j$ be an index achieving this minimum. Then $\theta'_j = 0$, and $\theta'_i \ge 0$ for all $i$.
+            <strong>Step 4: Reduction.</strong>
+            Set the new weights $\theta'_i = \theta_i - \lambda^* \alpha_i$.
+            <ul>
+                <li>For all $i$, $\theta'_i \ge 0$ by construction.</li>
+                <li>For the index $j$, $\theta'_j = 0$.</li>
+                <li>The point $\mathbf{x}$ is now a convex combination of the remaining $k-1$ points (excluding $\mathbf{x}_j$).</li>
+            </ul>
           </div>
+
           <div class="proof-step">
-            <strong>Conclusion:</strong> We have expressed $\mathbf{x}$ as a convex combination of at most $k-1$ points (since the $j$-th coefficient is zero). We can repeat this reduction process as long as $k > n+1$. The recursion stops when we have at most $n+1$ points.
+            <strong>Conclusion:</strong> We reduced the count from $k$ to $k-1$. We can repeat this process as long as $k-1 > n+1$. Thus, we eventually express $\mathbf{x}$ using at most $n+1$ points.
           </div>
         </div>
 
@@ -1909,14 +1924,21 @@
           <h3>P3.19 — Projection onto a Convex Set</h3>
           <p>Let $C$ be a closed convex set. The projection $P_C(x)$ is the unique point in $C$ minimizing $\|z-x\|_2$. Prove the optimality condition: $\langle x - P_C(x), z - P_C(x) \rangle \le 0$ for all $z \in C$.</p>
           <div class="solution-box">
-            <h4>Solution</h4>
+            <h4>Solution (Geometric Proof)</h4>
             <div class="proof-step">
-              Let $y = P_C(x)$. The function $f(z) = \frac{1}{2}\|z-x\|_2^2$ is convex.
-              The optimality condition for minimizing a convex function over a convex set is $\langle \nabla f(y), z-y \rangle \ge 0$ for all feasible $z$.
-              $\nabla f(y) = y-x$.
-              So $\langle y-x, z-y \rangle \ge 0$.
-              Multiplying by -1 reverses the inequality: $\langle x-y, z-y \rangle \le 0$.
-              Geometrically, the angle between the residual vector $x-y$ and any vector $z-y$ into the set is obtuse ( $\ge 90^\circ$ ).
+              Let $y = P_C(x)$ be the projection. We want to show $\langle x-y, z-y \rangle \le 0$ for all $z \in C$.
+              <br><b>Proof by Contradiction:</b>
+              Suppose there exists a point $z \in C$ such that the angle is acute: $\langle x-y, z-y \rangle > 0$.
+              <br>Consider a point $w$ on the segment between $y$ and $z$: $w = (1-\theta)y + \theta z = y + \theta(z-y)$ for small $\theta \in (0,1)$. Since $C$ is convex, $w \in C$.
+            </div>
+            <div class="proof-step">
+              Check the distance squared from $x$ to $w$:
+              $$ \|x - w\|^2 = \|(x - y) - \theta(z - y)\|^2 = \|x - y\|^2 - 2\theta \langle x - y, z - y \rangle + \theta^2 \|z - y\|^2 $$
+            </div>
+            <div class="proof-step">
+              Notice the term $-2\theta \langle x - y, z - y \rangle$. If the inner product is positive, then for sufficiently small $\theta$ (where the linear term dominates the quadratic $\theta^2$ term), the total distance $\|x-w\|^2$ will be strictly less than $\|x-y\|^2$.
+              <br>This means $w$ is closer to $x$ than $y$ is. But $y$ was defined as the closest point (projection).
+              <br><b>Contradiction.</b> Therefore, the inner product must be non-positive: $\langle x-y, z-y \rangle \le 0$.
             </div>
           </div>
         </div>
@@ -2015,6 +2037,7 @@
   <script src="../../static/js/math-renderer.js"></script>
   <script src="../../static/js/ui.js"></script>
   <script src="../../static/js/toc.js"></script>
+  <script src="../../static/js/resizable.js"></script>
   <script>
     feather.replace();
     document.getElementById('year').textContent = new Date().getFullYear();

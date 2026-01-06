@@ -1676,6 +1676,65 @@
   </div>
 </div>
 
+        <div class="problem">
+  <h3>P9.15 — Dual of General LP (Problem 5.5)</h3>
+  <p>Find the dual function and dual problem of the general Linear Program:
+  $$
+  \begin{aligned}
+  \text{minimize} \quad & c^\top x \\
+  \text{subject to} \quad & Gx \preceq h \\
+  & Ax = b
+  \end{aligned}
+  $$
+  Make the implicit equality constraints in the dual explicit.</p>
+
+  <div class="recap-box">
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Unification:</b> This form covers both the Standard Form ($G=-I, h=0$) and Inequality Form ($A$ is empty).</li>
+        <li><b>Domain of Dual:</b> The dual function of an LP is finite only on an affine subspace. Outside this subspace, it is $-\infty$.</li>
+    </ul>
+  </div>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: The Lagrangian.</strong>
+      We associate multiplier $\lambda \succeq 0$ with $Gx \preceq h$ and $\nu \in \mathbb{R}^p$ with $Ax = b$.
+      $$
+      \begin{aligned}
+      L(x, \lambda, \nu) &= c^\top x + \lambda^\top (Gx - h) + \nu^\top (Ax - b) \\
+      &= -h^\top \lambda - b^\top \nu + (c + G^\top \lambda + A^\top \nu)^\top x
+      \end{aligned}
+      $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: The Dual Function.</strong>
+      The dual function is $g(\lambda, \nu) = \inf_x L(x, \lambda, \nu)$.
+      The term $(c + G^\top \lambda + A^\top \nu)^\top x$ is linear in $x$.
+      <ul>
+        <li>If the coefficient vector is non-zero, we can choose $x$ to drive the sum to $-\infty$.</li>
+        <li>If the coefficient vector is zero, the term vanishes, and the infimum is $-h^\top \lambda - b^\top \nu$.</li>
+      </ul>
+      $$
+      g(\lambda, \nu) = \begin{cases} -h^\top \lambda - b^\top \nu & \text{if } G^\top \lambda + A^\top \nu + c = 0 \\ -\infty & \text{otherwise} \end{cases}
+      $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: The Dual Problem.</strong>
+      We maximize the dual function subject to $\lambda \succeq 0$.
+      $$
+      \begin{aligned}
+      \text{maximize} \quad & -h^\top \lambda - b^\top \nu \\
+      \text{subject to} \quad & G^\top \lambda + A^\top \nu + c = 0 \\
+      & \lambda \succeq 0
+      \end{aligned}
+      $$
+      This problem has explicit equality constraints ($G^\top \lambda + A^\top \nu + c = 0$) which were implicit in the definition of the domain of $g$.
+    </div>
+  </div>
+</div>
+
       </section>
 
     </article>

@@ -1149,6 +1149,17 @@
           <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
         </div>
 
+        <div class="insight">
+          <h4>Applications in Optimization</h4>
+          <ul>
+            <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
+            <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
+            $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
+            where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
+            <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
+          </ul>
+        </div>
+
         <h4>Strict vs. Non-Strict Separation</h4>
         <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
         <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).

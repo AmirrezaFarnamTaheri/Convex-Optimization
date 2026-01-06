@@ -65,7 +65,18 @@
           <figcaption><i>Animation:</i> A <b>Subspace</b> (left) is tied to the origin (infinite sheet through 0). An <b>Affine Set</b> (right) is a translated subspace (infinite sheet floating in space). Affine combinations let you travel anywhere on the sheet, but never off it.</figcaption>
         </figure>
 
-        <p><b>Intuition (Infinite Sheet):</b> The coefficients $\theta_i$ may be negative. For two points $x_1, x_2$, the combination $x = \theta x_1 + (1-\theta)x_2$ traces the <b>infinite line</b> through them. For three points, it traces the infinite plane. Think of affine sets as "infinite sheets" that extend forever.</p>
+        <h4>Two-point affine combination = full line</h4>
+        <p>For two points $x, y \in \mathbb{R}^n$, the affine combination $z = \theta x + (1-\theta)y = y + \theta(x-y)$ traces the <b>entire line</b> through $y$ in the direction $x-y$ as $\theta$ ranges over all of $\mathbb{R}$.</p>
+        <ul>
+            <li>$\theta \in [0, 1]$: Segment between $y$ and $x$ (interpolation).</li>
+            <li>$\theta > 1$: Extrapolation past $x$.</li>
+            <li>$\theta < 0$: Extrapolation past $y$.</li>
+        </ul>
+
+        <h4>Why "sum to one" works (Translation Invariance)</h4>
+        <p>The condition $\sum \theta_i = 1$ ensures that the operation commutes with translation. If you shift all points by $t$, the affine combination shifts by exactly $t$:
+        $$ \sum \theta_i (x_i + t) = \sum \theta_i x_i + (\sum \theta_i)t = \sum \theta_i x_i + t $$
+        This is why affine geometry is "linear geometry without a fixed origin."</p>
 
         <div class="theorem-box">
           <h4>Definition (Affine Set)</h4>
@@ -142,6 +153,15 @@
           <br>$\bullet$ <b>Convex (Orange):</b> The finite region strictly "between" the points (Convex combinations).</figcaption>
         </figure>
 
+        <h4>Mixing vs Scaling</h4>
+        <p>Convex combinations represent "mixing" (interpolation) without "scaling" (size change).
+        <br>Consider a linear combination $z = \alpha x + \beta y$.
+        <ul>
+            <li>If $\alpha+\beta \neq 1$, the result includes a global scaling factor.</li>
+            <li>If $\alpha < 0$, the result includes extrapolation (subtraction).</li>
+        </ul>
+        Convexity restricts operations to pure mixing: you cannot go outside the segment between $x$ and $y$.</p>
+
         <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
         <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
 
@@ -163,6 +183,16 @@
           Let $y = \sum_{i=1}^{k-1} \bar{\theta}_i x_i$. By hypothesis, $y \in C$.
           Now observe $z = (1-\theta_k)y + \theta_k x_k$. This is a convex combination of two points in $C$. Thus $z \in C$.</p>
         </div>
+
+        <h4>Operations that Preserve Convexity</h4>
+        <p>The following operations preserve convexity. This is the "calculus" of convex sets.</p>
+        <ul>
+          <li><b>Intersection:</b> $\cap_i C_i$. (Corresponds to logical AND).</li>
+          <li><b>Affine Image:</b> $f(C)$ where $f(x)=Ax+b$.</li>
+          <li><b>Affine Preimage:</b> $f^{-1}(D)$ where $D$ is convex and $f(x)=Ax+b$. (This is the most used constraint form).</li>
+          <li><b>Cartesian Product:</b> $C \times D$.</li>
+          <li><b>Minkowski Sum:</b> $C + D$.</li>
+        </ul>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/convex-vs-nonconvex.png"
@@ -326,53 +356,27 @@
         $$
         H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
         $$
-        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).</p>
-        <p><b>Distance to Hyperplane:</b> The signed distance of a point $y$ to $H$ is $\frac{a^\top y - b}{\|a\|_2}$. This formula is the quantitative backbone of margins and separating hyperplanes.</p>
+        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).
+        <br><b>Constraint Interpretation:</b> $H$ is the solution set of a single linear equation.
+        <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. It is an affine set of codimension 1.
+        <br><b>Particular + Nullspace:</b> $H = x_0 + \{s \mid a^\top s = 0\}$.</p>
 
         <div class="theorem-box">
-          <h4>Geometric Interpretation</h4>
-          <p>A hyperplane is an affine set of dimension $n-1$. It can be viewed as:</p>
-          <ul>
-            <li>The solution set of a single linear equation.</li>
-            <li>A linear subspace ($a^\top x = 0$) translated by some vector $x_0$ (where $a^\top x_0 = b$). Thus $H = x_0 + \mathrm{Ker}(a^\top)$.</li>
-          </ul>
+          <h4>Signed Distance to a Hyperplane</h4>
+          <p>The signed distance of a point $y$ to $H$ is:
+          $$ \frac{a^\top y - b}{\|a\|_2} $$
+          <br><b>Derivation:</b> The closest point $x^*$ to $y$ on the hyperplane lies along the normal direction. $x^* = y - \lambda a$.
+          Enforcing $a^\top x^* = b \implies a^\top(y-\lambda a) = b \implies \lambda = \frac{a^\top y - b}{\|a\|^2}$.
+          The distance is $\|y-x^*\| = \|\lambda a\| = |\lambda| \|a\| = \frac{|a^\top y - b|}{\|a\|}$.</p>
         </div>
-
-        <h4>Phase 1.2 — Supporting Hyperplanes (The Skeleton)</h4>
-        <p>This is the deep geometric backbone of optimization.</p>
-        <div class="theorem-box">
-            <h4>Supporting Hyperplane Theorem</h4>
-            <p>A hyperplane $H = \{x \mid a^\top x = \alpha\}$ <b>supports</b> a set $C$ at a point $x_0 \in \partial C$ if:
-            <ol>
-                <li>$x_0$ lies on the hyperplane ($a^\top x_0 = \alpha$).</li>
-                <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le \alpha$ for all $x \in C$).</li>
-            </ol>
-            <b>Key Fact:</b> If $C$ is convex, then <i>every</i> point on its boundary has at least one supporting hyperplane.</p>
-        </div>
-        <p><b>Optimality Connection:</b> In optimization, we usually minimize $f_0(x)$ over a convex set $\mathcal{F}$.
-        <br>At the optimal point $x^\star$, the level set $\{x \mid f_0(x) \le p^\star\}$ and the feasible set $\mathcal{F}$ touch but do not overlap (their interiors are disjoint).
-        <br>Thus, there exists a <b>separating hyperplane</b> between them. This hyperplane supports both sets at $x^\star$.
-        <br><b>Internalize:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
 
         <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
         $$
         H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
         $$
-        <p>This is the region on one side of the hyperplane. The complement halfspace is $H^+ = \{x \mid a^\top x \ge b\}$.</p>
-
-        <h4>Phase 1.1 — Constraints as Geometry (Normal Cones)</h4>
-        <p>This phase explains <i>why</i> Lagrange multipliers exist.</p>
-        <p><b>Constraint Geometry:</b>
-        <ul>
-            <li>Inequality constraints $f_i(x) \le 0$ define curved regions (sublevel sets).</li>
-            <li>Equality constraints $h_j(x) = 0$ define manifolds (surfaces).</li>
-            <li><b>Active constraints</b> define the boundary where the optimum lives.</li>
-        </ul>
-        </p>
-        <p><b>Normal Cone Definition:</b> For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions that are blocked by the boundary.
-        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
-        <b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$.
-        <br>This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
+        <p><b>Convexity:</b> Halfspaces are convex.
+        <br><i>Proof:</i> If $a^\top x \le b$ and $a^\top y \le b$, then $a^\top(\theta x + (1-\theta)y) \le \theta b + (1-\theta)b = b$ for $\theta \in [0,1]$.
+        <br>Note that halfspaces are generally <b>not affine</b> (extrapolation can leave the set).</p>
 
         <div class="proof-box">
           <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
@@ -1143,6 +1147,17 @@
             <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
           </ol>
           <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
+        </div>
+
+        <div class="insight">
+          <h4>Applications in Optimization</h4>
+          <ul>
+            <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
+            <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
+            $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
+            where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
+            <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
+          </ul>
         </div>
 
         <h4>Strict vs. Non-Strict Separation</h4>

@@ -72,6 +72,17 @@
       <section class="section-card" id="section-1">
         <h2>1. Foundations: Geometry & Conjugates</h2>
 
+        <div class="insight">
+          <h4>The Road to Duality</h4>
+          <p>Duality is a journey with four main stops. We will visit them in order:</p>
+          <ol>
+            <li><b>The Lagrangian</b> (§2): A tool from calculus to "soften" constraints into objective penalties.</li>
+            <li><b>The Dual Function</b> (§3): The <i>best possible</i> lower bound obtained by minimizing the Lagrangian.</li>
+            <li><b>The Dual Problem</b> (§4): The search for the optimal prices (multipliers) that maximize this lower bound.</li>
+            <li><b>Strong Duality & KKT</b> (§5): The conditions under which the bound is tight ($p^\star = d^\star$) and the "equilibrium" equations that characterize the solution.</li>
+          </ol>
+        </div>
+
         <h3>1.1 Optimization Problem as an Object</h3>
         <p>You must be fluent with:</p>
         <ul>
@@ -498,13 +509,20 @@
         <div class="insight">
           <h4>The Grand Unification: KKT as the Algorithm's Goal</h4>
           <p>The entire journey from Lagrangian $\to$ Dual Function $\to$ Dual Problem culminates here. The KKT conditions are the <b>necessary and sufficient conditions</b> for optimality in convex problems. This means solving an optimization problem is equivalent to solving the KKT system of equations.</p>
-          <p>Most algorithms are just different ways of hunting for a KKT point:</p>
-          <ul>
-            <li><b>Gradient Descent</b> hunts for Stationarity ($\nabla f_0 = 0$) in unconstrained problems.</li>
-            <li><b>Simplex Method</b> maintains Stationarity and Feasibility while fixing Complementary Slackness, iteratively improving the objective.</li>
-            <li><b>Interior-Point Methods</b> attack Complementary Slackness ($\lambda_i f_i(x) = 0$) directly. They replace the "hard zero" with a "soft target" $\lambda_i f_i(x) = -1/t$ (Central Path) and drive $t \to \infty$.</li>
-          </ul>
         </div>
+
+        <h3>5.2 Algorithms: Solving via Duality</h3>
+        <p>Why do we care about KKT conditions? Because they are the blueprint for modern solvers.</p>
+        <p><b>1. Primal-Dual Interior-Point Methods:</b>
+        <br>Solvers like CVXPY (using ECOS or SCS) solve the <b>Primal</b> and <b>Dual</b> problems simultaneously. They maintain a primal point $x$ and dual points $(\lambda, \nu)$ and try to satisfy the KKT conditions.
+        <br>Specifically, they relax the <b>Complementary Slackness</b> condition:
+        $$ \lambda_i f_i(x) = -1/t $$
+        This defines the "Central Path". As $t \to \infty$, the solution converges to the true KKT point.</p>
+
+        <p><b>2. The Duality Gap as a Stopping Criterion:</b>
+        <br>How does a solver know when to stop? It computes the duality gap:
+        $$ \text{Gap} = f_0(x) - g(\lambda, \nu) $$
+        If the gap is $\le \epsilon$, we are guaranteed to be $\epsilon$-close to the global optimum. No other method gives this <b>certificate of optimality</b>.</p>
 
         <div class="proof-box">
           <h4>Derivation from Strong Duality</h4>

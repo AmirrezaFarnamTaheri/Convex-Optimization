@@ -583,13 +583,19 @@
       <h3>2.2 The Supporting Hyperplane Theorem</h3>
 
       <div class="theorem-box">
-        <h4>Theorem (Supporting Hyperplane)</h4>
-        <p>Let $C \subseteq \mathbb{R}^n$ be a nonempty convex set, and let $x_0 \in \partial C$ (boundary). Then there exists a nonzero vector $a$ such that:</p>
-        $$
-        a^\top x \le a^\top x_0 \quad \forall x \in C
-        $$
-        <p>The hyperplane $H = \{x \mid a^\top x = a^\top x_0\}$ is called a <b>supporting hyperplane</b> at $x_0$. It "kisses" the set without cutting into it.</p>
+        <h4>Supporting Hyperplane Theorem</h4>
+        <p>A hyperplane $H = \{x \mid a^\top x = \alpha\}$ <b>supports</b> a set $C$ at a point $x_0 \in \partial C$ if:
+        <ol>
+            <li>$x_0$ lies on the hyperplane ($a^\top x_0 = \alpha$).</li>
+            <li>The entire set $C$ lies in one of the halfspaces defined by $H$ (e.g., $a^\top x \le \alpha$ for all $x \in C$).</li>
+        </ol>
+        <b>Key Fact:</b> If $C$ is convex, then <i>every</i> point on its boundary has at least one supporting hyperplane.</p>
       </div>
+
+      <p><b>Optimality Connection:</b> In optimization, we usually minimize $f_0(x)$ over a convex set $\mathcal{F}$.
+      <br>At the optimal point $x^\star$, the level set $\{x \mid f_0(x) \le p^\star\}$ and the feasible set $\mathcal{F}$ touch but do not overlap (their interiors are disjoint).
+      <br>Thus, there exists a <b>separating hyperplane</b> between them. This hyperplane supports both sets at $x^\star$.
+      <br><b>Internalize:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
 
       <div class="proof-box">
         <h4>Constructive Proof via Projection (Separation)</h4>
@@ -634,17 +640,25 @@
       </figure>
 
       <h3>2.3 Normal Cones and Optimality Certificates</h3>
-      <p>The set of all valid supporting normal vectors at a point $x_0$ forms a cone.</p>
+      <p>The set of all valid supporting normal vectors at a point $x_0$ forms a cone. This section explains <i>why</i> Lagrange multipliers exist.</p>
+
+      <p><b>Constraint Geometry:</b>
+      <ul>
+          <li>Inequality constraints $f_i(x) \le 0$ define curved regions (sublevel sets).</li>
+          <li>Equality constraints $h_j(x) = 0$ define manifolds (surfaces).</li>
+          <li><b>Active constraints</b> define the boundary where the optimum lives.</li>
+      </ul>
+      </p>
 
       <div class="definition-box">
         <h4>Definition: Normal Cone</h4>
-        <p>The <b>normal cone</b> of $C$ at $x_0 \in C$ is the set of vectors that make a non-acute angle with every feasible direction:</p>
-        $$ N_C(x_0) = \{g \in \mathbb{R}^n \mid g^\top (x - x_0) \le 0 \quad \forall x \in C\} $$
+        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions that are blocked by the boundary. It is the set of vectors that make a non-acute angle with every feasible direction:</p>
+        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
         <ul>
             <li>If $x_0 \in \mathrm{int}(C)$, then $N_C(x_0) = \{0\}$.</li>
             <li>If $x_0 \in \partial C$, $N_C(x_0)$ contains the outward normals of all supporting hyperplanes.</li>
         </ul>
-        <p><b>Equivalence:</b> $a \in N_C(x_0) \iff$ the hyperplane $a^\top x = a^\top x_0$ supports $C$ at $x_0$.</p>
+        <p><b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$. This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
       </div>
 
       <div class="insight">

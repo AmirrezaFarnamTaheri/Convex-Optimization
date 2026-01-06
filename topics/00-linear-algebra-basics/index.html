@@ -85,7 +85,75 @@
 
       <h3>1.1.1 Scalars: The Rulebook</h3>
       <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. Scalars play two roles: weights (coefficients) and objective values.</p>
-      <p><b>Field Axioms Matter:</b> When you write $a(x+y) = ax+ay$ or $(a+b)x=ax+bx$, you are using the fact that $\mathbb{R}$ is a <b>field</b> (distributivity, associativity, inverses). If scalars lived in something weaker (like integers $\mathbb{Z}$), you couldn't divide, and many optimization arguments (like finding a midpoint) would break.</p>
+
+      <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
+
+      <h4>The Field Axioms (From Scratch)</h4>
+      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying three bundles of axioms:</p>
+      <ul>
+        <li><b>A) Addition ($\mathbb{F}, +$ is an abelian group):</b>
+            <ul>
+            <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
+            <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
+            <li><b>Commutativity:</b> $a+b = b+a$.</li>
+            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
+            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
+            </ul>
+        </li>
+        <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
+          <ul>
+            <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
+            <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
+            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
+            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
+            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
+          </ul>
+        </li>
+        <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
+      </ul>
+
+      <div class="proof-box">
+        <h4>Fundamental Field Lemmas</h4>
+        <p>These proofs demonstrate how algebraic rigor underpins "obvious" arithmetic.</p>
+        <div class="proof-step">
+          <strong>Lemma 1: $0 \cdot a = 0$ for all $a$.</strong>
+          $$ 0\cdot a = (0+0)\cdot a = 0\cdot a + 0\cdot a \quad \text{(Distributivity)} $$
+          Add $-(0\cdot a)$ to both sides:
+          $$ 0 = 0\cdot a $$
+        </div>
+        <div class="proof-step">
+          <strong>Lemma 2: $(-1)a = -a$.</strong>
+          We must show that $(-1)a$ acts as the additive inverse of $a$.
+          $$ a + (-1)a = 1\cdot a + (-1)\cdot a = (1 + (-1))a = 0\cdot a = 0 $$
+          By uniqueness of the additive inverse, $(-1)a = -a$.
+        </div>
+        <div class="proof-step">
+          <strong>Lemma 3: No Zero Divisors.</strong>
+          If $ab=0$ and $a \neq 0$, then $b=0$.
+          <br><i>Proof:</i> Since $a \neq 0$, $a^{-1}$ exists. Multiply both sides by $a^{-1}$:
+          $$ a^{-1}(ab) = a^{-1}(0) \implies (a^{-1}a)b = 0 \implies 1\cdot b = 0 \implies b=0 $$
+          This property fails in rings like $\mathbb{Z}_6$ (where $2 \cdot 3 = 0$), which is why linear algebra requires a field.
+        </div>
+      </div>
+
+      <h4>Concrete Examples & The Failure Museum</h4>
+      <p>Understanding what <i>breaks</i> when axioms are missing is the best way to understand the axioms.</p>
+      <ul>
+        <li><b>Fields (Good Citizens):</b>
+            <ul>
+                <li>$\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex).</li>
+                <li><b>Finite fields $\mathbb{F}_p$:</b> Integers mod $p$ (where $p$ is prime). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$). Linear algebra works perfectly here.</li>
+            </ul>
+        </li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory" (where bases might not exist, and Smith Normal Form replaces SVD).</li>
+        <li><b>$\mathbb{Z}_n$ (Integers mod $n$, composite $n$):</b> NOT a field.
+            <br><i>Example:</i> In $\mathbb{Z}_6$, we have $2 \cdot 3 = 0 \pmod 6$.
+            <br><b>Failure 1 (Zero Divisors):</b> Non-zero numbers multiply to zero. This destroys the cancellation law: $2x=2y$ does <i>not</i> imply $x=y$ (e.g., $2\cdot 0 = 0$ and $2\cdot 3 = 0$).
+            <br><b>Failure 2 (Singular Non-zeros):</b> The number 2 has no inverse. You cannot divide by it.
+            <br>In a field, scaling by a non-zero scalar is always an <b>injective</b> map (it preserves information). In $\mathbb{Z}_6$, scaling by 2 destroys information (collapses 0 and 3 to 0).
+        </li>
+      </ul>
+
       <p><b>Extended Reals:</b> In optimization, we often work with the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to encode "forbidden" regions by assigning them infinite cost (e.g., indicator functions), effectively treating constraints as part of the objective.</p>
 
       <h3>1.1.2 Vectors: Elements of $\mathbb{R}^n$</h3>
@@ -116,6 +184,36 @@
       <p><b>Two Essential Views:</b>
       <br><b>1. Row View (Measurement):</b> $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional measuring $x$.
       <br><b>2. Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the view for span, range, and feasibility.</p>
+
+      <h3>1.1.5 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
+      <p>While $\mathbb{R}^n$ is our working model, the power of linear algebra comes from the fact that it applies to <i>any</i> set behaving like $\mathbb{R}^n$. This allows us to treat functions, polynomials, and matrices as vectors.</p>
+      <div class="definition-box">
+        <h4>Definition: Vector Space</h4>
+        <p>A vector space $V$ over a field $\mathbb{F}$ is a set equipped with two operations (addition $+$ and scalar multiplication $\cdot$) satisfying eight axioms:</p>
+        <ul>
+            <li><b>Axioms for Addition (Abelian Group):</b>
+                <ul>
+                    <li>(VS1) Closure: $u+v \in V$.</li>
+                    <li>(VS2) Associativity: $(u+v)+w = u+(v+w)$.</li>
+                    <li>(VS3) Commutativity: $u+v = v+u$.</li>
+                    <li>(VS4) Identity: There exists $\mathbf{0} \in V$ such that $u+\mathbf{0} = u$.</li>
+                    <li>(VS5) Inverse: For every $u$, there exists $-u$ such that $u+(-u) = \mathbf{0}$.</li>
+                </ul>
+            </li>
+            <li><b>Axioms for Scalar Multiplication:</b>
+                <ul>
+                    <li>(VS6) Compatibility: $\alpha(\beta u) = (\alpha\beta)u$.</li>
+                    <li>(VS7) Identity: $1 \cdot u = u$.</li>
+                </ul>
+            </li>
+            <li><b>Distributive Laws (The Glue):</b>
+                <ul>
+                    <li>(VS8) $\alpha(u+v) = \alpha u + \alpha v$ and $(\alpha+\beta)u = \alpha u + \beta u$.</li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+      <p><b>Consequences:</b> Any theorem proved using only these axioms is true for $\mathbb{R}^n$, spaces of functions, spaces of matrices, and infinite sequences.</p>
 
       <h3>1.2 Sets: The Logic Layer of Feasibility</h3>
       <p>Optimization problems ask us to minimize a function over a <b>feasible set</b>. Constraints are not fundamentally "inequalities"—they are membership tests defining a set.</p>

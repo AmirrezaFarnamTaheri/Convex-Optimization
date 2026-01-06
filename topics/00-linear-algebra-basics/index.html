@@ -162,13 +162,19 @@
       <b>"$\mathbb{R}^n$" is a Type Tag:</b> It asserts (1) Length/Shape: $x$ has exactly $n$ coordinates, and (2) Ambient Space: $x$ lives in a vector space where addition and scaling are defined.</p>
       <p><b>Equality is Coordinatewise:</b> $x=y \iff x_i=y_i$ for all $i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
 
-      <h3>1.1.3 Vector Operations (Coordinatewise)</h3>
-      <p>Vector addition and scalar multiplication are defined component by component. This is not arbitrary; it is forced by the desire to lift the field properties of $\mathbb{R}$ into higher dimensions.</p>
+      <h3>1.1.3 Vector Operations (Forced by Consistency)</h3>
+      <p><b>Vector Operations (Forced by Consistency):</b>
+      <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
+      <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
+      <br>This is why operations on $\mathbb{R}^n$ are "boring"—they are literally scalar algebra applied $n$ times.</p>
+
+      <h4>The Axioms Verified (Why it works)</h4>
+      <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
       <ul>
-        <li><b>Addition:</b> $(x+y)_i := x_i + y_i$. (Compatible with scalar addition).</li>
-        <li><b>Scaling:</b> $(ax)_i := a x_i$. (Distributes over addition: $a(x+y) = ax + ay$).</li>
+        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed by componentwise uniqueness.</li>
+        <li><b>Derived Facts:</b> $0 \cdot \mathbf{x} = \mathbf{0}$, $(-1)\mathbf{x} = -\mathbf{x}$. These are not assumptions; they are theorems derived from the axioms.</li>
+        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
       </ul>
-      <p>Because operations are defined coordinatewise, proving vector space axioms for $\mathbb{R}^n$ reduces to applying the scalar field axioms $n$ times.</p>
 
       <h3>1.1.4 Matrices: Typed Operators</h3>
       <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>linear map</b> $A: \mathbb{R}^n \to \mathbb{R}^m$.

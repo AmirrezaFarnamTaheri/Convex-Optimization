@@ -65,7 +65,18 @@
           <figcaption><i>Animation:</i> A <b>Subspace</b> (left) is tied to the origin (infinite sheet through 0). An <b>Affine Set</b> (right) is a translated subspace (infinite sheet floating in space). Affine combinations let you travel anywhere on the sheet, but never off it.</figcaption>
         </figure>
 
-        <p><b>Intuition (Infinite Sheet):</b> The coefficients $\theta_i$ may be negative. For two points $x_1, x_2$, the combination $x = \theta x_1 + (1-\theta)x_2$ traces the <b>infinite line</b> through them. For three points, it traces the infinite plane. Think of affine sets as "infinite sheets" that extend forever.</p>
+        <h4>Two-point affine combination = full line</h4>
+        <p>For two points $x, y \in \mathbb{R}^n$, the affine combination $z = \theta x + (1-\theta)y = y + \theta(x-y)$ traces the <b>entire line</b> through $y$ in the direction $x-y$ as $\theta$ ranges over all of $\mathbb{R}$.</p>
+        <ul>
+            <li>$\theta \in [0, 1]$: Segment between $y$ and $x$ (interpolation).</li>
+            <li>$\theta > 1$: Extrapolation past $x$.</li>
+            <li>$\theta < 0$: Extrapolation past $y$.</li>
+        </ul>
+
+        <h4>Why "sum to one" works (Translation Invariance)</h4>
+        <p>The condition $\sum \theta_i = 1$ ensures that the operation commutes with translation. If you shift all points by $t$, the affine combination shifts by exactly $t$:
+        $$ \sum \theta_i (x_i + t) = \sum \theta_i x_i + (\sum \theta_i)t = \sum \theta_i x_i + t $$
+        This is why affine geometry is "linear geometry without a fixed origin."</p>
 
         <div class="theorem-box">
           <h4>Definition (Affine Set)</h4>
@@ -141,6 +152,15 @@
           <br>$\bullet$ <b>Affine (Green):</b> Infinite sheet through points (Affine combinations).
           <br>$\bullet$ <b>Convex (Orange):</b> The finite region strictly "between" the points (Convex combinations).</figcaption>
         </figure>
+
+        <h4>Mixing vs Scaling</h4>
+        <p>Convex combinations represent "mixing" (interpolation) without "scaling" (size change).
+        <br>Consider a linear combination $z = \alpha x + \beta y$.
+        <ul>
+            <li>If $\alpha+\beta \neq 1$, the result includes a global scaling factor.</li>
+            <li>If $\alpha < 0$, the result includes extrapolation (subtraction).</li>
+        </ul>
+        Convexity restricts operations to pure mixing: you cannot go outside the segment between $x$ and $y$.</p>
 
         <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
         <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
@@ -338,7 +358,8 @@
         $$
         <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).
         <br><b>Constraint Interpretation:</b> $H$ is the solution set of a single linear equation.
-        <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. Thus $H$ is affine.</p>
+        <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. It is an affine set of codimension 1.
+        <br><b>Particular + Nullspace:</b> $H = x_0 + \{s \mid a^\top s = 0\}$.</p>
 
         <div class="theorem-box">
           <h4>Signed Distance to a Hyperplane</h4>

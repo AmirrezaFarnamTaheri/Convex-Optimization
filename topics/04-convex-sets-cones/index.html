@@ -580,8 +580,8 @@
         </div>
       </div>
 
-      <h3>2.2 The Supporting Hyperplane Theorem</h3>
-
+      <h4>Phase 1.2 — Supporting Hyperplanes (The Skeleton)</h4>
+      <p>This is the deep geometric backbone of optimization.</p>
       <div class="theorem-box">
         <h4>Supporting Hyperplane Theorem</h4>
         <p>A hyperplane $H = \{x \mid a^\top x = \alpha\}$ <b>supports</b> a set $C$ at a point $x_0 \in \partial C$ if:
@@ -639,9 +639,8 @@
         <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
-      <h3>2.3 Normal Cones and Optimality Certificates</h3>
-      <p>The set of all valid supporting normal vectors at a point $x_0$ forms a cone. This section explains <i>why</i> Lagrange multipliers exist.</p>
-
+      <h4>Phase 1.1 — Constraints as Geometry (Normal Cones)</h4>
+      <p>This phase explains <i>why</i> Lagrange multipliers exist.</p>
       <p><b>Constraint Geometry:</b>
       <ul>
           <li>Inequality constraints $f_i(x) \le 0$ define curved regions (sublevel sets).</li>
@@ -649,17 +648,10 @@
           <li><b>Active constraints</b> define the boundary where the optimum lives.</li>
       </ul>
       </p>
-
-      <div class="definition-box">
-        <h4>Definition: Normal Cone</h4>
-        <p>For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions that are blocked by the boundary. It is the set of vectors that make a non-acute angle with every feasible direction:</p>
-        $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
-        <ul>
-            <li>If $x_0 \in \mathrm{int}(C)$, then $N_C(x_0) = \{0\}$.</li>
-            <li>If $x_0 \in \partial C$, $N_C(x_0)$ contains the outward normals of all supporting hyperplanes.</li>
-        </ul>
-        <p><b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$. This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
-      </div>
+      <p><b>Normal Cone Definition:</b> For a convex set $C$ and a point $\mathbf{x} \in C$, the <b>normal cone</b> $N_C(\mathbf{x})$ describes the "outward" directions that are blocked by the boundary.
+      $$ N_C(\mathbf{x}) = \{\mathbf{g} \in \mathbb{R}^n \mid \mathbf{g}^\top (\mathbf{y} - \mathbf{x}) \le 0 \text{ for all } \mathbf{y} \in C\} $$
+      <b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$.
+      <br>This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
 
       <div class="insight">
         <h4>Linear Optimization Viewpoint: Support = Optimality</h4>

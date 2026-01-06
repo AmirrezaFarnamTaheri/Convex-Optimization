@@ -292,7 +292,7 @@
         </div>
 
         <div class="proof-box">
-          <h4>Deep Dive: The Dual of a Non-Convex Problem (Exercise 5.3)</h4>
+          <h4>Deep Dive: The Dual of a Non-Convex Problem</h4>
           <p>We perform a rigorous derivation of the Lagrange dual for the problem $\min c^\top x$ subject to a single inequality $f(x) \le 0$. Crucially, we do <b>not</b> assume $f$ is convex.</p>
 
           <div class="proof-step">
@@ -796,7 +796,7 @@
         </div>
 
         <div class="problem">
-        <h3>Problem 5: LP Dual via Relaxed Problems (Problem 5.4)</h3>
+        <h3>Problem 5: LP Dual via Relaxed Problems</h3>
         <p><b>Primal:</b> $\min c^\top x$ s.t. $Ax \le b$.</p>
         <p><b>Interpretation:</b> Instead of enforcing all constraints, consider a non-negative weighted sum $w^\top A x \le w^\top b$.
         $$ \tilde{p}(w) = \min c^\top x \quad \text{s.t.} \quad (A^\top w)^\top x \le b^\top w $$
@@ -869,7 +869,7 @@
         </div>
 
         <div class="problem">
-        <h3>Problem 8: Sum of Largest Elements (The Deep Dive)</h3>
+        <h3>Problem 8: Sum of Largest Elements (The Deep Dive) (Problem 5.19)</h3>
         <p><strong>Context:</strong> This problem is a masterclass in "Constructive Duality"—using duality to convert a combinatorial object (sum of sorted components) into a clean set of linear inequalities.
         <br>Let $f(x) = \sum_{i=1}^r x_{[i]}$ be the sum of the $r$ largest components of $x \in \mathbb{R}^n$.
         <br><strong>Goal:</strong> Prove that $f(x) \le \alpha$ is equivalent to a small system of linear inequalities.</p>
@@ -901,7 +901,7 @@
             <p>Suppose an optimal $y$ puts positive weight on a "small" entry $x_j$ ($y_j > 0$) while a "large" entry $x_i$ ($x_i > x_j$) is not fully selected ($y_i < 1$).
             <br>We can define a new vector $y'$ by shifting $\epsilon = \min(y_j, 1-y_i)$ mass from $j$ to $i$.
             $$ y'_i = y_i + \epsilon, \quad y'_j = y_j - \epsilon $$
-            The change in objective is $\epsilon(x_i - x_j) > 0$. This contradicts optimality. Thus, the optimal $y$ must fill the buckets corresponding to the largest $x_i$'s first.</p>
+            The change in objective is $\epsilon(x_i - x_j) > 0$. This contradicts optimality. Thus, the optimal $y$ must fill the buckets corresponding to the largest $x_i$'s first, which recovers the "sum of largest" logic.</p>
           </div>
 
           <div class="proof-step">
@@ -946,7 +946,7 @@
         </div>
 
         <div class="problem">
-        <h3>Problem 9: Markowitz Portfolio with Diversification</h3>
+        <h3>Problem 9: Markowitz Portfolio with Diversification (Problem 5.19 Continued)</h3>
         <p><strong>Context:</strong> Modern Portfolio Theory often yields solutions that are too concentrated in a few assets.
         <br><strong>Goal:</strong> Add a diversification constraint: "No more than 80% of the total budget can be invested in the top 10% of assets."
         <br><strong>Setup:</strong> Variables $x \in \mathbb{R}^n$, $\Sigma \succeq 0$, return vector $\bar{p}$.</p>
@@ -1087,6 +1087,142 @@
   </div>
 </div>
 
+<div class="problem">
+  <h3>P9.17 — Quadratic inequality via duality (Problem 5.4)</h3>
+  <p>Consider the quadratic inequality
+  $$
+  x^T Q x + 2 b^T x + c \le 0
+  $$
+  over all $x \in \mathbb R^n$.
+  <br><b>(a)</b> Derive a condition under which the inequality holds for all $x$ satisfying
+  $$ w^T x = \beta. $$
+  <b>(b)</b> Express this condition as a linear matrix inequality (LMI).
+  <br><b>(c)</b> Interpret the result geometrically and via the Lagrange dual.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Part (a): Deriving the Condition (The S-Procedure).</strong>
+      We are checking if the quadratic $f(x) = x^T Q x + 2b^T x + c$ is non-positive on the hyperplane $\mathcal{H} = \{x \mid w^T x - \beta = 0\}$.
+      <br>This is a theorem of alternatives (specifically, a variant of the S-Procedure for equality constraints). The condition holds if and only if there exists a multiplier $\lambda \in \mathbb{R}$ such that the "Lagrangian" is non-positive <b>everywhere</b> in $\mathbb{R}^n$:
+      $$ x^T Q x + 2b^T x + c + 2\lambda (w^T x - \beta) \le 0, \quad \forall x \in \mathbb{R}^n $$
+      <b>Why?</b>
+      <ul>
+        <li>($\Leftarrow$) If this global inequality holds, then for any $x \in \mathcal{H}$, the term $2\lambda(w^T x - \beta)$ vanishes, leaving $f(x) \le 0$.</li>
+        <li>($\Rightarrow$) This direction is deeper. If $f(x) \le 0$ on the affine space, the curvature of $f$ restricted to that space must be non-positive (concave). We can add a linear term $2\lambda w^T x$ to "tilt" the function without changing its curvature so that its unconstrained global maximum is $\le 0$.</li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>Part (b): The Linear Matrix Inequality (LMI).</strong>
+      We regroup the terms in the global inequality to form a single quadratic form in $x$.
+      $$
+      \begin{aligned}
+      \text{LHS} &= x^T Q x + 2b^T x + c + 2\lambda w^T x - 2\lambda \beta \\
+      &= x^T Q x + 2(b + \lambda w)^T x + (c - 2\lambda \beta)
+      \end{aligned}
+      $$
+      A quadratic form $x^T A x + 2q^T x + r \le 0$ holds for all $x$ if and only if the "homogenized" matrix is negative semidefinite (NSD):
+      $$
+      \begin{bmatrix} Q & b + \lambda w \\ (b + \lambda w)^T & c - 2\lambda \beta \end{bmatrix} \preceq 0
+      $$
+      This constraint is linear in the unknown variable $\lambda$. Thus, the condition is the existence of $\lambda$ satisfying this LMI.
+    </div>
+    <div class="proof-step">
+      <strong>Part (c): Geometric and Dual Interpretation.</strong>
+      <ul>
+        <li><b>Geometric:</b> The region $\mathcal{R} = \{x \mid f(x) \le 0\}$ is a quadratic sublevel set (e.g., the exterior of an ellipsoid or a half-space defined by a hyperboloid). The problem asks if the hyperplane $\mathcal{H}$ is a subset of $\mathcal{R}$ ($\mathcal{H} \subseteq \mathcal{R}$). The LMI condition essentially checks if the quadratic defining the set "dominates" the quadratic defining the hyperplane (conceptually), wrapping around it.</li>
+        <li><b>Lagrange Dual:</b> Consider the maximization problem:
+        $$ p^* = \max_{x} \{ f(x) \mid w^T x = \beta \} $$
+        We want to verify $p^* \le 0$.
+        <br>The dual function $g(\lambda)$ provides an upper bound on $p^*$.
+        $$ g(\lambda) = \sup_x ( f(x) + 2\lambda(w^T x - \beta) ) $$
+        For this supremum to be finite, the quadratic in $x$ must be bounded above (NSD). If it is NSD, the supremum is finite.
+        <br>The LMI states exactly that the matrix representing this Lagrangian is NSD, ensuring the dual function is well-defined and non-positive. Thus, duality transforms a "local" check on a subspace into a "global" spectral check on a matrix.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P9.16 — Conjugate-based dual of least-squares (Problem 5.3)</h3>
+  <p>Consider the least-squares problem
+  $$
+  \min_{x \in \mathbb R^n} \ \|Ax - b\|_2,
+  $$
+  where $A \in \mathbb R^{m\times n}$ and $b \in \mathbb R^m$.
+  <br>Using the conjugate representation of the norm, derive the dual problem and show that the dual is
+  $$
+  \max_{\nu} \; - b^T \nu
+  \quad \text{s.t.} \quad
+  \| \nu \|_2 \le 1, \;
+  A^T \nu = 0 .
+  $$
+  Show that strong duality holds.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Strategic Reformulation.</strong>
+      The problem involves a composition of a norm with an affine transformation. While we could analyze it directly, it is cleaner to "lift" the problem by introducing an explicit variable for the residual.
+      <br>Let $y = Ax - b$. The problem becomes:
+      $$ \min_{x \in \mathbb{R}^n, y \in \mathbb{R}^m} \|y\|_2 \quad \text{s.t.} \quad y = Ax - b $$
+      This separates the "norm geometry" (in $y$) from the "linear subspace structure" (in $x$).
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Constructing the Lagrangian.</strong>
+      We assign a dual variable $\nu \in \mathbb{R}^m$ to the equality constraint $Ax - b - y = 0$. The Lagrangian is:
+      $$
+      \begin{aligned}
+      L(x, y, \nu) &= \|y\|_2 + \nu^\top (Ax - b - y) \\
+      &= \|y\|_2 - \nu^\top y + \nu^\top Ax - \nu^\top b \\
+      &= (\|y\|_2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu
+      \end{aligned}
+      $$
+      We have grouped terms by $y$ and $x$ to facilitate minimization.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Deriving the Dual Function.</strong>
+      The dual function is $g(\nu) = \inf_{x, y} L(x, y, \nu)$. We minimize over $x$ and $y$ separately.
+      <ul>
+        <li><b>Minimizing over $x$:</b> The term $(A^\top \nu)^\top x$ is a linear function of $x$. Its infimum is $-\infty$ unless the gradient is zero.
+        $$ \inf_x (A^\top \nu)^\top x = \begin{cases} 0 & \text{if } A^\top \nu = 0 \\ -\infty & \text{otherwise} \end{cases} $$
+        This generates the constraint $A^\top \nu = 0$ (orthogonality to the range of $A$).
+        </li>
+        <li><b>Minimizing over $y$:</b> We need to evaluate $\inf_y (\|y\|_2 - \nu^\top y)$. This looks like the definition of the convex conjugate.
+        $$ \inf_y (\|y\|_2 - \nu^\top y) = - \sup_y (\nu^\top y - \|y\|_2) = - f^*(\nu) $$
+        where $f(y) = \|y\|_2$.
+        <br><b>Recall:</b> The conjugate of a norm $f(y) = \|y\|$ is the indicator function of the dual norm unit ball.
+        $$ f^*(\nu) = \begin{cases} 0 & \|\nu\|_* \le 1 \\ \infty & \text{otherwise} \end{cases} $$
+        For the $\ell_2$ norm, the dual is also the $\ell_2$ norm ($\|\nu\|_* = \|\nu\|_2$).
+        <br>Thus, the term is $0$ if $\|\nu\|_2 \le 1$ and $-\infty$ otherwise.
+        </li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: The Dual Problem.</strong>
+      Collecting the pieces, the dual function is finite only when $A^\top \nu = 0$ and $\|\nu\|_2 \le 1$. In that case, $g(\nu) = -b^\top \nu$.
+      $$
+      \begin{aligned}
+      \text{maximize} \quad & -b^\top \nu \\
+      \text{subject to} \quad & A^\top \nu = 0 \\
+      & \|\nu\|_2 \le 1
+      \end{aligned}
+      $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 5: Strong Duality.</strong>
+      Does $p^\star = d^\star$? We check Slater's condition.
+      <br>The reformulated problem $\min \|y\|_2$ s.t. $y - Ax + b = 0$ is a convex optimization problem with:
+      <ul>
+        <li>Convex objective (norm).</li>
+        <li>Linear equality constraints.</li>
+        <li>No inequality constraints.</li>
+      </ul>
+      For problems with only linear equality constraints, Slater's condition is reduced to simple feasibility. Since for any $x$, we can find $y = Ax - b$, the problem is feasible.
+      <br>Thus, <b>Strong Duality holds</b>.
+    </div>
+  </div>
+</div>
         <div class="problem">
   <h3>P9.2 — KKT Conditions for Entropy Maximization</h3>
   <p>Maximize the entropy $-\sum x_i \log x_i$ subject to $\mathbf{1}^\top x = 1$ and $Ax \le b$.
@@ -1475,7 +1611,7 @@
         </div>
 
         <div class="problem">
-  <h3>P9.12 — Deep Dive: Chebyshev Approximation vs Least Squares</h3>
+  <h3>P9.12 — Deep Dive: Chebyshev Approximation vs Least Squares (Problem 5.6)</h3>
   <p>Consider the problem of minimizing the $\ell_\infty$ norm of the residual: $p^\star = \min_x \|Ax - b\|_\infty$.
   <br>Let $x_{\text{ls}}$ be the least-squares solution ($p_{\text{ls}} = \min \|Ax-b\|_2$).
   <br><strong>(a)</strong> Prove that the least-squares solution provides a $\sqrt{m}$-approximation: $\|Ax_{\text{ls}} - b\|_\infty \le \sqrt{m} p^\star$.
@@ -1485,78 +1621,66 @@
     <h4>Solution</h4>
 
     <div class="proof-step">
-      <strong>Part (a): The Primal Bound (Comparing Norms).</strong>
-      We want to compare the worst-case error of the least-squares solution to the optimal worst-case error.
-      Let $r_{\text{ls}} = Ax_{\text{ls}} - b$ and $r_{\text{ch}} = Ax_{\text{ch}} - b$.
-      We use the standard norm inequalities for $z \in \mathbb{R}^m$: $\|z\|_\infty \le \|z\|_2 \le \sqrt{m}\|z\|_\infty$.
-      <br>1. <b>Convert LS $\ell_\infty$ to $\ell_2$:</b> $\|r_{\text{ls}}\|_\infty \le \|r_{\text{ls}}\|_2$. (The max entry is bounded by the Euclidean length).
-      <br>2. <b>Use LS Optimality:</b> Since $x_{\text{ls}}$ minimizes the $\ell_2$ norm, it beats any other candidate, including $x_{\text{ch}}$.
-      $$ \|r_{\text{ls}}\|_2 \le \|r_{\text{ch}}\|_2 $$
-      3. <b>Convert Chebyshev $\ell_2$ to $\ell_\infty$:</b> $\|r_{\text{ch}}\|_2 \le \sqrt{m} \|r_{\text{ch}}\|_\infty$. (Euclidean length is at most $\sqrt{m}$ times the max entry).
-      <br>Chaining these gives the result:
-      $$ \|Ax_{\text{ls}} - b\|_\infty \le \sqrt{m} \|Ax_{\text{ch}} - b\|_\infty = \sqrt{m} p^\star $$
-      Rearranging gives a computable lower bound on the optimal value: $p^\star \ge \frac{1}{\sqrt{m}} \|r_{\text{ls}}\|_\infty$.
+      <strong>Part (a): The Primal Bound (Norm Chain).</strong>
+      We want to prove $|Ax_{\rm ls} - b|_\infty \le \sqrt{m} p^\star$.
+      Let $r_{\rm ls} = Ax_{\rm ls} - b$ and $r_{\rm ch} = Ax_{\rm ch} - b$.
+      <br>The proof relies on the chain of inequalities relating $\ell_2$ and $\ell_\infty$ norms in $\mathbb{R}^m$:
+      $$ \|z\|_\infty \le \|z\|_2 \le \sqrt{m} \|z\|_\infty $$
+      <br>We chain these inequalities together:
+      <ol>
+        <li><b>Step 1:</b> $\|r_{\rm ls}\|_\infty \le \|r_{\rm ls}\|_2$ (Max entry $\le$ Euclidean length).</li>
+        <li><b>Step 2:</b> $\|r_{\rm ls}\|_2 \le \|r_{\rm ch}\|_2$. This is the definition of Least Squares: $x_{\rm ls}$ minimizes the $\ell_2$ norm, so it must be better (or equal) than the Chebyshev solution $x_{\rm ch}$ in the $\ell_2$ sense.</li>
+        <li><b>Step 3:</b> $\|r_{\rm ch}\|_2 \le \sqrt{m} \|r_{\rm ch}\|_\infty$. (Euclidean length $\le \sqrt{m}$ times max entry).</li>
+      </ol>
+      Combining them:
+      $$ \|r_{\rm ls}\|_\infty \le \|r_{\rm ls}\|_2 \le \|r_{\rm ch}\|_2 \le \sqrt{m} \|r_{\rm ch}\|_\infty = \sqrt{m} p^\star $$
     </div>
 
     <div class="proof-step">
-      <strong>Part (b): The Dual "Lower Bound Machine".</strong>
-      We derived the dual of the Chebyshev problem in the notes:
-      $$ \max_{\nu} \ b^\top \nu \quad \text{subject to} \quad A^\top \nu = 0, \ \|\nu\|_1 \le 1 $$
-      By <b>Weak Duality</b>, for any feasible $\nu$, the value $b^\top \nu$ is a guaranteed lower bound on $p^\star$.
-      We will "manufacture" a feasible $\nu$ using the least squares residual.
+      <strong>Part (b): The Dual Lower Bound.</strong>
+      The dual problem for Chebyshev approximation is:
+      $$ \max_{\nu} \ b^T \nu \quad \text{s.t.} \quad A^T \nu = 0, \ \|\nu\|_1 \le 1 $$
+      Any $\nu$ satisfying the constraints provides a lower bound $b^T \nu \le p^\star$.
     </div>
 
     <div class="proof-step">
-      <strong>Step 1: The Orthogonality Bridge.</strong>
-      The least-squares solution $x_{\text{ls}}$ satisfies the normal equations: $A^\top A x_{\text{ls}} = A^\top b$.
-      Rearranging, we get $A^\top (b - Ax_{\text{ls}}) = 0$.
-      Let $r_{\text{ls}} = b - Ax_{\text{ls}}$. Then $A^\top r_{\text{ls}} = 0$.
-      <br><i>Insight:</i> The least-squares residual is automatically orthogonal to the columns of $A$. This satisfies the hardest constraint of the dual ($A^\top \nu = 0$).
+      <strong>Step 1: Manufacturing a Dual Candidate.</strong>
+      We want to construct a feasible $\nu$ from the LS residual $r_{\rm ls} = b - Ax_{\rm ls}$.
+      <br><b>Constraint 1: Orthogonality ($A^T \nu = 0$).</b>
+      The LS residual satisfies the Normal Equations: $A^T (b - Ax_{\rm ls}) = 0$, so $A^T r_{\rm ls} = 0$.
+      Thus, $r_{\rm ls}$ already satisfies the orthogonality constraint! This is the "magic" of least squares.
+      <br><b>Constraint 2: Norm ($|\nu|_1 \le 1$).</b>
+      The vector $r_{\rm ls}$ might be too large. We simply scale it:
+      $$ \hat{\nu} = \frac{r_{\rm ls}}{\|r_{\rm ls}\|_1} $$
+      This vector $\hat{\nu}$ satisfies both constraints.
     </div>
 
     <div class="proof-step">
-      <strong>Step 2: Constructing the Dual Candidate.</strong>
-      We need to satisfy the second dual constraint: $\|\nu\|_1 \le 1$.
-      We take $r_{\text{ls}}$ and normalize it by its $\ell_1$ norm:
-      $$ \hat{\nu} = \frac{r_{\text{ls}}}{\|r_{\text{ls}}\|_1} $$
-      Check feasibility:
-      <ul>
-        <li>$A^\top \hat{\nu} = \frac{1}{\|r_{\text{ls}}\|_1} A^\top r_{\text{ls}} = 0$. (Feasible)</li>
-        <li>$\|\hat{\nu}\|_1 = \frac{\|r_{\text{ls}}\|_1}{\|r_{\text{ls}}\|_1} = 1 \le 1$. (Feasible)</li>
-      </ul>
+      <strong>Step 2: Evaluating the Bound.</strong>
+      The dual objective value is:
+      $$ b^T \hat{\nu} = \frac{b^T r_{\rm ls}}{\|r_{\rm ls}\|_1} $$
+      We simplify the numerator. Since $r_{\rm ls} = b - Ax_{\rm ls}$, we have $b = r_{\rm ls} + Ax_{\rm ls}$.
+      $$ b^T r_{\rm ls} = (r_{\rm ls} + Ax_{\rm ls})^T r_{\rm ls} = r_{\rm ls}^T r_{\rm ls} + x_{\rm ls}^T A^T r_{\rm ls} $$
+      Since $A^T r_{\rm ls} = 0$, the second term vanishes.
+      $$ b^T \hat{\nu} = \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} $$
+      By weak duality, this is a valid lower bound:
+      $$ p^\star \ge \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} $$
     </div>
 
     <div class="proof-step">
-      <strong>Step 3: Evaluate the Bound.</strong>
-      Evaluate the dual objective with $\hat{\nu}$:
-      $$ b^\top \hat{\nu} = \frac{b^\top r_{\text{ls}}}{\|r_{\text{ls}}\|_1} = \frac{(Ax_{\text{ls}} + r_{\text{ls}})^\top r_{\text{ls}}}{\|r_{\text{ls}}\|_1} $$
-      Since $r_{\text{ls}} \perp A$ (and thus $r_{\text{ls}} \perp Ax_{\text{ls}}$), the first term vanishes:
-      $$ b^\top \hat{\nu} = \frac{r_{\text{ls}}^\top r_{\text{ls}}}{\|r_{\text{ls}}\|_1} = \frac{\|r_{\text{ls}}\|_2^2}{\|r_{\text{ls}}\|_1} $$
-      Thus, we have the certified lower bound:
-      $$ \boxed{ p^\star \ge \frac{\|r_{\text{ls}}\|_2^2}{\|r_{\text{ls}}\|_1} } $$
-    </div>
-
-    <div class="proof-step">
-      <strong>Comparison: Which bound is tighter?</strong>
-      Is the dual bound better than the crude $\frac{1}{\sqrt{m}}$ bound from Part (a)?
-      <br>We know $\|r\|_1 \le \sqrt{m}\|r\|_2$ (Cauchy-Schwarz).
-      $$ \text{Dual Bound} = \frac{\|r_{\text{ls}}\|_2^2}{\|r_{\text{ls}}\|_1} \ge \frac{\|r_{\text{ls}}\|_2^2}{\sqrt{m}\|r_{\text{ls}}\|_2} = \frac{\|r_{\text{ls}}\|_2}{\sqrt{m}} $$
-      Since $\|r\|_2 \ge \|r\|_\infty$, we have:
-      $$ \frac{\|r_{\text{ls}}\|_2}{\sqrt{m}} \ge \frac{\|r_{\text{ls}}\|_\infty}{\sqrt{m}} = \text{Bound (a)} $$
-      <b>Conclusion:</b> The dual bound is always at least as strong as the norm-based bound, and usually much stronger (especially for "spiky" residuals).
-    </div>
-
-    <div class="proof-step">
-      <strong>The "Sandwich" Theorem.</strong>
-      Without solving the Chebyshev problem, we have bracketed the optimal value $p^\star$:
-      $$ \frac{\|r_{\text{ls}}\|_2^2}{\|r_{\text{ls}}\|_1} \le p^\star \le \|r_{\text{ls}}\|_\infty $$
-      This interval gives a guaranteed quality check for the least-squares approximation.
+      <strong>Comparison and Sandwiching.</strong>
+      We now have a "sandwich" for the optimal value $p^\star$:
+      $$ \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} \le p^\star \le \|r_{\rm ls}\|_\infty $$
+      How good is the dual bound compared to Part (a)?
+      <br>Using $\|r\|_1 \le \sqrt{m}\|r\|_2$, we see:
+      $$ \text{Dual Bound} = \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} \ge \frac{\|r_{\rm ls}\|_2^2}{\sqrt{m}\|r_{\rm ls}\|_2} = \frac{\|r_{\rm ls}\|_2}{\sqrt{m}} \ge \frac{\|r_{\rm ls}\|_\infty}{\sqrt{m}} $$
+      The dual bound is strictly stronger than the $\sqrt{m}$ bound derived in (a). It uses the specific "spikiness" of the residual (ratio of $\ell_2/\ell_1$) rather than the worst-case dimension factor.
     </div>
   </div>
 </div>
 
         <div class="problem">
-  <h3>P9.13 — Case Study: The Geometry of Max-of-Affines</h3>
+  <h3>P9.13 — Case Study: The Geometry of Max-of-Affines (Problem 5.7)</h3>
   <p>Consider the classic piecewise-linear minimization problem:
   $$ \min_{x \in \mathbb{R}^n} \; \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
   This problem is convex but nonsmooth. We analyze it through four different lenses to see how smoothing relates to duality.</p>
@@ -1574,56 +1698,69 @@
     <h4>Solution</h4>
 
     <div class="proof-step">
-      <strong>Part (a): Dual via Equivalent Problem (Lagrange).</strong>
-      Rewrite the problem using auxiliary variables $y_i$:
-      $$ \min_{x, y} \max_i y_i \quad \text{s.t.} \quad y_i = a_i^\top x + b_i $$
-      Form the Lagrangian with multipliers $\lambda$:
+      <strong>Part (a): Dual via Equivalent Problem.</strong>
+      Rewriting the problem: $\min_{x, y} \max_i y_i$ s.t. $y_i = a_i^\top x + b_i$.
+      <br><b>Lagrangian Construction:</b>
       $$ L(x, y, \lambda) = \max_i y_i + \sum \lambda_i (a_i^\top x + b_i - y_i) = (\max_i y_i - \lambda^\top y) + (A\lambda)^\top x + b^\top \lambda $$
-      The dual function is $g(\lambda) = \inf_{x,y} L(x, y, \lambda)$.
+      <b>Deriving the Dual Function:</b>
       <ul>
-        <li>Inf over $x$: Finite iff $A\lambda = 0$ (weighted slopes cancel).</li>
-        <li>Inf over $y$: We need $\inf_y (\max_i y_i - \lambda^\top y)$. This is the conjugate of the max function.
-        If $\lambda \succeq 0$ and $\mathbf{1}^\top \lambda = 1$, then $\lambda^\top y \le \max y_i$, so the diff is $\ge 0$ (and 0 for $y=c\mathbf{1}$).
-        Otherwise, we can drive it to $-\infty$. Thus, $\lambda$ must be in the simplex $\Delta$.</li>
+        <li><b>Inf over $x$:</b> Linear term $(A\lambda)^\top x$. Finite (0) only if $A\lambda = \sum \lambda_i a_i = 0$.</li>
+        <li><b>Inf over $y$:</b> This is $-\sup_y (\lambda^\top y - \max_i y_i)$.
+        This supremum is the conjugate of the max function, evaluated at $\lambda$.
+        <br><i>Fact:</i> The conjugate of $f(y) = \max y_i$ is the indicator of the unit simplex $\Delta$.
+        <br><i>Why?</i> If $\lambda \in \Delta$, then $\lambda^\top y \le \max_i y_i (\sum \lambda_i) = \max_i y_i$, so $\lambda^\top y - \max y_i \le 0$ (tight at $y=0$).
+        If $\lambda \notin \Delta$, we can drive the gap to $\infty$.
+        <br>Thus, $\lambda \in \Delta$ is required.</li>
       </ul>
-      <b>Result:</b> $\max b^\top \lambda$ s.t. $A\lambda = 0, \lambda \in \Delta$.
+      <b>Result:</b> $\max b^\top \lambda$ s.t. $A\lambda = 0, \lambda \in \Delta$. (A force balance problem).
     </div>
 
     <div class="proof-step">
       <strong>Part (b): Dual via LP Formulation.</strong>
       Standard epigraph form: $\min t$ s.t. $a_i^\top x + b_i \le t$.
-      Lagrangian: $L(x, t, \lambda) = t + \sum \lambda_i(a_i^\top x + b_i - t) = (1-\mathbf{1}^\top \lambda)t + (A\lambda)^\top x + b^\top \lambda$.
-      Minimizing over $t$ yields $\mathbf{1}^\top \lambda = 1$. Minimizing over $x$ yields $A\lambda = 0$.
-      <b>Result:</b> Exactly the same dual problem. The geometry forces the probability simplex constraint regardless of derivation path.
+      $$ L(x, t, \lambda) = t + \sum \lambda_i (a_i^\top x + b_i - t) = (1 - \mathbf{1}^\top \lambda)t + (A\lambda)^\top x + b^\top \lambda $$
+      Minimizing over $t$ (a scalar free variable) yields the equality constraint $1 - \mathbf{1}^\top \lambda = 0$.
+      <br>Minimizing over $x$ yields $A\lambda = 0$.
+      <br>Since $\lambda \ge 0$ (inequality multipliers), we recover exactly the same constraints: $\lambda \in \Delta, A\lambda = 0$.
     </div>
 
     <div class="proof-step">
-      <strong>Part (c): Dual of Smooth Approximation (Entropy).</strong>
-      Let $f_{sm}(x) = \log(\sum e^{a_i^\top x + b_i})$.
-      Using the variational identity $\log(\sum e^{u_i}) = \max_{\lambda \in \Delta} (\lambda^\top u - \sum \lambda_i \log \lambda_i)$:
-      $$ \min_x f_{sm}(x) = \min_x \max_{\lambda \in \Delta} \left( \lambda^\top(Ax+b) - \sum \lambda_i \log \lambda_i \right) $$
-      Swapping min/max: The inner $\min_x \lambda^\top Ax$ forces $A^\top \lambda = 0$.
-      <b>Result:</b>
-      $$ \max_{\lambda \in \Delta, A^\top \lambda = 0} \left( b^\top \lambda - \sum_{i=1}^m \lambda_i \log \lambda_i \right) $$
-      The dual of the smooth problem is the dual of the nonsmooth problem plus an <b>entropy bonus</b>.
+      <strong>Part (c): Entropy Smoothing and its Dual.</strong>
+      Let $f_{sm}(x) = \log \sum \exp(a_i^\top x + b_i)$.
+      We use the <b>variational representation of log-sum-exp</b> (derived from Fenchel duality of negative entropy):
+      $$ \log \sum_{i=1}^m e^{u_i} = \max_{\lambda \in \Delta} \left( \lambda^\top u - \sum_{i=1}^m \lambda_i \log \lambda_i \right) $$
+      Substitute $u_i = a_i^\top x + b_i$:
+      $$ \min_x f_{sm}(x) = \min_x \max_{\lambda \in \Delta} \left( \lambda^\top(Ax+b) + H(\lambda) \right) $$
+      where $H(\lambda) = -\sum \lambda_i \log \lambda_i$ is the entropy.
+      <br>Interchanging min and max (by minimax theorem):
+      $$ \max_{\lambda \in \Delta} \left( b^\top \lambda + H(\lambda) + \min_x (\lambda^\top A x) \right) $$
+      The inner min over $x$ forces $A^\top \lambda = 0$.
+      <br><b>Result:</b> The dual is $\max_{\lambda \in \Delta, A\lambda=0} (b^\top \lambda + H(\lambda))$.
+      This is the original dual regularized by entropy!
     </div>
 
     <div class="proof-step">
-      <strong>Part (d): Approximation Bounds ($\gamma$-scaling).</strong>
-      Define $f_\gamma(x) = \frac{1}{\gamma} \log(\sum e^{\gamma(a_i^\top x + b_i)})$.
-      Using the inequality $\max u_i \le \log \sum e^{u_i} \le \max u_i + \log m$, applied to $\gamma u$:
+      <strong>Part (d): Bounds and Convergence.</strong>
+      Consider the temperature-scaled approximation $f_\gamma(x) = \frac{1}{\gamma} \log \sum e^{\gamma(a_i^\top x + b_i)}$.
+      <br>We use the fundamental inequality for LSE:
+      $$ \max_i u_i \le \log \sum e^{u_i} \le \max_i u_i + \log m $$
+      Applying this to vector $\gamma u$:
       $$ \gamma \max u_i \le \log \sum e^{\gamma u_i} \le \gamma \max u_i + \log m $$
-      Dividing by $\gamma$:
+      Divide by $\gamma$:
       $$ f_{pl}(x) \le f_\gamma(x) \le f_{pl}(x) + \frac{\log m}{\gamma} $$
-      Taking infimum over $x$:
+      This holds for <b>all</b> $x$. Taking the minimum over $x$:
       $$ p^\star_{pl} \le p^\star_\gamma \le p^\star_{pl} + \frac{\log m}{\gamma} $$
-      As $\gamma \to \infty$, the smooth approximation (and its optimal value) converges to the piecewise-linear one. In the dual, this corresponds to the entropy term $\frac{1}{\gamma} H(\lambda)$ vanishing, allowing the dual variables to become sparse (vertices of the simplex).
+      <b>Interpretation:</b>
+      <ul>
+        <li>As $\gamma \to \infty$, the gap vanishes at rate $1/\gamma$.</li>
+        <li>In the dual, the objective is $b^\top \lambda + \frac{1}{\gamma} H(\lambda)$. As $\gamma \to \infty$, the "entropic barrier" $\frac{1}{\gamma} H(\lambda)$ weakens, allowing the dual solution to move toward the boundary (sparse solutions).</li>
+      </ul>
     </div>
   </div>
 </div>
 
         <div class="problem">
-  <h3>P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation)</h3>
+  <h3>P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation) (Problem 5.9)</h3>
   <p><strong>Context:</strong> We seek the minimum-volume ellipsoid $\mathcal{E}(X) = \{x \in \mathbb{R}^n \mid x^\top X x \le 1\}$ centered at the origin that contains a set of points $a_1, \dots, a_m \in \mathbb{R}^n$ (which span $\mathbb{R}^n$).
   <br>This is formulated as the convex problem:
   $$ \min_{X \in \mathbb{S}_{++}^n} \log \det(X^{-1}) \quad \text{s.t.} \quad a_i^\top X a_i \le 1, \quad i=1,\dots,m $$
@@ -1643,36 +1780,51 @@
     <h4>Solution</h4>
     <div class="proof-step">
       <strong>Step 0: Preliminaries.</strong>
-      Define $S = \sum_{k=1}^m a_k a_k^\top$. Since the points $a_k$ span $\mathbb{R}^n$, for any vector $v \ne 0$, $v^\top S v = \sum (a_k^\top v)^2 > 0$. Thus $S \succ 0$ and its inverse $X_{\text{sim}} = S^{-1}$ is well-defined.
+      Let $S = \sum_{k=1}^m a_k a_k^\top$ be the empirical covariance matrix. Since $\{a_k\}$ spans $\mathbb{R}^n$, $S \succ 0$.
+      The proposed solution is $X_{\text{sim}} = S^{-1}$.
+      The ellipsoid is $\mathcal{E} = \{u \mid u^\top S^{-1} u \le 1\}$.
     </div>
 
     <div class="proof-step">
-      <strong>Step 1: Feasibility (Part a).</strong>
-      We must show $a_i^\top S^{-1} a_i \le 1$ for all $i$.
-      Consider the block matrix $M_i = \begin{bmatrix} S & a_i \\ a_i^\top & 1 \end{bmatrix}$.
-      We can write $M_i$ as a sum of PSD outer products:
-      $$ M_i = \sum_{k \ne i} \begin{bmatrix} a_k \\ 0 \end{bmatrix} \begin{bmatrix} a_k \\ 0 \end{bmatrix}^\top + \begin{bmatrix} a_i \\ 1 \end{bmatrix} \begin{bmatrix} a_i \\ 1 \end{bmatrix}^\top \succeq 0 $$
-      Since $M_i \succeq 0$ and $S \succ 0$, by the Schur Complement lemma ($M \succeq 0 \iff \alpha - u^\top S^{-1} u \ge 0$), we have $1 - a_i^\top S^{-1} a_i \ge 0$.
-      Thus $a_i^\top X_{\text{sim}} a_i \le 1$, so $X_{\text{sim}}$ is feasible.
+      <strong>Step 1: Proving Feasibility (The Schur Complement).</strong>
+      We need to verify that every point $a_i$ lies inside the ellipsoid defined by $X_{\text{sim}}$.
+      $$ a_i^\top S^{-1} a_i \le 1, \quad \forall i=1,\dots,m $$
+      Construct the block matrix $M^{(i)} \in \mathbb{S}^{n+1}$:
+      $$ M^{(i)} = \begin{bmatrix} S & a_i \\ a_i^\top & 1 \end{bmatrix} $$
+      Notice that $M^{(i)}$ can be written as a sum of rank-1 matrices:
+      $$ M^{(i)} = \sum_{k \ne i} \begin{bmatrix} a_k \\ 0 \end{bmatrix} \begin{bmatrix} a_k \\ 0 \end{bmatrix}^\top + \begin{bmatrix} a_i \\ 1 \end{bmatrix} \begin{bmatrix} a_i \\ 1 \end{bmatrix}^\top $$
+      Each term is an outer product ($vv^\top$), so it is Positive Semidefinite (PSD). Thus $M^{(i)} \succeq 0$.
+      <br><b>Schur Complement Lemma:</b> For $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$, $M \succeq 0 \iff C - B^\top A^{-1} B \ge 0$.
+      <br>Applying this to $M^{(i)}$: $1 - a_i^\top S^{-1} a_i \ge 0 \implies a_i^\top S^{-1} a_i \le 1$.
+      <br>Thus, $X_{\text{sim}}$ is strictly feasible.
     </div>
 
     <div class="proof-step">
-      <strong>Step 2: The Dual Bound (Part b).</strong>
-      The dual problem maximizes $d(\lambda) = \log \det(\sum \lambda_i a_i a_i^\top) - \sum \lambda_i + n$ over $\lambda \succeq 0$.
-      We choose a specific dual candidate: $\lambda_i = t$ for all $i$.
-      $$ d(t\mathbf{1}) = \log \det(tS) - mt + n = \log \det S + n \log t - mt + n $$
-      Maximizing over $t > 0$: the derivative is $n/t - m = 0 \implies t^* = n/m$.
-      $$ d(t^*) = \log \det S + n \log(n/m) - n + n = \log \det S - n \log(m/n) $$
+      <strong>Step 2: Optimizing the Dual Bound.</strong>
+      The dual problem maximizes $g(\lambda) = \log \det(\sum \lambda_i a_i a_i^\top) - \mathbf{1}^\top \lambda + n$ over $\lambda \succeq 0$.
+      <br>We restrict our search to a symmetric candidate: $\lambda = t \mathbf{1}$ (where $t > 0$).
+      $$ \sum \lambda_i a_i a_i^\top = t \sum a_i a_i^\top = t S $$
+      $$ g(t \mathbf{1}) = \log \det(tS) - m t + n = \log(t^n \det S) - mt + n = n \log t + \log \det S - mt + n $$
+      Maximize this scalar function over $t$:
+      $$ \frac{d}{dt} (n \log t - mt) = \frac{n}{t} - m = 0 \implies t^* = \frac{n}{m} $$
+      Substitute $t^*$ back to get the lower bound:
+      $$ d^* \ge g(t^* \mathbf{1}) = n \log(n/m) + \log \det S - n + n = \log \det S - n \log(m/n) $$
     </div>
 
     <div class="proof-step">
-      <strong>Step 3: Volume Ratio.</strong>
-      By Weak Duality, $p^* \ge d(t^*)$. The primal objective at $X_{\text{sim}}$ is $f_0(X_{\text{sim}}) = \log \det(S)$.
-      The suboptimality gap is bounded by:
-      $$ f_0(X_{\text{sim}}) - p^* \le \log \det S - (\log \det S - n \log(m/n)) = n \log(m/n) $$
-      Since $\text{Vol}(\mathcal{E}(X)) \propto \det(X)^{-1/2} = \exp(\frac{1}{2} f_0(X))$, the volume ratio is:
-      $$ \frac{\text{Vol}(X_{\text{sim}})}{\text{Vol}(X^*)} = \exp\left( \frac{1}{2}(f_0(X_{\text{sim}}) - p^*) \right) \le \exp\left( \frac{n}{2} \log \frac{m}{n} \right) = \left( \frac{m}{n} \right)^{n/2} $$
-        </div>
+      <strong>Step 3: Calculating the Approximation Ratio.</strong>
+      The primal objective at $X_{\text{sim}}$ is $p(X_{\text{sim}}) = \log \det(S)$.
+      We assume strong duality ($p^* = d^*$), but we only need Weak Duality ($p^* \ge d^*_{\text{best}} \ge g(t^*\mathbf{1})$).
+      <br>The gap in objective values is:
+      $$ \Delta = p(X_{\text{sim}}) - p^* \le \log \det S - (\log \det S - n \log(m/n)) = n \log(m/n) $$
+      <b>Converting to Volume:</b>
+      The volume of $\mathcal{E}(X)$ is proportional to $\det(X^{-1/2})$. In log-space: $\log \text{Vol} = -\frac{1}{2} \log \det X$.
+      Wait, the objective is $\min \log \det(X^{-1}) = -\log \det X$. So the objective is exactly $2 \log \text{Vol}$.
+      $$ 2 \log \text{Vol}(X_{\text{sim}}) - 2 \log \text{Vol}(X^*) \le n \log(m/n) $$
+      $$ \log \frac{\text{Vol}(X_{\text{sim}})}{\text{Vol}(X^*)} \le \frac{n}{2} \log(m/n) = \log \left( (m/n)^{n/2} \right) $$
+      Exponentiating gives the result:
+      $$ \frac{\text{Vol}(X_{\text{sim}})}{\text{Vol}(X^*)} \le \left( \frac{m}{n} \right)^{n/2} $$
+    </div>
   </div>
 </div>
 

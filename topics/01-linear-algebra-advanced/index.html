@@ -566,9 +566,17 @@
         <li>$V \in \mathbb{R}^{n \times n}$ is orthogonal (Right singular vectors, basis for domain).</li>
         <li>$\Sigma \in \mathbb{R}^{m \times n}$ is diagonal with non-negative entries $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.</li>
       </ul>
-      <p><b>Interpretation:</b>
-      $$ x \xrightarrow{V^\top} \text{rotate coordinates} \xrightarrow{\Sigma} \text{independent scaling} \xrightarrow{U} \text{rotate to output basis} $$
-      This proves that the image of the unit sphere under <i>any</i> linear map is a hyperellipse. The singular values are the lengths of the semi-axes.</p>
+
+      <div class="intuition-box">
+        <h4>The "Data Processor" Mental Model</h4>
+        <p>Imagine $A$ as a machine processing a vector $x$. The SVD breaks this process into three independent, simple steps:</p>
+        <ol>
+            <li><b>Step 1 (Rotate):</b> $V^\top$ rotates the input vector $x$ to align with the "natural axes" of the data (the right singular vectors). It changes the coordinate system but not the length.</li>
+            <li><b>Step 2 (Stretch):</b> $\Sigma$ stretches or shrinks the vector along these new axes. The factors $\sigma_i$ tell you the "gain" of the matrix in each direction. If $\sigma_i=0$, that dimension is annihilated.</li>
+            <li><b>Step 3 (Rotate):</b> $U$ rotates the result into the output coordinate system.</li>
+        </ol>
+        <p><b>Result:</b> Every linear map sends circles to ellipses. The SVD simply finds the axes of the input circle ($V$) that map to the axes of the output ellipse ($U$).</p>
+      </div>
 
       <div class="insight">
         <h4>Why Singular Values = Roots of Eigenvalues of $A^\top A$</h4>
@@ -641,8 +649,18 @@
       <h3>5.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
       <p>SVD solves the problem of finding the best approximation of a matrix by one of lower rank.
       $$ A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top $$
-      This matrix $A_k$ minimizes $\|A - X\|$ in both Spectral and Frobenius norms among all matrices of rank $k$.
-      <br><b>Applications:</b> Image compression, PCA, Denoising.</p>
+      This matrix $A_k$ minimizes $\|A - X\|$ in both Spectral and Frobenius norms among all matrices of rank $k$.</p>
+
+      <div class="proof-box">
+        <h4>Why Truncation Works (The Energy Argument)</h4>
+        <p>Why is keeping the largest singular values optimal?
+        <br><b>1. Frobenius Norm (Energy):</b> The total "energy" of $A$ is $\|A\|_F^2 = \sum \sigma_i^2$.
+        <br>The energy of the error $E = A - A_k$ is the sum of the <i>discarded</i> singular values squared: $\|E\|_F^2 = \sum_{i=k+1}^r \sigma_i^2$.
+        <br>To minimize error, we must discard the <i>smallest</i> $\sigma_i$'s.
+        <br><b>2. Spectral Norm (Worst-Case):</b> The maximum error amplification is $\|A - A_k\|_2 = \sigma_{k+1}$.
+        <br>Any other rank-$k$ matrix would result in a larger worst-case error.
+        <br><b>Conclusion:</b> SVD packs the most "matrix energy" into the fewest components. This is why it is the gold standard for compression (PCA) and denoising.</p>
+      </div>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Rank-1 SVD Approximation</h3>

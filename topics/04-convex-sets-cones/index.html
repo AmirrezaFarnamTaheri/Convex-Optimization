@@ -1047,10 +1047,16 @@
 
 <div class="problem">
   <h3>P4.24 — Converse Supporting Hyperplane Theorem</h3>
-  <p>Let $C$ be a closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
+  <p>Let $C$ be a connected closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
   <div class="solution-box">
     <h4>Solution</h4>
-    <p>This is the Tietze-Nakajima Theorem. The local existence of supporting hyperplanes everywhere on the boundary implies global convexity for connected closed sets with interior.</p>
+    <p>This is the <b>Tietze-Nakajima Theorem</b>.
+    <br><b>Intuition:</b> If a set is non-convex, it must have a "dent". At the deepest part of the dent (a point of non-convexity), any hyperplane passing through it would cut into the set, making it impossible to support the set.
+    <br>However, this requires the set to be <b>connected</b>.
+    <br><b>Counterexample (without connectedness):</b> Let $C$ be the union of two disjoint closed balls. Every boundary point has a supporting hyperplane (the tangent plane to the ball). However, $C$ is not convex.
+    <br><b>Proof Sketch:</b>
+    Assume $C$ is connected and has interior points. If $C$ is not convex, there exist $x, y \in C$ such that the segment $[x,y]$ is not contained in $C$.
+    One can define a "visibility" function or use a topological argument to show that if every boundary point has a support, the "kernel" of the set (points that can see every other point) must be the whole set.</p>
   </div>
 </div>
 

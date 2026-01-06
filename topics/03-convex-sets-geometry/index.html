@@ -2002,9 +2002,33 @@
           <div class="solution-box">
             <h4>Solution</h4>
             <div class="proof-step">
-              This is a classic problem solvable via KKT conditions (we will cover this fully in later lectures, but the geometry is relevant here).
-              The solution structure is $x_i = \max(z_i - \nu, 0)$, where $\nu$ is a scalar chosen such that $\sum x_i = 1$.
-              This corresponds to a "water-filling" algorithm: finding a threshold $\nu$ to chop off values of $z$.
+              This problem asks for the projection of $z$ onto the simplex $\Delta_n$.
+              The optimality condition for projection (from P3.19) is $\langle z - x^*, y - x^* \rangle \le 0$ for all $y \in \Delta_n$.
+              This is equivalent to minimizing the Lagrangian $\mathcal{L}(x, \nu, \lambda) = \frac{1}{2}\|x-z\|^2 + \nu (\mathbf{1}^\top x - 1) - \lambda^\top x$ with $\lambda \ge 0$.
+            </div>
+            <div class="proof-step">
+              The stationarity condition $\nabla_x \mathcal{L} = 0$ gives:
+              $$ x - z + \nu \mathbf{1} - \lambda = 0 \implies x_i = z_i - \nu + \lambda_i $$
+              Complementary slackness requires $\lambda_i x_i = 0$ and $\lambda_i \ge 0, x_i \ge 0$.
+              <ul>
+                  <li>If $x_i > 0$, then $\lambda_i = 0$, so $x_i = z_i - \nu$.</li>
+                  <li>If $x_i = 0$, then $\lambda_i \ge 0$, so $z_i - \nu = -\lambda_i \le 0$, i.e., $z_i \le \nu$.</li>
+              </ul>
+              Combining these, we get the structure:
+              $$ x_i = \max(z_i - \nu, 0) $$
+            </div>
+            <div class="proof-step">
+              We must choose the scalar $\nu$ such that $\sum x_i = \sum \max(z_i - \nu, 0) = 1$.
+              Let $g(\nu) = \sum_{i=1}^n \max(z_i - \nu, 0)$.
+              This function is continuous, strictly decreasing (when non-zero), $g(-\infty) = \infty$, and $g(\infty) = 0$.
+              Thus, there is a unique $\nu^*$ satisfying the equation.
+            </div>
+            <div class="proof-step">
+              <b>Water-filling Algorithm:</b>
+              1. Sort $z$ in descending order: $z_{(1)} \ge z_{(2)} \ge \dots \ge z_{(n)}$.
+              2. Find the largest index $\rho$ such that $z_{(\rho)} - \frac{1}{\rho}(\sum_{j=1}^\rho z_{(j)} - 1) > 0$.
+              3. Set $\nu = \frac{1}{\rho}(\sum_{j=1}^\rho z_{(j)} - 1)$.
+              4. Set $x_i = \max(z_i - \nu, 0)$.
             </div>
           </div>
         </div>

@@ -356,10 +356,14 @@
         $$
         H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
         $$
-        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).
-        <br><b>Constraint Interpretation:</b> $H$ is the solution set of a single linear equation.
-        <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. It is an affine set of codimension 1.
-        <br><b>Particular + Nullspace:</b> $H = x_0 + \{s \mid a^\top s = 0\}$.</p>
+        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).</p>
+
+        <h4>Geometric Interpretation</h4>
+        <p>A hyperplane is an affine set of dimension $n-1$. It can be viewed as:</p>
+        <ul>
+          <li>The solution set of a single linear equation.</li>
+          <li>A linear subspace ($a^\top x = 0$) translated by some vector $x_0$ (where $a^\top x_0 = b$). Thus $H = x_0 + \mathrm{Ker}(a^\top)$.</li>
+        </ul>
 
         <div class="theorem-box">
           <h4>Signed Distance to a Hyperplane</h4>

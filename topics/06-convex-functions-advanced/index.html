@@ -51,7 +51,7 @@
     </section>
 
     <article>
-      <section class="section-card" id="section-subgradients">
+      <section class="section-card" id="section-1">
       <h2>1. Subgradients and Subdifferentials</h2>
 
       <h3>1.1 Definition of Subgradient</h3>
@@ -135,6 +135,13 @@
             for all $\mathbf{y}$. Thus $\mathbf{x}^*$ minimizes $f$.
           </div>
         </div>
+      </div>
+
+      <div class="insight">
+        <h4>Looking Ahead: Algorithms</h4>
+        <p>The condition $0 \in \partial f(x^*)$ is not just theoretical—it's <b>algorithmic</b>.
+        <br><b>Subgradient Descent</b> moves in the direction $-g$ where $g \in \partial f(x)$. It is the "Swiss Army Knife" for non-differentiable problems.
+        <br><b>Proximal Algorithms</b> minimize $f(x) + (\rho/2)\|x-z\|^2$ using subdifferentials to handle non-smooth terms (like $\ell_1$ norm). You'll see these in advanced optimization courses (10-725, etc.).</p>
       </div>
 
       <div class="insight">
@@ -260,7 +267,7 @@
 
     </section>
 
-      <section class="section-card" id="section-strong-convexity">
+      <section class="section-card" id="section-2">
       <h2>2. Smoothness and Strong Convexity</h2>
 
       <h3>2.1 Strictly Convex Functions</h3>

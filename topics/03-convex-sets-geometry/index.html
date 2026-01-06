@@ -1131,6 +1131,29 @@
           <p>Geometrically, this means we can slide a flat sheet of paper between any two disjoint convex shapes.</p>
         </div>
 
+        <div class="proof-box">
+          <h4>Proof: Separation via Minimum Distance</h4>
+          <p>We prove this for the case where $C$ is closed and $D$ is a singleton $\{d\}$ outside $C$. The general case follows by considering the set $S = C - D$.</p>
+          <div class="proof-step">
+            <strong>Step 1: Find the Closest Point.</strong>
+            Since $C$ is closed and convex, there exists a unique point $p \in C$ that is closest to $d$.
+            Let $p = \Pi_C(d)$. The vector $a = d - p$ is non-zero (since $d \notin C$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Construct the Hyperplane.</strong>
+            Define the hyperplane orthogonal to $a$ passing through the midpoint $m = (p+d)/2$.
+            Equation: $a^\top (x - m) = 0$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Verify Separation.</strong>
+            For any $x \in C$, the angle between $x-p$ and $d-p$ must be obtuse (obtuse angle property of projection).
+            $$ (d-p)^\top (x-p) \le 0 $$
+            Since $a = d-p$, this means $a^\top x \le a^\top p$.
+            Meanwhile, $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2 > a^\top p$.
+            Thus $a^\top x \le a^\top p < a^\top d$. The hyperplane separates $C$ from $d$.
+          </div>
+        </div>
+
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/separating-hyperplane.png"
                alt="A hyperplane separating two disjoint convex sets"
@@ -1325,7 +1348,7 @@
 
 
       <!-- SECTION 6: REVIEW -->
-      <section class="section-card" id="section-review">
+      <section class="section-card" id="section-6">
         <h2>6. Review & Cheat Sheet</h2>
         <h3>Key Definitions</h3>
         <ul>

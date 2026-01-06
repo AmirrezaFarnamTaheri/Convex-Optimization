@@ -304,6 +304,53 @@
           </div>
         </div>
 
+        <div class="insight">
+          <h4>The Dual Cone Construction Kit</h4>
+          <p>How do you find the dual of a complex cone? Use these calculus rules (valid for closed convex cones):</p>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Primal Cone $K$</th>
+                <th>Dual Cone $K^*$</th>
+                <th>Intuition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Intersection</b></td>
+                <td>$K_1 \cap K_2$</td>
+                <td>$K_1^* + K_2^*$</td>
+                <td>Dual of AND is OR (Minkowski sum).</td>
+              </tr>
+              <tr>
+                <td><b>Sum</b></td>
+                <td>$K_1 + K_2$</td>
+                <td>$K_1^* \cap K_2^*$</td>
+                <td>Dual of OR is AND.</td>
+              </tr>
+              <tr>
+                <td><b>Linear Map</b></td>
+                <td>$A(K) = \{Ax \mid x \in K\}$</td>
+                <td>$(A^\top)^{-1}(K^*) = \{y \mid A^\top y \in K^*\}$</td>
+                <td>Linear maps act as inverse transpose on duals.</td>
+              </tr>
+              <tr>
+                <td><b>Inverse Map</b></td>
+                <td>$A^{-1}(K) = \{x \mid Ax \in K\}$</td>
+                <td>$A^\top (K^*) = \{A^\top y \mid y \in K^*\}$</td>
+                <td>(assuming $A$ has full range).</td>
+              </tr>
+              <tr>
+                <td><b>Product</b></td>
+                <td>$K_1 \times K_2$</td>
+                <td>$K_1^* \times K_2^*$</td>
+                <td>Component-wise duality.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       <h4>The Polar Cone</h4>
       <p>The <a href="#" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
       $$ K^\circ = -K^* = \{\mathbf{y} \in \mathbb{R}^n \mid \mathbf{y}^\top \mathbf{x} \le 0 \ \forall \mathbf{x} \in K\} $$

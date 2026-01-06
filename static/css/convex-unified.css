@@ -4,19 +4,20 @@
  * A comprehensive, modern CSS design system consolidating all styles
  * for the Convex Optimization course website.
  *
- * Version: 5.1.0 (Refined UI/UX)
+ * Version: 5.2.0 (Theming & Book Mode Support)
  */
 
 /* ====================
    FONTS
    ==================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap');
 
 /* ====================
    CSS VARIABLES & DESIGN TOKENS
    ==================== */
 :root {
-  /* === Color Palette: Refined Deep Blue & Emerald === */
+  /* === Color Palette: Default (Ocean Dark) === */
+
   /* Primary: Deep Academic Blue */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
@@ -62,8 +63,7 @@
   --error: #ef4444;
   --info: #3b82f6;
 
-  /* === Modern Surface Colors === */
-  /* Using a deep, rich background for dark mode feel but high legibility */
+  /* === Surface Colors (Dark Default) === */
   --bg-body: var(--neutral-950);
   --bg-surface-1: var(--neutral-900);
   --bg-surface-2: var(--neutral-800);
@@ -71,16 +71,6 @@
   --bg-highlight: rgba(59, 130, 246, 0.1);
   --bg-glass: rgba(15, 23, 42, 0.85);
   --bg-glass-strong: rgba(15, 23, 42, 0.95);
-
-  /* Legacy Colors (Backwards Compatibility) */
-  --surface-base: var(--bg-body);
-  --surface-1: var(--bg-surface-1);
-  --surface-2: var(--bg-surface-2);
-  --surface-3: var(--bg-surface-3);
-  --color-primary: var(--primary-500);
-  --color-accent: var(--accent-500);
-  --color-text-main: var(--neutral-100);
-  --color-text-muted: var(--neutral-400);
 
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
@@ -101,7 +91,7 @@
   --font-mono: 'JetBrains Mono', 'Source Code Pro', monospace;
   --font-display: 'Playfair Display', serif;
 
-  /* Scale (Major Third) */
+  /* Scale */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -116,7 +106,7 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.8;
 
-  /* Legacy Typography Vars */
+  /* Legacy */
   --font-size-base: var(--text-base);
 
   /* === Spacing === */
@@ -151,6 +141,103 @@
 }
 
 /* ====================
+   THEMES
+   ==================== */
+
+/* --- Light (Clean) --- */
+[data-theme="light"] {
+  --primary-500: #2563eb; /* Slightly darker for contrast on white */
+  --primary-600: #1d4ed8;
+
+  --bg-body: #f8fafc; /* Slate 50 */
+  --bg-surface-1: #ffffff;
+  --bg-surface-2: #f1f5f9; /* Slate 100 */
+  --bg-surface-3: #e2e8f0; /* Slate 200 */
+  --bg-highlight: rgba(37, 99, 235, 0.08);
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-glass-strong: rgba(255, 255, 255, 0.95);
+
+  --border-subtle: #e2e8f0;
+  --border-default: #cbd5e1;
+  --border-strong: #94a3b8;
+
+  --text-primary: #0f172a; /* Slate 900 */
+  --text-secondary: #334155; /* Slate 700 */
+  --text-tertiary: #64748b; /* Slate 500 */
+  --text-heading: #020617;
+  --text-inverse: #ffffff;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 25px rgba(37, 99, 235, 0.15);
+}
+
+/* --- Paper (Book) --- */
+[data-theme="paper"] {
+  --primary-500: #bc472a; /* Terracotta/Rust */
+  --primary-600: #9a3412;
+  --accent-500: #3f6212; /* Olive Green */
+
+  --bg-body: #fdfbf7; /* Cream / Warm Paper */
+  --bg-surface-1: #fefcf8;
+  --bg-surface-2: #f5f0e6; /* Darker Cream */
+  --bg-surface-3: #e8dfd2; /* Parchment */
+  --bg-highlight: rgba(188, 71, 42, 0.08);
+  --bg-glass: rgba(253, 251, 247, 0.9);
+  --bg-glass-strong: rgba(253, 251, 247, 0.98);
+
+  --border-subtle: #e6dbcf;
+  --border-default: #d6cbbd;
+  --border-strong: #bcaaa4;
+
+  --text-primary: #292524; /* Warm Gray 800 */
+  --text-secondary: #44403c; /* Warm Gray 700 */
+  --text-tertiary: #78716c; /* Warm Gray 500 */
+  --text-heading: #1c1917; /* Warm Gray 900 */
+  --text-inverse: #ffffff;
+
+  /* Reduce shadows for a flatter, print-like look */
+  --shadow-sm: 0 1px 2px rgba(41, 37, 36, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(41, 37, 36, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(41, 37, 36, 0.08);
+  --shadow-glow: none;
+}
+
+/* --- Dark Variants --- */
+[data-theme="emerald"] {
+  --primary-500: #10b981;
+  --primary-600: #059669;
+  --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="amethyst"] {
+  --primary-500: #8b5cf6;
+  --primary-600: #7c3aed;
+  --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.25);
+}
+
+[data-theme="sunset"] {
+  --primary-500: #f97316;
+  --primary-600: #ea580c;
+  --shadow-glow: 0 0 25px rgba(249, 115, 22, 0.25);
+}
+
+[data-theme="midnight"] {
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  --shadow-glow: 0 0 25px rgba(14, 165, 233, 0.25);
+}
+
+[data-theme="forest"] {
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --shadow-glow: 0 0 25px rgba(34, 197, 94, 0.25);
+}
+
+
+/* ====================
    RESET & BASE
    ==================== */
 *, *::before, *::after {
@@ -164,30 +251,23 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Media Resets - Fixes for broken UI/UX */
 img, video, canvas {
   max-width: 100%;
   height: auto;
-  display: block; /* Removes bottom space for inline elements */
+  display: block;
 }
 
 iframe {
   max-width: 100%;
   display: block;
+  border: 0;
 }
 
-/* SVGs need constraint but should preserve inline behavior for icons */
 svg {
   max-width: 100%;
   height: auto;
 }
 
-/* Specific fix for iframes to avoid height collapse if width changes */
-iframe {
-  border: 0;
-}
-
-/* Figure styling */
 figure {
   margin: var(--space-6) 0;
   text-align: center;
@@ -208,10 +288,10 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   min-height: 100vh;
-  /* Subtle mesh gradient background */
+  /* Subtle mesh gradient background (adapted for themes) */
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05), transparent 30%),
-    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05), transparent 30%);
+    radial-gradient(circle at 10% 20%, var(--bg-highlight), transparent 30%),
+    radial-gradient(circle at 90% 80%, var(--bg-highlight), transparent 30%);
   background-attachment: fixed;
 }
 
@@ -235,11 +315,21 @@ h1 {
   font-family: var(--font-display);
   font-size: var(--text-4xl);
   letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--primary-200), var(--accent-200));
+  color: var(--text-heading); /* Fallback */
+  background: linear-gradient(135deg, var(--text-heading), var(--primary-500));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: var(--space-6);
-  text-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
+  /* Use subtle shadow instead of hard shadow for light modes */
+  text-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Paper Theme Override for H1 */
+[data-theme="paper"] h1 {
+  background: none;
+  -webkit-text-fill-color: var(--primary-600);
+  color: var(--primary-600);
+  font-weight: 800;
 }
 
 h2 {
@@ -273,7 +363,7 @@ p {
 }
 
 a {
-  color: var(--primary-400);
+  color: var(--primary-500);
   text-decoration: none;
   transition: var(--transition);
   border-bottom: 1px solid transparent;
@@ -281,18 +371,18 @@ a {
 }
 
 a:hover {
-  color: var(--primary-300);
-  border-bottom-color: var(--primary-300);
+  color: var(--primary-600);
+  border-bottom-color: var(--primary-600);
 }
 
 /* Inline Code */
 code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface-2);
   padding: 0.2em 0.4em;
   border-radius: var(--radius-sm);
-  color: var(--accent-300);
+  color: var(--primary-600);
   border: 1px solid var(--border-subtle);
 }
 
@@ -303,7 +393,7 @@ pre {
   overflow-x: auto;
   margin: var(--space-6) 0;
   border: 1px solid var(--border-subtle);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 pre code {
@@ -364,7 +454,6 @@ pre code {
   display: flex;
   align-items: center;
   transition: var(--transition);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .site-header .container {
@@ -388,14 +477,11 @@ pre code {
 .brand a {
   color: inherit;
   border: none;
-  background: linear-gradient(to right, #fff, #a5b4fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 .brand a:hover {
-  background: linear-gradient(to right, #fff, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary-500);
 }
 
 
@@ -416,7 +502,7 @@ pre code {
 
 .nav a:hover {
   color: var(--text-heading);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface-2);
 }
 
 /* ====================
@@ -585,6 +671,13 @@ pre code {
   border: 1px solid var(--primary-500);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
+
+/* Theme adaptation for primary button shadow */
+[data-theme="paper"] .btn-primary {
+    box-shadow: none;
+    border-color: var(--primary-700);
+}
+
 .btn-primary:hover {
   background: var(--primary-500);
   transform: translateY(-1px);
@@ -607,7 +700,7 @@ pre code {
 }
 .btn-ghost:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface-2);
 }
 
 /* ====================
@@ -623,6 +716,16 @@ pre code {
   padding-top: 42px; /* Increased header space */
   overflow: hidden;
   transition: var(--transition);
+}
+
+/* Paper Theme Box Overrides (Solid Borders) */
+[data-theme="paper"] .proof-box,
+[data-theme="paper"] .theorem-box,
+[data-theme="paper"] .example-box,
+[data-theme="paper"] .solution-box {
+    box-shadow: none;
+    background: var(--bg-surface-1);
+    border-width: 1px;
 }
 
 .proof-box:hover, .theorem-box:hover, .example-box:hover, .solution-box:hover {
@@ -659,15 +762,20 @@ pre code {
   margin-bottom: var(--space-6);
 }
 
-/* 1. THEOREM: Authoritative, Emerald */
+/* 1. THEOREM: Authoritative, Emerald/Green */
 .theorem-box {
   border: 1px solid rgba(16, 185, 129, 0.3);
   background: linear-gradient(180deg, rgba(16, 185, 129, 0.02) 0%, var(--bg-surface-2) 100%);
 }
+[data-theme="paper"] .theorem-box {
+    border: 1px solid var(--accent-600);
+    background: var(--bg-surface-1);
+}
+
 .theorem-box::before {
   content: 'Theorem';
   background: rgba(16, 185, 129, 0.1);
-  color: var(--accent-400);
+  color: var(--accent-600);
   border-bottom: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -675,10 +783,14 @@ pre code {
 .proof-box {
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
+[data-theme="paper"] .proof-box {
+    border: 1px solid var(--primary-600);
+}
+
 .proof-box::before {
   content: 'Proof';
   background: rgba(59, 130, 246, 0.1);
-  color: var(--primary-300);
+  color: var(--primary-600);
   border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
@@ -689,7 +801,7 @@ pre code {
 .example-box::before {
   content: 'Example';
   background: rgba(96, 165, 250, 0.08);
-  color: var(--primary-400);
+  color: var(--primary-500);
   border-bottom: 1px solid rgba(96, 165, 250, 0.2);
 }
 
@@ -712,7 +824,7 @@ pre code {
 .intuition-box::before {
   content: 'Intuition';
   background: transparent;
-  color: var(--primary-300);
+  color: var(--primary-500);
   border-bottom: 1px dashed var(--primary-300);
 }
 
@@ -851,7 +963,7 @@ pre code {
 
 .search-input-wrapper input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--bg-surface-2);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 8px 16px 8px 36px;
@@ -900,60 +1012,6 @@ pre code {
 }
 
 /* ====================
-   HERO SECTION
-   ==================== */
-.hero-section {
-  position: relative;
-  text-align: center;
-  padding: var(--space-16) var(--space-6);
-  margin-bottom: var(--space-12);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 40%),
-              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.1), transparent 40%);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-glow);
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--border-subtle) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.2;
-  pointer-events: none;
-  mask-image: radial-gradient(circle at center, black, transparent 80%);
-  -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-subtitle {
-  font-size: var(--text-lg);
-  max-width: 600px;
-  margin: var(--space-6) auto;
-  color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
-}
-
-.hero-actions {
-  display: flex;
-  gap: var(--space-4);
-  justify-content: center;
-  margin-top: var(--space-8);
-}
-
-.btn-lg {
-  padding: 12px 32px;
-  font-size: 1.1rem;
-}
-
-/* ====================
    CONTROL DOCK (NEW)
    ==================== */
 .control-dock {
@@ -986,7 +1044,7 @@ pre code {
 
 .dock-btn:hover {
   background: var(--bg-surface-2);
-  color: var(--primary-400);
+  color: var(--primary-500);
   transform: scale(1.1);
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
 }
@@ -1075,9 +1133,8 @@ pre code {
 }
 
 /* ====================
-   LEGACY COMPATIBILITY (Lecture Pages)
+   LEGACY COMPATIBILITY
    ==================== */
-/* TOC Container */
 #toc-container {
   position: sticky;
   top: 100px;
@@ -1120,42 +1177,14 @@ pre code {
 }
 
 #toc li a:hover {
-  color: var(--primary-400);
+  color: var(--primary-500);
   border-left-color: var(--primary-500);
   background: var(--bg-surface-2);
 }
 
 #toc li a.active {
-  color: var(--accent-400);
-  border-left-color: var(--accent-500);
+  color: var(--primary-600);
+  border-left-color: var(--primary-500);
   font-weight: 600;
-  background: rgba(16, 185, 129, 0.05);
-}
-
-/* Legacy Card (Maps to Section Card) */
-.card {
-  background: var(--bg-surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-8);
-  margin-bottom: var(--space-8);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Problem Box */
-.problem {
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-4);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-/* Solution Box (Maps to .solution-box style) */
-.solution {
-  background: rgba(245, 158, 11, 0.03);
-  border-left: 4px solid var(--warning);
-  padding: var(--space-6);
-  border-radius: var(--radius-md);
-  margin-top: var(--space-4);
-  border: 1px solid var(--border-subtle);
-  border-left-width: 4px; /* Ensure override */
+  background: var(--bg-surface-2);
 }

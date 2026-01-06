@@ -1984,15 +1984,43 @@
       <h4>Why are Eigenvectors of Symmetric Matrices Orthogonal?</h4>
       <p>The Spectral Theorem guarantees orthogonal eigenvectors for symmetric matrices. The proof relies on the adjoint property.</p>
       <div class="proof-box">
-        <h4>Proof of Orthogonality</h4>
-        <p>Let $A$ be symmetric ($A^\top = A$). Let $v_1, v_2$ be eigenvectors with distinct eigenvalues $\lambda_1 \neq \lambda_2$.
-        $$ A v_1 = \lambda_1 v_1, \quad A v_2 = \lambda_2 v_2 $$
-        Consider the inner product $\langle A v_1, v_2 \rangle$. We can evaluate it two ways:</p>
-        <ol>
-          <li>$\langle A v_1, v_2 \rangle = \langle \lambda_1 v_1, v_2 \rangle = \lambda_1 \langle v_1, v_2 \rangle$</li>
-          <li>$\langle A v_1, v_2 \rangle = \langle v_1, A^\top v_2 \rangle = \langle v_1, A v_2 \rangle = \langle v_1, \lambda_2 v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle$</li>
-        </ol>
-        <p>Subtracting gives $(\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0$. Since $\lambda_1 \neq \lambda_2$, we must have $\langle v_1, v_2 \rangle = 0$.</p>
+        <h4>Proof of Orthogonality (Step-by-Step Walkthrough)</h4>
+        <p><b>Goal:</b> Show that eigenvectors corresponding to distinct eigenvalues of a symmetric matrix are orthogonal.</p>
+        <p><b>Strategy:</b> We will compute the quantity $\langle A v_1, v_2 \rangle$ in two different ways and compare the results. This technique—evaluating a scalar in two ways—is a standard trick in linear algebra proofs.</p>
+
+        <div class="proof-step">
+            <strong>Setup:</strong>
+            Let $A$ be symmetric ($A^\top = A$). Let $v_1, v_2$ be eigenvectors with distinct eigenvalues $\lambda_1 \neq \lambda_2$:
+            $$ A v_1 = \lambda_1 v_1, \quad A v_2 = \lambda_2 v_2 $$
+        </div>
+
+        <div class="proof-step">
+            <strong>Step 1: Evaluate $\langle A v_1, v_2 \rangle$ using the first eigenvalue.</strong>
+            Since $A v_1 = \lambda_1 v_1$, we substitute directly:
+            $$ \langle A v_1, v_2 \rangle = \langle \lambda_1 v_1, v_2 \rangle = \lambda_1 \langle v_1, v_2 \rangle $$
+        </div>
+
+        <div class="proof-step">
+            <strong>Step 2: Evaluate $\langle A v_1, v_2 \rangle$ by moving the matrix.</strong>
+            By the definition of the adjoint (transpose), we can move $A$ to the other side of the inner product: $\langle Ax, y \rangle = \langle x, A^\top y \rangle$.
+            $$ \langle A v_1, v_2 \rangle = \langle v_1, A^\top v_2 \rangle $$
+            <b>Crucial Step:</b> Since $A$ is symmetric, $A^\top = A$.
+            $$ = \langle v_1, A v_2 \rangle $$
+            Now substitute $A v_2 = \lambda_2 v_2$:
+            $$ = \langle v_1, \lambda_2 v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
+        </div>
+
+        <div class="proof-step">
+            <strong>Step 3: Compare and Conclude.</strong>
+            We have two expressions for the same quantity:
+            $$ \lambda_1 \langle v_1, v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
+            Subtracting the right side from the left:
+            $$ (\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0 $$
+            Since we assumed the eigenvalues are distinct ($\lambda_1 \neq \lambda_2$), the term $(\lambda_1 - \lambda_2)$ is non-zero.
+            Therefore, the other term must be zero:
+            $$ \langle v_1, v_2 \rangle = 0 $$
+            Thus, $v_1$ and $v_2$ are orthogonal.
+        </div>
       </div>
 
       <p><b>Implication for convexity:</b> The "shape" of a multivariable function (bowl vs. saddle) is entirely determined by the signs of the eigenvalues of its Hessian.</p>
@@ -2022,23 +2050,35 @@
       </p>
 
       <div class="proof-box">
-        <h4>Proof: Equivalence of Definitions</h4>
-        <p>We prove that $(\mathbf{x}^\top A \mathbf{x} \ge 0) \iff (\lambda_i \ge 0)$.</p>
+        <h4>Proof: Equivalence of Definitions (Detailed Walkthrough)</h4>
+        <p><b>Goal:</b> Prove that the variational definition ("energy is always non-negative") is equivalent to the spectral definition ("all eigenvalues are non-negative").</p>
+        <p>$$ (\forall \mathbf{x}, \mathbf{x}^\top A \mathbf{x} \ge 0) \iff (\forall i, \lambda_i(A) \ge 0) $$</p>
 
         <div class="proof-step">
-          <strong>Step 1: $(\Rightarrow)$</strong> Assume $\mathbf{x}^\top A \mathbf{x} \ge 0$ for all vectors $\mathbf{x}$. Let $\mathbf{v}$ be an eigenvector of $A$ with eigenvalue $\lambda$.
-          $$ A \mathbf{v} = \lambda \mathbf{v} $$
-          Substitute $\mathbf{x} = \mathbf{v}$ into the variational definition:
+          <strong>Direction 1: Variational $\implies$ Eigenvalues $(\Rightarrow)$</strong>
+          <br><b>Assumption:</b> $\mathbf{x}^\top A \mathbf{x} \ge 0$ holds for <i>every</i> vector $\mathbf{x}$.
+          <br><b>Strategy:</b> Since the condition holds for <i>all</i> vectors, we are free to choose a specific "test vector" that makes the math easy. The best candidate is an eigenvector.
+          <br>1. Let $\mathbf{v}$ be an eigenvector with eigenvalue $\lambda$. ($A \mathbf{v} = \lambda \mathbf{v}$, with $\mathbf{v} \neq 0$).
+          <br>2. Plug $\mathbf{x} = \mathbf{v}$ into the quadratic form:
           $$ \mathbf{v}^\top A \mathbf{v} = \mathbf{v}^\top (\lambda \mathbf{v}) = \lambda (\mathbf{v}^\top \mathbf{v}) = \lambda \|\mathbf{v}\|_2^2 $$
-          Since $\mathbf{x}^\top A \mathbf{x} \ge 0$, we have $\lambda \|\mathbf{v}\|_2^2 \ge 0$. Since eigenvectors are non-zero, $\|v\|_2^2 > 0$. Therefore, <b>$\lambda \ge 0$</b>.
+          <br>3. By our assumption, this quantity must be non-negative: $\lambda \|\mathbf{v}\|_2^2 \ge 0$.
+          <br>4. Since $\mathbf{v} \neq 0$, the squared norm $\|\mathbf{v}\|_2^2$ is strictly positive. We can divide by it.
+          <br><b>Conclusion:</b> $\lambda \ge 0$. This holds for any eigenvalue.
         </div>
 
         <div class="proof-step">
-          <strong>Step 2: $(\Leftarrow)$</strong> Assume all $\lambda_i \ge 0$. Use the Spectral Decomposition $A = Q \Lambda Q^\top$. For any arbitrary vector $\mathbf{x}$:
-          $$ \mathbf{x}^\top A \mathbf{x} = \mathbf{x}^\top (Q \Lambda Q^\top) \mathbf{x} = (Q^\top \mathbf{x})^\top \Lambda (Q^\top \mathbf{x}) $$
-          Let $\mathbf{y} = Q^\top \mathbf{x}$. Then:
-          $$ \mathbf{x}^\top A \mathbf{x} = \mathbf{y}^\top \Lambda \mathbf{y} = \sum_{i=1}^n \lambda_i y_i^2 $$
-          Since $\lambda_i \ge 0$ and $y_i^2 \ge 0$, the sum is non-negative. Thus <b>$\mathbf{x}^\top A \mathbf{x} \ge 0$</b>.
+          <strong>Direction 2: Eigenvalues $\implies$ Variational $(\Leftarrow)$</strong>
+          <br><b>Assumption:</b> All eigenvalues $\lambda_i \ge 0$.
+          <br><b>Strategy:</b> We use the Spectral Decomposition to diagonalize the matrix, decoupling the quadratic form into a sum of squares.
+          <br>1. Since $A$ is symmetric, we can write $A = Q \Lambda Q^\top$, where $Q$ is orthogonal and $\Lambda = \mathrm{diag}(\lambda_1, \dots, \lambda_n)$.
+          <br>2. Substitute this into the quadratic form for an arbitrary $\mathbf{x}$:
+          $$ \mathbf{x}^\top A \mathbf{x} = \mathbf{x}^\top (Q \Lambda Q^\top) \mathbf{x} $$
+          <br>3. Group the terms. Let $\mathbf{y} = Q^\top \mathbf{x}$. (This represents $\mathbf{x}$ in the eigenbasis).
+          $$ = (Q^\top \mathbf{x})^\top \Lambda (Q^\top \mathbf{x}) = \mathbf{y}^\top \Lambda \mathbf{y} $$
+          <br>4. Expand the diagonal quadratic form:
+          $$ \mathbf{y}^\top \Lambda \mathbf{y} = \sum_{i=1}^n \lambda_i y_i^2 $$
+          <br>5. Analyze the signs. We know $y_i^2 \ge 0$ (squares are non-negative) and $\lambda_i \ge 0$ (by assumption).
+          <br><b>Conclusion:</b> The sum of non-negative terms is non-negative. Thus $\mathbf{x}^\top A \mathbf{x} \ge 0$ for any $\mathbf{x}$.
         </div>
       </div>
 
@@ -2751,11 +2791,31 @@
         <li>The columns of an upper triangular matrix with non-zero diagonal entries.</li>
       </ol>
       <div class="solution-box">
-        <h4>Solution</h4>
+        <h4>Solution (Step-by-Step)</h4>
         <ol type="a">
-          <li><b>Dependent.</b> Notice that the vectors are in an arithmetic progression. $v_2 - v_1 = (3, 3, 3)^\top$ and $v_3 - v_2 = (3, 3, 3)^\top$. Thus $v_2 - v_1 = v_3 - v_2$, which rearranges to $v_1 - 2v_2 + v_3 = 0$. This is a non-zero linear combination summing to zero.</li>
-          <li><b>Independent.</b> Form the matrix $A = [v_1, v_2, v_3]$. It is lower triangular with non-zero diagonal entries (all 1s). The determinant is the product of the diagonal entries, which is 1. Since $\det(A) \neq 0$, the columns are linearly independent.</li>
-          <li><b>Independent.</b> An upper triangular matrix $U$ with non-zero diagonal entries has determinant $\prod u_{ii} \neq 0$. Thus, its columns form a basis and are linearly independent.</li>
+          <li><b>Status: Linearly Dependent.</b>
+          <br><i>Walkthrough:</i>
+          <br>1. <b>Observation:</b> Look at the vectors $(1,2,3), (4,5,6), (7,8,9)$. The components increase by constant steps. This suggests an arithmetic progression.
+          <br>2. <b>Check differences:</b>
+             $$ v_2 - v_1 = (3, 3, 3)^\top $$
+             $$ v_3 - v_2 = (3, 3, 3)^\top $$
+          <br>3. <b>Formulate relation:</b> Since the differences are equal, $v_2 - v_1 = v_3 - v_2$.
+          <br>4. <b>Rearrange to standard form:</b> Move everything to one side to find the linear combination summing to zero.
+             $$ v_1 - 2v_2 + v_3 = 0 $$
+          <br>5. <b>Conclusion:</b> We found non-zero coefficients $(1, -2, 1)$ that annihilate the vectors. Thus, they are dependent.
+          </li>
+          <li><b>Status: Linearly Independent.</b>
+          <br><i>Walkthrough:</i>
+          <br>1. <b>Matrix Method:</b> Stack the vectors as columns of a matrix $A$:
+             $$ A = \begin{bmatrix} 1 & 1 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix} $$
+          <br>2. <b>Analyze Structure:</b> The matrix is <b>upper triangular</b> (zeros below the diagonal).
+          <br>3. <b>Determinant Test:</b> For triangular matrices, the determinant is the product of diagonal entries.
+             $$ \det(A) = 1 \cdot 1 \cdot 1 = 1 $$
+          <br>4. <b>Conclusion:</b> Since $\det(A) \neq 0$, the matrix is invertible, and its columns are linearly independent.
+          </li>
+          <li><b>Status: Linearly Independent.</b>
+          <br><i>Reasoning:</i> This generalizes part (b). Any upper triangular matrix $U$ with non-zero diagonal entries $u_{ii} \neq 0$ has determinant $\det(U) = \prod u_{ii} \neq 0$. Therefore, its columns form a basis for $\mathbb{R}^n$.
+          </li>
         </ol>
       </div>
       <div class="recap-box">
@@ -3472,6 +3532,7 @@
   <script src="../../static/js/math-renderer.js"></script>
   <script src="../../static/js/toc.js"></script>
   <script src="../../static/js/theme-switcher.js"></script>
+  <script src="../../static/js/resizable.js"></script>
   <script src="../../static/js/ui.js"></script>
   <script src="../../static/js/notes-widget.js"></script>
   <script src="../../static/js/pomodoro.js"></script>

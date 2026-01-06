@@ -71,35 +71,41 @@ class ThemeSwitcher {
     }
 
     createUI() {
-        const nav = document.querySelector('.site-header .nav');
-        if (!nav) return;
+        // Create Panel (Always, independent of trigger location)
+        const panel = document.createElement('div');
+        panel.id = 'theme-panel';
+        panel.className = 'section-card hidden';
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-label', 'Appearance Options');
+        Object.assign(panel.style, {
+            position: 'fixed',
+            bottom: '80px',
+            right: '80px', // Near the dock
+            width: '300px',
+            zIndex: '3000',
+            padding: 'var(--space-4)',
+            margin: '0'
+        });
 
-        // Remove old trigger if exists
-        const old = document.getElementById('theme-widget-container');
-        if (old) old.remove();
-
-        const container = document.createElement('div');
-        container.id = 'theme-widget-container';
-        container.className = 'theme-widget';
-
-        container.innerHTML = `
-            <button class="theme-btn" id="theme-trigger" aria-label="Appearance Settings">
-                <i data-feather="sliders"></i> <span>Appearance</span>
-            </button>
-            <div class="theme-dropdown-panel hidden" id="theme-panel" role="dialog" aria-label="Theme Options">
-                <div class="theme-section">
-                    <div class="theme-section-title">Color Theme</div>
-                    <div class="theme-grid" id="color-options"></div>
-                </div>
-                <div class="theme-section">
-                    <div class="theme-section-title">Typography</div>
-                    <div class="theme-grid" id="font-options"></div>
-                </div>
+        panel.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-4); border-bottom:1px solid var(--border-subtle); padding-bottom:var(--space-2);">
+                <h4 style="margin:0; font-size:var(--text-base);">Appearance</h4>
+                <button class="btn btn-ghost btn-xs" id="close-theme"><i data-feather="x"></i></button>
+            </div>
+            <div class="theme-section" style="margin-bottom:16px;">
+                <div class="theme-section-title">Color Theme</div>
+                <div class="theme-grid" id="color-options"></div>
+            </div>
+            <div class="theme-section">
+                <div class="theme-section-title">Typography</div>
+                <div class="theme-grid" id="font-options"></div>
             </div>
         `;
 
+        document.body.appendChild(panel);
+
         // Populate Colors
-        const colorGrid = container.querySelector('#color-options');
+        const colorGrid = panel.querySelector('#color-options');
         this.themes.color.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'theme-option-btn';
@@ -111,7 +117,7 @@ class ThemeSwitcher {
         });
 
         // Populate Fonts
-        const fontGrid = container.querySelector('#font-options');
+        const fontGrid = panel.querySelector('#font-options');
         this.themes.font.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'theme-option-btn';
@@ -123,22 +129,36 @@ class ThemeSwitcher {
             fontGrid.appendChild(btn);
         });
 
-        nav.appendChild(container);
-
-        // Events
-        const trigger = container.querySelector('#theme-trigger');
-        const panel = container.querySelector('#theme-panel');
-
-        trigger.onclick = (e) => {
-            e.stopPropagation();
-            panel.classList.toggle('hidden');
-        };
-
-        document.addEventListener('click', (e) => {
-            if (!container.contains(e.target)) {
-                panel.classList.add('hidden');
+        // Add Dock Button
+        if (window.controlDock) {
+            window.controlDock.addButton(
+                'theme-trigger',
+                'sliders',
+                'Appearance',
+                () => {
+                    panel.classList.toggle('hidden');
+                    const btn = document.getElementById('theme-trigger');
+                    if (btn) btn.classList.toggle('active', !panel.classList.contains('hidden'));
+                }
+            );
+        } else {
+            // Fallback for header if no dock (Legacy support, though dock is standard now)
+            const nav = document.querySelector('.site-header .nav');
+            if (nav) {
+                const btn = document.createElement('button');
+                btn.className = 'theme-btn';
+                btn.innerHTML = '<i data-feather="sliders"></i>';
+                btn.onclick = () => panel.classList.toggle('hidden');
+                nav.appendChild(btn);
             }
-        });
+        }
+
+        // Close Event
+        panel.querySelector('#close-theme').onclick = () => {
+            panel.classList.add('hidden');
+            const btn = document.getElementById('theme-trigger');
+            if(btn) btn.classList.remove('active');
+        };
 
         if (typeof feather !== 'undefined') feather.replace();
     }

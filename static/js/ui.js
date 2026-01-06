@@ -8,21 +8,6 @@
  * - Theme Switching (via theme-switcher.js)
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Dock First
-    initControlDock();
-
-    // 2. Initialize Components
-    initCollapsibleEnvironments();
-    initHierarchicalSections();
-    initPageSettings();
-    initHeaderFontSize();
-    initSidebarToggle();
-    initBackToTop();
-
-    if (typeof feather !== 'undefined') feather.replace();
-});
-
 /* =========================================
    0. CONTROL DOCK (New Centralized Toolbar)
    ========================================= */
@@ -62,7 +47,29 @@ class ControlDock {
 
 function initControlDock() {
     window.controlDock = new ControlDock();
+    // Dispatch event for other scripts
+    window.dispatchEvent(new Event('convex-dock-ready'));
 }
+
+// Immediate initialization if possible, else on DOMContentLoaded
+if (document.body) {
+    initControlDock();
+} else {
+    document.addEventListener('DOMContentLoaded', initControlDock);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 2. Initialize Components
+    initCollapsibleEnvironments();
+    initHierarchicalSections();
+    initPageSettings();
+    initHeaderFontSize();
+    initSidebarToggle();
+    initBackToTop();
+    initResizableSidebar();
+
+    if (typeof feather !== 'undefined') feather.replace();
+});
 
 
 /* =========================================
@@ -583,31 +590,21 @@ function initPageSettings() {
 
 
 /* =========================================
-   4. SIDEBAR TOGGLE
+   4. SIDEBAR TOGGLE & RESIZING
    ========================================= */
 function initSidebarToggle() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    // Logic: Only show this button if screen is small
-    const checkSize = () => {
-        // If small screen, we need the button. If large screen, we might hide it.
-        // But with Dock, we can keep it or hide the specific button.
-        // Let's rely on CSS media queries or check here.
-        const isMobile = window.innerWidth <= 1024;
-        const btn = document.getElementById('sidebar-toggle-dock');
-        if (btn) btn.style.display = isMobile ? 'flex' : 'none';
-
-        if (!isMobile) sidebar.classList.remove('active');
-    };
-
+    // 1. Mobile Dock Toggle
     if (window.controlDock) {
-        window.controlDock.addButton(
+        const dockBtn = window.controlDock.addButton(
             'sidebar-toggle-dock',
             'menu',
             'Toggle Sidebar',
             () => {
                 sidebar.classList.toggle('active');
+                // Mobile style logic
                 if (sidebar.classList.contains('active')) {
                      sidebar.style.position = 'fixed';
                      sidebar.style.top = '72px';
@@ -624,10 +621,73 @@ function initSidebarToggle() {
                      sidebar.style = '';
                 }
             },
-            'end' // Position
+            'end'
         );
+
+        // Only show dock button on mobile
+        const checkSize = () => {
+            const isMobile = window.innerWidth <= 1024;
+            dockBtn.style.display = isMobile ? 'flex' : 'none';
+            if (!isMobile) sidebar.classList.remove('active');
+        };
         checkSize();
         window.addEventListener('resize', checkSize);
+    }
+
+    // 2. Desktop Collapse Button (In Sidebar)
+    const header = sidebar.querySelector('#toc-container h2');
+    if (header && !document.getElementById('sidebar-collapse-btn')) {
+        const collapseBtn = document.createElement('button');
+        collapseBtn.id = 'sidebar-collapse-btn';
+        collapseBtn.className = 'btn-ghost btn-xs';
+        collapseBtn.style.float = 'right';
+        collapseBtn.innerHTML = '<i data-feather="chevrons-left"></i>';
+        collapseBtn.title = "Collapse Sidebar";
+        collapseBtn.onclick = () => toggleDesktopSidebar(false);
+        header.insertBefore(collapseBtn, header.firstChild);
+    }
+
+    // 3. Desktop Expand Trigger (Floating on Left)
+    const expandTrigger = document.createElement('div');
+    expandTrigger.id = 'sidebar-expand-trigger';
+    expandTrigger.className = 'sidebar-expand-trigger hidden';
+    expandTrigger.title = "Expand Sidebar";
+    expandTrigger.innerHTML = '<i data-feather="list"></i>';
+    expandTrigger.onclick = () => toggleDesktopSidebar(true);
+    document.body.appendChild(expandTrigger);
+
+    function toggleDesktopSidebar(show) {
+        const main = document.getElementById('main');
+
+        if (show) {
+            sidebar.classList.remove('collapsed-desktop');
+            expandTrigger.classList.add('hidden');
+            // Restore width if needed, but CSS handles standard view
+        } else {
+            sidebar.classList.add('collapsed-desktop');
+            expandTrigger.classList.remove('hidden');
+        }
+
+        if (typeof feather !== 'undefined') feather.replace();
+    }
+}
+
+function initResizableSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    if (typeof Resizable !== 'undefined') {
+        new Resizable(sidebar, {
+            handles: ['e'], // East handle only
+            minWidth: 200,
+            saveKey: 'sidebar',
+            onResize: () => {
+                // Adjust main content margin if necessary,
+                // but Flexbox usually handles this if sidebar width is explicit.
+                // However, Resizable sets absolute width.
+                // In flex container, 'width' property works.
+            }
+        });
     }
 }
 

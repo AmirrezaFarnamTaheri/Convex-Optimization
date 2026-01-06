@@ -184,14 +184,14 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/diagonalization_eigenbasis.gif"
              alt="Diagonalization transforms the map into pure scaling along axes"
-             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> Diagonalization allows us to view the linear map as pure scaling along the eigenvector axes. This is the ideal case.</figcaption>
       </figure>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/trace_sum_eigenvalues_constant.gif"
              alt="Trace is the sum of eigenvalues"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> The sum of eigenvalues (trace) is conserved even as the matrix deforms, acting as a "total scaling budget".</figcaption>
       </figure>
 
@@ -623,11 +623,11 @@
 
       <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="assets/svd-wiki.png" alt="SVD Decomposition Wiki" style="width: 100%; height: auto; border-radius: 8px;">
+          <img src="assets/svd-wiki.png" alt="SVD Decomposition Wiki" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
           <figcaption><i>Figure 5a:</i> Standard SVD visualization (Wikimedia).</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
-          <img src="assets/svd-ellipse.png" alt="SVD Ellipse" style="width: 100%; height: auto; border-radius: 8px;">
+          <img src="assets/svd-ellipse.png" alt="SVD Ellipse" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
           <figcaption><i>Figure 5b:</i> Unit circle to ellipse transformation.</figcaption>
         </figure>
       </div>
@@ -665,13 +665,13 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Rank-1 SVD Approximation</h3>
         <p><b>The Power of Low-Rank Approximation:</b> See how a rank-1 matrix $A_1 = \sigma_1 u_1 v_1^\top$ approximates a general matrix. This is the core principle behind PCA and image compression.</p>
-        <iframe src="widgets/la_batch2.html?mode=rank1" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=rank1" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: 3D SVD Geometry</h3>
         <p>Visualize the SVD decomposition $A = U \Sigma V^\top$ in 3D as a sequence of three geometric transformations: rotation ($V^\top$), axis-aligned scaling ($\Sigma$), and rotation ($U$).</p>
-        <iframe src="widgets/la_batch3.html?mode=svd3" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch3.html?mode=svd3" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <h3>5.4 The Schur Complement: Block Elimination</h3>
@@ -705,7 +705,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Schur Complement Feasibility</h3>
         <p>Explore the feasible region of the parameter $t$ that makes the block matrix PSD. The threshold $t^*$ is exactly the Schur complement condition.</p>
-        <iframe src="widgets/la_batch3.html?mode=schur" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch3.html?mode=schur" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <h3>5.5 Application: PCA as SVD of Data</h3>
@@ -764,20 +764,27 @@
 
       <div class="proof-box">
         <h4>Proof: Uniqueness of the Pseudoinverse</h4>
-        <p>Suppose $X$ and $Y$ both satisfy the four Moore-Penrose axioms. We show $X=Y$.
-        <br>1. Start with $X = X A X$.
-        <br>2. Use $A = A Y A$: $X = X (A Y A) X$.
-        <br>3. Group terms: $X = (X A) Y (A X)$.
-        <br>4. Use Axiom 3/4 to introduce symmetry: $X A = (X A)^\top = A^\top X^\top$ and $A X = (A X)^\top = X^\top A^\top$. (Wait, this direction is harder).
-        <br><b>Alternative Clean Derivation:</b>
-        $$ X = X A X = (X A) X = (X A)^\top X = A^\top X^\top X = (A Y A)^\top X^\top X = A^\top Y^\top A^\top X^\top X $$
-        $$ = (Y A)^\top (X A)^\top X = Y A X A X = Y A X $$
-        Symmetrically, $Y = Y A Y = Y A (X A Y) = Y A X A Y = (Y A X) A Y$.
-        From above, $Y A X = X$, so $Y = X A Y$.
-        <br>Now apply symmetry again:
-        $X = Y A X = Y (A X) = Y (A X)^\top = Y X^\top A^\top = Y X^\top (A Y A)^\top = Y X^\top A^\top Y^\top A^\top$.
-        This algebraic manipulation confirms that the geometric definition (via SVD) produces the <i>unique</i> matrix satisfying the algebraic axioms.
-        </p>
+        <p>Suppose $X$ and $Y$ both satisfy the four Moore-Penrose axioms. We show $X=Y$.</p>
+        <div class="proof-step">
+          <strong>Step 1: Expand using AAX and YAA.</strong>
+          $X = XAX$. Substitute $A = AYA$: $X = X(AYA)X = XAYAX$.
+          Use transpose symmetry on the "inner" terms.
+          The classic proof is more direct.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Key Identities.</strong>
+          $XA = (XA)^\top = A^\top X^\top$.
+          $AY = (AY)^\top = Y^\top A^\top$.
+          <br>So $X = XAX = (XA)X = (XA)^\top X = A^\top X^\top X$.
+          Substitute $A^\top = (AYA)^\top = A^\top Y^\top A^\top$:
+          $$ X = (A^\top Y^\top A^\top) X^\top X = A^\top Y^\top (A^\top X^\top X) = A^\top Y^\top (XA)^\top X = A^\top Y^\top XA X = A^\top Y^\top X = (YA)^\top X = Y A X $$
+          So $X = YAX$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Symmetry.</strong>
+          By a symmetric argument starting with $Y = YAY$, we get $Y = YAX$.
+          Thus $X = Y$. The pseudoinverse is unique.
+        </div>
       </div>
 
       <p><b>Definition via SVD:</b> If $A = U \Sigma V^\top$, then:
@@ -851,13 +858,13 @@
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/conditioning-geometry.png"
                alt="Well-conditioned versus ill-conditioned error amplification geometry"
-               style="width: 100%; height: auto; border-radius: 8px;" />
+               style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 6:</i> Condition number as error magnification: the same small uncertainty in $\mathbf{b}$ can map to a small or huge uncertainty in $\mathbf{x}$ depending on $\kappa(A)$.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/zig-zag-ill-conditioning.png"
                alt="Gradient descent zig-zagging on elongated contours in an ill-conditioned problem"
-               style="width: 100%; height: auto; border-radius: 8px;" />
+               style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 7:</i> Ill-conditioning creates elongated level sets; first-order methods like gradient descent can zig-zag across the valley, slowing convergence.</figcaption>
         </figure>
       </div>
@@ -876,7 +883,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive: Condition Number & Stability</h3>
         <p><b>Visualize Ill-Conditioning:</b> Compare solving $A\mathbf{x}=\mathbf{b}$ for a well-conditioned versus ill-conditioned matrix. See how small noise in $\mathbf{b}$ amplifies into large errors in $\mathbf{x}$.</p>
-        <iframe src="widgets/la_batch3.html?mode=cond" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch3.html?mode=cond" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <h3>6.3 Regularization: Controlled Bias for Stability</h3>
@@ -1200,22 +1207,40 @@
       </div>
 
       <h3>P1.9 — Pseudoinverse of Rank-1 Matrix</h3>
-      <p>Let $A = xy^\top$ where $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ are non-zero vectors. Show that $A^+ = \frac{A^\top}{\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2}$.</p>
+      <p>Let $A = \mathbf{x}\mathbf{y}^\top$ where $\mathbf{x} \in \mathbb{R}^m, \mathbf{y} \in \mathbb{R}^n$ are non-zero vectors.
+      <br>(a) Construct the Singular Value Decomposition (SVD) of $A$.
+      <br>(b) Use the SVD to show that $A^+ = \frac{A^\top}{\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2}$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>SVD of rank-1 matrix: $A = \sigma \mathbf{u} \mathbf{v}^\top$.
-        $\|A\|_F = \|x\|\|y\| = \sigma$.
-        $\mathbf{u} = \mathbf{x}/\|\mathbf{x}\|$, $\mathbf{v} = \mathbf{y}/\|\mathbf{y}\|$.
-        Check: $A = (\|\mathbf{x}\|\|\mathbf{y}\|) \frac{\mathbf{x}}{\|\mathbf{x}\|} \frac{\mathbf{y}^\top}{\|\mathbf{y}\|} = xy^\top$. Correct.
-        Pseudoinverse: $A^+ = \frac{1}{\sigma} \mathbf{v} \mathbf{u}^\top = \frac{1}{\|\mathbf{x}\|\|\mathbf{y}\|} \frac{\mathbf{y}}{\|\mathbf{y}\|} \frac{\mathbf{x}^\top}{\|\mathbf{x}\|} = \frac{yx^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.
-        Note that $A^\top = (xy^\top)^\top = yx^\top$.
-        Thus $A^+ = \frac{A^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.</p>
+        <div class="proof-step">
+          <strong>Part (a): SVD Construction.</strong>
+          We need to write $A = \sigma_1 \mathbf{u}_1 \mathbf{v}_1^\top$.
+          <br>1. <b>Singular Value $\sigma_1$:</b> This is the operator norm $\|A\|_2$.
+          $$ \|A\|_2 = \sup_{\|v\|=1} \|\mathbf{x}\mathbf{y}^\top v\|_2 = \sup_{\|v\|=1} |\mathbf{y}^\top v| \|\mathbf{x}\|_2 = \|\mathbf{y}\|_2 \|\mathbf{x}\|_2 $$
+          Thus $\sigma_1 = \|\mathbf{x}\|_2 \|\mathbf{y}\|_2$.
+          <br>2. <b>Left Singular Vector $\mathbf{u}_1$:</b> The output direction is clearly along $\mathbf{x}$. Normalized: $\mathbf{u}_1 = \frac{\mathbf{x}}{\|\mathbf{x}\|_2}$.
+          <br>3. <b>Right Singular Vector $\mathbf{v}_1$:</b> The input direction maximizing the gain is along $\mathbf{y}$. Normalized: $\mathbf{v}_1 = \frac{\mathbf{y}}{\|\mathbf{y}\|_2}$.
+          <br><b>Check:</b> $\sigma_1 \mathbf{u}_1 \mathbf{v}_1^\top = (\|\mathbf{x}\|\|\mathbf{y}\|) \frac{\mathbf{x}}{\|\mathbf{x}\|} \frac{\mathbf{y}^\top}{\|\mathbf{y}\|} = \mathbf{x}\mathbf{y}^\top = A$.
+        </div>
+        <div class="proof-step">
+          <strong>Part (b): Pseudoinverse Calculation.</strong>
+          The pseudoinverse formula is $A^+ = \frac{1}{\sigma_1} \mathbf{v}_1 \mathbf{u}_1^\top$.
+          $$ A^+ = \frac{1}{\|\mathbf{x}\|\|\mathbf{y}\|} \left( \frac{\mathbf{y}}{\|\mathbf{y}\|} \right) \left( \frac{\mathbf{x}}{\|\mathbf{x}\|} \right)^\top $$
+          $$ = \frac{1}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2} \mathbf{y} \mathbf{x}^\top $$
+          Recognizing that $\mathbf{y} \mathbf{x}^\top = (\mathbf{x} \mathbf{y}^\top)^\top = A^\top$:
+          $$ A^+ = \frac{A^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2} $$
+        </div>
+        <div class="proof-step">
+          <strong>Alternative Check (Moore-Penrose Axioms):</strong>
+          Let $B = \frac{A^\top}{\alpha}$ where $\alpha = \|x\|^2 \|y\|^2$.
+          $ABA = A \frac{A^\top}{\alpha} A = \frac{xy^\top yx^\top xy^\top}{\alpha} = \frac{x (y^\top y) (x^\top x) y^\top}{\|x\|^2 \|y\|^2} = \frac{x \|y\|^2 \|x\|^2 y^\top}{\|x\|^2 \|y\|^2} = xy^\top = A$.
+          Symmetry holds similarly.
+        </div>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>
         <p><b>Rank-1 SVD:</b> A matrix $A = xy^\top$ has exactly one non-zero singular value $\sigma_1 = \|\mathbf{x}\|_2 \|\mathbf{y}\|_2$.
-        <br><b>Singular Vectors:</b> $u_1 = \mathbf{x}/\|\mathbf{x}\|$, $v_1 = \mathbf{y}/\|\mathbf{y}\|$.
-        <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2} = \frac{yx^\top}{\|\mathbf{x}\|^2 \|\mathbf{y}\|^2}$.</p>
+        <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2}$. This formula is extremely useful for updating inverse approximations (like in Quasi-Newton methods).</p>
       </div>
 
       <h3>P1.10 — Operator Norm Properties</h3>

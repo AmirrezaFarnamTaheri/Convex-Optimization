@@ -529,7 +529,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/linear_map_grid.gif"
              alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> A linear map is a structure-preserving deformation. Straight lines remain straight, parallel lines remain parallel, and the origin never moves. This is the geometric essence of linearity.</figcaption>
       </figure>
 
@@ -612,10 +612,10 @@
         </p>
       </div>
       
-      <figure style="text-align:center; margin: 20px 0;">
+      <figure style="text-align:center; margin: 24px 0;">
         <img src="assets/basis_coordinates.gif"
              alt="Basis and Coordinates Animation"
-             style="max-width:80%; border-radius:8px; border:1px solid var(--border);">
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> A fixed vector $\mathbf{v}$ (blue) in a skewed basis $\{b_1, b_2\}$ (red grid). The coefficients $(c_1, c_2)$ update live as the basis changes, always satisfying $\mathbf{v} = c_1 b_1 + c_2 b_2$. This illustrates that coordinates depend on the choice of basis—the vector itself is the geometry.</figcaption>
       </figure>
 
@@ -686,7 +686,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Kernel and Image</h3>
         <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
       <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
@@ -803,14 +803,14 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/four_fundamental_subspaces.gif"
              alt="The four fundamental subspaces under a linear map"
-             style="max-width: 90%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> The four fundamental subspaces in action. Domain (left): Row(A) vs Null(A). Codomain (right): Col(A) vs LeftNull(A). Inputs differing only in the nullspace direction map to the same output.</figcaption>
       </figure>
 
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/kernel_image_rank_unified.gif"
              alt="Unified view of kernel, image, and rank"
-             style="max-width: 85%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> Left: Input vector explores all directions; the kernel direction (dashed) maps to zero. Right: Output always lands on the image line. When input aligns with the kernel, output snaps to zero. $\dim(\mathbb{R}^2) = \mathrm{rank}(A) + \mathrm{nullity}(A) = 1 + 1$.</figcaption>
       </figure>
 
@@ -848,10 +848,10 @@
         </div>
       </div>
 
-      <figure style="text-align: center;">
+      <figure style="text-align: center; margin: 24px 0;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/linear-subspaces.svg"
              alt="Visual representation of intersecting planes showing linear subspaces"
-             style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 4:</i> The orthogonal decomposition of the domain and codomain.</figcaption>
       </figure>
 
@@ -924,7 +924,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: Rank & Nullspace</h3>
         <p><b>Explore the Four Fundamental Subspaces:</b> Define a matrix and visualize how its column space, row space, nullspace, and left nullspace relate. The tool shows the orthogonality relationships explicitly.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
     </section>
 
@@ -967,7 +967,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/determinant-volume-scaling.png"
              alt="A unit square mapped by a linear transformation to a parallelogram with area |det(A)|"
-             style="max-width: 90%; height: auto; border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 5:</i> Determinant as volume scaling: a unit square maps to a parallelogram of area $|\det(A)|$; the sign of $\det(A)$ tracks whether orientation is preserved or flipped.</figcaption>
       </figure>
 
@@ -999,7 +999,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/diagonalization_eigenbasis.gif"
              alt="In the eigenbasis, a linear map becomes pure axis scaling"
-             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> Left: In standard coordinates, a circle becomes an ellipse. Right: In eigen-coordinates, the same map is pure axis scaling. Diagonalization reveals the hidden simplicity.</figcaption>
       </figure>
 
@@ -1089,7 +1089,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/trace_sum_eigenvalues_constant.gif"
              alt="Trace as sum of eigenvalues: eigenvalues trade off while trace remains constant"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> The trace equals the sum of eigenvalues. As the matrix deforms, $\lambda_1$ increases and $\lambda_2$ decreases, but $\mathrm{tr}(A) = \lambda_1 + \lambda_2$ remains constant. The trace is a "total scaling budget".</figcaption>
       </figure>
 
@@ -1230,10 +1230,10 @@
       <br><b>Geometric Meaning:</b> If $P = L^\top L$ (Cholesky), then $\|x\|_P = \|Lx\|_2$. This is Euclidean geometry after a linear transformation $L$. The unit ball $\{x : x^\top P x \le 1\}$ is an ellipsoid.
       <br>If $P \succeq 0$ (PSD) but singular, we get a <b>semi-inner product</b> (lengths can be zero for non-zero vectors).</p>
 
-      <figure style="text-align: center;">
+      <figure style="text-align: center; margin: 24px 0;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
              alt="Parallelogram law for vector addition"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
       </figure>
 
@@ -1407,10 +1407,10 @@
         </ul>
       </div>
 
-      <div class="figure-container" style="text-align: center; margin: 24px 0;">
-        <img src="assets/layer2_21_dot_product_projection.gif" alt="Dot Product Projection" style="width: 70%; height: auto; border-radius: 8px;">
+      <figure style="text-align: center; margin: 24px 0;">
+        <img src="assets/layer2_21_dot_product_projection.gif" alt="Dot Product Projection" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
         <figcaption><i>Animation:</i> Norms and Projections are linked. The dot product is the length of the shadow. Different norms measure this length differently.</figcaption>
-      </div>
+      </figure>
 
       <div class="example">
         <h4>Example 2: Manhattan Norm ($\ell_1$)</h4>
@@ -1442,17 +1442,17 @@
         <li><b>$\ell_\infty$ (Chebyshev):</b> $\|\mathbf{x}\|_\infty = \max_{i} |x_i|$. Unit ball is a square (polyhedron).</li>
       </ul>
 
-      <figure style="text-align: center;">
+      <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/norm-balls.png"
              alt="Comparison of L1, L2, and Infinity norm unit balls"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 6:</i> The "unit ball" $\{\mathbf{x} \mid \|\mathbf{x}\| \le 1\}$ for the $\ell_1$ (diamond), $\ell_2$ (circle), and $\ell_\infty$ (square) norms. All are convex sets.</figcaption>
       </figure>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: The Geometry of Norms</h3>
         <p><b>Visualize Norm Unit Balls:</b> Explore the unit balls for the $\ell_1$, $\ell_2$, and $\ell_\infty$ norms. Note that the $\ell_1$ ball has "corners" on the axes (promoting sparsity), while $\ell_2$ is isotropic.</p>
-        <div id="widget-norm-geometry" style="width: 100%; height: 400px; position: relative;"></div>
+        <div id="widget-norm-geometry" style="width: 100%; max-width: 800px; height: 400px; position: relative; margin: 0 auto;"></div>
       </div>
 
       <h3>Dual Norms and Polar Sets</h3>
@@ -1522,7 +1522,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif"
              alt="Supporting hyperplanes for L1 and L-infinity norms"
-             style="max-width: 95%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> Supporting hyperplanes $\mathbf{u}^\top \mathbf{x} = \|\mathbf{u}\|_*$ for the $\ell_1$ (diamond) and $\ell_\infty$ (square) balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
       </figure>
 
@@ -1574,7 +1574,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/operator-norm-geometry.png"
              alt="A unit circle mapped to an ellipse illustrating the spectral norm as maximum stretch"
-             style="max-width: 90%; height: auto; border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 7:</i> Operator-norm geometry: $\|A\|_2$ is the maximum stretch of the unit circle under $A$, equal to the longest semi-axis length (the largest singular value).</figcaption>
       </figure>
 
@@ -1724,7 +1724,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/orthonormal_coordinates.gif"
              alt="In an orthonormal basis, coordinates are inner products"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> $\mathbf{v} = (q_1^\top \mathbf{v}) q_1 + (q_2^\top \mathbf{v}) q_2$. When the basis is orthonormal, the expansion coefficients are simply the inner products—no matrix inversion required.</figcaption>
       </figure>
 
@@ -1733,7 +1733,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Gram-Schmidt Process</h3>
         <p>Watch step-by-step how an orthonormal basis is built. At each step, we subtract the projection onto the previously constructed subspace to get a new orthogonal direction.</p>
-        <iframe src="widgets/la_batch2.html?mode=gs" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=gs" width="100%" height="550" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"></iframe>
       </div>
 
       <div class="insight">
@@ -1759,7 +1759,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/gram-schmidt-orthogonalization.png"
              alt="Step-by-step geometric illustration of the Gram-Schmidt orthogonalization process"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 8:</i> Gram-Schmidt orthogonalization: subtract projections to remove components in previously constructed directions.</figcaption>
       </figure>
 
@@ -1784,7 +1784,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Orthogonality & Projections</h3>
         <p><b>Visualize Vector Relationships:</b> Observe how geometric relationships change. The tool displays the orthogonal projection—the shadow of one vector onto another. This is the foundation of least squares.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
     </section>
 
@@ -2351,24 +2351,24 @@
 
       <p>A positive definite matrix $Q$ can be used to define a generalized norm, $\|x\|_Q = \sqrt{\mathbf{x}^\top Q \mathbf{x}}$. The unit ball for this norm, $\{x \mid \mathbf{x}^\top Q \mathbf{x} \le 1\}$, is an ellipsoid, whose geometry is determined by the eigenvalues and eigenvectors of $Q$.</p>
 
-      <figure style="text-align: center;">
+      <figure style="text-align: center; margin: 24px 0;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/eigenvalues-psd.png"
              alt="Eigenvalue visualization for PSD matrices"
-             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 10:</i> Eigenvalues and positive semidefiniteness—the signs determine the matrix's curvature properties.</figcaption>
       </figure>
 
-      <figure style="text-align: center;">
+      <figure style="text-align: center; margin: 24px 0;">
         <img src="../../static/assets/topics/00-linear-algebra-basics/eigenvectors.gif"
              alt="Animated eigenvector visualization"
-             style="max-width: 70%; height: auto; border: 1px solid var(--border); border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 11:</i> Eigenvectors in action—how matrices transform space along principal directions.</figcaption>
       </figure>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Matrix Geometry & Definiteness</h3>
         <p><b>Explore Linear Maps and Quadratic Forms:</b> This interactive tool connects the linear transformation $A\mathbf{x}$ with the quadratic form $\mathbf{x}^\top A\mathbf{x}$.</p>
-        <iframe src="widgets/la_batch1.html?mode=eigen" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch1.html?mode=eigen" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
@@ -2380,7 +2380,7 @@
           <li><b>Condition number ($\kappa = \lambda_{\max}/\lambda_{\min}$):</b> When this ratio is large, gradient descent converges slowly</li>
         </ul>
         <p><i>Practical insight:</i> This visualization explains why preconditioning (transforming to balance eigenvalues) dramatically speeds up iterative solvers!</p>
-        <div id="widget-hessian-landscape" style="width: 100%; height: 400px; position: relative;"></div>
+        <div id="widget-hessian-landscape" style="width: 100%; max-width: 800px; height: 400px; position: relative; margin: 0 auto;"></div>
       </div>
 
       <h3>7.6 The Loewner Order</h3>
@@ -2521,7 +2521,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/projection-onto-affine-set.png"
              alt="Projection onto an affine set visualized as translation to a subspace, projection, then translation back"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 12:</i> Projection onto an affine set: translate to a parallel subspace, project orthogonally, then shift back by a particular solution.</figcaption>
       </figure>
 
@@ -2667,7 +2667,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/least-squares-orthogonal-projection.png"
              alt="Least squares as orthogonal projection of b onto the column space of A with residual orthogonal to the subspace"
-             style="max-width: 95%; height: auto; border-radius: 8px;" />
+             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 13:</i> Least squares geometry: the fitted vector $\mathbf{p}=A\mathbf{x}^\star$ is the projection of $\mathbf{b}$ onto $\mathcal{R}(A)$, and the residual $\mathbf{r}=\mathbf{b}-\mathbf{p}$ is orthogonal to the subspace.</figcaption>
       </figure>
 
@@ -2696,7 +2696,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Visualizer: Least Squares Projection</h3>
         <p><b>See the Geometry:</b> The solution $A\mathbf{x}^\star$ is the orthogonal projection of the target vector $\mathbf{b}$ onto the subspace spanned by the columns of $A$. The residual vector $\mathbf{r} = \mathbf{b} - A\mathbf{x}^\star$ is perpendicular (orthogonal) to the subspace.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <h3>Uniqueness of the Solution</h3>

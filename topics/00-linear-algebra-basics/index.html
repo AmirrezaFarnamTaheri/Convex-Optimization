@@ -3270,13 +3270,32 @@
       <br>Show that the $\ell_\infty$ error of the least-squares solution is at most $\sqrt{m}$ times the optimal $\ell_\infty$ error.</p>
       <div class="solution-box">
         <h4>Solution</h4>
-        <p>Let $\mathbf{r}_{\text{ls}} = \mathbf{b} - A\mathbf{x}_{\text{ls}}$ and $\mathbf{r}_{\text{ch}} = \mathbf{b} - A\mathbf{x}_{\text{ch}}$.
-        We want to bound $\|\mathbf{r}_{\text{ls}}\|_\infty$.
-        <br>1. Norm equivalence: $\|\mathbf{z}\|_\infty \le \|\mathbf{z}\|_2 \le \sqrt{m} \|\mathbf{z}\|_\infty$.
-        <br>2. Optimality of LS: Since $x_{\text{ls}}$ minimizes the $\ell_2$ norm of the residual, $\|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2$.
-        <br>3. Chain inequalities:
-        $$ \|\mathbf{r}_{\text{ls}}\|_\infty \le \|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2 \le \sqrt{m} \|\mathbf{r}_{\text{ch}}\|_\infty $$
-        Thus, the least squares solution provides a $\sqrt{m}$-approximation to the Chebyshev problem.</p>
+        <p>This problem compares two different ways to measure the residual error.
+        <br>Let $\mathbf{r}_{\text{ls}} = A\mathbf{x}_{\text{ls}} - \mathbf{b}$ and $\mathbf{r}_{\text{ch}} = A\mathbf{x}_{\text{ch}} - \mathbf{b}$.
+        <br>We use two fundamental norm inequalities for vectors in $\mathbb{R}^m$:
+        <ul>
+            <li>$\|\mathbf{z}\|_\infty \le \|\mathbf{z}\|_2$ (The max entry is less than the Euclidean length).</li>
+            <li>$\|\mathbf{z}\|_2 \le \sqrt{m} \|\mathbf{z}\|_\infty$ (The Euclidean length is at most $\sqrt{m}$ times the max entry).</li>
+        </ul>
+        </p>
+        <div class="proof-step">
+            <strong>Step 1: Bound LS error by its 2-norm.</strong>
+            $$ \|\mathbf{r}_{\text{ls}}\|_\infty \le \|\mathbf{r}_{\text{ls}}\|_2 $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Use Least-Squares Optimality.</strong>
+            By definition, $x_{\text{ls}}$ minimizes the 2-norm of the residual. Thus, for any other vector $x$ (including $x_{\text{ch}}$), we must have:
+            $$ \|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2 $$
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Bound Chebyshev error by its $\infty$-norm.</strong>
+            $$ \|\mathbf{r}_{\text{ch}}\|_2 \le \sqrt{m} \|\mathbf{r}_{\text{ch}}\|_\infty $$
+        </div>
+        <div class="proof-step">
+            <strong>Conclusion:</strong> Chaining the inequalities together:
+            $$ \|\mathbf{r}_{\text{ls}}\|_\infty \le \|\mathbf{r}_{\text{ls}}\|_2 \le \|\mathbf{r}_{\text{ch}}\|_2 \le \sqrt{m} \|\mathbf{r}_{\text{ch}}\|_\infty $$
+            This proves that using the easy-to-compute Least Squares solution gives a worst-case error that is at most $\sqrt{m}$ times worse than the optimal Chebyshev error.
+        </div>
       </div>
       <div class="recap-box">
         <h4>Recap</h4>

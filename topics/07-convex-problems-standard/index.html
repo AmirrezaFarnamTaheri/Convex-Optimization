@@ -1497,6 +1497,25 @@
       $$ \log \left( \sum_{k=1}^K \exp(\mathbf{a}_k^\top y + b_k) \right) \le 0 $$
       This is a convex constraint because the <b>Log-Sum-Exp</b> function is convex.</p>
 
+      <div class="proof-box">
+        <h4>Deep Dive: Dual of a Geometric Program (Entropy Maximization)</h4>
+        <p>The dual of a GP reveals a beautiful connection to entropy maximization.
+        <br>Consider the unconstrained GP approximation $\min \log \sum e^{a_i^\top y + b_i}$.
+        <br>This is the conjugate of the negative entropy function restricted to the simplex.
+        <br><b>Dual Derivation:</b>
+        <br>Primal: $\min_y \log \sum_{i=1}^m \exp(a_i^\top y + b_i)$.
+        <br>Introduce variables $z_i = a_i^\top y + b_i$.
+        <br>Problem: $\min \log \sum e^{z_i}$ s.t. $z = Ay + b$.
+        <br>Lagrangian: $L(y, z, \nu) = \log \sum e^{z_i} + \nu^\top (Ay + b - z)$.
+        <br>Minimize $L$ over $y$: $\nabla_y L = A^\top \nu = 0$. (Constraint on dual variables).
+        <br>Minimize $L$ over $z$: This is the conjugate of the Log-Sum-Exp function!
+        $$ \inf_z (\log \sum e^{z_i} - \nu^\top z) = -(\log \sum e^{z})^*(\nu) $$
+        From Lecture 06, the conjugate of LSE is the negative entropy $\sum \nu_i \log \nu_i$ on the simplex $\mathbf{1}^\top \nu = 1, \nu \ge 0$.
+        <br><b>Dual Problem:</b>
+        $$ \max_{\nu} \ b^\top \nu - \sum \nu_i \log \nu_i \quad \text{s.t.} \quad A^\top \nu = 0, \ \mathbf{1}^\top \nu = 1, \ \nu \ge 0 $$
+        This interprets the dual variables as a probability distribution over the monomial terms.</p>
+      </div>
+
       <h4>3. The Resulting Convex Problem</h4>
       <p style="text-align: center;">
           $$

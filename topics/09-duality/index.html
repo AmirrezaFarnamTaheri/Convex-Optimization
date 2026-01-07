@@ -486,15 +486,18 @@
           <h4>Geometric Proof via Separation</h4>
           <p>This proof constructs the dual variables as the coefficients of a separating hyperplane in the space of (constraints, objective).</p>
           <div class="proof-step">
-            <strong>Step 1: The Set of Achievable Values $\mathcal{A}$.</strong>
-            Consider the set of triplets $(u, v, t)$ that are "worse" than some feasible point $\mathbf{x}$:
-            $$ \mathcal{A} = \{ (u, v, t) \mid \exists x \in \mathcal{D}, f_i(x) \le u_i, h_j(x) = v_j, f_0(x) \le t \} $$
-            This set is convex (it's the projection of the epigraph of the problem).
+            <strong>Step 1: The Set of Achievable Values $\mathcal{G}$.</strong>
+            Define the set $\mathcal{G} \subset \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}$ of achievable constraint and objective values:
+            $$ \mathcal{G} = \{ (f_1(x), \dots, f_m(x), h_1(x), \dots, h_p(x), f_0(x)) \mid x \in \mathcal{D} \} $$
+            This set is not necessarily convex. We consider its epigraph-like extension $\mathcal{A}$:
+            $$ \mathcal{A} = \mathcal{G} + (\mathbb{R}_+^m \times \{0\} \times \mathbb{R}_+) $$
+            Since the problem is convex, the set $\mathcal{A}$ is convex.
           </div>
           <div class="proof-step">
             <strong>Step 2: Separation.</strong>
-            The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$.
-            By the <a href="../03-convex-sets-geometry/index.html#section-3">Separating Hyperplane Theorem</a>, there exists a non-zero vector $(\lambda, \nu, \mu)$ separating $\mathcal{A}$ from $(0,0,p^*)$.
+            The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$ (it cannot be in the interior, or we could achieve a better objective value).
+            By the <a href="../03-convex-sets-geometry/index.html#section-3">Supporting Hyperplane Theorem</a>, there exists a non-zero vector $(\lambda, \nu, \mu)$ such that:
+            $$ \lambda^\top u + \nu^\top v + \mu t \ge \lambda^\top 0 + \nu^\top 0 + \mu p^* = \mu p^* \quad \forall (u,v,t) \in \mathcal{A} $$
           </div>
           <div class="proof-step">
             <strong>Step 3: Slater's Condition implies Non-Verticality ($\mu > 0$).</strong>
@@ -564,16 +567,19 @@
             Because Strong Duality holds ($d^* = p^*$), the start and end of this chain are equal. This forces <b>every inequality in the middle to be an equality</b>.
           </div>
           <div class="proof-step">
-            <strong>Conclusion 1: Stationarity.</strong>
-            The inequality $\inf_x \mathcal{L}(x, \lambda^*, \nu^*) \le \mathcal{L}(x^*, \lambda^*, \nu^*)$ becomes an equality.
-            This implies that $\mathbf{x}^*$ is a global minimizer of the Lagrangian function.
-            $$ \nabla_x \mathcal{L}(x^*, \lambda^*, \nu^*) = 0 $$
+            <strong>Conclusion 1: Stationarity (First-Order Condition).</strong>
+            The equality $\inf_x \mathcal{L}(x, \lambda^*, \nu^*) = \mathcal{L}(x^*, \lambda^*, \nu^*)$ implies that $x^*$ minimizes $\mathcal{L}(x, \lambda^*, \nu^*)$ over $\mathbb{R}^n$.
+            Since the Lagrangian is differentiable (assuming problem functions are), its gradient at the minimizer must be zero:
+            $$ \nabla_x \mathcal{L}(x^*, \lambda^*, \nu^*) = \nabla f_0(x^*) + \sum \lambda_i^* \nabla f_i(x^*) + \sum \nu_j^* \nabla h_j(x^*) = 0 $$
           </div>
           <div class="proof-step">
             <strong>Conclusion 2: Complementary Slackness.</strong>
-            The inequality $\mathcal{L}(x^*, \lambda^*, \nu^*) \le f_0(x^*)$ is also an equality. This means:
-            $$ \sum_{i=1}^m \lambda_i^* f_i(x^*) = 0 $$
-            Since every term is non-positive, the sum can only be zero if <b>every single term is zero</b>.
+            The equality $\mathcal{L}(x^*, \lambda^*, \nu^*) = f_0(x^*)$ implies:
+            $$ f_0(x^*) + \sum \lambda_i^* f_i(x^*) + \sum \nu_j^* h_j(x^*) = f_0(x^*) $$
+            Since $h_j(x^*) = 0$ (primal feasibility), this simplifies to $\sum \lambda_i^* f_i(x^*) = 0$.
+            Since $\lambda_i^* \ge 0$ and $f_i(x^*) \le 0$, each term $\lambda_i^* f_i(x^*)$ is $\le 0$.
+            The sum of non-positive terms is zero if and only if <b>each term is zero</b>:
+            $$ \lambda_i^* f_i(x^*) = 0 \quad \forall i $$
           </div>
         </div>
 

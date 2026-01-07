@@ -271,6 +271,15 @@
         </div>
       </div>
 
+      <!-- Widget 4: Norm Steepest Descent -->
+      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
+        <h3 style="margin-top: 0;">Steepest Descent Geometry</h3>
+        <p>Visualizing how the norm determines the "steepest" direction. L2 steepest opposes the gradient. L1 steepest snaps to an axis (coordinate descent).</p>
+        <div id="widget-norm-steepest" style="width: 100%; height: auto; position: relative; text-align: center;">
+          <!-- Widget will be rendered here -->
+        </div>
+      </div>
+
       <!-- Widget 2 -->
       <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
         <h3 style="margin-top: 0;">GD vs. Newton Race</h3>
@@ -472,6 +481,10 @@
   <script type="module">
     import { initConvergenceRate } from './widgets/js/convergence-rate.js';
     initConvergenceRate('widget-3');
+  </script>
+  <script type="module">
+    import { initNormSteepest } from './widgets/js/norm-steepest.js';
+    initNormSteepest('widget-norm-steepest');
   </script>
 
   <!-- Global utilities -->

@@ -1461,7 +1461,10 @@
             </div>
             <div class="proof-step">
               <strong>Step 2: Linearize.</strong>
-              The quadratic term $x^\top x$ cancels out from both sides (this is the key step). Rearranging terms:
+              Notice that $\|x-a\|^2 = \|x\|^2 - 2a^\top x + \|a\|^2$.
+              Substituting this into the inequality:
+              $$ \|x\|^2 - 2x_i^\top x + \|x_i\|^2 \le \|x\|^2 - 2x_j^\top x + \|x_j\|^2 $$
+              The quadratic term $\|x\|^2$ cancels out from both sides (this is the key step). Rearranging terms:
               $$ 2(x_j - x_i)^\top x \le \|x_j\|_2^2 - \|x_i\|_2^2 $$
               This is a linear inequality $a_{ij}^\top x \le b_{ij}$ defining a closed halfspace $H_{ij}$.
             </div>

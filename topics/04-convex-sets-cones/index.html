@@ -789,8 +789,13 @@
     <p>Let $u=(x,t)$ and $v=(y,s)$.</p>
     <div class="proof-step">
       <strong>($\subseteq$):</strong> Let $v \in \mathcal{Q}$. For any $u \in \mathcal{Q}$, we have $\|x\| \le t$ and $\|y\| \le s$.
-      Using Cauchy-Schwarz $x^\top y \ge -\|x\|\|y\|$:
-      $$ u^\top v = x^\top y + ts \ge -\|x\|\|y\| + ts \ge -ts + ts = 0 $$
+      We want to show $u^\top v \ge 0$.
+      The standard Cauchy-Schwarz inequality states $|x^\top y| \le \|x\|\|y\|$, which implies $x^\top y \ge -|x^\top y| \ge -\|x\|\|y\|$.
+      Thus:
+      $$ u^\top v = x^\top y + ts \ge -\|x\|\|y\| + ts $$
+      Since $t \ge \|x\|$ and $s \ge \|y\|$, we have $ts \ge \|x\|\|y\|$.
+      Therefore:
+      $$ -\|x\|\|y\| + ts \ge -\|x\|\|y\| + \|x\|\|y\| = 0 $$
       Thus $u^\top v \ge 0$ for all $u \in \mathcal{Q}$, so $v \in \mathcal{Q}^*$.
     </div>
     <div class="proof-step">

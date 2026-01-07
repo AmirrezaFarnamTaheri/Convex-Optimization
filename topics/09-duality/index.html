@@ -1545,12 +1545,15 @@
     </div>
     <div class="proof-step">
       <strong>Case 2: (1) has no solution (Infeasible).</strong>
-      If the primal is infeasible, then $p^* = +\infty$ (by convention for minimization).
-      <br>By Strong Duality for LPs, $d^* = p^* = +\infty$.
-      <br>This means the dual problem $\max \{ b^\top y \mid A^\top y \le 0 \}$ is unbounded above.
-      <br>For the objective $b^\top y$ to grow arbitrarily large while $y$ remains in the cone $A^\top y \le 0$, there must exist a direction $y$ such that $A^\top y \le 0$ and $b^\top y > 0$ (otherwise the max would be 0).
-      <br>Let $z = -y$. Then $A^\top (-z) \le 0 \implies A^\top z \ge 0$ and $b^\top (-z) > 0 \implies b^\top z < 0$.
-      <br>This $z$ is a solution to system (2). Thus, system (2) <b>has a solution</b>.
+      If the primal system $Ax=b, x \ge 0$ has no solution, then the primal optimization problem $p^* = \min \{ 0^\top x \mid Ax=b, x \ge 0 \}$ is infeasible.
+      <br>By convention, $p^* = +\infty$.
+      <br>We invoke the <b>Strong Duality Theorem for Linear Programming</b>, which states that if the primal is infeasible, the dual must be either infeasible or unbounded. Since $\nu=0$ is always a feasible solution for the dual (giving objective 0), the dual is feasible.
+      <br>Therefore, the dual must be <b>unbounded</b>: $d^* = +\infty$.
+      <br>The dual problem is $\max \{ -b^\top \nu \mid A^\top \nu \ge 0 \}$.
+      <br>For this maximization to be unbounded, there must exist a direction $\nu$ in the feasible set ($A^\top \nu \ge 0$) along which the objective $-b^\top \nu$ can increase indefinitely.
+      <br>This implies $-b^\top \nu > 0$, or $b^\top \nu < 0$.
+      <br>Let $y = \nu$. We have found a vector $y$ such that $A^\top y \ge 0$ and $b^\top y < 0$.
+      <br>This $y$ is a solution to system (2). Thus, system (2) <b>has a solution</b>.
     </div>
         </div>
 </div>

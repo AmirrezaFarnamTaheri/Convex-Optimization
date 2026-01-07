@@ -56,32 +56,69 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
-      <h3>1. Gradient Descent (GD)</h3>
-      <p>Gradient descent iterates $x_{k+1} = x_k - t_k \nabla f(x_k)$. For $f$ strongly convex ($\mu I \preceq \nabla^2 f \preceq L I$), GD with appropriate step size converges linearly: $f(x_k) - p^* \le c^k (f(x_0) - p^*)$ where $c \approx 1 - \mu/L$. For merely convex functions, the rate is $O(1/k)$.</p>
+      <h3>0. Setup and Assumptions</h3>
+      <p>We consider the unconstrained minimization problem $\min_x f(x)$ where $f: \mathrm{dom}\,f \to \mathbb{R}$ is convex and twice continuously differentiable ($C^2$) on an open domain. We assume the problem is solvable with optimal value $p^\star = f(x^\star)$.</p>
+      <p>The analysis typically relies on the initial sublevel set $S = \{x \in \mathrm{dom}\,f \mid f(x) \le f(x^{(0)})\}$. Descent methods ensure $x^{(k)} \in S$ for all $k$. We often assume $S$ is closed (implies compactness if bounded).</p>
 
-      <h3>2. Step Size Selection</h3>
-      <p><strong>Backtracking Line Search:</strong> Given descent direction $\Delta x$ (e.g., $-\nabla f(x)$), start with $t=1$. While $f(x+t\Delta x) > f(x) + \alpha t \nabla f(x)^\top \Delta x$, update $t \leftarrow \beta t$. Typical values: $\alpha \in (0.01, 0.3), \beta \in (0.1, 0.8)$. This guarantees sufficient decrease without the cost of exact minimization.</p>
+      <h3>1. Strong Convexity and Conditioning</h3>
+      <p>We assume strong convexity on $S$: there exists $m > 0$ such that $\nabla^2 f(x) \succeq mI$ for all $x \in S$. This implies a quadratic lower bound on growth:
+      $$f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|_2^2$$
+      Minimizing the RHS gives a bound on suboptimality in terms of the gradient norm:
+      $$f(x) - p^\star \le \frac{1}{2m}\|\nabla f(x)\|_2^2$$
+      This justifies using $\|\nabla f(x)\| \le \epsilon$ as a stopping criterion.
+      </p>
+      <p>We also assume an upper bound on curvature (smoothness): $\nabla^2 f(x) \preceq MI$ for all $x \in S$. The ratio $\kappa = M/m \ge 1$ is the <strong>condition number</strong> of the sublevel sets. A large $\kappa$ implies the level sets are long and skinny ("valleys"), which causes zigzagging in gradient descent.</p>
 
-      <h3>3. Newton's Method</h3>
-      <p>Newton's step is $\Delta x_{nt} = -[\nabla^2 f(x)]^{-1} \nabla f(x)$. This minimizes the second-order Taylor approximation of $f$ at $x$. The iteration is $x_{k+1} = x_k + t \Delta x_{nt}$. Newton's method is affine invariant and converges quadratically near the optimum: $\|x_{k+1} - x^*\| \le C \|x_k - x^*\|^2$.</p>
+      <h3>2. Descent Methods and Line Search</h3>
+      <p>A generic descent method iterates $x^{(k+1)} = x^{(k)} + t^{(k)}\Delta x^{(k)}$.</p>
+      <ul>
+        <li><strong>Exact Line Search:</strong> $t = \text{argmin}_{s \ge 0} f(x + s\Delta x)$.</li>
+        <li><strong>Backtracking (Armijo) Line Search:</strong> Start with $t=1$ and reduce by factor $\beta \in (0,1)$ until sufficient decrease is met:
+        $$f(x+t\Delta x) \le f(x) + \alpha t \nabla f(x)^T \Delta x$$
+        where $\alpha \in (0, 0.5)$. This guarantees termination and sufficient progress.</li>
+      </ul>
 
-      <h3>4. Newton Decrement</h3>
-      <p>The quantity $\lambda(x) = (\nabla f(x)^\top [\nabla^2 f(x)]^{-1} \nabla f(x))^{1/2}$ is the Newton decrement. It relates to the difference between $f(x)$ and the minimum of its quadratic approximation: $f(x) - \inf_y \hat{f}(y) = \frac{1}{2}\lambda(x)^2$. It serves as a robust stopping criterion: stop when $\lambda(x)^2/2 \le \epsilon$.</p>
+      <h3>3. Gradient Descent Analysis</h3>
+      <p>For GD ($\Delta x = -\nabla f(x)$), smoothness $\nabla^2 f \preceq MI$ implies a quadratic upper bound:
+      $$f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|_2^2$$
+      This guarantees a decrease of at least $\frac{1}{2M}\|\nabla f(x)\|^2$ per step. Combined with strong convexity, we get <strong>linear convergence</strong>:
+      $$f(x^{(k)}) - p^\star \le c^k (f(x^{(0)}) - p^\star), \quad c = 1 - \frac{m}{M}$$
+      The convergence rate depends directly on the condition number $\kappa = M/m$. For ill-conditioned problems (large $\kappa$), $c \approx 1$, and convergence is very slow.</p>
 
-      <h3>5. Self-Concordance</h3>
+      <h3>4. Steepest Descent & Geometry</h3>
+      <p>"Steepest" depends on how you measure length. The <strong>normalized steepest descent direction</strong> for a norm $\|\cdot\|$ is:
+      $$\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} \nabla f(x)^T v$$
+      Using the <strong>dual norm</strong> $\|g\|_* = \sup_{\|v\| \le 1} g^T v$, the best rate of decrease is $-\|\nabla f(x)\|_*$.
+      Different norms yield different algorithms:</p>
+      <ul>
+        <li><strong>Euclidean Norm ($\ell_2$):</strong> $\Delta x_{sd} = -\nabla f(x)$. (Gradient Descent)</li>
+        <li><strong>Quadratic Norm ($\|v\|_P = \sqrt{v^T P v}$):</strong> $\Delta x_{sd} = -P^{-1}\nabla f(x)$. (Preconditioned GD). This corresponds to GD in the coordinate system $\bar{x} = P^{1/2}x$.</li>
+        <li><strong>$\ell_1$ Norm:</strong> $\Delta x_{sd} = -(\partial f/\partial x_i) e_i$. (Coordinate Descent). Updates the coordinate with the largest partial derivative.</li>
+      </ul>
+
+      <h3>5. Newton's Method</h3>
+      <p>Newton's step $\Delta x_{nt} = -\nabla^2 f(x)^{-1}\nabla f(x)$ has two powerful interpretations:</p>
+      <ol>
+        <li><strong>Steepest Descent in Hessian Norm:</strong> It is steepest descent using the local geometry defined by the Hessian $\|\cdot\|_{\nabla^2 f(x)}$. This effectively "preconditions" the problem to have condition number 1 locally.</li>
+        <li><strong>Quadratic Model Minimization:</strong> It minimizes the second-order Taylor approximation:
+        $$\hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2}v^T \nabla^2 f(x) v$$</li>
+      </ol>
+      <p>The <strong>Newton Decrement</strong> is $\lambda(x) = (\nabla f(x)^T \nabla^2 f(x)^{-1} \nabla f(x))^{1/2}$. It represents the approximate suboptimality: $f(x) - \inf_y \hat{f}(y) = \lambda(x)^2/2$. It is affine invariant.</p>
+
+      <h3>6. Newton Convergence Phases</h3>
+      <p>Newton's method (with backtracking) typically exhibits two phases:</p>
+      <ul>
+        <li><strong>Damped Phase:</strong> When far from optimum, backtracking selects $t < 1$. The algorithm behaves like steepest descent with guaranteed decrease.</li>
+        <li><strong>Quadratically Convergent Phase:</strong> Once sufficiently close (where the Hessian is stable, captured by self-concordance or Lipschitz assumptions), backtracking accepts $t=1$. The error squres at each step:
+        $$\|\nabla f(x^{(k+1)})\| \le C \|\nabla f(x^{(k)})\|^2$$
+        This leads to extremely high precision in very few steps (e.g., doubling digits of accuracy).</li>
+      </ul>
+
+      <h3>7. Self-Concordance</h3>
       <p>A function is self-concordant if $|f'''(x)| \le 2 f''(x)^{3/2}$. For such functions, Newton's method can be analyzed without unknown constants like $L, \mu$. The analysis guarantees convergence based purely on the Newton decrement $\lambda(x)$. Standard barriers like $-\sum \log x_i$ are self-concordant.</p>
 
-      <h3>6. Quasi-Newton Methods</h3>
+      <h3>8. Quasi-Newton Methods</h3>
       <p>Methods like BFGS approximate the Hessian (or its inverse) using gradient differences $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ and steps $s_k = x_{k+1} - x_k$, satisfying the secant equation $B_{k+1} s_k = y_k$. They achieve superlinear convergence without $O(n^3)$ Hessian inversion.</p>
-
-      <h3>7. Convergence Analysis</h3>
-      <p>
-        <ul>
-            <li><strong>Strongly Convex:</strong> GD is Linear ($c < 1$), Newton is Quadratic (doubles digits of accuracy).</li>
-            <li><strong>Convex (not strong):</strong> GD is Sublinear ($O(1/k)$), Accelerated GD is $O(1/k^2)$.</li>
-        </ul>
-        Condition number $\kappa = L/\mu$ dictates the speed of first-order methods. Newton's method is largely independent of $\kappa$.
-      </p>
     </section>
 
     <!-- Interactive widgets -->

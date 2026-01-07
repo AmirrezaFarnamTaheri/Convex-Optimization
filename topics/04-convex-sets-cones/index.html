@@ -231,12 +231,13 @@
           <p>Consider minimizing $f(x) = (\text{risk}(x), -\text{return}(x))$ where $x$ is a portfolio allocation.
           <br>Using $K = \mathbb{R}^2_+$ (component-wise ordering):
           <ul>
-            <li>Point $A$: Low risk, low return</li>
-            <li>Point $B$: High risk, high return</li>
-            <li>Point $C$: Medium risk, medium return (on Pareto frontier)</li>
+            <li>Point $A$: Risk 5%, Return 3% (Low risk, low return)</li>
+            <li>Point $B$: Risk 20%, Return 12% (High risk, high return)</li>
+            <li>Point $C$: Risk 10%, Return 8% (Medium risk, medium return)</li>
           </ul>
-          If $C$ is Pareto optimal, you cannot find another portfolio with <i>both</i> lower risk and higher return than $C$. You can reduce risk by moving to $A$, but you sacrifice return. You can increase return by moving to $B$, but you accept higher risk.
-          <br><b>The Pareto frontier</b> is the set of all Pareto optimal points—the "efficient frontier" in finance.</p>
+          Is $C$ Pareto optimal? Yes, if there is no portfolio $D$ with Risk $\le 10\%$ AND Return $\ge 8\%$ (with at least one strict inequality).
+          <br>If $C$ is Pareto optimal, you face a trade-off: to reduce risk below 10% (move towards $A$), you <i>must</i> accept a return lower than 8%. To get a return higher than 8% (move towards $B$), you <i>must</i> accept risk higher than 10%.
+          <br><b>The Pareto frontier</b> is the set of all such "unbeatable" points.</p>
         </div>
 
         <div class="insight">
@@ -1146,10 +1147,11 @@
     <div class="proof-step">
       <strong>Step 3: The Lagrangian.</strong>
       The Lagrangian is $L(x, \nu, \mathbf{z}) = c^\top x + \nu^\top (b - Ax) - \sum_{i=1}^m \mathbf{z}_i^\top (D_i x + e_i, f_i^\top x + g_i)$.
-      Recall the inner product in the cone is just the dot product.
-      $$ \mathbf{z}_i^\top (\dots) = \mathbf{u}_i^\top (D_i x + e_i) + t_i (f_i^\top x + g_i) $$
-      Grouping terms by $x$:
-      $$ L = \left( c - A^\top \nu - \sum_{i=1}^m (D_i^\top \mathbf{u}_i + t_i f_i) \right)^\top x + \left( \nu^\top b - \sum_{i=1}^m (\mathbf{u}_i^\top e_i + t_i g_i) \right) $$
+      <br>Recall the inner product in the cone is just the dot product of the vectors.
+      $$ \mathbf{z}_i^\top (\dots) = \begin{bmatrix} \mathbf{u}_i \\ t_i \end{bmatrix}^\top \begin{bmatrix} D_i x + e_i \\ f_i^\top x + g_i \end{bmatrix} = \mathbf{u}_i^\top (D_i x + e_i) + t_i (f_i^\top x + g_i) $$
+      We now collect all terms involving $x$ to isolate the coefficient vector:
+      $$ = c^\top x + \nu^\top b - (A^\top \nu)^\top x - \sum (\mathbf{u}_i^\top D_i x + \mathbf{u}_i^\top e_i + t_i f_i^\top x + t_i g_i) $$
+      $$ = \left( c - A^\top \nu - \sum_{i=1}^m (D_i^\top \mathbf{u}_i + t_i f_i) \right)^\top x + \left( \nu^\top b - \sum_{i=1}^m (\mathbf{u}_i^\top e_i + t_i g_i) \right) $$
     </div>
 
     <div class="proof-step">

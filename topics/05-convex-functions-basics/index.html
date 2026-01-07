@@ -279,6 +279,10 @@
         $$
         \boxed{ f(\mathbb{E}[Z]) \le \mathbb{E}[f(Z)] }
         $$
+        <p><b>Analogy (Center of Mass):</b> Think of $f(x)$ as a bowl. Place mass (probability) at various points in the bowl.
+        $\mathbb{E}[Z]$ is the center of mass of the x-coordinates. $f(\mathbb{E}[Z])$ is the height of the bowl at the center of mass.
+        $\mathbb{E}[f(Z)]$ is the center of mass of the z-coordinates (average height).
+        Since the bowl curves up, the average height is always higher than the height at the average.</p>
         <p><b>Caveat:</b> We require $Z \in \mathrm{dom} f$ almost surely, $\mathbb{E}[Z]$ finite, and $\mathbb{E}[f(Z)]$ well-defined.</p>
 
         <div class="proof-box">
@@ -986,6 +990,8 @@
           <p>Let $\ell_i(x) = a_i^\top x + b_i$ for $i=1,\dots,m$. Define:</p>
           $$ f(x) = \max_{1\le i\le m} (a_i^\top x + b_i) $$
           <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).
+          <br><b>Concrete Case:</b> $f(x) = \max(x, 2x-1, -x+2)$.
+          <br>For $x$ large positive, $2x-1$ dominates. For $x$ large negative, $-x+2$ dominates. In between, they switch. The result traces the upper envelope, creating a convex "V" or "bowl" shape.
           <br><b>Application:</b> This function arises in minimizing the $\ell_\infty$ norm residual $\min \|Ax-b\|_\infty$ (which is $\max_i |a_i^\top x - b_i|$).</p>
         </div>
 
@@ -2830,12 +2836,15 @@
       <strong>Step 2: Compute the Hessian Entry-by-Entry.</strong>
       We compute the partial derivative of the $i$-th gradient component $h_i(x) = f_i(x) / f(x)$ with respect to $x_j$:
       $$ h_{ij}(x) = \frac{\partial}{\partial x_j} \left( \frac{f_i(x)}{f(x)} \right) $$
-      Using the <b>Quotient Rule</b> $(u/v)' = (u'v - uv')/v^2$:
+      Recall the <b>Quotient Rule</b> for $\frac{u(x)}{v(x)}$: $\left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$.
+      Here $u = f_i(x)$ (partial derivative w.r.t $x_i$) and $v = f(x)$.
       <ul>
-        <li>Numerator part 1: $\frac{\partial f_i}{\partial x_j} f(x) = f_{ij}(x) f(x)$.</li>
-        <li>Numerator part 2: $f_i(x) \frac{\partial f}{\partial x_j} = f_i(x) f_j(x)$.</li>
+        <li>Differentiating the top $u$: $u' = \frac{\partial}{\partial x_j} f_i(x) = f_{ij}(x)$.
+        <br>First term of numerator: $u'v = f_{ij}(x) f(x)$.</li>
+        <li>Differentiating the bottom $v$: $v' = \frac{\partial}{\partial x_j} f(x) = f_j(x)$.
+        <br>Second term of numerator: $uv' = f_i(x) f_j(x)$.</li>
       </ul>
-      Substituting back:
+      Substituting back into the formula:
       $$ h_{ij} = \frac{f_{ij} f - f_i f_j}{f^2} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
     </div>
 

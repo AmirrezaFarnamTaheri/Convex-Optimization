@@ -97,22 +97,33 @@
           <div class="proof-box">
             <h4>Proof: The Geometric Shift</h4>
             <div class="proof-step">
-              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. Let $x_1, x_2 \in C$. Then $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
-              For any $\theta \in \mathbb{R}$:
+              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. We check if $C$ contains the line through any two points $x_1, x_2 \in C$.
+              <br>Since $x_1, x_2 \in C$, we can write $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
+              <br>Form the affine combination for any $\theta \in \mathbb{R}$:
               $$
-              \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
-            = x_0 + [\theta v_1 + (1-\theta)v_2]
+              z = \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
               $$
-              Since $V$ is a subspace, it is closed under linear combinations, so the bracketed term is in $V$. Thus the combination is in $x_0 + V = C$.
+              Distribute and regroup terms relative to $x_0$:
+              $$ z = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
+              Since $V$ is a subspace, it is closed under linear combinations. Thus $v' = \theta v_1 + (1-\theta)v_2$ is in $V$.
+              <br>Therefore, $z = x_0 + v' \in x_0 + V = C$.
             </div>
             <div class="proof-step">
-              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick any $x_0 \in C$ and define $V = C - x_0$. We show $V$ is a subspace.
+              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick a base point $x_0 \in C$. Define the set of displacements $V = C - x_0 = \{c - x_0 \mid c \in C\}$. We must prove $V$ is a linear subspace.
               <ul>
-                <li><b>Contains zero:</b> $x_0 - x_0 = 0 \in V$.</li>
-                <li><b>Closed under scaling:</b> Let $v \in V$, so $x_0 + v \in C$. Since $C$ is affine, the combination $\alpha(x_0 + v) + (1-\alpha)x_0 = x_0 + \alpha v$ is in $C$. Thus $\alpha v \in V$.</li>
-                <li><b>Closed under addition:</b> Let $u, v \in V$. Then $x_0+u, x_0+v \in C$. Since $C$ is affine, the midpoint $\frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+v) = x_0 + \frac{1}{2}(u+v)$ is in $C$. Thus $\frac{1}{2}(u+v) \in V$. By scaling (proven above), $u+v \in V$.</li>
+                <li><b>Contains zero:</b> Since $x_0 \in C$, $x_0 - x_0 = 0 \in V$.</li>
+                <li><b>Closed under scaling:</b> Let $v \in V$ and $\alpha \in \mathbb{R}$. We want $\alpha v \in V$.
+                <br>Since $v \in V$, $x_0 + v \in C$. Since $C$ is affine, the affine combination of $(x_0 + v)$ and $x_0$ with weights $\alpha$ and $(1-\alpha)$ is in $C$:
+                $$ \alpha(x_0 + v) + (1-\alpha)x_0 = \alpha x_0 + \alpha v + x_0 - \alpha x_0 = x_0 + \alpha v $$
+                Since $x_0 + \alpha v \in C$, by definition $\alpha v \in V$.</li>
+                <li><b>Closed under addition:</b> Let $u, w \in V$. We want $u+w \in V$.
+                <br>Since $u, w \in V$, $x_0+u \in C$ and $x_0+w \in C$.
+                <br>Since $C$ is affine, the midpoint is in $C$:
+                $$ m = \frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+w) = x_0 + \frac{1}{2}(u+w) $$
+                Thus $\frac{1}{2}(u+w) \in V$.
+                <br>Since $V$ is closed under scaling (proven above), $2 \cdot \frac{1}{2}(u+w) = u+w \in V$.</li>
               </ul>
-              Thus $V$ is a subspace.
+              Since $V$ contains 0 and is closed under addition and scaling, it is a subspace.
             </div>
           </div>
         </div>
@@ -157,7 +168,7 @@
         <p>Convex combinations represent "mixing" (interpolation) without "scaling" (size change).
         <br>Consider a linear combination $z = \alpha x + \beta y$.
         <ul>
-            <li>If $\alpha+\beta \neq 1$, the result includes a global scaling factor.</li>
+            <li>If $\alpha+\beta \neq 1$, the result includes a global scaling factor. For example, $x+y$ (where weights are 1 and 1) is not a mix; it is a mix scaled by 2 ($2 \cdot (0.5x + 0.5y)$).</li>
             <li>If $\alpha < 0$, the result includes extrapolation (subtraction).</li>
         </ul>
         Convexity restricts operations to pure mixing: you cannot go outside the segment between $x$ and $y$.</p>
@@ -249,11 +260,16 @@
             <strong>Step 2: The Perturbation Strategy.</strong>
             We want to change the weights $\theta_i$ to eliminate one point while keeping the sum valid.
             Consider new weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$.
-            <br>Check validity:
-            <ul>
-                <li>Sum: $\sum \theta'_i = \sum \theta_i - \lambda \sum \alpha_i = 1 - 0 = 1$. (Valid affine combination).</li>
-                <li>Value: $\sum \theta'_i \mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - 0 = \mathbf{x}$. (Represent the same point).</li>
-            </ul>
+            We need to verify two things:
+            <ol>
+                <li><b>Affine Sum is Preserved:</b> The weights still sum to 1.
+                $$ \sum \theta'_i = \sum (\theta_i - \lambda \alpha_i) = \sum \theta_i - \lambda \sum \alpha_i = 1 - \lambda(0) = 1 $$
+                </li>
+                <li><b>Point is Preserved:</b> The combination still produces $\mathbf{x}$.
+                $$ \sum \theta'_i \mathbf{x}_i = \sum (\theta_i - \lambda \alpha_i)\mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - \lambda(0) = \mathbf{x} $$
+                </li>
+            </ol>
+            Thus, for any $\lambda$, the new combination is a valid affine representation of $\mathbf{x}$. Our goal is to choose $\lambda$ so it becomes a valid <i>convex</i> representation (non-negative weights) with fewer non-zero terms.
           </div>
 
           <div class="proof-step">
@@ -565,7 +581,11 @@
           </div>
           <div class="proof-step">
             <strong>Upper Bound:</strong> For any $x$ with $\|x\|_\infty \le 1$, we have $|x_i| \le 1$ for all $i$.
-            $$ u^\top x = \sum_i u_i x_i \le \sum_i |u_i| |x_i| \le \sum_i |u_i| (1) = \|u\|_1 $$
+            We use the standard inequality $a \cdot b \le |a| \cdot |b|$:
+            $$ u^\top x = \sum_{i=1}^n u_i x_i \le \sum_{i=1}^n |u_i x_i| = \sum_{i=1}^n |u_i| |x_i| $$
+            Since $|x_i| \le 1$ and $|u_i| \ge 0$, we have $|u_i| |x_i| \le |u_i|$. Thus:
+            $$ \sum_{i=1}^n |u_i| |x_i| \le \sum_{i=1}^n |u_i| = \|u\|_1 $$
+            So $u^\top x \le \|u\|_1$ for all feasible $x$.
           </div>
           <div class="proof-step">
             <strong>Achievability:</strong> Choose $x_i = \text{sign}(u_i)$ for each $i$. Since each component is $\pm 1$ or 0, we have $\|x\|_\infty \le 1$.
@@ -706,16 +726,20 @@
           <h4>Proof: The PSD Cone is Convex</h4>
           <p>We need to show that if $A, B \in \mathbb{S}^n_+$ and $\theta \in [0,1]$, then $\theta A + (1-\theta)B \in \mathbb{S}^n_+$.</p>
           <div class="proof-step">
-            <strong>Definition Check:</strong> Let $\mathbf{z} \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination:
+            <strong>Definition Check:</strong> Let $\mathbf{z} \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination.
+            First, recall that the quadratic form $Q_M(z) = z^\top M z$ is <b>linear</b> in the matrix $M$.
             $$
             \mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} = \theta (\mathbf{z}^\top A \mathbf{z}) + (1-\theta) (\mathbf{z}^\top B \mathbf{z})
             $$
           </div>
           <div class="proof-step">
-            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know $\mathbf{z}^\top A \mathbf{z} \ge 0$ and $\mathbf{z}^\top B \mathbf{z} \ge 0$ for all $\mathbf{z}$. Since $\theta \in [0,1]$, both coefficients $\theta$ and $1-\theta$ are non-negative.
+            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know their "energy" is non-negative: $\mathbf{z}^\top A \mathbf{z} \ge 0$ and $\mathbf{z}^\top B \mathbf{z} \ge 0$ for all $\mathbf{z}$.
+            Since $\theta \in [0,1]$, the mixing weights $\theta$ and $1-\theta$ are non-negative.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> The sum of non-negative terms is non-negative, so $\mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} \ge 0$ for all $\mathbf{z}$. Thus the combination is PSD.
+            <strong>Conclusion:</strong> We have a non-negative weighted sum of non-negative numbers.
+            Thus $\mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} \ge 0$ for all $\mathbf{z}$.
+            This satisfies the definition of positive semidefiniteness, so the combination is in $\mathbb{S}^n_+$.
           </div>
         </div>
 
@@ -930,11 +954,11 @@
           <div class="proof-step">
             <strong>Step 3: Construct the convex combination in the domain.</strong>
             We need to find a point in $C$ that maps to $\mathbf{w}$. This point will be a convex combination of $(\mathbf{y},t)$ and $(\mathbf{y}',t')$.
-            The perspective map is non-linear, so the mixing weights in the domain ($\mu$) will be different from the mixing weights in the image ($\alpha$).
-            We define the weights proportional to the denominators:
+            <br><b>The Weight Trick:</b> We cannot simply use $\alpha$ as the mixing weight because the perspective map $P$ scales inputs by $1/t$. We need to "compensate" for the different denominators $t$ and $t'$.
+            <br>Define the domain mixing weight $\mu$ proportional to the denominators:
             $$ \mu = \frac{\alpha t'}{\alpha t' + (1-\alpha)t} $$
-            Note that $\mu \in [0, 1]$ because $t, t' > 0$.
-            Consider the point $\mathbf{z} = \mu (\mathbf{y}, t) + (1-\mu) (\mathbf{y}', t')$. Since $C$ is convex, $\mathbf{z} \in C$.
+            Observe that since $t, t' > 0$ and $\alpha \in [0,1]$, the denominator is positive and $\mu \in [0, 1]$.
+            <br>Consider the point $\mathbf{z} = \mu (\mathbf{y}, t) + (1-\mu) (\mathbf{y}', t')$. Since $C$ is convex, $\mathbf{z} \in C$.
           </div>
 
           <div class="proof-step">
@@ -1166,12 +1190,14 @@
             Equation: $a^\top (x - m) = 0$.
           </div>
           <div class="proof-step">
-            <strong>Step 3: Verify Separation.</strong>
-            For any $x \in C$, the angle between $x-p$ and $d-p$ must be obtuse (obtuse angle property of projection).
-            $$ (d-p)^\top (x-p) \le 0 $$
-            Since $a = d-p$, this means $a^\top x \le a^\top p$.
-            Meanwhile, $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2 > a^\top p$.
-            Thus $a^\top x \le a^\top p < a^\top d$. The hyperplane separates $C$ from $d$.
+            <strong>Step 3: Verify Separation (The Obtuse Angle).</strong>
+            By the projection theorem (Lecture 03), the vector $d-p$ makes an <b>obtuse angle</b> with any vector pointing from $p$ into $C$.
+            Mathematically: $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
+            <br>Substitute $a = d-p$: $\langle a, x-p \rangle \le 0 \implies a^\top x \le a^\top p$.
+            <br>Now check the point $d$: $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2$.
+            Since $d \notin C$, $a \ne 0$, so $\|a\|^2 > 0$.
+            $$ a^\top x \le a^\top p < a^\top d $$
+            Thus, the hyperplane orthogonal to $a$ strictly separates $C$ and $d$.
           </div>
         </div>
 
@@ -1362,7 +1388,10 @@
             <li>Subdifferential calculus (nonemptiness, sum rules)</li>
             <li>Interior-point algorithms (feasibility and strict decrease)</li>
           </ul>
-          <p>Whenever you see $\mathrm{ri}(C)$ in a theorem, it's rescuing a result that would fail with $\mathrm{int}(C)$ due to empty interiors.</p>
+          <p>Whenever you see $\mathrm{ri}(C)$ in a theorem, it's rescuing a result that would fail with $\mathrm{int}(C)$ due to empty interiors.
+          <br><b>Visualizing the Rescue:</b> Think of the 3D Frisbee again. The theorem says "you can move around freely in the interior."
+          <br>$\bullet$ With $\mathrm{int}(C)$: "You can move up, down, left, right, forward, backward." (False, you can't move up/down off the Frisbee).
+          <br>$\bullet$ With $\mathrm{ri}(C)$: "You can move freely <i>within the plane of the Frisbee</i>." (True!).</p>
         </div>
 
       </section>
@@ -2033,11 +2062,18 @@
               Thus, there is a unique $\nu^*$ satisfying the equation.
             </div>
             <div class="proof-step">
-              <b>Water-filling Algorithm:</b>
-              1. Sort $z$ in descending order: $z_{(1)} \ge z_{(2)} \ge \dots \ge z_{(n)}$.
-              2. Find the largest index $\rho$ such that $z_{(\rho)} - \frac{1}{\rho}(\sum_{j=1}^\rho z_{(j)} - 1) > 0$.
-              3. Set $\nu = \frac{1}{\rho}(\sum_{j=1}^\rho z_{(j)} - 1)$.
-              4. Set $x_i = \max(z_i - \nu, 0)$.
+              <b>Water-filling Algorithm (Step-by-Step Construction):</b>
+              The condition is $x_i = \max(z_i - \nu, 0)$ and $\sum x_i = 1$.
+              This means $\sum_{i=1}^n \max(z_i - \nu, 0) = 1$.
+              Imagine "pouring water" into channels of height $z_i$ up to level $\nu$.
+              <br>1. <b>Sort:</b> Sort $z$ in descending order: $z_{(1)} \ge z_{(2)} \ge \dots \ge z_{(n)}$.
+              <br>2. <b>Active Set Search:</b> We need to find how many components are non-zero. Let $k$ be the number of active components ($x_i > 0$).
+              If $k$ components are active, they are the $k$ largest ones. For these, $z_i > \nu$, so $x_i = z_i - \nu$.
+              The sum constraint becomes:
+              $$ \sum_{j=1}^k (z_{(j)} - \nu) = 1 \implies \sum_{j=1}^k z_{(j)} - k\nu = 1 \implies \nu = \frac{1}{k}\left(\sum_{j=1}^k z_{(j)} - 1\right) $$
+              We need to find the largest $k$ (call it $\rho$) such that the consistency check holds: $z_{(\rho)} > \nu$.
+              <br>3. <b>Compute Threshold:</b> Set $\nu = \frac{1}{\rho}(\sum_{j=1}^\rho z_{(j)} - 1)$.
+              <br>4. <b>Result:</b> Set $x_i = \max(z_i - \nu, 0)$.
             </div>
           </div>
         </div>

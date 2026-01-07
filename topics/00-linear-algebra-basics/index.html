@@ -77,6 +77,12 @@
 
       <h4>Type Checking Rules</h4>
       <p>You may only add vectors of the same dimension. You may only multiply $A$ and $x$ if inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" prevents silent errors like writing $Ax=b$ with incompatible dimensions or forming gradients of the wrong shape.</p>
+      <div class="example-box">
+        <h4>Example: The Silent Killer</h4>
+        <p>Consider the gradient update $\mathbf{x}_{k+1} = \mathbf{x}_k - \alpha \nabla f(\mathbf{x}_k)$.
+        <br>If $\mathbf{x} \in \mathbb{R}^n$ (column), then mathematically $\nabla f(\mathbf{x})$ is often treated as a row vector (dual space). However, in code (NumPy/PyTorch), adding a shape $(n,)$ array to a shape $(1, n)$ array might trigger broadcasting, resulting in an $(n, n)$ matrix!
+        <br><b>Rigorous Typing:</b> Always enforce that gradients are column vectors in implementation to match the primal variable's shape.</p>
+      </div>
       <ol>
         <li><b>Addition:</b> only same type/shape. ($x+y$ defined iff $x, y \in \mathbb{R}^n$)</li>
         <li><b>Multiplication:</b> inner dimensions must match. ($A x$ defined iff $A \in \mathbb{R}^{m \times n}$ and $x \in \mathbb{R}^n$)</li>
@@ -117,8 +123,9 @@
         <p>These proofs demonstrate how algebraic rigor underpins "obvious" arithmetic.</p>
         <div class="proof-step">
           <strong>Lemma 1: $0 \cdot a = 0$ for all $a$.</strong>
+          <p>This isn't an axiom; it's a consequence of the additive identity and distributivity.</p>
           $$ 0\cdot a = (0+0)\cdot a = 0\cdot a + 0\cdot a \quad \text{(Distributivity)} $$
-          Add $-(0\cdot a)$ to both sides:
+          Now, we have an equation $x = x + x$ where $x = 0 \cdot a$. To solve for $x$, we add its additive inverse $-(0\cdot a)$ to both sides (cancellation law):
           $$ 0 = 0\cdot a $$
         </div>
         <div class="proof-step">
@@ -730,10 +737,15 @@
       <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
       <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
       <div class="insight">
-        <h4>Analogy: Conservation of Energy</h4>
-        <p>Think of dimensions as energy.
-        <br>Total Input Energy ($n$) = Dissipated Energy (Nullity) + Useful Work (Rank).
-        <br>No dimension vanishes; it just moves to the "zero" bucket or the "non-zero" bucket.</p>
+        <h4>Analogy: Conservation of Information</h4>
+        <p>Think of the input vector $\mathbf{x} \in \mathbb{R}^n$ as a packet containing $n$ independent pieces of information. When it passes through the matrix $A$:</p>
+        <ul>
+            <li><b>Rank ($r$):</b> The number of pieces that survive and appear in the output.</li>
+            <li><b>Nullity ($k$):</b> The number of pieces that get "crushed" to zero (lost).</li>
+        </ul>
+        <p><b>Conservation Law:</b> Input Information = Surviving Info + Lost Info.
+        <br>$$ n = r + k $$
+        This means you cannot compress information (lower dimension) without losing something (nullity > 0), nor can you create information from nothing (output dimension cannot exceed input dimension unless redundancy exists).</p>
       </div>
 
       <h3>2.3 The Four Fundamental Subspaces: Invariant Anatomy</h3>
@@ -1153,9 +1165,12 @@
 
         <div class="example-box">
           <h4>Example: Making a Gram Matrix Invertible</h4>
-          <p>Consider the Gram matrix $G = X^\top X$ where $X \in \mathbb{R}^{m \times n}$ has $m < n$ (tall matrix). Then $\mathrm{rank}(G) \le m < n$, so $G$ is singular.
-          <br><br>
-          Adding $\lambda I$ shifts all eigenvalues: if $\lambda_i(G) \ge 0$, then $\lambda_i(G + \lambda I) = \lambda_i(G) + \lambda \ge \lambda > 0$ for all $i$. The zero eigenvalues become $\lambda$, making $G + \lambda I$ invertible. This is the foundation of <b>Tikhonov regularization</b>.</p>
+          <p>Consider the matrix $A = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$. Its eigenvalues are $2$ and $0$. It is singular (non-invertible) because of the zero eigenvalue.
+          <br><b>Goal:</b> We want to invert it to solve a system, but we can't.
+          <br><b>Fix:</b> Add a "ridge" $\epsilon I$ with $\epsilon = 0.1$.
+          $$ A + 0.1 I = \begin{bmatrix} 1.1 & 1 \\ 1 & 1.1 \end{bmatrix} $$
+          The new eigenvalues are $2.1$ and $0.1$. Both are strictly positive. The matrix is now invertible, with determinant $1.1^2 - 1 = 0.21$.
+          <br>This technique, known as <b>Tikhonov regularization</b> or "ridge regression," trades a small amount of bias (modifying the matrix) for numerical stability (invertibility).</p>
         </div>
       </div>
 
@@ -1257,8 +1272,10 @@
         <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
         Expanding using bilinearity:
         $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
+        This is a quadratic polynomial $P(t) = at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
+        Since norms are non-negative, $P(t) = \|x-ty\|^2 \ge 0$ for all real $t$.
+        Geometrically, this means the parabola opens upwards ($a \ge 0$) and either touches the horizontal axis or stays strictly above it. It never crosses the axis to become negative.
+        Algebraically, this implies the quadratic equation $P(t)=0$ has at most one real root (a double root or no real roots). Therefore, its <b>discriminant must be non-positive</b> ($b^2 - 4ac \le 0$).
         $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
         $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
         Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
@@ -1692,7 +1709,14 @@
       </p>
 
       <h3>5.2 Orthogonal Projection: Preview</h3>
-      <p>Orthogonal projection is the central problem of approximation theory: given a vector $\mathbf{x}$ and a subspace $W$, find the closest point $\mathbf{p} \in W$ to $\mathbf{x}$. This minimization problem underlies least squares, constraint handling, and iterative optimization algorithms. The complete theory of projections—including formulas for subspaces, affine sets, and general convex sets—is developed comprehensively in <b>Section 8: Projections onto Subspaces and Affine Sets</b> (see below), where we derive explicit formulas and explore connections to optimization.</p>
+      <p>Orthogonal projection is the central problem of approximation theory: given a vector $\mathbf{x}$ and a subspace $W$, find the closest point $\mathbf{p} \in W$ to $\mathbf{x}$.
+      <br><b>Intuition:</b> Think of shining a light perpendicular to the subspace $W$. The "shadow" cast by $\mathbf{x}$ onto $W$ is the projection $\mathbf{p}$. The vector difference $\mathbf{x} - \mathbf{p}$ is the "height" of $\mathbf{x}$ above the subspace.
+      <br>This operation is so fundamental that we dedicate two later sections to it:
+      <ul>
+        <li><b>Section 8</b> covers the general theory for subspaces and affine sets.</li>
+        <li><b>Section 9</b> applies it to solve the Least Squares problem.</li>
+      </ul>
+      For now, remember the golden rule: <b>The error vector is orthogonal to the subspace.</b></p>
 
       <div class="insight">
         <h4>Why Projections Matter for Optimization</h4>
@@ -1921,12 +1945,14 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Linearize via Taylor Series.</strong>
-            We use the scalar Taylor series expansion $\log(1+\mathbf{z}) = \mathbf{z} - \frac{\mathbf{z}^2}{2} + O(\mathbf{z}^3)$ for small $\mathbf{z}$.
-            Applying this to each term $\log(1+\lambda_i)$:
-            $$ \sum_{i=1}^n \log(1 + \lambda_i) = \sum_{i=1}^n \left( \lambda_i - \frac{\lambda_i^2}{2} + \dots \right) = \sum_{i=1}^n \lambda_i - \frac{1}{2}\sum_{i=1}^n \lambda_i^2 + \dots $$
-            The linear term is the sum of eigenvalues, which is the <b>trace</b> of the matrix $E$:
+            Recall the scalar Taylor series expansion for the natural logarithm near 1:
+            $$ \log(1+z) = z - \frac{z^2}{2} + \frac{z^3}{3} - \dots $$
+            For small perturbations, we only care about the linear term ($z$).
+            Applying this to each eigenvalue term $\log(1+\lambda_i)$:
+            $$ \sum_{i=1}^n \log(1 + \lambda_i) \approx \sum_{i=1}^n \lambda_i $$
+            We recognize the sum of eigenvalues $\sum \lambda_i$ as the <b>trace</b> of the matrix $E$.
             $$ \sum_{i=1}^n \lambda_i = \mathrm{tr}(E) = \mathrm{tr}(X^{-1}\Delta) $$
-            Thus, to first order, $\log \det(I + E) \approx \mathrm{tr}(E)$.
+            Thus, to first order, the change in the log-determinant is exactly the trace of the relative change matrix $E$.
           </div>
           <div class="proof-step">
             <strong>Step 4: Extract the Gradient.</strong>
@@ -2503,8 +2529,12 @@
       </div>
 
       <h3>8.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
-      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank:
+      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank, the projection matrix onto its column space is given by the famous "Hat Matrix":
       $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
+      <b>Derivation:</b> This formula is not magic. It arises from solving the Least Squares problem $\min \|A\mathbf{x} - \mathbf{b}\|^2$.
+      The optimal coefficients $\mathbf{x}$ solve the <b>Normal Equations</b> $A^\top A \mathbf{x} = A^\top \mathbf{b}$ (derived in Section 9).
+      Solving for $\mathbf{x}$ gives $\mathbf{x} = (A^\top A)^{-1} A^\top \mathbf{b}$.
+      The projection is the corresponding point in the column space: $\mathbf{p} = A\mathbf{x} = A(A^\top A)^{-1} A^\top \mathbf{b}$.
       </p>
 
       <h3>8.3 Projection onto Closed Convex Sets</h3>
@@ -2616,7 +2646,8 @@
       <h2>9. The Method of Least Squares</h2>
 
       <h3>The Problem: Overdetermined Systems</h3>
-      <p>In practice, we often encounter linear systems $A\mathbf{x}=\mathbf{b}$ with no exact solution. This typically occurs when $m > n$ (more equations than unknowns) and $\mathbf{b} \notin \mathcal{R}(A)$. The "least squares" approach finds the best approximate solution by minimizing the sum of squared errors—the squared Euclidean norm of the residual $r = A\mathbf{x}-\mathbf{b}$. This formulates the canonical <b>unconstrained optimization problem</b>:</p>
+      <p>In practice, we often encounter linear systems $A\mathbf{x}=\mathbf{b}$ with no exact solution. This typically occurs when $m > n$ (more equations than unknowns) and $\mathbf{b} \notin \mathcal{R}(A)$. Since we cannot reach $\mathbf{b}$ exactly, we settle for the "closest possible" point in the range of $A$.
+      <br>The "least squares" approach finds this best approximate solution by minimizing the sum of squared errors—the squared Euclidean norm of the residual $r = A\mathbf{x}-\mathbf{b}$. This formulates the canonical <b>unconstrained optimization problem</b>:</p>
       $$ \min_{\mathbf{x} \in \mathbb{R}^n} \|A\mathbf{x} - \mathbf{b}\|_2^2 $$
 
       <div class="insight">

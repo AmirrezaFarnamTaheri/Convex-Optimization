@@ -98,18 +98,23 @@
       <div class="proof-box">
         <h4>Convexity of the Second-Order Cone</h4>
         <div class="proof-step">
-          <strong>Setup:</strong> Let $(\mathbf{x}_1, t_1), (\mathbf{x}_2, t_2) \in \mathcal{Q}^{n+1}$ and $\theta \in [0, 1]$.
+          <strong>Setup:</strong> Let $\mathbf{z}_1 = (t_1, \mathbf{x}_1)$ and $\mathbf{z}_2 = (t_2, \mathbf{x}_2)$ be points in $\mathcal{Q}^{n+1}$.
+          By definition, $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$.
+          Let $\mathbf{z} = \theta \mathbf{z}_1 + (1-\theta)\mathbf{z}_2 = (\theta t_1 + (1-\theta)t_2, \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2)$ for $\theta \in [0,1]$.
         </div>
         <div class="proof-step">
-          <strong>Convex combination:</strong> We have $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$. Consider:
-          $ \|\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2\|_2 \le \theta \|\mathbf{x}_1\|_2 + (1-\theta) \|\mathbf{x}_2\|_2 \quad \text{(triangle inequality)} $
+          <strong>Check Norm Condition:</strong> We need to check if $\|\theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2\|_2 \le \theta t_1 + (1-\theta)t_2$.
+          <br>Applying the <b>triangle inequality</b> $\|a+b\| \le \|a\| + \|b\|$:
+          $$ \|\theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2\|_2 \le \|\theta \mathbf{x}_1\|_2 + \|(1-\theta)\mathbf{x}_2\|_2 $$
+          Since $\theta \ge 0$ and $1-\theta \ge 0$, scalars pull out with absolute value unchanged:
+          $$ = \theta \|\mathbf{x}_1\|_2 + (1-\theta)\|\mathbf{x}_2\|_2 $$
         </div>
         <div class="proof-step">
-          <strong>Apply constraints:</strong>
-          $ \le \theta t_1 + (1-\theta) t_2 $
+          <strong>Apply Membership:</strong> Substitute the cone conditions $\|\mathbf{x}_i\|_2 \le t_i$:
+          $$ \le \theta t_1 + (1-\theta) t_2 $$
         </div>
         <div class="proof-step">
-          <strong>Conclusion:</strong> Thus $(\theta \mathbf{x}_1 + (1-\theta) \mathbf{x}_2, \theta t_1 + (1-\theta) t_2) \in \mathcal{Q}^{n+1}$, so $\mathcal{Q}^{n+1}$ is convex.
+          <strong>Conclusion:</strong> The convex combination satisfies the cone definition. Thus $\mathcal{Q}^{n+1}$ is a convex set.
         </div>
       </div>
 
@@ -229,17 +234,19 @@
 
         <div class="proof-step">
           <strong>Step 3: Construct Worst-Case Perturbation (Tightness Proof).</strong>
-          Is this bound just a loose estimate, or can nature actually achieve it? We construct a specific $\Delta A$ that hits the bound exactly.
-          <br>Let $\mathbf{u} = A\mathbf{x} - \mathbf{b}$ be the nominal residual vector. We want the perturbation term $\Delta A \mathbf{x}$ to point in the <i>exact same direction</i> as $\mathbf{u}$ to maximize the sum.
-          <br><b>The Construction:</b> Define a rank-1 perturbation matrix:
-          $$ \Delta A = \rho \frac{u}{\|u\|_2} \frac{x^\top}{\|x\|_2} $$
-          This matrix takes the input direction $\mathbf{x}$ and maps it to the output direction $\mathbf{u}$, scaled by $\rho$.
-          <br><b>Verification:</b>
-          1. <b>Norm Check:</b> $\|\Delta A\|_2 = \rho \cdot 1 \cdot 1 = \rho$. (Valid perturbation).
-          2. <b>Alignment Check:</b> $\Delta A x = \rho \frac{u}{\|u\|} \frac{x^\top x}{\|x\|} = \rho \|x\|_2 \frac{u}{\|u\|}$.
-          3. <b>Sum:</b> $u + \Delta A x = u + \rho \frac{\|x\|}{\|u\|} u = (1 + \frac{\rho \|x\|}{\|u\|}) u$.
-          The norm is $(1 + \frac{\rho \|x\|}{\|u\|}) \|u\| = \|u\| + \rho \|x\|$.
-          <br>Thus, the worst-case error is exactly $\|Ax - b\|_2 + \rho \|x\|_2$.
+          Is the bound $\|Ax - b\|_2 + \rho \|x\|_2$ achievable? We construct a specific $\Delta A$ that hits it.
+          <br>Let $r = Ax - b$ be the current residual. We want the perturbation error $\Delta A x$ to align perfectly with $r$.
+          <br><b>Construction:</b> Define the rank-1 matrix:
+          $$ \Delta A = \rho \frac{r}{\|r\|_2} \frac{x^\top}{\|x\|_2} $$
+          (If $r=0$ or $x=0$, use arbitrary unit vectors).
+          <br><b>Verify Norm:</b> The spectral norm is $\|\Delta A\|_2 = \rho \| \frac{r}{\|r\|} \|_2 \| \frac{x^\top}{\|x\|} \|_2 = \rho \cdot 1 \cdot 1 = \rho$. Valid.
+          <br><b>Verify Effect:</b>
+          $$ \Delta A x = \left( \rho \frac{r}{\|r\|_2} \frac{x^\top}{\|x\|_2} \right) x = \rho \frac{r}{\|r\|_2} \frac{x^\top x}{\|x\|_2} = \rho \frac{r}{\|r\|_2} \|x\|_2 $$
+          The total residual is:
+          $$ r + \Delta A x = r + \rho \|x\|_2 \frac{r}{\|r\|_2} = r \left( 1 + \frac{\rho \|x\|_2}{\|r\|_2} \right) $$
+          The norm is:
+          $$ \|r + \Delta A x\|_2 = \|r\|_2 \left( 1 + \frac{\rho \|x\|_2}{\|r\|_2} \right) = \|r\|_2 + \rho \|x\|_2 $$
+          Thus, the bound is tight.
         </div>
 
         <div class="proof-step">
@@ -461,17 +468,25 @@
       <div class="proof-box">
         <h4>Full Proof of the Schur Complement Lemma</h4>
         <div class="proof-step">
-            <strong>Step 1: Block LDL Factorization.</strong>
-            Assume $A \succ 0$ and perform a congruence transformation:
-            $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} I & -A^{-1}B \\ 0 & I \end{bmatrix} = \begin{bmatrix} A & 0 \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
+            <strong>Step 1: Gaussian Elimination (Block Form).</strong>
+            To diagonalize the matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$, we want to eliminate the off-diagonal block $B$.
+            <br>Multiply by the elimination matrix $L$:
+            $$ L = \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} $$
+            Compute the congruence transformation $L M L^\top$:
+            $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} I & -A^{-1}B \\ 0 & I \end{bmatrix} $$
+            $$ = \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top - B^\top A^{-1} A & C - B^\top A^{-1} B \end{bmatrix} $$
+            $$ = \begin{bmatrix} A & 0 \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
         </div>
         <div class="proof-step">
-            <strong>Step 2: Congruence Preserves Inertia.</strong>
-            Congruence by an invertible matrix preserves the number of positive, negative, and zero eigenvalues (Sylvester's Law of Inertia).
+            <strong>Step 2: Inertia Property.</strong>
+            Since $L$ is invertible (determinant 1), the matrix $M$ is congruent to the block diagonal matrix.
+            By Sylvester's Law of Inertia, $M \succeq 0 \iff L M L^\top \succeq 0$.
         </div>
         <div class="proof-step">
-            <strong>Step 3: Conclusion.</strong>
-            The block diagonal matrix $\begin{bmatrix} A & 0 \\ 0 & S \end{bmatrix}$ is PSD iff both blocks are PSD. Since $A \succ 0$, we need $S = C - B^\top A^{-1} B \succeq 0$.
+            <strong>Step 3: Block Diagonal PSD.</strong>
+            A block diagonal matrix is PSD if and only if its diagonal blocks are PSD.
+            $$ \begin{bmatrix} A & 0 \\ 0 & S \end{bmatrix} \succeq 0 \iff A \succeq 0 \text{ and } S \succeq 0 $$
+            Since we assumed $A \succ 0$, the condition reduces to $S = C - B^\top A^{-1} B \succeq 0$.
         </div>
       </div>
 

@@ -63,140 +63,77 @@
       <h2>1. Mathematical Atoms: From Fields to Functions</h2>
 
       <h3>1.1 The Optimization Type System</h3>
-      <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match. Most errors in convex optimization are not conceptual—they are <b>type errors</b> disguised as math.</p>
+      <p>In convex optimization, we constantly build expressions like $Ax$, $a^\top x$, $\nabla f(x)$, and $g(x) \in K$. Every one of these only makes sense if the <i>shapes</i> match. To avoid "type errors disguised as math," we adopt a strict discipline: every symbol has a <b>type</b> and a <b>shape</b>.</p>
 
-      <h4>The Type System of Optimization</h4>
-      <p>Think like a compiler. Every symbol has a declared type.</p>
+      <h4>The Type System</h4>
       <ul>
-        <li><b>Scalar:</b> $a \in \mathbb{R}$. Simple numbers. They scale vectors and matrices.</li>
-        <li><b>Vector:</b> $x \in \mathbb{R}^n$. An ordered list of $n$ scalars. Interpretation: a point in space or a direction.</li>
-        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$. A typed operator that transforms vectors from $\mathbb{R}^n$ to $\mathbb{R}^m$.</li>
-        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$. A boolean predicate (membership test) on the space. Constraints define sets.</li>
-        <li><b>Function:</b> $f: D \to Y$. A rule assigning values to inputs. Domains are mandatory, not optional.</li>
+        <li><b>Scalar:</b> $a \in \mathbb{R}$. Elements of a field. Roles: weights ($\lambda, \alpha$), objective values ($f(x)$).</li>
+        <li><b>Vector:</b> $x \in \mathbb{R}^n$. Ordered $n$-tuples of scalars. Roles: decision variables, gradients, search directions.</li>
+        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$. Typed operators mapping $\mathbb{R}^n \to \mathbb{R}^m$. Roles: linear maps, quadratic forms (Hessians).</li>
+        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$. Boolean predicates ($x \in C$ is True/False). Roles: feasible regions, domains.</li>
+        <li><b>Function:</b> $f: D \to Y$. Mappings with explicit domains. Roles: objectives, constraints.</li>
       </ul>
 
-      <h4>Type Checking Rules</h4>
-      <p>You may only add vectors of the same dimension. You may only multiply $A$ and $x$ if inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" prevents silent errors like writing $Ax=b$ with incompatible dimensions or forming gradients of the wrong shape.</p>
-      <div class="example-box">
-        <h4>Example: The Silent Killer</h4>
-        <p>Consider the gradient update $\mathbf{x}_{k+1} = \mathbf{x}_k - \alpha \nabla f(\mathbf{x}_k)$.
-        <br>If $\mathbf{x} \in \mathbb{R}^n$ (column), then mathematically $\nabla f(\mathbf{x})$ is often treated as a row vector (dual space). However, in code (NumPy/PyTorch), adding a shape $(n,)$ array to a shape $(1, n)$ array might trigger broadcasting, resulting in an $(n, n)$ matrix!
-        <br><b>Rigorous Typing:</b> Always enforce that gradients are column vectors in implementation to match the primal variable's shape.</p>
-      </div>
-      <ol>
-        <li><b>Addition:</b> only same type/shape. ($x+y$ defined iff $x, y \in \mathbb{R}^n$)</li>
-        <li><b>Multiplication:</b> inner dimensions must match. ($A x$ defined iff $A \in \mathbb{R}^{m \times n}$ and $x \in \mathbb{R}^n$)</li>
-        <li><b>Equality:</b> both sides must have identical shape. ($Ax = b$ asserts $Ax$ and $b$ live in the same $\mathbb{R}^m$)</li>
-      </ol>
+      <h4>Type Checking Rules (Operational)</h4>
+      <p>1. <b>Annotate Shapes:</b> scalar (), vector $(n \times 1)$, matrix $(m \times n)$.
+      <br>2. <b>Addition:</b> Shapes must match exactly. $x+y$ is undefined if $x \in \mathbb{R}^n, y \in \mathbb{R}^m, n \ne m$.
+      <br>3. <b>Multiplication:</b> Inner dimensions must match. $A(m \times n) x(n \times 1) \to y(m \times 1)$.
+      <br>4. <b>Equality:</b> Both sides must have identical shape. $Ax=b$ asserts $Ax$ and $b$ live in the same space.</p>
 
-      <h3>1.1.1 Scalars: The Rulebook</h3>
-      <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. Scalars play two roles: weights (coefficients) and objective values.</p>
-
-      <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
-
-      <h4>The Field Axioms (From Scratch)</h4>
-      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying three bundles of axioms:</p>
+      <h3>1.1.1 Scalars: Elements of a Field</h3>
+      <p>A scalar is an element of a <b>field</b> $\mathbb{F}$ (usually $\mathbb{R}$). A field is a set equipped with addition and multiplication satisfying:
       <ul>
-        <li><b>A) Addition ($\mathbb{F}, +$ is an abelian group):</b>
-            <ul>
-            <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
-            <li><b>Commutativity:</b> $a+b = b+a$.</li>
-            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
-            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
-            </ul>
-        </li>
-        <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
-          <ul>
-            <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
-            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
-            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
-            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
-          </ul>
-        </li>
-        <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
+        <li><b>Closure, Associativity, Commutativity:</b> Standard arithmetic holds.</li>
+        <li><b>Identities:</b> $0$ (additive) and $1$ (multiplicative).</li>
+        <li><b>Inverses:</b> $-a$ exists for all $a$; $a^{-1}$ exists for all $a \ne 0$.</li>
+        <li><b>Distributivity:</b> $a(b+c) = ab + ac$.</li>
       </ul>
+      <b>Why this matters:</b> In optimization, we rearrange Lagrangians, solve linear systems, and normalize vectors. These operations rely on the existence of inverses and distributivity.</p>
 
-      <div class="proof-box">
-        <h4>Fundamental Field Lemmas</h4>
-        <p>These proofs demonstrate how algebraic rigor underpins "obvious" arithmetic.</p>
-        <div class="proof-step">
-          <strong>Lemma 1: $0 \cdot a = 0$ for all $a$.</strong>
-          <p>This isn't an axiom; it's a consequence of the additive identity and distributivity.</p>
-          $$ 0\cdot a = (0+0)\cdot a = 0\cdot a + 0\cdot a \quad \text{(Distributivity)} $$
-          Now, we have an equation $x = x + x$ where $x = 0 \cdot a$. To solve for $x$, we add its additive inverse $-(0\cdot a)$ to both sides (cancellation law):
-          $$ 0 = 0\cdot a $$
-        </div>
-        <div class="proof-step">
-          <strong>Lemma 2: $(-1)a = -a$.</strong>
-          We must show that $(-1)a$ acts as the additive inverse of $a$.
-          $$ a + (-1)a = 1\cdot a + (-1)\cdot a = (1 + (-1))a = 0\cdot a = 0 $$
-          By uniqueness of the additive inverse, $(-1)a = -a$.
-        </div>
-        <div class="proof-step">
-          <strong>Lemma 3: No Zero Divisors.</strong>
-          If $ab=0$ and $a \neq 0$, then $b=0$.
-          <br><i>Proof:</i> Since $a \neq 0$, $a^{-1}$ exists. Multiply both sides by $a^{-1}$:
-          $$ a^{-1}(ab) = a^{-1}(0) \implies (a^{-1}a)b = 0 \implies 1\cdot b = 0 \implies b=0 $$
-          This property fails in rings like $\mathbb{Z}_6$ (where $2 \cdot 3 = 0$), which is why linear algebra requires a field.
-        </div>
-      </div>
-
-      <h4>Concrete Examples & The Failure Museum</h4>
-      <p>Understanding what <i>breaks</i> when axioms are missing is the best way to understand the axioms.</p>
-      <ul>
-        <li><b>Fields (Good Citizens):</b>
-            <ul>
-                <li>$\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex).</li>
-                <li><b>Finite fields $\mathbb{F}_p$:</b> Integers mod $p$ (where $p$ is prime). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$). Linear algebra works perfectly here.</li>
-            </ul>
-        </li>
-        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory" (where bases might not exist, and Smith Normal Form replaces SVD).</li>
-        <li><b>$\mathbb{Z}_n$ (Integers mod $n$, composite $n$):</b> NOT a field.
-            <br><i>Example:</i> In $\mathbb{Z}_6$, we have $2 \cdot 3 = 0 \pmod 6$.
-            <br><b>Failure 1 (Zero Divisors):</b> Non-zero numbers multiply to zero. This destroys the cancellation law: $2x=2y$ does <i>not</i> imply $x=y$ (e.g., $2\cdot 0 = 0$ and $2\cdot 3 = 0$).
-            <br><b>Failure 2 (Singular Non-zeros):</b> The number 2 has no inverse. You cannot divide by it.
-            <br>In a field, scaling by a non-zero scalar is always an <b>injective</b> map (it preserves information). In $\mathbb{Z}_6$, scaling by 2 destroys information (collapses 0 and 3 to 0).
-        </li>
-      </ul>
-
-      <p><b>Extended Reals:</b> In optimization, we often work with the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to encode "forbidden" regions by assigning them infinite cost (e.g., indicator functions), effectively treating constraints as part of the objective.</p>
+      <p><b>Extended Reals:</b> We often work with $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to encode "forbidden" regions (constraints) directly into the objective function via indicator functions.</p>
 
       <h3>1.1.2 Vectors: Elements of $\mathbb{R}^n$</h3>
-      <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple of scalars. We almost always treat vectors as <b>columns</b>:
-      $$ x = \begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix} $$
-      <b>"$\mathbb{R}^n$" is a Type Tag:</b> It asserts (1) Length/Shape: $x$ has exactly $n$ coordinates, and (2) Ambient Space: $x$ lives in a vector space where addition and scaling are defined.</p>
-      <p><b>Equality is Coordinatewise:</b> $x=y \iff x_i=y_i$ for all $i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
+      <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple. By convention, vectors are <b>columns</b>:
+      $$ x = \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix} $$
+      <b>Meaning of "$x \in \mathbb{R}^n$":</b> It is a type tag asserting:
+      <br>1. <b>Shape:</b> $x$ has exactly $n$ coordinates.
+      <br>2. <b>Ambient Space:</b> $x$ lives in a space where addition and scaling are defined.</p>
+
+      <p><b>Coordinatewise Equality:</b>
+      $$ x = y \iff x_i = y_i \quad \forall i=1,\dots,n $$
+      This is the bridge that converts one vector equation into $n$ scalar equations.</p>
 
       <h3>1.1.3 Vector Operations (Forced by Consistency)</h3>
-      <p><b>Vector Operations (Forced by Consistency):</b>
-      <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
-      <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
-      <br>This is why operations on $\mathbb{R}^n$ are "boring"—they are literally scalar algebra applied $n$ times.</p>
-
-      <h4>The Axioms Verified (Why it works)</h4>
-      <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
+      <p>Operations on vectors are defined <b>coordinatewise</b>. This is not arbitrary; it is the only definition compatible with scalar algebra.</p>
       <ul>
-        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed by componentwise uniqueness.</li>
-        <li><b>Derived Facts:</b> $0 \cdot \mathbf{x} = \mathbf{0}$, $(-1)\mathbf{x} = -\mathbf{x}$. These are not assumptions; they are theorems derived from the axioms.</li>
-        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
+        <li><b>Addition:</b> $(x+y)_i := x_i + y_i$. (Required for compatibility with scalar addition).</li>
+        <li><b>Scalar Multiplication:</b> $(ax)_i := a x_i$. (Required for distributivity: $a(x+y) = ax+ay$).</li>
       </ul>
+      <p>Because operations are coordinatewise, $\mathbb{R}^n$ inherits all vector space axioms (commutativity, associativity, etc.) directly from the field axioms of $\mathbb{R}$.</p>
 
       <h3>1.1.4 Matrices: Typed Operators</h3>
-      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>linear map</b> $A: \mathbb{R}^n \to \mathbb{R}^m$.
-      <br><b>Input Type:</b> $\mathbb{R}^n$ (Columns).
-      <br><b>Output Type:</b> $\mathbb{R}^m$ (Rows).</p>
-      <p><b>Matrix-Vector Multiplication Definition:</b>
+      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is a rectangular array, but its primary identity is a <b>linear map</b>:
+      $$ A: \mathbb{R}^n \to \mathbb{R}^m $$
+      <ul>
+        <li>$n$ columns = input dimension.</li>
+        <li>$m$ rows = output dimension.</li>
+      </ul>
+      <b>Matrix-Vector Multiplication:</b>
       $$ (Ax)_i := \sum_{j=1}^n A_{ij} x_j $$
-      This definition does three jobs at once:
+      This definition is "inevitable" because it satisfies three constraints simultaneously:
       <br>1. <b>Typing:</b> Maps $n$-vector to $m$-vector.
-      <br>2. <b>Linearity:</b> $A(ax+by) = aAx + bAy$.
-      <br>3. <b>Composition:</b> It ensures $(BA)x = B(Ax)$. Matrix multiplication corresponds to function composition.</p>
+      <br>2. <b>Linearity:</b> $A(\alpha x + \beta y) = \alpha Ax + \beta Ay$.
+      <br>3. <b>Composition:</b> $(BA)x = B(Ax)$. Matrix multiplication corresponds to function composition.</p>
 
-      <p><b>Two Essential Views:</b>
-      <br><b>1. Row View (Measurement):</b> $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional measuring $x$.
-      <br><b>2. Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the view for span, range, and feasibility.</p>
+      <div class="insight">
+        <h4>Two Essential Views of $Ax$</h4>
+        <p><b>1. Row View (Measurement):</b>
+        $$ (Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle $$
+        Each row is a linear functional "measuring" $x$. Constraints like $a^\top x \le b$ are measurements.
+        <br><b>2. Column View (Synthesis):</b>
+        $$ Ax = \sum_{j=1}^n x_j A_{:j} $$
+        $Ax$ is a linear combination of the columns of $A$. This is the view for span, range, and feasibility geometry.</p>
+      </div>
 
       <h3>1.1.5 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
       <p>While $\mathbb{R}^n$ is our working model, the power of linear algebra comes from the fact that it applies to <i>any</i> set behaving like $\mathbb{R}^n$. This allows us to treat functions, polynomials, and matrices as vectors.</p>
@@ -229,47 +166,50 @@
       <p><b>Consequences:</b> Any theorem proved using only these axioms is true for $\mathbb{R}^n$, spaces of functions, spaces of matrices, and infinite sequences.</p>
 
       <h3>1.2 Sets: The Logic Layer of Feasibility</h3>
-      <p>Optimization problems ask us to minimize a function over a <b>feasible set</b>. Constraints are not fundamentally "inequalities"—they are membership tests defining a set.</p>
+      <p>An optimization problem minimizes a value over a <b>feasible set</b>. Constraints are not fundamentally "inequalities"—they are membership tests defining sets.</p>
 
-      <h4>1.2.1 Constraints as Sets (Semantics)</h4>
-      <p>A constraint like $g(x) \le 0$ is shorthand for the membership statement:
-      $$ x \in \{z \in \mathbb{R}^n : g(z) \le 0\} $$
-      This matters because convexity is a property of <b>sets</b>. We prove a problem is convex by showing the feasible set (intersection of constraints) is convex.</p>
+      <h4>1.2.1 Membership is Primitive</h4>
+      <p>A set is a collection of objects. The fundamental statement is <b>membership</b>: $x \in C$.
+      <br>A constraint $g(x) \le 0$ is shorthand for:
+      $$ x \in \{z : g(z) \le 0\} $$
+      This reframing matters because convexity is a property of sets. We prove feasibility by intersecting convex sets.</p>
 
       <h4>1.2.2 Intersection = Logical AND</h4>
-      <p>If we have multiple constraints, we require $x$ to satisfy all of them simultaneously.
+      <p>Feasibility requires satisfying <i>all</i> constraints simultaneously. This corresponds to set intersection:
       $$ \bigcap_{i=1}^m C_i = \{x : x \in C_i \text{ for all } i\} $$
-      <b>Infeasibility</b> means the intersection is the empty set $\emptyset$. This is not a numerical error; it is a logical contradiction.</p>
+      <b>Infeasibility</b> means the intersection is empty ($\emptyset$). This is a logical contradiction, not a numerical error.</p>
 
-      <h4>1.2.3 Preimages: The Engine of Modeling</h4>
-      <p>Most constraints in optimization are of the form "an expression belongs to a set".
-      Given a function $g: \mathbb{R}^n \to \mathbb{R}^m$ and a target set $D \subseteq \mathbb{R}^m$, the <b>preimage</b> is:
-      $$ g^{-1}(D) = \{x \in \mathbb{R}^n : g(x) \in D\} $$
+      <h4>1.2.3 Constraints as Preimages</h4>
+      <p>Most constraints in optimization follow the pattern "an expression belongs to a set".
+      Given $g: \mathbb{R}^n \to \mathbb{R}^m$ and a target set $S \subseteq \mathbb{R}^m$, the <b>preimage</b> is:
+      $$ g^{-1}(S) = \{x \in \mathbb{R}^n : g(x) \in S\} $$
       Examples:
       <br>$\bullet$ $Ax=b \iff Ax \in \{b\}$ (Preimage of a singleton).
-      <br>$\bullet$ $g(x) \le 0 \iff g(x) \in \mathbb{R}^m_-$ (Preimage of the non-positive orthant).
-      <br>$\bullet$ $\|Ax-b\|_2 \le t \iff (Ax-b, t) \in \text{SOC}$ (Preimage of the Second-Order Cone).</p>
-      <p><b>Why this matters:</b> Convexity is preserved under affine preimages. If $D$ is convex and $g(x) = Ax+b$ is affine, then $g^{-1}(D)$ is convex. This one rule explains why linear constraints, norm constraints, and LMIs are convex.</p>
+      <br>$\bullet$ $Ax \le b \iff Ax-b \in \mathbb{R}^m_-$ (Preimage of the non-positive orthant).
+      <br>$\bullet$ $\|Ax-b\|_2 \le t \iff (Ax-b, t) \in \text{SOC}$ (Preimage of the Second-Order Cone).
+      <br><b>Key Theorem:</b> Affine preimages preserve convexity. If $S$ is convex and $g$ is affine, then $g^{-1}(S)$ is convex.</p>
 
       <h3>1.3 Functions: The Rulebook</h3>
-      <p>A function $f: D \to Y$ consists of a <b>domain</b> $D$, a <b>codomain</b> $Y$, and a rule. In optimization, we must be precise about domains.</p>
+      <p>A function $f: D \to Y$ consists of a <b>domain</b> $D$, a <b>codomain</b> $Y$, and a rule. In convex optimization, "undefined" is not allowed.</p>
 
       <h4>1.3.1 Domain is Law</h4>
-      <p>The domain is part of the function definition, not a suggestion.
-      <br>Example: $f(x) = -\log x$ has domain $D = \{x \in \mathbb{R} : x > 0\}$.
-      <br>If you write "minimize $-\log x$ subject to $x \le -1$", the feasible set is empty because the domain constraint ($x > 0$) contradicts the explicit constraint ($x \le -1$).</p>
+      <p>The domain is part of the object.
+      <br>Example: $f(x) = -\log x$ is defined only on $D = \{x \in \mathbb{R} : x > 0\}$.
+      <br><b>Implicit Constraints:</b> Even if you don't write $x > 0$ as a constraint, the function is undefined for $x \le 0$. The <b>effective domain</b> of an objective is the set of points where it is finite. The true feasible set is:
+      $$ \text{Feasible} = (\text{Explicit Constraints}) \cap (\text{Domains of all functions}) $$</p>
 
       <h4>1.3.2 Extended-Real-Valued Functions</h4>
-      <p>We often define functions mapping to $\overline{\mathbb{R}} = \mathbb{R} \cup \{+\infty\}$.
-      <br><b>Effective Domain:</b> $\mathrm{dom}\, f = \{x : f(x) < +\infty\}$.
-      <br>This allows us to encode constraints into the objective. The <b>indicator function</b> of a set $C$ is:
+      <p>We often map to $\overline{\mathbb{R}} = \mathbb{R} \cup \{+\infty\}$.
+      <br>$\bullet$ $f(x) \in \mathbb{R}$: Feasible/meaningful.
+      <br>$\bullet$ $f(x) = +\infty$: Forbidden/Infeasible.
+      <br>This allows the <b>Indicator Trick</b>. For a set $C$, define:
       $$ \delta_C(x) = \begin{cases} 0 & x \in C \\ +\infty & x \notin C \end{cases} $$
-      Then $\min_{x \in C} f(x)$ is equivalent to the unconstrained problem $\min_x (f(x) + \delta_C(x))$.</p>
+      Then the constrained problem $\min_{x \in C} f(x)$ becomes the unconstrained problem $\min_x (f(x) + \delta_C(x))$.</p>
 
-      <h4>1.3.3 Epigraphs: Functions as Sets</h4>
-      <p>The <b>graph</b> of $f$ is $\{(x, f(x))\}$. The <b>epigraph</b> is the set of points on or above the graph:
+      <h4>1.3.3 Epigraphs: The Bridge</h4>
+      <p>The <b>epigraph</b> converts a function into a set:
       $$ \mathrm{epi}(f) = \{(x, t) : f(x) \le t\} $$
-      A function is <b>convex</b> if and only if its epigraph is a <b>convex set</b>. This bridges the analysis of functions and the geometry of sets.</p>
+      A function is <b>convex</b> if and only if its epigraph is a <b>convex set</b>. This bridges analysis (functions) and geometry (sets).</p>
 
       <h3>1.4 Geometry as a Representation (Points vs. Vectors)</h3>
       <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In optimization, the distinction is critical.
@@ -420,76 +360,39 @@
       <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
 
       <h3>1.6 Affine vs Linear Mappings: The Structural Backbone</h3>
-      <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. Optimization is essentially the study of problems whose feasible sets and objective geometry survive a specific class of transformations: <b>affine maps</b>.</p>
+      <p>Optimization is the study of problems whose feasible sets and objective geometry survive a specific class of transformations: <b>affine maps</b>. Understanding the distinction between linear and affine is critical.</p>
 
-      <h4>1.6.1 Linear Maps: The Origin-Anchored Structure</h4>
-      <p>A map $L: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if for all $x,y$ and scalars $\alpha,\beta$:
-      $$ L(\alpha x + \beta y) = \alpha L(x) + \beta L(y) $$
-      <b>Immediate Consequences:</b>
-      <br>1. $L(0) = 0$. Linear maps must fix the origin.
-      <br>2. <b>Matrix Representation:</b> Every linear map $L: \mathbb{R}^n \to \mathbb{R}^m$ can be written as $L(x) = Ax$ for a unique matrix $A$. The $j$-th column of $A$ is $L(e_j)$.
-      <br>3. <b>Subspaces map to Subspaces:</b> If $S$ is a subspace, $L(S)$ is a subspace.
-      <br>4. <b>Convex sets map to Convex sets:</b> If $C$ is convex, $L(C)$ is convex.</p>
+      <h4>1.6.1 Linear Maps: Origin-Anchored</h4>
+      <p>A map $L: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if $L(\alpha x + \beta y) = \alpha L(x) + \beta L(y)$.
+      <br><b>Structure:</b>
+      <br>1. <b>Fixed Origin:</b> $L(0) = 0$.
+      <br>2. <b>Matrix Form:</b> Every linear map is $L(x) = Ax$.
+      <br>3. <b>Preservation:</b> Maps subspaces to subspaces.</p>
 
-      <h4>1.6.2 Affine Maps: Linear + Translation</h4>
-      <p>Most feasible sets (like $Ax=b$) do not pass through the origin. We need maps that allow <b>translation</b>.
-      <br>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it has the form $f(x) = Ax + b$.
-      <br>This decomposes behavior into linear structure ($Ax$) and a shift ($+b$).</p>
+      <h4>1.6.2 Affine Maps: Translated</h4>
+      <p>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if $f(x) = Ax + b$.
+      <br><b>Structure:</b>
+      <br>1. <b>Moves Origin:</b> $f(0) = b$.
+      <br>2. <b>Characterization:</b> $f$ preserves <b>affine combinations</b>:
+      $$ f(\theta x + (1-\theta)y) = \theta f(x) + (1-\theta)f(y) \quad \forall \theta \in \mathbb{R} $$
+      <br>3. <b>Geometry:</b> Maps lines to lines. Preserves parallelism.</p>
 
-      <div class="theorem-box">
-        <h4>Theorem: Affine Combination Characterization</h4>
-        <p>A map $f$ is affine if and only if it preserves <b>affine combinations</b>:
-        $$ f(\theta x + (1-\theta)y) = \theta f(x) + (1-\theta)f(y) \quad \forall x,y \in \mathbb{R}^n, \forall \theta \in \mathbb{R} $$
-        Note the quantifier $\theta \in \mathbb{R}$. This condition is strong enough to force the form $Ax+b$.
-        </p>
-      </div>
+      <h4>1.6.3 Convexity Preservation</h4>
+      <p>This is the engine of convex modeling.
+      <br><b>Theorem A (Image):</b> If $C$ is convex and $f$ is affine, then $f(C)$ is convex.
+      <br><b>Theorem B (Preimage):</b> If $D$ is convex and $f$ is affine, then $f^{-1}(D) = \{x : f(x) \in D\}$ is convex.
+      <br>
+      <b>Proof of Preimage Convexity:</b>
+      <br>Take $x_1, x_2 \in f^{-1}(D)$. Then $f(x_1) \in D$ and $f(x_2) \in D$.
+      <br>For $\theta \in [0,1]$, let $x_\theta = \theta x_1 + (1-\theta)x_2$.
+      <br>$$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b = \theta(Ax_1+b) + (1-\theta)(Ax_2+b) = \theta f(x_1) + (1-\theta)f(x_2) $$
+      <br>Since $D$ is convex, the combination is in $D$. Thus $x_\theta \in f^{-1}(D)$.</p>
 
-      <h4>1.6.3 Geometry of Affine Maps</h4>
-      <ul>
-        <li><b>Lines to Lines:</b> $f(x_0 + td) = (Ax_0+b) + t(Ad)$. A line maps to a line (or a point).</li>
-        <li><b>Parallelism:</b> Parallel lines map to parallel lines (or points). Affine maps preserve "straightness" and relative proportions on lines.</li>
-      </ul>
-
-      <h4>1.6.4 Convexity Invariance: The Modeling Engine</h4>
-      <p>This is the single most-used fact in convex modeling.
-      <br><b>Theorem A (Image):</b> If $C \subseteq \mathbb{R}^n$ is convex and $f$ is affine, then $f(C)$ is convex.
-      <br><b>Theorem B (Preimage):</b> If $D \subseteq \mathbb{R}^m$ is convex and $f(x)=Ax+b$, then the preimage $f^{-1}(D) = \{x : Ax+b \in D\}$ is convex.</p>
-
-      <div class="proof-box">
-        <h4>Proof: Preimage Convexity</h4>
-        <p>We want to show that if $D$ is a convex set, then its preimage $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$ is also convex.</p>
-        <div class="proof-step">
-          <strong>Step 1: Pick two points in the preimage.</strong>
-          Let $x_1, x_2 \in C$. By definition, this means their images map into $D$:
-          $$ y_1 = Ax_1+b \in D \quad \text{and} \quad y_2 = Ax_2+b \in D $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Form a convex combination.</strong>
-          Let $\theta \in [0,1]$. We need to show that $x_\theta = \theta x_1 + (1-\theta)x_2$ is also in $C$.
-          This requires checking if $f(x_\theta) \in D$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Apply the affine map.</strong>
-          $$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b $$
-          Distribute the matrix $A$ (linearity):
-          $$ = \theta A x_1 + (1-\theta) A x_2 + b $$
-          Rewrite $b$ as $\theta b + (1-\theta)b$ (since $\theta + 1 - \theta = 1$):
-          $$ = \theta A x_1 + (1-\theta) A x_2 + \theta b + (1-\theta)b $$
-          Group terms:
-          $$ = \theta (A x_1 + b) + (1-\theta) (A x_2 + b) $$
-          $$ = \theta y_1 + (1-\theta) y_2 $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 4: Use convexity of D.</strong>
-          Since $y_1, y_2 \in D$ and $D$ is convex, the combination $\theta y_1 + (1-\theta) y_2$ must be in $D$.
-          Therefore, $f(x_\theta) \in D$, which implies $x_\theta \in C$.
-        </div>
-      </div>
-
-      <p><b>Application:</b>
-      <br>$\bullet$ $Ax=b \iff Ax \in \{b\}$. Singletons are convex; affine preimages are convex. Thus affine sets are convex.
-      <br>$\bullet$ $Ax \le b \iff Ax-b \in \mathbb{R}^m_-$. Orthants are convex; thus polyhedra are convex.
-      <br>$\bullet$ $\|Ax+b\|_2 \le c^\top x + d \iff (Ax+b, c^\top x+d) \in \text{SOC}$. The Second-Order Cone is convex; thus SOC constraints define convex sets.</p>
+      <h4>1.6.4 Linear vs Nonlinear Equalities</h4>
+      <p>Why are linear equalities ($Ax=b$) allowed in convex optimization, but nonlinear equalities ($h(x)=0$) usually not?
+      <br>$\bullet$ $Ax=b$ defines an <b>affine set</b> (a shifted subspace), which is convex.
+      <br>$\bullet$ $h(x)=0$ generally defines a curved surface. For convexity, we need the set to contain the chord between any two points. Curved equality surfaces fail this.
+      <br><b>Precise Statement:</b> If $h$ is convex, the set $\{x : h(x)=0\}$ is convex only if $h$ is affine (linear + constant).</p>
 
       <div class="theorem-box">
         <h4>Theorem: Basis Determines Linear Maps</h4>
@@ -1234,78 +1137,44 @@
 
     <section class="section-card" id="section-norms">
       <h2>4. Inner Products & Norms: Geometry from Algebra</h2>
-      <p>Inner products and norms bridge the gap between abstract vector spaces and geometry. They allow us to talk about <b>angles</b>, <b>lengths</b>, <b>distances</b>, and <b>projections</b>. Without these, a vector space is just a "floppy" elastic sheet; with them, it becomes a rigid structure capable of supporting optimization.</p>
+      <p>Inner products provide geometry (angles, orthogonality) to a vector space. This structure is essential for defining gradients, projections, and optimality conditions.</p>
 
-      <h3>4.1 Inner Products: The Source of Angles</h3>
+      <h3>4.1 Inner Product: Definition as Axioms</h3>
       <p>An <b>inner product</b> on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x, y, z \in V$ and $\alpha \in \mathbb{R}$:</p>
       <ol>
         <li><b>Linearity (in first argument):</b> $\langle \alpha x + y, z \rangle = \alpha \langle x, z \rangle + \langle y, z \rangle$.</li>
         <li><b>Symmetry:</b> $\langle x, y \rangle = \langle y, x \rangle$.</li>
         <li><b>Positive Definiteness:</b> $\langle x, x \rangle \ge 0$, and $\langle x, x \rangle = 0 \iff x = 0$.</li>
       </ol>
-      <p>Note: Linearity + Symmetry implies bilinearity. Positive definiteness is what allows us to define "length".</p>
-
-      <h4>Verification for the Dot Product</h4>
-      <p>For $\langle x,y \rangle = x^\top y$:
-      <br>1. <b>Symmetry:</b> $\sum x_i y_i = \sum y_i x_i$.
-      <br>2. <b>Linearity:</b> $\sum (\alpha x_i + \beta z_i) y_i = \alpha \sum x_i y_i + \beta \sum z_i y_i$.
-      <br>3. <b>Positivity:</b> $\sum x_i^2 \ge 0$. Sum of squares is zero iff every $x_i=0$.
-      <br>Thus, the dot product transforms $\mathbb{R}^n$ into a <b>Euclidean Space</b>.</p>
-
-      <h4>Weighted Inner Products ($P$-Geometry)</h4>
-      <p>Any symmetric positive definite matrix $P \in \mathbb{S}^n_{++}$ defines a generalized inner product:
-      $$ \langle x, y \rangle_P := x^\top P y $$
-      <b>Induced Norm:</b> $\|x\|_P = \sqrt{x^\top P x}$.
-      <br><b>Geometric Meaning:</b> If $P = L^\top L$ (Cholesky), then $\|x\|_P = \|Lx\|_2$. This is Euclidean geometry after a linear transformation $L$. The unit ball $\{x : x^\top P x \le 1\}$ is an ellipsoid.
-      <br>If $P \succeq 0$ (PSD) but singular, we get a <b>semi-inner product</b> (lengths can be zero for non-zero vectors).</p>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/vector-addition-parallelogram.png"
-             alt="Parallelogram law for vector addition"
-             style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
-      </figure>
+      <p><b>Standard Euclidean Product:</b> On $\mathbb{R}^n$, $\langle x, y \rangle = x^\top y = \sum x_i y_i$.
+      <br><b>Weighted Product:</b> For $P \succ 0$, $\langle x, y \rangle_P = x^\top P y$. This defines a warped geometry (ellipsoidal unit balls).</p>
 
       <h3>4.2 Geometry Extracted from Axioms</h3>
-      <p>Once you have an inner product, you define:</p>
-      <ul>
-        <li><b>Norm:</b> $\|x\| = \sqrt{\langle x, x \rangle}$.</li>
-        <li><b>Orthogonality:</b> $x \perp y \iff \langle x, y \rangle = 0$.</li>
-        <li><b>Angles:</b> $\cos \theta = \frac{\langle x, y \rangle}{\|x\| \|y\|}$ (valid by Cauchy-Schwarz).</li>
-      </ul>
+      <p>Once you have an inner product, you define:
+      <br><b>Norm (Length):</b> $\|x\| = \sqrt{\langle x, x \rangle}$.
+      <br><b>Orthogonality:</b> $x \perp y \iff \langle x, y \rangle = 0$.
+      <br><b>Angle:</b> $\cos \theta = \frac{\langle x, y \rangle}{\|x\| \|y\|}$. (Valid only because of Cauchy-Schwarz).</p>
 
-      <h4>Proof of Norm Properties</h4>
-      <ol>
-        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
-        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
-        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
-      </ol>
-
+      <div class="proof-box">
         <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
         <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
         <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
         Expanding using bilinearity:
         $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $P(t) = at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since norms are non-negative, $P(t) = \|x-ty\|^2 \ge 0$ for all real $t$.
-        Geometrically, this means the parabola opens upwards ($a \ge 0$) and either touches the horizontal axis or stays strictly above it. It never crosses the axis to become negative.
-        Algebraically, this implies the quadratic equation $P(t)=0$ has at most one real root (a double root or no real roots). Therefore, its <b>discriminant must be non-positive</b> ($b^2 - 4ac \le 0$).
-        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
+        This is a quadratic $at^2 + bt + c$ with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
+        Since the quadratic is non-negative, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
+        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 \implies 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 $$
         Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
-        <br><b>Equality Condition:</b> Discriminant is 0 iff the quadratic has a real root, meaning $\phi(t)=0$ for some $t$, i.e., $x-ty=0$. Thus equality holds iff $x$ and $y$ are linearly dependent.</p>
+        <br><b>Equality:</b> Discriminant is 0 iff the quadratic has a real root, meaning $\|x-ty\|=0 \implies x=ty$.</p>
+      </div>
 
-        <h4>Derivation: Triangle Inequality</h4>
-        <p>Now we can prove the final norm axiom.
-        $$ \begin{aligned}
-        \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
-        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
-        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
-        &= (\|x\| + \|y\|)^2
-        \end{aligned} $$
-        Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
-        <br><b>Conclusion:</b> Every inner product space is a normed space. The converse is false (only norms satisfying the Parallelogram Law come from inner products).
-        </p>
+      <h4>Norm Axioms Proved</h4>
+      <p>The induced norm $\|x\| = \sqrt{\langle x, x \rangle}$ satisfies all norm axioms:
+      <br>1. <b>Definiteness:</b> From inner product axiom.
+      <br>2. <b>Homogeneity:</b> $\|\alpha x\| = \sqrt{\alpha^2 \langle x, x \rangle} = |\alpha| \|x\|$.
+      <br>3. <b>Triangle Inequality:</b>
+      $$ \|x+y\|^2 = \|x\|^2 + 2\langle x,y \rangle + \|y\|^2 \le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 = (\|x\|+\|y\|)^2 $$
+      </p>
 
           <h4>Proof: Norm Balls are Convex</h4>
           <p>Let $x, y \in B(x_c, r)$ and $\theta \in [0,1]$. Then $\|x - x_c\| \le r$ and $\|y - x_c\| \le r$.</p>

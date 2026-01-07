@@ -124,28 +124,32 @@
         <br>($\Leftarrow$) Setting $\beta=0$ gives the cone property. Setting $\alpha=\theta, \beta=1-\theta$ gives convexity.</p>
 
         <h4>The Big Three Cones (The "Atoms" of Conic Programming)</h4>
-        <p>Most practical convex problems (LP, QP, QCQP, SOCP, SDP) can be written using just these three cones. Understanding their geometry is crucial.</p>
+        <p>Most convex constraints can be rewritten as membership in one of these three cones.</p>
 
         <h5>(I) Nonnegative Orthant $\mathbb{R}^n_+$</h5>
         $$ \mathbb{R}^n_+ = \{x \in \mathbb{R}^n \mid x_i \ge 0 \ \forall i\} $$
-        <p><b>Convexity Proof:</b> If $x_i \ge 0$ and $y_i \ge 0$, then $(\theta x + (1-\theta)y)_i = \theta x_i + (1-\theta)y_i \ge 0$ for $\theta \in [0,1]$.
-        <br><b>Modeling:</b> Encodes linear inequalities $Ax \le b \iff b - Ax \in \mathbb{R}^m_+$.</p>
+        <p><b>Structure:</b> Polyhedral cone. Self-dual.
+        <br><b>Modeling:</b> Encodes componentwise inequalities. $Ax \le b \iff b - Ax \in \mathbb{R}^m_+$.</p>
 
         <h5>(II) Second-Order Cone (SOC) $\mathcal{Q}^{n+1}$</h5>
         $$ \mathcal{Q}^{n+1} = \{(x, t) \in \mathbb{R}^n \times \mathbb{R} \mid \|x\|_2 \le t\} $$
-        <p><b>Convexity Proof:</b> The norm is convex. $\mathcal{Q}^{n+1}$ is the epigraph of the Euclidean norm function $f(x)=\|x\|_2$. Epigraphs of convex functions are convex sets.
-        <br><b>Modeling:</b> Encodes Euclidean distance constraints and robust linear constraints.</p>
+        <p><b>Structure:</b> "Ice cream" cone. Self-dual.
+        <br><b>Convexity:</b> $\mathcal{Q}$ is the epigraph of the Euclidean norm $f(x) = \|x\|_2$. Since norms are convex, their epigraphs are convex sets.
+        <br><b>Modeling:</b> Encodes constraints involving distances, magnitudes, and robustness margins.</p>
 
         <h5>(III) Positive Semidefinite (PSD) Cone $\mathbb{S}^n_+$</h5>
-        $$ \mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid z^\top X z \ge 0 \ \forall z \in \mathbb{R}^n\} $$
-        <p><b>Convexity Proof:</b> If $X, Y \succeq 0$, then $z^\top (\theta X + (1-\theta)Y) z = \theta (z^\top X z) + (1-\theta) (z^\top Y z) \ge 0$.
-        <br><b>Modeling:</b> Encodes eigenvalues, ellipses, and covariance matrices. (Warning: PSD is not elementwise non-negativity!).</p>
+        $$ \mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid \mathbf{v}^\top X \mathbf{v} \ge 0 \ \forall \mathbf{v}\} $$
+        <p><b>Structure:</b> Non-polyhedral cone. Self-dual.
+        <br><b>Convexity:</b> If $X, Y \succeq 0$, then for any $\mathbf{v}$,
+        $$ \mathbf{v}^\top (\theta X + (1-\theta)Y) \mathbf{v} = \theta (\mathbf{v}^\top X \mathbf{v}) + (1-\theta) (\mathbf{v}^\top Y \mathbf{v}) \ge 0 $$
+        So the mixture is PSD.
+        <br><b>Modeling:</b> Encodes eigenvalues, ellipsoids, and correlations. WARNING: PSD is <i>not</i> elementwise non-negativity.</p>
 
         <div class="theorem-box">
           <h4>Unified View: The Conic Program Template</h4>
-          <p>LP, SOCP, and SDP are all instances of the same problem:
-          $$ \min c^\top x \quad \text{s.t.} \quad Ax = b, \quad x \in K $$
-          where $K$ is a product of these "Big Three" cones. Solvers like Mosek/SCS/ECOS are designed to handle exactly this structure efficiently.</p>
+          <p>Modern solvers treat LP, SOCP, and SDP uniformly:
+          $$ \min c^\top x \quad \text{s.t.} \quad Ax = b, \quad F(x) \in K $$
+          where $K$ is a Cartesian product of Orthant, SOC, and PSD cones.</p>
         </div>
 
         <div class="insight">
@@ -312,61 +316,47 @@
 
         <div class="theorem-box">
           <h4>Theorem (Bipolar Theorem)</h4>
-          <p>If $K$ is a convex cone, then its second dual (bipolar) is its closure:</p>
-          $$ K^{**} = \mathrm{cl}(K) $$
-          <p>Consequently, if $K$ is a <b>closed convex cone</b>, then $K^{**} = K$. This is the "reflexive" property of cones, analogous to $(V^\perp)^\perp = V$ for subspaces.</p>
-          <div class="proof-box">
-            <h4>Proof Sketch</h4>
-            <p>1. $K \subseteq K^{**}$: If $\mathbf{x} \in K$, then for all $\mathbf{y} \in K^*$, $\mathbf{y}^\top \mathbf{x} \ge 0$. Thus $\mathbf{x}$ makes a non-negative angle with everything in $K^*$, so $\mathbf{x} \in K^{**}$.</p>
-            <p>2. $K^{**} \subseteq \mathrm{cl}(K)$: If $\mathbf{x} \notin \mathrm{cl}(K)$, by the Separating Hyperplane Theorem, there exists $\mathbf{y}$ strictly separating $\mathbf{x}$ from $\mathrm{cl}(K)$. This $\mathbf{y}$ can be shown to lie in $K^*$ while $\mathbf{y}^\top \mathbf{x} < 0$, proving $\mathbf{x} \notin K^{**}$.</p>
-          </div>
+          <p>If $K$ is a convex cone, then $K^{**} = \mathrm{cl}(K)$.
+          <br>For <b>closed</b> convex cones, $K^{**} = K$.
+          <br><i>Meaning:</i> The dual of the dual is the primal. This is the cone version of $(V^\perp)^\perp = V$.
+          <br><i>Proof Sketch:</i> $K \subseteq K^{**}$ is trivial (if $x \in K$, it makes acute angles with all $y \in K^*$). The reverse uses the separating hyperplane theorem: if $x \notin K$, we can separate it from $K$ with a hyperplane that proves $x \notin K^{**}$.</p>
         </div>
 
         <div class="insight">
-          <h4>The Dual Cone Construction Kit</h4>
-          <p>How do you find the dual of a complex cone? Use these calculus rules (valid for closed convex cones):</p>
+          <h4>Dual Operations Table (Calculus of Cones)</h4>
+          <p>Use these rules to compute duals of complex cones:</p>
           <table class="data-table">
             <thead>
               <tr>
                 <th>Operation</th>
-                <th>Primal Cone $K$</th>
-                <th>Dual Cone $K^*$</th>
-                <th>Intuition</th>
+                <th>Primal $K$</th>
+                <th>Dual $K^*$</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><b>Intersection</b></td>
+                <td>Intersection</td>
                 <td>$K_1 \cap K_2$</td>
-                <td>$K_1^* + K_2^*$</td>
-                <td>Dual of AND is OR (Minkowski sum).</td>
+                <td>$K_1^* + K_2^*$ (Sum)</td>
               </tr>
               <tr>
-                <td><b>Sum</b></td>
+                <td>Sum</td>
                 <td>$K_1 + K_2$</td>
-                <td>$K_1^* \cap K_2^*$</td>
-                <td>Dual of OR is AND.</td>
+                <td>$K_1^* \cap K_2^*$ (Intersection)</td>
               </tr>
               <tr>
-                <td><b>Linear Map</b></td>
-                <td>$A(K) = \{Ax \mid x \in K\}$</td>
-                <td>$(A^\top)^{-1}(K^*) = \{y \mid A^\top y \in K^*\}$</td>
-                <td>Linear maps act as inverse transpose on duals.</td>
-              </tr>
-              <tr>
-                <td><b>Inverse Map</b></td>
-                <td>$A^{-1}(K) = \{x \mid Ax \in K\}$</td>
-                <td>$A^\top (K^*) = \{A^\top y \mid y \in K^*\}$</td>
-                <td>(assuming $A$ has full range).</td>
-              </tr>
-              <tr>
-                <td><b>Product</b></td>
+                <td>Product</td>
                 <td>$K_1 \times K_2$</td>
                 <td>$K_1^* \times K_2^*$</td>
-                <td>Component-wise duality.</td>
+              </tr>
+              <tr>
+                <td>Linear Map</td>
+                <td>$A(K)$</td>
+                <td>$(A^\top)^{-1}(K^*)$</td>
               </tr>
             </tbody>
           </table>
+          <p><i>Note:</i> For the Intersection rule, the sum $K_1^* + K_2^*$ might need to be closed ($\mathrm{cl}(K_1^* + K_2^*)$).</p>
         </div>
 
       <h4>The Polar Cone</h4>

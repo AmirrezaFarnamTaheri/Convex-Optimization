@@ -474,7 +474,8 @@
           $$ \min f_0(x) \quad \text{s.t.} \quad f_i(x) \le 0, \quad Ax = b $$
           If there exists a point $x \in \mathrm{relint}(\mathcal{D})$ such that:
           $$ f_i(x) < 0, \quad i=1,\dots,m, \quad Ax = b $$
-          (strictly feasible for non-affine inequalities), then <b>strong duality holds</b> ($d^* = p^*$) and the dual optimal value is attained (if $p^* > -\infty$).</p>
+          (strictly feasible for non-affine inequalities), then <b>strong duality holds</b> ($d^* = p^*$) and the dual optimal value is attained (if $p^* > -\infty$).
+          <br><b>Note on Relative Interior:</b> We require $x \in \mathrm{relint}(\mathcal{D})$ rather than the interior to handle equality constraints. For example, if $Ax=b$, the feasible set has empty interior in $\mathbb{R}^n$, but may have a non-empty relative interior within the affine subspace.</p>
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
@@ -583,7 +584,7 @@
           <h4>Geometric Interpretation via Normal Cones</h4>
           <p>The stationarity condition $0 \in \nabla f_0(x^*) + \sum \lambda_i \nabla f_i(x^*) + \sum \nu_j \nabla h_j(x^*)$ has a deep geometric meaning:
           $$ -\nabla f_0(x^*) \in N_{\mathcal{F}}(x^*) $$
-          The negative gradient of the objective must lie in the <b>normal cone</b> of the feasible set at the optimal point.</p>
+          The negative gradient of the objective (the "gravity" pulling the ball downhill) must be balanced by the reaction forces from the active constraints. The vector $\sum \lambda_i \nabla f_i(x^*)$ represents the normal force exerted by the "walls" of the feasible set. Optimality is simply <b>static equilibrium</b>: Net Force = 0.</p>
         </div>
 
         <div class="example">
@@ -610,14 +611,15 @@
         <p>Duality provides powerful insights into how the optimal value changes when constraints are perturbed.</p>
 
         <h3>6.1 The Value Function (Perturbation Function)</h3>
-        <p>Consider the perturbed primal problem with optimal value $p^*(u, v)$:</p>
+        <p>We define the optimal value function $p^*(u, v)$ as the minimum cost achievable when the constraints are relaxed by amounts $u$ and $v$:</p>
         $$
         \begin{aligned}
-        \min \quad & f_0(x) \\
+        p^*(u, v) = \inf_x \quad & f_0(x) \\
         \text{s.t.} \quad & f_i(x) \le u_i, \quad i=1\dots m \\
         & h_j(x) = v_j, \quad j=1\dots p
         \end{aligned}
         $$
+        <p><b>Interpretation:</b> If $u_i > 0$, we have loosened the $i$-th constraint (making it easier to satisfy). If $u_i < 0$, we have tightened it. The function $p^*(u, v)$ maps "resource availability" to "optimal cost".</p>
 
         <h3>6.2 Convexity of the Value Function</h3>
         <p>If the original problem is convex (convex $f_0, f_i$, affine $h_j$), then $p^*(u, v)$ is a <b>convex function</b> of $(u, v)$.</p>

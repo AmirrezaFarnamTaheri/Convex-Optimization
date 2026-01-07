@@ -119,20 +119,24 @@
       <h3>1.4 Optimality Conditions</h3>
       <div class="theorem-box">
         <h4>Theorem: Subgradient Optimality Condition</h4>
-        <p>For a convex function $f$, a point $\mathbf{x}^*$ minimizes $f$ if and only if $0 \in \partial f(\mathbf{x}^*)$.</p>
+        <p>For a convex function $f$, a point $\mathbf{x}^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(\mathbf{x}^*)$.</p>
         <div class="proof-box">
           <h4>Proof</h4>
           <div class="proof-step">
-            <strong>($\Rightarrow$) Minimizer $\implies$ $0 \in \partial f(\mathbf{x}^*)$:</strong>
-            If $\mathbf{x}^*$ minimizes $f$, then $f(\mathbf{y}) \ge f(\mathbf{x}^*)$ for all $\mathbf{y}$. This is exactly the subgradient inequality with $\mathbf{g} = 0$:
+            <strong>1. Direction: Minimizer $\implies$ $0 \in \partial f(\mathbf{x}^*)$</strong>
+            <br>Assume $\mathbf{x}^*$ is a global minimizer. By definition, this means:
+            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) \quad \text{for all } \mathbf{y} \in \mathrm{dom}\, f $$
+            We can rewrite the right-hand side artificially as:
             $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) + 0^\top (\mathbf{y} - \mathbf{x}^*) $$
-            Thus $0 \in \partial f(\mathbf{x}^*)$.
+            Comparing this to the definition of subgradient ($f(\mathbf{y}) \ge f(\mathbf{x}) + g^\top (\mathbf{y}-\mathbf{x})$), we see that the zero vector $\mathbf{g} = 0$ satisfies the condition. Therefore, $0 \in \partial f(\mathbf{x}^*)$.
           </div>
           <div class="proof-step">
-            <strong>($\Leftarrow$) $0 \in \partial f(\mathbf{x}^*) \implies$ Minimizer:</strong>
-            If $0 \in \partial f(\mathbf{x}^*)$, then by definition:
-            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) + 0^\top (\mathbf{y} - \mathbf{x}^*) = f(\mathbf{x}^*) $$
-            for all $\mathbf{y}$. Thus $\mathbf{x}^*$ minimizes $f$.
+            <strong>2. Direction: $0 \in \partial f(\mathbf{x}^*) \implies$ Minimizer</strong>
+            <br>Assume the zero vector is in the subdifferential set. By definition, this means:
+            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) + 0^\top (\mathbf{y} - \mathbf{x}^*) \quad \text{for all } \mathbf{y} $$
+            The dot product term vanishes:
+            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) $$
+            This inequality holds for all $\mathbf{y}$ in the domain, which is exactly the definition of $\mathbf{x}^*$ being a global minimizer.
           </div>
         </div>
       </div>
@@ -562,42 +566,67 @@
         <h4>(e) Negative Entropy & Log-Sum-Exp</h4>
           <p>Let $f(x) = \sum_{i=1}^n x_i \log x_i$ on the probability simplex $\Delta_n = \{x \mid x \ge 0, \sum x_i = 1\}$. This is the negative Shannon entropy.
           <br><b>Conjugate Derivation:</b>
-          Maximize $y^\top x - \sum x_i \log x_i$ subject to $\sum x_i = 1$ and $x \ge 0$.
-          <br>Lagrangian: $L(x, \nu) = \sum y_i x_i - \sum x_i \log x_i + \nu (\sum x_i - 1)$.
-          <br>Stationarity: $y_i - (1 + \log x_i) + \nu = 0 \implies \log x_i = y_i + \nu - 1 \implies x_i = e^{y_i + \nu - 1}$.
-          <br>Normalize using $\sum x_i = 1$: $\sum e^{y_i + \nu - 1} = e^{\nu - 1} \sum e^{y_i} = 1 \implies e^{\nu - 1} = 1 / \sum e^{y_k}$.
-          <br>Substitute back: $x_i^* = \frac{e^{y_i}}{\sum e^{y_k}}$.
-          <br><b>Value:</b> $\sum y_i x_i^* - \sum x_i^* \log x_i^*$. Note $\log x_i^* = y_i - \log(\sum e^{y_k})$.
-          <br>Sum is $\sum x_i^* (y_i - (y_i - \log \sum e^{y_k})) = \sum x_i^* \log(\sum e^{y_k}) = \log(\sum e^{y_k})$.
+          We wish to calculate $f^*(y) = \sup_{x \in \Delta_n} (y^\top x - \sum x_i \log x_i)$. This is a constrained optimization problem:
+          $$ \begin{array}{ll} \text{maximize} & \sum y_i x_i - \sum x_i \log x_i \\ \text{subject to} & \sum x_i = 1, \ x \ge 0 \end{array} $$
+          <br><b>Step 1: Form the Lagrangian.</b>
+          We introduce a Lagrange multiplier $\nu$ for the equality constraint $\sum x_i = 1$. (We implicitly handle $x \ge 0$ by the domain of $\log$).
+          $$ L(x, \nu) = \sum y_i x_i - \sum x_i \log x_i + \nu \left(\sum x_i - 1\right) $$
+          <br><b>Step 2: Find Stationary Point.</b>
+          Take the derivative with respect to $x_i$ and set to zero:
+          $$ \frac{\partial L}{\partial x_i} = y_i - (\log x_i + 1) + \nu = 0 $$
+          Solving for $x_i$:
+          $$ \log x_i = y_i + \nu - 1 \implies x_i(\nu) = e^{y_i + \nu - 1} = e^{y_i} e^{\nu - 1} $$
+          <br><b>Step 3: Determine Multiplier $\nu$.</b>
+          Use the constraint $\sum x_i = 1$:
+          $$ \sum_{i=1}^n x_i(\nu) = \sum_{i=1}^n (e^{y_i} e^{\nu - 1}) = e^{\nu - 1} \sum_{i=1}^n e^{y_i} = 1 $$
+          Solving for the term $e^{\nu-1}$:
+          $$ e^{\nu - 1} = \frac{1}{\sum_{k=1}^n e^{y_k}} $$
+          <br><b>Step 4: Substitute Back.</b>
+          The optimal $x_i^*$ is:
+          $$ x_i^* = e^{y_i} \left( \frac{1}{\sum e^{y_k}} \right) = \frac{e^{y_i}}{\sum_{k=1}^n e^{y_k}} $$
+          (This is the famous <b>Softmax</b> function!)
+          <br><b>Step 5: Compute Optimal Value.</b>
+          Plug $x^*$ into the objective $y^\top x - f(x)$:
+          $$ \text{Value} = \sum_i y_i x_i^* - \sum_i x_i^* \log x_i^* $$
+          Substitute $\log x_i^* = y_i - \log(\sum e^{y_k})$:
+          $$ \begin{aligned}
+             \text{Value} &= \sum y_i x_i^* - \sum x_i^* (y_i - \log(\sum e^{y_k})) \\
+             &= \sum y_i x_i^* - \sum y_i x_i^* + \sum x_i^* \log(\sum e^{y_k}) \\
+             &= \left(\sum x_i^*\right) \log\left(\sum e^{y_k}\right)
+             \end{aligned} $$
+          Since $\sum x_i^* = 1$, the result is:
           <br><b>Result:</b> $f^*(y) = \log\left(\sum_{i=1}^n e^{y_i}\right)$ (Log-Sum-Exp).
           <br>This duality is fundamental to Maximum Entropy modeling and Logistic Regression.</p>
       </div>
 
       <div class="example">
         <h4>(f) Geometric Mean via Conjugates</h4>
-        <p>Consider $f(x) = -g(x) = -(\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We show $f$ is convex by proving its conjugate is the indicator of a convex set.
-        <br>The conjugate is $f^*(y) = \sup_{x>0} (y^\top x + (\prod x_i)^{1/n})$. Let $\Phi_y(x) = y^\top x + g(x)$.
-        <br><b>Step 1: Necessary conditions.</b>
+        <p>Consider the negative geometric mean $f(x) = -(\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We wish to compute its conjugate to prove $f$ is convex.
+        $$ f^*(y) = \sup_{x \succ 0} \left( y^\top x + \left(\prod_{i=1}^n x_i\right)^{1/n} \right) $$
+        <br><b>Step 1: Homogeneity and Domain.</b>
+        Note that the term inside the supremum is homogeneous of degree 1. Let $h(x) = y^\top x + (\prod x_i)^{1/n}$.
+        Since $h(tx) = t h(x)$ for any $t > 0$:
         <ul>
-          <li>If any $y_i > 0$, taking $x_i \to \infty$ gives $\sup = \infty$. So we require $y \le 0$.</li>
-          <li>Consider scaling $\mathbf{x}$ by $t > 0$: $\Phi_{\mathbf{y}}(t\mathbf{x}) = t(\mathbf{y}^\top \mathbf{x} + g(\mathbf{x}))$. For the supremum to be finite (not $+\infty$), we must have $\mathbf{y}^\top \mathbf{x} + g(\mathbf{x}) \le 0$ for all $\mathbf{x}$. But if it is strictly negative somewhere, the supremum over $t$ is 0. If it is positive somewhere, it is $\infty$.
-          <br>Crucially, testing $\mathbf{x} = \mathbf{1}$ gives $t(\sum y_i + 1)$. If $\sum y_i > -1$, limit is $\infty$. If $\sum y_i < -1$, we can find other directions.
-          <br> Detailed analysis shows we must have $\sum y_i = -1$ to avoid blowup.</li>
+          <li>If there exists <i>any</i> $x$ such that $h(x) > 0$, then letting $t \to \infty$ gives $\sup = \infty$.</li>
+          <li>Therefore, for the conjugate to be finite, we must have $h(x) \le 0$ for all $x$.</li>
+          <li>If $h(x) \le 0$ for all $x$, then the supremum is $0$ (achieved at $x \to 0$ or $x=0$).</li>
         </ul>
-        <b>Step 2: Explicit Optimization.</b>
-        Stationary condition $\nabla_{\mathbf{x}} \Phi_{\mathbf{y}} = 0 \implies y_i + \frac{g(\mathbf{x})}{n x_i} = 0 \implies x_i = \frac{g(\mathbf{x})}{n(-y_i)}$.
-        Substituting back into $g(\mathbf{x}) = (\prod x_i)^{1/n}$ yields the condition $\prod (-y_i) = n^{-n}$.
-        <br>However, evaluating the objective at the optimizer gives $\mathbf{y}^\top \mathbf{x} + g(\mathbf{x}) = \sum (-g(\mathbf{x})/n) + g(\mathbf{x}) = -g(\mathbf{x}) + g(\mathbf{x}) = 0$.
+        Thus, $f^*(y)$ is the <b>indicator function</b> of the set $C = \{y \mid y^\top x + (\prod x_i)^{1/n} \le 0 \ \forall x \succ 0\}$.
+
+        <br><b>Step 2: Explicit Condition for Set $C$.</b>
+        First, if any $y_i > 0$, we can choose $x$ to align with $y$ and make $h(x)$ large positive. So we must have $y \le 0$.
+        Let's analyze the condition $y^\top x + (\prod x_i)^{1/n} \le 0$.
+        Rewrite as: $(\prod x_i)^{1/n} \le -y^\top x = \sum (-y_i) x_i$.
+        This looks like the <b>AM-GM Inequality</b>: $\sqrt[n]{\prod a_i} \le \frac{1}{n} \sum a_i$.
+        However, here we have weights $-y_i$. By the <b>Weighted AM-GM inequality</b>:
+        $$ \prod_{i=1}^n x_i^{\lambda_i} \le \sum_{i=1}^n \lambda_i x_i \quad \text{where } \sum \lambda_i = 1, \lambda_i \ge 0 $$
+        Comparing terms, let's try to match $\sum (-y_i) x_i$ to $\sum \lambda_i x_i$.
+        This suggests we can force the inequality to hold if we relate $-y_i$ to $1/n$.
         <br>
-        Since $f$ is 1-homogeneous, its conjugate $f^*(\mathbf{y})$ must be the indicator function of some convex set $S$. Specifically, $f^*(\mathbf{y}) = 0$ if $\mathbf{y} \in S$ and $\infty$ otherwise.
-        <br>The scaling condition requires that for any $t > 0$, the supremum must not blow up. Considering $f(\mathbf{x}) = - (\prod x_i)^{1/n}$, the condition $\mathbf{y}^\top \mathbf{x} - f(\mathbf{x}) \le 0$ for all $\mathbf{x}$ implies that the arithmetic mean (weighted by $-\mathbf{y}$) dominates the geometric mean.
-        <br>Using the weighted AM-GM inequality, $\sum \lambda_i z_i \ge \prod z_i^{\lambda_i}$ for $\sum \lambda_i = 1$.
-        Let $\lambda_i = 1/n$. We have $\frac{1}{n} \sum x_i \ge (\prod x_i)^{1/n}$.
-        This inequality can be rewritten as $\sum (-1/n) x_i + (\prod x_i)^{1/n} \le 0$.
-        This matches the form $y^\top x - f(x) \le 0$ with $y_i = -1/n$.
-        <br>More generally, for the geometric mean $f(x) = -(\prod x_i)^{1/n}$, the conjugate is the indicator of the set:
-        $$ D = \left\{ y \prec 0 \ \middle|\ \left(\prod (-y_i)\right)^{1/n} \ge \frac{1}{n} \right\} $$
-        <br><b>Result:</b> $f^*(y) = \delta_D(y)$. Since $D$ is a convex set (superlevel set of a concave geometric mean), $f$ is convex.
+        A precise derivation using Lagrange multipliers on the optimization problem $\sup ( \prod x_i^{1/n} )$ s.t. $y^\top x = -1$ yields the condition:
+        $$ \left( \prod_{i=1}^n (-y_i) \right)^{1/n} \ge \frac{1}{n} \quad \text{and} \quad y \prec 0 $$
+        (This set $C$ is the convex superlevel set of the geometric mean of $-y$).
+        <br><b>Result:</b> $f^*(y) = 0$ if $y \in C$, else $\infty$. Since the domain $C$ is a convex set (superlevel set of concave function), $f^*$ is convex. This implies $f$ is convex.</p>
       </div>
 
       <h3>3.4 Algebraic Rules for Conjugates</h3>
@@ -783,12 +812,11 @@
                 The inequality takes the form $|x-c|^2 \le R^2$. This describes a <b>Euclidean ball</b>, which is a convex set.</li>
               <li><b>Case $\alpha = 1$:</b> The quadratic term vanishes. We are left with a linear inequality $2(b-a)^\top x + C \le 0$, which describes a <b>halfspace</b>. This is a convex set.</li>
               <li><b>Case $\alpha > 1$:</b> The coefficient of $x^\top x$ is negative ($1-\alpha^2 < 0$).
-                Dividing by the negative coefficient reverses the inequality: $x^\top x + v^\top x + C \ge 0$.
-                Completing the square, this is equivalent to $\|x-c\|^2 \ge R^2$.
-                This describes the <b>exterior (complement) of an open ball</b>.
-                <br><i>Correction:</i> The complement of a ball is <b>not convex</b>. (e.g., midpoint of two distant points is inside the hole).
-                <br>Therefore, the distance ratio function is <b>quasiconvex</b> only on the halfspace defined by $\alpha \le 1$ (the set of points closer to $a$ than $b$). It is not globally quasiconvex on $\mathbb{R}^n$.</li>
-            </ul></p>
+            Dividing by the negative coefficient reverses the inequality: $\|x-c\|^2 \ge R^2$.
+            This describes the <b>exterior of an open ball</b> (the hole is the ball). The complement of a ball is <b>not convex</b>.
+            (For example, the midpoint of two points on opposite sides of the hole might fall inside the hole).</li>
+        </ul>
+        <p><b>Conclusion:</b> The distance ratio function is <b>quasiconvex</b> only on the set $\{x \mid f(x) \le 1\}$ (the Voronoi region of $a$). It is not globally quasiconvex on $\mathbb{R}^n$. This subtle distinction is important in facility location problems.</p>
         </div>
         <div class="example">
             <h4>5. Generalized Eigenvalue</h4>
@@ -1164,11 +1192,13 @@
     </div>
     <div class="proof-step">
       <strong>Part C: Variance Interpretation.</strong>
-      Consider a discrete random variable $Z$ that takes value $v_i$ with probability $p_i$ (where $p$ is the softmax vector defined above).
-      <br>The term $\sum p_i v_i$ is the expected value $\mathbb{E}[Z]$.
-      <br>The term $\sum p_i v_i^2$ is the second moment $\mathbb{E}[Z^2]$.
-      <br>The expression for the quadratic form is $\mathbb{E}[Z^2] - (\mathbb{E}[Z])^2$, which is exactly the variance $\text{Var}(Z)$.
-      <br>Since variance is always non-negative, $v^\top \nabla^2 f v \ge 0$. Thus $f$ is convex.
+      Let $Z$ be a random variable taking values $v_1, \dots, v_n$ with probabilities $p_1, \dots, p_n$ (where $p$ is the softmax vector).
+      <br>The term $\sum p_i v_i$ corresponds to the expected value: $\mathbb{E}[Z]$.
+      <br>The term $\sum p_i v_i^2$ corresponds to the second moment: $\mathbb{E}[Z^2]$.
+      <br>The quadratic form of the Hessian is:
+      $$ v^\top \nabla^2 f(x) v = \mathbb{E}[Z^2] - (\mathbb{E}[Z])^2 = \mathrm{Var}(Z) $$
+      Since variance is always non-negative ($\mathrm{Var}(Z) \ge 0$), the Hessian is positive semidefinite.
+      <br><b>Intuition:</b> The curvature of the Log-Sum-Exp function in direction $v$ is exactly the variance of the softmax distribution projected onto $v$. When the probabilities are uniform ($p_i \approx 1/n$), the variance is high (high curvature). When the probabilities concentrate on one index ($p_k \approx 1$), the variance approaches zero (flat), matching the behavior of the "hard" max function.
     </div>
   </div>
 </div>

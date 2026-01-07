@@ -624,10 +624,18 @@
         <div class="proof-step">
             <strong>Step 2: Support Function of the Ball.</strong>
             Substitute $\mathbf{x} = \mathbf{x}_c + \mathbf{u}$ where $\|\mathbf{u}\|_2 \le r$.
-            $$ \sup_{\|u\|_2 \le r} a_i^\top (x_c + u) = a_i^\top x_c + \sup_{\|u\|_2 \le r} a_i^\top u $$
-            Recall the definition of the dual norm: $\|\mathbf{v}\|_* = \sup \{\mathbf{v}^\top \mathbf{u} \mid \|\mathbf{u}\| \le 1\}$. Scaling the variable $\mathbf{u}$ by $r$, we get $\sup \{\mathbf{v}^\top \mathbf{u} \mid \|\mathbf{u}\| \le r\} = r \|\mathbf{v}\|_*$.
-            For the Euclidean norm, the dual is the Euclidean norm itself ($\|\cdot\|_2^* = \|\cdot\|_2$). Thus:
-            $$ \sup_{\|u\| \le r} a_i^\top u = r \|a_i\|_2 $$
+            The condition becomes:
+            $$ \sup_{\|u\|_2 \le r} a_i^\top (x_c + u) \le b_i \implies a_i^\top x_c + \sup_{\|u\|_2 \le r} (a_i^\top u) \le b_i $$
+            We need to evaluate the term $\sup_{\|u\|_2 \le r} (a_i^\top u)$.
+            <ul>
+                <li>Recall the definition of the <b>dual norm</b>: $\|y\|_* = \sup \{y^\top x \mid \|x\| \le 1\}$.</li>
+                <li>By scaling the constraint $\|x\| \le r$ to $\|x/r\| \le 1$, we get:
+                    $$ \sup_{\|u\| \le r} a_i^\top u = r \sup_{\|v\| \le 1} a_i^\top v = r \|a_i\|_* $$
+                </li>
+                <li>For the Euclidean norm (L2), the dual is itself ($\|\cdot\|_2^* = \|\cdot\|_2$). Thus:
+                    $$ \sup_{\|u\|_2 \le r} a_i^\top u = r \|a_i\|_2 $$
+                </li>
+            </ul>
         </div>
         <div class="proof-step">
             <strong>Step 3: Linear Constraints.</strong>
@@ -1434,13 +1442,23 @@
           <br>2. A posynomial becomes a sum of exponentials: $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}} = \sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k}$ (where $b_k = \log c_k$).
           <br>3. Taking the log gives the function $g(y) = \log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$. This is the composition of the **Log-Sum-Exp** function with affine maps.
           <br>4. <b>Why is Log-Sum-Exp convex?</b> We prove $f(u) = \log(\sum e^{u_i})$ is convex using Hölder's inequality.
-          <br>Let $u, v \in \mathbb{R}^n$ and $\theta \in [0,1]$.
-          $$ f(\theta u + (1-\theta)v) = \log\left(\sum e^{\theta u_i} e^{(1-\theta)v_i}\right) $$
-          Applying Hölder's inequality with $p=1/\theta$ and $q=1/(1-\theta)$:
-          $$ \sum (e^{u_i})^\theta (e^{v_i})^{1-\theta} \le \left(\sum e^{u_i}\right)^\theta \left(\sum e^{v_i}\right)^{1-\theta} $$
-          Taking the log of both sides (log is monotonic increasing):
-          $$ \log\left(\sum e^{\theta u_i + (1-\theta)v_i}\right) \le \theta \log\left(\sum e^{u_i}\right) + (1-\theta) \log\left(\sum e^{v_i}\right) $$
-          Thus, $f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v)$.
+          <br>Let $u, v \in \mathbb{R}^n$ and $\theta \in (0,1)$. We want to show:
+          $$ f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v) $$
+          <b>Sub-step 4a: Setup the Sum.</b>
+          $$ \exp(f(\theta u + (1-\theta)v)) = \sum_i e^{\theta u_i + (1-\theta)v_i} = \sum_i (e^{u_i})^\theta (e^{v_i})^{1-\theta} $$
+          <b>Sub-step 4b: Apply Hölder's Inequality.</b>
+          Hölder's inequality states $\sum a_i b_i \le (\sum a_i^p)^{1/p} (\sum b_i^q)^{1/q}$ for $1/p + 1/q = 1$.
+          Set $a_i = (e^{u_i})^\theta$, $b_i = (e^{v_i})^{1-\theta}$.
+          Set $p = 1/\theta$, $q = 1/(1-\theta)$. Note $1/p + 1/q = \theta + (1-\theta) = 1$.
+          $$ \sum_i (e^{u_i})^\theta (e^{v_i})^{1-\theta} \le \left( \sum_i (e^{u_i})^{\theta \cdot \frac{1}{\theta}} \right)^\theta \left( \sum_i (e^{v_i})^{(1-\theta) \cdot \frac{1}{1-\theta}} \right)^{1-\theta} $$
+          Simplifying the powers:
+          $$ \sum_i e^{\theta u_i + (1-\theta)v_i} \le \left(\sum_i e^{u_i}\right)^\theta \left(\sum_i e^{v_i}\right)^{1-\theta} $$
+          <b>Sub-step 4c: Take the Logarithm.</b>
+          Since $\log$ is monotonic increasing, applying it preserves the inequality:
+          $$ \log\left(\sum e^{\theta u_i + (1-\theta)v_i}\right) \le \log\left( \left(\sum e^{u_i}\right)^\theta \left(\sum e^{v_i}\right)^{1-\theta} \right) $$
+          Using properties of log:
+          $$ \text{LHS} \le \theta \log\left(\sum e^{u_i}\right) + (1-\theta) \log\left(\sum e^{v_i}\right) $$
+          $$ f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v) $$
           <br>5. Since Log-Sum-Exp is convex and affine composition preserves convexity, the transformed posynomial is convex.</p>
       </div>
 

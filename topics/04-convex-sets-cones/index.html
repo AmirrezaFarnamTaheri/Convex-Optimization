@@ -888,23 +888,23 @@
   <p>Describe all closed convex cones in $\mathbb{R}^2$.</p>
 
   <div class="recap-box">
-    <h4>Recap</h4>
-    <p>In 2D, convex cones are simply wedges radiating from the origin. The dual cone relationship is purely geometric: if the primal cone has angle $\phi$, the dual cone has angle $\pi - \phi$.</p>
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Geometric Intuition:</b> In 2D, a cone is simply a "wedge" radiating from the origin.</li>
+        <li><b>Dual Angle Relation:</b> If a cone has angular width $\alpha$, its dual cone has angular width $\pi - \alpha$. If the cone is "sharp" ($\alpha < \pi/2$), the dual is "blunt".</li>
+    </ul>
   </div>
 
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      Any closed convex cone $K \subset \mathbb{R}^2$ must be one of the following:
+      Any closed convex cone $K \subset \mathbb{R}^2$ must fall into one of these categories:
       <ul>
-        <li>The origin $\{0\}$.</li>
-        <li>A single ray $\{t v \mid t \ge 0\}$.</li>
-        <li>A "wedge" defined by the intersection of two half-planes passing through the origin. This can be parameterized by two angles $[\theta_1, \theta_2]$ where $|\theta_2 - \theta_1| \le \pi$. If the difference is $\pi$, it is a half-plane.</li>
-        <li>The entire plane $\mathbb{R}^2$.</li>
+        <li><b>Zero Dimensional:</b> The origin $\{0\}$. (Dual is $\mathbb{R}^2$).</li>
+        <li><b>One Dimensional:</b> A single ray $\{t v \mid t \ge 0\}$. (Dual is a halfspace).</li>
+        <li><b>Two Dimensional (Proper):</b> A "wedge" defined by two rays. Analytically, $K = \{x \mid a_1^\top x \ge 0, a_2^\top x \ge 0\}$. The angle between the bounding rays is less than $\pi$.</li>
+        <li><b>Two Dimensional (Improper):</b> A half-plane (angle $\pi$) or the entire plane $\mathbb{R}^2$ (angle $2\pi$).</li>
       </ul>
-    </div>
-    <div class="proof-step">
-      Analytically, any proper cone in $\mathbb{R}^2$ can be written as $K = \{x \mid a_1^\top x \ge 0, a_2^\top x \ge 0\}$ for two linearly independent vectors $a_1, a_2$.
     </div>
   </div>
 </div>
@@ -914,16 +914,30 @@
   <p>Prove that if $\mathrm{int}(K) \neq \emptyset$, then $K^*$ is pointed.</p>
 
   <div class="recap-box">
-    <h4>Recap</h4>
-    <p>There is a duality between "solidness" and "pointedness". A fat cone (solid) forces its dual to be sharp (pointed). A flat cone (subspace) allows its dual to be wide (subspace).</p>
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Geometric Duality:</b> There is a duality between "solidness" and "pointedness". A fat cone (solid) forces its dual to be sharp (pointed). A flat cone (subspace) allows its dual to be wide (subspace).</li>
+        <li><b>Lineality Space:</b> The set $K \cap -K$ is the lineality space. Pointed means the lineality space is $\{0\}$.</li>
+    </ul>
   </div>
 
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      If $y \in K^* \cap -K^*$, then $y^\top x = 0$ for all $x \in K$.
-      Since $K$ has interior, it contains a basis of $\mathbb{R}^n$.
-      A vector orthogonal to a basis must be the zero vector. Thus $y=0$, so $K^*$ is pointed.
+      <strong>Step 1: Characterize the Lineality Space.</strong>
+      $K^*$ is pointed if $K^* \cap -K^* = \{0\}$.
+      Let $y \in K^* \cap -K^*$. This means $y^\top x \ge 0$ AND $(-y)^\top x \ge 0$ for all $x \in K$.
+      Thus $y^\top x = 0$ for all $x \in K$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Use Solidness.</strong>
+      Since $\mathrm{int}(K) \neq \emptyset$, the cone $K$ contains a basis of $\mathbb{R}^n$. Specifically, there exist $n$ linearly independent vectors $b_1, \dots, b_n \in K$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Orthogonality Argument.</strong>
+      We know $y^\top b_i = 0$ for all $i=1\dots n$.
+      Since the $b_i$ span $\mathbb{R}^n$, the only vector orthogonal to all of them is the zero vector.
+      Therefore $y = 0$. This proves $K^*$ contains no lines, so it is pointed.
     </div>
   </div>
 </div>
@@ -933,15 +947,30 @@
   <p>Let $K = \{Ax \mid x \ge 0\}$. Show $K^* = \{y \mid A^\top y \ge 0\}$.</p>
 
   <div class="recap-box">
-    <h4>Recap</h4>
-    <p>This is the dual of the finitely generated cone (polyhedral cone). It corresponds to the Farkas Lemma: $\mathbf{y}$ is in the dual cone if it makes a non-negative angle with all generators (columns of $A$).</p>
+    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
+    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
+        <li><b>Farkas Lemma Connection:</b> This result is the geometric heart of Farkas' Lemma. $\mathbf{y}$ is in the dual cone if it makes a non-negative angle with <i>all</i> vectors in $K$.</li>
+        <li><b>Generators:</b> Since every vector in $K$ is a non-negative sum of the columns of $A$, checking non-negativity on the columns is sufficient.</li>
+    </ul>
   </div>
 
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      $\mathbf{y} \in K^* \iff \mathbf{y}^\top (A\mathbf{x}) \ge 0 \ \forall \mathbf{x} \ge 0 \iff (A^\top \mathbf{y})^\top \mathbf{x} \ge 0 \ \forall \mathbf{x} \ge 0$.
-      This is true iff $A^\top \mathbf{y} \ge 0$ (component-wise).
+      <strong>Step 1: Definition.</strong>
+      $y \in K^* \iff y^\top z \ge 0$ for all $z \in K$.
+      Any $z \in K$ can be written as $z = Ax$ for some $x \ge 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Adjoint Property.</strong>
+      The condition becomes: $y^\top (Ax) \ge 0$ for all $x \ge 0$.
+      Using the transpose: $(A^\top y)^\top x \ge 0$ for all $x \ge 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Self-Duality of Positive Orthant.</strong>
+      Let $w = A^\top y$. The condition is $w^\top x \ge 0$ for all $x \in \mathbb{R}^n_+$.
+      This is exactly the definition of the dual cone of $\mathbb{R}^n_+$. Since the orthant is self-dual, this means $w \in \mathbb{R}^n_+$, i.e., $w \ge 0$.
+      Thus $A^\top y \ge 0$.
     </div>
   </div>
 </div>

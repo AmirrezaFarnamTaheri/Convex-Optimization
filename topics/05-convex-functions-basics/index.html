@@ -188,6 +188,13 @@
         <h3>1.3 Strict Convexity and Uniqueness</h3>
         <p>$f$ is <b>strictly convex</b> if for all distinct $x \neq y$ in $\operatorname{dom} f$ and all $\theta \in (0,1)$:</p>
         $$ f(\theta x + (1-\theta)y) < \theta f(x) + (1-\theta)f(y) $$
+        <div class="insight">
+          <h4>1D Analogy: Flat Spots</h4>
+          <p>Think of $f(x) = x^2$ (strictly convex) versus $f(x) = \max(0, x-1)$ (merely convex).
+          <br>$\bullet$ $x^2$: Any chord lies strictly above the graph. The minimum at $x=0$ is unique.
+          <br>$\bullet$ $\max(0, x-1)$: The graph is flat for $x \le 1$. Chords connecting points in the flat region lie <i>on</i> the graph, not above it. The minimum is not unique (any $x \le 1$ works).
+          <br><b>Rule:</b> Strict convexity bans flat spots.</p>
+        </div>
 
         <div class="theorem-box">
             <h4>Theorem: Uniqueness of Minimizers</h4>
@@ -563,6 +570,7 @@
           <h4>The Epigraph Encodes the Function Completely</h4>
           <p>The epigraph is not merely a certificate of convexity; it is a set-theoretic representation of the function itself. We can recover $f$ from $\mathrm{epi}\, f$ via:</p>
           $$ f(x) = \inf \{ t \mid (x, t) \in \mathrm{epi}\, f \} $$
+          <p><b>Visual:</b> Think of pouring water into the epigraph set. The surface of the water forms the graph of the function.</p>
           <ul>
               <li>If the set of $t$'s is empty, the infimum is $+\infty$ (correct for $x \notin \mathrm{dom} f$).</li>
               <li>If the set is unbounded below, the infimum is $-\infty$.</li>

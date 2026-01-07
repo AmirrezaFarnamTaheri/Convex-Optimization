@@ -396,6 +396,15 @@
         <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. It is an affine set of codimension 1.
         <br><b>Particular + Nullspace:</b> $H = x_0 + \{s \mid a^\top s = 0\}$.</p>
 
+        <div class="insight">
+          <h4>Geometric Intuition: The Level Set View</h4>
+          <p>Consider the function $f(x) = a^\top x$. This function measures "how far" you are in direction $a$.
+          <br>$\bullet$ The hyperplane $H$ is the level set where $f(x) = b$.
+          <br>$\bullet$ The normal vector $a$ points in the direction of increasing value.
+          <br>$\bullet$ Changing $b$ shifts the hyperplane parallel to itself along the direction $a$.
+          </p>
+        </div>
+
         <div class="theorem-box">
           <h4>Signed Distance to a Hyperplane</h4>
           <p>The signed distance of a point $y$ to $H$ is:
@@ -1184,9 +1193,9 @@
           <h4>Proof: Separation via Minimum Distance</h4>
           <p>We prove this for the case where $C$ is closed and $D$ is a singleton $\{d\}$ outside $C$. The general case follows by considering the set $S = C - D$.</p>
           <div class="proof-step">
-            <strong>Step 1: Find the Closest Point.</strong>
-            Since $C$ is closed and convex, there exists a unique point $p \in C$ that is closest to $d$.
-            Let $p = \Pi_C(d)$. The vector $a = d - p$ is non-zero (since $d \notin C$).
+            <strong>Step 1: Find the Closest Point (The Projection).</strong>
+            Since $C$ is closed and convex, the problem $\min_{x \in C} \|x - d\|^2$ has a unique solution. Let $p = \Pi_C(d)$ be this unique projection.
+            The vector $a = d - p$ is non-zero (since $d \notin C$). It points from the set towards the external point.
           </div>
           <div class="proof-step">
             <strong>Step 2: Construct the Hyperplane.</strong>

@@ -168,6 +168,13 @@
           </ul>
           <b>The Connection:</b> The dual problem of minimizing a norm $\|Ax-b\|$ naturally involves the dual norm constraint $\|z\|_* \le 1$. The dual norm appears because it is the "support function" of the unit ball.</p>
         </div>
+
+        <div class="intuition-box">
+          <h4>Economic Interpretation: Prices and Budgets</h4>
+          <p>If the Primal Problem minimizes <b>Cost</b> subject to <b>Resource Constraints</b> ($f_i(x) \le 0$), then:
+          <br><b>Dual Variables $\lambda_i$ are Shadow Prices:</b> They represent the marginal value of the $i$-th resource. $\lambda_i$ is the rate at which the optimal cost would decrease if you were given one more unit of resource $i$.
+          <br><b>The Dual Problem:</b> Maximizes the total value of the resources from the perspective of a competitor offering to buy them from you.</p>
+        </div>
       </section>
 
       <section class="section-card" id="section-2">
@@ -380,6 +387,14 @@
             $$
             <p>Since this holds for <i>every</i> feasible $\tilde{x}$, it holds for the infimum of the right side: $g(\lambda, \nu) \le \inf \{f_0(\tilde{x})\} = p^\star$.</p>
           </div>
+        </div>
+
+        <div class="intuition-box">
+          <h4>Game Theory Analogy</h4>
+          <p>Consider a zero-sum game between a Minimizer (Primal) and a Maximizer (Dual).
+          <br><b>Weak Duality</b> says: The best score the Minimizer can guarantee (knowing the Maximizer will play optimally against them) is always worse than or equal to the score the Maximizer can guarantee (moving first).
+          <br>$\max_\lambda \min_x L \le \min_x \max_\lambda L$.
+          <br>This is logically equivalent to saying "seeing your opponent's move first is an advantage."</p>
         </div>
 
         <h3>3.3 Examples of Dual Functions</h3>

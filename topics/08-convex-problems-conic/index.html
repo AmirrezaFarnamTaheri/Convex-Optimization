@@ -81,6 +81,17 @@
         $
       </p>
 
+      <div class="intuition-box">
+        <h4>Visual Intuition: The Ice Cream Cone</h4>
+        <p>In 3D ($t, x_1, x_2$), the set $t \ge \sqrt{x_1^2 + x_2^2}$ looks exactly like an infinite ice cream cone opening upwards along the $t$-axis.
+        <br><b>Cross-sections:</b>
+        <ul>
+            <li><b>Horizontal ($t$ fixed):</b> The slice is a disk of radius $t$. As $t$ increases, the disk grows linearly.</li>
+            <li><b>Vertical (through origin):</b> The slice is a "V" shape bounded by lines $t = \pm x$.</li>
+        </ul>
+        This curvature is what separates SOCP from LP. LP can only model "flat" faces; SOCP models smooth, round boundaries.</p>
+      </div>
+
       <div class="insight">
           <h4>SOCP Atom #1: The Norm Bound</h4>
           <p>The core equivalence is: $\|x\|_2 \le t \iff (t, x) \in \mathcal{Q}$.
@@ -457,6 +468,20 @@
           <p>For a block symmetric matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$:</p>
           $$ M \succeq 0 \iff C - B^\top A^{-1} B \succeq 0 $$
           <p>This lemma is the primary tool for converting nonlinear convex constraints into LMIs.</p>
+      </div>
+
+      <div class="intuition-box">
+        <h4>Mnemonic: "Outer minus Inner-Inverse-Inner"</h4>
+        <p>How to remember $C - B^\top A^{-1} B$?
+        <br>Think of scalar completion of squares: $ax^2 + 2bx + c \ge 0$.
+        <br>This is equivalent to $a(x + b/a)^2 + (c - b^2/a) \ge 0$.
+        <br>The term $c - b^2/a$ is the "residual" constant.
+        <br>In matrices:
+        <ul>
+            <li>$C$ is the "constant" block.</li>
+            <li>$B^\top A^{-1} B$ is the matrix equivalent of $b^2/a$.</li>
+        </ul>
+        So the condition is always: <b>(Bottom Right) - (Off Diagonal)$^\top$ (Top Left)$^{-1}$ (Off Diagonal) $\succeq 0$.</b></p>
       </div>
 
       <div class="widget-container" style="margin: 24px 0;">
@@ -1072,6 +1097,24 @@
         <li><b>Canonicalize:</b> Transform the high-level problem into standard conic form</li>
         <li><b>Invoke solver:</b> Pass the conic form to an interior-point solver</li>
       </ol>
+
+      <div class="warning-box">
+        <h4>Common DCP Errors (Debugging Guide)</h4>
+        <p>If you get a <code>DCPError</code>, check these common traps:</p>
+        <ul>
+            <li><b>Trap 1: "It's mathematically convex!"</b>
+            <br><i>Code:</i> <code>sqrt(x**2 + 1)</code>
+            <br><i>Issue:</i> DCP sees <code>sqrt(convex)</code>. Since <code>sqrt</code> is concave and increasing, <code>sqrt(convex)</code> is <b>not</b> DCP-compliant (could be non-convex).
+            <br><i>Fix:</i> Use the atom <code>norm([x, 1])</code>. Atoms carry the "proof" of convexity.</li>
+            <li><b>Trap 2: Product of variables.</b>
+            <br><i>Code:</i> <code>x * y</code>
+            <br><i>Issue:</i> Products are generally non-convex.
+            <br><i>Fix:</i> Is it a geometric program? Use <code>log(x) + log(y)</code>. Or is it <code>quad_form</code>?</li>
+            <li><b>Trap 3: Sign Errors.</b>
+            <br><i>Code:</i> <code>square(x) >= 1</code>
+            <br><i>Issue:</i> <code>convex >= constant</code> is non-convex. Did you mean <code><=</code>?</li>
+        </ul>
+      </div>
 
       <p>If DCP verification fails (e.g., you wrote <code>exp(norm(x))</code>, which is neither convex nor concave), the framework rejects the problem <i>before</i> calling the solver, saving you from silently getting wrong answers.</p>
 

@@ -415,6 +415,18 @@
       <h4>Geometry of the Objective: Sliding Hyperplanes</h4>
         <p>Minimizing $c^\top x$ corresponds to moving the hyperplane $H_\alpha = \{x \mid c^\top x = \alpha\}$ in the direction of $-c$ (the direction of steepest descent).
         Imagine "pushing the objective down" by sliding this supporting hyperplane until it just touches the feasible polyhedron. The point where it makes contact is the optimal solution.</p>
+
+      <div class="intuition-box">
+        <h4>Physical Analogy: The Gravity Table</h4>
+        <p>Imagine the feasible set is a solid polygonal block sitting on a table. The objective function defines "gravity".
+        <br><b>The Tilt:</b> The vector $c$ determines which way is "down". Minimizing $c^\top x$ is like tilting the entire table so that the direction $-c$ points straight to the floor.
+        <br><b>The Result:</b> The optimal solution is the lowest point of the block.
+        <ul>
+            <li>If you tilt it generically, a single corner (vertex) will be lowest.</li>
+            <li>If you tilt it so an edge is perfectly horizontal, the entire edge is lowest (multiple optima).</li>
+        </ul>
+        This is why optimal solutions in LP tend to be at the corners.</p>
+      </div>
       <ul>
             <li><strong>Why Vertices?</strong> If the optimum is unique, it must be at a vertex (extreme point). If it is not unique (e.g., the hyperplane is parallel to a face), then an entire face is optimal, but at least one vertex on that face is also optimal.</li>
             <li><strong>The Fundamental Theorem of LP:</strong> If an LP has an optimal solution, it has an optimal solution at a vertex of the feasible set. This geometric fact underpins the Simplex method.</li>
@@ -907,6 +919,17 @@
           <h4>Theorem: Convexity $\iff$ PSD</h4>
           <p>The quadratic function is convex if and only if $P \succeq 0$.
           <br><b>Warning:</b> If $P$ has even one negative eigenvalue, the problem is non-convex and NP-hard. Convexity is binary here.</p>
+      </div>
+
+      <div class="intuition-box">
+        <h4>Visual Guide: The Shapes of Quadratics</h4>
+        <p>The eigenvalues of $P$ determine the shape of the surface $z = x^\top P x$:</p>
+        <ul>
+            <li><b>Positive Definite ($P \succ 0$):</b> A bowl shape (like $x^2 + y^2$). Minimum is unique. <b>(Convex)</b></li>
+            <li><b>Positive Semidefinite ($P \succeq 0$):</b> A taco or half-pipe shape (like $x^2 + 0y^2$). Valley floor is flat. <b>(Convex)</b></li>
+            <li><b>Indefinite (Mixed signs):</b> A saddle or Pringles chip (like $x^2 - y^2$). Curves up one way, down another. <b>(Non-Convex)</b></li>
+            <li><b>Negative Definite ($P \prec 0$):</b> A hill (like $-x^2 - y^2$). <b>(Concave)</b></li>
+        </ul>
       </div>
 
       <div class="insight">
@@ -1481,6 +1504,19 @@
           <li>Inequalities $f_i$: Must be <b>Posynomial</b> $\le 1$.</li>
           <li>Equalities $h_j$: Must be <b>Monomial</b> $= 1$. (Posynomial equality is generally non-convex).</li>
       </ul></p>
+
+      <div class="theorem-box">
+        <h4>Deep Dive: Why Monomial Equalities?</h4>
+        <p>Why is $h(x) = 1$ restricted to monomials? Why can't we have posynomial equalities?
+        <br><b>Reason:</b> We need the transformed constraint $\log h(e^y) = 0$ to be <b>affine</b>.
+        <ul>
+            <li>If $h$ is a <b>monomial</b>, $\log h(e^y)$ is a linear function ($a^\top y + b$). Thus $\log h = 0$ is a linear equality (affine).</li>
+            <li>If $h$ is a <b>posynomial</b> (sum of terms), $\log h(e^y)$ is a Log-Sum-Exp function, which is <b>convex</b> but not linear.</li>
+        </ul>
+        A constraint "Convex Function = 0" defines a non-convex set (unless the function is affine).
+        <br><b>Example:</b> $x^2 + y^2 = 1$ (Convex function = 1) is a circle boundary (non-convex). $x + y = 1$ (Affine function = 1) is a line (convex).
+        <br>Thus, GP rules strictly forbid posynomial equalities to preserve convexity.</p>
+      </div>
 
       <h3>6.3 The Convex Reformulation (Log-Log)</h3>
       <p>We transform the problem by changing variables to $y_i = \log x_i$ (so $x_i = e^{y_i}$) and taking the logarithm of the objective and constraints.</p>

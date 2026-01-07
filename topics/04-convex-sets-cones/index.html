@@ -204,6 +204,13 @@
         $$
         \mathbf{x} \preceq_K \mathbf{y} \iff \mathbf{y} - \mathbf{x} \in K
         $$
+        <div class="insight">
+          <h4>Breakdown: What does $x \preceq_K y$ mean?</h4>
+          <p>This generalizes the scalar concept "$y \ge x$" (or $y-x \ge 0$).
+          <br>Instead of requiring $y-x$ to be a non-negative number, we require the vector difference $y-x$ to land inside the "acceptable" set $K$.
+          <br><b>Example (PSD Cone):</b> $A \preceq B$ means $B - A$ is a positive semidefinite matrix. It does <i>not</i> mean every entry of $B$ is larger than $A$. It means the "energy" $z^\top B z \ge z^\top A z$ for all directions $z$.
+          </p>
+        </div>
         <p>Strict inequality is defined using the interior of the cone:</p>
         $$
         \mathbf{x} \prec_K \mathbf{y} \iff \mathbf{y} - \mathbf{x} \in \text{int}(K)
@@ -281,6 +288,16 @@
         $$
         K^* = \{y \in \mathbb{R}^n \mid y^\top x \ge 0 \ \forall x \in K\}
         $$
+
+        <div class="example-box">
+          <h4>Geometric Example: 2D Wedges</h4>
+          <p>Consider a cone $K$ in $\mathbb{R}^2$ spanned by two vectors $v_1 = (1, 0)$ and $v_2 = (1, 1)$. This is a $45^\circ$ wedge.
+          <br>The dual cone $K^*$ consists of all $y$ such that $y^\top v_1 \ge 0$ and $y^\top v_2 \ge 0$.
+          <br>$\bullet$ $y^\top (1, 0) \ge 0 \implies y_1 \ge 0$.
+          <br>$\bullet$ $y^\top (1, 1) \ge 0 \implies y_1 + y_2 \ge 0$.
+          <br>This dual wedge is spanned by $(0, 1)$ (normal to $v_1$) and $(1, -1)$ (normal to $v_2$). Notice the angular relationship: if $K$ is "thin", $K^*$ is "fat".
+          </p>
+        </div>
 
         <div class="insight">
           <h4>Why Dual Cones Matter</h4>

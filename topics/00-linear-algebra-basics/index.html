@@ -695,6 +695,20 @@
         <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
         <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
+      <div class="example-box">
+        <h4>Manual Computation: Finding the Kernel</h4>
+        <p>Let $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \end{bmatrix}$. Find $\mathcal{N}(A)$.
+        <br><b>Step 1: Solve $A\mathbf{x} = 0$.</b>
+        <br>Augmented matrix: $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 2 & 4 & 6 & 0 \end{array}\right]$.
+        <br>Row reduce ($R_2 = R_2 - 2R_1$): $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 0 & 0 & 0 & 0 \end{array}\right]$.
+        <br><b>Step 2: Identify Pivot and Free Variables.</b>
+        <br>$x_1$ is a pivot variable. $x_2$ and $x_3$ are free variables.
+        <br>Equation: $x_1 + 2x_2 + 3x_3 = 0 \implies x_1 = -2x_2 - 3x_3$.
+        <br><b>Step 3: Write in Parametric Vector Form.</b>
+        $$ \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} = \begin{bmatrix} -2x_2 - 3x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix} + x_3 \begin{bmatrix} -3 \\ 0 \\ 1 \end{bmatrix} $$
+        <br><b>Result:</b> The kernel is the span of $(-2, 1, 0)^\top$ and $(-3, 0, 1)^\top$. It is a 2D plane inside $\mathbb{R}^3$.
+        </p>
+      </div>
       <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
         <li><b>Kernel (Nullspace):</b> $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
@@ -2118,6 +2132,17 @@
       <p>A symmetric matrix $A \in \mathbb{S}^n$ is <a href="#" class="definition-link" data-term="positive semidefinite">Positive Semidefinite (PSD)</a>, denoted as $A \succeq 0$, if:</p>
       $$ \mathbf{x}^\top A \mathbf{x} \ge 0 \quad \text{for all } \mathbf{x} \in \mathbb{R}^n $$
       <p><b>Geometric Intuition (Generalized Non-Negative Numbers):</b> Just as a non-negative number $a \ge 0$ allows us to define convex quadratic functions like $f(\mathbf{x}) = ax^2$, a PSD matrix allows us to define convex quadratic forms in higher dimensions. If $A \succeq 0$, the function $f(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$ looks like a bowl. If $A$ has a negative eigenvalue, the function looks like a saddle (curves down in some directions), breaking convexity.</p>
+      <div class="example-box">
+        <h4>Example: Checking Energy</h4>
+        <p>Let $A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$. Is it PSD?
+        <br>Let's check the "energy" for an arbitrary vector $\mathbf{x} = (x_1, x_2)^\top$.
+        $$ \mathbf{x}^\top A \mathbf{x} = \begin{bmatrix} x_1 & x_2 \end{bmatrix} \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} $$
+        $$ = \begin{bmatrix} x_1 & x_2 \end{bmatrix} \begin{bmatrix} 2x_1 - x_2 \\ -x_1 + 2x_2 \end{bmatrix} = x_1(2x_1 - x_2) + x_2(-x_1 + 2x_2) $$
+        $$ = 2x_1^2 - 2x_1 x_2 + 2x_2^2 = x_1^2 + (x_1^2 - 2x_1 x_2 + x_2^2) + x_2^2 = x_1^2 + (x_1 - x_2)^2 + x_2^2 $$
+        Since squares are always non-negative, the sum is $\ge 0$ for any real $x_1, x_2$.
+        <br>Thus, $A \succeq 0$. In fact, it is Positive Definite (strictly positive for $\mathbf{x} \neq 0$).
+        </p>
+      </div>
       <p><b>Curvature:</b> If $A$ is the Hessian $\nabla^2 f(\mathbf{x})$, the term $\mathbf{x}^\top A \mathbf{x}$ is the second derivative along the line defined by vector $\mathbf{x}$. $A \succeq 0$ means the function has non-negative curvature in <i>every</i> possible direction.</p>
 
       <h4>Definition B: The Eigenvalue Definition</h4>
@@ -2693,7 +2718,8 @@
       </div>
 
       <h3>Geometric Interpretation: Projection</h3>
-      <p>The solution to the least squares problem has a clean geometric interpretation. The vector $A\mathbf{x}$ lies in the column space of $A$, denoted $\mathcal{R}(A)$. The problem $\min_x \|A\mathbf{x} - \mathbf{b}\|_2$ is therefore equivalent to finding the point $\mathbf{p} \in \mathcal{R}(A)$ that is closest to $\mathbf{b}$ in Euclidean distance.</p>
+      <p>The solution to the least squares problem has a clean geometric interpretation. The vector $A\mathbf{x}$ is constrained to lie in the <b>column space</b> of $A$, denoted $\mathcal{R}(A)$. The optimization problem $\min_x \|A\mathbf{x} - \mathbf{b}\|_2$ is therefore equivalent to finding the point $\mathbf{p} \in \mathcal{R}(A)$ that is closest to $\mathbf{b}$.</p>
+      <p><b>The Shadow Analogy:</b> Imagine shining a light directly from above (perpendicular to the subspace). The "shadow" cast by $\mathbf{b}$ onto the subspace $\mathcal{R}(A)$ is the projection $\mathbf{p}$. The vector connecting the tip of the shadow to the tip of $\mathbf{b}$ is the error (or residual), and it stands perfectly upright (orthogonal) to the floor.</p>
 
       <h4>The 1D Case: Projection onto a Vector</h4>
       <p>Before solving the general case, consider projecting $\mathbf{x}$ onto the line spanned by a vector $\mathbf{y} \neq 0$. We want to find $t$ to minimize $\|x - ty\|_2^2$.

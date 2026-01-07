@@ -2222,10 +2222,20 @@
 
 
 <section class="section-card" id="section-8">
-        <h2>8. Summary and Modeling Patterns</h2>
-        <p>A comprehensive summary of convexity-preserving operations, pitfalls to avoid, and standard modeling patterns.</p>
+        <h2>8. Summary &amp; Cheat Sheet</h2>
 
-        <h3>8.0 When to Use Which Convexity Verification Method</h3>
+        <div class="recap-box" style="margin-bottom: 24px;">
+          <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
+          <ul style="margin: 0 0 0 20px;">
+            <li><b>Definition-first mindset:</b> Convexity is Jensen's inequality plus a convex domain.</li>
+            <li><b>Geometry:</b> Epigraphs convert function questions into set questions (intersections and projections).</li>
+            <li><b>Differentiable tests:</b> First-order (supporting hyperplanes) and second-order (Hessian PSD) conditions give fast convexity checks.</li>
+            <li><b>Construction rules:</b> Sums, pointwise maxima, affine precomposition, and perspectives generate new convex functions reliably.</li>
+            <li><b>Strong convexity:</b> Adds curvature, giving uniqueness of minimizers and stability guarantees.</li>
+          </ul>
+        </div>
+
+        <h3>8.1 Verification Strategy: Which Method When?</h3>
 
         <p>This lecture introduced three characterizations of convexity. Each has different requirements and trade-offs. Here's a practical guide for <b>which tool to use when</b>:</p>
 
@@ -2358,7 +2368,7 @@
           <p><b>Lesson:</b> Even for twice-differentiable functions, composition rules (§5) can be faster than Hessian computation.</p>
         </div>
 
-        <h3>8.1 Pitfalls and Illegal Moves</h3>
+        <h3>8.2 Pitfalls and Illegal Moves</h3>
         <p>A common pitfall is to assume the <b>minimum</b> of convex functions is convex. It is generally <b>not</b>.</p>
         <div class="insight">
           <h4>Counterexample</h4>
@@ -2377,7 +2387,7 @@
           </ul>
         </div>
 
-        <h3>8.2 Summary: A Complete "Legal Moves Checklist"</h3>
+        <h3>8.3 Summary: A Complete "Legal Moves Checklist"</h3>
         <p>When you build or analyze a function, follow this "compiler" checklist. If your function passes, it is certified convex.</p>
         <ul>
             <li>Is it an <b>atom</b> from the standard library? (See Section 6).</li>
@@ -2421,7 +2431,7 @@
           <div id="widget-operations-preserving" style="width: 100%; height: 600px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
 
-        <h3>8.3 Standard Epigraph Modeling Patterns</h3>
+        <h3>8.4 Standard Epigraph Modeling Patterns</h3>
         <p>This section provides the exact "compiler rules" to translate mathematical expressions into standard LP/SOCP/SDP atoms. These are not heuristics; they are exact algebraic equivalences.</p>
 
         <div class="example-box">
@@ -2466,6 +2476,10 @@
           <br><b>Convexity:</b> The function $g(x) = \|Ax+b\| - (c^\top x + d)$ is convex (sum of convex norm and linear). Thus $g(x) \le 0$ defines a convex set.
           <br><b>Representability:</b> A solver like MOSEK doesn't "know" $g(x)$. It knows the cone $\mathcal{K} = \{(z, t) : \|z\| \le t\}$. To map your problem to $\mathcal{K}$, you must ensure the RHS matches the cone variable $t$, which must be non-negative.
           <br><b>Lesson:</b> You must often add redundant constraints (like $c^\top x + d \ge 0$) to satisfy the solver's API, even if the math implies them.</p>
+        </div>
+
+        <div class="interpretation-box">
+          <p style="margin: 0;"><b>Forward look:</b> <a href="../06-convex-functions-advanced/index.html">Lecture 06</a> introduces the convex conjugate (the algebra of supporting hyperplanes) and quasiconvexity/log-concavity. These become the main tools for duality (<a href="../09-duality/index.html">Lecture 09</a>) and for recognizing standard problem classes (<a href="../07-convex-problems-standard/index.html">Lecture 07</a>).</p>
         </div>
       </section>
 
@@ -2965,18 +2979,24 @@
       </section>
 
       <section class="section-card" id="section-10">
-        <h2>10. Recap &amp; What's Next</h2>
-        <div class="recap-box">
-          <ul style="margin: 0 0 0 20px;">
-            <li><b>Definition-first mindset:</b> convexity is Jensen's inequality plus a convex domain.</li>
-            <li><b>Geometry:</b> epigraphs convert function questions into set questions (intersections and projections).</li>
-            <li><b>Differentiable tests:</b> first-order (supporting hyperplanes) and second-order (Hessian PSD) conditions give fast convexity checks.</li>
-            <li><b>Construction rules:</b> sums, pointwise maxima, affine precomposition, and perspectives generate new convex functions reliably.</li>
-            <li><b>Strong convexity:</b> adds curvature, giving uniqueness of minimizers and stability guarantees.</li>
+        <h2>10. Readings &amp; Resources</h2>
+        <div class="citation-box">
+          <h3>Primary Textbook</h3>
+          <ul>
+            <li><b>Boyd & Vandenberghe</b>, <i>Convex Optimization</i>: Chapter 3 (Convex Functions).
+              <ul>
+                <li>§3.1: Basic properties and examples</li>
+                <li>§3.2: Operations that preserve convexity</li>
+              </ul>
+            </li>
           </ul>
         </div>
-        <div class="interpretation-box">
-          <p style="margin: 0;"><b>Forward look:</b> <a href="../06-convex-functions-advanced/index.html">Lecture 06</a> introduces the convex conjugate (the algebra of supporting hyperplanes) and quasiconvexity/log-concavity. These become the main tools for duality (<a href="../09-duality/index.html">Lecture 09</a>) and for recognizing standard problem classes (<a href="../07-convex-problems-standard/index.html">Lecture 07</a>).</p>
+        <div class="citation-box">
+          <h3>Additional Resources</h3>
+          <ul>
+            <li><b>Rockafellar</b>, <i>Convex Analysis</i>: The definitive reference for the rigorous theory (Sections 1-10).</li>
+            <li><b>Hiriart-Urruty & Lemaréchal</b>, <i>Fundamentals of Convex Analysis</i>: A more accessible introduction to the core theory.</li>
+          </ul>
         </div>
       </section>
     </article>

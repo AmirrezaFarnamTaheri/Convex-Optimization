@@ -177,6 +177,41 @@
         </ul>
         Convexity restricts operations to pure mixing: you cannot go outside the segment between $x$ and $y$.</p>
 
+        <div class="insight">
+            <h4>Comparison: Affine vs. Convex Combinations</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Affine Combination</th>
+                        <th>Convex Combination</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Formula</b></td>
+                        <td>$\sum \theta_i x_i$ with $\sum \theta_i = 1$</td>
+                        <td>$\sum \theta_i x_i$ with $\sum \theta_i = 1, \theta_i \ge 0$</td>
+                    </tr>
+                    <tr>
+                        <td><b>Geometric Result (2 points)</b></td>
+                        <td>The infinite <b>line</b> through $x_1, x_2$.</td>
+                        <td>The finite <b>line segment</b> between $x_1, x_2$.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Geometric Result (3 points)</b></td>
+                        <td>The infinite <b>plane</b> containing the triangle.</td>
+                        <td>The finite <b>triangle</b> (including interior).</td>
+                    </tr>
+                    <tr>
+                        <td><b>Intuition</b></td>
+                        <td>"Interpolation + Extrapolation" (Unbounded)</td>
+                        <td>"Interpolation / Mixing" (Bounded)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
         <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
 

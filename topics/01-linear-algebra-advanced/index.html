@@ -659,6 +659,8 @@
       <h3>5.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
       <p><b>Theorem (SVD):</b> Any matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:
       $$ \boxed{ A = U \Sigma V^\top } $$
+      <b>Type Signatures (Operator View):</b>
+      $$ \underset{\mathbb{R}^n \to \mathbb{R}^m}{A} = \underset{\mathbb{R}^m \to \mathbb{R}^m}{U} \cdot \underset{\mathbb{R}^n \to \mathbb{R}^m}{\Sigma} \cdot \underset{\mathbb{R}^n \to \mathbb{R}^n}{V^\top} $$
       where:
       <ul>
         <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal (Left singular vectors, basis for codomain).</li>

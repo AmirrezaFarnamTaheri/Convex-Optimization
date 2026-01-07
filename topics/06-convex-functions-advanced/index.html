@@ -1131,8 +1131,19 @@
     </section>
 
     <section class="section-card" id="section-6">
-      <h2>6. Review & Cheat Sheet</h2>
-      <h3>Conjugate Transformations</h3>
+      <h2>6. Summary & Cheat Sheet</h2>
+
+      <div class="recap-box" style="margin-bottom: 24px;">
+        <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Conjugates:</b> $f^*(y)=\sup_x (y^\top x - f(x))$ packages all supporting hyperplanes of $f$ into a single convex function.</li>
+          <li><b>Fenchel Inequality:</b> $f(x) + f^*(y) \ge x^\top y$ is the fundamental source of dual bounds.</li>
+          <li><b>Quasiconvexity:</b> Sublevel sets are convex even when the function is not; crucial for fractional and max-type objectives.</li>
+          <li><b>Log-concavity:</b> Turns multiplicative structure (probabilities, volumes) into additive structure via $\log$, enabling convex optimization techniques.</li>
+        </ul>
+      </div>
+
+      <h3>Conjugate Transformations Cheat Sheet</h3>
       <table class="data-table">
         <tr><th>Primal $f(x)$</th><th>Conjugate $f^*(y)$</th><th>Domain of $f^*$</th></tr>
         <tr><td>$\frac{1}{2}x^\top Q x$ ($Q \succ 0$)</td><td>$\frac{1}{2}y^\top Q^{-1} y$</td><td>$\mathbb{R}^n$</td></tr>
@@ -1142,14 +1153,6 @@
         <tr><td>$I_C(x)$</td><td>$\sigma_C(y)$ (Support)</td><td>$\mathbb{R}^n$</td></tr>
         <tr><td>$\|x\|$</td><td>$I_{B_*}(y)$ (Dual Ball)</td><td>$\|y\|_* \le 1$</td></tr>
       </table>
-
-      <h3>Key Concepts</h3>
-      <ul>
-          <li><b>Conjugate $f^*$:</b> Best linear lower bound (support function of epigraph). Always convex.</li>
-          <li><b>Fenchel Inequality:</b> $f(x) + f^*(y) \ge x^\top y$.</li>
-          <li><b>Quasiconvex:</b> Convex sublevel sets. $f(\theta x + (1-\theta)y) \le \max(f(x), f(y))$.</li>
-          <li><b>Log-Concave:</b> $\log f$ is concave. Closed under product, marginals, convolution.</li>
-      </ul>
     </section>
 
     <section class="section-card" id="section-7">
@@ -1665,7 +1668,7 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      See Example 1.4(e) for the derivation. The key steps are:
+      See Example 3.3.3(e) for the derivation. The key steps are:
       1. Gradient condition $y = \nabla f(x)$ implies $y$ is a probability vector.
       2. If $y$ is not a probability vector, the supremum is infinite.
       3. Substituting $x$ back gives the negative entropy term.
@@ -2207,12 +2210,24 @@
 </section>
 
     <section class="section-card" id="section-8">
-      <h2>8. Recap &amp; What's Next</h2>
-      <div class="recap-box">
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Conjugates:</b> $f^*(y)=\sup_x (y^\top x - f(x))$ packages all supporting hyperplanes of $f$ into a single convex function.</li>
-          <li><b>Quasiconvexity:</b> sublevel sets are convex even when the function is not; fractional and max-type objectives often land here.</li>
-          <li><b>Log-concavity/log-convexity:</b> turns multiplicative structure into additive structure via $\log$, which is why it appears in probability and geometry.</li>
+      <h2>8. Readings &amp; Resources</h2>
+      <div class="citation-box">
+        <h3>Primary Textbook</h3>
+        <ul>
+          <li><b>Boyd & Vandenberghe</b>, <i>Convex Optimization</i>: Chapter 3.
+            <ul>
+              <li>§3.3: The convex conjugate</li>
+              <li>§3.4: Quasiconvex functions</li>
+              <li>§3.5: Log-concave and log-convex functions</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="citation-box">
+        <h3>Additional Resources</h3>
+        <ul>
+          <li><b>Rockafellar</b>, <i>Convex Analysis</i>: Section 12 (Conjugates), Section 26 (Closed convex functions).</li>
+          <li><b>Bertsekas</b>, <i>Convex Optimization Theory</i>: Chapter 1 (Basic Convexity).</li>
         </ul>
       </div>
       <div class="interpretation-box">

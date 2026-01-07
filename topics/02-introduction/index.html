@@ -286,6 +286,16 @@
         </ol>
         <p>The core move is to turn every constraint into "$x \in \text{SomeSet}$" and understand how that set behaves under mixing (convexity) and transformations.</p>
 
+        <div class="insight">
+          <h4>Set Logic: The Algebra of Constraints</h4>
+          <p>Convex optimization relies on a specific subset of set logic:</p>
+          <ul>
+            <li><b>Intersection = Logical AND:</b> The feasible set is the intersection of all constraint sets ($\cap S_i$). Since the intersection of convex sets is convex, satisfying <i>all</i> constraints preserves convexity.</li>
+            <li><b>Union = Logical OR:</b> The union of sets ($\cup S_i$) corresponds to "satisfy constraint A <b>OR</b> constraint B". This is <b>not</b> convex (e.g., two disjoint circles). This is why "disjunctive constraints" are hard (integer programming).</li>
+            <li><b>Preimages = Substitution:</b> If $S$ is a valid set, then the preimage $f^{-1}(S) = \{x \mid f(x) \in S\}$ is the set of points that map into $S$. If $f$ is affine and $S$ is convex, the preimage is convex. This justifies substituting linear expressions into constraints (e.g., $\|Ax+b\| \le 1$).</li>
+          </ul>
+        </div>
+
         <h4>Affine vs. Linear Maps (0.5)</h4>
         <p>Distinguishing linear and affine maps is crucial.
         <br><b>Linear Map:</b> $L(x) = Ax$. Passes through the origin. Preserves linear combinations.

@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>01. Linear Algebra Advanced — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js"
+        "three": "../../static/lib/three/three.module.js"
       }
     }
   </script>
@@ -659,6 +659,8 @@
       <h3>5.1 The Geometry of SVD: Rotate → Scale → Rotate</h3>
       <p><b>Theorem (SVD):</b> Any matrix $A \in \mathbb{R}^{m \times n}$ can be factored as:
       $$ \boxed{ A = U \Sigma V^\top } $$
+      <b>Type Signatures (Operator View):</b>
+      $$ \underset{\mathbb{R}^n \to \mathbb{R}^m}{A} = \underset{\mathbb{R}^m \to \mathbb{R}^m}{U} \cdot \underset{\mathbb{R}^n \to \mathbb{R}^m}{\Sigma} \cdot \underset{\mathbb{R}^n \to \mathbb{R}^n}{V^\top} $$
       where:
       <ul>
         <li>$U \in \mathbb{R}^{m \times m}$ is orthogonal (Left singular vectors, basis for codomain).</li>

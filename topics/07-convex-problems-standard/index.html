@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>07. Convex Optimization Problems: Standard Forms — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
 </head>
 <body>
   <!-- Header with navigation -->
@@ -78,6 +78,17 @@
         <li>$f_i: \mathbb{R}^n \to \mathbb{R}$, $i = 1, \dots, m$ are <strong>inequality constraint functions</strong> (all convex)</li>
         <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(\mathbf{x}) = \mathbf{a}_j^\top \mathbf{x} - b_j$)</li>
       </ul>
+
+      <div class="insight">
+        <h4>Optimization Type System (Dimensionality Checks)</h4>
+        <p>A valid optimization problem must satisfy "type safety":</p>
+        <ul>
+            <li><b>Objective:</b> Must return a <b>scalar</b> ($f_0: \mathbb{R}^n \to \mathbb{R}$). You cannot minimize a vector.</li>
+            <li><b>Inequalities:</b> $f_i(x) \le 0$ compares <b>scalars</b>. If you write $Ax \le b$ (vector inequality), it is shorthand for $m$ scalar constraints $(Ax)_i \le b_i$.</li>
+            <li><b>Equalities:</b> $Ax = b$ represents $p$ scalar affine constraints. $A$ must be a matrix ($p \times n$) or row vector.</li>
+        </ul>
+        <p><b>Common Error:</b> Writing $\min \|Ax-b\|$ is valid (norm is scalar). Writing $\min Ax-b$ is invalid (vector). Writing constraints like $\|x\| \le I$ (matrix) is invalid.</p>
+      </div>
 
       <h3>1.2 The Epigraph Standard Form (The Universal Translator)</h3>
       <p>Optimization solvers do not natively understand "minimize a convex function." They understand linear objectives and specific <b>conic constraints</b>. The <a href="#" class="definition-link">epigraph transformation</a> is the universal adapter that moves all complexity from the objective into the constraints.</p>
@@ -1609,9 +1620,51 @@
       </div>
     </section>
 
-<!-- NEW SECTION 7: Summary Pattern Library -->
+    <!-- NEW SECTION 7: Matrix Viewpoint -->
     <section class="section-card" id="section-7">
-      <h2>7. Summary: The Convex Optimization Pattern Library</h2>
+      <h2>7. Matrix Viewpoint: The Algebra of QPs</h2>
+      <p>Throughout this lecture, we've used block matrices and quadratic forms to construct optimization problems. Let's formalize the linear algebra that makes this work.</p>
+
+      <h3>7.1 Congruence and PSD Matrices</h3>
+      <p>When we write a quadratic form in a new coordinate system $x = Bz$ (where $B$ is invertible), the expression transforms as:</p>
+      $$ x^\top A x = (Bz)^\top A (Bz) = z^\top (B^\top A B) z $$
+      <p>The transformation $A \mapsto B^\top A B$ is called a <strong>congruence transform</strong>.</p>
+      <div class="insight">
+        <h4>Key Property: Preservation of Definiteness</h4>
+        <p><strong>Sylvester's Law of Inertia:</strong> Congruence transforms preserve the number of positive, negative, and zero eigenvalues.
+        <br>Specifically, $A \succeq 0 \iff B^\top A B \succeq 0$.
+        <br>This is why we can build complex QPs using block matrices. For example, the distance matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ represents squared distance $\|x-y\|^2$. Since squared distance is non-negative in <em>any</em> coordinate system, $Q$ must be PSD.</p>
+      </div>
+
+      <h3>7.2 Similarity and Eigenvalues</h3>
+      <p>Contrast congruence with <strong>similarity transforms</strong> $A \mapsto B^{-1} A B$, which arise in eigen-analysis.</p>
+      $$ Ax = \lambda x \iff (B^{-1}AB)(B^{-1}x) = \lambda (B^{-1}x) $$
+      <ul>
+          <li><strong>Similarity</strong> preserves the <strong>values</strong> of the eigenvalues (spectrum).</li>
+          <li><strong>Congruence</strong> preserves the <strong>signs</strong> of the eigenvalues (inertia).</li>
+      </ul>
+      <p>In Convex Optimization:</p>
+      <ul>
+          <li>We use <strong>Congruence</strong> to check if a problem formulation is convex (is the Hessian PSD?).</li>
+          <li>We use <strong>Similarity</strong> (diagonalization) to understand the geometry (shape of ellipsoids) and conditioning of the problem.</li>
+      </ul>
+    </section>
+
+    <!-- NEW SECTION 8: Summary & Cheat Sheet -->
+    <section class="section-card" id="section-8">
+      <h2>8. Summary & Cheat Sheet</h2>
+
+      <div class="recap-box" style="margin-bottom: 24px;">
+        <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Standard form is a checklist:</b> convex objective, convex inequalities, affine equalities.</li>
+          <li><b>LP geometry:</b> linear objectives push level sets until they hit a face/vertex of a polyhedron.</li>
+          <li><b>Reformulation patterns:</b> epigraph variables, slack variables, and perspective/linear-fractional transforms turn “weird” models into standard form.</li>
+          <li><b>Problem classes are reusable:</b> once you can recognize LP/QP/LFP/GP structure, you can model faster and solve reliably.</li>
+        </ul>
+      </div>
+
+      <h3>The Convex Optimization Pattern Library</h3>
       <p>We have encountered three fundamental patterns that translate geometric or analytic descriptions into standard convex problems. Internalizing these is key to mastering formulation.</p>
 
       <div class="proof-box">
@@ -1642,36 +1695,9 @@
         <p><strong>Result:</strong> Turns multiplicative structure into additive convex structure (Log-Sum-Exp).</p>
       </div>
 
-    </section>
-
-    <!-- NEW SECTION 8: Matrix Viewpoint -->
-    <section class="section-card" id="section-8">
-      <h2>8. Matrix Viewpoint: The Algebra of QPs</h2>
-      <p>Throughout this lecture, we've used block matrices and quadratic forms to construct optimization problems. Let's formalize the linear algebra that makes this work.</p>
-
-      <h3>8.1 Congruence and PSD Matrices</h3>
-      <p>When we write a quadratic form in a new coordinate system $x = Bz$ (where $B$ is invertible), the expression transforms as:</p>
-      $$ x^\top A x = (Bz)^\top A (Bz) = z^\top (B^\top A B) z $$
-      <p>The transformation $A \mapsto B^\top A B$ is called a <strong>congruence transform</strong>.</p>
-      <div class="insight">
-        <h4>Key Property: Preservation of Definiteness</h4>
-        <p><strong>Sylvester's Law of Inertia:</strong> Congruence transforms preserve the number of positive, negative, and zero eigenvalues.
-        <br>Specifically, $A \succeq 0 \iff B^\top A B \succeq 0$.
-        <br>This is why we can build complex QPs using block matrices. For example, the distance matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ represents squared distance $\|x-y\|^2$. Since squared distance is non-negative in <em>any</em> coordinate system, $Q$ must be PSD.</p>
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> <a href="../08-convex-problems-conic/index.html">Lecture 08</a> shows how many constraints can be written as membership in a cone (SOCP/SDP), expanding what you can model while keeping convexity. <a href="../09-duality/index.html">Lecture 09</a> explains why solvers can certify optimality and how dual variables interpret constraints.</p>
       </div>
-
-      <h3>8.2 Similarity and Eigenvalues</h3>
-      <p>Contrast congruence with <strong>similarity transforms</strong> $A \mapsto B^{-1} A B$, which arise in eigen-analysis.</p>
-      $$ Ax = \lambda x \iff (B^{-1}AB)(B^{-1}x) = \lambda (B^{-1}x) $$
-      <ul>
-          <li><strong>Similarity</strong> preserves the <strong>values</strong> of the eigenvalues (spectrum).</li>
-          <li><strong>Congruence</strong> preserves the <strong>signs</strong> of the eigenvalues (inertia).</li>
-      </ul>
-      <p>In Convex Optimization:</p>
-      <ul>
-          <li>We use <strong>Congruence</strong> to check if a problem formulation is convex (is the Hessian PSD?).</li>
-          <li>We use <strong>Similarity</strong> (diagonalization) to understand the geometry (shape of ellipsoids) and conditioning of the problem.</li>
-      </ul>
     </section>
 
     <!-- SECTION 9: EXERCISES -->
@@ -2134,20 +2160,6 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-11">
-      <h2>11. Recap &amp; What's Next</h2>
-      <div class="recap-box">
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Standard form is a checklist:</b> convex objective, convex inequalities, affine equalities.</li>
-          <li><b>LP geometry:</b> linear objectives push level sets until they hit a face/vertex of a polyhedron.</li>
-          <li><b>Reformulation patterns:</b> epigraph variables, slack variables, and perspective/linear-fractional transforms turn “weird” models into standard form.</li>
-          <li><b>Problem classes are reusable:</b> once you can recognize LP/QP/LFP/GP structure, you can model faster and solve reliably.</li>
-        </ul>
-      </div>
-      <div class="interpretation-box">
-        <p style="margin: 0;"><b>Forward look:</b> <a href="../08-convex-problems-conic/index.html">Lecture 08</a> shows how many constraints can be written as membership in a cone (SOCP/SDP), expanding what you can model while keeping convexity. <a href="../09-duality/index.html">Lecture 09</a> explains why solvers can certify optimality and how dual variables interpret constraints.</p>
-      </div>
-    </section>
 
     </article>
 

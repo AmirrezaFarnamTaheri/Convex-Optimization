@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>00. Linear Algebra Basics — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js"
+        "three": "../../static/lib/three/three.module.js"
       }
     }
   </script>
@@ -89,7 +89,7 @@
         <li><b>Equality:</b> both sides must have identical shape. ($Ax = b$ asserts $Ax$ and $b$ live in the same $\mathbb{R}^m$)</li>
       </ol>
 
-      <h3>1.1.1 Scalars: The Rulebook</h3>
+      <h3>1.2 Scalars: The Rulebook</h3>
       <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. Scalars play two roles: weights (coefficients) and objective values.</p>
 
       <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
@@ -163,13 +163,13 @@
 
       <p><b>Extended Reals:</b> In optimization, we often work with the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to encode "forbidden" regions by assigning them infinite cost (e.g., indicator functions), effectively treating constraints as part of the objective.</p>
 
-      <h3>1.1.2 Vectors: Elements of $\mathbb{R}^n$</h3>
+      <h3>1.3 Vectors: Elements of $\mathbb{R}^n$</h3>
       <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple of scalars. We almost always treat vectors as <b>columns</b>:
       $$ x = \begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix} $$
       <b>"$\mathbb{R}^n$" is a Type Tag:</b> It asserts (1) Length/Shape: $x$ has exactly $n$ coordinates, and (2) Ambient Space: $x$ lives in a vector space where addition and scaling are defined.</p>
       <p><b>Equality is Coordinatewise:</b> $x=y \iff x_i=y_i$ for all $i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
 
-      <h3>1.1.3 Vector Operations (Forced by Consistency)</h3>
+      <h3>1.4 Vector Operations (Forced by Consistency)</h3>
       <p><b>Vector Operations (Forced by Consistency):</b>
       <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
       <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
@@ -183,7 +183,7 @@
         <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
       </ul>
 
-      <h3>1.1.4 Matrices: Typed Operators</h3>
+      <h3>1.5 Matrices: Typed Operators</h3>
       <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>linear map</b> $A: \mathbb{R}^n \to \mathbb{R}^m$.
       <br><b>Input Type:</b> $\mathbb{R}^n$ (Columns).
       <br><b>Output Type:</b> $\mathbb{R}^m$ (Rows).</p>
@@ -198,7 +198,7 @@
       <br><b>1. Row View (Measurement):</b> $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional measuring $x$.
       <br><b>2. Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the view for span, range, and feasibility.</p>
 
-      <h3>1.1.5 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
+      <h3>1.6 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
       <p>While $\mathbb{R}^n$ is our working model, the power of linear algebra comes from the fact that it applies to <i>any</i> set behaving like $\mathbb{R}^n$. This allows us to treat functions, polynomials, and matrices as vectors.</p>
       <div class="definition-box">
         <h4>Definition: Vector Space</h4>
@@ -228,20 +228,20 @@
       </div>
       <p><b>Consequences:</b> Any theorem proved using only these axioms is true for $\mathbb{R}^n$, spaces of functions, spaces of matrices, and infinite sequences.</p>
 
-      <h3>1.2 Sets: The Logic Layer of Feasibility</h3>
+      <h3>1.7 Sets: The Logic Layer of Feasibility</h3>
       <p>Optimization problems ask us to minimize a function over a <b>feasible set</b>. Constraints are not fundamentally "inequalities"—they are membership tests defining a set.</p>
 
-      <h4>1.2.1 Constraints as Sets (Semantics)</h4>
+      <h4>Constraints as Sets (Semantics)</h4>
       <p>A constraint like $g(x) \le 0$ is shorthand for the membership statement:
       $$ x \in \{z \in \mathbb{R}^n : g(z) \le 0\} $$
       This matters because convexity is a property of <b>sets</b>. We prove a problem is convex by showing the feasible set (intersection of constraints) is convex.</p>
 
-      <h4>1.2.2 Intersection = Logical AND</h4>
+      <h4>Set Logic: Intersection = Logical AND</h4>
       <p>If we have multiple constraints, we require $x$ to satisfy all of them simultaneously.
       $$ \bigcap_{i=1}^m C_i = \{x : x \in C_i \text{ for all } i\} $$
       <b>Infeasibility</b> means the intersection is the empty set $\emptyset$. This is not a numerical error; it is a logical contradiction.</p>
 
-      <h4>1.2.3 Preimages: The Engine of Modeling</h4>
+      <h4>Preimages: The Engine of Modeling (Substitution)</h4>
       <p>Most constraints in optimization are of the form "an expression belongs to a set".
       Given a function $g: \mathbb{R}^n \to \mathbb{R}^m$ and a target set $D \subseteq \mathbb{R}^m$, the <b>preimage</b> is:
       $$ g^{-1}(D) = \{x \in \mathbb{R}^n : g(x) \in D\} $$
@@ -251,37 +251,37 @@
       <br>$\bullet$ $\|Ax-b\|_2 \le t \iff (Ax-b, t) \in \text{SOC}$ (Preimage of the Second-Order Cone).</p>
       <p><b>Why this matters:</b> Convexity is preserved under affine preimages. If $D$ is convex and $g(x) = Ax+b$ is affine, then $g^{-1}(D)$ is convex. This one rule explains why linear constraints, norm constraints, and LMIs are convex.</p>
 
-      <h3>1.3 Functions: The Rulebook</h3>
+      <h3>1.8 Functions: The Rulebook</h3>
       <p>A function $f: D \to Y$ consists of a <b>domain</b> $D$, a <b>codomain</b> $Y$, and a rule. In optimization, we must be precise about domains.</p>
 
-      <h4>1.3.1 Domain is Law</h4>
+      <h4>Domain is Law</h4>
       <p>The domain is part of the function definition, not a suggestion.
       <br>Example: $f(x) = -\log x$ has domain $D = \{x \in \mathbb{R} : x > 0\}$.
       <br>If you write "minimize $-\log x$ subject to $x \le -1$", the feasible set is empty because the domain constraint ($x > 0$) contradicts the explicit constraint ($x \le -1$).</p>
 
-      <h4>1.3.2 Extended-Real-Valued Functions</h4>
+      <h4>Extended-Real-Valued Functions</h4>
       <p>We often define functions mapping to $\overline{\mathbb{R}} = \mathbb{R} \cup \{+\infty\}$.
       <br><b>Effective Domain:</b> $\mathrm{dom}\, f = \{x : f(x) < +\infty\}$.
       <br>This allows us to encode constraints into the objective. The <b>indicator function</b> of a set $C$ is:
       $$ \delta_C(x) = \begin{cases} 0 & x \in C \\ +\infty & x \notin C \end{cases} $$
       Then $\min_{x \in C} f(x)$ is equivalent to the unconstrained problem $\min_x (f(x) + \delta_C(x))$.</p>
 
-      <h4>1.3.3 Epigraphs: Functions as Sets</h4>
+      <h4>Epigraphs: Functions as Sets</h4>
       <p>The <b>graph</b> of $f$ is $\{(x, f(x))\}$. The <b>epigraph</b> is the set of points on or above the graph:
       $$ \mathrm{epi}(f) = \{(x, t) : f(x) \le t\} $$
       A function is <b>convex</b> if and only if its epigraph is a <b>convex set</b>. This bridges the analysis of functions and the geometry of sets.</p>
 
-      <h3>1.4 Geometry as a Representation (Points vs. Vectors)</h3>
+      <h3>1.9 Geometry as a Representation (Points vs. Vectors)</h3>
       <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In optimization, the distinction is critical.
       <br><b>Vectors</b> are displacements (elements of a vector space $V$). You can add them and scale them.
       <br><b>Points</b> are locations (elements of an affine space $A$). You cannot add points intrinsically. Adding locations depends on where you put the origin.</p>
 
-      <h4>The Affine Rules</h4>
+      <h4>The Affine Rules and Combinations</h4>
       <ul>
         <li><b>Point - Point = Vector:</b> $q - p$ is the unique displacement from $p$ to $q$.</li>
         <li><b>Point + Vector = Point:</b> $p + v$ is the translation of $p$ by $v$.</li>
-        <li><b>Point + Point = Illegal:</b> $(1,1) + (2,2) = (3,3)$ is only meaningful if we secretly treat them as displacements from $(0,0)$. Change the origin, and the sum changes.</li>
         <li><b>Affine Combinations:</b> $\sum \alpha_i p_i$ is a valid point if and only if $\sum \alpha_i = 1$. This makes the result origin-independent.</li>
+        <li><b>Convex Combinations:</b> A special case of affine combinations where $\sum \alpha_i = 1$ AND $\alpha_i \ge 0$. This represents a "mixture" or interpolation between points, remaining strictly within the shape defined by them.</li>
       </ul>
 
       <div class="proof-box">
@@ -298,7 +298,7 @@
 
       <p><b>Why this matters:</b> The solution set to $Ax=0$ is a <b>subspace</b> (contains 0, vectors). The solution set to $Ax=b$ ($b \ne 0$) is an <b>affine set</b> (does not contain 0, points). Mixing them up leads to errors in duality and tangent space calculations.</p>
 
-      <h3>1.5 Linear Combinations: The Fundamental Constructor</h3>
+      <h3>1.10 Linear Combinations: The Fundamental Constructor</h3>
       <p>Linear algebra is built on one atomic operation: the <b>finite linear combination</b>.
       $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
       Every concept in the course reduces to this.</p>
@@ -419,10 +419,10 @@
       </ol>
       <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
 
-      <h3>1.6 Affine vs Linear Mappings: The Structural Backbone</h3>
+      <h3>1.11 Affine vs Linear Mappings: The Structural Backbone</h3>
       <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. Optimization is essentially the study of problems whose feasible sets and objective geometry survive a specific class of transformations: <b>affine maps</b>.</p>
 
-      <h4>1.6.1 Linear Maps: The Origin-Anchored Structure</h4>
+      <h4>Linear Maps: The Origin-Anchored Structure</h4>
       <p>A map $L: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if for all $x,y$ and scalars $\alpha,\beta$:
       $$ L(\alpha x + \beta y) = \alpha L(x) + \beta L(y) $$
       <b>Immediate Consequences:</b>
@@ -431,7 +431,7 @@
       <br>3. <b>Subspaces map to Subspaces:</b> If $S$ is a subspace, $L(S)$ is a subspace.
       <br>4. <b>Convex sets map to Convex sets:</b> If $C$ is convex, $L(C)$ is convex.</p>
 
-      <h4>1.6.2 Affine Maps: Linear + Translation</h4>
+      <h4>Affine Maps: Linear + Translation</h4>
       <p>Most feasible sets (like $Ax=b$) do not pass through the origin. We need maps that allow <b>translation</b>.
       <br>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it has the form $f(x) = Ax + b$.
       <br>This decomposes behavior into linear structure ($Ax$) and a shift ($+b$).</p>
@@ -444,13 +444,13 @@
         </p>
       </div>
 
-      <h4>1.6.3 Geometry of Affine Maps</h4>
+      <h4>Geometry of Affine Maps</h4>
       <ul>
         <li><b>Lines to Lines:</b> $f(x_0 + td) = (Ax_0+b) + t(Ad)$. A line maps to a line (or a point).</li>
         <li><b>Parallelism:</b> Parallel lines map to parallel lines (or points). Affine maps preserve "straightness" and relative proportions on lines.</li>
       </ul>
 
-      <h4>1.6.4 Convexity Invariance: The Modeling Engine</h4>
+      <h4>Convexity Invariance: The Modeling Engine</h4>
       <p>This is the single most-used fact in convex modeling.
       <br><b>Theorem A (Image):</b> If $C \subseteq \mathbb{R}^n$ is convex and $f$ is affine, then $f(C)$ is convex.
       <br><b>Theorem B (Preimage):</b> If $D \subseteq \mathbb{R}^m$ is convex and $f(x)=Ax+b$, then the preimage $f^{-1}(D) = \{x : Ax+b \in D\}$ is convex.</p>
@@ -500,7 +500,7 @@
         There is no freedom left. Once the images of the basis vectors are chosen, the image of every other vector is forced by linearity. This explains why an infinite number of input-output pairs can be encoded by a finite matrix.</p>
       </div>
 
-      <h3>1.7 Matrix Algebra from Linear Maps</h3>
+      <h3>1.12 Matrix Algebra from Linear Maps</h3>
       <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>typed operator</b>: $A: \mathbb{R}^n \to \mathbb{R}^m$. The number of columns $n$ is the input dimension, and the number of rows $m$ is the output dimension. This prevents shape errors: $BA$ is only defined if the output space of $A$ matches the input space of $B$.</p>
 
       <h4>Theorem (Matrix Representation)</h4>
@@ -585,7 +585,7 @@
       $$ A' = P^{-1} A P $$
       <p>This is the definition of <b>similarity</b>. Properties invariant under this transformation (like eigenvalues, trace, and determinant) are intrinsic properties of the operator $T$, not artifacts of the coordinate system.</p>
 
-      <h3>1.8 Linear Independence, Basis, and Dimension</h3>
+      <h3>1.13 Linear Independence, Basis, and Dimension</h3>
       <p>A <b>basis</b> is where linear algebra stops being about abstract sets and becomes a working coordinate system. To get there, we first need to formalize "redundancy".</p>
 
       <h4>(A) Linear Independence as "No Redundancy"</h4>
@@ -676,11 +676,10 @@
         <br>Thus $n$ is the unique crossover point where max-independence meets min-spanning.</p>
       </div>
 
-      <h3>1.9 Functions and Preimages</h3>
+      <h3>1.14 Functions and Preimages</h3>
       <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
       <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
       <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
-
     </section>
 
     <!-- SECTION 2: SUBSPACES -->
@@ -2061,11 +2060,11 @@
       </div>
     </section>
 
-    <!-- SECTION 7: PSD MATRICES -->
+    <!-- SECTION 5: PSD MATRICES -->
     <section class="section-card" id="section-psd">
-      <h2>7. Positive Semidefinite Matrices</h2>
+      <h2>5. Positive Semidefinite Matrices</h2>
 
-      <h3>7.1 The Space of Symmetric Matrices ($\mathbb{S}^n$)</h3>
+      <h3>5.1 The Space of Symmetric Matrices ($\mathbb{S}^n$)</h3>
       <p>In convex optimization, a central object is the Hessian matrix $\nabla^2 f(\mathbf{x})$. By Schwarz's Theorem, if a function is twice continuously differentiable, its Hessian is symmetric. A matrix $A \in \mathbb{R}^{n \times n}$ is symmetric if $A = A^\top$. The set of such matrices is denoted $\mathbb{S}^n$.</p>
 
       <h4>The Spectral Theorem</h4>
@@ -2120,7 +2119,7 @@
 
       <p><b>Implication for convexity:</b> The "shape" of a multivariable function (bowl vs. saddle) is entirely determined by the signs of the eigenvalues of its Hessian.</p>
 
-      <h3>7.2 Positive Semidefinite (PSD) Matrices</h3>
+      <h3>5.2 Positive Semidefinite (PSD) Matrices</h3>
       <p>This definition is central to the course. It provides the matrix equivalent of a "non-negative number" and underpins the definition of <b>Convex Functions</b> (<a href="../05-convex-functions-basics/index.html">Lecture 05</a>) and <b>Semidefinite Programming</b> (<a href="../07-convex-problems-standard/index.html">Lecture 08</a>).</p>
 
       <div class="insight">
@@ -2188,7 +2187,7 @@
         </div>
       </div>
 
-      <h3>7.3 Geometry of PSD Matrices: Ellipsoids</h3>
+      <h3>5.3 Geometry of PSD Matrices: Ellipsoids</h3>
       <p>Positive Definite (PD) matrices define the shape of <b>ellipsoids</b>. For a matrix $P \in \mathbb{S}^n_{++}$, the set:
       $$ \mathcal{E} = \{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}^\top P \mathbf{x} \le 1 \} $$
       is an ellipsoid centered at the origin.
@@ -2199,7 +2198,7 @@
       </ul>
       <p>This geometric link explains why "conditioning" matters. If the ratio $\lambda_{\max}/\lambda_{\min}$ is large, the ellipsoid is very long and thin (a narrow valley in one direction, flat in another), making optimization difficult.</p>
 
-      <h3>7.4 The Rayleigh Quotient: Bridge to Optimization</h3>
+      <h3>5.4 The Rayleigh Quotient: Bridge to Optimization</h3>
       <p>For a symmetric matrix $A \in \mathbb{S}^n$, the <b>Rayleigh Quotient</b> is defined as:</p>
       $$ R_A(\mathbf{x}) := \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}}, \quad \mathbf{x} \neq 0 $$
       
@@ -2250,7 +2249,7 @@
       <h4>Convexity of $\lambda_{\max}$</h4>
       <p>This variational characterization proves that $\lambda_{\max}(A)$ is a <b>convex function</b> of $A$. For fixed $\mathbf{x}$, the function $g(A) = \mathbf{x}^\top A \mathbf{x}$ is linear in $A$. Since $\lambda_{\max}(A)$ is the pointwise supremum of linear functions (indexed by $\mathbf{x}$), it is convex.</p>
 
-      <h3>7.5 The Schur Complement Lemma</h3>
+      <h3>5.5 The Schur Complement Lemma</h3>
       <p>The Schur Complement is essential for handling block matrices in optimization. It allows conversion of nonlinear constraints into Linear Matrix Inequalities (LMIs) and provides a systematic method for checking positive semidefiniteness.</p>
 
       <div class="insight">
@@ -2471,7 +2470,7 @@
         <div id="widget-hessian-landscape" style="width: 100%; max-width: 800px; height: 400px; position: relative; margin: 0 auto;"></div>
       </div>
 
-      <h3>7.6 The Loewner Order</h3>
+      <h3>5.6 The Loewner Order</h3>
       <p>For symmetric matrices $X, Y \in \mathbb{S}^n$, we write <b>$X \succeq Y$</b> if and only if $X - Y$ is <b>positive semidefinite (PSD)</b>, meaning:</p>
       $$
       \mathbf{v}^\top (X - Y) \mathbf{v} \ge 0 \quad \text{for all } \mathbf{v} \in \mathbb{R}^n
@@ -2497,13 +2496,13 @@
       </ul>
     </section>
 
-    <!-- SECTION 8: PROJECTIONS -->
+    <!-- SECTION 6: PROJECTIONS -->
     <section class="section-card" id="section-projections">
-      <h2>8. Projections onto Subspaces and Affine Sets</h2>
+      <h2>6. Projections onto Subspaces and Affine Sets</h2>
 
       <p>The concept of "finding the closest point" is the geometric heart of optimization. Whether solving least squares, applying constraints, or analyzing duality, we are often just computing an orthogonal projection.</p>
 
-      <h3>8.1 Projection onto a Line (1D Case)</h3>
+      <h3>6.1 Projection onto a Line (1D Case)</h3>
       <p>Before tackling general subspaces, let's derive the projection of a vector $\mathbf{x}$ onto the line spanned by a single non-zero vector $a \in \mathbb{R}^n$. This simple case contains all the intuition needed for the general theory.</p>
       <p>We seek the scalar $\alpha$ that minimizes the squared distance $\|x - \alpha a\|_2^2$.
       $$ f(\alpha) = \|\mathbf{x} - \alpha a\|_2^2 = (\mathbf{x} - \alpha a)^\top (\mathbf{x} - \alpha a) = \|\mathbf{x}\|_2^2 - 2\alpha (a^\top \mathbf{x}) + \alpha^2 \|a\|_2^2 $$
@@ -2519,7 +2518,7 @@
         The error is orthogonal to the subspace (line). This <b>Orthogonality Principle</b> is universal: the optimal error is always perpendicular to the feasible set (for subspaces and affine sets).</p>
       </div>
 
-      <h3>8.2 Orthogonal Projection onto a General Subspace</h3>
+      <h3>6.2 Orthogonal Projection onto a General Subspace</h3>
       <p>Let $\mathcal{S} \subseteq \mathbb{R}^m$ be a subspace and $\mathbf{b} \in \mathbb{R}^m$. The <b>orthogonal projection</b> $\mathbf{p} \in \mathcal{S}$ of $\mathbf{b}$ is the unique vector in $\mathcal{S}$ minimizing $\|\mathbf{b} - \mathbf{p}\|_2$.</p>
 
       <h4>The Orthogonal Decomposition Theorem</h4>
@@ -2569,7 +2568,7 @@
         </figure>
       </div>
 
-      <h3>8.2.1 Projection via a Basis</h3>
+      <h3>6.2.1 Projection via a Basis</h3>
       <p>If $Q \in \mathbb{R}^{m \times k}$ has orthonormal columns spanning $\mathcal{S}$, the projector is:
       $$ P = QQ^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} = QQ^\top \mathbf{b} $$
       </p>
@@ -2590,7 +2589,7 @@
         This is because $\mathbf{p}$ already lives in $W$, so the closest point in $W$ to $\mathbf{p}$ is just $\mathbf{p}$ itself. Idempotence says that projection is a "stabilizing" operation: once you're in the target subspace, you stay there.</p>
       </div>
 
-      <h3>8.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
+      <h3>6.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
       <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank, the projection matrix onto its column space is given by the famous "Hat Matrix":
       $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
       <b>Derivation:</b> This formula is not magic. It arises from solving the Least Squares problem $\min \|A\mathbf{x} - \mathbf{b}\|^2$.
@@ -2599,7 +2598,7 @@
       The projection is the corresponding point in the column space: $\mathbf{p} = A\mathbf{x} = A(A^\top A)^{-1} A^\top \mathbf{b}$.
       </p>
 
-      <h3>8.3 Projection onto Closed Convex Sets</h3>
+      <h3>6.3 Projection onto Closed Convex Sets</h3>
       <p>The concept of projection extends beyond subspaces. For any nonempty, closed convex set $C$, and any point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.
       $$ \Pi_C(y) = \operatorname{argmin}_{x \in C} \|x - y\|_2 $$
       <b>Existence & Uniqueness:</b> Existence follows from $C$ being closed (and the norm being coercive). Uniqueness follows from the strict convexity of the Euclidean norm and the convexity of $C$.
@@ -2607,7 +2606,7 @@
       $$ \langle y - x^*, z - x^* \rangle \le 0 \quad \forall z \in C $$
       Geometrically, the vector from the projection $x^*$ to the target $y$ makes an obtuse angle with any vector pointing from $x^*$ into the set. This condition is the ancestor of KKT stationarity and separating hyperplanes.</p>
 
-      <h3>8.4 Projection onto an Affine Set</h3>
+      <h3>6.4 Projection onto an Affine Set</h3>
       <p>Consider an affine set defined by $\mathcal{A} = \{ \mathbf{x} \in \mathbb{R}^n \mid F\mathbf{x} = \mathbf{g} \}$, where $F \in \mathbb{R}^{\mathbf{p} \times n}$ has full row rank and $\mathbf{g} \in \mathbb{R}^p$. Projecting onto this set reduces to subspace projection by translating.</p>
 
       <figure style="text-align: center; margin: 24px 0;">
@@ -2703,9 +2702,9 @@
 
     </section>
 
-    <!-- SECTION 9: LEAST SQUARES -->
+    <!-- SECTION 7: LEAST SQUARES -->
     <section class="section-card" id="section-least-squares">
-      <h2>9. The Method of Least Squares</h2>
+      <h2>7. The Method of Least Squares</h2>
 
       <h3>The Problem: Overdetermined Systems</h3>
       <p>In practice, we often encounter linear systems $A\mathbf{x}=\mathbf{b}$ with no exact solution. This typically occurs when $m > n$ (more equations than unknowns) and $\mathbf{b} \notin \mathcal{R}(A)$. Since we cannot reach $\mathbf{b}$ exactly, we settle for the "closest possible" point in the range of $A$.
@@ -2834,9 +2833,9 @@
 
     </section>
 
-    <!-- SECTION 10: REVIEW -->
+    <!-- SECTION 8: REVIEW -->
     <section class="section-card" id="section-review">
-      <h2>10. Review & Cheat Sheet</h2>
+      <h2>8. Review & Cheat Sheet</h2>
       <div class="lecture-summary" style="margin-bottom: 20px;">
         <p>This section condenses the lecture into a quick-reference format for definitions, properties, and standard results.</p>
       </div>
@@ -2930,9 +2929,9 @@
       </table>
     </section>
 
-        <!-- SECTION 11: EXERCISES -->
+        <!-- SECTION 9: EXERCISES -->
     <section class="section-card" id="section-exercises">
-      <h2><i data-feather="edit-3"></i> 11. Exercises</h2>
+      <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
       <div class="insight">
         <h4>Recap & Key Concepts</h4>
         <p>These exercises reinforce the foundational tools of linear algebra used in optimization. Focus on the geometry of subspaces, the calculus of gradients (crucial for finding optimality conditions), and the properties of PSD matrices (essential for convexity).</p>
@@ -3687,9 +3686,9 @@
 
 
 
-<!-- SECTION 12: READINGS -->
+<!-- SECTION 10: READINGS -->
     <section class="section-card" id="section-readings">
-      <h2>12. Readings & Resources</h2>
+      <h2>10. Readings & Resources</h2>
       <ul>
         <li>
           <b>Boyd & Vandenberghe, Convex Optimization:</b>

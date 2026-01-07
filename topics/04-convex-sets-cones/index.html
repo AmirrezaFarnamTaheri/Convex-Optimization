@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>04. Convex Sets: Cones and Separation — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
 </head>
 <body>
   <header class="site-header sticky">
@@ -672,7 +672,7 @@
         </div>
       </div>
 
-      <h4>Phase 1.2 — Supporting Hyperplanes (The Skeleton)</h4>
+      <h3>2.2 Supporting Hyperplanes (The Skeleton)</h3>
       <p>This is the deep geometric backbone of optimization.</p>
       <div class="theorem-box">
         <h4>Supporting Hyperplane Theorem</h4>
@@ -731,7 +731,7 @@
         <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
-      <h4>Phase 1.1 — Constraints as Geometry (Normal Cones)</h4>
+      <h3>2.3 Constraints as Geometry (Normal Cones)</h3>
       <p>This phase explains <i>why</i> Lagrange multipliers exist.</p>
       <p><b>Constraint Geometry:</b>
       <ul>
@@ -773,22 +773,37 @@
     </section>
 
     <section class="section-card" id="section-3">
-        <h2>3. Review & Cheat Sheet</h2>
-        <h3>Separation Theorems</h3>
+        <h2>3. Summary & Cheat Sheet</h2>
+
+        <div class="recap-box" style="margin-bottom: 24px;">
+          <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
+          <ul style="margin: 0 0 0 20px;">
+            <li><b>Separation:</b> Convex sets can be separated from disjoint convex sets by a hyperplane.</li>
+            <li><b>Projection viewpoint:</b> Projecting onto a closed convex set produces a normal direction that defines a separating/supporting hyperplane.</li>
+            <li><b>Cones:</b> A cone is closed under nonnegative scaling; a proper cone induces a generalized inequality.</li>
+            <li><b>Dual cones:</b> $K^*$ encodes the set of non-negative linear functionals on $K$.</li>
+          </ul>
+        </div>
+
+        <h3>Separation Theorems Cheat Sheet</h3>
         <ul>
-          <li><b>Separating Hyperplane:</b> Any two disjoint convex sets can be separated by a hyperplane ($a^\top x \le b \le a^\top y$).</li>
+          <li><b>Separating Hyperplane:</b> Any two disjoint convex sets can be separated ($a^\top x \le b \le a^\top y$).</li>
           <li><b>Strict Separation:</b> Requires disjoint, closed, and one set compact.</li>
-          <li><b>Supporting Hyperplane:</b> At every boundary point of a convex set, there exists a hyperplane containing the set on one side.</li>
-          <li><b>Farkas Lemma:</b> The fundamental theorem of the alternative for linear inequalities, derived from separation.</li>
+          <li><b>Supporting Hyperplane:</b> At every boundary point, there exists a hyperplane containing the set on one side.</li>
+          <li><b>Farkas Lemma:</b> The fundamental theorem of the alternative, derived from separation.</li>
         </ul>
 
-        <h3>Cones and Duality</h3>
+        <h3>Cones and Duality Cheat Sheet</h3>
         <ul>
           <li><b>Proper Cone:</b> Convex, Closed, Pointed, Solid. Induces a partial order $\preceq_K$.</li>
-          <li><b>Dual Cone ($K^*$):</b> The set of vectors making a non-obtuse angle with $K$.</li>
+          <li><b>Dual Cone ($K^*$):</b> $\{y \mid y^\top x \ge 0 \ \forall x \in K\}$.</li>
           <li><b>Self-Dual Cones:</b> $\mathbb{R}^n_+$, $\mathcal{Q}^{n+1}$ (SOC), $\mathbb{S}^n_+$ (PSD).</li>
           <li><b>Dual Operations:</b> $(K_1 + K_2)^* = K_1^* \cap K_2^*$ (for closed convex cones).</li>
         </ul>
+
+        <div class="interpretation-box">
+          <p style="margin: 0;"><b>Forward look:</b> In <a href="../08-convex-problems-conic/index.html">Lecture 08</a> you will see constraints written as “$(x,t)\in K$,” where $K$ is a cone like the SOC or PSD cone. In <a href="../09-duality/index.html">Lecture 09</a> you will see separation reappear as dual variables and optimality certificates.</p>
+        </div>
       </section>
 
     <section class="section-card" id="section-4">
@@ -1281,20 +1296,6 @@
       </ul>
     </section>
 
-    <section class="section-card" id="section-6">
-      <h2>6. Recap &amp; What's Next</h2>
-      <div class="recap-box">
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Separation:</b> convex sets can be separated from disjoint convex sets by a hyperplane; boundary points admit supporting hyperplanes.</li>
-          <li><b>Projection viewpoint:</b> projecting onto a closed convex set produces a normal direction that defines a separating/supporting hyperplane.</li>
-          <li><b>Cones:</b> a cone is closed under nonnegative scaling; a proper cone is closed, pointed, and solid and induces a generalized inequality.</li>
-          <li><b>Dual cones:</b> $K^* = \{y \mid y^\top x \ge 0 \ \forall x \in K\}$ encodes which linear functionals are “nonnegative” on $K$.</li>
-        </ul>
-      </div>
-      <div class="interpretation-box">
-        <p style="margin: 0;"><b>Forward look:</b> In <a href="../08-convex-problems-conic/index.html">Lecture 08</a> you will see constraints written as “$(x,t)\in K$,” where $K$ is a cone like the SOC or PSD cone. In <a href="../09-duality/index.html">Lecture 09</a> you will see separation reappear as dual variables and optimality certificates.</p>
-      </div>
-    </section>
 
     </article>
 

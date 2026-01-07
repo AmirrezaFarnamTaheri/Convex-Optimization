@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>08. Convex Optimization Problems: Conic Programming — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
 </head>
 <body>
   <!-- Header with navigation -->
@@ -1160,7 +1160,77 @@ problem.solve()</code></pre>
     </section>
 
     <section class="section-card" id="section-6">
-      <h2><i data-feather="edit-3"></i> 6. Exercises</h2>
+      <h2>6. Summary & Cheat Sheet</h2>
+
+      <div class="recap-box" style="margin-bottom: 24px;">
+        <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
+        <ul style="margin: 0 0 0 20px;">
+          <li><b>Conic viewpoint:</b> Many constraints can be written as “(expression) $\in K$” for a standard cone $K$.</li>
+          <li><b>SOCP/SDP are modeling languages:</b> They capture norms, quadratic forms, and matrix inequalities while remaining convex.</li>
+          <li><b>Robustness via geometry:</b> Uncertainty sets turn into conic constraints that enforce worst-case feasibility.</li>
+          <li><b>DCP is a proof system:</b> Composition rules guarantee convexity so you can model safely at scale.</li>
+        </ul>
+      </div>
+
+      <h3>The Big Three Cones</h3>
+      <table class="data-table" style="width: 100%; margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th>Cone</th>
+            <th>Definition</th>
+            <th>Dual Cone</th>
+            <th>Problem Class</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Nonnegative Orthant</b> $\mathbb{R}_+^n$</td>
+            <td>$x \ge 0$ (componentwise)</td>
+            <td>Self-dual ($\mathbb{R}_+^n$)</td>
+            <td>Linear Programming (LP)</td>
+          </tr>
+          <tr>
+            <td><b>Second-Order Cone</b> $\mathcal{Q}^{n+1}$</td>
+            <td>$\|x\|_2 \le t$</td>
+            <td>Self-dual ($\mathcal{Q}^{n+1}$)</td>
+            <td>SOCP</td>
+          </tr>
+          <tr>
+            <td><b>PSD Cone</b> $\mathbb{S}_+^n$</td>
+            <td>$X \succeq 0 \iff z^\top X z \ge 0 \ \forall z$</td>
+            <td>Self-dual ($\mathbb{S}_+^n$)</td>
+            <td>Semidefinite Programming (SDP)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Convexification Recipes</h3>
+      <div class="proof-box">
+        <h4>Recipe 1: Robustness $\to$ Norms $\to$ SOCP</h4>
+        <p>Uncertainty in data (worst-case or Gaussian) converts linear constraints into norms of affine functions.
+        <br>$\sup a^\top x$ or $\mathbb{P}(a^\top x \le b)$ $\implies$ $\|P^\top x\|_2 \le b - \bar{a}^\top x$.</p>
+      </div>
+      <div class="proof-box">
+        <h4>Recipe 2: Eigenvalues $\to$ LMIs $\to$ SDP</h4>
+        <p>Minimizing maximal eigenvalues or singular values converts to Linear Matrix Inequalities.
+        <br>$\lambda_{\max}(A) \le t \iff A \preceq tI$.
+        <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
+      </div>
+      <div class="proof-box">
+        <h4>Recipe 3: SDP Modeling Templates</h4>
+        <ul>
+            <li><b>Quadratic Bound:</b> $x^\top P x \le t \ (P \succ 0) \iff \begin{bmatrix} t & x^\top \\ x & P^{-1} \end{bmatrix} \succeq 0$.</li>
+            <li><b>Matrix Fractional:</b> $x^\top Y^{-1} x \le t \ (Y \succ 0) \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
+        </ul>
+      </div>
+
+      <div class="interpretation-box">
+        <p style="margin: 0;"><b>Forward look:</b> In <a href="../09-duality/index.html">Lecture 09</a>, these conic forms gain optimality certificates: dual cones appear as dual constraints, and strong duality explains when the primal and dual solutions match.</p>
+      </div>
+    </section>
+
+    <section class="section-card" id="section-7">
+      <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
       <p>These problems consolidate the lecture material and provide practice in problem classification, formulation, and reformulation.</p>
 
       <!-- Problem 4.1 -->
@@ -1965,82 +2035,6 @@ problem.solve()</code></pre>
 
     </section>
 
-<section class="section-card" id="section-7">
-      <h2>7. Review & Cheat Sheet</h2>
-
-
-      <h3>Meta-Patterns: Convexification Recipes</h3>
-      <div class="proof-box">
-        <h4>Recipe 1: Robustness $\to$ Norms $\to$ SOCP</h4>
-        <p>Uncertainty in data (worst-case or Gaussian) converts linear constraints into norms of affine functions.
-        <br>$\sup a^\top x$ or $\mathbb{P}(a^\top x \le b)$ $\implies$ $\|P^\top x\|_2 \le b - \bar{a}^\top x$.</p>
-      </div>
-      <div class="proof-box">
-        <h4>Recipe 2: Eigenvalues $\to$ LMIs $\to$ SDP</h4>
-        <p>Minimizing maximal eigenvalues or singular values converts to Linear Matrix Inequalities.
-        <br>$\lambda_{\max}(A) \le t \iff A \preceq tI$.
-        <br>$\|A\|_2 \le t \iff \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
-      </div>
-
-      <div class="proof-box">
-        <h4>Recipe 3: SDP Modeling Templates (Pattern Cards)</h4>
-        <p>These equivalences allow you to "lift" difficult constraints into the PSD cone using Schur Complements.</p>
-        <ul>
-            <li><b>Quadratic Bound:</b> $x^\top P x \le t \ (P \succ 0) \iff \begin{bmatrix} t & x^\top \\ x & P^{-1} \end{bmatrix} \succeq 0$.</li>
-            <li><b>Norm Bound:</b> $\|x\|_2 \le t \iff \begin{bmatrix} tI & x \\ x^\top & t \end{bmatrix} \succeq 0$. (SDP generalizes SOCP).</li>
-            <li><b>Eigenvalues:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.</li>
-            <li><b>Matrix Fractional:</b> $x^\top Y^{-1} x \le t \ (Y \succ 0) \iff \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0$.</li>
-        </ul>
-      </div>
-
-<h3>Problem Classes Reference</h3>
-      <table class="data-table" style="width: 100%; margin-bottom: 24px;">
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th>Objective</th>
-            <th>Constraints</th>
-            <th>Key Property</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>LP</b></td>
-            <td>Linear</td>
-            <td>Linear inequalities ($Ax \le b$)</td>
-            <td>Solution at vertex; simplex method.</td>
-          </tr>
-          <tr>
-            <td><b>QP</b></td>
-            <td>Convex Quadratic</td>
-            <td>Linear inequalities</td>
-            <td>Unique solution if $P \succ 0$.</td>
-          </tr>
-          <tr>
-            <td><b>SOCP</b></td>
-            <td>Linear</td>
-            <td>Norm constraints ($\|Ax+b\|_2 \le c^\top x + d$)</td>
-            <td>Robust optimization; Euclidean geometry.</td>
-          </tr>
-          <tr>
-            <td><b>SDP</b></td>
-            <td>Linear</td>
-            <td>LMI ($F_0 + \sum x_i F_i \succeq 0$)</td>
-            <td>Optimizes over matrices; relaxation power.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Hierarchy</h3>
-      <p style="text-align: center; font-size: 1.2em;">
-        <strong>LP &subseteq; QP &subseteq; SOCP &subseteq; SDP</strong>
-      </p>
-      <ul>
-        <li>Every LP is a QP (with $P=0$).</li>
-        <li>Every QP is an SOCP (via Cholesky factorization of constraints).</li>
-        <li>Every SOCP is an SDP (via Schur complement).</li>
-      </ul>
-    </section>
 
 <section class="section-card" id="section-8">
       <h2>8. Readings & Resources</h2>
@@ -2052,22 +2046,6 @@ problem.solve()</code></pre>
       </ul>
     </section>
 
-    <section class="section-card" id="section-9">
-      <h2>9. Recap &amp; What's Next</h2>
-      <div class="recap-box">
-        <h4><i data-feather="cpu"></i> DCP Encounter #3: The Finale</h4>
-        <p>This is <b>DCP encounter #3 (the finale)</b>. Lecture 02 gave the intuition ("Legos"), Lecture 07 showed the reformulation rules, and here we have revealed the <b>under-the-hood machinery</b>: mapping atoms to conic constraints.</p>
-        <ul style="margin: 0 0 0 20px;">
-          <li><b>Conic viewpoint:</b> many constraints can be written as “(expression) $\in K$” for a cone $K$ (SOC, PSD cone, etc.).</li>
-          <li><b>SOCP/SDP are modeling languages:</b> they capture norms, quadratic forms, and matrix inequalities while remaining convex.</li>
-          <li><b>Robustness via geometry:</b> uncertainty sets turn into conic constraints that enforce worst-case feasibility.</li>
-          <li><b>DCP is a proof system:</b> composition rules guarantee convexity so you can model safely at scale.</li>
-        </ul>
-      </div>
-      <div class="interpretation-box">
-        <p style="margin: 0;"><b>Forward look:</b> In <a href="../09-duality/index.html">Lecture 09</a>, these conic forms gain optimality certificates: dual cones appear as dual constraints, and strong duality explains when the primal and dual solutions match.</p>
-      </div>
-    </section>
 
     </article>
 

@@ -53,10 +53,9 @@
 
         <h3>1.1 Affine Combinations and Affine Sets</h3>
 
-        <p>An <a href="#" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one. Geometrically, this operation generates lines, planes, and hyperplanes passing through the given points, without reference to the origin.</p>
-        $$
-        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1
-        $$
+        <p>An <a href="#" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one:
+        $$ \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1 $$
+        Unlike convex combinations, the coefficients $\theta_i$ can be negative. This operation generates lines, planes, and hyperplanes—"flat" geometry.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/layer3_32_subspace_affine.gif"
@@ -65,72 +64,31 @@
           <figcaption><i>Animation:</i> A <b>Subspace</b> (left) is tied to the origin (infinite sheet through 0). An <b>Affine Set</b> (right) is a translated subspace (infinite sheet floating in space). Affine combinations let you travel anywhere on the sheet, but never off it.</figcaption>
         </figure>
 
-        <h4>Two-point affine combination = full line</h4>
-        <p>For two points $x, y \in \mathbb{R}^n$, the affine combination $z = \theta x + (1-\theta)y = y + \theta(x-y)$ traces the <b>entire line</b> through $y$ in the direction $x-y$ as $\theta$ ranges over all of $\mathbb{R}$.</p>
-        <ul>
-            <li>$\theta \in [0, 1]$: Segment between $y$ and $x$ (interpolation).</li>
-            <li>$\theta > 1$: Extrapolation past $x$.</li>
-            <li>$\theta < 0$: Extrapolation past $y$.</li>
-        </ul>
+        <h4>Geometric Meaning: Line vs Segment</h4>
+        <p>For two points $x, y \in \mathbb{R}^n$, the affine combination $z = \theta x + (1-\theta)y = y + \theta(x-y)$ traces the <b>entire infinite line</b> passing through $x$ and $y$.
+        <br>$\bullet$ $\theta \in [0, 1]$: Segment between $y$ and $x$ (interpolation).
+        <br>$\bullet$ $\theta > 1$ or $\theta < 0$: Extrapolation outside the segment.</p>
 
-        <h4>Why "sum to one" works (Translation Invariance)</h4>
-        <p>The condition $\sum \theta_i = 1$ ensures that the operation commutes with translation. If you shift all points by $t$, the affine combination shifts by exactly $t$:
-        $$ \sum \theta_i (x_i + t) = \sum \theta_i x_i + (\sum \theta_i)t = \sum \theta_i x_i + t $$
-        This is why affine geometry is "linear geometry without a fixed origin."</p>
+        <h4>Translation Invariance (Why "sum to one" matters)</h4>
+        <p>The condition $\sum \theta_i = 1$ ensures that the operation is independent of the origin. If you shift all points by $t$, the affine combination shifts by exactly $t$:
+        $$ \sum \theta_i (x_i + t) = \sum \theta_i x_i + (\sum \theta_i)t = \left(\sum \theta_i x_i\right) + t $$
+        If $\sum \theta_i \ne 1$, the result would depend on where the origin is placed (scaling artifact). Thus, affine geometry is "linear geometry without a fixed origin."</p>
 
         <div class="theorem-box">
           <h4>Definition (Affine Set)</h4>
-          <p>A set $C$ is <a href="#" class="definition-link">affine</a> if it contains all affine combinations of its points. Equivalently, the <b>infinite line</b> passing through any two points in $C$ lies entirely in $C$.</p>
-          $$ x_1, x_2 \in C, \ \theta \in \mathbb{R} \implies \theta x_1 + (1-\theta)x_2 \in C $$
+          <p>A set $C$ is <a href="#" class="definition-link">affine</a> if it contains the full line through any two of its points:
+          $$ x, y \in C, \ \theta \in \mathbb{R} \implies \theta x + (1-\theta)y \in C $$
+          </p>
         </div>
 
-        <h4>Affine Sets as Translated Subspaces</h4>
-        <p>Geometrically, every affine set is a linear subspace that has been shifted (translated) away from the origin.</p>
-
-        <div class="theorem-box">
-          <h4>Theorem: Affine Set $\iff$ Translated Subspace</h4>
-          <p>A set $C \subseteq \mathbb{R}^n$ is affine if and only if it can be written as:</p>
-          $$
-          C = x_0 + V = \{x_0 + v \mid v \in V\}
-          $$
-          <p>where $x_0$ is any specific point in $C$, and $V$ is a linear subspace of $\mathbb{R}^n$.</p>
-          <div class="proof-box">
-            <h4>Proof: The Geometric Shift</h4>
-            <div class="proof-step">
-              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. We check if $C$ contains the line through any two points $x_1, x_2 \in C$.
-              <br>Since $x_1, x_2 \in C$, we can write $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
-              <br>Form the affine combination for any $\theta \in \mathbb{R}$:
-              $$
-              z = \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
-              $$
-              Distribute and regroup terms relative to $x_0$:
-              $$ z = \theta x_0 + \theta v_1 + (1-\theta)x_0 + (1-\theta)v_2 = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
-              Since $V$ is a subspace, it is closed under scalar multiplication and vector addition.
-              <ul>
-                <li>$\theta v_1 \in V$ and $(1-\theta)v_2 \in V$.</li>
-                <li>Their sum $v' = \theta v_1 + (1-\theta)v_2$ is in $V$.</li>
-              </ul>
-              <br>Therefore, $z = x_0 + v' \in x_0 + V = C$.
-            </div>
-            <div class="proof-step">
-              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick a base point $x_0 \in C$. Define the set of displacements $V = C - x_0 = \{c - x_0 \mid c \in C\}$. We must prove $V$ is a linear subspace.
-              <ul>
-                <li><b>Contains zero:</b> Since $x_0 \in C$, $x_0 - x_0 = 0 \in V$.</li>
-                <li><b>Closed under scaling:</b> Let $v \in V$ and $\alpha \in \mathbb{R}$. We want $\alpha v \in V$.
-                <br>Since $v \in V$, $x_0 + v \in C$. Since $C$ is affine, the affine combination of $(x_0 + v)$ and $x_0$ with weights $\alpha$ and $(1-\alpha)$ is in $C$:
-                $$ \alpha(x_0 + v) + (1-\alpha)x_0 = \alpha x_0 + \alpha v + x_0 - \alpha x_0 = x_0 + \alpha v $$
-                Since $x_0 + \alpha v \in C$, by definition $\alpha v \in V$.</li>
-                <li><b>Closed under addition:</b> Let $u, w \in V$. We want $u+w \in V$.
-                <br>Since $u, w \in V$, $x_0+u \in C$ and $x_0+w \in C$.
-                <br>Since $C$ is affine, the midpoint is in $C$:
-                $$ m = \frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+w) = x_0 + \frac{1}{2}(u+w) $$
-                Thus $\frac{1}{2}(u+w) \in V$.
-                <br>Since $V$ is closed under scaling (proven above), $2 \cdot \frac{1}{2}(u+w) = u+w \in V$.</li>
-              </ul>
-              Since $V$ contains 0 and is closed under addition and scaling, it is a subspace.
-            </div>
-          </div>
-        </div>
+        <h4>Structure Theorem: Affine Set = Translated Subspace</h4>
+        <p>Every affine set $C$ can be written as a linear subspace $V$ shifted by a vector $x_0$:
+        $$ C = x_0 + V = \{x_0 + v \mid v \in V\} $$
+        The subspace $V$ is unique (it is the set of differences $x-y$ for $x,y \in C$).
+        <br><b>Consequences:</b>
+        <br>1. If an affine set contains the origin, it is a subspace.
+        <br>2. The "dimension" of an affine set is the dimension of the subspace $V$.
+        <br>3. Solutions to $Ax=b$ form an affine set: $x_p + \mathcal{N}(A)$.</p>
 
 
         <!-- Moved P3.20 to Section 6 -->
@@ -153,10 +111,9 @@
 
         <h3>1.2 Convex Combinations and Convex Sets</h3>
 
-        <p>A <a href="#" class="definition-link">convex combination</a> is an affine combination with the additional constraint that all weights are nonnegative:</p>
-        $$
-        \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1
-        $$
+        <p>A <a href="#" class="definition-link">convex combination</a> is an affine combination with non-negative weights:
+        $$ \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1 $$
+        This operation represents "mixing" or "averaging" without scaling or extrapolation.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/layer3_33_span_generators.gif"
@@ -168,35 +125,26 @@
           <br>$\bullet$ <b>Convex (Orange):</b> The finite region strictly "between" the points (Convex combinations).</figcaption>
         </figure>
 
-        <h4>Mixing vs Scaling</h4>
-        <p>Convex combinations represent "mixing" (interpolation) without "scaling" (size change).
-        <br>Consider a linear combination $z = \alpha x + \beta y$.
-        <ul>
-            <li>If $\alpha+\beta \neq 1$, the result includes a global scaling factor. For example, $x+y$ (where weights are 1 and 1) is not a mix; it is a mix scaled by 2 ($2 \cdot (0.5x + 0.5y)$).</li>
-            <li>If $\alpha < 0$, the result includes extrapolation (subtraction).</li>
-        </ul>
-        Convexity restricts operations to pure mixing: you cannot go outside the segment between $x$ and $y$.</p>
-
-        <p><b>Intuition (The Elastic Sheet):</b> The constraints $\theta_i \ge 0$ prevent us from "extrapolating" beyond the points. We are restricted to "interpolating" between them. Think of a rubber band stretched around nails; the convex hull is the area inside the band.
-        <br>For two points, $z = \theta x + (1-\theta)y = y + \theta(x-y)$. As $\theta$ runs from 0 to 1, we trace the segment from $y$ to $x$. If $\theta < 0$ or $\theta > 1$, we extrapolate.</p>
+        <h4>Why "Mixing without Scaling"?</h4>
+        <p>A general linear combination $z = \alpha x + \beta y$ can be decomposed:
+        $$ z = (\alpha+\beta) \left( \frac{\alpha}{\alpha+\beta} x + \frac{\beta}{\alpha+\beta} y \right) $$
+        If $\alpha+\beta \ne 1$, you are mixing <i>and</i> scaling (zooming in/out).
+        If $\alpha < 0$, you are extrapolating (subtracting).
+        Convexity forbids both: it requires stability under pure averaging.</p>
 
         <div class="theorem-box">
           <h4>Definition (Convex Set)</h4>
-          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="#" class="definition-link" data-term="convex set">convex</a> if for any two points $x, y \in C$ and any $\theta \in [0,1]$:</p>
-          $$
-          \theta x + (1-\theta)y \in C
-          $$
-          <p><b>Geometric meaning:</b> The line segment connecting any two points in the set lies entirely within the set—no "dents" or "holes."
-          <br><b>Quantifiers matter:</b> This must hold for <b>all</b> pairs $x,y \in C$ and <b>all</b> $\theta \in [0,1]$. A single counterexample (one leaking segment) disproves convexity.</p>
+          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="#" class="definition-link" data-term="convex set">convex</a> if it contains the line segment between any two of its points:
+          $$ x, y \in C, \ \theta \in [0,1] \implies \theta x + (1-\theta)y \in C $$
+          <b>Equivalent Logic:</b> $C$ is convex iff $C$ is closed under convex combinations.
+          <br><i>Proof (Induction):</i> If a set contains all segments (2-point mixtures), it contains all triangles (3-point mixtures), and by induction, all $k$-point mixtures. (See Exercise P3.12).</p>
+        </div>
 
-          <h4 style="margin-top: 15px;">Theorem (Pairwise Closure implies Finite Closure)</h4>
-          <p>If a set $C$ is closed under convex combinations of <b>pairs</b> of points, then it is closed under convex combinations of <b>any finite number</b> of points.
-          <br><i>Proof:</i> We prove by induction on $k$.
-          <br><b>Base case $k=2$:</b> True by definition.
-          <br><b>Inductive step:</b> Assume true for $k-1$. Let $z = \sum_{i=1}^k \theta_i x_i$ with $\theta_i \ge 0, \sum \theta_i = 1$.
-          If $\theta_k = 1$, then $z=x_k \in C$. If $\theta_k < 1$, define $\bar{\theta}_i = \theta_i / (1-\theta_k)$ for $i < k$. Note $\sum \bar{\theta}_i = 1$.
-          Let $y = \sum_{i=1}^{k-1} \bar{\theta}_i x_i$. By hypothesis, $y \in C$.
-          Now observe $z = (1-\theta_k)y + \theta_k x_k$. This is a convex combination of two points in $C$. Thus $z \in C$.</p>
+        <div class="insight">
+          <h4>Probability Interpretation: Expectations</h4>
+          <p>If $\theta_i \ge 0$ and $\sum \theta_i = 1$, the $\theta_i$ form a probability distribution.
+          A convex combination is simply the <b>expected value</b> $\mathbb{E}[X]$ of a random variable $X$ that takes values in the set of points.
+          <br><b>Convexity means:</b> "The set of averages is contained in the set."</p>
         </div>
 
         <h4>Operations that Preserve Convexity</h4>
@@ -387,63 +335,28 @@
 
         <h3>2.1 Hyperplanes and Halfspaces</h3>
 
-        <p>A <a href="#" class="definition-link">hyperplane</a> is a set of the form:</p>
-        $$
-        H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
-        $$
-        <p>where $a \in \mathbb{R}^n \setminus \{0\}$ and $b \in \mathbb{R}$. The vector $a$ is the <b>normal vector</b> (perpendicular to the hyperplane).
-        <br><b>Constraint Interpretation:</b> $H$ is the solution set of a single linear equation.
-        <br><b>Affine Set Interpretation:</b> $H$ is a subspace ($\ker a^\top$) shifted by any point $x_0$ such that $a^\top x_0 = b$. It is an affine set of codimension 1.
-        <br><b>Particular + Nullspace:</b> $H = x_0 + \{s \mid a^\top s = 0\}$.</p>
+        <p>A <a href="#" class="definition-link">hyperplane</a> is a set of the form:
+        $$ H = \{x \in \mathbb{R}^n \mid a^\top x = b\}, \quad a \neq 0 $$
+        <b>Affine Nature:</b> A hyperplane is an affine set (codimension 1). It is the solution set of a single linear equation.
+        <br><b>Normal Vector:</b> The vector $a$ is the normal. If $x, y \in H$, then $a^\top x = a^\top y = b$, so $a^\top(x-y) = 0$. Thus $a$ is orthogonal to every vector <i>in</i> the hyperplane.</p>
 
         <div class="insight">
-          <h4>Geometric Intuition: The Level Set View</h4>
-          <p>Consider the function $f(x) = a^\top x$. This function measures "how far" you are in direction $a$.
-          <br>$\bullet$ The hyperplane $H$ is the level set where $f(x) = b$.
-          <br>$\bullet$ The normal vector $a$ points in the direction of increasing value.
-          <br>$\bullet$ Changing $b$ shifts the hyperplane parallel to itself along the direction $a$.
-          </p>
+          <h4>Geometry of Linear Functionals</h4>
+          <p>Think of $f(x) = a^\top x$ as a "height function".
+          <br>$\bullet$ The hyperplane is the level set (contour line) where height = $b$.
+          <br>$\bullet$ The normal $a$ points in the direction of steepest ascent.
+          <br>$\bullet$ The offset $b$ shifts the plane along the normal direction.</p>
         </div>
+
+        <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:
+        $$ S = \{x \in \mathbb{R}^n \mid a^\top x \le b\} $$
+        <b>Convexity:</b> Halfspaces are convex (because $a^\top (\theta x + (1-\theta)y) \le \theta b + (1-\theta)b = b$). They are <b>not</b> affine (extrapolation fails).</p>
 
         <div class="theorem-box">
-          <h4>Signed Distance to a Hyperplane</h4>
-          <p>The signed distance of a point $y$ to $H$ is:
-          $$ \frac{a^\top y - b}{\|a\|_2} $$
-          <br><b>Derivation:</b> The closest point $x^*$ to $y$ on the hyperplane lies along the normal direction. $x^* = y - \lambda a$.
-          Enforcing $a^\top x^* = b \implies a^\top(y-\lambda a) = b \implies \lambda = \frac{a^\top y - b}{\|a\|^2}$.
-          The distance is $\|y-x^*\| = \|\lambda a\| = |\lambda| \|a\| = \frac{|a^\top y - b|}{\|a\|}$.</p>
-        </div>
-
-        <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
-        $$
-        H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
-        $$
-        <p><b>Convexity:</b> Halfspaces are convex.
-        <br><i>Proof:</i> If $a^\top x \le b$ and $a^\top y \le b$, then $a^\top(\theta x + (1-\theta)y) \le \theta b + (1-\theta)b = b$ for $\theta \in [0,1]$.
-        <br>Note that halfspaces are generally <b>not affine</b> (extrapolation can leave the set).</p>
-
-        <div class="proof-box">
-          <h4>Proof: Hyperplanes and Halfspaces are Convex</h4>
-
-          <div class="proof-step">
-            <strong>Hyperplane:</strong> Take $x_1, x_2 \in H$ and $\theta \in [0,1]$. Then:
-            $$
-            a^\top(\theta x_1 + (1-\theta)x_2) = \theta a^\top x_1 + (1-\theta)a^\top x_2 = \theta b + (1-\theta)b = b
-            $$
-            So the entire segment lies in $H$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Halfspace:</strong> Take $x_1, x_2 \in H^-$ (so $a^\top x_i \le b$) and $\theta \in [0,1]$. Then:
-            $$
-            a^\top(\theta x_1 + (1-\theta)x_2) = \theta a^\top x_1 + (1-\theta)a^\top x_2 \le \theta b + (1-\theta)b = b
-            $$
-            So the segment lies in $H^-$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Alternate View (Preimage):</strong> Define the linear function $f(x) = a^\top x$. Then $H^- = f^{-1}((-\infty, b])$. Since $(-\infty, b]$ is a convex interval in $\mathbb{R}$ and preimages of convex sets under affine maps are convex, $H^-$ is convex.
-          </div>
+          <h4>Distance to a Hyperplane</h4>
+          <p>The Euclidean distance from a point $y$ to the hyperplane $H = \{x : a^\top x = b\}$ is:
+          $$ \operatorname{dist}(y, H) = \frac{|a^\top y - b|}{\|a\|_2} $$
+          This quantity appears constantly in optimization as the "constraint violation" or "margin".</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -1179,98 +1092,46 @@
 
     <section class="section-card" id="section-4">
       <h2>4. Separation and Supporting Hyperplanes</h2>
-      <h3>4.1 The Separating Hyperplane Theorem</h3>
-        <p>A central result in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
+      <h3>4.1 Supporting Hyperplanes: The "Tangent" of Convex Sets</h3>
+      <p>A convex set has the remarkable property that at every boundary point, you can touch it with a flat plane without cutting inside. This plane is a <b>supporting hyperplane</b>.</p>
 
-        <div class="theorem-box">
-          <h4>Theorem (Separating Hyperplane)</h4>
-          <p>Let $C$ and $D$ be two convex sets such that $C \cap D = \emptyset$. Then there exists a hyperplane that separates them. That is, there exist $a \neq 0$ and $b$ such that:</p>
-          $$ a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top x \ge b \quad \forall x \in D $$
-          <p>Geometrically, this means we can slide a flat sheet of paper between any two disjoint convex shapes.</p>
-        </div>
+      <div class="theorem-box">
+        <h4>Supporting Hyperplane Theorem</h4>
+        <p>If $C$ is convex and $x_0 \in \partial C$ (boundary), there exists a non-zero vector $a$ such that:
+        $$ a^\top x \le a^\top x_0 \quad \forall x \in C $$
+        This says that $C$ lies entirely in the "lower" halfspace defined by the hyperplane passing through $x_0$ with normal $a$.</p>
+      </div>
 
-        <div class="proof-box">
-          <h4>Proof: Separation via Minimum Distance</h4>
-          <p>We prove this for the case where $C$ is closed and $D$ is a singleton $\{d\}$ outside $C$. The general case follows by considering the set $S = C - D$.</p>
-          <div class="proof-step">
-            <strong>Step 1: Find the Closest Point (The Projection).</strong>
-            Since $C$ is closed and convex, the problem $\min_{x \in C} \|x - d\|^2$ has a unique solution. Let $p = \Pi_C(d)$ be this unique projection.
-            The vector $a = d - p$ is non-zero (since $d \notin C$). It points from the set towards the external point.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Construct the Hyperplane.</strong>
-            Define the hyperplane orthogonal to $a$ passing through the midpoint $m = (p+d)/2$.
-            Equation: $a^\top (x - m) = 0$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Verify Separation (The Obtuse Angle).</strong>
-            We use the characteristic property of the Euclidean projection onto a convex set (see P3.19). For any point $x \in C$, the vector from the projection $p$ to $d$ forms an obtuse angle with the vector from $p$ to $x$.
-            <br><i>Inequality:</i> $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
-            <br>Let $a = d-p$. This is our normal vector. The inequality becomes:
-            $$ a^\top (x-p) \le 0 \implies a^\top x \le a^\top p $$
-            This establishes the upper bound for points in $C$. Now we check where $d$ lies relative to this bound.
-            $$ a^\top d = a^\top (p + a) = a^\top p + a^\top a = a^\top p + \|a\|^2 $$
-            Since $d \notin C$, the distance $\|a\| > 0$, so $\|a\|^2 > 0$. Therefore:
-            $$ a^\top x \le a^\top p < a^\top d $$
-            The hyperplane $H = \{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $C$ and $d$.
-          </div>
-        </div>
+      <h4>Normal Cone: All Supporting Directions</h4>
+      <p>The set of all valid normal vectors at a point $x_0$ is called the <b>Normal Cone</b>:
+      $$ N_C(x_0) = \{a \in \mathbb{R}^n \mid a^\top(x - x_0) \le 0 \ \forall x \in C\} $$
+      <b>Meaning:</b> $a \in N_C(x_0)$ iff $a$ is an "outward" normal direction.
+      <br><b>Optimality Condition:</b> $x_0$ minimizes a linear function $c^\top x$ over $C$ iff $-c \in N_C(x_0)$. (Gradient points opposite to normal). This is the geometric form of KKT stationarity.</p>
 
-        <figure style="text-align: center; margin: 24px 0;">
-          <img src="assets/separating-hyperplane.png"
-               alt="A hyperplane separating two disjoint convex sets"
-               style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-          <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
-        </figure>
+      <h3>4.2 Separating Hyperplane Theorem</h3>
+      <p>If two convex sets $C$ and $D$ are disjoint ($C \cap D = \emptyset$), there exists a hyperplane that separates them.
+      $$ a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top y \ge b \quad \forall y \in D $$
+      This is the geometric engine of <b>Duality</b>. It provides a linear "certificate" that $C$ and $D$ do not intersect.</p>
 
-        <div class="insight">
-          <h4>Why This Matters: Three Foundational Applications</h4>
-          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
-          <ol>
-            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
-            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
-            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
-          </ol>
-          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
-        </div>
+      <div class="proof-box">
+        <h4>Constructive Proof via Projection (Separating Point from Set)</h4>
+        <p>We prove separation for a closed convex set $C$ and a point $y \notin C$.
+        <br><b>Step 1: Projection.</b> Let $p = \Pi_C(y)$ be the closest point in $C$ to $y$.
+        <br><b>Step 2: Normal.</b> Let $a = y - p$. Since $y \notin C$, $a \ne 0$.
+        <br><b>Step 3: Variational Inequality.</b> By the projection theorem: $\langle y - p, z - p \rangle \le 0$ for all $z \in C$.
+        <br>Substitute $a = y-p$: $\langle a, z - p \rangle \le 0 \implies a^\top z \le a^\top p$.
+        <br><b>Step 4: Separation.</b> For the point $y$ itself: $a^\top y = a^\top (p+a) = a^\top p + \|a\|^2 > a^\top p$.
+        <br><b>Result:</b> The hyperplane through $p$ with normal $a$ strictly separates $y$ from $C$.
+        </p>
+      </div>
 
-        <div class="insight">
-          <h4>Applications in Optimization</h4>
-          <ul>
-            <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
-            <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
-            $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
-            where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
-            <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
-          </ul>
-        </div>
-
-        <h4>Strict vs. Non-Strict Separation</h4>
-        <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
-        <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
-        <br><i>Counter-example:</i> Consider $C = \{(x,y) \mid xy \ge 1, x > 0\}$ and $D = \{(x,y) \mid x \le 0\}$. They are disjoint closed convex sets, but the only separating hyperplane is the y-axis ($x=0$), which touches the boundary of $D$. They cannot be strictly separated.</p>
-
-        <div class="insight">
-          <h4>Why this matters for Duality</h4>
-          <p>In optimization, we often ask: "Does there exist a solution with cost $< \gamma$?" This defines a set of desired outcomes. If this set is disjoint from the set of <i>feasible</i> outcomes, the separating hyperplane theorem provides a vector $a$ (Lagrange multipliers) that certifies this disjointness. This is the geometric origin of dual certificates.</p>
-        </div>
-
-        <h4>Supporting Hyperplanes</h4>
-        <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
-        <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
-
-        <div class="insight">
-            <h4>The Geometric Skeleton of Optimality</h4>
-            <p>Why do we care about supporting hyperplanes? Because <b>optimality is a geometric tangency condition</b>.
-            <br>Consider minimizing $f_0(x)$ over a convex set $C$.
-            <ul>
-                <li>The optimal point $x^*$ lies on the boundary of the feasible set (usually).</li>
-                <li>The level set of the objective $\{x \mid f_0(x) \le p^*\}$ touches the feasible set $C$ at $x^*$.</li>
-                <li>Because they touch but don't overlap (interior disjoint), there exists a <b>separating hyperplane</b> between them.</li>
-            </ul>
-            This hyperplane supports both the feasible set and the objective level set. Its normal vector gives the Lagrange multipliers.
-            <br><b>Mantra:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
-        </div>
+      <div class="insight">
+        <h4>Geometric Foundation of Duality</h4>
+        <p>Why do Lagrange multipliers exist? Because of the Separating Hyperplane Theorem.
+        <br>Consider the set of achievable values $(g(x), f(x))$. We want to know if there is a point with $g(x) \le 0$ and $f(x) < \gamma$.
+        <br>If no such point exists, the sets are disjoint. The separating hyperplane normal vector corresponds to the Lagrange multipliers $(\lambda, 1)$, proving that $f(x) + \lambda g(x) \ge \gamma$.
+        </p>
+      </div>
 
 
     </section>

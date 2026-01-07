@@ -83,6 +83,14 @@
         <li><b>Equality:</b> both sides must have identical shape. ($Ax = b$ asserts $Ax$ and $b$ live in the same $\mathbb{R}^m$)</li>
       </ol>
 
+      <div class="example-box">
+        <h4>Common Type Error: The Transpose Trap</h4>
+        <p>A classic beginner mistake is computing the gradient of $f(x) = a^\top x$ and getting a row vector $a^\top$ instead of a column vector $a$.
+        <br><b>Why it happens:</b> In standard calculus, the derivative is a linear map (a row vector).
+        <br><b>Optimization convention:</b> We identify the dual space with the primal space via the inner product. The gradient is the vector $g$ such that $f(x+h) \approx f(x) + g^\top h$.
+        <br><b>Type Check:</b> Inputs $x \in \mathbb{R}^n$ (column). Gradient $\nabla f(x)$ must be in $\mathbb{R}^n$ (column) to be added to $x$ in gradient descent ($x \leftarrow x - \alpha \nabla f(x)$).</p>
+      </div>
+
       <h3>1.1.1 Scalars: The Rulebook</h3>
       <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. Scalars play two roles: weights (coefficients) and objective values.</p>
 
@@ -145,7 +153,12 @@
                 <li><b>Finite fields $\mathbb{F}_p$:</b> Integers mod $p$ (where $p$ is prime). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$). Linear algebra works perfectly here.</li>
             </ul>
         </li>
-        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory" (where bases might not exist, and Smith Normal Form replaces SVD).</li>
+        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>.
+            <br><i>Crash Test:</i> Consider the system $2x = 3$.
+            <br>In $\mathbb{R}$, $x = 1.5$.
+            <br>In $\mathbb{Z}$, there is <b>no solution</b>. The operation "inverse of 2" is undefined.
+            <br><i>Consequence:</i> You cannot perform Gaussian elimination because you cannot divide by pivots. Linear algebra over $\mathbb{Z}$ becomes "Module Theory" (where bases might not exist, and Smith Normal Form replaces SVD).
+        </li>
         <li><b>$\mathbb{Z}_n$ (Integers mod $n$, composite $n$):</b> NOT a field.
             <br><i>Example:</i> In $\mathbb{Z}_6$, we have $2 \cdot 3 = 0 \pmod 6$.
             <br><b>Failure 1 (Zero Divisors):</b> Non-zero numbers multiply to zero. This destroys the cancellation law: $2x=2y$ does <i>not</i> imply $x=y$ (e.g., $2\cdot 0 = 0$ and $2\cdot 3 = 0$).
@@ -190,6 +203,17 @@
       <p><b>Two Essential Views:</b>
       <br><b>1. Row View (Measurement):</b> $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional measuring $x$.
       <br><b>2. Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the view for span, range, and feasibility.</p>
+
+      <div class="example-box">
+        <h4>Concrete Example: Row vs Column View</h4>
+        <p>Let $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ and $x = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$.</p>
+        <p><b>Row View (Dot Products):</b>
+        $$ Ax = \begin{bmatrix} (1, 2) \cdot (x_1, x_2) \\ (3, 4) \cdot (x_1, x_2) \end{bmatrix} = \begin{bmatrix} 1x_1 + 2x_2 \\ 3x_1 + 4x_2 \end{bmatrix} $$
+        We project $x$ onto the rows $(1,2)$ and $(3,4)$. This perspective is useful for checking constraints (does $x$ satisfy row 1 AND row 2?).</p>
+        <p><b>Column View (Linear Combination):</b>
+        $$ Ax = x_1 \begin{bmatrix} 1 \\ 3 \end{bmatrix} + x_2 \begin{bmatrix} 2 \\ 4 \end{bmatrix} $$
+        We mix the columns: "take $x_1$ cups of column 1 and $x_2$ cups of column 2". The output lives in the span of the columns. This perspective is useful for reachability (is $b$ in the column space?).</p>
+      </div>
 
       <h3>1.1.5 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
       <p>While $\mathbb{R}^n$ is our working model, the power of linear algebra comes from the fact that it applies to <i>any</i> set behaving like $\mathbb{R}^n$. This allows us to treat functions, polynomials, and matrices as vectors.</p>
@@ -729,6 +753,29 @@
       <br><b>Rank ($r$):</b> Number of independent constraints the system <i>can</i> impose (or independent directions it can reach).
       <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
       <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
+
+      <div class="example-box">
+        <h4>Step-by-Step: Rank-Nullity in Action</h4>
+        <p>Let $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \end{bmatrix}$. This is a $2 \times 3$ matrix ($m=2, n=3$).</p>
+        <ol>
+            <li><b>Find Rank (Column Space):</b>
+                <br>Column 2 is $2 \times$ Column 1. Column 3 is $3 \times$ Column 1.
+                <br>Only 1 independent column. Thus, $\dim(\mathcal{R}(A)) = 1$.
+            </li>
+            <li><b>Find Nullity (Kernel):</b>
+                <br>Equation: $x_1 + 2x_2 + 3x_3 = 0$.
+                <br>We have 1 constraint on 3 variables. We expect $3-1=2$ free variables.
+                <br>Independent choices: Set $x_2=1, x_3=0 \implies x_1=-2$. Vector $v_1 = (-2, 1, 0)$.
+                <br>Set $x_2=0, x_3=1 \implies x_1=-3$. Vector $v_2 = (-3, 0, 1)$.
+                <br>These span the nullspace. $\dim(\mathcal{N}(A)) = 2$.
+            </li>
+            <li><b>Verify Theorem:</b>
+                <br>Rank (1) + Nullity (2) = 3 (Dimension of Domain $n$).
+                <br>Conservation holds.
+            </li>
+        </ol>
+      </div>
+
       <div class="insight">
         <h4>Analogy: Conservation of Energy</h4>
         <p>Think of dimensions as energy.
@@ -1056,6 +1103,18 @@
       This reflects the geometric fact that the volume scaling of a composite map is the product of the individual scalings. Note that $\det(AB) = \det(BA)$ even if $AB \neq BA$.
       </p>
 
+      <div class="intuition-box">
+        <h4>Intuition: Why is $\det(AB) = \det(A)\det(B)$?</h4>
+        <p>Think of matrices as volume scalers.</p>
+        <ul>
+            <li>Applying $B$ scales volumes by a factor of $\det(B)$.</li>
+            <li>Then applying $A$ scales the <i>result</i> by a factor of $\det(A)$.</li>
+            <li>The total transformation $AB$ scales the original volume by $\det(B)$ then $\det(A)$.</li>
+            <li>Total scaling = $\det(A) \cdot \det(B)$.</li>
+        </ul>
+        <p>Since scalars commute, this also explains why $\det(AB) = \det(BA)$ even if the matrices don't commute.</p>
+      </div>
+
       <h4>Trace of a Product (Cyclic Property)</h4>
       <p>In general, $\mathrm{tr}(AB) \neq \mathrm{tr}(A)\mathrm{tr}(B)$. However, the trace is <b>cyclic</b>:
       $$ \mathrm{tr}(AB) = \mathrm{tr}(BA). $$
@@ -1349,6 +1408,22 @@
           <strong>Step 3:</strong> Combine.
           $$ -\|x-y\| \le \|x\| - \|y\| \le \|x-y\| \iff \big| \|x\| - \|y\| \big| \le \|x-y\| $$
         </div>
+      </div>
+
+      <div class="example-box">
+        <h4>Walkthrough: Triangle Inequality for $\ell_1$</h4>
+        <p>Let's verify $\|x+y\|_1 \le \|x\|_1 + \|y\|_1$ for $x=(1, -2)$ and $y=(-2, 3)$.</p>
+        <ol>
+            <li><b>Compute Sum:</b> $x+y = (1-2, -2+3) = (-1, 1)$.</li>
+            <li><b>Compute Norm of Sum:</b> $\|x+y\|_1 = |-1| + |1| = 1 + 1 = 2$.</li>
+            <li><b>Compute Individual Norms:</b>
+                <br>$\|x\|_1 = |1| + |-2| = 1 + 2 = 3$.
+                <br>$\|y\|_1 = |-2| + |3| = 2 + 3 = 5$.
+            </li>
+            <li><b>Check Inequality:</b> Is $2 \le 3 + 5$? Yes, $2 \le 8$.
+            <br>Notice that strict inequality holds because the signs of components clashed ($x_1>0, y_1<0$ and $x_2<0, y_2>0$), causing cancellation.
+            </li>
+        </ol>
       </div>
 
       <h4>Lemma 3: "Two-point Jensen" (Convexity Inequality)</h4>
@@ -2078,6 +2153,28 @@
       <p>A symmetric matrix $A \in \mathbb{S}^n$ is PSD if and only if all its eigenvalues are non-negative:</p>
       $$ \lambda_i(A) \ge 0 \quad \text{for all } i = 1, \dots, n $$
 
+      <div class="example-box">
+        <h4>Concrete Check: Is this matrix PSD?</h4>
+        <p>Let $A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$.</p>
+        <ol>
+            <li><b>Eigenvalue Method:</b>
+                <br>Characteristic equation: $\det(A - \lambda I) = (2-\lambda)(2-\lambda) - (-1)(-1) = (2-\lambda)^2 - 1 = 0$.
+                <br>$(2-\lambda)^2 = 1 \implies 2-\lambda = \pm 1$.
+                <br>$\lambda_1 = 1, \lambda_2 = 3$. Both are positive. So $A \succ 0$ (PD, and thus PSD).
+            </li>
+            <li><b>Principal Minors (Sylvester's Criterion):</b>
+                <br>$D_1 = 2 > 0$.
+                <br>$D_2 = \det(A) = 3 > 0$.
+                <br>All positive $\implies$ PD.
+            </li>
+            <li><b>Variational Check (Test Vector):</b>
+                <br>Let $x = (1, 1)^\top$. $x^\top A x = 2(1)^2 + 2(1)^2 - 2(1)(1) = 2$. Positive.
+                <br>Let $x = (1, 0)^\top$. $x^\top A x = 2$.
+                <br>(To prove for ALL vectors, we need the eigenvalue or minor test).
+            </li>
+        </ol>
+      </div>
+
       <h4>Factorization of PSD Matrices (Gram Matrix)</h4>
       <p>A symmetric matrix $A$ is PSD if and only if it can be written as a Gram matrix: $A = B^\top B$ for some matrix $B$ (not necessarily square).
       <br><i>Proof:</i> If $A \succeq 0$, spectral decomposition gives $A = Q \Lambda Q^\top = (Q \Lambda^{1/2}) (Q \Lambda^{1/2})^\top$. Let $B = (Q \Lambda^{1/2})^\top$. This $B$ is a "square root" of $A$.
@@ -2626,6 +2723,14 @@
 
       <h3>Geometric Interpretation: Projection</h3>
       <p>The solution to the least squares problem has a clean geometric interpretation. The vector $A\mathbf{x}$ lies in the column space of $A$, denoted $\mathcal{R}(A)$. The problem $\min_x \|A\mathbf{x} - \mathbf{b}\|_2$ is therefore equivalent to finding the point $\mathbf{p} \in \mathcal{R}(A)$ that is closest to $\mathbf{b}$ in Euclidean distance.</p>
+
+      <div class="intuition-box">
+        <h4>Why "Normal" Equations?</h4>
+        <p>The term "normal" comes from geometry, meaning "perpendicular".
+        <br>The optimal solution occurs when the error vector $e = b - Ax$ is <b>perpendicular (normal)</b> to the column space of $A$.
+        <br>Algebraically: $A^\top e = 0 \implies A^\top(b - Ax) = 0 \implies A^\top b = A^\top A x$.
+        <br>The equation $A^\top A x = A^\top b$ literally says "The residual is normal to all columns of A".</p>
+      </div>
 
       <h4>The 1D Case: Projection onto a Vector</h4>
       <p>Before solving the general case, consider projecting $\mathbf{x}$ onto the line spanned by a vector $\mathbf{y} \neq 0$. We want to find $t$ to minimize $\|x - ty\|_2^2$.

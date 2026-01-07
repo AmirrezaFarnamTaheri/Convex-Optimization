@@ -333,6 +333,14 @@ function initPageSettings() {
                 <button class="btn btn-secondary btn-sm" id="font-inc" aria-label="Increase Font Size"><i data-feather="plus"></i></button>
             </div>
         </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.8em; color:var(--text-tertiary);">Font Family</span>
+            <select id="font-family-select" class="btn btn-secondary btn-sm" style="padding: 2px 8px; height: 28px;">
+                <option value="sans">Sans-Serif</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Monospace</option>
+            </select>
+        </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:0.8em; color:var(--text-tertiary);">Line Height</span>
             <div style="display:flex; gap:4px;">
@@ -505,6 +513,24 @@ function initPageSettings() {
     document.getElementById('lh-normal').onclick = () => setLineHeight('1.6', 'lh-normal');
     document.getElementById('lh-relaxed').onclick = () => setLineHeight('1.8', 'lh-relaxed');
 
+    // 3b. Font Family
+    const fontSelect = document.getElementById('font-family-select');
+    const setFontFamily = (val) => {
+        if (val === 'serif') {
+            root.style.setProperty('--font-sans', "var(--font-serif)");
+        } else if (val === 'mono') {
+            root.style.setProperty('--font-sans', "var(--font-mono)");
+        } else {
+            // Restore default sans stack
+            root.style.setProperty('--font-sans', "'Inter', system-ui, -apple-system, sans-serif");
+        }
+        localStorage.setItem('font-family', val);
+        fontSelect.value = val;
+    };
+    const savedFontFamily = localStorage.getItem('font-family') || 'sans';
+    setFontFamily(savedFontFamily);
+    fontSelect.onchange = (e) => setFontFamily(e.target.value);
+
     // 4. Focus Mode & Fullscreen
     const focusBtn = document.getElementById('toggle-focus-mode');
     focusBtn.onclick = () => {
@@ -673,6 +699,7 @@ function initSidebarToggle() {
     expandTrigger.id = 'sidebar-expand-trigger';
     expandTrigger.className = 'sidebar-expand-trigger hidden';
     expandTrigger.title = "Expand Sidebar";
+    expandTrigger.setAttribute('aria-label', 'Expand Sidebar');
     expandTrigger.innerHTML = '<i data-feather="list"></i>';
     expandTrigger.onclick = () => toggleDesktopSidebar(true);
     document.body.appendChild(expandTrigger);

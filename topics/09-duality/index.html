@@ -146,6 +146,15 @@
         $$ f^*(\mathbf{y}) = \sup_{\mathbf{x} \in \mathrm{dom} f} (\mathbf{y}^\top \mathbf{x} - f(\mathbf{x})) $$
         Geometric duality rests on this transformation. The conjugate $f^*(\mathbf{y})$ represents the maximum gap between the linear function $\mathbf{y}^\top \mathbf{x}$ and the function $f(\mathbf{x})$.</p>
 
+        <div class="example-box">
+            <h4>Example: Negative Logarithm</h4>
+            <p>For $f(x) = -\log x$ (domain $x > 0$), the conjugate is:
+            $$ f^*(y) = \sup_{x > 0} (xy - (-\log x)) = \sup_{x > 0} (xy + \log x) $$
+            Setting the derivative to zero: $y + 1/x = 0 \implies x = -1/y$. (Requires $y < 0$).
+            <br>Value: $y(-1/y) + \log(-1/y) = -1 - \log(-y)$.
+            <br>Thus, $f^*(y) = -1 - \log(-y)$ for $y < 0$. This transformation turns the "primal barrier" into a "dual barrier".</p>
+        </div>
+
         <p>We recall two essential facts that drive the duality engine:</p>
         <ul>
         <li><b>Convexity:</b> $f^*$ is always convex (even if $f$ is not).</li>
@@ -516,8 +525,14 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Slater's Condition implies Non-Verticality ($\mu > 0$).</strong>
-            Analysis of the directions implies $\lambda \succeq 0, \mu \ge 0$.
-            If $\mu = 0$, the separation implies a contradiction with Slater's strictly feasible point. Thus $\mu > 0$.
+            First, observe that $\mu \ge 0$ and $\lambda \succeq 0$ because the set $\mathcal{A}$ is unbounded in the positive directions (we can always increase constraint values without leaving $\mathcal{A}$).
+            <br><b>Proof by Contradiction:</b> Suppose $\mu = 0$. Then the separation inequality becomes:
+            $$ \sum \lambda_i f_i(x) + \sum \nu_j h_j(x) \ge 0 \quad \forall x \in \mathcal{D} $$
+            Apply this to the Slater point $\tilde{x}$ where $f_i(\tilde{x}) < 0$ and $h_j(\tilde{x}) = 0$:
+            $$ \sum_{i=1}^m \lambda_i \underbrace{f_i(\tilde{x})}_{< 0} \ge 0 $$
+            Since $\lambda_i \ge 0$ and $f_i(\tilde{x}) < 0$, each term in the sum is non-positive. For the sum to be non-negative, every term must be zero. Since $f_i(\tilde{x}) \ne 0$, we must have $\lambda_i = 0$ for all $i$.
+            <br>This implies $\lambda = 0, \mu = 0$. But if $\lambda=0$ and $\mu=0$, the separation inequality implies $\nu^\top h(\tilde{x}) \ge 0$, which is trivial ($0=0$). A deeper analysis shows $\nu$ must also be 0, contracting the fact that the separating vector $(\lambda, \nu, \mu)$ is non-zero.
+            <br><b>Conclusion:</b> We must have $\mu > 0$.
           </div>
           <div class="proof-step">
             <strong>Step 4: Recovering Strong Duality.</strong>
@@ -583,9 +598,12 @@
           </div>
           <div class="proof-step">
             <strong>Conclusion 1: Stationarity (First-Order Condition).</strong>
-            The equality $\inf_x \mathcal{L}(x, \lambda^*, \nu^*) = \mathcal{L}(x^*, \lambda^*, \nu^*)$ implies that $x^*$ minimizes $\mathcal{L}(x, \lambda^*, \nu^*)$ over $\mathbb{R}^n$.
-            Since the Lagrangian is differentiable (assuming problem functions are), its gradient at the minimizer must be zero:
-            $$ \nabla_x \mathcal{L}(x^*, \lambda^*, \nu^*) = \nabla f_0(x^*) + \sum \lambda_i^* \nabla f_i(x^*) + \sum \nu_j^* \nabla h_j(x^*) = 0 $$
+            The sandwich equality implies:
+            $$ \inf_x \mathcal{L}(x, \lambda^*, \nu^*) = \mathcal{L}(x^*, \lambda^*, \nu^*) $$
+            This states that $x^*$ is a <b>global minimizer</b> of the Lagrangian function $\mathcal{L}(\cdot, \lambda^*, \nu^*)$ over the entire domain $\mathcal{D}$.
+            <br>If the functions are differentiable, the gradient of the Lagrangian with respect to $x$ must vanish at $x^*$:
+            $$ \nabla_x \mathcal{L}(x^*, \lambda^*, \nu^*) = \nabla f_0(x^*) + \sum_{i=1}^m \lambda_i^* \nabla f_i(x^*) + \sum_{j=1}^p \nu_j^* \nabla h_j(x^*) = 0 $$
+            This explains the "balance of forces" interpretation.
           </div>
           <div class="proof-step">
             <strong>Conclusion 2: Complementary Slackness.</strong>

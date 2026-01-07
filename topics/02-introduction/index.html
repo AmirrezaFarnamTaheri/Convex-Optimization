@@ -877,6 +877,17 @@
             <li>Widely used in high-dimensional statistics (see <a href="../11-statistical-estimation/index.html">Lecture 11</a>) and compressed sensing (see <a href="../10-approximation-fitting/index.html">Lecture 10</a>).</li>
           </ul>
         </div>
+
+        <div class="recap-box">
+          <h3>Summary: The Modeling Recipe</h3>
+          <p>To build a convex model for a real-world problem:</p>
+          <ol>
+            <li><b>Choose a Loss Function:</b> Select a convex function (e.g., $\ell_2$ norm, Hinge loss) that measures error.</li>
+            <li><b>Choose a Regularizer:</b> Select a convex norm (e.g., $\ell_1$, $\ell_2$) to induce desired structure (sparsity, smoothness).</li>
+            <li><b>Add Constraints:</b> Restrict the domain using convex sets (e.g., non-negativity $x \ge 0$, budget $\mathbf{1}^\top x = 1$).</li>
+          </ol>
+          <p>If all three parts are convex, the sum is convex, and the problem is tractable.</p>
+        </div>
       </section>
 
       <section class="section-card" id="section-6">

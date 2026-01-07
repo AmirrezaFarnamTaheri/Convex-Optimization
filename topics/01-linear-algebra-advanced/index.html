@@ -781,8 +781,17 @@
         To minimize error, we should pick $d_i = \sigma_i$ for the indices with the largest $\sigma_i$.
         <br>Thus, the optimal choice is to keep $\sigma_1, \dots, \sigma_k$ and set the rest to zero. The residual error is the "tail energy":
         $$ \min_{\operatorname{rank}(B) \le k} \|A - B\|_F^2 = \sum_{i=k+1}^r \sigma_i^2 $$
-        <br><b>2. Spectral Norm (Worst-Case):</b> The maximum error amplification is $\|A - A_k\|_2 = \sigma_{k+1}$.
-        <br>Any other rank-$k$ matrix would result in a larger worst-case error.
+        <br><b>2. Spectral Norm (Worst-Case):</b>
+        We want to minimize $\|A - B\|_2 = \sigma_1(A - B)$ subject to $\operatorname{rank}(B) \le k$.
+        <br>By the Weyl inequalities for singular values, for any matrices $X, Y$:
+        $$ \sigma_{k+1}(X+Y) \le \sigma_1(X) + \sigma_{k+1}(Y) $$
+        Let $X = A - B$ and $Y = B$. Then $X+Y = A$.
+        $$ \sigma_{k+1}(A) \le \sigma_1(A - B) + \sigma_{k+1}(B) $$
+        Since $\operatorname{rank}(B) \le k$, we have $\sigma_{k+1}(B) = 0$.
+        $$ \sigma_{k+1}(A) \le \|A - B\|_2 $$
+        This establishes $\sigma_{k+1}$ as a lower bound on the error.
+        <br><b>Achievability:</b> Choosing the truncated SVD $A_k$ gives an error matrix with singular values $\sigma_{k+1}, \dots, \sigma_n$. The spectral norm is the largest of these, which is $\sigma_{k+1}$.
+        <br>Thus, the lower bound is achieved.
         <br><b>Conclusion:</b> SVD packs the most "matrix energy" into the fewest components. This is why it is the gold standard for compression (PCA) and denoising.</p>
       </div>
 
@@ -978,6 +987,18 @@
         <li><b>$\kappa \approx 1$:</b> Well-conditioned. Errors are not amplified. Orthogonal matrices have $\kappa = 1$.</li>
         <li><b>$\kappa \gg 1$:</b> Ill-conditioned. Small errors in $\mathbf{b}$ can lead to massive errors in $\mathbf{x}$.</li>
       </ul>
+
+      <div class="intuition-box">
+        <h4>Geometric Intuition: The Skewed Ellipse</h4>
+        <p>Recall that a matrix $A$ maps the unit sphere to an ellipsoid.
+        <ul>
+            <li>$\sigma_{\max}$ is the length of the <b>longest</b> axis (maximum stretch).</li>
+            <li>$\sigma_{\min}$ is the length of the <b>shortest</b> axis (minimum stretch).</li>
+        </ul>
+        The condition number $\kappa = \sigma_{\max}/\sigma_{\min}$ is the <b>aspect ratio</b> of this ellipsoid.
+        <br><b>Solving $Ax=b$:</b> We are mapping backwards from the ellipsoid to the sphere.
+        <br>If the ellipsoid is very "pancake-like" (high $\kappa$), a small vertical wiggle in $b$ (along the short axis) corresponds to a huge horizontal movement in $x$ (along the direction that was crushed). This is why precision is lost.</p>
+      </div>
 
       <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">

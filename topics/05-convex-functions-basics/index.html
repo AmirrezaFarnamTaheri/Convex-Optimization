@@ -840,9 +840,33 @@
 
         <div class="example-box">
             <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
-            <p><b>Proof:</b> Hessian is $\text{diag}(p) - pp^\top$ (covariance matrix), hence PSD.</p>
-            <p><b>Engineering Hook:</b> Used as a smooth approximation of $\max(x)$.
-            <br>$\text{lse}(x) \le t$ is representable using $n$ exponential cones.</p>
+            <p>This function acts as a smooth approximation of the maximum function. Its convexity is a crucial result used in logistic regression and geometric programming.</p>
+
+            <div class="proof-box">
+              <h4>Proof: Convexity via Hessian</h4>
+              <div class="proof-step">
+                <strong>Step 1: Gradient (Softmax).</strong>
+                Let $S = \sum_k e^{x_k}$. The derivative with respect to $x_i$ is:
+                $$ \frac{\partial f}{\partial x_i} = \frac{1}{S} \frac{\partial S}{\partial x_i} = \frac{e^{x_i}}{S} $$
+                This vector $p = \nabla f(x)$ is the <b>softmax</b> probability distribution ($p_i > 0, \sum p_i = 1$).
+              </div>
+              <div class="proof-step">
+                <strong>Step 2: Hessian.</strong>
+                Differentiating again w.r.t. $x_j$:
+                $$ \frac{\partial^2 f}{\partial x_i \partial x_j} = \frac{\partial}{\partial x_j} (e^{x_i} S^{-1}) = e^{x_i} \delta_{ij} S^{-1} + e^{x_i} (-S^{-2} e^{x_j}) $$
+                $$ = \frac{e^{x_i}}{S} \delta_{ij} - \frac{e^{x_i} e^{x_j}}{S^2} = p_i \delta_{ij} - p_i p_j $$
+                In matrix form: $\nabla^2 f(x) = \text{diag}(p) - pp^\top$.
+              </div>
+              <div class="proof-step">
+                <strong>Step 3: PSD Check.</strong>
+                For any vector $v$:
+                $$ v^\top \nabla^2 f(x) v = \sum p_i v_i^2 - (p^\top v)^2 = \sum p_i v_i^2 - (\sum p_i v_i)^2 $$
+                Since $p$ is a probability vector ($\sum p_i = 1$), the term $(\sum p_i v_i)^2$ is the square of the expectation $(\mathbb{E}[V])^2$, and $\sum p_i v_i^2$ is the second moment $\mathbb{E}[V^2]$.
+                <br>By Jensen's inequality (or variance non-negativity): $\mathbb{E}[V^2] - (\mathbb{E}[V])^2 = \text{Var}(V) \ge 0$.
+                <br>Thus $\nabla^2 f(x) \succeq 0$.
+              </div>
+            </div>
+
             <p><b>Approximation Bounds:</b> For any $x$, we have:
             $$ \max_i x_i \le \text{lse}(x) \le \max_i x_i + \log n $$
             <i>Proof:</i> Let $M = \max_i x_i$. Factor out $e^M$:
@@ -861,11 +885,21 @@
         </div>
 
         <div class="example-box">
-            <h4>3. Quadratic-over-Linear ($x^\top x / y$)</h4>
-            <p><b>Domain:</b> $y > 0$ (Crucial!). Not defined at $y=0$ (unless 0/0=0 convention) and non-convex for $y < 0$.</p>
+            <h4>3. Quadratic-over-Linear ($f(x,y) = x^\top x / y$)</h4>
+            <p>This function appears in variance minimization and robust optimization.</p>
+            <p><b>Domain:</b> $y > 0$ (Crucial!). Not convex for $y < 0$.</p>
+
+            <div class="proof-box">
+              <h4>Proof: Convexity via Perspective</h4>
+              <p>Recall the function $g(x) = x^\top x = \|x\|_2^2$ is convex.
+              <br>The quadratic-over-linear function is exactly the <b>perspective transform</b> of $g$:
+              $$ f(x, y) = y g(x/y) = y \|x/y\|_2^2 = y \frac{x^\top x}{y^2} = \frac{x^\top x}{y} $$
+              Since the perspective operation preserves convexity, $f(x,y)$ is jointly convex in $(x,y)$.</p>
+            </div>
+
             <p><b>Engineering Hook:</b>
             $$ x^\top x / y \le t \iff x^\top x \le ty, \ y > 0, \ t \ge 0 $$
-            This is a <b>Rotated Second-Order Cone</b> constraint $x^\top x \le 2uv$ (with $u=y/2, v=t$).</p>
+            This is a <b>Rotated Second-Order Cone</b> constraint $x^\top x \le 2uv$ (with $u=y/2, v=t$). Modern solvers handle this natively.</p>
         </div>
 
         <div class="example-box">

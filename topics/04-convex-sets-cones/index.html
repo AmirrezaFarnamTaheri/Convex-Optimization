@@ -109,7 +109,7 @@
 
     <article>
       <section class="section-card" id="section-1">
-        <h2>1. Cones, Proper Cones, and Dual Cones</h2>
+        <h2>1. Cones and Generalized Inequalities</h2>
 
         <h3>1.1 Cones and Convex Cones</h3>
 
@@ -281,8 +281,12 @@
                   <figcaption><i>Figure 10:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
              </figure>
         </div>
+      </section>
 
-        <h3>1.4 The Dual Cone</h3>
+      <section class="section-card" id="section-2">
+        <h2>2. Dual Cones and Duality</h2>
+
+        <h3>2.1 The Dual Cone</h3>
 
         <p>The <a href="#" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
         $$
@@ -512,7 +516,7 @@
              </figure>
         </div>
 
-        <h3>1.5 Dual Norms: The Shadow Ruler</h3>
+        <h3>2.2 Dual Norms: The Shadow Ruler</h3>
         <p>A specific and crucial application of duality is the concept of a <b>dual norm</b>. Just as dual cones define allowable gradients, dual norms define the "worst-case" alignment of a vector with the unit ball.</p>
 
         <p>For any norm $\|\cdot\|$ on $\mathbb{R}^n$, its dual norm $\|\cdot\|_*$ is defined by:</p>
@@ -559,7 +563,7 @@
           </li>
         </ul>
 
-        <h3>1.6 Cone Operations</h3>
+        <h3>2.3 Cone Operations</h3>
         <p>Just as with convex sets, we can construct new cones from existing ones. This is particularly useful for modeling complex constraints in conic programming. Below we detail the primary operations and, crucially, how to compute their duals.</p>
 
         <h4>(a) Intersection</h4>
@@ -616,11 +620,11 @@
 
       </section>
 
-          <section class="section-card" id="section-2">
-      <h2>2. Separation and Supporting Hyperplanes</h2>
+          <section class="section-card" id="section-3">
+      <h2>3. Separation and Supporting Hyperplanes</h2>
       <p>These theorems form the geometric backbone of duality theory. They formalize the intuition that convex sets can be "separated" from points outside them and "supported" by planes at their boundaries.</p>
 
-      <h3>2.1 The Separating Hyperplane Theorem (Recap & Strict Separation)</h3>
+      <h3>3.1 The Separating Hyperplane Theorem (Recap & Strict Separation)</h3>
 
       <div class="insight">
         <h4>Geometric Duality vs. Lagrangian Duality</h4>
@@ -672,7 +676,7 @@
         </div>
       </div>
 
-      <h3>2.2 Supporting Hyperplanes (The Skeleton)</h3>
+      <h3>3.2 Supporting Hyperplanes (The Skeleton)</h3>
       <p>This is the deep geometric backbone of optimization.</p>
       <div class="theorem-box">
         <h4>Supporting Hyperplane Theorem</h4>
@@ -691,7 +695,7 @@
 
       <div class="proof-box">
         <h4>Constructive Proof via Projection (Separation)</h4>
-        <p>We use the result from 2.1 (Strict Separation) and a limiting argument.</p>
+        <p>We use the result from 3.1 (Strict Separation) and a limiting argument.</p>
         <div class="proof-step">
           <strong>Step 1: Exterior Sequence.</strong>
           Since $x_0 \in \partial C$, there is a sequence of points $y_k \notin C$ such that $y_k \to x_0$.
@@ -731,7 +735,7 @@
         <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
-      <h3>2.3 Constraints as Geometry (Normal Cones)</h3>
+      <h3>3.3 Constraints as Geometry (Normal Cones)</h3>
       <p>This phase explains <i>why</i> Lagrange multipliers exist.</p>
       <p><b>Constraint Geometry:</b>
       <ul>
@@ -753,7 +757,7 @@
         <br>This is why <b>dual variables</b> (Lagrange multipliers) are geometric normals. They are the certificates that "push back" against the gradient of the objective function to keep it from improving further.</p>
       </div>
 
-      <h3>2.4 Theorems of the Alternative (Farkas' Lemma)</h3>
+      <h3>3.4 Theorems of the Alternative (Farkas' Lemma)</h3>
       <p>Farkas' Lemma is the algebraic certificate of infeasibility for linear inequalities, derived directly from the Separating Hyperplane Theorem.</p>
 
       <div class="theorem-box">
@@ -772,8 +776,8 @@
       </div>
     </section>
 
-    <section class="section-card" id="section-3">
-        <h2>3. Summary & Cheat Sheet</h2>
+    <section class="section-card" id="section-4">
+        <h2>4. Summary & Cheat Sheet</h2>
 
         <div class="recap-box" style="margin-bottom: 24px;">
           <h3 style="margin-top: 0; font-size: 1.1em;">Key Takeaways</h3>
@@ -806,8 +810,8 @@
         </div>
       </section>
 
-    <section class="section-card" id="section-4">
-      <h2><i data-feather="edit-3"></i> 4. Exercises</h2>
+    <section class="section-card" id="section-5">
+      <h2><i data-feather="edit-3"></i> 5. Exercises</h2>
 
 <div class="problem">
   <h3>P4.2 — Dual of a Subspace</h3>
@@ -1282,8 +1286,8 @@
 
     </section>
 
-    <section class="section-card" id="section-5">
-      <h2>5. Readings & Resources</h2>
+    <section class="section-card" id="section-6">
+      <h2>6. Readings & Resources</h2>
       <ul class="link-list">
         <li><strong>Required Reading:</strong> Boyd & Vandenberghe, Chapter 2 (Convex Sets, specifically Cones and Dual Cones).</li>
         <li><strong>Supplementary:</strong> Rockafellar, <em>Convex Analysis</em>, Sections 11 (Separation Theorems) and 14 (Cones).</li>

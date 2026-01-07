@@ -2494,6 +2494,17 @@
         <li><b>PSD cone</b> $\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}$ in <a href="../03-convex-sets-geometry/index.html">Lecture 03</a></li>
         <li><b>Semidefinite programs (SDPs)</b> in <a href="../08-convex-problems-conic/index.html">Lecture 08</a></li>
       </ul>
+
+      <div class="recap-box">
+        <h3>Summary: The PSD Checklist</h3>
+        <p>To check if a symmetric matrix $A$ is PSD ($A \succeq 0$), use any of these equivalent tests:</p>
+        <ol>
+          <li><b>Eigenvalues:</b> All $\lambda_i(A) \ge 0$.</li>
+          <li><b>Energy:</b> $\mathbf{x}^\top A \mathbf{x} \ge 0$ for all vectors $\mathbf{x}$.</li>
+          <li><b>Principal Minors:</b> All principal minors are non-negative.</li>
+          <li><b>Factorization:</b> $A = B^\top B$ for some matrix $B$ (Cholesky/Gram).</li>
+        </ol>
+      </div>
     </section>
 
     <!-- SECTION 6: PROJECTIONS -->

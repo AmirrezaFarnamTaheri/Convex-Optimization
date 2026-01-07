@@ -74,14 +74,36 @@
 
       <div class="proof-box">
         <h4>Derivation: Why Axioms Force the Formula</h4>
-        <p>This derivation shows that the determinant is not an arbitrary definition, but a necessary consequence of geometry.
-        <br>1. <b>Expand columns:</b> Write each column $a_j$ as a linear combination of standard basis vectors $e_i$: $a_j = \sum_i A_{ij} e_i$.
-        <br>2. <b>Apply Multilinearity:</b> Expanding $\det(a_1, \dots, a_n)$ involves $n$ sums.
-        $$ \det(A) = \sum_{i_1, \dots, i_n} A_{i_1, 1} \dots A_{i_n, n} \det(e_{i_1}, \dots, e_{i_n}) $$
-        <br>3. <b>Apply Alternation:</b> If any two indices $i_j, i_k$ are the same, $\det(e_{i_1}, \dots, e_{i_n}) = 0$. Thus, we only sum over <b>permutations</b> $\sigma$ where all indices are distinct.
-        <br>4. <b>Apply Normalization:</b> Swapping columns to order the basis vectors $(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ into $(e_1, \dots, e_n)$ requires sign flips.
-        $$ \det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = \mathrm{sgn}(\sigma) \det(I) = \mathrm{sgn}(\sigma) $$
-        <br><b>Result:</b> $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{j=1}^n A_{\sigma(j), j}$.</p>
+        <p>This derivation shows that the determinant is not an arbitrary definition, but a necessary consequence of the geometric axioms. We start with the axioms and see where they lead us.</p>
+        <div class="proof-step">
+          <strong>Step 1: Expand columns in the standard basis.</strong>
+          Write each column $a_j$ of the matrix $A$ as a linear combination of the standard basis vectors $e_1, \dots, e_n$:
+          $$ a_j = \sum_{k=1}^n A_{kj} e_k $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Apply Multilinearity.</strong>
+          Substituting this into the determinant function:
+          $$ \det(A) = \det\left(\sum_{k_1} A_{k_1,1} e_{k_1}, \dots, \sum_{k_n} A_{k_n,n} e_{k_n}\right) $$
+          By linearity in each slot, we can pull the sums and coefficients out. This results in a massive sum of $n^n$ terms:
+          $$ \det(A) = \sum_{k_1=1}^n \dots \sum_{k_n=1}^n A_{k_1, 1} \dots A_{k_n, n} \det(e_{k_1}, \dots, e_{k_n}) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Apply Alternation (The Filter).</strong>
+          The term $\det(e_{k_1}, \dots, e_{k_n})$ is the determinant of a matrix formed by standard basis vectors.
+          If any two indices are the same (e.g., $k_1 = k_2$), the matrix has two identical columns. By the Alternating axiom, its determinant is 0.
+          <br>Thus, the only surviving terms are those where all indices $(k_1, \dots, k_n)$ are distinct. This means $(k_1, \dots, k_n)$ must be a <b>permutation</b> $\sigma$ of $(1, \dots, n)$, where $k_j = \sigma(j)$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Apply Normalization and Swaps.</strong>
+          We are left with terms of the form $\det(e_{\sigma(1)}, \dots, e_{\sigma(n)})$.
+          To transform this into the standard basis order $\det(e_1, \dots, e_n)$, we perform column swaps. Each swap flips the sign. The total sign change is the <b>sign of the permutation</b>, $\mathrm{sgn}(\sigma)$.
+          $$ \det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = \mathrm{sgn}(\sigma) \det(e_1, \dots, e_n) = \mathrm{sgn}(\sigma) \cdot 1 $$
+        </div>
+        <div class="proof-step">
+          <strong>Result: The Leibniz Formula.</strong>
+          Summing over all $n!$ permutations:
+          $$ \det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{j=1}^n A_{\sigma(j), j} $$
+        </div>
       </div>
 
       <h4>Geometric Interpretation: Volume and Orientation</h4>
@@ -276,22 +298,40 @@
       </div>
       <div class="proof-box">
         <h4>Proof: Weighted Average Intuition</h4>
-        <p>Why do min/max Rayleigh quotients give the extreme eigenvalues? The cleanest intuition comes from the Spectral Theorem.</p>
+        <p>Why do min/max Rayleigh quotients give the extreme eigenvalues? The cleanest intuition comes from interpreting the quotient as a convex combination.</p>
         <div class="proof-step">
-          <strong>Step 1: Diagonalization.</strong>
-          Since $A$ is symmetric, $A = Q \Lambda Q^\top$ with orthonormal $Q$.
-          Let $\mathbf{y} = Q^\top \mathbf{x}$. Since $Q$ is orthogonal, $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
+          <strong>Step 1: Diagonalize the quadratic form.</strong>
+          Since $A$ is symmetric, use the Spectral Theorem to write $A = Q \Lambda Q^\top$, where $Q$ is orthogonal and $\Lambda$ is diagonal.
+          Substitute this into the quotient:
+          $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top Q \Lambda Q^\top \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Convex Combination.</strong>
-          $$ R_A(\mathbf{x}) = \frac{\mathbf{x}^\top Q \Lambda Q^\top \mathbf{x}}{\mathbf{x}^\top \mathbf{x}} = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum \lambda_i y_i^2}{\sum y_i^2} $$
-          Define weights $w_i = y_i^2 / (\sum y_j^2)$. Then $w_i \ge 0$ and $\sum w_i = 1$.
-          $$ R_A(\mathbf{x}) = \sum_{i=1}^n w_i \lambda_i $$
+          <strong>Step 2: Change coordinates to the eigenbasis.</strong>
+          Let $\mathbf{y} = Q^\top \mathbf{x}$. Since $Q$ is orthogonal, it preserves length: $\|\mathbf{y}\|^2 = \|Q^\top \mathbf{x}\|^2 = \|\mathbf{x}\|^2$.
+          The expression simplifies to a sum of squares weighted by eigenvalues:
+          $$ R_A(\mathbf{x}) = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum_{i=1}^n \lambda_i y_i^2}{\sum_{j=1}^n y_j^2} $$
         </div>
         <div class="proof-step">
-          <strong>Step 3: Conclusion.</strong>
-          The Rayleigh quotient is a <b>weighted average (convex combination) of the eigenvalues</b>. Thus it must lie between $\lambda_{\min}$ and $\lambda_{\max}$.
-          We achieve the max by putting all "mass" $w_i$ on the largest eigenvalue (choosing $\mathbf{x}$ as the corresponding eigenvector).
+          <strong>Step 3: Interpret as a Convex Combination.</strong>
+          Define weights $w_i = \frac{y_i^2}{\sum_j y_j^2}$.
+          Observe two properties:
+          <ol>
+            <li>$w_i \ge 0$ (since squares are non-negative).</li>
+            <li>$\sum_{i=1}^n w_i = \frac{\sum y_i^2}{\sum y_j^2} = 1$.</li>
+          </ol>
+          Thus, $R_A(\mathbf{x}) = \sum_{i=1}^n w_i \lambda_i$. This is a <b>convex combination</b> of the eigenvalues.
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Establish Bounds.</strong>
+          A convex combination of a set of numbers always lies between the minimum and maximum of that set.
+          $$ \lambda_{\min} \underbrace{\sum w_i}_{1} \le \sum w_i \lambda_i \le \lambda_{\max} \underbrace{\sum w_i}_{1} $$
+          $$ \lambda_{\min} \le R_A(\mathbf{x}) \le \lambda_{\max} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 5: Achievability.</strong>
+          To achieve the maximum, we need $w_i = 1$ for the index $i$ corresponding to $\lambda_{\max}$, and $0$ elsewhere.
+          This means we choose $\mathbf{y} = e_{\max}$, or $\mathbf{x} = Q e_{\max} = q_{\max}$ (the top eigenvector).
+          Similarly, the minimum is achieved at the bottom eigenvector.
         </div>
       </div>
       <p>This connects linear algebra to optimization: finding the largest eigenvalue is equivalent to maximizing a quadratic form over the unit sphere.</p>
@@ -302,12 +342,32 @@
       This arises when optimizing $\mathbf{x}^\top A \mathbf{x}$ subject to an ellipsoidal constraint $\mathbf{x}^\top B \mathbf{x} = 1$.</p>
 
       <h4>Reduction to Standard Eigenvalue Problem</h4>
-      <p>Since $B \succ 0$, it has a Cholesky factorization $B = L L^\top$. Let $\mathbf{x} = L^{-\top} \mathbf{y}$.
-      $$ A (L^{-\top} \mathbf{y}) = \lambda B (L^{-\top} \mathbf{y}) = \lambda (L L^\top) L^{-\top} \mathbf{y} = \lambda L \mathbf{y} $$
-      Left-multiplying by $L^{-1}$:
-      $$ (L^{-1} A L^{-\top}) \mathbf{y} = \lambda \mathbf{y} $$
-      Thus, the generalized eigenvalues of $(A, B)$ are the ordinary eigenvalues of the symmetric matrix $C = L^{-1} A L^{-\top}$ (often written $B^{-1/2} A B^{-1/2}$).
-      <br><b>Key Insight:</b> This process is called <b>whitening</b>. It transforms the geometry so that the $B$-norm becomes the Euclidean norm.</p>
+      <p>Since $B \succ 0$, it has a Cholesky factorization $B = L L^\top$. We want to transform the generalized problem $A\mathbf{x} = \lambda B \mathbf{x}$ into a standard form $M\mathbf{y} = \lambda \mathbf{y}$.</p>
+      <div class="proof-box">
+        <h4>Derivation: Whitening Transformation</h4>
+        <div class="proof-step">
+          <strong>Step 1: Change Variables.</strong>
+          We want to make the "B-inner product" look like a dot product.
+          Let $\mathbf{y} = L^\top \mathbf{x}$. Then $\mathbf{x} = L^{-\top} \mathbf{y}$.
+          The norm condition $\mathbf{x}^\top B \mathbf{x} = 1$ becomes:
+          $$ \mathbf{x}^\top (L L^\top) \mathbf{x} = (L^\top \mathbf{x})^\top (L^\top \mathbf{x}) = \mathbf{y}^\top \mathbf{y} = \|\mathbf{y}\|_2^2 = 1 $$
+          This change of variables maps the ellipsoid $\{x \mid x^\top B x = 1\}$ to the unit sphere $\{y \mid y^\top y = 1\}$. This is <b>whitening</b>.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Transform the Equation.</strong>
+          Substitute $\mathbf{x} = L^{-\top} \mathbf{y}$ into $A\mathbf{x} = \lambda B \mathbf{x}$:
+          $$ A (L^{-\top} \mathbf{y}) = \lambda (L L^\top) (L^{-\top} \mathbf{y}) $$
+          $$ A L^{-\top} \mathbf{y} = \lambda L (L^\top L^{-\top}) \mathbf{y} = \lambda L \mathbf{y} $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Isolate $\lambda \mathbf{y}$.</strong>
+          Multiply from the left by $L^{-1}$:
+          $$ L^{-1} A L^{-\top} \mathbf{y} = \lambda \mathbf{y} $$
+          Let $C = L^{-1} A L^{-\top}$. This is a symmetric matrix.
+          We have reduced the problem to finding the eigenvalues of $C$: $C \mathbf{y} = \lambda \mathbf{y}$.
+        </div>
+      </div>
+      <p><b>Key Insight:</b> Whitening transforms the geometry so that the $B$-norm becomes the Euclidean norm. The generalized eigenvalues are the ordinary eigenvalues of the whitened matrix $B^{-1/2} A B^{-1/2}$.</p>
 
       <h4>Generalized Rayleigh Quotient</h4>
       <p>The generalized Rayleigh quotient is:
@@ -348,6 +408,14 @@
           <strong>Step 2: Achievability.</strong>
           Simply choose $\mathbf{x} = \mathbf{e}_k$, where $k$ is the index of the largest column. Then $\|A\mathbf{e}_k\|_1 = \|\mathbf{a}_k\|_1$, hitting the bound.
         </div>
+      </div>
+      <div class="example-box">
+        <h4>Concrete Example</h4>
+        <p>Consider $A = \begin{bmatrix} 1 & -5 \\ 2 & 2 \end{bmatrix}$.
+        <br><b>Column 1:</b> Sum of absolute values is $|1| + |2| = 3$. Input $\mathbf{x} = (1, 0)$ gives output $(1, 2)$, norm 3.
+        <br><b>Column 2:</b> Sum of absolute values is $|-5| + |2| = 7$. Input $\mathbf{x} = (0, 1)$ gives output $(-5, 2)$, norm 7.
+        <br><b>Mix?</b> Try $\mathbf{x} = (0.5, 0.5)$. Output $(1(0.5)-5(0.5), 2(0.5)+2(0.5)) = (-2, 2)$, norm 4.
+        <br>The maximum is achieved by putting all weight on the "largest" column. Thus $\|A\|_1 = 7$.</p>
       </div>
 
       <h3>3.2 The $\ell_\infty$ Operator Norm (Max Row Sum)</h3>
@@ -500,18 +568,33 @@
 
       <div class="example-box">
         <h4>Example: QR via Householder for a 3×2 Matrix</h4>
-        <p>Consider $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{bmatrix}$.
-        <br><br>
-        <b>Step 1:</b> Zero out the first column below the diagonal.
-        <br>$\mathbf{x} = (1, 1, 0)^\top$, $\|\mathbf{x}\| = \sqrt{2}$.
-        <br>$\mathbf{v} = \mathbf{x} + \sqrt{2} \mathbf{e}_1 = (1+\sqrt{2}, 1, 0)^\top$.
-        <br>Normalize: $\mathbf{u} = \frac{\mathbf{v}}{\|\mathbf{v}\|}$.
-        <br>$H_1 = I - 2\mathbf{u}\mathbf{u}^\top$ transforms the first column to $(\sqrt{2}, 0, 0)^\top$.
-        <br><br>
-        <b>Step 2:</b> Apply $H_1$ to entire matrix, then construct $H_2$ to zero out the second column below diagonal (in the $2 \times 2$ submatrix).
-        <br><br>
-        <b>Result:</b> $A = QR$ where $Q = H_1 H_2$ and $R$ is upper triangular.
-        </p>
+        <p>Consider $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{bmatrix}$. We want to zero out the entries below $A_{11}$.</p>
+        <div class="proof-step">
+          <strong>Step 1: The Target Vector.</strong>
+          Take the first column $\mathbf{a}_1 = (1, 1, 0)^\top$. We want to map it to a multiple of $\mathbf{e}_1$.
+          Target length: $\|\mathbf{a}_1\| = \sqrt{1^2+1^2} = \sqrt{2}$.
+          Target vector: $\mathbf{t} = -\sqrt{2}\mathbf{e}_1 = (-\sqrt{2}, 0, 0)^\top$. (Choosing negative sign to add to positive first entry $1$).
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: The Reflection Normal.</strong>
+          The reflection vector is $\mathbf{v} = \mathbf{a}_1 - \mathbf{t} = (1+\sqrt{2}, 1, 0)^\top$.
+          Squared norm: $\|\mathbf{v}\|^2 = (1+\sqrt{2})^2 + 1^2 = 1 + 2\sqrt{2} + 2 + 1 = 4 + 2\sqrt{2}$.
+          Unit normal $\mathbf{u} = \mathbf{v}/\|\mathbf{v}\|$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Apply $H_1$.</strong>
+          $H_1 = I - 2\mathbf{u}\mathbf{u}^\top$.
+          $H_1 \mathbf{a}_1 = \mathbf{t} = (-\sqrt{2}, 0, 0)^\top$. (By construction).
+          We must also apply $H_1$ to the second column $\mathbf{a}_2 = (1, 0, 1)^\top$.
+          $$ H_1 \mathbf{a}_2 = \mathbf{a}_2 - 2\mathbf{u}(\mathbf{u}^\top \mathbf{a}_2) = \mathbf{a}_2 - \frac{2}{\|\mathbf{v}\|^2} \mathbf{v}(\mathbf{v}^\top \mathbf{a}_2) $$
+          First, compute the dot product: $\mathbf{v}^\top \mathbf{a}_2 = (1+\sqrt{2})(1) + (1)(0) + (0)(1) = 1+\sqrt{2}$.
+          Next, simplify the scalar coefficient:
+          $$ \frac{2(\mathbf{v}^\top \mathbf{a}_2)}{\|\mathbf{v}\|^2} = \frac{2(1+\sqrt{2})}{4+2\sqrt{2}} = \frac{2(1+\sqrt{2})}{2(2+\sqrt{2})} = \frac{1+\sqrt{2}}{\sqrt{2}(\sqrt{2}+1)} = \frac{1}{\sqrt{2}} $$
+          Now update the vector:
+          $$ H_1 \mathbf{a}_2 = \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} - \frac{1}{\sqrt{2}} \begin{bmatrix} 1+\sqrt{2} \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 - \frac{1+\sqrt{2}}{\sqrt{2}} \\ - \frac{1}{\sqrt{2}} \\ 1 \end{bmatrix} = \begin{bmatrix} 1 - (\frac{1}{\sqrt{2}} + 1) \\ - \frac{1}{\sqrt{2}} \\ 1 \end{bmatrix} = \begin{bmatrix} -1/\sqrt{2} \\ -1/\sqrt{2} \\ 1 \end{bmatrix} $$
+          This vector is the second column of the partially processed matrix.
+        </div>
+        <p><b>Result:</b> $A$ is transformed into an upper triangular form (or closer to it). Repeating for the submatrix gives the full QR.</p>
       </div>
 
       <h4>Why Householder is Superior</h4>
@@ -569,11 +652,16 @@
 
       <div class="intuition-box">
         <h4>The "Data Processor" Mental Model</h4>
-        <p>Imagine $A$ as a machine processing a vector $x$. The SVD breaks this process into three independent, simple steps:</p>
+        <p>Imagine $A$ as a machine processing a vector $x$. The SVD breaks this process into three independent, simple steps: <b>Rotate, Stretch, Rotate</b>.</p>
+        <div class="example-box">
+            <b>Example:</b> Let $A = \begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix}$ (simple scaling). The SVD is $I \begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix} I$.
+            <br>Now consider a rotated version $M = R_{\pi/4} A$. Then $M = U \Sigma V^\top$ where $U$ is a 45-degree rotation, $\Sigma = \text{diag}(2, 3)$, and $V=I$.
+            <br>Input $\mathbf{x}$ enters $\to$ Aligned by $V^\top$ (no change) $\to$ Stretched by (2, 3) $\to$ Rotated by 45 degrees.
+        </div>
         <ol>
-            <li><b>Step 1 (Rotate):</b> $V^\top$ rotates the input vector $x$ to align with the "natural axes" of the data (the right singular vectors). It changes the coordinate system but not the length.</li>
-            <li><b>Step 2 (Stretch):</b> $\Sigma$ stretches or shrinks the vector along these new axes. The factors $\sigma_i$ tell you the "gain" of the matrix in each direction. If $\sigma_i=0$, that dimension is annihilated.</li>
-            <li><b>Step 3 (Rotate):</b> $U$ rotates the result into the output coordinate system.</li>
+            <li><b>Step 1 (Input Rotation):</b> $V^\top$ rotates the input vector $x$ to align with the "natural axes" (the right singular vectors). It changes the coordinate system but not the length.</li>
+            <li><b>Step 2 (Axis Scaling):</b> $\Sigma$ stretches or shrinks the vector along these new axes. The factors $\sigma_i$ tell you the "gain" of the matrix in each direction. If $\sigma_i=0$, that dimension is crushed.</li>
+            <li><b>Step 3 (Output Rotation):</b> $U$ rotates the result into the output coordinate system.</li>
         </ol>
         <p><b>Result:</b> Every linear map sends circles to ellipses. The SVD simply finds the axes of the input circle ($V$) that map to the axes of the output ellipse ($U$).</p>
       </div>
@@ -654,9 +742,12 @@
       <div class="proof-box">
         <h4>Why Truncation Works (The Energy Argument)</h4>
         <p>Why is keeping the largest singular values optimal?
-        <br><b>1. Frobenius Norm (Energy):</b> The total "energy" of $A$ is $\|A\|_F^2 = \sum \sigma_i^2$.
-        <br>The energy of the error $E = A - A_k$ is the sum of the <i>discarded</i> singular values squared: $\|E\|_F^2 = \sum_{i=k+1}^r \sigma_i^2$.
-        <br>To minimize error, we must discard the <i>smallest</i> $\sigma_i$'s.
+        <br><b>1. Frobenius Norm (Energy):</b>
+        Recall that $\|A\|_F^2 = \sum \sigma_i^2$. This norm is orthogonally invariant:
+        $$ \|A - A_k\|_F^2 = \|U \Sigma V^\top - U \Sigma_k V^\top\|_F^2 = \|U (\Sigma - \Sigma_k) V^\top\|_F^2 = \|\Sigma - \Sigma_k\|_F^2 $$
+        $\Sigma - \Sigma_k$ is a diagonal matrix containing the singular values we didn't keep: $\sigma_{k+1}, \dots, \sigma_r$.
+        $$ \|\Sigma - \Sigma_k\|_F^2 = \sum_{i=k+1}^r \sigma_i^2 $$
+        To minimize the error, we must make the tail sum as small as possible. This forces us to keep the largest $\sigma$'s and discard the smallest.
         <br><b>2. Spectral Norm (Worst-Case):</b> The maximum error amplification is $\|A - A_k\|_2 = \sigma_{k+1}$.
         <br>Any other rank-$k$ matrix would result in a larger worst-case error.
         <br><b>Conclusion:</b> SVD packs the most "matrix energy" into the fewest components. This is why it is the gold standard for compression (PCA) and denoising.</p>
@@ -831,12 +922,13 @@
           <strong>Step 3: Pythagorean Minimization.</strong>
           Let $\mathbf{x}$ be any solution to the least squares problem. The set of all solutions is the affine set $S = \mathbf{x}^+ + \mathcal{N}(A)$.
           Any solution $\mathbf{x}$ can be written as $\mathbf{x} = \mathbf{x}^+ + \mathbf{z}$, where $\mathbf{z} \in \mathcal{N}(A)$.
-          <br>We established in Step 2 that $\mathbf{x}^+ \in \mathcal{R}(A^\top)$.
-          The Fundamental Theorem of Linear Algebra states that $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
-          Therefore, $\mathbf{x}^+ \perp \mathbf{z}$.
+          <br>We established in Step 2 that $\mathbf{x}^+ \in \mathcal{R}(A^\top)$ (Row Space).
+          The Fundamental Theorem of Linear Algebra states that the Row Space is orthogonal to the Nullspace: $\mathcal{R}(A^\top) \perp \mathcal{N}(A)$.
+          Therefore, $\mathbf{x}^+ \perp \mathbf{z}$ (The inner product $\langle \mathbf{x}^+, \mathbf{z} \rangle = 0$).
           <br>By the Pythagorean Theorem:
           $$ \|\mathbf{x}\|_2^2 = \|\mathbf{x}^+ + \mathbf{z}\|_2^2 = \|\mathbf{x}^+\|_2^2 + \|\mathbf{z}\|_2^2 $$
-          Since $\|z\|_2^2 \ge 0$, the minimum possible value for $\|x\|_2^2$ occurs when $\|z\|_2^2 = 0$, i.e., $\mathbf{z}=0$.
+          The term $\|\mathbf{x}^+\|_2^2$ is constant for all solutions. The only variable part is $\|\mathbf{z}\|_2^2$.
+          Since norms are non-negative, $\|\mathbf{z}\|_2^2 \ge 0$. The global minimum is achieved if and only if $\mathbf{z}=0$.
           Thus, $\mathbf{x} = \mathbf{x}^+$ is the unique solution with minimum norm.
           </div>
         </div>
@@ -906,6 +998,22 @@
       <p>Another approach is to simply discard singular values below a threshold. This is the optimal low-rank approximation applied to the inversion process.
       $$ \mathbf{x}_{\text{trunc}} = \sum_{\sigma_i > \epsilon} \frac{1}{\sigma_i} (\mathbf{u}_i^\top \mathbf{b}) \mathbf{v}_i $$
       Both methods trade a small amount of bias (exactness) for a large reduction in variance (stability).</p>
+
+      <div class="example-box">
+        <h4>Numerical Comparison: Inversion vs. Regularization</h4>
+        <p>Let $A = \begin{bmatrix} 1 & 0 \\ 0 & 10^{-5} \end{bmatrix}$ and $\mathbf{b} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+        <br><b>Exact Inverse:</b> $\mathbf{x} = A^{-1}\mathbf{b} = (1, 10^5)^\top$.
+        <br>Suppose $\mathbf{b}$ has noise $\mathbf{\delta} = (0, 10^{-5})^\top$.
+        <br><b>Perturbed Inverse:</b> $A^{-1}(\mathbf{b}+\mathbf{\delta}) = A^{-1} (1, 1+10^{-5})^\top = (1, 10^5 + 1)^\top$.
+        <br>The noise is amplified by $1/\sigma_{\min} = 10^5$.
+        <br><br>
+        <b>Tikhonov ($\lambda = 10^{-4}$):</b>
+        Filter for $\sigma_2$: $\frac{(10^{-5})^2}{(10^{-5})^2 + 10^{-4}} \approx \frac{10^{-10}}{10^{-4}} = 10^{-6}$.
+        The second component is suppressed to $\approx 10^{-6} \cdot 10^5 \cdot 1 \approx 0.1$.
+        The solution is roughly $(1, 0.1)^\top$.
+        We lost the "true" large signal in the second component (bias), but we are now immune to noise amplification (variance).
+        </p>
+      </div>
 
       <div class="insight">
         <h4>The Irreducible Truth</h4>

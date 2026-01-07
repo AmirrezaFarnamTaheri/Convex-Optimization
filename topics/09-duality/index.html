@@ -670,35 +670,432 @@
       <section class="section-card" id="section-7">
         <h2>7. Examples of Dual Problems</h2>
 
-        <h3>7.1 Linear Programming</h3>
-        <p>Primal: $\min c^\top x$ s.t. $Ax \le b, x \ge 0$.
-        <br>Dual: $\max -b^\top \lambda$ s.t. $A^\top \lambda + c \ge 0, \lambda \ge 0$. (See Sec 2.3).</p>
+        <div class="insight">
+          <h4>Micro-Toolbox for Deriving Duals</h4>
+          <p>Before diving into specific problems, keep these three tools handy. They handle 90% of the derivations.</p>
+          <ul>
+            <li><b>Lemma A1 (Linear Term):</b> $\inf_x a^\top x = 0$ if $a=0$, else $-\infty$.
+            <br><i>Use:</i> Generates equality constraints ($A^\top \nu + c = 0$).</li>
+            <li><b>Lemma A2 (Quadratic Min):</b> $\inf_x (\frac{1}{2}x^\top P x + q^\top x) = -\frac{1}{2}q^\top P^{-1} q$ (if $P \succ 0$).
+            <br><i>Use:</i> Handles QP terms.</li>
+            <li><b>Lemma A3 (Conjugate of Norm):</b> $\sup_x (y^\top x - \|x\|) = 0$ if $\|y\|_* \le 1$, else $\infty$.
+            <br><i>Use:</i> Generates dual norm constraints.</li>
+          </ul>
+        </div>
+
+        <h3>7.1 Linear Programming (Standard Inequality Form)</h3>
+        <p><b>Primal:</b> $\min c^\top x$ subject to $Ax \le b$. (Note: $x$ is free, only inequality constraints).</p>
+        <div class="proof-box">
+          <h4>Step-by-Step Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            Assign multiplier $\lambda \ge 0$ to $Ax - b \le 0$.
+            $$ L(x, \lambda) = c^\top x + \lambda^\top (Ax - b) = (c + A^\top \lambda)^\top x - b^\top \lambda $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $x$.</strong>
+            The term is linear in $x$. The infimum is $-\infty$ unless the gradient is zero.
+            $$ \nabla_x L = c + A^\top \lambda = 0 $$
+            If this holds, the term vanishes, leaving $-b^\top \lambda$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Dual Problem.</strong>
+            $$ \max_{\lambda \ge 0} \ -b^\top \lambda \quad \text{s.t.} \quad A^\top \lambda + c = 0 $$
+          </div>
+        </div>
 
         <h3>7.2 Quadratic Programming</h3>
-        <p>Primal: $\min \frac{1}{2}x^\top P x + q^\top x$ s.t. $Ax \le b$. ($P \succ 0$).
-        <br>Lagrangian: $L(x, \lambda) = \frac{1}{2}x^\top P x + q^\top x + \lambda^\top (Ax - b)$.
-        <br>Minimize over $\mathbf{x}$: $P\mathbf{x} + \mathbf{q} + A^\top \lambda = 0 \implies \mathbf{x} = -P^{-1}(\mathbf{q} + A^\top \lambda)$.
-        <br>Dual Function (after algebra):
-        $$ g(\lambda) = -\frac{1}{2} \lambda^\top (A P^{-1} A^\top) \lambda - (b + A P^{-1} q)^\top \lambda - \frac{1}{2} q^\top P^{-1} q $$
-        This is a concave quadratic maximization (since $A P^{-1} A^\top \succeq 0$).</p>
-
-      <figure class="animation-figure">
-        <div class="animation-container">
-          <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif" alt="Dual Norm Geometry Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
+        <p><b>Primal:</b> $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax \le b$. (Assume $P \succ 0$).</p>
+        <div class="proof-box">
+          <h4>Step-by-Step Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            $$ L(x, \lambda) = \frac{1}{2}x^\top P x + q^\top x + \lambda^\top (Ax - b) = \frac{1}{2}x^\top P x + (q + A^\top \lambda)^\top x - b^\top \lambda $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $x$.</strong>
+            This is an unconstrained quadratic minimization. Set gradient to zero:
+            $$ P x + (q + A^\top \lambda) = 0 \implies x^* = -P^{-1}(q + A^\top \lambda) $$
+            Substitute back into $L$:
+            $$ \inf_x L = -\frac{1}{2}(q + A^\top \lambda)^\top P^{-1} (q + A^\top \lambda) - b^\top \lambda $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Dual Problem.</strong>
+            $$ \max_{\lambda \ge 0} \ -\frac{1}{2}(q + A^\top \lambda)^\top P^{-1} (q + A^\top \lambda) - b^\top \lambda $$
+            This is a concave quadratic maximization over the non-negative orthant.
+          </div>
         </div>
-        <figcaption><i>Animation:</i> Supporting hyperplanes $u^\top x = \|u\|_*$ for the $\ell_1$ and $\ell_\infty$ balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
-      </figure>
+
+        <figure class="animation-figure">
+          <div class="animation-container">
+            <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif" alt="Dual Norm Geometry Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
+          </div>
+          <figcaption><i>Animation:</i> Supporting hyperplanes $u^\top x = \|u\|_*$ for the $\ell_1$ and $\ell_\infty$ balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
+        </figure>
 
         <h3>7.3 Semidefinite Programming</h3>
-        <p>Primal: $\min \mathrm{tr}(CX)$ s.t. $\mathrm{tr}(A_i X) = b_i, X \succeq 0$.
-        <br>Dual:
-        $$
-        \begin{aligned}
-        \text{maximize} \quad & b^\top \nu \\
-        \text{subject to} \quad & \sum_{i=1}^m \nu_i A_i \preceq C
-        \end{aligned}
-        $$
-        This is another SDP.</p>
+        <p><b>Primal:</b> $\min \mathrm{tr}(CX)$ subject to $\mathrm{tr}(A_i X) = b_i$ for $i=1\dots m$, and $X \succeq 0$.</p>
+        <div class="proof-box">
+          <h4>Step-by-Step Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            Assign scalar multipliers $\nu_i$ to equalities and matrix multiplier $S \succeq 0$ to $X \succeq 0$.
+            $$
+            \begin{aligned}
+            L(X, \nu, S) &= \mathrm{tr}(CX) + \sum \nu_i (b_i - \mathrm{tr}(A_i X)) - \mathrm{tr}(SX) \\
+            &= \mathrm{tr}\left( \left( C - \sum \nu_i A_i - S \right) X \right) + b^\top \nu
+            \end{aligned}
+            $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $X$.</strong>
+            The term is linear in $X$ (trace inner product). The infimum is $-\infty$ unless the coefficient matrix is zero.
+            $$ C - \sum \nu_i A_i - S = 0 \iff S = C - \sum \nu_i A_i $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Dual Problem.</strong>
+            Maximize $b^\top \nu$ subject to $S \succeq 0$.
+            Substituting $S$:
+            $$ \max_\nu \ b^\top \nu \quad \text{s.t.} \quad \sum_{i=1}^m \nu_i A_i \preceq C $$
+            This is the standard dual SDP.
+          </div>
+        </div>
+
+        <h3>7.4 Problem 1: Least Squares (Residual Form)</h3>
+        <p><b>Primal:</b> $\min \frac{1}{2} \|Ax - b\|_2^2$.
+        <br><i>Strategy:</i> Introduce a new variable $y = Ax - b$ to decouple the norm from the matrix.</p>
+        <div class="solution-box">
+          <h4>Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Reformulate.</strong>
+            $$ \min_{x,y} \frac{1}{2}\|y\|_2^2 \quad \text{s.t.} \quad y = Ax - b $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Lagrangian.</strong>
+            $$ L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \nu^\top (Ax - b - y) = (\frac{1}{2}\|y\|^2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Minimize over $x$.</strong>
+            Requires $A^\top \nu = 0$ (otherwise $-\infty$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Minimize over $y$.</strong>
+            $\inf_y (\frac{1}{2}\|y\|^2 - \nu^\top y)$. Gradient: $y - \nu = 0 \implies y = \nu$.
+            Value: $\frac{1}{2}\|\nu\|^2 - \|\nu\|^2 = -\frac{1}{2}\|\nu\|^2$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 5: Dual Problem.</strong>
+            $$ \max_\nu \ -\frac{1}{2}\|\nu\|^2 - b^\top \nu \quad \text{s.t.} \quad A^\top \nu = 0 $$
+          </div>
+        </div>
+
+        <h3>7.5 Problem 2: Ridge Regression</h3>
+        <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$.
+        <br><i>Strategy:</i> Again, let $y = Ax - b$. The penalty term stays with $x$.</p>
+        <div class="solution-box">
+          <h4>Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            $$ L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \frac{\lambda}{2}\|x\|^2 + \nu^\top(Ax - b - y) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $y$.</strong>
+            Same as above: $-\frac{1}{2}\|\nu\|^2$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Minimize over $x$.</strong>
+            $$ \inf_x \left( \frac{\lambda}{2}\|x\|^2 + (A^\top \nu)^\top x \right) $$
+            Gradient: $\lambda x + A^\top \nu = 0 \implies x = -\frac{1}{\lambda} A^\top \nu$.
+            Value: $\frac{\lambda}{2} \frac{1}{\lambda^2} \|A^\top \nu\|^2 - \frac{1}{\lambda} \|A^\top \nu\|^2 = -\frac{1}{2\lambda} \|A^\top \nu\|^2$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Dual Problem.</strong>
+            $$ \max_\nu \ -b^\top \nu - \frac{1}{2}\|\nu\|^2 - \frac{1}{2\lambda}\|A^\top \nu\|^2 $$
+            This is an unconstrained quadratic maximization!
+          </div>
+        </div>
+
+        <h3>7.6 Problem 3: LASSO</h3>
+        <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \rho \|x\|_1$. (Using $\rho$ to distinguish from multiplier).</p>
+        <div class="solution-box">
+          <h4>Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            With $y = Ax - b$:
+            $$ L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \rho \|x\|_1 + \nu^\top(Ax - b - y) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $y$.</strong>
+            Result: $-\frac{1}{2}\|\nu\|^2$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Minimize over $x$.</strong>
+            $$ \inf_x \left( \rho \|x\|_1 + (A^\top \nu)^\top x \right) = - \sup_x \left( -(A^\top \nu)^\top x - \rho \|x\|_1 \right) $$
+            This is related to the conjugate of the L1 norm. The term is 0 if $\|A^\top \nu\|_\infty \le \rho$, else $-\infty$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Dual Problem.</strong>
+            $$ \max_\nu \ -b^\top \nu - \frac{1}{2}\|\nu\|^2 \quad \text{s.t.} \quad \|A^\top \nu\|_\infty \le \rho $$
+            The dual constraints are box constraints on the correlation vector $A^\top \nu$.
+          </div>
+        </div>
+
+        <h3>7.7 Problem 4: Basis Pursuit</h3>
+        <p><b>Primal:</b> $\min \|x\|_1$ s.t. $Ax = b$.</p>
+        <div class="solution-box">
+          <h4>Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            $$ L(x, \nu) = \|x\|_1 + \nu^\top (b - Ax) = b^\top \nu + (\|x\|_1 - (A^\top \nu)^\top x) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $x$.</strong>
+            Using the conjugate relation for L1 norm: $\inf_x (\|x\|_1 - z^\top x) = 0$ iff $\|z\|_\infty \le 1$.
+            Here $z = A^\top \nu$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Dual Problem.</strong>
+            $$ \max_\nu \ b^\top \nu \quad \text{s.t.} \quad \|A^\top \nu\|_\infty \le 1 $$
+          </div>
+        </div>
+
+        <h3>7.8 Problem 5: LP Dual via Relaxed Problems</h3>
+        <p><b>Primal:</b> $\min c^\top x$ s.t. $Ax \le b$.
+        <br><b>Interpretation:</b> Instead of enforcing all constraints, consider a non-negative weighted sum $w^\top A x \le w^\top b$.
+        $$ \tilde{p}(w) = \min c^\top x \quad \text{s.t.} \quad (A^\top w)^\top x \le b^\top w $$
+        The set of points satisfying the weighted constraint contains the original feasible set, so $\tilde{p}(w)$ is a lower bound.
+        <br>The minimization $\min c^\top x$ s.t. $a^\top x \le \beta$ is finite only if $c$ is a multiple of $a$ (specifically $c = -ka$ for $k \ge 0$) or if $a=0$.
+        <br>Setting the gradient to match: $c = -A^\top w$ (implies the objective is supported by the constraint).
+        <br>The value is $-b^\top w$.
+        <br>The best lower bound is $\max -b^\top w$ s.t. $A^\top w + c = 0, w \ge 0$. This recovers the standard LP dual.</p>
+
+        <h3>7.9 Problem 6: Support Vector Machine (Hinge Loss)</h3>
+        <p><b>Primal:</b> $\min \frac{1}{2}\|w\|^2 + C \sum \max(0, 1 - y_i w^\top x_i)$.
+        <br>Rewrite: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $\xi_i \ge 1 - y_i w^\top x_i, \xi_i \ge 0$.</p>
+        <div class="solution-box">
+          <h4>Derivation</h4>
+          <div class="proof-step">
+            <strong>Step 1: Lagrangian.</strong>
+            Multipliers $\alpha_i \ge 0$ for hinge constraints, $\mu_i \ge 0$ for non-negativity.
+            $$ L = \frac{1}{2}\|w\|^2 + \sum (C - \alpha_i - \mu_i)\xi_i + \sum \alpha_i (1 - y_i w^\top x_i) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Minimize over $\xi$.</strong>
+            Coefficient must vanish: $C - \alpha_i - \mu_i = 0 \implies \alpha_i \le C$ (since $\mu_i \ge 0$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Minimize over $w$.</strong>
+            $\nabla_w L = w - \sum \alpha_i y_i x_i = 0 \implies w = \sum \alpha_i y_i x_i$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Dual Problem.</strong>
+            $$ \max_\alpha \ \sum \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j \quad \text{s.t.} \quad 0 \le \alpha_i \le C $$
+            (Note: if bias $b$ is included, we also get constraint $\sum \alpha_i y_i = 0$).
+          </div>
+        </div>
+
+        <h3>7.10 Problem 7: Trust-Region QCQP (Nonconvex with Strong Duality)</h3>
+        <p><b>Primal:</b> $\min x^\top A x + 2 b^\top x$ s.t. $x^\top x \le 1$.</p>
+        <p>This is the classic <b>trust-region subproblem</b>. Even if $A \not\succeq 0$ (making the objective nonconvex), strong duality still holds.</p>
+
+        <div class="insight">
+          <h4>Why It Matters</h4>
+          <p>This problem arises in Newton-type methods when optimizing within a trusted region. The constraint $\|x\|_2 \le 1$ is the unit ball—the "trust region" where a quadratic approximation is valid.</p>
+        </div>
+
+        <p><b>Lagrangian:</b></p>
+        $$ L(x, \lambda) = x^\top A x + 2 b^\top x + \lambda(x^\top x - 1) = x^\top (A + \lambda I) x + 2 b^\top x - \lambda $$
+
+        <div class="proof-box">
+          <h4>Deep Dive: Zero-to-Hero Derivation of the Dual</h4>
+          <p>We derive the dual function $g(\lambda) = \inf_x L(x, \lambda)$ from first principles, showing why this nonconvex problem behaves nicely.</p>
+
+          <div class="proof-step">
+            <strong>1. The Lagrangian Form.</strong>
+            Define $H(\lambda) = A + \lambda I$. The Lagrangian is a quadratic function of $x$:
+            $$ L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda $$
+            Even if $A$ is indefinite (negative eigenvalues), we can choose $\lambda$ large enough such that $H(\lambda) \succeq 0$. This "convexifies" the Lagrangian.
+          </div>
+
+          <div class="proof-step">
+            <strong>2. Finiteness Conditions (Avoiding $-\infty$).</strong>
+            The quadratic $L(x, \lambda)$ has a finite minimum if and only if:
+            <ul>
+              <li><b>Curvature:</b> $H(\lambda) \succeq 0$. If $H(\lambda)$ has a negative eigenvalue, we can send $x$ to infinity along that eigenvector to drive $L \to -\infty$. This forces $\lambda \ge -\lambda_{\min}(A)$.</li>
+              <li><b>Range:</b> $b \in \mathcal{R}(H(\lambda))$. If $H(\lambda)$ is singular (has 0 eigenvalues), the quadratic is "flat" along the nullspace. If $b$ has a component in that nullspace ($b \notin \mathcal{R}(H(\lambda))$), the linear term $2b^\top x$ tilts the flat valley, driving the minimum to $-\infty$.</li>
+            </ul>
+          </div>
+
+          <div class="proof-step">
+            <strong>3. Computing the Minimum.</strong>
+            When finite, the minimum is attained at any $x$ satisfying the stationarity condition $2H(\lambda)x + 2b = 0 \implies H(\lambda)x = -b$.
+            <br>The optimal value is obtained by completing the square or using the pseudoinverse $H(\lambda)^\dagger$:
+            $$ g(\lambda) = -b^\top H(\lambda)^\dagger b - \lambda $$
+          </div>
+        </div>
+
+        <div class="theorem-box">
+          <h4>Strong Duality Theorem</h4>
+          <p><b>Theorem:</b> For the Trust Region Subproblem, $p^\star = d^\star$ even if non-convex.</p>
+          <p><b>Geometric Intuition (The S-Lemma):</b>
+          The joint range of $(x^\top x, x^\top A x + 2b^\top x)$ is a convex set in $\mathbb{R}^2$ (this is specific to having only <i>one</i> quadratic constraint).
+          Because the image is convex, we can separate the optimal point from the infeasible region with a hyperplane. The normal vector to this hyperplane corresponds to the dual variable $\lambda$. Thus, a linear combination of the objective and constraint supports the optimal value exactly.</p>
+        </div>
+
+        <h3>7.11 Problem 8: Sum of Largest Elements (The Deep Dive)</h3>
+        <p><strong>Context:</strong> This problem is a masterclass in "Constructive Duality"—using duality to convert a combinatorial object (sum of sorted components) into a clean set of linear inequalities.
+        <br>Let $f(x) = \sum_{i=1}^r x_{[i]}$ be the sum of the $r$ largest components of $x \in \mathbb{R}^n$.
+        <br><strong>Goal:</strong> Prove that $f(x) \le \alpha$ is equivalent to a small system of linear inequalities.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+
+          <div class="proof-step">
+            <strong>Step 1: The Variational Identity (Max over Subsets).</strong>
+            First, we establish what $f(x)$ is combinatorially.
+            $$ f(x) = \max \left\{ \sum_{i \in S} x_i \mid S \subseteq \{1,\dots,n\}, |S|=r \right\} $$
+            <b>Proof:</b> Let $S^\star$ be the indices of the $r$ largest components. Then $\sum_{S^\star} x_i = f(x)$. For any other set $S$ of size $r$, its elements $x_{i_k}$ are term-by-term dominated by the globally largest elements $x_{[k]}$. Thus $\sum_S x_i \le f(x)$.
+            <br><i>Implication:</i> The constraint $f(x) \le \alpha$ is equivalent to $\binom{n}{r}$ linear inequalities. We want to reduce this to $O(n)$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: The LP Representation (Primal).</strong>
+            We relax the discrete subset choice to a continuous LP. Let $\mathcal{Y} = \{ y \in \mathbb{R}^n \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$.
+            $$ f(x) = \max_{y \in \mathcal{Y}} x^\top y $$
+            <p>We provide two rigorous proofs for why this relaxation is exact.</p>
+
+            <p><b>Proof 1: Extreme Points (The Geometry).</b></p>
+            <ul>
+              <li>The feasible set $\mathcal{Y}$ is a bounded polyhedron (a polytope). Linearity of the objective implies the maximum is attained at an extreme point (vertex).</li>
+              <li><b>Claim:</b> $\mathrm{ext}(\mathcal{Y}) = \{v \in \{0,1\}^n : \mathbf{1}^\top v = r\}$. (The vertices are exactly the subset indicators).</li>
+              <li><b>Reasoning:</b> Suppose $y \in \mathcal{Y}$ has two fractional components $0 < y_i, y_j < 1$. We can perturb $y$ by adding/subtracting $\epsilon(e_i - e_j)$ while staying feasible. This shows $y$ is the midpoint of two distinct points in $\mathcal{Y}$, so it cannot be a vertex. Thus, vertices have at most one fractional component. But since $\sum y_i = r$ is integer, there cannot be exactly one fractional component. Therefore, all vertices are binary.</li>
+            </ul>
+
+            <p><b>Proof 2: The Exchange Argument (The Mechanics).</b></p>
+            <p>Suppose an optimal $y$ puts positive weight on a "small" entry $x_j$ ($y_j > 0$) while a "large" entry $x_i$ ($x_i > x_j$) is not fully selected ($y_i < 1$).
+            <br>We can define a new vector $y'$ by shifting $\epsilon = \min(y_j, 1-y_i)$ mass from $j$ to $i$.
+            $$ y'_i = y_i + \epsilon, \quad y'_j = y_j - \epsilon $$
+            The change in objective is $\epsilon(x_i - x_j) > 0$. This contradicts optimality. Thus, the optimal $y$ must fill the buckets corresponding to the largest $x_i$'s first, which recovers the "sum of largest" logic.</p>
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Deriving the Dual.</strong>
+            We transform the maximization LP into a minimization problem to expose the hidden variables.
+            <br><b>Primal (P):</b> $\max x^\top y$ s.t. $y \le \mathbf{1}$, $y \ge 0$, $\mathbf{1}^\top y = r$.
+            <br><b>Lagrangian Construction:</b> To minimize the upper bound, we format as $\min -x^\top y$.
+            $$ L(y, u, v, t) = -x^\top y + u^\top(y-\mathbf{1}) + v^\top(-y) + t(\mathbf{1}^\top y - r) $$
+            Here $u \ge 0$ handles the upper bound, $v \ge 0$ handles the lower bound, and $t \in \mathbb{R}$ handles the sum.
+            $$ L = (-x + u - v + t\mathbf{1})^\top y - \mathbf{1}^\top u - rt $$
+            <br><b>Dual Function:</b> The infimum over $y$ is finite only if the gradient vanishes (Stationarity):
+            $$ -x + u - v + t\mathbf{1} = 0 \iff u - v + t\mathbf{1} = x $$
+            If this holds, $g(u, v, t) = -\mathbf{1}^\top u - rt$.
+            <br><b>Dual Problem (D):</b> Maximize the dual function (or minimize its negation):
+            $$ \min_{t, u, v} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad u - v + t\mathbf{1} = x, \ u, v \ge 0 $$
+            <b>Simplification:</b> Eliminate $v$. From stationarity, $v = u + t\mathbf{1} - x$. The constraint $v \ge 0$ becomes $u + t\mathbf{1} \ge x$.
+            $$ f(x) = \min_{t, u} \left\{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, \ u \ge 0 \right\} $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: The Compact Constraint.</strong>
+            By Strong Duality, $f(x) \le \alpha$ if and only if there exists a feasible dual point with objective $\le \alpha$.
+            $$ \boxed{ rt + \sum_{i=1}^n u_i \le \alpha, \quad t + u_i \ge x_i, \quad u_i \ge 0 \quad (\forall i) } $$
+            This uses $2n+1$ inequalities instead of $\binom{n}{r}$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 5: The "Threshold" Interpretation via KKT.</strong>
+            The KKT conditions reveal the mechanical role of the dual variables.
+            From stationarity ($u_i - v_i = x_i - t$) and complementary slackness ($u_i(y_i-1)=0, v_iy_i=0$), we can deduce the behavior of the optimal primal $y^*$ based on the threshold $t$:
+            <ul>
+                <li><b>Case A ($x_i > t$):</b> Then $u_i - v_i > 0 \implies u_i > 0 \implies y_i = 1$. (Must select).</li>
+                <li><b>Case B ($x_i < t$):</b> Then $u_i - v_i < 0 \implies v_i > 0 \implies y_i = 0$. (Must reject).</li>
+                <li><b>Case C ($x_i = t$):</b> Then $u_i = v_i$. We can have $y_i \in [0, 1]$.</li>
+            </ul>
+            <p>Thus, $t^*$ acts as a <b>cutoff value</b>. We select all elements strictly above $t^*$ and fill the remainder of our budget $r$ from the elements equal to $t^*$.</p>
+            <p><b>Connection to Hinge Loss:</b> Minimizing over $u$ explicitly gives $u_i = \max(0, x_i - t)$. The dual problem reduces to a 1D convex minimization:
+            $$ f(x) = \min_{t \in \mathbb{R}} \left( rt + \sum_{i=1}^n \max(0, x_i - t) \right) $$
+            This formula is widely used in risk management (CVaR) and regression (SVR), avoiding the need for sorting in the optimization loop.</p>
+          </div>
+        </div>
+
+        <h3>7.12 Problem 9: Markowitz Portfolio with Diversification</h3>
+        <p><strong>Context:</strong> Modern Portfolio Theory often yields solutions that are too concentrated in a few assets.
+        <br><strong>Goal:</strong> Add a diversification constraint: "No more than 80% of the total budget can be invested in the top 10% of assets."
+        <br><strong>Setup:</strong> Variables $x \in \mathbb{R}^n$, $\Sigma \succeq 0$, return vector $\bar{p}$.</p>
+
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            <strong>Step 1: The Constraint.</strong>
+            Let $r = \lfloor 0.1 n \rfloor$. The "top 10% mass" is exactly $f(x) = \sum_{i=1}^r x_{[i]}$.
+            The constraint is $f(x) \le 0.8$.
+            <br><i>Sanity Check:</i> Is this feasible? If we invest uniformly ($x_i = 1/n$), the top $r$ sum is $r/n \approx 0.1$, which is well below $0.8$. So the feasible set is non-empty.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Substitution.</strong>
+            We cannot plug $f(x)$ directly into a standard QP solver because of the sorting.
+            Instead, we introduce auxiliary variables $t \in \mathbb{R}$ and $u \in \mathbb{R}^n$ and use the compact linear form derived in Problem 8.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: The Full QP.</strong>
+            $$
+            \begin{aligned}
+            \text{minimize}_{x, u, t} \quad & x^\top \Sigma x \\
+            \text{subject to} \quad & \bar{p}^\top x \ge r_{\min} \quad (\text{Target Return}) \\
+            & \mathbf{1}^\top x = 1, \quad x \ge 0 \quad (\text{Budget}) \\
+            & rt + \mathbf{1}^\top u \le 0.8 \quad (\text{Diversification}) \\
+            & t + u_i \ge x_i \quad \forall i \\
+            & u_i \ge 0 \quad \forall i
+            \end{aligned}
+            $$
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Convexity & Solvability.</strong>
+            <ul>
+                <li><b>Objective:</b> Convex quadratic (since $\Sigma \succeq 0$).</li>
+                <li><b>Constraints:</b> All linear inequalities and equalities.</li>
+            </ul>
+            This is a standard convex QP. We successfully modeled a complex order-statistic constraint using duality!
+            <br><b>Solver Note:</b> In a standard solver (like OSQP or SCS), the state vector is $z = [x, u, t]^\top$. The $P$ matrix will have $\Sigma$ in the top-left block and zeros elsewhere.
+          </div>
+        </div>
+
+        <h3>7.13 Problem 10: Simplex Projection</h3>
+        <p><b>Primal:</b> $\min \frac{1}{2}\|x-z\|_2^2$ s.t. $\mathbf{1}^\top x = 1, x \ge 0$.</p>
+        <p><b>KKT Approach (No explicit dual needed for solution):</b>
+        <br>Stationarity: $x - z - \lambda + \nu \mathbf{1} = 0 \implies x = z + \lambda - \nu \mathbf{1}$.
+        <br>Complementary Slackness: $\lambda \ge 0, x \ge 0, \lambda_i x_i = 0$.
+        <br>If $x_i > 0$, $\lambda_i=0 \implies x_i = z_i - \nu$.
+        <br>If $x_i = 0$, $\lambda_i = \nu - z_i \ge 0 \implies z_i \le \nu$.
+        <br>Unified: $x_i = \max(0, z_i - \nu)$.
+        <br><b>Algorithm:</b> Find $\nu$ such that $\sum \max(0, z_i - \nu) = 1$ via sorting.
+        </p>
+
+        <h3>7.14 Problem 11: Logistic Regression</h3>
+        <p><b>Primal:</b> $\min \sum \log(1 + e^{x_i^\top w}) - y_i x_i^\top w + \frac{\lambda}{2}\|w\|^2$.</p>
+        <p><b>Dual:</b> Uses the conjugate of the logistic loss (binary entropy).
+        <br>The dual involves maximizing entropy subject to correlation constraints with data.
+        <br>This duality is the basis for Maximum Entropy models.
+        </p>
+
+        <h3>7.15 Problem 12: Ellipsoid Volume Minimization (Löwner-John)</h3>
+        <p><strong>Context:</strong> Find minimum-volume ellipsoid $\mathcal{E}(X) = \{x \mid x^\top X x \le 1\}$ containing points $a_1, \dots, a_m$.
+        $$ \min_{X \succ 0} \log \det(X^{-1}) \quad \text{s.t.} \quad a_i^\top X a_i \le 1 $$
+        <br><strong>Dual derivation (Sketch):</strong>
+        $L(X, \lambda) = -\log \det X + \sum \lambda_i (a_i^\top X a_i - 1)$.
+        Gradient $\nabla_X L = -X^{-1} + \sum \lambda_i a_i a_i^\top = 0$.
+        So $X = (\sum \lambda_i a_i a_i^\top)^{-1}$.
+        Substitute back: $g(\lambda) = \log \det (\sum \lambda_i a_i a_i^\top) - \sum \lambda_i + n$.
+        </p>
+
+        <figure class="animation-figure">
+          <div class="animation-container">
+            <img src="assets/l1_linf_polar_swap.gif" alt="Polar Duality Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
+          </div>
+          <figcaption><i>Animation:</i> The polar of the $\ell_1$ ball is the $\ell_\infty$ ball, and vice versa. This geometric duality underpins the relationship between sparse primal solutions and box-constrained dual variables.</figcaption>
+        </figure>
       </section>
 
       <section class="section-card" id="section-8">
@@ -776,294 +1173,9 @@
         </ol>
       </section>
 
+
       <section class="section-card" id="section-10">
-      <h2>10. Canonical Duals: A Problem Pack</h2>
-        <p>This section provides a "micro-toolbox" of derivations for standard problems. Mastering these specific derivations builds the pattern-matching skills needed for general duality.</p>
-
-      <div class="insight">
-        <h4>Micro-Toolbox</h4>
-        <ul>
-          <li><b>Lemma A1 (Linear Term):</b> $\inf_x a^\top x = 0$ if $a=0$, else $-\infty$. This generates equality constraints ($A^\top \nu + c = 0$).</li>
-          <li><b>Lemma A2 (Quadratic Min):</b> $\inf_x (\frac{1}{2}x^\top P x + q^\top x) = -\frac{1}{2}q^\top P^{-1} q$ (if $P \succ 0$). This handles QP terms.</li>
-          <li><b>Lemma A3 (Conjugate of Norm):</b> $\sup_x (y^\top x - \|x\|) = 0$ if $\|y\|_* \le 1$, else $\infty$. This generates dual norm constraints.</li>
-        </ul>
-      </div>
-
-      <figure class="animation-figure">
-        <div class="animation-container">
-          <img src="assets/l1_linf_polar_swap.gif" alt="Polar Duality Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
-        </div>
-        <figcaption><i>Animation:</i> The polar of the $\ell_1$ ball is the $\ell_\infty$ ball, and vice versa. This geometric duality underpins the relationship between sparse primal solutions and box-constrained dual variables.</figcaption>
-      </figure>
-
-        <div class="problem">
-          <h3>Problem 1: Least Squares (Residual Form)</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2} \|Ax - b\|_2^2$. Rewrite as $\min \frac{1}{2}\|y\|_2^2$ s.t. $y = Ax - b$.</p>
-        <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \nu^\top (Ax - b - y) = (\frac{1}{2}\|y\|^2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu$.</p>
-        <p><b>Dual Function:</b>
-        <br>1. Min over $\mathbf{x}$: Requires $A^\top \nu = 0$ (Lemma A1).
-        <br>2. Min over $\mathbf{y}$: $\inf (\frac{1}{2}\|\mathbf{y}\|^2 - \nu^\top \mathbf{y}) = -\frac{1}{2}\|\nu\|^2$ (Lemma A2 with $P=I$).
-        <br><b>Dual Problem:</b> $\max -\frac{1}{2}\|\nu\|^2 - b^\top \nu$ s.t. $A^\top \nu = 0$.
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 2: Ridge Regression</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$. Rewrite with $y = Ax - b$.</p>
-        <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \frac{\lambda}{2}\|x\|^2 + \nu^\top(Ax - b - y)$.</p>
-        <p><b>Dual Function:</b>
-        <br>1. Min over $\mathbf{y}$: same as above, $-\frac{1}{2}\|\nu\|^2$.
-        <br>2. Min over $\mathbf{x}$: $\inf (\frac{\lambda}{2}\|\mathbf{x}\|^2 + (A^\top \nu)^\top \mathbf{x}) = -\frac{1}{2\lambda}\|A^\top \nu\|^2$.
-        <br><b>Dual Problem:</b> $\max -b^\top \nu - \frac{1}{2}\|\nu\|^2 - \frac{1}{2\lambda}\|A^\top \nu\|^2$. (Unconstrained!)
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 3: LASSO</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1$. Rewrite with $y = Ax - b$.</p>
-        <p><b>Lagrangian:</b> $L(x, y, \nu) = \frac{1}{2}\|y\|^2 + \lambda \|x\|_1 + \nu^\top(Ax - b - y)$.</p>
-        <p><b>Dual Function:</b>
-        <br>1. Min over $\mathbf{y}$: $-\frac{1}{2}\|\nu\|^2$.
-        <br>2. Min over $\mathbf{x}$: $\inf_{\mathbf{x}} (\lambda \|\mathbf{x}\|_1 + (A^\top \nu)^\top \mathbf{x}) = -\sup_{\mathbf{x}} (-(A^\top \nu)^\top \mathbf{x} - \lambda \|\mathbf{x}\|_1)$.
-        This is finite (0) only if $\|A^\top \nu\|_\infty \le \lambda$ (Lemma A3 scaled).
-        <br><b>Dual Problem:</b> $\max -b^\top \nu - \frac{1}{2}\|\nu\|^2$ s.t. $\|A^\top \nu\|_\infty \le \lambda$.
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 4: Basis Pursuit</h3>
-        <p><b>Primal:</b> $\min \|x\|_1$ s.t. $Ax = b$.</p>
-        <p><b>Lagrangian:</b> $L(x, \nu) = \|x\|_1 + \nu^\top(b - Ax) = b^\top \nu + (\|x\|_1 - (A^\top \nu)^\top x)$.</p>
-        <p><b>Dual Function:</b>
-        <br>The term $\inf_x (\|x\|_1 - z^\top x)$ is related to the conjugate of the L1 norm. It is finite (zero) iff the dual norm condition holds: $\|z\|_\infty \le 1$.
-        <br>Here $z = A^\top \nu$.
-        <br><b>Dual Problem:</b> $\max b^\top \nu$ s.t. $\|A^\top \nu\|_\infty \le 1$.
-        <br><b>KKT Insight:</b> At optimum, $A^\top \nu \in \partial \|x\|_1$. Dual variables certify the support of the sparse solution.
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 5: LP Dual via Relaxed Problems</h3>
-        <p><b>Primal:</b> $\min c^\top x$ s.t. $Ax \le b$.</p>
-        <p><b>Interpretation:</b> Instead of enforcing all constraints, consider a non-negative weighted sum $w^\top A x \le w^\top b$.
-        $$ \tilde{p}(w) = \min c^\top x \quad \text{s.t.} \quad (A^\top w)^\top x \le b^\top w $$
-        The set of points satisfying the weighted constraint contains the original feasible set, so $\tilde{p}(w)$ is a lower bound.
-        <br>The minimization $\min c^\top x$ s.t. $a^\top x \le \beta$ is finite only if $c$ is a multiple of $a$ (specifically $c = -ka$ for $k \ge 0$) or if $a=0$.
-        <br>Setting the gradient to match: $c = -A^\top w$ (implies the objective is supported by the constraint).
-        <br>The value is $-b^\top w$.
-        <br>The best lower bound is $\max -b^\top w$ s.t. $A^\top w + c = 0, w \ge 0$. This recovers the standard LP dual.</p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 6: Support Vector Machine (Hinge Loss)</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}\|w\|^2 + C \sum \max(0, 1 - y_i w^\top x_i)$.
-        <br>Rewrite: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $\xi_i \ge 1 - y_i w^\top x_i, \xi_i \ge 0$.</p>
-        <p><b>Dual Derivation:</b>
-        <br>Lagrangian involves multipliers $\alpha_i, \mu_i$. Minimizing over $\mathbf{w}$ gives $\mathbf{w} = \sum \alpha_i y_i \mathbf{x}_i$.
-        <br>Minimizing over $\xi$ gives constraint $0 \le \alpha_i \le C$.
-        <br><b>Dual Problem:</b> $\max \sum \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j$ s.t. $0 \le \alpha_i \le C, \sum \alpha_i y_i = 0$.
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 7: Trust-Region QCQP (Nonconvex with Strong Duality)</h3>
-        <p><b>Primal:</b> $\min x^\top A x + 2 b^\top x$ s.t. $x^\top x \le 1$.</p>
-        <p>This is the classic <b>trust-region subproblem</b>. Even if $A \not\succeq 0$ (making the objective nonconvex), strong duality still holds.</p>
-
-        <div class="insight">
-          <h4>Why It Matters</h4>
-          <p>This problem arises in Newton-type methods when optimizing within a trusted region. The constraint $\|x\|_2 \le 1$ is the unit ball—the "trust region" where a quadratic approximation is valid.</p>
-        </div>
-
-        <p><b>Lagrangian:</b></p>
-        $$ L(x, \lambda) = x^\top A x + 2 b^\top x + \lambda(x^\top x - 1) = x^\top (A + \lambda I) x + 2 b^\top x - \lambda $$
-
-        <div class="proof-box">
-          <h4>Deep Dive: Zero-to-Hero Derivation of the Dual</h4>
-          <p>We derive the dual function $g(\lambda) = \inf_x L(x, \lambda)$ from first principles, showing why this nonconvex problem behaves nicely.</p>
-
-          <div class="proof-step">
-            <strong>1. The Lagrangian Form.</strong>
-            Define $H(\lambda) = A + \lambda I$. The Lagrangian is a quadratic function of $x$:
-            $$ L(x, \lambda) = x^\top H(\lambda) x + 2b^\top x - \lambda $$
-            Even if $A$ is indefinite (negative eigenvalues), we can choose $\lambda$ large enough such that $H(\lambda) \succeq 0$. This "convexifies" the Lagrangian.
-          </div>
-
-          <div class="proof-step">
-            <strong>2. Finiteness Conditions (Avoiding $-\infty$).</strong>
-            The quadratic $L(x, \lambda)$ has a finite minimum if and only if:
-            <ul>
-              <li><b>Curvature:</b> $H(\lambda) \succeq 0$. If $H(\lambda)$ has a negative eigenvalue, we can send $x$ to infinity along that eigenvector to drive $L \to -\infty$. This forces $\lambda \ge -\lambda_{\min}(A)$.</li>
-              <li><b>Range:</b> $b \in \mathcal{R}(H(\lambda))$. If $H(\lambda)$ is singular (has 0 eigenvalues), the quadratic is "flat" along the nullspace. If $b$ has a component in that nullspace ($b \notin \mathcal{R}(H(\lambda))$), the linear term $2b^\top x$ tilts the flat valley, driving the minimum to $-\infty$.</li>
-            </ul>
-          </div>
-
-          <div class="proof-step">
-            <strong>3. Computing the Minimum.</strong>
-            When finite, the minimum is attained at any $x$ satisfying the stationarity condition $2H(\lambda)x + 2b = 0 \implies H(\lambda)x = -b$.
-            <br>The optimal value is obtained by completing the square or using the pseudoinverse $H(\lambda)^\dagger$:
-            $$ g(\lambda) = -b^\top H(\lambda)^\dagger b - \lambda $$
-          </div>
-        </div>
-
-        <div class="theorem-box">
-          <h4>Strong Duality Theorem</h4>
-          <p><b>Theorem:</b> For the Trust Region Subproblem, $p^\star = d^\star$ even if non-convex.</p>
-          <p><b>Geometric Intuition (The S-Lemma):</b>
-          The joint range of $(x^\top x, x^\top A x + 2b^\top x)$ is a convex set in $\mathbb{R}^2$ (this is specific to having only <i>one</i> quadratic constraint).
-          Because the image is convex, we can separate the optimal point from the infeasible region with a hyperplane. The normal vector to this hyperplane corresponds to the dual variable $\lambda$. Thus, a linear combination of the objective and constraint supports the optimal value exactly.</p>
-        </div>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 8: Sum of Largest Elements (The Deep Dive) (Problem 5.19)</h3>
-        <p><strong>Context:</strong> This problem is a masterclass in "Constructive Duality"—using duality to convert a combinatorial object (sum of sorted components) into a clean set of linear inequalities.
-        <br>Let $f(x) = \sum_{i=1}^r x_{[i]}$ be the sum of the $r$ largest components of $x \in \mathbb{R}^n$.
-        <br><strong>Goal:</strong> Prove that $f(x) \le \alpha$ is equivalent to a small system of linear inequalities.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-
-          <div class="proof-step">
-            <strong>Step 1: The Variational Identity (Max over Subsets).</strong>
-            First, we establish what $f(x)$ is combinatorially.
-            $$ f(x) = \max \left\{ \sum_{i \in S} x_i \mid S \subseteq \{1,\dots,n\}, |S|=r \right\} $$
-            <b>Proof:</b> Let $S^\star$ be the indices of the $r$ largest components. Then $\sum_{S^\star} x_i = f(x)$. For any other set $S$ of size $r$, its elements $x_{i_k}$ are term-by-term dominated by the globally largest elements $x_{[k]}$. Thus $\sum_S x_i \le f(x)$.
-            <br><i>Implication:</i> The constraint $f(x) \le \alpha$ is equivalent to $\binom{n}{r}$ linear inequalities. We want to reduce this to $O(n)$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: The LP Representation (Primal).</strong>
-            We relax the discrete subset choice to a continuous LP. Let $\mathcal{Y} = \{ y \in \mathbb{R}^n \mid 0 \le y \le \mathbf{1}, \mathbf{1}^\top y = r \}$.
-            $$ f(x) = \max_{y \in \mathcal{Y}} x^\top y $$
-            <p>We provide two rigorous proofs for why this relaxation is exact.</p>
-
-            <p><b>Proof 1: Extreme Points (The Geometry).</b></p>
-            <ul>
-              <li>The feasible set $\mathcal{Y}$ is a bounded polyhedron (a polytope). Linearity of the objective implies the maximum is attained at an extreme point (vertex).</li>
-              <li><b>Claim:</b> $\mathrm{ext}(\mathcal{Y}) = \{v \in \{0,1\}^n : \mathbf{1}^\top v = r\}$. (The vertices are exactly the subset indicators).</li>
-              <li><b>Reasoning:</b> Suppose $y \in \mathcal{Y}$ has two fractional components $0 < y_i, y_j < 1$. We can perturb $y$ by adding/subtracting $\epsilon(e_i - e_j)$ while staying feasible. This shows $y$ is the midpoint of two distinct points in $\mathcal{Y}$, so it cannot be a vertex. Thus, vertices have at most one fractional component. But since $\sum y_i = r$ is integer, there cannot be exactly one fractional component. Therefore, all vertices are binary.</li>
-            </ul>
-
-            <p><b>Proof 2: The Exchange Argument (The Mechanics).</b></p>
-            <p>Suppose an optimal $y$ puts positive weight on a "small" entry $x_j$ ($y_j > 0$) while a "large" entry $x_i$ ($x_i > x_j$) is not fully selected ($y_i < 1$).
-            <br>We can define a new vector $y'$ by shifting $\epsilon = \min(y_j, 1-y_i)$ mass from $j$ to $i$.
-            $$ y'_i = y_i + \epsilon, \quad y'_j = y_j - \epsilon $$
-            The change in objective is $\epsilon(x_i - x_j) > 0$. This contradicts optimality. Thus, the optimal $y$ must fill the buckets corresponding to the largest $x_i$'s first, which recovers the "sum of largest" logic.</p>
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Deriving the Dual.</strong>
-            We transform the maximization LP into a minimization problem to expose the hidden variables.
-            <br><b>Primal (P):</b> $\max x^\top y$ s.t. $y \le \mathbf{1}$, $y \ge 0$, $\mathbf{1}^\top y = r$.
-            <br><b>Lagrangian Construction:</b> To minimize the upper bound, we format as $\min -x^\top y$.
-            $$ L(y, u, v, t) = -x^\top y + u^\top(y-\mathbf{1}) + v^\top(-y) + t(\mathbf{1}^\top y - r) $$
-            Here $u \ge 0$ handles the upper bound, $v \ge 0$ handles the lower bound, and $t \in \mathbb{R}$ handles the sum.
-            $$ L = (-x + u - v + t\mathbf{1})^\top y - \mathbf{1}^\top u - rt $$
-            <br><b>Dual Function:</b> The infimum over $y$ is finite only if the gradient vanishes (Stationarity):
-            $$ -x + u - v + t\mathbf{1} = 0 \iff u - v + t\mathbf{1} = x $$
-            If this holds, $g(u, v, t) = -\mathbf{1}^\top u - rt$.
-            <br><b>Dual Problem (D):</b> Maximize the dual function (or minimize its negation):
-            $$ \min_{t, u, v} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad u - v + t\mathbf{1} = x, \ u, v \ge 0 $$
-            <b>Simplification:</b> Eliminate $v$. From stationarity, $v = u + t\mathbf{1} - x$. The constraint $v \ge 0$ becomes $u + t\mathbf{1} \ge x$.
-            $$ f(x) = \min_{t, u} \left\{ rt + \mathbf{1}^\top u \mid t\mathbf{1} + u \ge x, \ u \ge 0 \right\} $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: The Compact Constraint.</strong>
-            By Strong Duality, $f(x) \le \alpha$ if and only if there exists a feasible dual point with objective $\le \alpha$.
-            $$ \boxed{ rt + \sum_{i=1}^n u_i \le \alpha, \quad t + u_i \ge x_i, \quad u_i \ge 0 \quad (\forall i) } $$
-            This uses $2n+1$ inequalities instead of $\binom{n}{r}$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 5: The "Threshold" Interpretation via KKT.</strong>
-            The KKT conditions reveal the mechanical role of the dual variables.
-            From stationarity ($u_i - v_i = x_i - t$) and complementary slackness ($u_i(y_i-1)=0, v_iy_i=0$), we can deduce the behavior of the optimal primal $y^*$ based on the threshold $t$:
-            <ul>
-                <li><b>Case A ($x_i > t$):</b> Then $u_i - v_i > 0 \implies u_i > 0 \implies y_i = 1$. (Must select).</li>
-                <li><b>Case B ($x_i < t$):</b> Then $u_i - v_i < 0 \implies v_i > 0 \implies y_i = 0$. (Must reject).</li>
-                <li><b>Case C ($x_i = t$):</b> Then $u_i = v_i$. We can have $y_i \in [0, 1]$.</li>
-            </ul>
-            <p>Thus, $t^*$ acts as a <b>cutoff value</b>. We select all elements strictly above $t^*$ and fill the remainder of our budget $r$ from the elements equal to $t^*$.</p>
-            <p><b>Connection to Hinge Loss:</b> Minimizing over $u$ explicitly gives $u_i = \max(0, x_i - t)$. The dual problem reduces to a 1D convex minimization:
-            $$ f(x) = \min_{t \in \mathbb{R}} \left( rt + \sum_{i=1}^n \max(0, x_i - t) \right) $$
-            This formula is widely used in risk management (CVaR) and regression (SVR), avoiding the need for sorting in the optimization loop.</p>
-          </div>
-        </div>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 9: Markowitz Portfolio with Diversification (Problem 5.19 Continued)</h3>
-        <p><strong>Context:</strong> Modern Portfolio Theory often yields solutions that are too concentrated in a few assets.
-        <br><strong>Goal:</strong> Add a diversification constraint: "No more than 80% of the total budget can be invested in the top 10% of assets."
-        <br><strong>Setup:</strong> Variables $x \in \mathbb{R}^n$, $\Sigma \succeq 0$, return vector $\bar{p}$.</p>
-
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <div class="proof-step">
-            <strong>Step 1: The Constraint.</strong>
-            Let $r = \lfloor 0.1 n \rfloor$. The "top 10% mass" is exactly $f(x) = \sum_{i=1}^r x_{[i]}$.
-            The constraint is $f(x) \le 0.8$.
-            <br><i>Sanity Check:</i> Is this feasible? If we invest uniformly ($x_i = 1/n$), the top $r$ sum is $r/n \approx 0.1$, which is well below $0.8$. So the feasible set is non-empty.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Substitution.</strong>
-            We cannot plug $f(x)$ directly into a standard QP solver because of the sorting.
-            Instead, we introduce auxiliary variables $t \in \mathbb{R}$ and $u \in \mathbb{R}^n$ and use the compact linear form derived in Problem 8.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: The Full QP.</strong>
-            $$
-            \begin{aligned}
-            \text{minimize}_{x, u, t} \quad & x^\top \Sigma x \\
-            \text{subject to} \quad & \bar{p}^\top x \ge r_{\min} \quad (\text{Target Return}) \\
-            & \mathbf{1}^\top x = 1, \quad x \ge 0 \quad (\text{Budget}) \\
-            & rt + \mathbf{1}^\top u \le 0.8 \quad (\text{Diversification}) \\
-            & t + u_i \ge x_i \quad \forall i \\
-            & u_i \ge 0 \quad \forall i
-            \end{aligned}
-            $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: Convexity & Solvability.</strong>
-            <ul>
-                <li><b>Objective:</b> Convex quadratic (since $\Sigma \succeq 0$).</li>
-                <li><b>Constraints:</b> All linear inequalities and equalities.</li>
-            </ul>
-            This is a standard convex QP. We successfully modeled a complex order-statistic constraint using duality!
-            <br><b>Solver Note:</b> In a standard solver (like OSQP or SCS), the state vector is $z = [x, u, t]^\top$. The $P$ matrix will have $\Sigma$ in the top-left block and zeros elsewhere.
-          </div>
-        </div>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 10: Simplex Projection</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}\|x-z\|_2^2$ s.t. $\mathbf{1}^\top x = 1, x \ge 0$.</p>
-        <p><b>KKT Approach (No explicit dual needed for solution):</b>
-        <br>Stationarity: $x - z - \lambda + \nu \mathbf{1} = 0 \implies x = z + \lambda - \nu \mathbf{1}$.
-        <br>Complementary Slackness: $\lambda \ge 0, x \ge 0, \lambda_i x_i = 0$.
-        <br>If $x_i > 0$, $\lambda_i=0 \implies x_i = z_i - \nu$.
-        <br>If $x_i = 0$, $\lambda_i = \nu - z_i \ge 0 \implies z_i \le \nu$.
-        <br>Unified: $x_i = \max(0, z_i - \nu)$.
-        <br><b>Algorithm:</b> Find $\nu$ such that $\sum \max(0, z_i - \nu) = 1$ via sorting.
-        </p>
-        </div>
-
-        <div class="problem">
-        <h3>Problem 11: Logistic Regression</h3>
-        <p><b>Primal:</b> $\min \sum \log(1 + e^{x_i^\top w}) - y_i x_i^\top w + \frac{\lambda}{2}\|w\|^2$.</p>
-        <p><b>Dual:</b> Uses the conjugate of the logistic loss (binary entropy).
-        <br>The dual involves maximizing entropy subject to correlation constraints with data.
-        <br>This duality is the basis for Maximum Entropy models.
-        </p>
-        </div>
-      </section>
-
-      <section class="section-card" id="section-exercises">
-      <h2><i data-feather="edit-3"></i> 11. Exercises</h2>
+      <h2><i data-feather="edit-3"></i> 10. Exercises</h2>
 
       <div class="insight">
         <h4>Recap & Key Concepts</h4>

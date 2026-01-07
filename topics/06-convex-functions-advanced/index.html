@@ -1076,21 +1076,29 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Definition.</strong>
-    $f^*(y) = \sup_x (y^\top x - \frac{1}{2}\|x\|^2)$.</div>
-    <div class="proof-step"><strong>Step 2: Dual Norm Bound.</strong>
-    By definition of the dual norm, $y^\top x \le \|y\|_* \|x\|$.
-    Let $u = \|x\|$. Then $y^\top x - \frac{1}{2}\|x\|^2 \le \|y\|_* u - \frac{1}{2}u^2$.</div>
-    <div class="proof-step"><strong>Step 3: Optimize Scalar $u$.</strong>
-    The function $g(u) = \|y\|_* u - \frac{1}{2}u^2$ is a concave quadratic.
-    Maximum occurs at $g'(u) = \|y\|_* - u = 0 \implies u^* = \|y\|_*$.
-    Max value: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.</div>
-    <div class="proof-step"><strong>Step 4: Tightness.</strong>
-    Can we achieve this bound? By definition of the dual norm, there exists a vector $x_0$ with $\|x_0\|=1$ such that $y^\top x_0 = \|y\|_*$.
-    Choose $x = \|y\|_* x_0$. Then $\|x\| = \|y\|_*$.
-    $y^\top x = \|y\|_* (y^\top x_0) = \|y\|_*^2$.
-    Objective: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.
-    Thus the supremum is exactly $\frac{1}{2}\|y\|_*^2$.</div>
+    <div class="proof-step">
+      <strong>Step 1: Definition.</strong>
+      $f^*(y) = \sup_x (y^\top x - \frac{1}{2}\|x\|^2)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Dual Norm Bound.</strong>
+      By definition of the dual norm, $y^\top x \le \|y\|_* \|x\|$.
+      Let $u = \|x\|$. Then $y^\top x - \frac{1}{2}\|x\|^2 \le \|y\|_* u - \frac{1}{2}u^2$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Optimize Scalar $u$.</strong>
+      The function $g(u) = \|y\|_* u - \frac{1}{2}u^2$ is a concave quadratic.
+      Maximum occurs at $g'(u) = \|y\|_* - u = 0 \implies u^* = \|y\|_*$.
+      Max value: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Tightness.</strong>
+      Can we achieve this bound? By definition of the dual norm, there exists a vector $x_0$ with $\|x_0\|=1$ such that $y^\top x_0 = \|y\|_*$.
+      Choose $x = \|y\|_* x_0$. Then $\|x\| = \|y\|_*$.
+      $y^\top x = \|y\|_* (y^\top x_0) = \|y\|_*^2$.
+      Objective: $\|y\|_*^2 - \frac{1}{2}\|y\|_*^2 = \frac{1}{2}\|y\|_*^2$.
+      Thus the supremum is exactly $\frac{1}{2}\|y\|_*^2$.
+    </div>
   </div>
 </div>
 
@@ -1106,16 +1114,22 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Definition of Quasi-Convexity.</strong>
-    A function is quasi-convex if its sublevel sets $S_\alpha = \{x \mid f(x) \le \alpha\}$ are convex for all $\alpha \in \mathbb{R}$.</div>
-    <div class="proof-step"><strong>Step 2: Analyze Sublevel Sets.</strong>
-    Condition: $\lceil x \rceil \le \alpha$.
-    Since $\lceil x \rceil$ is an integer, let $k = \lfloor \alpha \rfloor$. The condition is $\lceil x \rceil \le k$.
-    This is equivalent to $x \le k$ (since if $x > k$, $\lceil x \rceil \ge k+1$).
-    So $S_\alpha = (-\infty, \lfloor \alpha \rfloor]$.</div>
-    <div class="proof-step"><strong>Step 3: Conclusion.</strong>
-    The set $(-\infty, k]$ is an interval, which is a convex set in $\mathbb{R}$.
-    Therefore, $f$ is quasi-convex.</div>
+    <div class="proof-step">
+      <strong>Step 1: Definition of Quasi-Convexity.</strong>
+      A function is quasi-convex if its sublevel sets $S_\alpha = \{x \mid f(x) \le \alpha\}$ are convex for all $\alpha \in \mathbb{R}$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Analyze Sublevel Sets.</strong>
+      Condition: $\lceil x \rceil \le \alpha$.
+      Since $\lceil x \rceil$ is an integer, let $k = \lfloor \alpha \rfloor$. The condition is $\lceil x \rceil \le k$.
+      This is equivalent to $x \le k$ (since if $x > k$, $\lceil x \rceil \ge k+1$).
+      So $S_\alpha = (-\infty, \lfloor \alpha \rfloor]$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Conclusion.</strong>
+      The set $(-\infty, k]$ is an interval, which is a convex set in $\mathbb{R}$.
+      Therefore, $f$ is quasi-convex.
+    </div>
   </div>
 </div>
 
@@ -1131,25 +1145,31 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Part A: Bounds.</strong>
-    Let $x_{\max} = \max_i x_i$.
-    Lower bound: $\sum e^{x_i} \ge e^{x_{\max}}$.
-    $f(x) \ge \log(e^{x_{\max}}) = x_{\max}$.
-    Upper bound: $\sum e^{x_i} = e^{x_{\max}} \sum e^{x_i - x_{\max}}$.
-    Since $x_i - x_{\max} \le 0$, each term $e^{x_i - x_{\max}} \le 1$.
-    Sum is bounded by $n$.
-    $f(x) = x_{\max} + \log(\sum e^{x_i - x_{\max}}) \le x_{\max} + \log n$.</div>
-    <div class="proof-step"><strong>Part B: Hessian.</strong>
-    Gradient $\nabla f(x) = p$ where $p_i = e^{x_i}/\sum e^{x_k}$. Note $\mathbf{1}^\top p = 1, p > 0$.
-    Hessian $\nabla^2 f(x) = \text{diag}(p) - pp^\top$.
-    Let $v \in \mathbb{R}^n$.
-    $v^\top \nabla^2 f v = \sum p_i v_i^2 - (p^\top v)^2 = \sum p_i v_i^2 - (\sum p_i v_i)^2$.</div>
-    <div class="proof-step"><strong>Part C: Variance Interpretation.</strong>
-    Consider a discrete random variable $Z$ that takes value $v_i$ with probability $p_i$ (where $p$ is the softmax vector defined above).
-    <br>The term $\sum p_i v_i$ is the expected value $\mathbb{E}[Z]$.
-    <br>The term $\sum p_i v_i^2$ is the second moment $\mathbb{E}[Z^2]$.
-    <br>The expression for the quadratic form is $\mathbb{E}[Z^2] - (\mathbb{E}[Z])^2$, which is exactly the variance $\text{Var}(Z)$.
-    <br>Since variance is always non-negative, $v^\top \nabla^2 f v \ge 0$. Thus $f$ is convex.</div>
+    <div class="proof-step">
+      <strong>Part A: Bounds.</strong>
+      Let $x_{\max} = \max_i x_i$.
+      Lower bound: $\sum e^{x_i} \ge e^{x_{\max}}$.
+      $f(x) \ge \log(e^{x_{\max}}) = x_{\max}$.
+      Upper bound: $\sum e^{x_i} = e^{x_{\max}} \sum e^{x_i - x_{\max}}$.
+      Since $x_i - x_{\max} \le 0$, each term $e^{x_i - x_{\max}} \le 1$.
+      Sum is bounded by $n$.
+      $f(x) = x_{\max} + \log(\sum e^{x_i - x_{\max}}) \le x_{\max} + \log n$.
+    </div>
+    <div class="proof-step">
+      <strong>Part B: Hessian.</strong>
+      Gradient $\nabla f(x) = p$ where $p_i = e^{x_i}/\sum e^{x_k}$. Note $\mathbf{1}^\top p = 1, p > 0$.
+      Hessian $\nabla^2 f(x) = \text{diag}(p) - pp^\top$.
+      Let $v \in \mathbb{R}^n$.
+      $v^\top \nabla^2 f v = \sum p_i v_i^2 - (p^\top v)^2 = \sum p_i v_i^2 - (\sum p_i v_i)^2$.
+    </div>
+    <div class="proof-step">
+      <strong>Part C: Variance Interpretation.</strong>
+      Consider a discrete random variable $Z$ that takes value $v_i$ with probability $p_i$ (where $p$ is the softmax vector defined above).
+      <br>The term $\sum p_i v_i$ is the expected value $\mathbb{E}[Z]$.
+      <br>The term $\sum p_i v_i^2$ is the second moment $\mathbb{E}[Z^2]$.
+      <br>The expression for the quadratic form is $\mathbb{E}[Z^2] - (\mathbb{E}[Z])^2$, which is exactly the variance $\text{Var}(Z)$.
+      <br>Since variance is always non-negative, $v^\top \nabla^2 f v \ge 0$. Thus $f$ is convex.
+    </div>
   </div>
 </div>
 
@@ -1165,29 +1185,35 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Check Log-Concavity.</strong>
-    Consider $\log G(x)$.
-    $$ \log \left( \prod x_i^{1/n} \right) = \frac{1}{n} \sum_{i=1}^n \log x_i $$
-    The function $\log x_i$ is concave. The sum of concave functions is concave.
-    Thus $\log G(x)$ is a concave function.
-    This means $G(x)$ is <b>log-concave</b>.</div>
-    <div class="proof-step"><strong>Step 2: Homogeneity.</strong>
-    $G(\alpha x) = (\prod (\alpha x_i))^{1/n} = (\alpha^n \prod x_i)^{1/n} = \alpha G(x)$.
-    $G$ is homogeneous of degree 1.</div>
-    <div class="proof-step"><strong>Step 3: Theorem.</strong>
-    We show that a function $G$ that is log-concave and homogeneous of degree 1 is concave.
-    We rely on the property of <strong>superadditivity</strong>: $G(x+y) \ge G(x) + G(y)$, which implies concavity for homogeneous functions.
-    <br><b>Proof of Superadditivity:</b>
-    Let $\alpha = G(x)$ and $\beta = G(y)$. If $\alpha=0$ or $\beta=0$, the result is trivial. Assume $\alpha, \beta > 0$.
-    Define the mixing weight $\lambda = \frac{\alpha}{\alpha+\beta}$. Then $1-\lambda = \frac{\beta}{\alpha+\beta}$.
-    Consider the point $z$ formed by combining normalized versions of $x$ and $y$:
-    $$ z = \frac{x+y}{\alpha+\beta} = \frac{\alpha}{\alpha+\beta} \frac{x}{\alpha} + \frac{\beta}{\alpha+\beta} \frac{y}{\beta} = \lambda \frac{x}{\alpha} + (1-\lambda) \frac{y}{\beta} $$
-    By log-concavity, $G(z) \ge G(x/\alpha)^\lambda G(y/\beta)^{1-\lambda}$.
-    Using 1-homogeneity, $G(x/\alpha) = G(x)/\alpha = 1$ and $G(y/\beta) = 1$.
-    Thus $G(z) \ge 1^\lambda 1^{1-\lambda} = 1$.
-    Finally, using homogeneity on $G(x+y)$:
-    $$ G(x+y) = G((\alpha+\beta)z) = (\alpha+\beta)G(z) \ge \alpha+\beta = G(x) + G(y) $$
-    Superadditivity plus homogeneity implies concavity: $G(\theta x + (1-\theta)y) \ge G(\theta x) + G((1-\theta)y) = \theta G(x) + (1-\theta)G(y)$.</div>
+    <div class="proof-step">
+      <strong>Step 1: Check Log-Concavity.</strong>
+      Consider $\log G(x)$.
+      $$ \log \left( \prod x_i^{1/n} \right) = \frac{1}{n} \sum_{i=1}^n \log x_i $$
+      The function $\log x_i$ is concave. The sum of concave functions is concave.
+      Thus $\log G(x)$ is a concave function.
+      This means $G(x)$ is <b>log-concave</b>.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Homogeneity.</strong>
+      $G(\alpha x) = (\prod (\alpha x_i))^{1/n} = (\alpha^n \prod x_i)^{1/n} = \alpha G(x)$.
+      $G$ is homogeneous of degree 1.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Theorem.</strong>
+      We show that a function $G$ that is log-concave and homogeneous of degree 1 is concave.
+      We rely on the property of <strong>superadditivity</strong>: $G(x+y) \ge G(x) + G(y)$, which implies concavity for homogeneous functions.
+      <br><b>Proof of Superadditivity:</b>
+      Let $\alpha = G(x)$ and $\beta = G(y)$. If $\alpha=0$ or $\beta=0$, the result is trivial. Assume $\alpha, \beta > 0$.
+      Define the mixing weight $\lambda = \frac{\alpha}{\alpha+\beta}$. Then $1-\lambda = \frac{\beta}{\alpha+\beta}$.
+      Consider the point $z$ formed by combining normalized versions of $x$ and $y$:
+      $$ z = \frac{x+y}{\alpha+\beta} = \frac{\alpha}{\alpha+\beta} \frac{x}{\alpha} + \frac{\beta}{\alpha+\beta} \frac{y}{\beta} = \lambda \frac{x}{\alpha} + (1-\lambda) \frac{y}{\beta} $$
+      By log-concavity, $G(z) \ge G(x/\alpha)^\lambda G(y/\beta)^{1-\lambda}$.
+      Using 1-homogeneity, $G(x/\alpha) = G(x)/\alpha = 1$ and $G(y/\beta) = 1$.
+      Thus $G(z) \ge 1^\lambda 1^{1-\lambda} = 1$.
+      Finally, using homogeneity on $G(x+y)$:
+      $$ G(x+y) = G((\alpha+\beta)z) = (\alpha+\beta)G(z) \ge \alpha+\beta = G(x) + G(y) $$
+      Superadditivity plus homogeneity implies concavity: $G(\theta x + (1-\theta)y) \ge G(\theta x) + G((1-\theta)y) = \theta G(x) + (1-\theta)G(y)$.
+    </div>
   </div>
 </div>
 
@@ -1203,21 +1229,29 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Rewrite condition.</strong>
-    $G(x) - \alpha A(x) \ge 0$.
-    Let $h(x) = G(x) - \alpha A(x)$.</div>
-    <div class="proof-step"><strong>Step 2: Check Concavity.</strong>
-    $G(x)$ is concave (from P6.4).
-    $A(x)$ is linear, so $-A(x)$ is concave.
-    Since $\alpha \ge 0$, $-\alpha A(x)$ is concave.
-    Thus $h(x)$ is a sum of concave functions, so $h$ is concave.</div>
-    <div class="proof-step"><strong>Step 3: Superlevel Set.</strong>
-    The set $K = \{x \mid h(x) \ge 0\}$ is the 0-superlevel set of a concave function.
-    Superlevel sets of concave functions are convex sets.</div>
-    <div class="proof-step"><strong>Step 4: Cone Property.</strong>
-    $G(kx) = kG(x)$ and $A(kx) = kA(x)$ for $k \ge 0$.
-    $G(kx) \ge \alpha A(kx) \iff kG(x) \ge k\alpha A(x) \iff G(x) \ge \alpha A(x)$ (for $k>0$).
-    Thus $K$ is a cone.</div>
+    <div class="proof-step">
+      <strong>Step 1: Rewrite condition.</strong>
+      $G(x) - \alpha A(x) \ge 0$.
+      Let $h(x) = G(x) - \alpha A(x)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Check Concavity.</strong>
+      $G(x)$ is concave (from P6.4).
+      $A(x)$ is linear, so $-A(x)$ is concave.
+      Since $\alpha \ge 0$, $-\alpha A(x)$ is concave.
+      Thus $h(x)$ is a sum of concave functions, so $h$ is concave.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Superlevel Set.</strong>
+      The set $K = \{x \mid h(x) \ge 0\}$ is the 0-superlevel set of a concave function.
+      Superlevel sets of concave functions are convex sets.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Cone Property.</strong>
+      $G(kx) = kG(x)$ and $A(kx) = kA(x)$ for $k \ge 0$.
+      $G(kx) \ge \alpha A(kx) \iff kG(x) \ge k\alpha A(x) \iff G(x) \ge \alpha A(x)$ (for $k>0$).
+      Thus $K$ is a cone.
+    </div>
   </div>
 </div>
 
@@ -1233,17 +1267,23 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Epigraph Definition.</strong>
-    $(x, Y, t) \in \text{epi } f \iff t \ge x^\top Y^{-1} x$ and $Y \succ 0$.</div>
-    <div class="proof-step"><strong>Step 2: Schur Complement.</strong>
-    The inequality $t - x^\top Y^{-1} x \ge 0$ is the Schur complement condition for the block matrix:
-    $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
-    (Assuming $Y \succ 0$. If $Y \succeq 0$ singular, we need $x \in \text{range}(Y)$ etc, but usually defined on open domain).</div>
-    <div class="proof-step"><strong>Step 3: Convexity of LMI.</strong>
-    The set of matrices $\mathcal{S}_+^k$ is a convex cone (PSD cone).
-    The map $(x, Y, t) \to M(x, Y, t)$ is linear.
-    The inverse image of a convex set under a linear map is convex.
-    Thus $\text{epi } f = \{(x, Y, t) \mid M(x, Y, t) \succeq 0\}$ is convex.</div>
+    <div class="proof-step">
+      <strong>Step 1: Epigraph Definition.</strong>
+      $(x, Y, t) \in \text{epi } f \iff t \ge x^\top Y^{-1} x$ and $Y \succ 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Schur Complement.</strong>
+      The inequality $t - x^\top Y^{-1} x \ge 0$ is the Schur complement condition for the block matrix:
+      $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
+      (Assuming $Y \succ 0$. If $Y \succeq 0$ singular, we need $x \in \text{range}(Y)$ etc, but usually defined on open domain).
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Convexity of LMI.</strong>
+      The set of matrices $\mathcal{S}_+^k$ is a convex cone (PSD cone).
+      The map $(x, Y, t) \to M(x, Y, t)$ is linear.
+      The inverse image of a convex set under a linear map is convex.
+      Thus $\text{epi } f = \{(x, Y, t) \mid M(x, Y, t) \succeq 0\}$ is convex.
+    </div>
   </div>
 </div>
 
@@ -1259,19 +1299,23 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Part 1: Fenchel's Inequality.</strong>
-    We need $f(x) + f^*(y) \ge x^\top y$.
-    We found $f^*(y) = \frac{1}{2}y^\top Q^{-1} y$.
-    LHS - RHS = $\frac{1}{2}x^\top Q x + \frac{1}{2}y^\top Q^{-1} y - x^\top y$.
-    Let $u = Q^{1/2}x$ and $v = Q^{-1/2}y$. Then $x = Q^{-1/2}u, y = Q^{1/2}v$.
-    $x^\top y = u^\top v$.
-    Expression: $\frac{1}{2}u^\top u + \frac{1}{2}v^\top v - u^\top v = \frac{1}{2}\|u-v\|^2 \ge 0$.
-    Verified.</div>
-    <div class="proof-step"><strong>Part 2: Biconjugate.</strong>
-    $f^{**}(x) = (f^*)^*(x)$. Let $g(y) = f^*(y) = \frac{1}{2}y^\top P y$ with $P = Q^{-1}$.
-    The conjugate of a quadratic $\frac{1}{2}y^\top P y$ is $\frac{1}{2}x^\top P^{-1} x$.
-    $P^{-1} = (Q^{-1})^{-1} = Q$.
-    So $f^{**}(x) = \frac{1}{2}x^\top Q x = f(x)$. Verified.</div>
+    <div class="proof-step">
+      <strong>Part 1: Fenchel's Inequality.</strong>
+      We need $f(x) + f^*(y) \ge x^\top y$.
+      We found $f^*(y) = \frac{1}{2}y^\top Q^{-1} y$.
+      LHS - RHS = $\frac{1}{2}x^\top Q x + \frac{1}{2}y^\top Q^{-1} y - x^\top y$.
+      Let $u = Q^{1/2}x$ and $v = Q^{-1/2}y$. Then $x = Q^{-1/2}u, y = Q^{1/2}v$.
+      $x^\top y = u^\top v$.
+      Expression: $\frac{1}{2}u^\top u + \frac{1}{2}v^\top v - u^\top v = \frac{1}{2}\|u-v\|^2 \ge 0$.
+      Verified.
+    </div>
+    <div class="proof-step">
+      <strong>Part 2: Biconjugate.</strong>
+      $f^{**}(x) = (f^*)^*(x)$. Let $g(y) = f^*(y) = \frac{1}{2}y^\top P y$ with $P = Q^{-1}$.
+      The conjugate of a quadratic $\frac{1}{2}y^\top P y$ is $\frac{1}{2}x^\top P^{-1} x$.
+      $P^{-1} = (Q^{-1})^{-1} = Q$.
+      So $f^{**}(x) = \frac{1}{2}x^\top Q x = f(x)$. Verified.
+    </div>
   </div>
 </div>
 
@@ -1287,17 +1331,23 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Square the condition.</strong>
-    $\|x-a\|^2 \le \theta^2 \|x-b\|^2$.
-    $(x-a)^\top (x-a) \le \theta^2 (x-b)^\top (x-b)$.
-    $x^\top x - 2a^\top x + a^\top a \le \theta^2 (x^\top x - 2b^\top x + b^\top b)$.</div>
-    <div class="proof-step"><strong>Step 2: Group terms.</strong>
-    $(1 - \theta^2) x^\top x - 2(a - \theta^2 b)^\top x + (\|a\|^2 - \theta^2 \|b\|^2) \le 0$.</div>
-    <div class="proof-step"><strong>Step 3: Analyze coefficient.</strong>
-    Let $q(x)$ be this quadratic expression. The quadratic term is $(1-\theta^2)\|x\|^2$.
-    If $\theta \le 1$, then $1-\theta^2 \ge 0$.
-    The sublevel set of a convex quadratic ($P \succeq 0$) is convex (an ellipsoid or halfspace).
-    Thus $S_\theta$ is convex. (If $\theta > 1$, it's the complement of an ellipsoid, which is non-convex).</div>
+    <div class="proof-step">
+      <strong>Step 1: Square the condition.</strong>
+      $\|x-a\|^2 \le \theta^2 \|x-b\|^2$.
+      $(x-a)^\top (x-a) \le \theta^2 (x-b)^\top (x-b)$.
+      $x^\top x - 2a^\top x + a^\top a \le \theta^2 (x^\top x - 2b^\top x + b^\top b)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Group terms.</strong>
+      $(1 - \theta^2) x^\top x - 2(a - \theta^2 b)^\top x + (\|a\|^2 - \theta^2 \|b\|^2) \le 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Analyze coefficient.</strong>
+      Let $q(x)$ be this quadratic expression. The quadratic term is $(1-\theta^2)\|x\|^2$.
+      If $\theta \le 1$, then $1-\theta^2 \ge 0$.
+      The sublevel set of a convex quadratic ($P \succeq 0$) is convex (an ellipsoid or halfspace).
+      Thus $S_\theta$ is convex. (If $\theta > 1$, it's the complement of an ellipsoid, which is non-convex).
+    </div>
   </div>
 </div>
 
@@ -1313,26 +1363,24 @@
   </div>
   <div class="solution-box">
     <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Write as Convolution.</strong>
-    The condition $x+W \in C$ is equivalent to $W \in C-x$. The probability is:
-    $$ f(x) = \int_{C-x} p(w) dw = \int_{\mathbb{R}^n} I_C(u) p(u-x) du $$
-    where we used the substitution $u = w+x$. This integral is exactly the convolution of the indicator function $I_C(x)$ and the reflected density $\tilde{p}(x) = p(-x)$.</div>
-    <div class="proof-step"><strong>Step 2: Apply Prékopa-Leindler.</strong>
-    The theorem states that the convolution of two log-concave functions is log-concave. We check the components:
-    <ul>
-        <li>$p(x)$ is log-concave (given), so $p(-x)$ is also log-concave.</li>
-        <li>$I_C(x)$ is the indicator function of a convex set (1 on C, 0 else), which is log-concave.</li>
-    </ul>
+    <div class="proof-step">
+      <strong>Step 1: Write as Convolution.</strong>
+      The condition $x+W \in C$ is equivalent to $W \in C-x$. The probability is:
+      $$ f(x) = \int_{C-x} p(w) dw = \int_{\mathbb{R}^n} I_C(u) p(u-x) du $$
+      where we used the substitution $u = w+x$. This integral is exactly the convolution of the indicator function $I_C(x)$ (which is 1 on $C$, 0 else) and the reflected density $\tilde{p}(x) = p(-x)$.
     </div>
-    <div class="proof-step"><strong>Step 3: Conclusion.</strong>
-    Since $f$ is the convolution of two log-concave functions, $f$ is log-concave.</div>
-    $I_C(x)$ is the indicator function of a convex set (1 on C, 0 else).
-    Is it log-concave? $\log I_C(x)$ is 0 on C, $-\infty$ else.
-    Since $C$ is convex, this is a concave function (extended value).
-    So $I_C$ is log-concave.</div>
-    <div class="proof-step"><strong>Step 4: Conclusion.</strong>
-    Since $f$ is the convolution of two log-concave functions, $f$ is log-concave.
-    (Note: The integral is essentially measuring the measure of the set $C$ shifted by $-x$. Prekopa-Leindler directly applies to marginals of log-concave functions).</div>
+    <div class="proof-step">
+      <strong>Step 2: Apply Prékopa-Leindler.</strong>
+      The theorem states that the convolution of two log-concave functions is log-concave. We check the components:
+      <ul>
+          <li>$p(x)$ is log-concave (given), so $p(-x)$ is also log-concave.</li>
+          <li>$I_C(x)$ is the indicator function of a convex set. $\log I_C(x)$ is 0 on $C$, $-\infty$ else. Since $C$ is convex, this is a concave function (extended value). So $I_C$ is log-concave.</li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Conclusion.</strong>
+      Since $f$ is the convolution of two log-concave functions, $f$ is log-concave.
+    </div>
   </div>
 </div>
 

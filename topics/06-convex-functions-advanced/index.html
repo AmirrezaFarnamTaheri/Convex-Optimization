@@ -68,6 +68,13 @@
       f(y) \ge f(x) + g^\top (y - x) \quad \text{for all } y \in \mathrm{dom}\, f
       $$
       <p>Geometrically, a subgradient $g$ defines a <b>supporting hyperplane</b> to the epigraph of $f$ at the point $(x, f(x))$. The existence of such a vector for convex functions is guaranteed by the <a href="../04-convex-sets-cones/index.html#section-2">Supporting Hyperplane Theorem</a>. The inequality states that the affine function $\ell(y) = f(x) + g^\top (y - x)$ is a <b>global underestimator</b> of $f$.</p>
+        <div class="insight">
+          <h4>1D Analogy: Slopes in the Corner</h4>
+          <p>Consider $f(x) = |x|$ at $x=0$.
+          <br>For $x>0$, the slope is $+1$. For $x<0$, the slope is $-1$.
+          <br>At $x=0$, any line passing through the origin with slope between $-1$ and $+1$ stays below the graph. Thus, the subdifferential is the interval $[-1, 1]$.
+          <br>This generalizes to higher dimensions as a "cone of normals".</p>
+        </div>
 
       <div class="theorem-box">
         <h4>Connection to Gradients</h4>
@@ -798,6 +805,10 @@
         S_\alpha := \{x \in \mathrm{dom}\, f \mid f(x) \le \alpha\}
         $$
         <p>is a convex set for every $\alpha \in \mathbb{R}$.
+        <div class="insight">
+          <h4>Visual: Lake Water Levels</h4>
+          <p>Imagine filling a landscape with water up to level $\alpha$. If the resulting lake is always a single connected convex shape (no islands, no pinched waists), the landscape function is quasiconvex.</p>
+        </div>
         <br><i>Note:</i> Convex $\implies$ Quasiconvex, but not conversely. Quasiconvexity allows "bendy" graphs, as long as the "valley" shape is maintained.</p>
 
         <div class="theorem-box">

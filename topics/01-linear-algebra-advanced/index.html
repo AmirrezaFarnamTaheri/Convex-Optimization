@@ -112,6 +112,16 @@
 
       <h4>Geometric Interpretation: Volume and Orientation</h4>
       <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ is the volume of the parallelepiped spanned by the columns of $A$.
+      <div class="insight">
+        <h4>Visual Intuition: Shearing Preserves Volume</h4>
+        <p>Think of a stack of playing cards.
+        <ul>
+            <li><b>Scaling:</b> If you double the height of the stack, the volume doubles. This is linearity ($\det(cA) = c^n \det(A)$? No, linear in <i>rows</i>: doubling one column doubles volume).</li>
+            <li><b>Shearing:</b> If you push the side of the stack so it leans (adding a multiple of one column to another), the volume stays exactly the same. This is the <b>alternating</b> property in disguise.</li>
+            <li><b>Singularity:</b> If you squash the stack flat (columns become linearly dependent), the volume becomes zero.</li>
+        </ul>
+        </p>
+      </div>
       <br><b>Properties forced by geometry:</b>
       <ul>
         <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ columns are linearly independent $\iff$ volume is non-zero.</li>
@@ -503,7 +513,9 @@
       Since $Q$ preserves norms (on its range), we multiply the residual by $Q^\top$ (projecting onto the geometry):
       $$ R\mathbf{x} = Q^\top \mathbf{b} $$
       This is a triangular system. The condition number is $\kappa(R) = \kappa(A)$.
-      <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.</p>
+      <br><b>Conclusion:</b> QR is numerically stable because it separates the geometry ($Q$) from the conditioning ($R$). It never squares the condition number.
+      <br><b>Why Orthogonality Matters:</b> Multiplying by an orthogonal matrix $Q^\top$ is essentially a rotation. Rotations do not stretch or shrink vectors ($|Qx| = |x|$). Therefore, they do not amplify any pre-existing noise in the vector $\mathbf{b}$. The only potential for error amplification comes from solving the triangular system $R$, which has the same condition number as $A$.
+      </p>
 
       <h3>4.3 Full vs. Thin QR</h3>
       <p>
@@ -978,6 +990,18 @@
                style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 7:</i> Ill-conditioning creates elongated level sets; first-order methods like gradient descent can zig-zag across the valley, slowing convergence.</figcaption>
         </figure>
+      </div>
+
+      <div class="insight">
+        <h4>Rule of Thumb: Digits of Precision</h4>
+        <p>If you solve $A\mathbf{x} = \mathbf{b}$ with a condition number $\kappa(A) = 10^k$, you can expect to lose roughly <b>$k$ digits of precision</b>.
+        <br><i>Example:</i> Using standard 64-bit floats (approx. 16 decimal digits):
+        <ul>
+            <li>If $\kappa(A) = 10^4$, you have $16 - 4 = 12$ reliable digits. (Safe).</li>
+            <li>If $\kappa(A) = 10^{16}$, you have $16 - 16 = 0$ reliable digits. (Garbage output).</li>
+        </ul>
+        This is why forming $A^\top A$ (squaring the condition number) can be disastrous. If $\kappa(A) = 10^9$ (solvable), then $\kappa(A^\top A) = 10^{18}$ (unsolvable in double precision).
+        </p>
       </div>
 
       <div class="insight">

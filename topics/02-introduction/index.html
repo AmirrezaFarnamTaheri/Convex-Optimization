@@ -132,7 +132,8 @@
         <p>Certain structural features act as "kryptonite" to convexity. Recognizing these patterns allows you to immediately identify intractable components.</p>
         <ul>
           <li><b>Integer constraints:</b> $x_i \in \mathbb{Z}$ or $x_i \in \{0,1\}$.
-            <br><i>The pathology:</i> Disconnectedness. The set $\{0, 1\}$ is fundamentally non-convex because it does not contain the interval $(0, 1)$. This destroys the ability to use gradients (local information) to find a global optimum, forcing solvers to rely on combinatorial search (Branch and Bound), which is generally NP-hard.</li>
+            <br><i>The pathology:</i> <b>Disconnectedness.</b> Convex sets must be connected (you can walk between any two points). Integer sets are discrete islands.
+            <br><i>Why it breaks solvers:</i> Gradient descent relies on "sliding down the hill". If the variables are integers, there is no smooth hill—only discrete jumps. You cannot define a derivative on integers. This forces algorithms to use combinatorial enumeration (checking $2^n$ possibilities), leading to exponential time complexity.</li>
           <li><b>Nonlinear Equality Constraints:</b> $h(x) = 0$ where $h$ is nonlinear.
             <br><i>The pathology:</i> Curvature. The constraint $x_1^2 + x_2^2 = 1$ describes a circle. If you take two points on the circle, the line segment connecting them lies <i>inside</i> the circle, violating the constraint. Thus, the feasible set is not convex. Only <b>flat</b> surfaces (planes/affine sets) are valid equality constraints.</li>
           <li><b>Maximizing a Convex Function:</b> $\max \|x\|_2$.
@@ -189,6 +190,15 @@
         & A x = b && \text{(Equality constraints)}
         \end{aligned}
         $$
+        <div class="insight">
+          <h4>Why these specific conditions?</h4>
+          <p>Each condition serves a geometric purpose to ensure the "bowl" shape:</p>
+          <ul>
+            <li><b>Objective ($f_0$ convex):</b> Ensures that if you draw a line between any two points on the cost surface, the line stays <i>above</i> the surface. This prevents "bumps" that create local minima.</li>
+            <li><b>Inequalities ($f_i$ convex):</b> The constraint $f_i(x) \le 0$ defines the set of points "inside the bowl". The intersection of these sets is always convex. If we used concave functions ($f_i(x) \ge 0$), we would get the region "outside the bowl", which typically has holes.</li>
+            <li><b>Equalities ($Ax=b$):</b> Restricts the solution to a flat plane. A plane is the only surface that is simultaneously convex and concave, preserving the convexity of the intersection.</li>
+          </ul>
+        </div>
         <p>where three conditions must be satisfied:</p>
         <ol>
           <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. Geometrically, this means the graph of the function is bowl-shaped, ensuring that any local minimum is a global minimum.</li>

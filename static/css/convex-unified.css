@@ -1154,6 +1154,11 @@ body.hide-theorems .theorem-box { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--neutral-600); border-radius: 5px; border: 2px solid var(--bg-surface-1); }
 ::-webkit-scrollbar-thumb:hover { background: var(--neutral-500); }
 
+/* Tablet/Small Desktop - Hide floating trigger (use Dock instead) */
+@media (max-width: 1024px) {
+    .sidebar-expand-trigger { display: none !important; }
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .lecture-container { flex-direction: column; }

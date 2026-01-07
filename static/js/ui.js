@@ -619,43 +619,61 @@ function initSidebarToggle() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    // 1. Mobile Dock Toggle
+    // Helper: Create/Get Expand Trigger
+    let expandTrigger = document.getElementById('sidebar-expand-trigger');
+    if (!expandTrigger) {
+        expandTrigger = document.createElement('div');
+        expandTrigger.id = 'sidebar-expand-trigger';
+        expandTrigger.className = 'sidebar-expand-trigger hidden';
+        expandTrigger.title = "Expand Sidebar";
+        expandTrigger.innerHTML = '<i data-feather="list"></i>';
+        expandTrigger.onclick = () => setSidebarState(true);
+        document.body.appendChild(expandTrigger);
+    }
+
+    // Helper: Set State (No Overlay, Flow Layout)
+    function setSidebarState(isOpen) {
+        if (isOpen) {
+            sidebar.classList.remove('collapsed-desktop');
+            expandTrigger.classList.add('hidden');
+        } else {
+            sidebar.classList.add('collapsed-desktop');
+            expandTrigger.classList.remove('hidden');
+        }
+
+        // Update dock button state if it exists
+        const dockBtn = document.getElementById('sidebar-toggle-dock');
+        if (dockBtn) {
+             dockBtn.classList.toggle('active', isOpen);
+        }
+
+        if (typeof feather !== 'undefined') feather.replace();
+        window.dispatchEvent(new Event('resize')); // Trigger layout update for charts
+    }
+
+    // 1. Unified Toggle (Dock Button)
     if (window.controlDock) {
         const dockBtn = window.controlDock.addButton(
             'sidebar-toggle-dock',
             'menu',
             'Toggle Sidebar',
             () => {
-                sidebar.classList.toggle('active');
-                if (sidebar.classList.contains('active')) {
-                     sidebar.style.position = 'fixed';
-                     sidebar.style.top = '72px';
-                     sidebar.style.left = '0';
-                     sidebar.style.height = 'calc(100vh - 72px)';
-                     sidebar.style.width = '80%';
-                     sidebar.style.maxWidth = '300px';
-                     sidebar.style.zIndex = '2000';
-                     sidebar.style.background = 'var(--bg-surface-1)';
-                     sidebar.style.borderRight = '1px solid var(--border-subtle)';
-                     sidebar.style.padding = 'var(--space-4)';
-                     sidebar.style.display = 'block';
-                } else {
-                     sidebar.style = '';
-                }
+                // If collapsed, open it. If open, collapse it.
+                const isCollapsed = sidebar.classList.contains('collapsed-desktop');
+                setSidebarState(isCollapsed);
             },
             'end'
         );
 
         const checkSize = () => {
-            const isMobile = window.innerWidth <= 1024;
-            dockBtn.style.display = isMobile ? 'flex' : 'none';
-            if (!isMobile) sidebar.classList.remove('active');
+            const isSmallScreen = window.innerWidth <= 1024;
+            dockBtn.style.display = isSmallScreen ? 'flex' : 'none';
         };
         checkSize();
         window.addEventListener('resize', checkSize);
     }
 
-    // 2. Desktop Collapse Button
+    // 2. Sidebar Internal Collapse Button
     const header = sidebar.querySelector('#toc-container h2');
     if (header && !document.getElementById('sidebar-collapse-btn')) {
         const collapseBtn = document.createElement('button');
@@ -664,28 +682,8 @@ function initSidebarToggle() {
         collapseBtn.style.float = 'right';
         collapseBtn.innerHTML = '<i data-feather="chevrons-left"></i>';
         collapseBtn.title = "Collapse Sidebar";
-        collapseBtn.onclick = () => toggleDesktopSidebar(false);
+        collapseBtn.onclick = () => setSidebarState(false);
         header.insertBefore(collapseBtn, header.firstChild);
-    }
-
-    // 3. Desktop Expand Trigger
-    const expandTrigger = document.createElement('div');
-    expandTrigger.id = 'sidebar-expand-trigger';
-    expandTrigger.className = 'sidebar-expand-trigger hidden';
-    expandTrigger.title = "Expand Sidebar";
-    expandTrigger.innerHTML = '<i data-feather="list"></i>';
-    expandTrigger.onclick = () => toggleDesktopSidebar(true);
-    document.body.appendChild(expandTrigger);
-
-    function toggleDesktopSidebar(show) {
-        if (show) {
-            sidebar.classList.remove('collapsed-desktop');
-            expandTrigger.classList.add('hidden');
-        } else {
-            sidebar.classList.add('collapsed-desktop');
-            expandTrigger.classList.remove('hidden');
-        }
-        if (typeof feather !== 'undefined') feather.replace();
     }
 }
 

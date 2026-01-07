@@ -1618,14 +1618,36 @@
         </div>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>Matrix Form: $\min c^\top x$ s.t. $Ax \ge b, x \ge 0$.
-          The feasible set is generally unbounded (you can eat infinite food), but the cost is bounded below by 0.</p>
+          <div class="proof-step">
+            <strong>Step 1: Variables and Costs.</strong>
+            Let $x_j$ be the amount of food $j$ for $j=1,\dots,n$.
+            The total cost is $c_1 x_1 + \dots + c_n x_n = c^\top x$.
+            We must have $x_j \ge 0$ (cannot eat negative food).
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Nutritional Constraints.</strong>
+            Let $a_{ij}$ be the amount of nutrient $i$ in food $j$.
+            Let $b_i$ be the minimum required amount of nutrient $i$.
+            For each nutrient $i$: $\sum_{j=1}^n a_{ij} x_j \ge b_i$.
+            In matrix form: $Ax \ge b$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Standard Form LP.</strong>
+            $$
+            \begin{aligned}
+            \min \quad & c^\top x \\
+            \text{s.t.} \quad & Ax \ge b \\
+            & x \ge 0
+            \end{aligned}
+            $$
+            <b>Boundedness:</b> The feasible set is generally <b>unbounded</b>. If $x$ is a healthy diet, then $x + \Delta$ is also healthy for any $\Delta \ge 0$. Geometrically, this is an unbounded polyhedron (like an inverted pyramid). However, the cost function is bounded below by 0 (since $c \ge 0, x \ge 0$), so an optimal solution exists.
+          </div>
         </div>
       </div>
 
       <div class="problem">
         <h3>P7.2 — Transportation Problem (LP)</h3>
-        <p>Supply $s_i$ at sources, demand $d_j$ at destinations. Cost $C_{ij}$. Formulate as LP.</p>
+        <p>Supply $s_i$ at source $i$ ($i=1\dots m$), demand $d_j$ at destination $j$ ($j=1\dots n$). Cost to ship unit from $i$ to $j$ is $C_{ij}$. Formulate as LP.</p>
         <div class="recap-box">
           <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
           <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
@@ -1635,7 +1657,26 @@
         </div>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>$\min \sum C_{ij} x_{ij}$ s.t. $\sum_j x_{ij} \le s_i$, $\sum_i x_{ij} = d_j$, $x_{ij} \ge 0$.</p>
+          <div class="proof-step">
+            <strong>Step 1: Variables.</strong>
+            Let $x_{ij} \ge 0$ be the quantity shipped from source $i$ to destination $j$.
+            Total variables: $m \times n$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Supply Constraints.</strong>
+            Total amount leaving source $i$ cannot exceed supply $s_i$:
+            $$ \sum_{j=1}^n x_{ij} \le s_i \quad \forall i=1\dots m $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Demand Constraints.</strong>
+            Total amount arriving at destination $j$ must meet demand $d_j$:
+            $$ \sum_{i=1}^m x_{ij} = d_j \quad \forall j=1\dots n $$
+            (Assuming exact demand fulfillment. If "at least", use $\ge$).
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Objective.</strong>
+            Minimize total shipping cost: $\sum_{i,j} C_{ij} x_{ij}$.
+          </div>
         </div>
       </div>
 
@@ -1651,18 +1692,23 @@
         </div>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>We want to find $B$ such that $z^\top Q z = \|Bz\|^2$.
-          <br>Recall the objective function for distance: $f(x,y) = \|x - y\|^2$.
-          Let $z = (x, y)$. Then:
-          $$ \|x - y\|^2 = \|\begin{bmatrix} I & -I \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix}\|^2 = \|B z\|^2 $$
-          So $B = \begin{bmatrix} I & -I \end{bmatrix}$.
-          <br><strong>Verification:</strong>
-          $$ B^\top B = \begin{bmatrix} I \\ -I \end{bmatrix} \begin{bmatrix} I & -I \end{bmatrix} = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix} = Q $$
-          Since $Q$ can be written as $B^\top B$, it is Positive Semidefinite.
-          <br><strong>Schur Complement Connection:</strong>
-          Alternatively, we can use the Schur complement. For $Q = \begin{bmatrix} A & B_{block} \\ B_{block}^\top & C \end{bmatrix} = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$:
-          $$ S = C - B_{block}^\top A^{-1} B_{block} = I - (-I)^\top (I)^{-1} (-I) = I - I = 0 $$
-          Since $A=I \succ 0$ and $S=0 \succeq 0$, the matrix $Q$ is PSD.</p>
+          <div class="proof-step">
+            <strong>Step 1: Identification.</strong>
+            We suspect $Q$ represents a squared difference.
+            Let $z = [x; y]$. Then $z^\top Q z = x^\top I x - x^\top I y - y^\top I x + y^\top I y = \|x\|^2 - 2x^\top y + \|y\|^2 = \|x-y\|^2$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Factorization.</strong>
+            Since $\|x-y\|^2 = \| [I \ -I] z \|^2$, we can choose $B = [I \ -I]$.
+            $$ B^\top B = \begin{bmatrix} I \\ -I \end{bmatrix} \begin{bmatrix} I & -I \end{bmatrix} = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix} = Q $$
+            Since $Q = B^\top B$, it is PSD.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Schur Complement Check.</strong>
+            $Q = \begin{bmatrix} A & B_{blk} \\ B_{blk}^\top & C \end{bmatrix}$ with $A=I, B_{blk}=-I, C=I$.
+            Schur complement $S = C - B_{blk}^\top A^{-1} B_{blk} = I - (-I)^\top I^{-1} (-I) = I - I = 0$.
+            Since $A \succ 0$ and $S \succeq 0$, $Q \succeq 0$.
+          </div>
         </div>
       </div>
 
@@ -1678,7 +1724,31 @@
         </div>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>Standard slack variable trick: $-t \le Ax - b \le t$. Constraints on $x$ become $-\mathbf{1} \le x \le \mathbf{1}$. Minimize $\mathbf{1}^\top t$.</p>
+          <div class="proof-step">
+            <strong>Step 1: L1 Objective.</strong>
+            Let $r = Ax - b$. We want to minimize $\sum |r_i|$.
+            Introduce slack variables $t_i$ such that $|r_i| \le t_i$.
+            This splits into two linear inequalities per component:
+            $$ -t_i \le (Ax - b)_i \le t_i \quad \forall i $$
+            Objective becomes: $\min \sum t_i$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: L-infinity Constraint.</strong>
+            $\|x\|_\infty \le 1$ is equivalent to $|x_j| \le 1$ for all $j$.
+            $$ -1 \le x_j \le 1 \quad \forall j $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Final LP.</strong>
+            $$
+            \begin{aligned}
+            \min_{x, t} \quad & \mathbf{1}^\top t \\
+            \text{s.t.} \quad & Ax - t \le b \\
+            & -Ax - t \le -b \\
+            & x \le \mathbf{1} \\
+            & -x \le \mathbf{1}
+            \end{aligned}
+            $$
+          </div>
         </div>
       </div>
 
@@ -1783,16 +1853,23 @@
         </p>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>Introduce $t$ such that $|x_i| \le t_i$.
-          The problem becomes:
-          $$
-          \begin{aligned}
-          \min_{x, t} \quad & \frac{1}{2}\|Ax - b\|_2^2 + \lambda \sum t_i \\
-          \text{subject to} \quad & -t_i \le x_i \le t_i
-          \end{aligned}
-          $$
-          The objective is quadratic in $x$ and linear in $t$. Constraints are linear.
-          This is a QP.</p>
+          <div class="proof-step">
+            <strong>Step 1: Reformulate L1 Penalty.</strong>
+            We replace the non-smooth term $\|x\|_1 = \sum |x_i|$ using slack variables $t_i$.
+            $$ |x_i| \le t_i \iff -t_i \le x_i \le t_i $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Objective and Constraints.</strong>
+            Minimize the convex quadratic function plus linear costs:
+            $$ \min_{x, t} \frac{1}{2} x^\top (A^\top A) x - (A^\top b)^\top x + \frac{1}{2}b^\top b + \lambda \mathbf{1}^\top t $$
+            Subject to linear inequality constraints:
+            $$ \begin{bmatrix} I & -I \\ -I & -I \end{bmatrix} \begin{bmatrix} x \\ t \end{bmatrix} \le \begin{bmatrix} 0 \\ 0 \end{bmatrix} $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: QP Identification.</strong>
+            The objective is quadratic in $(x,t)$. The Hessian with respect to the stacked vector is $\begin{bmatrix} A^\top A & 0 \\ 0 & 0 \end{bmatrix}$, which is PSD.
+            The constraints are linear. Thus, it is a QP.
+          </div>
         </div>
       </div>
 
@@ -1806,10 +1883,26 @@
         </p>
         <div class="solution-box">
           <h4>Solution</h4>
-          <p>The objective is quadratic (in $w$) plus linear (in $\xi$).
-          The constraints are affine inequalities.
-          $$ \frac{1}{2} \begin{bmatrix} w \\ b \\ \xi \end{bmatrix}^\top \begin{bmatrix} I & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} \begin{bmatrix} w \\ b \\ \xi \end{bmatrix} + \begin{bmatrix} 0 \\ 0 \\ C\mathbf{1} \end{bmatrix}^\top \begin{bmatrix} w \\ b \\ \xi \end{bmatrix} $$
-          This is a standard QP.</p>
+          <div class="proof-step">
+            <strong>Step 1: Identify Variables.</strong>
+            The optimization variables are $w \in \mathbb{R}^n$, $b \in \mathbb{R}$, and $\xi \in \mathbb{R}^m$.
+            Let $z = [w^\top, b, \xi^\top]^\top \in \mathbb{R}^{n+1+m}$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Construct Objective Matrix.</strong>
+            We want to minimize $\frac{1}{2} w^\top I w + 0 \cdot b + 0 \cdot \xi + C \mathbf{1}^\top \xi$.
+            This corresponds to a quadratic form $z^\top P z + q^\top z$ with:
+            $$ P = \begin{bmatrix} I_n & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0_m \end{bmatrix}, \quad q = \begin{bmatrix} 0_n \\ 0 \\ C \mathbf{1}_m \end{bmatrix} $$
+            $P$ is diagonal with 1s and 0s, so it is PSD.
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Construct Constraints.</strong>
+            The margin constraints $y_i(w^\top x_i + b) \ge 1 - \xi_i$ are affine in $z$:
+            $$ y_i x_i^\top w + y_i b + \xi_i \ge 1 $$
+            The non-negativity constraints $\xi_i \ge 0$ are also affine.
+            All constraints are linear inequalities.
+            Therefore, this is a Convex QP.
+          </div>
         </div>
       </div>
 

@@ -1592,7 +1592,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
       </li>
       <li><b>❌ Not Convex.</b>
         <ul>
-          <li><b>Objective:</b> The quadratic form $x^\top Q x$ is convex if and only if $Q \succeq 0$ (PSD). If $Q$ has a negative eigenvalue, the function has a saddle point or curves downward in some direction, creating local minima. Since $Q$ is generic, we cannot assume convexity.</li>
+          <li><b>Objective:</b> The quadratic form $x^\top Q x$ is convex if and only if $Q \succeq 0$ (PSD). If $Q$ has a negative eigenvalue, the function has a saddle point or curves downward in some direction, creating local minima. Specifically, along the eigenvector corresponding to a negative eigenvalue, the function is a downward-opening parabola, while along other directions it may curve upward, forming a saddle geometry that lacks a global minimum or has disconnected sublevel sets. Since $Q$ is generic, we cannot assume convexity.</li>
         </ul>
       </li>
       <li><b>❌ Not Convex.</b>

@@ -1897,8 +1897,10 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Construct Constraints.</strong>
-            The margin constraints $y_i(w^\top x_i + b) \ge 1 - \xi_i$ are affine in $z$:
-            $$ y_i x_i^\top w + y_i b + \xi_i \ge 1 $$
+            The margin constraints $y_i(w^\top x_i + b) \ge 1 - \xi_i$ are affine in $z$.
+            To see this, rewrite them as:
+            $$ y_i (x_i^\top w) + y_i b + \xi_i \ge 1 $$
+            This is a linear inequality in the variables $w, b, \xi$ because $y_i$ and $x_i$ are constants (data).
             The non-negativity constraints $\xi_i \ge 0$ are also affine.
             All constraints are linear inequalities.
             Therefore, this is a Convex QP.

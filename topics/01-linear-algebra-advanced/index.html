@@ -1008,16 +1008,32 @@
           From Hölder, if $\|x\|_p \le 1$, then $\mathbf{x}^\top \mathbf{y} \le \|\mathbf{y}\|_q$. Thus $\|y\|_* \le \|\mathbf{y}\|_q$.
         </div>
         <div class="proof-step">
-          <strong>Lower bound ($\ge$):</strong> We need to construct a vector $\mathbf{x}$ that "aligns" with $\mathbf{y}$ to maximize the inner product.
-          We want $x_i$ to have the same sign as $y_i$, and magnitudes such that equality holds in Hölder's.
-          Choose $x_i = \mathrm{sign}(y_i) |y_i|^{q-1}$.
-          <br>Check inner product: $\mathbf{x}^\top \mathbf{y} = \sum \mathrm{sign}(y_i)|y_i|^{q-1} y_i = \sum |y_i|^q = \|\mathbf{y}\|_q^q$.
-          <br>Check norm of $\mathbf{x}$: $\|x\|_p^p = \sum |x_i|^p = \sum |y_i|^{p(q-1)}$.
-          Since $(p-1)q = p \implies p(q-1) = q$: $\|x\|_p^p = \sum |y_i|^q = \|\mathbf{y}\|_q^q$.
-          So $\|x\|_p = \|y\|_q^{q/p}$.
-          <br>Now normalize to get a unit vector $\tilde{\mathbf{x}} = \mathbf{x} / \|\mathbf{x}\|_p = \mathbf{x} / \|\mathbf{y}\|_q^{q/p}$.
-          $$ \tilde{\mathbf{x}}^\top \mathbf{y} = \frac{\|\mathbf{y}\|_q^q}{\|\mathbf{y}\|_q^{q/p}} = \|\mathbf{y}\|_q^{q - q/p} = \|\mathbf{y}\|_q^1 = \|\mathbf{y}\|_q $$
-          Since we found a unit vector achieving this value, $\|y\|_* \ge \|\mathbf{y}\|_q$.
+          <strong>Lower bound ($\ge$):</strong> The dual norm is defined as the supremum of $\mathbf{x}^\top \mathbf{y}$ over the unit ball $\|\mathbf{x}\|_p \le 1$. To prove $\|y\|_* \ge \|y\|_q$, we need to find a specific unit vector $\mathbf{x}$ such that $\mathbf{x}^\top \mathbf{y} = \|y\|_q$.
+          <br><br>
+          <b>Step 1: Alignment Construction.</b>
+          We construct a vector $\mathbf{x}$ that aligns with $\mathbf{y}$.
+          To maximize the sum $\sum x_i y_i$, each term $x_i y_i$ should be positive. Thus, we choose the sign of $x_i$ to match $y_i$.
+          To satisfy the equality condition in Hölder's inequality (which occurs when $|x_i|^p \propto |y_i|^q$), we set the magnitude $|x_i| = |y_i|^{q-1}$.
+          <br>Thus, let $x_i = \mathrm{sign}(y_i) |y_i|^{q-1}$.
+          <br><br>
+          <b>Step 2: Evaluate Inner Product.</b>
+          $$ \mathbf{x}^\top \mathbf{y} = \sum_{i=1}^n x_i y_i = \sum_{i=1}^n \mathrm{sign}(y_i) |y_i|^{q-1} y_i $$
+          Since $\mathrm{sign}(y_i) y_i = |y_i|$, this simplifies to:
+          $$ \sum_{i=1}^n |y_i|^{q-1} |y_i| = \sum_{i=1}^n |y_i|^q = \|\mathbf{y}\|_q^q $$
+          <br>
+          <b>Step 3: Evaluate Norm of $\mathbf{x}$.</b>
+          $$ \|\mathbf{x}\|_p^p = \sum_{i=1}^n |x_i|^p = \sum_{i=1}^n (|y_i|^{q-1})^p = \sum_{i=1}^n |y_i|^{p(q-1)} $$
+          Recall the conjugate relation $\frac{1}{p} + \frac{1}{q} = 1 \implies p+q = pq \implies p(q-1) = q$.
+          $$ \|\mathbf{x}\|_p^p = \sum_{i=1}^n |y_i|^q = \|\mathbf{y}\|_q^q $$
+          Taking the $p$-th root: $\|\mathbf{x}\|_p = (\|\mathbf{y}\|_q^q)^{1/p} = \|\mathbf{y}\|_q^{q/p}$.
+          <br><br>
+          <b>Step 4: Normalization.</b>
+          Let $\tilde{\mathbf{x}} = \frac{\mathbf{x}}{\|\mathbf{x}\|_p}$. This vector has unit norm $\|\tilde{\mathbf{x}}\|_p = 1$.
+          The inner product is:
+          $$ \tilde{\mathbf{x}}^\top \mathbf{y} = \frac{\mathbf{x}^\top \mathbf{y}}{\|\mathbf{x}\|_p} = \frac{\|\mathbf{y}\|_q^q}{\|\mathbf{y}\|_q^{q/p}} = \|\mathbf{y}\|_q^{q - q/p} $$
+          Since $q - q/p = q(1 - 1/p) = q(1/q) = 1$, we get:
+          $$ \tilde{\mathbf{x}}^\top \mathbf{y} = \|\mathbf{y}\|_q $$
+          Since we found a feasible vector achieving this value, the supremum must be at least $\|\mathbf{y}\|_q$.
         </div>
       </div>
       <div class="recap-box">

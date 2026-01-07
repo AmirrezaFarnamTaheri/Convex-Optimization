@@ -1401,9 +1401,14 @@
       $$ \log f(x) = -\frac{n}{2}\log(2\pi) - \frac{1}{2}\log(\det \Sigma) - \frac{1}{2}(x-\mu)^\top \Sigma^{-1} (x-\mu) $$
     </div>
     <div class="proof-step">
-      The first two terms are constants. The third term is a quadratic form.
-      Let $g(x) = \log f(x)$. The gradient is $\nabla g(x) = -\Sigma^{-1}(x-\mu)$.
-      The Hessian is $\nabla^2 g(x) = -\Sigma^{-1}$.
+      The first two terms are constants. The third term is a quadratic form $-\frac{1}{2}x^\top \Sigma^{-1} x + \text{linear term}$.
+      Let $g(x) = \log f(x)$.
+      <br><b>Gradient:</b>
+      We use the identity $\nabla(x^\top A x) = (A+A^\top)x$. Since $\Sigma^{-1}$ is symmetric:
+      $$ \nabla \left( -\frac{1}{2}(x-\mu)^\top \Sigma^{-1} (x-\mu) \right) = -\Sigma^{-1}(x-\mu) $$
+      So $\nabla g(x) = -\Sigma^{-1}(x-\mu)$.
+      <br><b>Hessian:</b>
+      $$ \nabla^2 g(x) = \nabla (-\Sigma^{-1}x + \Sigma^{-1}\mu) = -\Sigma^{-1} $$
     </div>
     <div class="proof-step">
       Since $\Sigma \succ 0$, its inverse $\Sigma^{-1} \succ 0$, so $-\Sigma^{-1} \prec 0$ (negative definite).

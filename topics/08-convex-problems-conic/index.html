@@ -1726,8 +1726,16 @@ problem.solve()</code></pre>
     </div>
     <div class="proof-step">
       <strong>Step 2: Introduce Auxiliary Variables.</strong>
-      For each $i$ with $x_i > 0$, we need to express $x_i \log x_i$ using the exponential cone. The key insight is that $(1, x_i, e^{t_i/x_i}) \in K_{\text{exp}}$ implies $t_i \ge x_i \log(1/x_i) = -x_i \log x_i$.
-      <br>Introduce variables $t_i$ and constraints $(1, x_i, e^{-t_i/x_i}) \in K_{\text{exp}}$ for $i = 1, \dots, n$.
+      The objective is to maximize $-\sum x_i \log x_i$, which is equivalent to maximizing $\sum t_i$ subject to $t_i \le -x_i \log x_i$ for each $i$.
+      <br>We use the exponential cone constraint $(x_i, 1, t_i) \in K_{\text{exp}}$.
+      <br>Recall the definition: $(u, v, w) \in K_{\text{exp}} \iff v \ge u e^{w/u}$ (for $u > 0$).
+      <br>Substitute $u=x_i, v=1, w=t_i$:
+      $$ 1 \ge x_i e^{t_i/x_i} $$
+      Taking the logarithm (which is monotonic increasing):
+      $$ \log(1) \ge \log(x_i) + \frac{t_i}{x_i} \implies 0 \ge \log x_i + \frac{t_i}{x_i} $$
+      Multiplying by $x_i$ (which is positive):
+      $$ 0 \ge x_i \log x_i + t_i \implies t_i \le -x_i \log x_i $$
+      Thus, the constraint $(x_i, 1, t_i) \in K_{\text{exp}}$ exactly models the hypograph of the entropy term.
     </div>
     <div class="proof-step">
       <strong>Step 3: Reformulation.</strong>

@@ -2609,7 +2609,7 @@
     </div>
     <div class="proof-step">
       By the Cauchy-Schwarz inequality $(a^\top b)^2 \le \|a\|_2^2 \|b\|_2^2$:
-      $$ \left(\sum (v_i\sqrt{z_i})(\sqrt{z_i})\right)^2 \le \left(\sum v_i^2 z_i\right) \left(\sum z_i\right) $$
+      $$ \left(\sum (v_i\sqrt{z_i})(\sqrt{z_i})\right)^2 \le \left(\sum (v_i\sqrt{z_i})^2\right) \left(\sum (\sqrt{z_i})^2\right) = \left(\sum v_i^2 z_i\right) \left(\sum z_i\right) $$
       Substitute $S = \sum z_i$:
       $$ (\sum v_i z_i)^2 \le (\sum v_i^2 z_i) S $$
       This implies $S (\sum v_i^2 z_i) - (\sum v_i z_i)^2 \ge 0$.

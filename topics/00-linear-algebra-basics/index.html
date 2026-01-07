@@ -3019,14 +3019,27 @@
           Since scalar transpose is identity ($\mathbf{x}^\top A^\top \mathbf{b} = \mathbf{b}^\top A \mathbf{x}$), we simplify to:
           $$ f(\mathbf{x}) = \frac{1}{2} \mathbf{x}^\top A^\top A \mathbf{x} - \mathbf{b}^\top A \mathbf{x} + \frac{1}{2} \mathbf{b}^\top \mathbf{b} $$
           </li>
-          <li><b>Gradient Derivation:</b>
-            <br>Term 1: $\frac{1}{2} \mathbf{x}^\top (A^\top A) \mathbf{x}$. Let $Q = A^\top A$ (symmetric).
-            $$ \nabla (\frac{1}{2} \mathbf{x}^\top Q \mathbf{x}) = \frac{1}{2} (Q + Q^\top) \mathbf{x} = \frac{1}{2} (2Q) \mathbf{x} = Q\mathbf{x} = A^\top A \mathbf{x} $$
-            <br>Term 2: $-\mathbf{b}^\top A \mathbf{x}$. This is linear in $\mathbf{x}$. We can rewrite it as $-(A^\top \mathbf{b})^\top \mathbf{x}$.
-            The gradient of $c^\top \mathbf{x}$ is $c$. Here $c = -(A^\top \mathbf{b})$.
-            $$ \nabla (-\mathbf{b}^\top A \mathbf{x}) = -A^\top \mathbf{b} $$
-            <br>Term 3: $\frac{1}{2} \mathbf{b}^\top \mathbf{b}$. Constant w.r.t $\mathbf{x}$, gradient is 0.
-            <br><b>Result:</b> $\nabla f(\mathbf{x}) = A^\top A \mathbf{x} - A^\top \mathbf{b} = A^\top (A\mathbf{x} - \mathbf{b})$.
+          <li><b>Gradient Derivation (Term-by-Term):</b>
+            <br>We compute the gradient of each term in the expanded expression $f(\mathbf{x}) = \frac{1}{2} \mathbf{x}^\top A^\top A \mathbf{x} - \mathbf{b}^\top A \mathbf{x} + \frac{1}{2} \mathbf{b}^\top \mathbf{b}$.
+            <br>
+            <br><b>Term 1: Quadratic Term $\frac{1}{2} \mathbf{x}^\top (A^\top A) \mathbf{x}$</b>
+            <br>Let $Q = A^\top A$. Note that $Q$ is symmetric ($Q^\top = (A^\top A)^\top = A^\top A = Q$).
+            <br>The gradient of a quadratic form $\mathbf{x}^\top Q \mathbf{x}$ is given by $(Q + Q^\top)\mathbf{x}$.
+            <br>Since $Q$ is symmetric, $Q + Q^\top = 2Q$.
+            <br>Therefore, $\nabla (\frac{1}{2} \mathbf{x}^\top Q \mathbf{x}) = \frac{1}{2} (2Q\mathbf{x}) = Q\mathbf{x} = A^\top A \mathbf{x}$.
+            <br>
+            <br><b>Term 2: Linear Term $-\mathbf{b}^\top A \mathbf{x}$</b>
+            <br>This term represents a dot product. We can use the property of the transpose to group the constant vectors:
+            $$ -\mathbf{b}^\top (A \mathbf{x}) = -(\mathbf{b}^\top A) \mathbf{x} = -(A^\top \mathbf{b})^\top \mathbf{x} $$
+            This is now in the form $\mathbf{c}^\top \mathbf{x}$ where $\mathbf{c} = -A^\top \mathbf{b}$.
+            <br>The gradient of a linear function $\mathbf{c}^\top \mathbf{x}$ is simply the vector $\mathbf{c}$.
+            <br>Thus, $\nabla (-\mathbf{b}^\top A \mathbf{x}) = -A^\top \mathbf{b}$.
+            <br>
+            <br><b>Term 3: Constant Term $\frac{1}{2} \mathbf{b}^\top \mathbf{b}$</b>
+            <br>This term does not depend on $\mathbf{x}$, so its gradient is $\mathbf{0}$.
+            <br>
+            <br><b>Result:</b> Summing the gradients gives:
+            $$ \nabla f(\mathbf{x}) = A^\top A \mathbf{x} - A^\top \mathbf{b} = A^\top (A\mathbf{x} - \mathbf{b}) $$
           </li>
           <li>$\nabla f(\mathbf{x}) = 0 \implies A^\top A \mathbf{x} - A^\top \mathbf{b} = 0 \implies A^\top A \mathbf{x} = A^\top \mathbf{b}$. These are the Normal Equations.
           </li>

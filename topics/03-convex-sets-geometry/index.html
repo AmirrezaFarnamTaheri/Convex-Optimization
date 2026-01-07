@@ -726,16 +726,20 @@
           <h4>Proof: The PSD Cone is Convex</h4>
           <p>We need to show that if $A, B \in \mathbb{S}^n_+$ and $\theta \in [0,1]$, then $\theta A + (1-\theta)B \in \mathbb{S}^n_+$.</p>
           <div class="proof-step">
-            <strong>Definition Check:</strong> Let $\mathbf{z} \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination:
+            <strong>Definition Check:</strong> Let $\mathbf{z} \in \mathbb{R}^n$ be any vector. We examine the quadratic form of the convex combination.
+            First, recall that the quadratic form $Q_M(z) = z^\top M z$ is <b>linear</b> in the matrix $M$.
             $$
             \mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} = \theta (\mathbf{z}^\top A \mathbf{z}) + (1-\theta) (\mathbf{z}^\top B \mathbf{z})
             $$
           </div>
           <div class="proof-step">
-            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know $\mathbf{z}^\top A \mathbf{z} \ge 0$ and $\mathbf{z}^\top B \mathbf{z} \ge 0$ for all $\mathbf{z}$. Since $\theta \in [0,1]$, both coefficients $\theta$ and $1-\theta$ are non-negative.
+            <strong>Sign Analysis:</strong> Since $A, B \succeq 0$, we know their "energy" is non-negative: $\mathbf{z}^\top A \mathbf{z} \ge 0$ and $\mathbf{z}^\top B \mathbf{z} \ge 0$ for all $\mathbf{z}$.
+            Since $\theta \in [0,1]$, the mixing weights $\theta$ and $1-\theta$ are non-negative.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> The sum of non-negative terms is non-negative, so $\mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} \ge 0$ for all $\mathbf{z}$. Thus the combination is PSD.
+            <strong>Conclusion:</strong> We have a non-negative weighted sum of non-negative numbers.
+            Thus $\mathbf{z}^\top (\theta A + (1-\theta)B) \mathbf{z} \ge 0$ for all $\mathbf{z}$.
+            This satisfies the definition of positive semidefiniteness, so the combination is in $\mathbb{S}^n_+$.
           </div>
         </div>
 
@@ -1186,12 +1190,14 @@
             Equation: $a^\top (x - m) = 0$.
           </div>
           <div class="proof-step">
-            <strong>Step 3: Verify Separation.</strong>
-            For any $x \in C$, the angle between $x-p$ and $d-p$ must be obtuse (obtuse angle property of projection).
-            $$ (d-p)^\top (x-p) \le 0 $$
-            Since $a = d-p$, this means $a^\top x \le a^\top p$.
-            Meanwhile, $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2 > a^\top p$.
-            Thus $a^\top x \le a^\top p < a^\top d$. The hyperplane separates $C$ from $d$.
+            <strong>Step 3: Verify Separation (The Obtuse Angle).</strong>
+            By the projection theorem (Lecture 03), the vector $d-p$ makes an <b>obtuse angle</b> with any vector pointing from $p$ into $C$.
+            Mathematically: $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
+            <br>Substitute $a = d-p$: $\langle a, x-p \rangle \le 0 \implies a^\top x \le a^\top p$.
+            <br>Now check the point $d$: $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2$.
+            Since $d \notin C$, $a \ne 0$, so $\|a\|^2 > 0$.
+            $$ a^\top x \le a^\top p < a^\top d $$
+            Thus, the hyperplane orthogonal to $a$ strictly separates $C$ and $d$.
           </div>
         </div>
 

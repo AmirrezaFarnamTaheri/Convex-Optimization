@@ -129,16 +129,16 @@
         </div>
 
         <h3>1.3 When Convexity is Lost</h3>
-        <p>Certain problem features immediately destroy convexity. Recognizing these structural obstacles saves time:</p>
+        <p>Certain structural features act as "kryptonite" to convexity. Recognizing these patterns allows you to immediately identify intractable components.</p>
         <ul>
-          <li><b>Integer constraints:</b> $x_i \in \{0,1\}$.
-            <br><i>Why?</i> The set $\{0, 1\}$ is not convex (doesn't contain the interval $[0,1]$). This turns the problem into a combinatorial one (NP-hard).</li>
-          <li><b>Equality constraints with nonlinear functions:</b> $h(x) = 0$ where $h$ is convex but not affine.
-            <br><i>Why?</i> The set $x^2 = 1$ consists of two points $\{-1, 1\}$. It is the boundary of the convex set $x^2 \le 1$. Boundaries of convex sets are generally non-convex.</li>
-          <li><b>Maximizing a convex function:</b> $\max \|x\|_2$.
-            <br><i>Why?</i> The maximum is achieved at the boundary, not the interior. We want to find the point <i>furthest</i> from the center, which is a global search problem.</li>
-          <li><b>Products of variables:</b> $x \cdot y \ge 1$.
-            <br><i>Why?</i> The set $\{(x,y) \mid xy \ge 1\}$ (hyperbola) is non-convex. Its Hessian $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ has eigenvalues $\pm 1$ (indefinite).</li>
+          <li><b>Integer constraints:</b> $x_i \in \mathbb{Z}$ or $x_i \in \{0,1\}$.
+            <br><i>The pathology:</i> Disconnectedness. The set $\{0, 1\}$ is fundamentally non-convex because it does not contain the interval $(0, 1)$. This destroys the ability to use gradients (local information) to find a global optimum, forcing solvers to rely on combinatorial search (Branch and Bound), which is generally NP-hard.</li>
+          <li><b>Nonlinear Equality Constraints:</b> $h(x) = 0$ where $h$ is nonlinear.
+            <br><i>The pathology:</i> Curvature. The constraint $x_1^2 + x_2^2 = 1$ describes a circle. If you take two points on the circle, the line segment connecting them lies <i>inside</i> the circle, violating the constraint. Thus, the feasible set is not convex. Only <b>flat</b> surfaces (planes/affine sets) are valid equality constraints.</li>
+          <li><b>Maximizing a Convex Function:</b> $\max \|x\|_2$.
+            <br><i>The pathology:</i> Boundary solutions. A convex function (like a bowl) achieves its maximum at the <i>boundary</i> of the domain, usually at a vertex. Finding the furthest point from the center requires searching all boundary points, which is combinatorial and difficult. (Minimizing a convex function finds the center, which is easy).</li>
+          <li><b>Products of Variables:</b> $x \cdot y \ge 1$ (or bilinear terms).
+            <br><i>The pathology:</i> Indefinite curvature. The set $\{(x,y) \mid xy \ge 1\}$ defines a hyperbola, which consists of two disconnected components (if $x,y \ne 0$) or a non-convex shape. The Hessian of $f(x,y) = xy$ is $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, which has eigenvalues $+1$ and $-1$. This saddle-point geometry is the hallmark of non-convexity.</li>
         </ul>
 
         <div class="insight">
@@ -193,7 +193,8 @@
         <ol>
           <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. Geometrically, this means the graph of the function is bowl-shaped, ensuring that any local minimum is a global minimum.</li>
           <li><b>Convex Inequality Constraints:</b> The functions $f_i$ defining the sublevel sets must be convex. This ensures that the feasible region defined by $f_i(x) \le 0$ is a convex set (no "dents" or holes).</li>
-          <li><b>Affine Equality Constraints:</b> The equality constraints must be linear/affine ($Ax=b$). This restricts the solution to a flat subspace (hyperplane), which is the only kind of equality constraint that preserves convexity (as it is both convex and concave).
+          <li><b>Affine Equality Constraints:</b> The equality constraints must be linear/affine ($Ax=b$).
+          <br><i>Intuition:</i> An equality constraint $h(x)=0$ forces the solution to lie on a surface. For the feasible set to be convex, this surface must be "flat". If the surface curves (like a sphere), the line segment connecting two points on the surface will cut through the interior, leaving the set. Affine sets (points, lines, planes, hyperplanes) are the <i>only</i> sets that are both convex and whose boundaries don't curve.
           <div class="footnote" style="font-size: 0.9em; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 4px;">
             <b>Terminology Note:</b> We often say "linear constraints" for historical reasons (like in "Linear Programming"), but mathematically, constraints of the form $Ax=b$ or $a^\top x \le b$ are <b>affine</b> (linear + translation). True linearity ($f(x+y)=f(x)+f(y)$) requires the line to pass through the origin ($b=0$). In this course, "linear constraint" always implies "affine constraint".
           </div>
@@ -363,41 +364,45 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof of Global Optimality (Narrative Walkthrough)</h4>
-          <p>This proof uses a "straight line" argument. We show that if there were a better point anywhere else, the path leading to it would immediately drop in value, contradicting local optimality.</p>
+          <h4>Proof of Global Optimality (The "Straight Line" Argument)</h4>
+          <p>This is the most important theorem in the course. It guarantees that we never get stuck in a "false bottom" when optimizing convex functions. The proof relies on a simple geometric idea: if a better point existed far away, the convex "bowl" shape would force the path towards it to slope downward immediately, meaning our current point wasn't even a local minimum.</p>
 
           <div class="proof-step">
-            <strong>Hypothesis:</strong> Assume the problem is convex. Suppose $\mathbf{x}^*$ is a <b>local minimum</b>. This means within some small radius $R$, no feasible point is better than $\mathbf{x}^*$.
-            <br><strong>Contradiction Assumption:</strong> Suppose $\mathbf{x}^*$ is <b>not</b> a global minimum. This implies there exists a "challenger" point $\mathbf{y}$ (somewhere far away) such that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$.
+            <strong>1. Setup: The Local Minimum.</strong>
+            Assume $\mathbf{x}^*$ is a <b>local minimum</b>. This means $\mathbf{x}^*$ is the best point in its immediate neighborhood.
+            <br><i>Mathematically:</i> There is a radius $R > 0$ such that for all feasible $\mathbf{z}$ with $\|\mathbf{z} - \mathbf{x}^*\| < R$, we have $f_0(\mathbf{x}^*) \le f_0(\mathbf{z})$.
           </div>
 
           <div class="proof-step">
-            <strong>Step 1: The Path.</strong>
-            Imagine walking from $\mathbf{x}^*$ towards $\mathbf{y}$. The path is the line segment $\mathbf{z}(\theta) = (1-\theta)\mathbf{x}^* + \theta \mathbf{y}$.
-            <br>Because the feasible set is convex, this entire path is safe (feasible). We never step outside the constraints.
+            <strong>2. The Challenger.</strong>
+            Suppose for the sake of contradiction that $\mathbf{x}^*$ is <b>not</b> a global minimum. Then there must be some "challenger" point $\mathbf{y}$ elsewhere in the feasible set such that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$.
           </div>
 
           <div class="proof-step">
-            <strong>Step 2: The Slope.</strong>
-            What happens to the objective value as we walk? Since $f_0$ is convex, the value along the segment lies below the chord connecting $f_0(\mathbf{x}^*)$ and $f_0(\mathbf{y})$.
+            <strong>3. The Path (Convexity of Set).</strong>
+            Consider the line segment connecting $\mathbf{x}^*$ to $\mathbf{y}$.
+            $$ \mathbf{z}(\theta) = (1-\theta)\mathbf{x}^* + \theta \mathbf{y}, \quad \theta \in [0, 1] $$
+            Since the feasible set is convex, every point on this line is feasible. We can walk straight towards $\mathbf{y}$ without hitting a wall.
+          </div>
+
+          <div class="proof-step">
+            <strong>4. The Value (Convexity of Function).</strong>
+            By Jensen's inequality (the definition of a convex function), the value of the function along this line is bounded by the chord connecting the endpoints:
             $$ f_0(\mathbf{z}(\theta)) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
-            Since the destination value $f_0(\mathbf{y})$ is strictly lower than the starting value $f_0(\mathbf{x}^*)$, the chord slopes <b>downward</b>.
+            Since $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$, we can substitute strict inequality:
             $$ f_0(\mathbf{z}(\theta)) < (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) = f_0(\mathbf{x}^*) $$
-            Mathematically, for any step size $\theta > 0$, the value $f_0(\mathbf{z}(\theta))$ is strictly less than $f_0(\mathbf{x}^*)$.
+            This inequality $f_0(\mathbf{z}(\theta)) < f_0(\mathbf{x}^*)$ holds for <b>any</b> $\theta \in (0, 1]$. The function drops immediately as we step away from $\mathbf{x}^*$.
           </div>
 
           <div class="proof-step">
-            <strong>Step 3: The Contradiction.</strong>
-            Take a tiny baby step along this path (very small $\theta$).
-            This point $\mathbf{z}(\theta)$ is:
-            1. Valid (feasible).
-            2. Very close to $\mathbf{x}^*$ (inside the local radius $R$).
-            3. Strictly better than $\mathbf{x}^*$ (lower objective).
-            This contradicts the fact that $\mathbf{x}^*$ was a local minimum!
-          </div>
-
-          <div class="proof-step">
-            <strong>Conclusion:</strong> The only way to resolve this contradiction is to reject the existence of the challenger $\mathbf{y}$. Thus, no point better than $\mathbf{x}^*$ exists anywhere. $\mathbf{x}^*$ is global.
+            <strong>5. The Contradiction.</strong>
+            Choose a step size $\theta$ small enough so that $\mathbf{z}(\theta)$ is inside the local neighborhood of $\mathbf{x}^*$ (i.e., $\|\mathbf{z}(\theta) - \mathbf{x}^*\| < R$).
+            <br>For this point, we have established two contradictory facts:
+            <ul>
+                <li>It is better than $\mathbf{x}^*$ (from Step 4).</li>
+                <li>It is worse than or equal to $\mathbf{x}^*$ (by definition of local minimum in Step 1).</li>
+            </ul>
+            This contradiction implies that no such challenger $\mathbf{y}$ can exist. Therefore, $\mathbf{x}^*$ is a global minimum.
           </div>
         </div>
 
@@ -489,18 +494,18 @@
 
         <div class="example">
           <h4>Example 1: Resource Allocation (Production Planning)</h4>
-          <p>A factory produces $n$ products using $m$ types of raw materials.</p>
+          <p>Consider a simple factory producing two products: <b>Widgets</b> ($x_1$) and <b>Gadgets</b> ($x_2$).</p>
           <ul>
-            <li><b>Decision variables:</b> $x_j$ = units of product $j$ to produce.</li>
-            <li><b>Objective:</b> Maximize profit $\max \sum_{j=1}^n p_j x_j$ where $p_j$ is profit per unit.</li>
-            <li><b>Constraints:</b>
-              <ul>
-                <li>Material limits: $\sum_{j=1}^n A_{ij} x_j \le S_i$ (amount of material $i$ used ≤ supply).</li>
-                <li>Non-negativity: $x_j \ge 0$.</li>
-              </ul>
-            </li>
+            <li><b>Profit:</b> \$3 per Widget, \$5 per Gadget. Objective: maximize $3x_1 + 5x_2$.</li>
+            <li><b>Constraint 1 (Metal):</b> Each Widget needs 2kg metal, Gadget needs 1kg. Total metal: 8kg. ($2x_1 + x_2 \le 8$)</li>
+            <li><b>Constraint 2 (Time):</b> Each Widget needs 1hr, Gadget needs 2hr. Total time: 7hr. ($x_1 + 2x_2 \le 7$)</li>
+            <li><b>Non-negativity:</b> $x_1 \ge 0, x_2 \ge 0$.</li>
           </ul>
-          <p><b>Standard form:</b> $\min -p^\top x$ subject to $Ax \le S$, $x \ge 0$.</p>
+          <p><b>Standard form ($\min c^\top x$ s.t. $Ax \le b$):</b>
+          $$
+          \min \begin{bmatrix} -3 \\ -5 \end{bmatrix}^\top \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} \quad \text{s.t.} \quad \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ -1 & 0 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} \le \begin{bmatrix} 8 \\ 7 \\ 0 \\ 0 \end{bmatrix}
+          $$
+          Geometrically, the feasible set is a polygon in the first quadrant. The optimal solution is at a vertex (intersection of constraints).</p>
         </div>
 
         <div class="example">
@@ -947,23 +952,19 @@
             </div>
 
             <div class="proof-step">
-              <strong>Step 3: Prove the bound is achievable (Tightness).</strong>
-              We need to construct a specific "worst-case" perturbation $\Delta$ that achieves the upper bound.
-              We want the vector $\Delta \mathbf{x}$ to align perfectly with the residual $\mathbf{r}$ (to maximize the vector sum) and for $\Delta$ to have the maximum allowed "gain" in the direction of $\mathbf{x}$.
-              <br>We construct $\Delta$ as a rank-1 outer product:
-              $$ \Delta = \rho \mathbf{u} \mathbf{v}^\top $$
-              where $\mathbf{u} = \frac{\mathbf{r}}{\|\mathbf{r}\|_2}$ is the direction of the residual, and $\mathbf{v} = \frac{\mathbf{x}}{\|\mathbf{x}\|_2}$ is the direction of the input.
-              <br><b>Verification:</b>
+              <strong>Step 3: Construct the Worst-Case Perturbation (Tightness).</strong>
+              We need to find a matrix $\Delta$ with $\|\Delta\|_2 \le \rho$ that hits the upper bound. The "worst" thing $\Delta$ can do is to push the vector $A\mathbf{x}$ further in the direction of the existing residual $\mathbf{r} = A\mathbf{x}-\mathbf{b}$.
+              <br>Let $\mathbf{u} = \frac{\mathbf{r}}{\|\mathbf{r}\|_2}$ (direction of residual) and $\mathbf{v} = \frac{\mathbf{x}}{\|\mathbf{x}\|_2}$ (direction of input).
+              <br>Define the rank-1 perturbation: $\Delta^* = \rho \mathbf{u} \mathbf{v}^\top$.
               <ul>
-                <li><b>Norm Constraint:</b> The spectral norm of a rank-1 matrix $\mathbf{u}\mathbf{v}^\top$ is $\|\mathbf{u}\|_2 \|\mathbf{v}\|_2$. Thus $\|\Delta\|_2 = \rho(1)(1) = \rho$. The perturbation is feasible.</li>
-                <li><b>Worst-Case Alignment:</b> Apply $\Delta$ to $\mathbf{x}$:
-                  $$ \Delta \mathbf{x} = (\rho \mathbf{u} \mathbf{v}^\top) \mathbf{x} = \rho \mathbf{u} (\mathbf{v}^\top \mathbf{x}) = \rho \mathbf{u} \left( \frac{\mathbf{x}^\top \mathbf{x}}{\|\mathbf{x}\|_2} \right) = \rho \mathbf{u} \|\mathbf{x}\|_2 = \rho \|\mathbf{x}\|_2 \frac{\mathbf{r}}{\|\mathbf{r}\|_2} $$
-                  This vector points exactly in the direction of $r$ and has magnitude $\rho \|x\|_2$.
+                <li><b>Check Feasibility:</b> $\|\Delta^*\|_2 = \rho \|\mathbf{u}\|_2 \|\mathbf{v}\|_2 = \rho(1)(1) = \rho$. Valid.</li>
+                <li><b>Check Impact:</b> $\Delta^* \mathbf{x} = \rho \mathbf{u} (\mathbf{v}^\top \mathbf{x}) = \rho \mathbf{u} \|\mathbf{x}\|_2$.
+                The perturbation adds a vector of length $\rho\|\mathbf{x}\|_2$ exactly aligned with $\mathbf{r}$.</li>
+                <li><b>Resulting Error:</b>
+                $$ \|\mathbf{r} + \Delta^* \mathbf{x}\|_2 = \|\mathbf{r} + \rho\|\mathbf{x}\|_2 \frac{\mathbf{r}}{\|\mathbf{r}\|}\|_2 = \|\mathbf{r}\|_2 + \rho\|\mathbf{x}\|_2 $$
                 </li>
               </ul>
-              Substituting this back:
-              $$ \|r + \Delta x\|_2 = \|r + \rho \|x\|_2 \frac{r}{\|r\|_2} \|_2 = \| r (1 + \frac{\rho \|x\|_2}{\|r\|_2}) \|_2 = \|r\|_2 + \rho \|x\|_2 $$
-              The bound is tight.
+              This proves equality: $\max_{\|\Delta\|\le\rho} \|(A+\Delta)x - b\|_2 = \|Ax-b\|_2 + \rho\|x\|_2$.
             </div>
 
             <div class="proof-step">
@@ -1062,9 +1063,12 @@
           <div class="proof-box">
             <h4>Step-by-Step Reformulation</h4>
             <div class="proof-step">
-              <strong>Step 1: Change of variables.</strong>
-              Let $y = \frac{x}{e^\top x + f}$ and $z = \frac{1}{e^\top x + f}$. Note that $z > 0$.
-              Then $x = y/z$.
+              <strong>Step 1: Change of variables (Homogenization).</strong>
+              The objective function is a ratio, which is hard to handle. We want to turn it into a linear function. The trick is to introduce a scaling variable $z$ that represents the inverse of the denominator:
+              $$ z = \frac{1}{e^\top x + f} $$
+              Since the denominator is positive, $z > 0$.
+              Now, define the scaled vector $y = xz$.
+              This transformation $(x) \to (y, z)$ maps the original space to a higher-dimensional cone. We can recover $x$ as $y/z$.
             </div>
 
             <div class="proof-step">
@@ -1592,7 +1596,10 @@ print(f"Optimal weights: {w.value}")</code></pre>
       </li>
       <li><b>❌ Not Convex.</b>
         <ul>
-          <li><b>Objective:</b> The quadratic form $x^\top Q x$ is convex if and only if $Q \succeq 0$ (PSD). If $Q$ has a negative eigenvalue, the function has a saddle point or curves downward in some direction, creating local minima. Specifically, along the eigenvector corresponding to a negative eigenvalue, the function is a downward-opening parabola, while along other directions it may curve upward, forming a saddle geometry that lacks a global minimum or has disconnected sublevel sets. Since $Q$ is generic, we cannot assume convexity.</li>
+          <li><b>Objective:</b> The quadratic form $x^\top Q x$ is convex if and only if $Q \succeq 0$ (PSD).
+          <br><i>Deep Dive:</i> Why does an indefinite $Q$ break convexity?
+          Let $\lambda < 0$ be a negative eigenvalue with eigenvector $\mathbf{v}$. Restrict the function to the line $x(t) = t\mathbf{v}$. Then $f(t) = \lambda t^2 \|\mathbf{v}\|^2$. This is an inverted parabola (concave).
+          <br>Since the function curves <i>down</i> in at least one direction, the "chord above graph" property fails. This geometry (a saddle point) means a local search algorithm could get stuck in a descent direction that leads to $-\infty$ or be unable to distinguish a saddle from a minimum.</li>
         </ul>
       </li>
       <li><b>❌ Not Convex.</b>

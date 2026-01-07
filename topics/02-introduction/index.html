@@ -388,10 +388,15 @@
           <div class="proof-step">
             <strong>4. The Value (Convexity of Function).</strong>
             By Jensen's inequality (the definition of a convex function), the value of the function along this line is bounded by the chord connecting the endpoints:
-            $$ f_0(\mathbf{z}(\theta)) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
-            Since $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$, we can substitute strict inequality:
-            $$ f_0(\mathbf{z}(\theta)) < (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) = f_0(\mathbf{x}^*) $$
-            This inequality $f_0(\mathbf{z}(\theta)) < f_0(\mathbf{x}^*)$ holds for <b>any</b> $\theta \in (0, 1]$. The function drops immediately as we step away from $\mathbf{x}^*$.
+            $$ f_0(\mathbf{z}(\theta)) = f_0((1-\theta)\mathbf{x}^* + \theta \mathbf{y}) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
+            We are given that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$. This means the "challenger" is strictly better.
+            We substitute this strict inequality into the Jensen bound:
+            $$ (1-\theta)f_0(\mathbf{x}^*) + \theta \underbrace{f_0(\mathbf{y})}_{< f_0(\mathbf{x}^*)} < (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) $$
+            Now simplify the right-hand side:
+            $$ (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) = (1 - \theta + \theta) f_0(\mathbf{x}^*) = f_0(\mathbf{x}^*) $$
+            Combining these, we get:
+            $$ f_0(\mathbf{z}(\theta)) < f_0(\mathbf{x}^*) $$
+            This inequality holds for <b>any</b> $\theta \in (0, 1]$. It means that as soon as we take even a microscopic step towards $\mathbf{y}$, the function value drops strictly below $f_0(\mathbf{x}^*)$.
           </div>
 
           <div class="proof-step">
@@ -1050,8 +1055,13 @@
           $$
           \|x\|_2^2 \le ts \quad \iff \quad \left\| \begin{bmatrix} 2x \\ s-t \end{bmatrix} \right\|_2 \le s+t
           $$
-          <p><i>Derivation:</i> $(s+t)^2 - (s-t)^2 = (s^2 + 2st + t^2) - (s^2 - 2st + t^2) = 4st$.
-          <br>So the norm inequality squares to $4\|x\|^2 + (s-t)^2 \le (s+t)^2 \iff 4\|x\|^2 \le 4st \iff \|x\|^2 \le st$.</p>
+          <p><i>Derivation:</i> We start with the norm inequality $\left\| \begin{bmatrix} 2x \\ s-t \end{bmatrix} \right\|_2 \le s+t$. Squaring both sides (assuming $s+t \ge 0$):
+          $$ \|2x\|_2^2 + (s-t)^2 \le (s+t)^2 $$
+          $$ 4\|x\|_2^2 + (s^2 - 2st + t^2) \le (s^2 + 2st + t^2) $$
+          Subtracting common terms $(s^2+t^2)$ from both sides:
+          $$ 4\|x\|_2^2 - 2st \le 2st $$
+          $$ 4\|x\|_2^2 \le 4st \implies \|x\|_2^2 \le st $$
+          Dividing by $t$ (assuming $t>0$) recovers the original form $\frac{\|x\|_2^2}{t} \le s$.</p>
         </div>
 
         <div class="example">
@@ -1119,9 +1129,15 @@
           <div class="proof-step">
             <strong>Step 2: Form the Dual.</strong>
             This is a Linear Programming (LP) maximization problem. We want to convert it to a minimization problem to obtain an upper bound structure.
-            <br>We use the standard dual form.
-            <br>Primal: $\max \{ x^\top y \mid y \le \mathbf{1}, \mathbf{1}^\top y = r, y \ge 0 \}$.
-            <br>Dual variables: $u \ge 0$ (for $y \le \mathbf{1}$), $t \in \mathbb{R}$ (for $\mathbf{1}^\top y = r$).
+            <br>We introduce Lagrange multipliers (dual variables) for the constraints:
+            <ul>
+                <li>For $y \le \mathbf{1}$ (equivalently $\mathbf{1} - y \ge 0$): Multiplier $\mathbf{u} \ge 0$.</li>
+                <li>For $\mathbf{1}^\top y = r$: Multiplier $t \in \mathbb{R}$.</li>
+                <li>For $y \ge 0$: Handled implicitly by dual standard form logic.</li>
+            </ul>
+            The Lagrangian is $\mathcal{L}(y, u, t) = x^\top y + u^\top (\mathbf{1} - y) + t (r - \mathbf{1}^\top y)$.
+            Grouping by $y$: $\mathcal{L} = y^\top (x - u - t\mathbf{1}) + \mathbf{1}^\top u + tr$.
+            To have a finite maximum over $y \ge 0$, the coefficient of $y$ must be $\le 0$. Thus $x - u - t\mathbf{1} \le 0 \iff t\mathbf{1} + u \ge x$.
             <br>Dual Problem:
             $$ \min_{t, u} \ rt + \mathbf{1}^\top u \quad \text{s.t.} \quad t\mathbf{1} + u \ge x, \quad u \ge 0 $$
           </div>
@@ -1740,8 +1756,10 @@ print(f"Optimal weights: {w.value}")</code></pre>
     <b>Second Derivative (Hessian):</b> Using the quotient rule on $\frac{e^z}{1+e^z}$:
     $$ f''(z) = \frac{(e^z)(1+e^z) - (e^z)(e^z)}{(1+e^z)^2} = \frac{e^z + e^{2z} - e^{2z}}{(1+e^z)^2} = \frac{e^z}{(1+e^z)^2} $$
     Since $e^z > 0$ for all $z$, $f''(z) > 0$. Thus $f(z)$ is strictly convex.
-    <br><b>Composition:</b> The objective is a sum of terms $L_i(\mathbf{w}) = f(z_i(\mathbf{w}))$, where $z_i(\mathbf{w}) = -y_i \mathbf{x}_i^\top \mathbf{w}$ is an affine function of $\mathbf{w}$.
-    <br>Since $f$ is convex and $z_i$ is affine, $L_i$ is convex. The sum of convex functions is convex.</div>
+    <br><b>Hessian of Composition:</b> For the full objective $L(\mathbf{w})$, let's apply the chain rule. Each term is $f(z_i)$ where $z_i = -y_i \mathbf{x}_i^\top \mathbf{w}$.
+    $$ \nabla^2 L_i(\mathbf{w}) = f''(z_i) \cdot \nabla z_i (\nabla z_i)^\top = f''(z_i) (-y_i \mathbf{x}_i) (-y_i \mathbf{x}_i)^\top = \underbrace{f''(z_i)}_{>0} \underbrace{y_i^2}_{1} \underbrace{\mathbf{x}_i \mathbf{x}_i^\top}_{\succeq 0} $$
+    The Hessian is a positive scalar times a rank-1 PSD matrix, so it is PSD. The sum of PSD matrices is PSD.
+    <br><b>Composition Rule:</b> Alternatively, since $f$ is convex and $z_i$ is affine, $L_i$ is convex. The sum of convex functions is convex.</div>
     <div class="proof-step"><strong>Conclusion:</strong> The optimization problem is:
     $$ \min_{w \in \mathbb{R}^n} \sum_{i=1}^m \log(1 + e^{-y_i w^\top x_i}) $$
     This is an unconstrained convex optimization problem.</div>

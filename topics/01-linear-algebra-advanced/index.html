@@ -81,17 +81,21 @@
           $$ a_j = \sum_{k=1}^n A_{kj} e_k $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Apply Multilinearity.</strong>
-          Substituting this into the determinant function:
-          $$ \det(A) = \det\left(\sum_{k_1} A_{k_1,1} e_{k_1}, \dots, \sum_{k_n} A_{k_n,n} e_{k_n}\right) $$
-          By linearity in each slot, we can pull the sums and coefficients out. This results in a massive sum of $n^n$ terms:
+          <strong>Step 2: Apply Multilinearity (Expansion).</strong>
+          We substitute the basis expansion into the determinant function.
+          $$ \det(A) = \det\left(\sum_{k_1=1}^n A_{k_1,1} e_{k_1}, \dots, \sum_{k_n=1}^n A_{k_n,n} e_{k_n}\right) $$
+          Because the determinant is linear in the first column, we can pull out the sum over $k_1$:
+          $$ = \sum_{k_1=1}^n A_{k_1, 1} \det(e_{k_1}, \sum_{k_2} \dots, \dots) $$
+          We repeat this for the second column, pulling out the sum over $k_2$ and the coefficient $A_{k_2, 2}$:
+          $$ = \sum_{k_1=1}^n \sum_{k_2=1}^n A_{k_1, 1} A_{k_2, 2} \det(e_{k_1}, e_{k_2}, \dots) $$
+          Continuing this for all $n$ columns results in a massive sum of $n^n$ terms:
           $$ \det(A) = \sum_{k_1=1}^n \dots \sum_{k_n=1}^n A_{k_1, 1} \dots A_{k_n, n} \det(e_{k_1}, \dots, e_{k_n}) $$
         </div>
         <div class="proof-step">
-          <strong>Step 3: Apply Alternation (The Filter).</strong>
-          The term $\det(e_{k_1}, \dots, e_{k_n})$ is the determinant of a matrix formed by standard basis vectors.
-          If any two indices are the same (e.g., $k_1 = k_2$), the matrix has two identical columns. By the Alternating axiom, its determinant is 0.
-          <br>Thus, the only surviving terms are those where all indices $(k_1, \dots, k_n)$ are distinct. This means $(k_1, \dots, k_n)$ must be a <b>permutation</b> $\sigma$ of $(1, \dots, n)$, where $k_j = \sigma(j)$.
+          <strong>Step 3: Apply Alternation (The Zero Filter).</strong>
+          We now evaluate the term $\det(e_{k_1}, \dots, e_{k_n})$. This represents the determinant of a "permutation matrix" (possibly with repeated columns).
+          <br><b>Case A (Repeated Indices):</b> If any two indices are the same (e.g., $k_1 = k_2$), then the matrix has two identical columns (column 1 is $e_{k_1}$ and column 2 is $e_{k_1}$). By the Alternating axiom, the determinant of a matrix with identical columns is <b>zero</b>. Thus, all such terms vanish.
+          <br><b>Case B (Distinct Indices):</b> The only surviving terms are those where all indices $(k_1, \dots, k_n)$ are distinct. Since there are $n$ indices chosen from $\{1, \dots, n\}$, "distinct" implies they form a <b>permutation</b> of $(1, \dots, n)$. Let $\sigma$ be this permutation, so $k_j = \sigma(j)$.
         </div>
         <div class="proof-step">
           <strong>Step 4: Apply Normalization and Swaps.</strong>
@@ -685,27 +689,36 @@
         <p>The existence of the SVD is a direct consequence of the Spectral Theorem applied to the symmetric positive semidefinite matrix $G = A^\top A$. This matrix captures the geometry of the domain metric induced by $A$.</p>
         <div class="proof-step">
             <strong>Step 1: Spectral Decomposition of $G$.</strong>
-            Since $G = A^\top A$ is symmetric, there exists an orthonormal basis $\{v_1, \dots, v_n\}$ of eigenvectors with real eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$.
+              The matrix $G = A^\top A \in \mathbb{R}^{n \times n}$ is symmetric ($G^\top = G$). By the Spectral Theorem, there exists an orthonormal basis $\{v_1, \dots, v_n\}$ of eigenvectors with real eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$.
             $$ A^\top A v_i = \lambda_i v_i $$
-            Since $\|A v_i\|^2 = v_i^\top A^\top A v_i = \lambda_i \|v_i\|^2 = \lambda_i$, we must have $\lambda_i \ge 0$.
+              We can verify non-negativity:
+              $$ \lambda_i = \lambda_i \|v_i\|^2 = v_i^\top (\lambda_i v_i) = v_i^\top (A^\top A v_i) = (Av_i)^\top (Av_i) = \|A v_i\|^2 \ge 0 $$
+              Thus $\lambda_i \ge 0$.
         </div>
         <div class="proof-step">
             <strong>Step 2: Define Singular Values and Right Singular Vectors.</strong>
-            Set $\sigma_i = \sqrt{\lambda_i}$. Let $r$ be the number of non-zero singular values (the rank).
-            The matrix $V = [v_1 \dots v_n]$ is orthogonal.
+              Define the singular values $\sigma_i = \sqrt{\lambda_i}$. Let $r$ be the number of non-zero singular values (so $\sigma_1 \ge \dots \ge \sigma_r > 0$ and $\sigma_{r+1} = \dots = 0$).
+              Define the matrix of right singular vectors $V = [v_1 \dots v_n]$. Since the $v_i$ are orthonormal, $V$ is an orthogonal matrix.
         </div>
         <div class="proof-step">
-            <strong>Step 3: Construct Left Singular Vectors.</strong>
-            For $i \le r$, define $u_i = \frac{1}{\sigma_i} A v_i$.
-            Check orthonormality:
-            $$ u_i^\top u_j = \frac{1}{\sigma_i \sigma_j} v_i^\top A^\top A v_j = \frac{1}{\sigma_i \sigma_j} v_i^\top (\lambda_j v_j) = \frac{\sigma_j^2}{\sigma_i \sigma_j} \delta_{ij} = \delta_{ij} $$
-            For $i > r$, $A v_i = 0$. We complete the set $\{u_1, \dots, u_r\}$ to an orthonormal basis $\{u_1, \dots, u_m\}$ for $\mathbb{R}^m$ (e.g., via Gram-Schmidt).
+              <strong>Step 3: Construct Left Singular Vectors ($U$).</strong>
+              We need to construct an orthonormal basis $\{u_1, \dots, u_m\}$ for the codomain $\mathbb{R}^m$.
+              <br><b>For $i \le r$ (The Range):</b> Define $u_i = \frac{1}{\sigma_i} A v_i$.
+              We must verify these are orthonormal:
+              $$ u_i^\top u_j = \left( \frac{1}{\sigma_i} A v_i \right)^\top \left( \frac{1}{\sigma_j} A v_j \right) = \frac{1}{\sigma_i \sigma_j} v_i^\top (A^\top A v_j) $$
+              $$ = \frac{1}{\sigma_i \sigma_j} v_i^\top (\lambda_j v_j) = \frac{\sigma_j^2}{\sigma_i \sigma_j} (v_i^\top v_j) $$
+              Since $v_i \perp v_j$ for $i \ne j$, this is 0. If $i=j$, it is $\sigma_i^2/\sigma_i^2 = 1$. Thus, $\{u_1, \dots, u_r\}$ are orthonormal.
+              <br><b>For $i > r$ (The Null Complement):</b> For indices $r+1, \dots, m$, we simply pick any orthonormal vectors $\{u_{r+1}, \dots, u_m\}$ that are orthogonal to the first $r$ vectors. This is always possible (e.g., via Gram-Schmidt extension) because $r \le \min(m, n) \le m$.
+              <br>Construct $U = [u_1 \dots u_m]$. This is an orthogonal matrix.
         </div>
         <div class="proof-step">
-            <strong>Step 4: Matrix Factorization.</strong>
-            Compute $A V$:
-            $$ A v_i = \begin{cases} \sigma_i u_i & i \le r \\ 0 & i > r \end{cases} $$
-            This is exactly the column-wise definition of $U \Sigma$. Thus $AV = U \Sigma$, or $A = U \Sigma V^\top$.
+              <strong>Step 4: Matrix Factorization ($AV = U\Sigma$).</strong>
+              We compare the action of $A$ on the basis $V$ with the action of $U\Sigma$.
+              <br><b>Case $i \le r$:</b> $A v_i = \sigma_i u_i$.
+              <br><b>Case $i > r$:</b> Since $\sigma_i = 0$, we have $\lambda_i = 0$, so $\|A v_i\|^2 = 0 \implies A v_i = 0$.
+              Also, the diagonal entry of $\Sigma$ is 0, so $\sigma_i u_i = 0$.
+              <br>Thus $A v_i = \sigma_i u_i$ for all $i=1\dots n$.
+              In matrix form: $A V = U \Sigma$. Right-multiplying by $V^\top$ gives $A = U \Sigma V^\top$.
         </div>
       </div>
 
@@ -741,13 +754,19 @@
 
       <div class="proof-box">
         <h4>Why Truncation Works (The Energy Argument)</h4>
-        <p>Why is keeping the largest singular values optimal?
+        <p>Why is keeping the largest singular values optimal? We want to minimize $\|A - B\|$ subject to $\operatorname{rank}(B) \le k$.
         <br><b>1. Frobenius Norm (Energy):</b>
-        Recall that $\|A\|_F^2 = \sum \sigma_i^2$. This norm is orthogonally invariant:
-        $$ \|A - A_k\|_F^2 = \|U \Sigma V^\top - U \Sigma_k V^\top\|_F^2 = \|U (\Sigma - \Sigma_k) V^\top\|_F^2 = \|\Sigma - \Sigma_k\|_F^2 $$
-        $\Sigma - \Sigma_k$ is a diagonal matrix containing the singular values we didn't keep: $\sigma_{k+1}, \dots, \sigma_r$.
-        $$ \|\Sigma - \Sigma_k\|_F^2 = \sum_{i=k+1}^r \sigma_i^2 $$
-        To minimize the error, we must make the tail sum as small as possible. This forces us to keep the largest $\sigma$'s and discard the smallest.
+        The Frobenius norm is $\|M\|_F = \sqrt{\sum M_{ij}^2} = \sqrt{\mathrm{tr}(M^\top M)}$. A crucial property is its invariance under orthogonal transformations: $\|U M V^\top\|_F = \|M\|_F$.
+        <br>Let $B$ be our rank-$k$ candidate. We can work in the SVD coordinates of $A = U \Sigma V^\top$.
+        $$ \|A - B\|_F^2 = \|U \Sigma V^\top - B\|_F^2 = \|U (\Sigma - U^\top B V) V^\top\|_F^2 $$
+        Let $\tilde{B} = U^\top B V$. Since $U, V$ are invertible, $\operatorname{rank}(\tilde{B}) = \operatorname{rank}(B) \le k$.
+        $$ \|A - B\|_F^2 = \|\Sigma - \tilde{B}\|_F^2 = \sum_{i=1}^n (\sigma_i - \tilde{B}_{ii})^2 + \sum_{i \neq j} \tilde{B}_{ij}^2 $$
+        To minimize this sum, the off-diagonal terms $\tilde{B}_{ij}$ ($i \ne j$) should be zero. Thus $\tilde{B}$ should be diagonal.
+        <br>This reduces the problem to choosing $k$ non-zero diagonal entries $d_1, \dots, d_k$ to approximate $\sigma_1, \dots, \sigma_n$.
+        $$ \text{Error} = \sum_{i=1}^n (\sigma_i - d_i)^2 $$
+        To minimize error, we should pick $d_i = \sigma_i$ for the indices with the largest $\sigma_i$.
+        <br>Thus, the optimal choice is to keep $\sigma_1, \dots, \sigma_k$ and set the rest to zero. The residual error is the "tail energy":
+        $$ \min_{\operatorname{rank}(B) \le k} \|A - B\|_F^2 = \sum_{i=k+1}^r \sigma_i^2 $$
         <br><b>2. Spectral Norm (Worst-Case):</b> The maximum error amplification is $\|A - A_k\|_2 = \sigma_{k+1}$.
         <br>Any other rank-$k$ matrix would result in a larger worst-case error.
         <br><b>Conclusion:</b> SVD packs the most "matrix energy" into the fewest components. This is why it is the gold standard for compression (PCA) and denoising.</p>
@@ -1175,27 +1194,42 @@
       <h3>P1.3 — SVD Computation</h3>
       <p>Compute the Singular Value Decomposition $A = U \Sigma V^\top$ by hand for the matrix $A = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$. Verify that the singular values are the square roots of the eigenvalues of $A^\top A$.</p>
       <div class="solution-box">
-        <h4>Solution</h4>
+        <h4>Solution (Detailed Walkthrough)</h4>
         <div class="proof-step">
-          <strong>1. Compute $A^\top A$ and its eigenvalues:</strong>
-          $A^\top A = \begin{bmatrix} 1 & 0 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$.
-          Characteristic eq: $(1-\lambda)^2 - 1 = 0 \implies \lambda^2 - 2\lambda = 0 \implies \lambda_1=2, \lambda_2=0$.
-          Singular values: $\sigma_1 = \sqrt{2}, \sigma_2 = 0$.
+          <strong>Step 1: Compute $A^\top A$ and its eigenvalues.</strong>
+          First, calculate the Gram matrix $G = A^\top A$:
+          $$ A^\top A = \begin{bmatrix} 1 & 0 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix} $$
+          Now, find the characteristic polynomial $p(\lambda) = \det(G - \lambda I)$:
+          $$ \det \begin{bmatrix} 1-\lambda & 1 \\ 1 & 1-\lambda \end{bmatrix} = (1-\lambda)^2 - 1 = \lambda^2 - 2\lambda = \lambda(\lambda-2) $$
+          The roots (eigenvalues) are $\lambda_1 = 2$ and $\lambda_2 = 0$.
+          <br>The singular values are $\sigma_1 = \sqrt{2}$ and $\sigma_2 = 0$.
         </div>
         <div class="proof-step">
-          <strong>2. Compute $V$ (eigenvectors of $A^\top A$):</strong>
-          For $\lambda_1=2$: $\begin{bmatrix} -1 & 1 \\ 1 & -1 \end{bmatrix} \mathbf{v} = 0 \implies v_1 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
-          For $\lambda_2=0$: $v_2 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ -1 \end{bmatrix}$.
-          $V = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$.
+          <strong>Step 2: Compute Right Singular Vectors ($V$).</strong>
+          We solve $(G - \lambda I)\mathbf{v} = 0$ for each eigenvalue.
+          <br><b>For $\lambda_1 = 2$:</b>
+          $$ \begin{bmatrix} 1-2 & 1 \\ 1 & 1-2 \end{bmatrix} \mathbf{v} = \begin{bmatrix} -1 & 1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix} \implies -x+y=0 \implies y=x $$
+          Normalized eigenvector: $v_1 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+          <br><b>For $\lambda_2 = 0$:</b>
+          $$ \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix} \mathbf{v} = 0 \implies x+y=0 \implies y=-x $$
+          Normalized eigenvector: $v_2 = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 \\ -1 \end{bmatrix}$.
+          <br>Matrix $V = [v_1 \ v_2] = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$.
         </div>
         <div class="proof-step">
-          <strong>3. Compute $U$:</strong>
-          $u_1 = \frac{1}{\sigma_1} A v_1 = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \frac{1}{2} \begin{bmatrix} 2 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$.
-          Since $m=2$, we need a second vector $u_2$ orthogonal to $u_1$. $u_2 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$.
-          $U = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.
+          <strong>Step 3: Compute Left Singular Vectors ($U$).</strong>
+          Use the formula $u_i = \frac{1}{\sigma_i} A v_i$ for non-zero singular values.
+          <br><b>For $\sigma_1 = \sqrt{2}$:</b>
+          $$ u_1 = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 1/\sqrt{2} \\ 1/\sqrt{2} \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 2/\sqrt{2} \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} $$
+          <br><b>For $\sigma_2 = 0$:</b> We cannot use the formula. We must complete the basis for $\mathbb{R}^m$ ($\mathbb{R}^2$).
+          We need a unit vector $u_2$ orthogonal to $u_1 = (1, 0)^\top$. Clearly, $u_2 = (0, 1)^\top$ works.
+          <br>Matrix $U = [u_1 \ u_2] = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} = I_2$.
         </div>
         <div class="proof-step">
-          <strong>Result:</strong> $A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} \sqrt{2} & 0 \\ 0 & 0 \end{bmatrix} \left(\frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\right)^\top$.
+          <strong>Step 4: Final Assembly.</strong>
+          $$ A = U \Sigma V^\top = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} \sqrt{2} & 0 \\ 0 & 0 \end{bmatrix} \left(\frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\right)^\top $$
+          <b>Verification:</b>
+          $U \Sigma = \begin{bmatrix} \sqrt{2} & 0 \\ 0 & 0 \end{bmatrix}$.
+          $(U \Sigma) V^\top = \begin{bmatrix} \sqrt{2} & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} 1/\sqrt{2} & 1/\sqrt{2} \\ 1/\sqrt{2} & -1/\sqrt{2} \end{bmatrix} = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} = A$. Correct.
         </div>
       </div>
       <div class="recap-box">

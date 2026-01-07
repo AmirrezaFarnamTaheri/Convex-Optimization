@@ -173,7 +173,7 @@
       $$ (u, v, w) \in \mathcal{Q}_r \iff \left( u+v, \ \begin{bmatrix} u-v \\ \sqrt{2}w \end{bmatrix} \right) \in \mathcal{Q} $$
       <b>Applications:</b></p>
       <ul>
-          <li><b>Hyperbolic constraints:</b> $w^2 \le xy \iff (x, y/2, w) \in \mathcal{Q}_r^3$.</li>
+          <li><b>Hyperbolic constraints:</b> $x^\top x \le yz, y,z \ge 0 \iff \|x\|^2 \le yz \iff (y, z/2, x) \in \mathcal{Q}_r^{n+2} \iff \left\| \begin{bmatrix} 2x \\ y-z \end{bmatrix} \right\|_2 \le y+z$. This converts the hyperbolic constraint into a standard norm inequality.</li>
           <li><b>Quadratic-over-linear:</b> $x^2/y \le t \iff x^2 \le ty \iff (t, y/2, x) \in \mathcal{Q}_r^3$.
               <br><em>Real-world use:</em> Models energy-to-power ratios, variance-to-mean relations, and power allocation efficiency.</li>
           <li><b>Vector Q-over-L:</b> $\|x\|_2^2/y \le t \iff (t, y/2, x) \in \mathcal{Q}_r^{n+2}$.</li>
@@ -628,22 +628,45 @@
         </div>
       </div>
 
-      <h4>Example: MAX-CUT Relaxation (Combinatorics)</h4>
-      <p>The MAX-CUT problem asks to partition graph vertices into two sets to maximize the number of edges crossing the cut.
-      <br><b>Integer Formulation:</b> $\max \frac{1}{2} \sum_{(i,j) \in E} (1 - x_i x_j)$ subject to $x_i \in \{-1, 1\}$.
+      <h4>Deep Dive: Semidefinite Relaxation (SDR)</h4>
+      <p>Semidefinite Relaxation (SDR) is a powerful technique for approximating non-convex quadratically constrained quadratic programs (QCQPs).
+      <br>Consider the <b>MAX-CUT problem</b>: partition graph vertices $V$ into two sets to maximize crossing edges.
+      <br>Let $x_i \in \{-1, 1\}$ represent the partition. Maximize $\frac{1}{2} \sum_{(i,j) \in E} (1 - x_i x_j)$.
       <br>This is equivalent to $\max \frac{1}{4} x^\top L x$ subject to $x_i^2 = 1$, where $L$ is the graph Laplacian.
-      <br><b>Semidefinite Relaxation (Goemans-Williamson):</b>
-      Lift the variable $x$ to a matrix $X = xx^\top$.
-      Properties of $X$: $X \succeq 0$, $\text{rank}(X)=1$, $X_{ii} = x_i^2 = 1$.
-      <br>Relax the hard rank constraint ($\text{rank}(X)=1$) to a convex constraint ($X \succeq 0$).
-      $$
-      \begin{aligned}
-      \text{maximize} \quad & \frac{1}{4} \text{tr}(LX) \\
-      \text{subject to} \quad & X_{ii} = 1, \quad i=1,\dots,n \\
-      & X \succeq 0
-      \end{aligned}
-      $$
-      This is an SDP. The solution provides a high-quality upper bound and can be rounded to a valid cut (with guaranteed approximation ratio 0.878).</p>
+      <br>This is a non-convex QCQP (due to equality constraints $x_i^2=1$).
+
+      <div class="proof-box">
+        <h4>The SDR Recipe</h4>
+        <div class="proof-step">
+            <strong>Step 1: Lifting.</strong>
+            Introduce the matrix variable $X = xx^\top$.
+            Rewrite the objective: $x^\top L x = \text{tr}(x^\top L x) = \text{tr}(L xx^\top) = \text{tr}(LX)$.
+            Rewrite constraints: $x_i^2 = (xx^\top)_{ii} = X_{ii} = 1$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 2: Characterization.</strong>
+            $X = xx^\top$ is equivalent to $X \succeq 0$ and $\text{rank}(X) = 1$.
+            The problem is equivalent to maximizing $\text{tr}(LX)$ subject to $X_{ii}=1, X \succeq 0, \text{rank}(X)=1$.
+        </div>
+        <div class="proof-step">
+            <strong>Step 3: Relaxation.</strong>
+            Drop the non-convex rank constraint.
+            $$
+            \begin{aligned}
+            \text{maximize} \quad & \frac{1}{4} \text{tr}(LX) \\
+            \text{subject to} \quad & X_{ii} = 1, \quad \forall i \\
+            & X \succeq 0
+            \end{aligned}
+            $$
+            This is an SDP. The optimal value $p^*_{SDP}$ is an upper bound on the true max cut.
+        </div>
+        <div class="proof-step">
+            <strong>Step 4: Rounding (Goemans-Williamson).</strong>
+            To recover a valid cut $x$, decompose $X^* = V^\top V$ (where $v_i$ are columns of $V$ on the unit sphere).
+            Choose a random hyperplane $r$. Set $x_i = \text{sgn}(r^\top v_i)$.
+            This randomized rounding achieves an expected approximation ratio of $\approx 0.878$.
+        </div>
+      </div>
 
 
       <!-- Widget 5: SDP Visualizer -->

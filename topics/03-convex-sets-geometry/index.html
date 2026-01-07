@@ -104,8 +104,12 @@
               z = \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
               $$
               Distribute and regroup terms relative to $x_0$:
-              $$ z = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
-              Since $V$ is a subspace, it is closed under linear combinations. Thus $v' = \theta v_1 + (1-\theta)v_2$ is in $V$.
+              $$ z = \theta x_0 + \theta v_1 + (1-\theta)x_0 + (1-\theta)v_2 = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
+              Since $V$ is a subspace, it is closed under scalar multiplication and vector addition.
+              <ul>
+                <li>$\theta v_1 \in V$ and $(1-\theta)v_2 \in V$.</li>
+                <li>Their sum $v' = \theta v_1 + (1-\theta)v_2$ is in $V$.</li>
+              </ul>
               <br>Therefore, $z = x_0 + v' \in x_0 + V = C$.
             </div>
             <div class="proof-step">
@@ -274,15 +278,15 @@
 
           <div class="proof-step">
             <strong>Step 3: Moving to the Boundary.</strong>
-            We need to choose $\lambda$ so that all $\theta'_i \ge 0$, but at least one becomes exactly 0.
-            <br>The condition $\theta_i - \lambda \alpha_i \ge 0$ means:
+            We need to choose $\lambda$ so that all new weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$ remain non-negative, but at least one becomes exactly 0.
+            <br>Analyze the condition $\theta_i - \lambda \alpha_i \ge 0$ for each index $i$:
             <ul>
-                <li>If $\alpha_i \le 0$, the weight increases or stays same. No danger of hitting zero.</li>
-                <li>If $\alpha_i > 0$, we must have $\lambda \le \frac{\theta_i}{\alpha_i}$.</li>
+                <li><b>Case 1: $\alpha_i \le 0$.</b> Since $\lambda > 0$, the term $-\lambda \alpha_i \ge 0$. The weight $\theta'_i$ increases or stays constant. Since we started with $\theta_i > 0$, we are safe.</li>
+                <li><b>Case 2: $\alpha_i > 0$.</b> Here, the weight decreases as $\lambda$ increases. To keep $\theta'_i \ge 0$, we require $\theta_i \ge \lambda \alpha_i$, or $\lambda \le \frac{\theta_i}{\alpha_i}$.</li>
             </ul>
-            To remove a point, we pick the largest possible $\lambda$:
-            $$ \lambda^* = \min_{i : \alpha_i > 0} \frac{\theta_i}{\alpha_i} $$
-            Let $j$ be an index that achieves this minimum.
+            To ensure <i>all</i> weights remain non-negative, $\lambda$ must satisfy this upper bound for all $i$ where $\alpha_i > 0$. To eliminate at least one point, we push $\lambda$ to the tightest such bound:
+            $$ \lambda^* = \min_{\{i \mid \alpha_i > 0\}} \frac{\theta_i}{\alpha_i} $$
+            Let $j$ be an index that achieves this minimum. By construction, $\theta'_j(\lambda^*) = 0$ and $\theta'_i(\lambda^*) \ge 0$ for all $i$.
           </div>
 
           <div class="proof-step">
@@ -1191,13 +1195,15 @@
           </div>
           <div class="proof-step">
             <strong>Step 3: Verify Separation (The Obtuse Angle).</strong>
-            By the projection theorem (Lecture 03), the vector $d-p$ makes an <b>obtuse angle</b> with any vector pointing from $p$ into $C$.
-            Mathematically: $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
-            <br>Substitute $a = d-p$: $\langle a, x-p \rangle \le 0 \implies a^\top x \le a^\top p$.
-            <br>Now check the point $d$: $a^\top d = a^\top (p+a) = a^\top p + \|a\|^2$.
-            Since $d \notin C$, $a \ne 0$, so $\|a\|^2 > 0$.
+            We use the characteristic property of the Euclidean projection onto a convex set (see P3.19). For any point $x \in C$, the vector from the projection $p$ to $d$ forms an obtuse angle with the vector from $p$ to $x$.
+            <br><i>Inequality:</i> $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
+            <br>Let $a = d-p$. This is our normal vector. The inequality becomes:
+            $$ a^\top (x-p) \le 0 \implies a^\top x \le a^\top p $$
+            This establishes the upper bound for points in $C$. Now we check where $d$ lies relative to this bound.
+            $$ a^\top d = a^\top (p + a) = a^\top p + a^\top a = a^\top p + \|a\|^2 $$
+            Since $d \notin C$, the distance $\|a\| > 0$, so $\|a\|^2 > 0$. Therefore:
             $$ a^\top x \le a^\top p < a^\top d $$
-            Thus, the hyperplane orthogonal to $a$ strictly separates $C$ and $d$.
+            The hyperplane $H = \{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $C$ and $d$.
           </div>
         </div>
 
@@ -1974,9 +1980,14 @@
               $$ \|x - w\|^2 = \|(x - y) - \theta(z - y)\|^2 = \|x - y\|^2 - 2\theta \langle x - y, z - y \rangle + \theta^2 \|z - y\|^2 $$
             </div>
             <div class="proof-step">
-              Notice the term $-2\theta \langle x - y, z - y \rangle$. If the inner product is positive, then for sufficiently small $\theta$ (where the linear term dominates the quadratic $\theta^2$ term), the total distance $\|x-w\|^2$ will be strictly less than $\|x-y\|^2$.
-              <br>This means $w$ is closer to $x$ than $y$ is. But $y$ was defined as the closest point (projection).
-              <br><b>Contradiction.</b> Therefore, the inner product must be non-positive: $\langle x-y, z-y \rangle \le 0$.
+              We assume for contradiction that the inner product is positive: $S = \langle x - y, z - y \rangle > 0$.
+              We analyze the squared distance $\|x-w\|^2$ as a function of $\theta$:
+              $$ g(\theta) = \|x-w\|^2 = \|x-y\|^2 - 2\theta S + \theta^2 \|z-y\|^2 $$
+              We want to show that for small $\theta > 0$, $g(\theta) < g(0) = \|x-y\|^2$.
+              <br>The derivative at 0 is $g'(0) = -2S < 0$. Since the function has a negative slope at 0, it must decrease immediately.
+              Specifically, for any $\theta$ in the range $0 < \theta < \frac{2S}{\|z-y\|^2}$, we have $-2\theta S + \theta^2 \|z-y\|^2 < 0$, so $\|x-w\|^2 < \|x-y\|^2$.
+              <br>Since such a $\theta$ exists (and can be chosen $\le 1$), we found a point $w \in C$ closer to $x$ than $y$. This contradicts the definition of projection.
+              <br><b>Conclusion:</b> The assumption $S > 0$ must be false. Thus $\langle x-y, z-y \rangle \le 0$.
             </div>
           </div>
         </div>

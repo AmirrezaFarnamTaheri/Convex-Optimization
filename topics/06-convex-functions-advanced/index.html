@@ -226,6 +226,18 @@
       </div>
       <p><b>Warning:</b> The chain rule for subdifferentials requires monotonicity of the outer function $h$. Unlike smooth calculus, $\partial (h \circ f)$ does NOT always equal $h'(f(x)) \cdot \partial f(x)$ for general $h$.</p>
 
+      <div class="example-box">
+        <h4>Example: Subgradient of $e^{|x|}$</h4>
+        <p>Let $g(x) = e^{|x|}$. This is the composition of $h(u) = e^u$ (convex, non-decreasing) and $f(x) = |x|$ (convex).
+        <br>We compute $\partial g(0)$ using the chain rule.
+        <ul>
+            <li>At $x=0$, $f(0) = 0$. The outer subgradient is $\partial h(0) = \{e^0\} = \{1\}$.</li>
+            <li>The inner subgradient is $\partial f(0) = [-1, 1]$.</li>
+            <li>Chain rule set: $\{v \cdot w \mid v \in \{1\}, w \in [-1, 1]\} = [-1, 1]$.</li>
+        </ul>
+        Thus $\partial g(0) = [-1, 1]$. This matches the geometric intuition of a "V" shape curved exponentially.</p>
+      </div>
+
       <h4>6. Conditions for Sum Rule Equality</h4>
       <p>While the sum rule $\partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x)$ always holds, many other rules require <b>qualification conditions</b>:</p>
       <ul>
@@ -672,6 +684,26 @@
       $$
       So $\boxed{(f_1 \oplus f_2)^* = f_1^* \oplus f_2^*}$. This separation is key in duality.</p>
 
+      <h4>Rule 4: Infimal Convolution</h4>
+      <p>Let $h(x) = (f \square g)(x) = \inf_u (f(u) + g(x-u))$. Its conjugate is the sum of conjugates:
+      $$ \boxed{ (f \square g)^* = f^* + g^* } $$
+      <br><b>Proof:</b>
+      $$
+      \begin{aligned}
+      (f \square g)^*(y) &= \sup_x \left( y^\top x - \inf_u (f(u) + g(x-u)) \right) \\
+      &= \sup_x \sup_u \left( y^\top x - f(u) - g(x-u) \right)
+      \end{aligned}
+      $$
+      Let $v = x-u$, so $x = u+v$. As $x, u$ vary over $\mathbb{R}^n$, $u, v$ vary independently over $\mathbb{R}^n$.
+      $$
+      \begin{aligned}
+      &= \sup_{u, v} \left( y^\top(u+v) - f(u) - g(v) \right) \\
+      &= \sup_u (y^\top u - f(u)) + \sup_v (y^\top v - g(v)) \\
+      &= f^*(y) + g^*(y)
+      \end{aligned}
+      $$
+      <b>Application:</b> The conjugate of a sum $(f+g)^*$ is related to the infimal convolution of conjugates $f^* \square g^*$. This duality (Sum $\leftrightarrow$ InfConv) is fundamental.</p>
+
       <h3>3.5 Advanced Topics</h3>
 
       <h4>3.5.1 The Legendre Transform (Smooth Case)</h4>
@@ -717,7 +749,27 @@
         <p><b>Why this matters:</b> This identity is how the conjugate enters Lagrangian duality. When computing $g(\lambda) = \inf_x (c^\top x + \lambda f(x))$, factoring out $\lambda$ and applying this identity gives $g(\lambda) = -\lambda f^*(-c/\lambda)$. This is the foundation for dual problem formulations in <a href="../09-duality/index.html">Lecture 09</a>.</p>
       </div>
 
-      <h4>3.5.3 Entropy and Log-Sum-Exp Connection</h4>
+      <h4>3.5.3 Curvature-Smoothness Duality</h4>
+      <p>There is a beautiful duality between the curvature of $f$ (strong convexity) and the smoothness of $f^*$ (Lipschitz gradients).</p>
+      <div class="theorem-box">
+        <h4>Theorem: Strong Convexity $\iff$ Dual Smoothness</h4>
+        <p>Let $f$ be a closed convex function. The following are equivalent:
+        <ol>
+            <li>$f$ is <b>$m$-strongly convex</b> ($ \nabla^2 f \succeq mI $).</li>
+            <li>$f^*$ is <b>$1/m$-smooth</b> ($ \nabla^2 f^* \preceq \frac{1}{m}I $).</li>
+        </ol>
+        </p>
+        <p><b>Intuition:</b>
+        <ul>
+            <li>If $f$ is very curved (large $m$), it looks like a sharp "V". Its conjugate $f^*$ (representing slopes) will have a domain that is large, and values that change slowly (flat, smooth).</li>
+            <li>If $f$ is flat (small $m$), $f^*$ will be sharp.</li>
+        </ul>
+        <b>Example:</b> $f(x) = \frac{1}{2}x^\top Q x$. $f^*(y) = \frac{1}{2}y^\top Q^{-1} y$.
+        <br>Strong convexity is $\lambda_{\min}(Q)$. Smoothness of dual is $\lambda_{\max}(Q^{-1}) = 1/\lambda_{\min}(Q)$.
+        <br>This confirms the relationship exactly.</p>
+      </div>
+
+      <h4>3.5.4 Entropy and Log-Sum-Exp Connection</h4>
 
       <div class="theorem-box">
         <h4>Conjugate of Max is Entropy-Regularized</h4>

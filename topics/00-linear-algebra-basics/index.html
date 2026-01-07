@@ -1253,16 +1253,42 @@
       </ol>
 
         <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
-        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
-        <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
-        Expanding using bilinearity:
-        $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
-        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
-        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
-        <br><b>Equality Condition:</b> Discriminant is 0 iff the quadratic has a real root, meaning $\phi(t)=0$ for some $t$, i.e., $x-ty=0$. Thus equality holds iff $x$ and $y$ are linearly dependent.</p>
+        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Construct a helper function.</strong>
+          Consider the function $\phi(t) = \|x - ty\|^2$. By the positive definiteness of the norm, the squared length of a vector is always non-negative.
+          $$ \phi(t) = \|x - ty\|^2 \ge 0 \quad \text{for all } t \in \mathbb{R} $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 2: Expand using bilinearity.</strong>
+          We expand the inner product $\langle x - ty, x - ty \rangle$:
+          $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
+          This expression reveals that $\phi(t)$ is a quadratic polynomial in the variable $t$:
+          $$ \phi(t) = at^2 + bt + c $$
+          where the coefficients are $a=\|y\|^2$, $b=-2\langle x,y\rangle$, and $c=\|x\|^2$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 3: Analyze the Discriminant.</strong>
+          We know that $\phi(t) \ge 0$ for all $t$. Geometrically, this means the parabola opens upwards (since $a = \|y\|^2 \ge 0$) and <b>never dips below the horizontal axis</b>.
+          <br>A quadratic that has no real roots (or exactly one root) must have a non-positive discriminant ($b^2 - 4ac \le 0$).
+          $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 4: Solve the inequality.</strong>
+          $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
+          Taking the square root of both sides yields the Cauchy-Schwarz inequality:
+          $$ |\langle x, y \rangle| \le \|x\| \|y\| $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 5: Equality Condition.</strong>
+          Equality holds if and only if the discriminant is exactly zero. A zero discriminant means the quadratic touches the axis at exactly one point, i.e., $\phi(t) = \|x - ty\|^2 = 0$ for some $t$.
+          This implies $x - ty = 0$, meaning $x$ is a scalar multiple of $y$. Thus, equality holds iff $x$ and $y$ are linearly dependent (collinear).
+        </div>
 
         <h4>Derivation: Triangle Inequality</h4>
         <p>Now we can prove the final norm axiom.
@@ -1692,7 +1718,7 @@
       </p>
 
       <h3>5.2 Orthogonal Projection: Preview</h3>
-      <p>Orthogonal projection is the central problem of approximation theory: given a vector $\mathbf{x}$ and a subspace $W$, find the closest point $\mathbf{p} \in W$ to $\mathbf{x}$. This minimization problem underlies least squares, constraint handling, and iterative optimization algorithms. The complete theory of projections—including formulas for subspaces, affine sets, and general convex sets—is developed comprehensively in <b>Section 8: Projections onto Subspaces and Affine Sets</b> (see below), where we derive explicit formulas and explore connections to optimization.</p>
+      <p>Orthogonal projection is the central problem of approximation theory: given a vector $\mathbf{x}$ and a subspace $W$, find the closest point $\mathbf{p} \in W$ to $\mathbf{x}$. This minimization problem underlies least squares, constraint handling, and iterative optimization algorithms. The complete theory of projections—including formulas for subspaces, affine sets, and general convex sets—is developed comprehensively in <b>Section 8: Projections onto Subspaces and Affine Sets</b>, where we derive explicit formulas and explore connections to optimization.</p>
 
       <div class="insight">
         <h4>Why Projections Matter for Optimization</h4>
@@ -2503,9 +2529,12 @@
       </div>
 
       <h3>8.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
-      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank:
-      $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
-      </p>
+      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank, the orthogonal projection onto its column space $\mathcal{R}(A)$ is given by the matrix:
+      $$ P = A(A^\top A)^{-1} A^\top $$
+      This matrix computes the projection $\mathbf{p} = P\mathbf{b}$ for any input $\mathbf{b}$.
+      <br><b>Connection to Least Squares:</b> This formula is not accidental. As we will derive in <b>Section 9: The Method of Least Squares</b>, the optimal approximate solution to $A\mathbf{x} = \mathbf{b}$ is $\mathbf{x}^\star = (A^\top A)^{-1} A^\top \mathbf{b}$. The projection $\mathbf{p}$ is simply the vector $A\mathbf{x}^\star$ corresponding to this solution:
+      $$ \mathbf{p} = A \mathbf{x}^\star = A \underbrace{(A^\top A)^{-1} A^\top \mathbf{b}}_{\text{Least Squares Sol.}} $$
+      Thus, the projection matrix $P$ is the linear operator that maps a target vector $\mathbf{b}$ directly to its best approximation in the column space of $A$.</p>
 
       <h3>8.3 Projection onto Closed Convex Sets</h3>
       <p>The concept of projection extends beyond subspaces. For any nonempty, closed convex set $C$, and any point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.

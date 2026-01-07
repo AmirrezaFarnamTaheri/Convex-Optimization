@@ -1154,12 +1154,18 @@ body.hide-theorems .theorem-box { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--neutral-600); border-radius: 5px; border: 2px solid var(--bg-surface-1); }
 ::-webkit-scrollbar-thumb:hover { background: var(--neutral-500); }
 
-/* Mobile */
-@media (max-width: 768px) {
+/* Mobile & Tablet */
+@media (max-width: 1024px) {
   .lecture-container { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: static; margin-bottom: var(--space-6); border-right: none; }
   h1 { font-size: var(--text-3xl); }
   .lecture-grid { grid-template-columns: 1fr; }
+
+  /* Ensure sidebar is hidden by default on mobile if we want the toggle to control it
+     However, the current design puts it at the top/bottom.
+     If we want the 'Toggle Sidebar' button to be the primary way to see the TOC on mobile: */
+  .sidebar { display: none; }
+  .sidebar.active { display: block; }
 }
 
 /* Print Styles */

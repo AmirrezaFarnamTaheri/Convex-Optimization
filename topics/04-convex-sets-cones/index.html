@@ -441,27 +441,38 @@
 
           <div class="proof-step">
             <strong>Part 1: $\mathbb{S}^n_+ \subseteq (\mathbb{S}^n_+)^*$ (Primal implies Dual)</strong>
-            <p>Assume $A \in \mathbb{S}^n_+$. We must show that for any $B \in \mathbb{S}^n_+$, $\mathrm{tr}(AB) \ge 0$.</p>
-            <ul>
-              <li>Since $A$ is PSD, it has a "square root" decomposition $A = L L^\top$ (e.g., Cholesky or spectral).</li>
-              <li>Then $\mathrm{tr}(AB) = \mathrm{tr}(L L^\top B) = \mathrm{tr}(L^\top B L)$ by the cyclic property.</li>
-              <li>Let $M = L^\top B L$. Notice that for any vector $x$, $x^\top M x = x^\top L^\top B L x = (Lx)^\top B (Lx)$.</li>
-              <li>Since $B \succeq 0$, $(Lx)^\top B (Lx) \ge 0$ for any vector $Lx$. Thus $M$ is PSD.</li>
-              <li>The trace of a PSD matrix is the sum of its eigenvalues (which are non-negative), so $\mathrm{tr}(M) \ge 0$.</li>
-            </ul>
-            <p>Thus $\mathrm{tr}(AB) \ge 0$, so $A \in (\mathbb{S}^n_+)^*$.</p>
+            <p>Assume $A \in \mathbb{S}^n_+$. We want to show it lies in the dual cone. By definition, this requires $\langle A, B \rangle \ge 0$ for every $B \in \mathbb{S}^n_+$.</p>
+            <p><b>Step 1.1: Factorize A.</b> Since $A$ is symmetric positive semidefinite, we can write it as $A = L L^\top$ (using Cholesky factorization or eigenvalue decomposition $A = \sum \lambda_i v_i v_i^\top$).</p>
+            <p><b>Step 1.2: Use Cyclic Property.</b>
+            $$ \langle A, B \rangle = \mathrm{tr}(AB) = \mathrm{tr}(L L^\top B) $$
+            Using the cyclic property of the trace ($\mathrm{tr}(XY) = \mathrm{tr}(YX)$), let $X=L$ and $Y=L^\top B$:
+            $$ \mathrm{tr}(L (L^\top B)) = \mathrm{tr}((L^\top B) L) = \mathrm{tr}(L^\top B L) $$
+            </p>
+            <p><b>Step 1.3: Verify Non-negativity.</b> Let $M = L^\top B L$. Is its trace non-negative?
+            <br>Consider the quadratic form for any vector $x$:
+            $$ x^\top M x = x^\top L^\top B L x = (Lx)^\top B (Lx) $$
+            Let $y = Lx$. Then $x^\top M x = y^\top B y$. Since $B \succeq 0$, we know $y^\top B y \ge 0$ for any vector $y$.
+            <br>This implies $M$ is positive semidefinite ($M \succeq 0$). The trace of a PSD matrix is the sum of its eigenvalues, which are all non-negative. Thus $\mathrm{tr}(M) \ge 0$.
+            <br><b>Conclusion:</b> $\mathrm{tr}(AB) \ge 0$ for all $B \succeq 0$, so $A \in (\mathbb{S}^n_+)^*$.</p>
           </div>
 
           <div class="proof-step">
             <strong>Part 2: $(\mathbb{S}^n_+)^* \subseteq \mathbb{S}^n_+$ (Dual implies Primal)</strong>
-            <p>Assume $Y \in (\mathbb{S}^n_+)^*$. By definition, this means $\mathrm{tr}(XY) \ge 0$ for <i>all</i> test matrices $X \in \mathbb{S}^n_+$.</p>
-            <ul>
-              <li>We choose a specific family of test matrices. For any arbitrary vector $v \in \mathbb{R}^n$, let $X = vv^\top$.</li>
-              <li>Check if $X$ is PSD: $z^\top X z = z^\top v v^\top z = (v^\top z)^2 \ge 0$. Yes, it is.</li>
-              <li>Apply the dual condition: $\mathrm{tr}(XY) = \mathrm{tr}(vv^\top Y) = \mathrm{tr}(v^\top Y v) = v^\top Y v$.</li>
-              <li>The condition $\mathrm{tr}(XY) \ge 0$ implies $v^\top Y v \ge 0$.</li>
-            </ul>
-            <p>Since $v^\top Y v \ge 0$ holds for <i>all</i> vectors $v$, $Y$ satisfies the definition of a PSD matrix. Thus $Y \in \mathbb{S}^n_+$.</p>
+            <p>Assume $Y \in (\mathbb{S}^n_+)^*$. We must prove $Y$ is PSD. By definition, $Y$ must make a non-negative inner product with <i>every</i> matrix in the primal cone $\mathbb{S}^n_+$.</p>
+            <p><b>Step 2.1: Choose Rank-1 Test Matrices.</b>
+            The primal cone contains all matrices of the form $X = vv^\top$ for any vector $v \in \mathbb{R}^n$.
+            <br>Check feasibility: Is $vv^\top \in \mathbb{S}^n_+$?
+            $$ z^\top (vv^\top) z = (z^\top v)(v^\top z) = (v^\top z)^2 \ge 0 \quad \forall z $$
+            Yes, rank-1 symmetric matrices are always PSD.
+            </p>
+            <p><b>Step 2.2: Apply the Dual Condition.</b>
+            Since $Y$ is in the dual cone, $\mathrm{tr}(XY) \ge 0$ for our chosen $X=vv^\top$.
+            $$ \mathrm{tr}(vv^\top Y) = \mathrm{tr}(v^\top Y v) = v^\top Y v $$
+            Therefore, we have established that $v^\top Y v \ge 0$ for any vector $v$.
+            </p>
+            <p><b>Step 2.3: Conclusion.</b>
+            The condition "$\forall v, v^\top Y v \ge 0$" is exactly the variational definition of a Positive Semidefinite matrix. Thus $Y \in \mathbb{S}^n_+$.
+            </p>
           </div>
 
           <div class="proof-step">
@@ -615,16 +626,32 @@
         <h4>Proof Sketch (Constructive via Projection)</h4>
         <p>We construct the separating normal using the projection theorem.</p>
         <div class="proof-step">
-          <strong>1. Difference Set:</strong> Define $S = C - D$. Since $C, D$ are disjoint, $0 \notin S$. Since $C$ is closed and $D$ compact, $S$ is closed.
+            <strong>Step 1: Difference Set Geometry.</strong> Define the Minkowski difference $S = C - D = \{c - d \mid c \in C, d \in D\}$.
+            <ul>
+                <li>Since $C, D$ are disjoint, the origin $0$ is not in $S$.</li>
+                <li>Since $C, D$ are convex, $S$ is convex.</li>
+                <li>Since $C$ is closed and $D$ is compact, $S$ is closed (a sum of closed and compact sets is closed).</li>
+            </ul>
+            The problem reduces to separating the point $0$ from the closed convex set $S$.
         </div>
         <div class="proof-step">
-          <strong>2. Projection:</strong> Let $p = \Pi_S(0)$ be the projection of the origin onto $S$. Since $0 \notin S$, $p \neq 0$.
+            <strong>Step 2: Projection onto S.</strong> Let $p = \Pi_S(0)$ be the unique point in $S$ closest to the origin.
+            Since $S$ is closed and convex, this projection exists and is unique.
+            Since $0 \notin S$, we have $\|p\| > 0$, so $p \neq 0$.
         </div>
         <div class="proof-step">
-          <strong>3. Normal Vector:</strong> Set $a = -p$. By the projection theorem, $p$ is the unique point in $S$ minimizing norm, implying $a^\top z \le -\|p\|^2 < 0$ for all $z \in S$.
+            <strong>Step 3: Variational Inequality.</strong>
+            The projection theorem states that for any $z \in S$, the vector $p$ forms an obtuse angle with the path to $z$:
+            $$ \langle z - p, 0 - p \rangle \le 0 \implies \langle z - p, -p \rangle \le 0 $$
+            Rearranging: $\langle z, p \rangle \ge \|p\|^2$.
         </div>
         <div class="proof-step">
-          <strong>4. Separation:</strong> This implies $a^\top (c-d) < 0 \implies a^\top c < a^\top d$ for all $c \in C, d \in D$.
+            <strong>Step 4: Separation.</strong>
+            Set the normal vector $a = -p$. The inequality becomes $a^\top z \le -\|p\|^2$ for all $z \in S$.
+            Substituting $z = c - d$:
+            $$ a^\top (c - d) \le -\|p\|^2 < 0 \implies a^\top c < a^\top d - \|p\|^2 $$
+            Let $b = \sup_{c \in C} a^\top c$. Then $b \le \inf_{d \in D} a^\top d - \|p\|^2 < \inf_{d \in D} a^\top d$.
+            Thus, the hyperplane defined by $(a, b)$ strictly separates $C$ and $D$ with a gap of at least $\|p\|^2$.
         </div>
       </div>
 
@@ -1040,7 +1067,9 @@
       <strong>Step 2: Apply to Duals.</strong> Let $A = K_1^*$ and $B = K_2^*$. Then $(K_1^* + K_2^*)^* = K_1^{**} \cap K_2^{**}$.
     </div>
     <div class="proof-step">
-      <strong>Step 3: Biconjugate.</strong> Since $K_i$ are closed convex cones, $K_i^{**} = K_i$. Thus $(K_1^* + K_2^*)^* = K_1 \cap K_2$.
+      <strong>Step 3: Biconjugate.</strong> Since $K_i$ are closed convex cones, the Bipolar Theorem guarantees $K_i^{**} = K_i$.
+      Substituting this into the intersection formula, we get $(K_1^* + K_2^*)^* = K_1 \cap K_2$.
+      (Note: If $K_i$ were not closed, $K_i^{**}$ would be the closure of $K_i$).
     </div>
     <div class="proof-step">
       <strong>Step 4: Take Dual again.</strong> Taking the dual of both sides: $(K_1^* + K_2^*)^{**} = (K_1 \cap K_2)^*$.

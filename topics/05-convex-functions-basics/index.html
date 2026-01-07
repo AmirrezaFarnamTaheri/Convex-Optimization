@@ -1169,9 +1169,38 @@
         <h3>4.5 Infimal Convolution</h3>
         <p>A sophisticated operation related to partial minimization is <b>infimal convolution</b>. Given two convex functions $f, g: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, their infimal convolution is defined as:</p>
         $$ (f \square g)(x) = \inf_{y \in \mathbb{R}^n} \big( f(y) + g(x-y) \big) $$
-        <p>This operation is convex.
-        <br><i>Proof:</i> Consider the function $F(x, y) = f(y) + g(x-y)$. Since $y \mapsto f(y)$ is convex, and $(x, y) \mapsto x-y$ is affine, $g(x-y)$ is jointly convex in $(x,y)$. The sum $F(x,y)$ is thus jointly convex. Minimizing $F$ over $y$ yields $f \square g$, which is convex by the partial minimization rule.</p>
-        <p>This operation appears in regularization (e.g., Moreau envelope) and smoothing.</p>
+        <p>This operation is convex and is the functional analog of the Minkowski sum of sets.</p>
+
+        <div class="proof-box">
+          <h4>Geometric Proof: Minkowski Sum of Epigraphs</h4>
+          <p>The epigraph of the infimal convolution is exactly the vector sum of the epigraphs of $f$ and $g$:</p>
+          $$ \mathrm{epi}(f \square g) = \mathrm{epi}(f) + \mathrm{epi}(g) = \{(u+v, s+t) \mid (u,s) \in \mathrm{epi}\, f, (v,t) \in \mathrm{epi}\, g\} $$
+          <p>Since the Minkowski sum of two convex sets is always a convex set, the epigraph of $f \square g$ is convex, which implies the function itself is convex.</p>
+          <div class="proof-step">
+            <strong>Verification:</strong>
+            Let $(z, r) \in \mathrm{epi}(f) + \mathrm{epi}(g)$. Then $z = u+v$ and $r = s+t$ where $f(u) \le s$ and $g(v) \le t$.
+            <br>Thus $r \ge f(u) + g(v)$.
+            <br>Since $u = z-v$, we have $r \ge f(z-v) + g(v) \ge \inf_v (f(z-v) + g(v)) = (f \square g)(z)$.
+            <br>This shows $(z, r) \in \mathrm{epi}(f \square g)$.
+          </div>
+        </div>
+
+        <div class="proof-box">
+          <h4>Algebraic Proof</h4>
+          <p>Consider the function $F(x, y) = f(y) + g(x-y)$.
+          <ul>
+            <li>The term $f(y)$ is convex in $(x,y)$ (constant in $x$).</li>
+            <li>The map $(x, y) \mapsto x-y$ is linear (affine). Since $g$ is convex, the composition $g(x-y)$ is jointly convex in $(x,y)$.</li>
+          </ul>
+          The sum $F(x,y)$ is thus jointly convex. Minimizing $F$ over $y$ yields $f \square g$, which is convex by the <b>partial minimization rule</b>.</p>
+        </div>
+
+        <p><b>Applications:</b>
+        <ul>
+            <li><b>Smoothing:</b> If $g(x) = \frac{1}{2\lambda}\|x\|^2$, then $f \square g$ is the <b>Moreau Envelope</b>, a smoothed version of $f$ that is differentiable everywhere.</li>
+            <li><b>Regularization:</b> It corresponds to addition in the dual domain: $(f \square g)^* = f^* + g^*$.</li>
+        </ul>
+        </p>
 
         <h4>The Matrix-Fractional Function</h4>
       <p>The function $f(x, Y) = x^\top Y^{-1} x$ is defined for $x \in \mathbb{R}^n$ and $Y \in \mathbb{S}^n_{++}$. It is <b>jointly convex</b> in $x$ and $Y$.</p>
@@ -1851,11 +1880,19 @@
             </div>
             <div class="proof-step">
                 <strong>($\Leftarrow$) Monotone $\implies$ Convex.</strong>
-                <br>Let $g(t) = f(x + t(y-x))$. Then $g'(t) = \nabla f(x+t(y-x))^\top (y-x)$.
-                <br>By the Mean Value Theorem, $f(y) - f(x) = g(1) - g(0) = \int_0^1 g'(t) dt$.
-                <br>Using monotonicity, we can show $g'(t) \ge g'(0)$.
-                $$ ( \nabla f(z) - \nabla f(x) )^\top (z-x) \ge 0 \implies \nabla f(z)^\top (y-x) \cdot t \ge \nabla f(x)^\top (y-x) \cdot t $$
-                Dividing by $t>0$, the directional derivative increases. Thus $f(y) \ge f(x) + \nabla f(x)^\top (y-x)$.
+                <br>We wish to prove $f(y) \ge f(x) + \nabla f(x)^\top (y-x)$ using the integral of the derivative.
+                <br>Let $g(t) = f(x + t(y-x))$ for $t \in [0, 1]$. Then $g'(t) = \nabla f(x+t(y-x))^\top (y-x)$.
+                <br>We can express the function difference as an integral:
+                $$ f(y) - f(x) = g(1) - g(0) = \int_0^1 g'(t) dt $$
+                <br><b>Key Step:</b> We use the monotonicity condition to bound $g'(t)$.
+                <br>Let $z = x + t(y-x)$. The condition $(\nabla f(z) - \nabla f(x))^\top (z-x) \ge 0$ becomes:
+                $$ (\nabla f(z) - \nabla f(x))^\top (t(y-x)) \ge 0 $$
+                Since $t > 0$, we divide by $t$:
+                $$ (\nabla f(z) - \nabla f(x))^\top (y-x) \ge 0 \implies \nabla f(z)^\top (y-x) \ge \nabla f(x)^\top (y-x) $$
+                This means $g'(t) \ge g'(0)$.
+                <br><b>Integration:</b>
+                $$ f(y) - f(x) = \int_0^1 g'(t) dt \ge \int_0^1 g'(0) dt = g'(0) \cdot 1 = \nabla f(x)^\top (y-x) $$
+                Thus $f(y) \ge f(x) + \nabla f(x)^\top (y-x)$, which implies convexity.
             </div>
         </div>
 
@@ -2039,6 +2076,46 @@
             <br>Thus $\mathbf{v}^\top \nabla^2 f(\mathbf{x}) \mathbf{v} \ge 0$ for all $\mathbf{v}$, so the Hessian is PSD.
           </div>
         </div>
+
+        <div class="proof-box">
+          <h4>Deep Dive: Hessian of Geometric Mean</h4>
+          <p>Let $g(x) = (\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We prove concavity by showing $\nabla^2 g(x) \preceq 0$.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: First Derivative.</strong>
+            Let $\mu = g(x)$. Using the logarithmic derivative:
+            $$ \log g(x) = \frac{1}{n} \sum \log x_i \implies \frac{\nabla g(x)}{g(x)} = \frac{1}{n} \begin{bmatrix} 1/x_1 \\ \vdots \\ 1/x_n \end{bmatrix} $$
+            So $\nabla g(x) = \frac{g(x)}{n} [1/x_1, \dots, 1/x_n]^\top$.
+            <br>Let $y_i = 1/x_i$. Then $\nabla g(x) = \frac{\mu}{n} y$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Second Derivative.</strong>
+            We differentiate $\frac{\partial g}{\partial x_i} = \frac{\mu}{n x_i}$ with respect to $x_j$.
+            <ul>
+              <li><b>Case $i=j$:</b> $\frac{\partial}{\partial x_i} (\frac{\mu}{n} x_i^{-1}) = \frac{1}{n} (\frac{\partial \mu}{\partial x_i} x_i^{-1} - \mu x_i^{-2})$.
+              $$ = \frac{1}{n} \left( (\frac{\mu}{n x_i}) \frac{1}{x_i} - \frac{\mu}{x_i^2} \right) = \frac{\mu}{n x_i^2} \left( \frac{1}{n} - 1 \right) $$</li>
+              <li><b>Case $i \ne j$:</b> $\frac{\partial}{\partial x_j} (\frac{\mu}{n x_i}) = \frac{1}{n x_i} \frac{\partial \mu}{\partial x_j} = \frac{1}{n x_i} (\frac{\mu}{n x_j}) = \frac{\mu}{n^2 x_i x_j}$.</li>
+            </ul>
+            In matrix form:
+            $$ \nabla^2 g(x) = \frac{\mu}{n^2} y y^\top - \frac{\mu}{n} \mathrm{diag}(y^2) $$
+            where $y = [1/x_1, \dots, 1/x_n]^\top$.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Quadratic Form Analysis.</strong>
+            For any vector $v$:
+            $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (y^\top v)^2 - \frac{\mu}{n} \sum y_i^2 v_i^2 $$
+            Let $w_i = y_i v_i = v_i/x_i$.
+            $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (\sum w_i)^2 - \frac{\mu}{n} \sum w_i^2 = \frac{\mu}{n^2} \left[ (\sum w_i)^2 - n \sum w_i^2 \right] $$
+            We need to show $(\sum w_i)^2 \le n \sum w_i^2$.
+            <br>This is exactly the <b>Cauchy-Schwarz inequality</b> applied to the vector $w$ and the all-ones vector $\mathbf{1}$:
+            $$ (\mathbf{1}^\top w)^2 \le \|\mathbf{1}\|^2 \|w\|^2 = n \sum w_i^2 $$
+            Thus, the expression in the bracket is $\le 0$. Since $\mu > 0$, the quadratic form is $\le 0$.
+            <br><b>Conclusion:</b> $\nabla^2 g(x) \preceq 0$, so the geometric mean is concave.
+          </div>
+        </div>
+
         <div class="example">
             <h4>Example 4: Trace of Inverse</h4>
             <p>Let $f(X) = \mathrm{tr}(X^{-1})$ on $\mathbb{S}^n_{++}$. We can establish convexity in two ways:</p>
@@ -2094,19 +2171,6 @@
           <br>Thus $h$ is concave.</p>
         </div>
 
-        <div class="proof-box">
-          <h4>Deep Dive: Hessian of Geometric Mean</h4>
-          <p>Let $g(x) = (\prod x_i)^{1/n}$. We prove concavity directly via the Hessian.
-          <br>Using $g(x) = e^{\phi(x)}$ with $\phi(x) = \frac{1}{n}\sum \log x_i$, we derived:
-          $$ \nabla^2 g(x) = g(x) \left( u u^\top - \frac{1}{n} \mathrm{diag}(1/x_i^2) \right) $$
-          where $u_i = \frac{1}{n x_i}$.
-          <br>Testing the quadratic form with vector $\mathbf{v}$:
-          $$ \mathbf{v}^\top \nabla^2 g(\mathbf{x}) \mathbf{v} \propto \left(\sum \frac{v_i}{n x_i}\right)^2 - \frac{1}{n} \sum \frac{v_i^2}{x_i^2} $$
-          Let $a_i = v_i/x_i$. The condition for NSD becomes:
-          $$ (\sum a_i)^2 \le n \sum a_i^2 $$
-          This is exactly <b>Cauchy-Schwarz</b> applied to the vector $a$ and the all-ones vector $\mathbf{1}$: $(\mathbf{1}^\top a)^2 \le \|\mathbf{1}\|^2 \|a\|^2$.
-          <br>Thus $\nabla^2 g(x) \preceq 0$, so the geometric mean is concave.</p>
-        </div>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Heatmap: Hessian Eigenvalue Analyzer</h3>
@@ -2821,42 +2885,26 @@
   <br><b>(b)</b> Use this to show that if $f$ is log-concave, then $f$ satisfies the condition $f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
-    <p>We provide an <b>ultra-granular derivation</b> from first principles to ensure every step is clear.</p>
+    <p>We provide an <b>ultra-granular derivation</b> of the matrix calculus steps.</p>
 
     <div class="proof-step">
-      <strong>Step 1: Compute the Gradient $\nabla h(x)$.</strong>
-      Write $h(x)$ as a composition: $h(x) = \psi(f(x))$ where $\psi(s) = \log s$.
-      <br>By the chain rule for a scalar-to-scalar map:
-      $$ \frac{\partial h}{\partial x_i} = \psi'(f(x)) \cdot \frac{\partial f}{\partial x_i} = \frac{1}{f(x)} f_i(x) $$
-      Stacking these into a vector gives the gradient:
-      $$ \nabla h(x) = \frac{1}{f(x)} \nabla f(x) $$
-    </div>
-
-    <div class="proof-step">
-      <strong>Step 2: Compute the Hessian Entry-by-Entry.</strong>
-      We compute the partial derivative of the $i$-th gradient component $h_i(x) = f_i(x) / f(x)$ with respect to $x_j$:
-      $$ h_{ij}(x) = \frac{\partial}{\partial x_j} \left( \frac{f_i(x)}{f(x)} \right) $$
-      Recall the <b>Quotient Rule</b> for $\frac{u(x)}{v(x)}$: $\left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$.
-      Here $u = f_i(x)$ (partial derivative w.r.t $x_i$) and $v = f(x)$.
+      <strong>(a) Gradient and Hessian Derivation.</strong>
+      <p>Let $h(x) = \log f(x)$.
+      <br><b>Gradient:</b> Using the chain rule for $g(u) = \log u$:
+      $$ \nabla h(x) = g'(f(x)) \nabla f(x) = \frac{1}{f(x)} \nabla f(x) $$
+      </p>
+      <p><b>Hessian:</b> We differentiate $\nabla h(x)$ again using the product rule for vector-valued functions (or quotient rule).
+      <br>Let $u(x) = \frac{1}{f(x)}$ (scalar) and $v(x) = \nabla f(x)$ (vector).
+      $$ \nabla^2 h(x) = \nabla (u(x) v(x)) = v(x) \nabla u(x)^\top + u(x) \nabla v(x) $$
       <ul>
-        <li>Differentiating the top $u$: $u' = \frac{\partial}{\partial x_j} f_i(x) = f_{ij}(x)$.
-        <br>First term of numerator: $u'v = f_{ij}(x) f(x)$.</li>
-        <li>Differentiating the bottom $v$: $v' = \frac{\partial}{\partial x_j} f(x) = f_j(x)$.
-        <br>Second term of numerator: $uv' = f_i(x) f_j(x)$.</li>
+        <li>Term 1 ($\nabla v(x)$): The derivative of the gradient $\nabla f(x)$ is the Hessian $\nabla^2 f(x)$. So $u(x) \nabla v(x) = \frac{1}{f(x)} \nabla^2 f(x)$.</li>
+        <li>Term 2 ($\nabla u(x)^\top$): Using chain rule on $1/f(x)$:
+        $$ \nabla \left(\frac{1}{f(x)}\right) = -\frac{1}{f(x)^2} \nabla f(x) $$
+        So $v(x) \nabla u(x)^\top = \nabla f(x) \left( -\frac{1}{f(x)^2} \nabla f(x) \right)^\top = -\frac{1}{f(x)^2} \nabla f(x) \nabla f(x)^\top$.</li>
       </ul>
-      Substituting back into the formula:
-      $$ h_{ij} = \frac{f_{ij} f - f_i f_j}{f^2} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
-    </div>
-
-    <div class="proof-step">
-      <strong>Step 3: Convert to Matrix Form.</strong>
-      We recognize the terms in the expression for $h_{ij}$:
-      <ul>
-        <li>$f_{ij}$ are the entries of the Hessian matrix $\nabla^2 f(x)$.</li>
-        <li>$f_i f_j$ are the entries of the outer product matrix $\nabla f(x) \nabla f(x)^\top$.</li>
-      </ul>
-      Thus, in matrix notation:
+      Combining these:
       $$ \nabla^2 h(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
+      </p>
     </div>
 
     <div class="proof-step">

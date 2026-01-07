@@ -1546,14 +1546,34 @@
       <div class="proof-box">
         <h4>Proof: Dual of $\ell_1$ is $\ell_\infty$</h4>
         <div class="proof-step">
-          <strong>Claim:</strong> $\|\mathbf{y}\|_{1,*} = \|\mathbf{y}\|_\infty$
+          <strong>Goal:</strong> We want to compute the dual norm $\|\mathbf{y}\|_{1,*} = \sup_{\|\mathbf{x}\|_1 \le 1} \mathbf{y}^\top \mathbf{x}$. We claim the result is $\|\mathbf{y}\|_\infty = \max_i |y_i|$.
         </div>
         <div class="proof-step">
-          <strong>Proof:</strong> By definition, $\|\mathbf{y}\|_{1,*} = \sup_{\|\mathbf{x}\|_1 \le 1} \mathbf{y}^\top \mathbf{x}$.
-          <br><b>Upper bound:</b> For any $\mathbf{x}$ with $\|\mathbf{x}\|_1 \le 1$:
-          $$ \mathbf{y}^\top \mathbf{x} = \sum_i y_i x_i \le \sum_i |y_i| |x_i| \le \max_i |y_i| \sum_i |x_i| = \|\mathbf{y}\|_\infty \|\mathbf{x}\|_1 \le \|\mathbf{y}\|_\infty $$
-          <br><b>Achievability:</b> Let $k = \arg\max_i |y_i|$, and take $\mathbf{x}^* = \mathrm{sign}(y_k) \mathbf{e}_k$. Then $\|\mathbf{x}^*\|_1 = 1$ and:
-          $$ \mathbf{y}^\top \mathbf{x}^* = y_k \cdot \mathrm{sign}(y_k) = |y_k| = \|\mathbf{y}\|_\infty $$
+          <strong>Part 1: The Upper Bound ($\le$).</strong>
+          We must show that for <i>any</i> vector $\mathbf{x}$ inside the unit $\ell_1$ ball (i.e., $\sum |x_i| \le 1$), the inner product $\mathbf{y}^\top \mathbf{x}$ cannot exceed $\|\mathbf{y}\|_\infty$.
+          <br>Expand the inner product:
+          $$ \mathbf{y}^\top \mathbf{x} = \sum_{i=1}^n y_i x_i $$
+          Apply the absolute value inequality ($z \le |z|$):
+          $$ \sum_{i=1}^n y_i x_i \le \sum_{i=1}^n |y_i x_i| = \sum_{i=1}^n |y_i| |x_i| $$
+          Now, replace each $|y_i|$ with the largest possible value, $\max_k |y_k| = \|\mathbf{y}\|_\infty$. This can only make the sum larger:
+          $$ \sum_{i=1}^n |y_i| |x_i| \le \sum_{i=1}^n \|\mathbf{y}\|_\infty |x_i| = \|\mathbf{y}\|_\infty \left( \sum_{i=1}^n |x_i| \right) $$
+          Since we assumed $\|\mathbf{x}\|_1 = \sum |x_i| \le 1$:
+          $$ \|\mathbf{y}\|_\infty \left( \sum_{i=1}^n |x_i| \right) \le \|\mathbf{y}\|_\infty \cdot 1 = \|\mathbf{y}\|_\infty $$
+          Thus, $\|\mathbf{y}\|_{1,*} \le \|\mathbf{y}\|_\infty$.
+        </div>
+        <div class="proof-step">
+          <strong>Part 2: Achievability ($\ge$).</strong>
+          To prove equality, we must find <i>at least one</i> specific vector $\mathbf{x}^*$ with $\|\mathbf{x}^*\|_1 \le 1$ that actually achieves this bound.
+          <br>Let $k$ be the index where $\mathbf{y}$ achieves its maximum absolute value (i.e., $|y_k| = \|\mathbf{y}\|_\infty$).
+          Construct the vector $\mathbf{x}^*$ to have a non-zero entry only at this position $k$, with a sign matching $y_k$:
+          $$ \mathbf{x}^* = \mathrm{sign}(y_k) \mathbf{e}_k = (0, \dots, \underbrace{\mathrm{sign}(y_k)}_{k\text{-th pos}}, \dots, 0) $$
+          Check the constraint: $\|\mathbf{x}^*\|_1 = |0| + \dots + |\mathrm{sign}(y_k)| + \dots = 1 \le 1$. It is feasible.
+          <br>Check the value:
+          $$ \mathbf{y}^\top \mathbf{x}^* = \sum y_i x^*_i = y_k \cdot \mathrm{sign}(y_k) = |y_k| = \|\mathbf{y}\|_\infty $$
+          Since we found a valid vector achieving the bound, $\|\mathbf{y}\|_{1,*} \ge \|\mathbf{y}\|_\infty$.
+        </div>
+        <div class="proof-step">
+            <strong>Conclusion:</strong> Since $\|\mathbf{y}\|_{1,*} \le \|\mathbf{y}\|_\infty$ and $\|\mathbf{y}\|_{1,*} \ge \|\mathbf{y}\|_\infty$, we have $\|\mathbf{y}\|_{1,*} = \|\mathbf{y}\|_\infty$.
         </div>
       </div>
 
@@ -1932,7 +1952,7 @@
             <strong>Step 1: Factor out X.</strong>
             We want to isolate the perturbation $\Delta$. Since $X$ is invertible, we can write $X+\Delta = X(I + X^{-1}\Delta)$.
             $$ \log \det (X + \Delta) = \log \det (X(I + X^{-1}\Delta)) $$
-            Using the multiplicative property of the determinant ($\det(AB) = \det(A)\det(B)$) and the additive property of the logarithm ($\log(ab) = \log a + \log \mathbf{b}$):
+            Using the multiplicative property of the determinant ($\det(AB) = \det(A)\det(B)$) and the additive property of the logarithm ($\log(ab) = \log a + \log b$):
             $$ = \log (\det X \cdot \det(I + X^{-1}\Delta)) = \log \det X + \log \det(I + X^{-1}\Delta) $$
           </div>
           <div class="proof-step">
@@ -1946,9 +1966,9 @@
           <div class="proof-step">
             <strong>Step 3: Linearize via Taylor Series.</strong>
             Recall the scalar Taylor series expansion for the natural logarithm near 1:
-            $$ \log(1+z) = z - \frac{z^2}{2} + \frac{z^3}{3} - \dots $$
-            For small perturbations, we only care about the linear term ($z$).
-            Applying this to each eigenvalue term $\log(1+\lambda_i)$:
+            $$ \log(1+z) \approx z \quad \text{for } z \approx 0 $$
+            For small perturbations $E$, the eigenvalues $\lambda_i$ are small.
+            Applying this approximation to each term:
             $$ \sum_{i=1}^n \log(1 + \lambda_i) \approx \sum_{i=1}^n \lambda_i $$
             We recognize the sum of eigenvalues $\sum \lambda_i$ as the <b>trace</b> of the matrix $E$.
             $$ \sum_{i=1}^n \lambda_i = \mathrm{tr}(E) = \mathrm{tr}(X^{-1}\Delta) $$
@@ -2238,9 +2258,26 @@
         <p>The <b>Schur complement</b> of $D$ in $M$ is the matrix defined as:</p>
         $$ S := A - B D^{-1} C $$
 
-        <h4>2. Constructing the Elimination Matrix</h4>
+        <h4>2. Constructing the Elimination Matrix (Derivation)</h4>
         <p>To understand the origin of $S$, we apply <b>Block Gaussian Elimination</b>. The goal is to zero out the $C$ block (bottom-left) to obtain a block upper-triangular matrix, from which properties like determinant and invertibility are easily read.</p>
-        <p>We achieve this by post-multiplying $M$ by an elimination matrix $E$:</p>
+
+        <div class="proof-step">
+            <strong>Goal:</strong> We want to find a matrix $E$ such that multiplying $M$ by $E$ eliminates the bottom-left block.
+            $$ M E = \begin{bmatrix} A & B \\ C & D \end{bmatrix} \begin{bmatrix} I & 0 \\ Z & I \end{bmatrix} = \begin{bmatrix} \star & B \\ 0 & D \end{bmatrix} $$
+            Here, $Z$ is the unknown "multiplier" we need to find.
+        </div>
+        <div class="proof-step">
+            <strong>Solving for Z:</strong>
+            Let's multiply the bottom row of blocks:
+            $$ \text{Bottom-Left Result} = C \cdot I + D \cdot Z $$
+            We require this to be the zero matrix:
+            $$ C + DZ = 0 \implies DZ = -C $$
+            Since $D$ is invertible, we solve for $Z$ by left-multiplying by $D^{-1}$:
+            $$ Z = -D^{-1}C $$
+            This gives us the exact form of the elimination matrix.
+        </div>
+
+        <p>We define the elimination matrix $E$ using this $Z$:</p>
         $$ E = \begin{bmatrix} I_p & 0 \\ -D^{-1}C & I_q \end{bmatrix} $$
         <p>This matrix $E$ is block lower-triangular with identity matrices on the diagonal, so $\det(E) = 1$. It acts as a "column operation": it subtracts $D^{-1}C$ times the second column-block from the first column-block.</p>
 
@@ -3329,27 +3366,56 @@
       <p>We proved $\|AB\|_F \le \|A\|_F \|B\|_F$ in the lecture using Cauchy-Schwarz.
       <br>Re-derive this result by writing $\|X\|_F^2 = \mathrm{tr}(X^\top X)$ and using the property $\mathrm{tr}(M) = \sum \lambda_i(M)$ along with the fact that $\lambda_{\max}(A^\top A) \le \mathrm{tr}(A^\top A)$.</p>
       <div class="solution-box">
-        <h4>Solution</h4>
+        <h4>Solution (Detailed Walkthrough)</h4>
         <div class="proof-step">
-          We want to bound $\|AB\|_F^2 = \mathrm{tr}(B^\top A^\top A B)$.
-          Using the cyclic property: $\mathrm{tr}(B^\top (A^\top A) B) = \mathrm{tr}((A^\top A) (B B^\top))$.
+          <strong>Step 1: Convert Norm to Trace.</strong>
+          The squared Frobenius norm is defined as $\|X\|_F^2 = \mathrm{tr}(X^\top X)$.
+          We apply this to the product $AB$:
+          $$ \|AB\|_F^2 = \mathrm{tr}((AB)^\top (AB)) = \mathrm{tr}(B^\top A^\top A B) $$
         </div>
         <div class="proof-step">
-          <strong>Step 2: Trace Inequality.</strong>
-          Let $P = A^\top A$ and $Q = B B^\top$. Both are symmetric positive semidefinite (PSD).
-          We claim $\mathrm{tr}(PQ) \le \lambda_{\max}(P) \mathrm{tr}(Q)$.
-          <br><i>Proof:</i> Since $Q$ is symmetric, it has an eigendecomposition $Q = U \Lambda U^\top$ with $\lambda_i \ge 0$.
-          $$ \mathrm{tr}(PQ) = \mathrm{tr}(P U \Lambda U^\top) = \mathrm{tr}(U^\top P U \Lambda) $$
-          Let $M = U^\top P U$. The diagonal entry $M_{ii} = u_i^\top P u_i$.
-          Since $u_i$ is a unit vector (column of orthogonal matrix $U$), the Rayleigh quotient implies:
-          $$ \lambda_{\min}(P) \le u_i^\top P u_i \le \lambda_{\max}(P) $$
-          Thus $M_{ii} \le \lambda_{\max}(P)$.
-          $$ \mathrm{tr}(M \Lambda) = \sum_i M_{ii} \lambda_i \le \sum_i \lambda_{\max}(P) \lambda_i = \lambda_{\max}(P) \sum_i \lambda_i = \lambda_{\max}(P) \mathrm{tr}(Q) $$
+          <strong>Step 2: Use Cyclic Property.</strong>
+          Recall that $\mathrm{tr}(XYZ) = \mathrm{tr}(ZXY)$. Let $X = B^\top$, $Y = A^\top A$, $Z = B$.
+          We can cycle $B$ to the left (or $B^\top$ to the right). Let's cycle $B$ to the left of $B^\top$:
+          $$ \mathrm{tr}(B^\top (A^\top A) B) = \mathrm{tr}((A^\top A) (B B^\top)) $$
+          Let $P = A^\top A$ and $Q = B B^\top$. Note that both $P$ and $Q$ are symmetric positive semidefinite (PSD) matrices.
+          Our goal is to bound $\mathrm{tr}(PQ)$.
         </div>
         <div class="proof-step">
-          Applying this: $\|AB\|_F^2 \le \lambda_{\max}(A^\top A) \mathrm{tr}(B B^\top) = \|A\|_2^2 \|B\|_F^2$.
-          Since the spectral norm $\|A\|_2$ satisfies $\|A\|_2 \le \|A\|_F$, we have $\|A\|_2^2 \le \|A\|_F^2$.
-          <br>Thus $\|AB\|_F^2 \le \|A\|_F^2 \|B\|_F^2$. Taking square roots gives the result.
+          <strong>Step 3: Establish Trace Inequality.</strong>
+          We claim that for PSD matrices $P, Q$: $\mathrm{tr}(PQ) \le \lambda_{\max}(P) \mathrm{tr}(Q)$.
+          <br><i>Proof:</i>
+          <br>1. Diagonalize $Q$ as $Q = U \Lambda U^\top$, where $U$ is orthogonal and $\Lambda = \mathrm{diag}(\lambda_i(Q))$. Note $\lambda_i(Q) \ge 0$.
+          <br>2. Substitute into the trace:
+          $$ \mathrm{tr}(PQ) = \mathrm{tr}(P U \Lambda U^\top) $$
+          <br>3. Use the cyclic property again to move $U^\top$:
+          $$ = \mathrm{tr}(U^\top P U \Lambda) $$
+          <br>4. Let $M = U^\top P U$. The diagonal elements are $M_{ii} = \mathbf{u}_i^\top P \mathbf{u}_i$.
+          Since $\mathbf{u}_i$ is a unit vector, the Rayleigh quotient tells us $M_{ii} \le \lambda_{\max}(P)$.
+          <br>5. Compute the trace of the product $M \Lambda$ (which is diagonal $\times$ diagonal effectively for the trace sum):
+          $$ \mathrm{tr}(M \Lambda) = \sum_{i} M_{ii} \lambda_i(Q) $$
+          <br>6. Apply the inequality $M_{ii} \le \lambda_{\max}(P)$:
+          $$ \sum_{i} M_{ii} \lambda_i(Q) \le \sum_{i} \lambda_{\max}(P) \lambda_i(Q) = \lambda_{\max}(P) \sum_{i} \lambda_i(Q) $$
+          <br>7. Recognize that $\sum \lambda_i(Q) = \mathrm{tr}(Q)$.
+          $$ \le \lambda_{\max}(P) \mathrm{tr}(Q) $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 4: Substitute Back.</strong>
+          We have:
+          $$ \|AB\|_F^2 \le \lambda_{\max}(A^\top A) \mathrm{tr}(B B^\top) $$
+          Identify the terms:
+          <ul>
+            <li>$\lambda_{\max}(A^\top A) = \|A\|_2^2$ (Squared Spectral Norm).</li>
+            <li>$\mathrm{tr}(B B^\top) = \mathrm{tr}(B^\top B) = \|B\|_F^2$ (Squared Frobenius Norm).</li>
+          </ul>
+          So, $\|AB\|_F^2 \le \|A\|_2^2 \|B\|_F^2$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 5: Compare Norms.</strong>
+          We know that the spectral norm is always less than or equal to the Frobenius norm: $\|A\|_2 \le \|A\|_F$.
+          Therefore, $\|A\|_2^2 \le \|A\|_F^2$.
+          $$ \|AB\|_F^2 \le \|A\|_F^2 \|B\|_F^2 $$
+          Taking square roots completes the proof.
         </div>
       </div>
       <div class="recap-box">

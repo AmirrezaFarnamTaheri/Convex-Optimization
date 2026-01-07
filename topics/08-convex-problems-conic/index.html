@@ -273,8 +273,15 @@
         \end{aligned}
         $
       </p>
-      <p>Note: The inequality constraints must define a convex set, so we typically require $f_i$ to be convex, not merely quasiconvex (since sublevel sets of individual quasiconvex functions are convex, but their intersection might not have nice properties without stronger assumptions, though technically intersection of convex sets is convex. Standard form usually requires convex constraints).</p>
-      <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{L}^{n+1}$.</p>
+      <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{Q}^{n+1}$.</p>
+
+      <h4>Example 4.3: Mechanical Equilibrium with Friction (Robotics)</h4>
+      <p>In mechanics, a contact force $\mathbf{f} \in \mathbb{R}^3$ at a contact point must satisfy the Coulomb friction model to avoid slipping.
+      <br>Decompose $\mathbf{f}$ into a normal component $f_n$ and a tangential component $\mathbf{f}_t \in \mathbb{R}^2$.
+      <br><b>Constraint:</b> $\|\mathbf{f}_t\|_2 \le \mu f_n$, where $\mu$ is the friction coefficient.
+      <br>This is exactly a Second-Order Cone constraint:
+      $$ (f_n, \frac{1}{\mu}\mathbf{f}_t) \in \mathcal{Q}^3 $$
+      Robotic grasping and structural stability problems are often modeled as SOCPs because of this "friction cone" geometry.</p>
 
       <h3>1.5 Application: Robust Optimization via Dual Norms</h3>
       <p>Robust optimization addresses optimization under uncertainty by requiring constraints to hold for all possible parameter values. When uncertainty sets are norm balls, robustification leads naturally to SOCP formulations through the dual norm lemma.</p>
@@ -605,6 +612,23 @@
           This LMI exactly encodes the norm constraint.
         </div>
       </div>
+
+      <h4>Example: MAX-CUT Relaxation (Combinatorics)</h4>
+      <p>The MAX-CUT problem asks to partition graph vertices into two sets to maximize the number of edges crossing the cut.
+      <br><b>Integer Formulation:</b> $\max \frac{1}{2} \sum_{(i,j) \in E} (1 - x_i x_j)$ subject to $x_i \in \{-1, 1\}$.
+      <br>This is equivalent to $\max \frac{1}{4} x^\top L x$ subject to $x_i^2 = 1$, where $L$ is the graph Laplacian.
+      <br><b>Semidefinite Relaxation (Goemans-Williamson):</b>
+      Lift the variable $x$ to a matrix $X = xx^\top$.
+      Properties of $X$: $X \succeq 0$, $\text{rank}(X)=1$, $X_{ii} = x_i^2 = 1$.
+      <br>Relax the hard rank constraint ($\text{rank}(X)=1$) to a convex constraint ($X \succeq 0$).
+      $$
+      \begin{aligned}
+      \text{maximize} \quad & \frac{1}{4} \text{tr}(LX) \\
+      \text{subject to} \quad & X_{ii} = 1, \quad i=1,\dots,n \\
+      & X \succeq 0
+      \end{aligned}
+      $$
+      This is an SDP. The solution provides a high-quality upper bound and can be rounded to a valid cut (with guaranteed approximation ratio 0.878).</p>
 
 
       <!-- Widget 5: SDP Visualizer -->

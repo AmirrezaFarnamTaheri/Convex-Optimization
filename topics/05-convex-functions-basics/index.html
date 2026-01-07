@@ -837,6 +837,14 @@
             $$ \log\left(\sum e^{x_i}\right) = \log\left(e^M \sum e^{x_i - M}\right) = M + \log\left(\sum e^{x_i - M}\right) $$
             Since $x_i - M \le 0$, each term $e^{x_i-M} \le 1$. The sum is at least 1 (the max term is $e^0=1$) and at most $n$.
             Thus $0 \le \log(\sum \dots) \le \log n$. Adding $M$ gives the result.</p>
+
+            <div class="insight" style="margin-top: 12px; border-left: 3px solid var(--primary);">
+              <h4 style="margin-top: 0; font-size: 0.95em;">Geometric Intuition: Softmax Temperature</h4>
+              <p>The "softness" of the approximation can be tuned. Define $f_\gamma(x) = \gamma \log \sum e^{x_i/\gamma}$.
+              <br>As $\gamma \to 0^+$, $f_\gamma(x) \to \max_i x_i$. The error is bounded by $\gamma \log n$.
+              <br>This is widely used in physics (free energy) and machine learning (attention mechanisms) to replace non-differentiable max functions with smooth convex surrogates.</p>
+            </div>
+
             <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
         </div>
 
@@ -2730,13 +2738,16 @@
       <ul>
         <li>Factor the expression: $t^p - \|x\|_p^p = t^{p-1} (t - \|x\|_p^p/t^{p-1})$.</li>
         <li>The term $q(x,t) = \|x\|_p^p/t^{p-1}$ is the perspective of the convex function $\|x\|_p^p$, so $q$ is convex.</li>
-        <li>Thus $r(x,t) = t - q(x,t)$ is concave and positive on the domain.</li>
+        <li>Thus $r(x,t) = t - q(x,t)$ is <b>concave</b> (affine minus convex) and positive on the domain.</li>
         <li>We can write $s(x,t) = (t^{p-1} r(x,t))^{1/p} = t^{(p-1)/p} r(x,t)^{1/p}$.</li>
-        <li>This is the composition of the function $\Phi(a,b) = a^{(p-1)/p} b^{1/p}$ with $a=t$ (affine) and $b=r(x,t)$ (concave).</li>
-        <li>$\Phi(a,b)$ is a weighted geometric mean, which is concave and non-decreasing in both arguments.</li>
-        <li>Therefore, by the composition rule (concave non-decreasing outer $\circ$ concave inner), $s(x,t)$ is concave.</li>
+        <li>This is the composition of the outer function $\Phi(a,b) = a^{(p-1)/p} b^{1/p}$ with inner functions $a(x,t)=t$ and $b(x,t)=r(x,t)$.</li>
+        <li><b>Check Outer Function $\Phi$:</b> This is a weighted geometric mean (Cobb-Douglas type).
+          <br>Hessian check or log-concavity shows $\Phi$ is <b>concave</b>.
+          <br>Monotonicity: $\partial \Phi / \partial a > 0$ and $\partial \Phi / \partial b > 0$ for $a,b > 0$. It is <b>non-decreasing</b>.</li>
+        <li><b>Check Inner Functions:</b> $a(x,t)=t$ is affine (concave). $b(x,t)=r(x,t)$ is concave.</li>
+        <li><b>Apply Rule:</b> Concave non-decreasing outer function $\Phi$ composed with concave inner functions $\implies$ <b>Concave</b> result.</li>
       </ul>
-      <p><b>Conclusion:</b> $f = -s$ is <b>Convex</b>.</p>
+      <p><b>Conclusion:</b> Since $s(x,t)$ is concave, $f = -s$ is <b>Convex</b>.</p>
     </div>
 
     <div class="proof-step">

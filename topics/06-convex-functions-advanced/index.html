@@ -656,8 +656,16 @@
       <ul>
           <li>The gradient maps are inverses: $\nabla f^*(y) = x$ where $y = \nabla f(x)$. So $\nabla f^* = (\nabla f)^{-1}$.</li>
           <li>At the optimum, Fenchel's inequality holds with equality: $f(x) + f^*(y) = x^\top y$ where $y = \nabla f(x)$.</li>
-      </ul>
-      This transformation connects Lagrangian and Hamiltonian mechanics.</p>
+      </ul></p>
+
+      <div class="insight">
+        <h4>Physics Interpretation: Lagrangian to Hamiltonian</h4>
+        <p>In classical mechanics, the state is described by position $q$ and velocity $\dot{q}$. The <b>Lagrangian</b> $L(q, \dot{q})$ captures the energy balance ($T-V$).
+        <br>To switch to the <b>Hamiltonian</b> formulation (position $q$ and momentum $p$), we take the Legendre transform with respect to velocity:
+        $$ p = \nabla_{\dot{q}} L(q, \dot{q}) \quad (\text{Momentum is gradient of Lagrangian}) $$
+        $$ H(q, p) = p^\top \dot{q} - L(q, \dot{q}) \quad (\text{Hamiltonian is conjugate}) $$
+        This change of variables (from $\dot{q}$ to $p$) is valid because the kinetic energy term is typically strictly convex in $\dot{q}$.</p>
+      </div>
 
       <h4>3.5.2 The Master Identity: Infimum via Conjugate</h4>
 

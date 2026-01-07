@@ -1096,11 +1096,47 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      The constraint can be written as $(f_i^\top x + g_i, D_i x + e_i) \in \mathcal{Q}$.
-      Let $z_i = (f_i^\top x + g_i, D_i x + e_i)$.
-      The Lagrangian involves multipliers $\lambda_i \in \mathcal{Q}^* = \mathcal{Q}$ and $\nu$ for the equality.
-      $$ L(x, \lambda, \nu) = c^\top x + \nu^\top (b - Ax) - \sum \lambda_i^\top z_i $$
-      Minimizing over $x$ gives the dual equality constraint. The condition $\lambda_i \in \mathcal{Q}$ is explicitly an SOC constraint.
+      <strong>Step 1: Conic Formulation.</strong>
+      Rewrite the SOC constraint as membership in the second-order cone $\mathcal{Q}_{k_i+1}$:
+      $$ (D_i x + e_i, f_i^\top x + g_i) \in \mathcal{Q}_{k_i+1} $$
+      Note the order: typically we write $(t, \mathbf{u}) \in \mathcal{Q}$ where $t \ge \|\mathbf{u}\|$. Here $t = f_i^\top x + g_i$ and $\mathbf{u} = D_i x + e_i$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 2: Dual Variables.</strong>
+      Associate a dual variable $\nu \in \mathbb{R}^m$ with the equality $Ax=b$.
+      Associate a dual variable $\mathbf{z}_i = (\mathbf{u}_i, t_i) \in \mathcal{Q}_{k_i+1}^*$ with each conic constraint.
+      Since $\mathcal{Q}$ is self-dual, the condition is simply $\|\mathbf{u}_i\|_2 \le t_i$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 3: The Lagrangian.</strong>
+      The Lagrangian is $L(x, \nu, \mathbf{z}) = c^\top x + \nu^\top (b - Ax) - \sum_{i=1}^m \mathbf{z}_i^\top (D_i x + e_i, f_i^\top x + g_i)$.
+      Recall the inner product in the cone is just the dot product.
+      $$ \mathbf{z}_i^\top (\dots) = \mathbf{u}_i^\top (D_i x + e_i) + t_i (f_i^\top x + g_i) $$
+      Grouping terms by $x$:
+      $$ L = \left( c - A^\top \nu - \sum_{i=1}^m (D_i^\top \mathbf{u}_i + t_i f_i) \right)^\top x + \left( \nu^\top b - \sum_{i=1}^m (\mathbf{u}_i^\top e_i + t_i g_i) \right) $$
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 4: The Dual Function.</strong>
+      The dual function $g(\nu, \mathbf{z}) = \inf_x L(x, \nu, \mathbf{z})$.
+      Since $L$ is affine in $x$, the infimum is $-\infty$ unless the coefficient of $x$ is zero.
+      Dual constraint: $c - A^\top \nu - \sum (D_i^\top \mathbf{u}_i + t_i f_i) = 0$.
+      If this holds, $g(\nu, \mathbf{z}) = \nu^\top b - \sum (\mathbf{u}_i^\top e_i + t_i g_i)$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 5: Final Dual Problem.</strong>
+      Maximize the dual function subject to constraints:
+      $$
+      \begin{aligned}
+      \max_{\nu, \mathbf{u}_i, t_i} \quad & b^\top \nu - \sum_{i=1}^m (e_i^\top \mathbf{u}_i + g_i t_i) \\
+      \text{s.t.} \quad & A^\top \nu + \sum_{i=1}^m (D_i^\top \mathbf{u}_i + f_i t_i) = c \\
+      & \|\mathbf{u}_i\|_2 \le t_i, \quad i=1,\dots,m
+      \end{aligned}
+      $$
+      This is clearly another SOCP (linear objective, linear equalities, SOC constraints).
     </div>
   </div>
 </div>

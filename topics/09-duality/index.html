@@ -110,6 +110,17 @@
         <b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$.
         <br>This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
 
+        <div class="intuition-box">
+          <h4>Visual Metaphor: Ball in a Box</h4>
+          <p>Imagine a ball rolling down a hill (minimizing potential energy $f_0(x)$) inside a box (constraints).
+          <ul>
+            <li><b>Interior:</b> If the ball stops in the middle, the ground must be flat ($\nabla f_0 = 0$). No constraints are active ($\lambda = 0$).</li>
+            <li><b>Wall:</b> If it stops against a wall, "gravity" ($-\nabla f_0$) pushes it into the wall. The wall pushes back with a normal force. This normal force is the dual variable $\lambda$.</li>
+            <li><b>Corner:</b> If it stops in a corner, the force is a sum of normal forces from each wall meeting there ($\sum \lambda_i a_i$).</li>
+          </ul>
+          The KKT condition $\nabla f_0 + \sum \lambda_i \nabla f_i = 0$ is simply Newton's First Law: forces sum to zero.</p>
+        </div>
+
         <h3>1.3 Supporting Hyperplanes (The Skeleton)</h3>
         <p>This is the deep geometric backbone of optimization.</p>
         <div class="theorem-box">
@@ -147,6 +158,16 @@
         <p>Constraints are modeled by indicator functions $I_C(\mathbf{x})$. Their conjugates are <b>Support Functions</b>:
         $$ \sigma_C(\mathbf{y}) = I_C^*(\mathbf{y}) = \sup_{\mathbf{x} \in C} \mathbf{y}^\top \mathbf{x} $$
         This explains why dual problems involve maximizing linear functions over convex sets.</p>
+
+        <div class="insight">
+          <h4>Terminology Check: Dual Norm vs. Dual Problem</h4>
+          <p>We use the word "dual" for two related but distinct concepts.
+          <ul>
+            <li><b>Dual Problem ($d^*$):</b> A specific optimization problem derived from a primal problem via the Lagrangian.</li>
+            <li><b>Dual Norm ($\|z\|_*$):</b> A derived norm defined by $\sup_{\|x\|\le 1} z^\top x$.</li>
+          </ul>
+          <b>The Connection:</b> The dual problem of minimizing a norm $\|Ax-b\|$ naturally involves the dual norm constraint $\|z\|_* \le 1$. The dual norm appears because it is the "support function" of the unit ball.</p>
+        </div>
       </section>
 
       <section class="section-card" id="section-2">
@@ -614,6 +635,14 @@
             <li>If $p^*$ is differentiable, then $\frac{\partial p^*}{\partial u_i} = -\lambda_i^*$ and $\frac{\partial p^*}{\partial v_j} = -\nu_j^*$. The Lagrange multipliers are exactly the <strong>sensitivity</strong> of the optimal value to constraint perturbations.</li>
           </ul>
           </p>
+
+          <div class="example">
+            <h4>Economic Example: Resource Limits</h4>
+            <p>Maximize Profit $c^\top x$ subject to Resource Limit $Ax \le b$.
+            <br>Dual variable $\lambda_i^*$ corresponds to the resource constraint $a_i^\top x \le b_i$.
+            <br><b>Interpretation:</b> $\lambda_i^*$ is the <b>marginal value</b> of resource $i$. If you could buy $\epsilon$ more units of resource $i$, your profit would increase by $\lambda_i^* \epsilon$.
+            <br>This tells you exactly how much you should be willing to pay for extra resources. If the market price is $<\lambda_i^*$, buy more!</p>
+          </div>
         </div>
 
         <h3>6.4 Local Sensitivity</h3>

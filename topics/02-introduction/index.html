@@ -1350,6 +1350,54 @@ print(f"Optimal weights: {w.value}")</code></pre>
           <p><b>Issue:</b> This is equivalent to $\min -f(x)$ where $-f$ is concave (non-convex).</p>
           <p><b>Fix:</b> Either minimize instead, or reformulate.</p>
         </div>
+
+        <h3>8.3 Hands-On Verification: The "Parser" Method</h3>
+        <p>Verifying convexity manually is like parsing a sentence: you break it down into atomic parts and verify the grammar rules (composition rules) at each step. Let's walk through a complex example.</p>
+
+        <div class="proof-box">
+          <h4>Walkthrough: Verifying the Log-Barrier of a Paraboloid</h4>
+          <p><b>Function:</b> $f(x, y) = -\log(y - \|x\|_2^2)$
+          <br><b>Domain:</b> $\{(x, y) \in \mathbb{R}^n \times \mathbb{R} \mid y > \|x\|_2^2\}$.
+          <br><b>Goal:</b> Prove $f$ is convex.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: Identify the innermost components.</strong>
+            <br>Term 1: $g_1(x) = \|x\|_2^2$. This is a convex quadratic form ($x^\top I x$).
+            <br>Term 2: $g_2(y) = y$. This is affine (convex and concave).
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Analyze the inner combination.</strong>
+            Let $u(x, y) = y - \|x\|_2^2$.
+            <br>This is a linear combination: $(+1) \cdot \text{Affine} + (-1) \cdot \text{Convex}$.
+            <br>Since the negative of a convex function is concave, $u(x, y)$ is the sum of a concave function ($y$) and a concave function ($-\|x\|^2$).
+            <br><b>Result:</b> $u(x, y)$ is <b>concave</b>.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Analyze the outer function.</strong>
+            Let $h(u) = -\log(u)$.
+            <br>Derivative: $h'(u) = -1/u$. Second derivative: $h''(u) = 1/u^2$.
+            <br>Since $h''(u) > 0$ for all $u$ in the domain ($u > 0$), $h$ is <b>convex</b>.
+            <br>Crucially, we must check monotonicity. $h'(u) = -1/u < 0$, so $h$ is <b>decreasing</b>.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Apply the Composition Rule.</strong>
+            Rule: $f = h(u(x))$ is convex if:
+            <ul>
+              <li>$h$ is convex and non-decreasing, and $u$ is convex. (Not applicable here)</li>
+              <li>$h$ is convex and <b>non-increasing</b>, and $u$ is <b>concave</b>. (Matches!)</li>
+            </ul>
+            Here, $h=-\log(\cdot)$ is convex decreasing, and $u(x,y)$ is concave.
+          </div>
+
+          <div class="proof-step">
+            <strong>Conclusion:</strong>
+            The function $f(x, y) = -\log(y - \|x\|_2^2)$ is convex.
+            <br><i>Geometric Interpretation:</i> This function acts as a "barrier" that blows up as $(x,y)$ approaches the boundary of the epigraph of the parabola $y \ge x^2$. Barriers for convex sets are generally convex functions.
+          </div>
+        </div>
       </section>
 
       <section class="section-card" id="section-9">

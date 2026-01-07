@@ -939,14 +939,20 @@
 
           <div class="proof-step">
             <strong>Step 4: Verify mapping.</strong>
-            Let's calculate $P(\mathbf{z})$. The $t$-coordinate of $\mathbf{z}$ is $D = \mu t + (1-\mu)t'$.
-            Substituting $\mu$:
-            $$ D = \frac{\alpha t' t + (1-\alpha)t t'}{\alpha t' + (1-\alpha)t} = \frac{tt'}{\alpha t' + (1-\alpha)t} $$
-            The $\mathbf{y}$-coordinate of $\mathbf{z}$ is $Y_{num} = \mu \mathbf{y} + (1-\mu) \mathbf{y}'$.
-            $$ P(\mathbf{z}) = \frac{Y_{num}}{D} = \frac{\mu}{D} \mathbf{y} + \frac{1-\mu}{D} \mathbf{y}' $$
-            Calculating the coefficients: $\frac{\mu}{D} = \frac{\alpha t' / (\dots)}{t t' / (\dots)} \cdot \frac{1}{t} ... $ wait, simpler algebra:
-            $$ \mu = \frac{\alpha/t}{\alpha/t + (1-\alpha)/t'} \implies \frac{\mu}{\mu t + (1-\mu)t'} = \frac{\alpha}{t} $$
-            Thus $P(\mathbf{z}) = \frac{\alpha}{t} \mathbf{y} + \frac{1-\alpha}{t'} \mathbf{y}' = \alpha \mathbf{u} + (1-\alpha) \mathbf{v} = \mathbf{w}$.
+            We calculate $P(\mathbf{z}) = Y_{num} / D$, where $Y_{num}$ is the vector part and $D$ is the scalar part of $\mathbf{z}$.
+            <br>The scalar denominator is $D = \mu t + (1-\mu)t'$.
+            <br>The vector numerator is $Y_{num} = \mu \mathbf{y} + (1-\mu) \mathbf{y}'$.
+            <br>The projection is:
+            $$ P(\mathbf{z}) = \frac{\mu}{D} \mathbf{y} + \frac{1-\mu}{D} \mathbf{y}' $$
+            Let's simplify the coefficient $\frac{\mu}{D}$:
+            $$ \frac{\mu}{D} = \frac{\mu}{\mu t + (1-\mu)t'} $$
+            Divide numerator and denominator by $\mu$:
+            $$ \frac{\mu}{D} = \frac{1}{t + \frac{1-\mu}{\mu} t'} $$
+            From the definition of $\mu$, we know the ratio $\frac{1-\mu}{\mu} = \frac{(1-\alpha)t}{\alpha t'}$. Substituting this back:
+            $$ \frac{\mu}{D} = \frac{1}{t + \frac{(1-\alpha)t}{\alpha t'} t'} = \frac{1}{t + \frac{1-\alpha}{\alpha} t} = \frac{1}{t (1 + \frac{1-\alpha}{\alpha})} = \frac{1}{t (\frac{1}{\alpha})} = \frac{\alpha}{t} $$
+            Similarly, we can show $\frac{1-\mu}{D} = \frac{1-\alpha}{t'}$.
+            <br>Substituting these coefficients back into the expression for $P(\mathbf{z})$:
+            $$ P(\mathbf{z}) = \frac{\alpha}{t} \mathbf{y} + \frac{1-\alpha}{t'} \mathbf{y}' = \alpha \left(\frac{\mathbf{y}}{t}\right) + (1-\alpha) \left(\frac{\mathbf{y}'}{t'}\right) = \alpha u + (1-\alpha) v = w $$
           </div>
 
           <div class="proof-step">

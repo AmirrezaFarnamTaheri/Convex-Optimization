@@ -5,10 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>03. Convex Sets: Geometry — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../../static/lib/katex/dist/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../static/lib/three/three.module.js"
+      }
+    }
+  </script>
 </head>
 <body>
   <header class="site-header sticky">
@@ -1213,99 +1220,27 @@
 
 
     <section class="section-card" id="section-4">
-      <h2>4. Separation and Supporting Hyperplanes</h2>
-      <h3>4.1 The Separating Hyperplane Theorem</h3>
-        <p>A central result in convex analysis is the ability to separate disjoint convex sets with a hyperplane. This geometric fact underpins the entire theory of <b>Lagrange Duality</b> (see <a href="../09-duality/index.html">Lecture 09</a>).</p>
+      <h2>4. Separation and Supporting Hyperplanes (Preview)</h2>
+      <p>A fundamental property of convex sets is that disjoint ones can be separated by a flat surface (hyperplane). This geometric fact is the basis for <b>duality</b> and <b>optimality conditions</b>.</p>
 
-        <div class="theorem-box">
-          <h4>Theorem (Separating Hyperplane)</h4>
-          <p>Let $C$ and $D$ be two convex sets such that $C \cap D = \emptyset$. Then there exists a hyperplane that separates them. That is, there exist $a \neq 0$ and $b$ such that:</p>
-          $$ a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top x \ge b \quad \forall x \in D $$
-          <p>Geometrically, this means we can slide a flat sheet of paper between any two disjoint convex shapes.</p>
-        </div>
+      <div class="theorem-box">
+        <h4>The Separating Hyperplane Theorem (Intuition)</h4>
+        <p>If two convex sets $C$ and $D$ do not intersect, you can slide a sheet of paper (hyperplane) between them.</p>
+        $$ \exists a \neq 0, b : \quad a^\top x \le b \quad \forall x \in C \quad \text{and} \quad a^\top x \ge b \quad \forall x \in D $$
+      </div>
 
-        <div class="proof-box">
-          <h4>Proof: Separation via Minimum Distance</h4>
-          <p>We prove this for the case where $C$ is closed and $D$ is a singleton $\{d\}$ outside $C$. The general case follows by considering the set $S = C - D$.</p>
-          <div class="proof-step">
-            <strong>Step 1: Find the Closest Point (The Projection).</strong>
-            Since $C$ is closed and convex, the problem $\min_{x \in C} \|x - d\|^2$ has a unique solution. Let $p = \Pi_C(d)$ be this unique projection.
-            The vector $a = d - p$ is non-zero (since $d \notin C$). It points from the set towards the external point.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Construct the Hyperplane.</strong>
-            Define the hyperplane orthogonal to $a$ passing through the midpoint $m = (p+d)/2$.
-            Equation: $a^\top (x - m) = 0$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Verify Separation (The Obtuse Angle).</strong>
-            We use the characteristic property of the Euclidean projection onto a convex set (see P3.19). For any point $x \in C$, the vector from the projection $p$ to $d$ forms an obtuse angle with the vector from $p$ to $x$.
-            <br><i>Inequality:</i> $\langle d-p, x-p \rangle \le 0$ for all $x \in C$.
-            <br>Let $a = d-p$. This is our normal vector. The inequality becomes:
-            $$ a^\top (x-p) \le 0 \implies a^\top x \le a^\top p $$
-            This establishes the upper bound for points in $C$. Now we check where $d$ lies relative to this bound.
-            $$ a^\top d = a^\top (p + a) = a^\top p + a^\top a = a^\top p + \|a\|^2 $$
-            Since $d \notin C$, the distance $\|a\| > 0$, so $\|a\|^2 > 0$. Therefore:
-            $$ a^\top x \le a^\top p < a^\top d $$
-            The hyperplane $H = \{z \mid a^\top z = a^\top p + \frac{1}{2}\|a\|^2\}$ strictly separates $C$ and $d$.
-          </div>
-        </div>
-
-        <figure style="text-align: center; margin: 24px 0;">
+      <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/separating-hyperplane.png"
                alt="A hyperplane separating two disjoint convex sets"
                style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-          <figcaption><i>Figure 19b:</i> A separating hyperplane defined by normal vector $a$. All points in $C$ have a projection onto $a$ less than $b$, and all points in $D$ have a projection greater than $b$.</figcaption>
-        </figure>
+          <figcaption><i>Figure 19b:</i> Separation allows us to certify that two sets don't intersect.</figcaption>
+      </figure>
 
-        <div class="insight">
-          <h4>Why This Matters: Three Foundational Applications</h4>
-          <p>The separating hyperplane theorem is not just an abstract geometric fact—it's the <b>foundation for three pillars</b> of optimization and machine learning:</p>
-          <ol>
-            <li><b>Geometric Foundation of Duality:</b> Separation theorems are the GEOMETRIC basis for Lagrangian duality (<a href="../09-duality/index.html">Lecture 09</a>). When primal and dual problems have the same optimal value (strong duality), it's because a separating hyperplane exists between the epigraph of the objective and the constraint set. The normal vector $a$ to this hyperplane gives the optimal Lagrange multipliers.</li>
-            <li><b>Support Vector Machines (SVMs):</b> The maximum-margin classifier in machine learning is <i>exactly</i> finding the separating hyperplane with the largest distance between two classes. The points on the margin (support vectors) determine the hyperplane. This makes SVM a direct application of separation geometry.</li>
-            <li><b>Halfspace Representation of Convex Sets:</b> Every closed convex set can be represented as the intersection of halfspaces (Minkowski-Weyl theorem). The separating hyperplane theorem proves this: for every point $y$ outside a closed convex set $C$, there exists a separating hyperplane, which defines a halfspace containing $C$ but not $y$. This is why convex sets are "describable by linear inequalities."</li>
-          </ol>
-          <p><b>Takeaway:</b> If you understand separation, you understand the geometric DNA of convex optimization.</p>
-        </div>
+      <p>This theorem has a rigorous constructive proof based on <b>projection</b> (finding the shortest distance between sets). We will cover the detailed proofs, strict separation, and the connection to dual cones in <b><a href="../04-convex-sets-cones/index.html#section-2">Lecture 04: Cones and Separation</a></b>.</p>
 
-        <div class="insight">
-          <h4>Applications in Optimization</h4>
-          <ul>
-            <li><b>Optimality Conditions:</b> At an optimal point $x^*$ of $\min\{c^\top x : x \in C\}$, the objective gradient $c$ must be a supporting normal vector. If not, you could move "downhill" while staying in $C$.</li>
-            <li><b>Dual Characterization:</b> A closed convex set equals the intersection of all its supporting halfspaces:
-            $$ C = \bigcap \{x \mid a^\top x \le \sigma_C(a)\} $$
-            where $\sigma_C(a) = \sup_{x \in C} a^\top x$ is the support function.</li>
-            <li><b>Subdifferential:</b> For convex functions, the subdifferential at a point equals the set of supporting slopes (hyperplanes to the epigraph).</li>
-          </ul>
-        </div>
-
-        <h4>Strict vs. Non-Strict Separation</h4>
-        <p>The standard theorem guarantees only <b>non-strict</b> separation (the sets might touch the hyperplane).
-        <br>For <b>strict</b> separation ($a^\top x < b < a^\top y$), we need stronger conditions: e.g., $C$ is closed and $D$ is compact (closed and bounded).
-        <br><i>Counter-example:</i> Consider $C = \{(x,y) \mid xy \ge 1, x > 0\}$ and $D = \{(x,y) \mid x \le 0\}$. They are disjoint closed convex sets, but the only separating hyperplane is the y-axis ($x=0$), which touches the boundary of $D$. They cannot be strictly separated.</p>
-
-        <div class="insight">
-          <h4>Why this matters for Duality</h4>
-          <p>In optimization, we often ask: "Does there exist a solution with cost $< \gamma$?" This defines a set of desired outcomes. If this set is disjoint from the set of <i>feasible</i> outcomes, the separating hyperplane theorem provides a vector $a$ (Lagrange multipliers) that certifies this disjointness. This is the geometric origin of dual certificates.</p>
-        </div>
-
-        <h4>Supporting Hyperplanes</h4>
-        <p>If $C$ is a convex set and $x_0$ is a point on its boundary $\partial C$, there exists a hyperplane that contains $x_0$ and contains $C$ in one of its halfspaces. This is called a <b>supporting hyperplane</b>.
-        <br><i>Intuition:</i> You can always touch a convex object with a flat ruler at any boundary point without cutting inside.</p>
-
-        <div class="insight">
-            <h4>The Geometric Skeleton of Optimality</h4>
-            <p>Why do we care about supporting hyperplanes? Because <b>optimality is a geometric tangency condition</b>.
-            <br>Consider minimizing $f_0(x)$ over a convex set $C$.
-            <ul>
-                <li>The optimal point $x^*$ lies on the boundary of the feasible set (usually).</li>
-                <li>The level set of the objective $\{x \mid f_0(x) \le p^*\}$ touches the feasible set $C$ at $x^*$.</li>
-                <li>Because they touch but don't overlap (interior disjoint), there exists a <b>separating hyperplane</b> between them.</li>
-            </ul>
-            This hyperplane supports both the feasible set and the objective level set. Its normal vector gives the Lagrange multipliers.
-            <br><b>Mantra:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
-        </div>
+      <h4>Supporting Hyperplanes</h4>
+      <p>If a point $x_0$ is on the boundary of a convex set $C$, there exists a hyperplane passing through $x_0$ that contains $C$ entirely on one side. This is a <b>supporting hyperplane</b>.
+      <br><i>Significance:</i> In optimization, the optimal point is supported by the "cost gradient" hyperplane. This geometric tangency condition is the origin of KKT conditions.</p>
 
 
     </section>

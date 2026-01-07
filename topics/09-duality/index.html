@@ -110,6 +110,17 @@
         <b>Key Geometric Fact:</b> At the optimum $x^\star$, the negative gradient of the objective $-\nabla f_0(x^\star)$ points "into the wall". Formally, $-\nabla f_0(x^\star) \in N_C(x^\star)$.
         <br>This "pressure" against the boundary is what <b>dual variables</b> (Lagrange multipliers) measure.</p>
 
+        <div class="intuition-box">
+          <h4>Visual Metaphor: Ball in a Box</h4>
+          <p>Imagine a ball rolling down a hill (minimizing potential energy $f_0(x)$) inside a box (constraints).
+          <ul>
+            <li><b>Interior:</b> If the ball stops in the middle, the ground must be flat ($\nabla f_0 = 0$). No constraints are active ($\lambda = 0$).</li>
+            <li><b>Wall:</b> If it stops against a wall, "gravity" ($-\nabla f_0$) pushes it into the wall. The wall pushes back with a normal force. This normal force is the dual variable $\lambda$.</li>
+            <li><b>Corner:</b> If it stops in a corner, the force is a sum of normal forces from each wall meeting there ($\sum \lambda_i a_i$).</li>
+          </ul>
+          The KKT condition $\nabla f_0 + \sum \lambda_i \nabla f_i = 0$ is simply Newton's First Law: forces sum to zero.</p>
+        </div>
+
         <h3>1.3 Supporting Hyperplanes (The Skeleton)</h3>
         <p>This is the deep geometric backbone of optimization.</p>
         <div class="theorem-box">
@@ -127,7 +138,7 @@
         <br><b>Internalize:</b> Optimality = Existence of a hyperplane that supports the feasible set <i>and</i> the objective epigraph.</p>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-            <iframe src="widgets/separation_two_disks.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+            <iframe src="widgets/separation_two_disks.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
 
         <h3>1.4 The Engine of Duality: Conjugates (Recap)</h3>
@@ -147,6 +158,16 @@
         <p>Constraints are modeled by indicator functions $I_C(\mathbf{x})$. Their conjugates are <b>Support Functions</b>:
         $$ \sigma_C(\mathbf{y}) = I_C^*(\mathbf{y}) = \sup_{\mathbf{x} \in C} \mathbf{y}^\top \mathbf{x} $$
         This explains why dual problems involve maximizing linear functions over convex sets.</p>
+
+        <div class="insight">
+          <h4>Terminology Check: Dual Norm vs. Dual Problem</h4>
+          <p>We use the word "dual" for two related but distinct concepts.
+          <ul>
+            <li><b>Dual Problem ($d^*$):</b> A specific optimization problem derived from a primal problem via the Lagrangian.</li>
+            <li><b>Dual Norm ($\|z\|_*$):</b> A derived norm defined by $\sup_{\|x\|\le 1} z^\top x$.</li>
+          </ul>
+          <b>The Connection:</b> The dual problem of minimizing a norm $\|Ax-b\|$ naturally involves the dual norm constraint $\|z\|_* \le 1$. The dual norm appears because it is the "support function" of the unit ball.</p>
+        </div>
       </section>
 
       <section class="section-card" id="section-2">
@@ -208,7 +229,7 @@
         <p>Recall from <a href="../03-convex-sets-geometry/index.html">Lecture 03</a> that optimality is related to <b>supporting hyperplanes</b>. The Lagrangian is simply the algebraic representation of a hyperplane supporting the "achievable set" of objective and constraint values.
         <br>The multipliers $(\lambda, \nu)$ are the normal vector to this hyperplane. The condition $\lambda \ge 0$ ensures the hyperplane orientation respects the "less than or equal to" direction of the inequality constraints.</p>
 
-        <img src="assets/duality_lagrangian_demo.gif" alt="Lagrangian as Lower Bound" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_lagrangian_demo.gif" alt="Lagrangian as Lower Bound" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
         <div class="example">
           <h4>Motivating Example: Primal Dual Optimization Walkthrough</h4>
@@ -257,10 +278,10 @@
             Linear programming duality is essentially the statement that this equality holds for linear constraints. Lagrangian duality extends this logic to general convex functions.</p>
         </div>
 
-        <img src="assets/duality_saddle_path.gif" alt="Saddle Path Dynamics" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_saddle_path.gif" alt="Saddle Path Dynamics" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-            <iframe src="widgets/primal_dual_1d.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+            <iframe src="widgets/primal_dual_1d.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
       </section>
 
@@ -395,11 +416,11 @@
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-          <iframe src="widgets/logsumexp_conjugate_widget.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+          <iframe src="widgets/logsumexp_conjugate_widget.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-            <iframe src="widgets/equality_dual_projection_2d.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+            <iframe src="widgets/equality_dual_projection_2d.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
       </section>
 
@@ -442,7 +463,7 @@
             <p><b>Result:</b> $p^* - d^* = \infty - 0.5 = \infty$. The duality gap is infinite.</p>
         </div>
 
-        <img src="assets/duality_gap_convergence.gif" alt="Duality Gap Convergence" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_gap_convergence.gif" alt="Duality Gap Convergence" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
         <h3>4.2 Strong Duality and Slater's Condition</h3>
         <p>Strong duality means $d^* = p^*$ (zero duality gap). It does not hold generally but usually holds for convex problems under mild conditions.</p>
@@ -457,7 +478,7 @@
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-            <iframe src="widgets/slater_failure_dual_attainment.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+            <iframe src="widgets/slater_failure_dual_attainment.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
 
         <div class="proof-box">
@@ -555,8 +576,8 @@
           </div>
         </div>
 
-        <img src="assets/duality_kkt_2d_fast.gif" alt="KKT Geometry" style="width: 100%; border-radius: 8px; margin: 16px 0;">
-        <img src="assets/duality_comp_slack_switch.gif" alt="Complementary Slackness Switch" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_kkt_2d_fast.gif" alt="KKT Geometry" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
+        <img src="assets/duality_comp_slack_switch.gif" alt="Complementary Slackness Switch" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
         <div class="insight">
           <h4>Geometric Interpretation via Normal Cones</h4>
@@ -579,7 +600,7 @@
         </div>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-          <iframe src="widgets/kkt_vector_balance.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+          <iframe src="widgets/kkt_vector_balance.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
       </section>
 
@@ -614,6 +635,14 @@
             <li>If $p^*$ is differentiable, then $\frac{\partial p^*}{\partial u_i} = -\lambda_i^*$ and $\frac{\partial p^*}{\partial v_j} = -\nu_j^*$. The Lagrange multipliers are exactly the <strong>sensitivity</strong> of the optimal value to constraint perturbations.</li>
           </ul>
           </p>
+
+          <div class="example">
+            <h4>Economic Example: Resource Limits</h4>
+            <p>Maximize Profit $c^\top x$ subject to Resource Limit $Ax \le b$.
+            <br>Dual variable $\lambda_i^*$ corresponds to the resource constraint $a_i^\top x \le b_i$.
+            <br><b>Interpretation:</b> $\lambda_i^*$ is the <b>marginal value</b> of resource $i$. If you could buy $\epsilon$ more units of resource $i$, your profit would increase by $\lambda_i^* \epsilon$.
+            <br>This tells you exactly how much you should be willing to pay for extra resources. If the market price is $<\lambda_i^*$, buy more!</p>
+          </div>
         </div>
 
         <h3>6.4 Local Sensitivity</h3>
@@ -621,10 +650,10 @@
         $$ \frac{\partial p^*(0, 0)}{\partial u_i} = -\lambda_i^*, \quad \frac{\partial p^*(0, 0)}{\partial v_j} = -\nu_j^* $$
         <p>Relaxing constraint $i$ ($u_i > 0$) improves the objective by approximately $\lambda_i^* u_i$. Tightening it ($u_i < 0$) worsens it.</p>
 
-        <img src="assets/duality_sensitivity_supporting_line_fast.gif" alt="Sensitivity Analysis" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_sensitivity_supporting_line_fast.gif" alt="Sensitivity Analysis" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-          <iframe src="widgets/value_function_support.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+          <iframe src="widgets/value_function_support.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
 
         <h3>6.5 Certificates of Infeasibility</h3>
@@ -635,7 +664,7 @@
           <br><b>Farkas' Lemma:</b> The system $Ax \le b$ is infeasible if and only if there exists $y \ge 0$ such that $A^\top y = 0$ and $b^\top y < 0$.
           <br>This vector $y$ is a <b>certificate of infeasibility</b>.</p>
         </div>
-        <img src="assets/duality_farkas_xy_infeasible.gif" alt="Farkas Certificate" style="width: 100%; border-radius: 8px; margin: 16px 0;">
+        <img src="assets/duality_farkas_xy_infeasible.gif" alt="Farkas Certificate" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
       </section>
 
       <section class="section-card" id="section-7">
@@ -655,7 +684,7 @@
 
       <figure class="animation-figure">
         <div class="animation-container">
-          <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif" alt="Dual Norm Geometry Animation" loading="lazy">
+          <img src="assets/supporting_hyperplanes_l1_linf_three_panels.gif" alt="Dual Norm Geometry Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
         </div>
         <figcaption><i>Animation:</i> Supporting hyperplanes $u^\top x = \|u\|_*$ for the $\ell_1$ and $\ell_\infty$ balls. The dual norm determines how far the hyperplane can be pushed before touching the ball.</figcaption>
       </figure>
@@ -695,7 +724,7 @@
         </div>
 
         <div style="margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-          <iframe src="widgets/soc_dual_cone.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+          <iframe src="widgets/soc_dual_cone.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
 
         <h3>8.2 The Standard Conic Form</h3>
@@ -724,7 +753,7 @@
         <br>For SDP: If $X \succeq 0$ and $S \succeq 0$, then $\mathrm{tr}(SX) = 0$ implies $SX = 0$ (zero matrix product).</p>
 
         <div style="margin-top: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
-          <iframe src="widgets/psd_cone_2x2.html" width="100%" height="520" style="border:none; background:#0b0d12;"></iframe>
+          <iframe src="widgets/psd_cone_2x2.html" width="100%" height="500" style="border:none; background:#0b0d12; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
         </div>
       </section>
 
@@ -762,7 +791,7 @@
 
       <figure class="animation-figure">
         <div class="animation-container">
-          <img src="assets/l1_linf_polar_swap.gif" alt="Polar Duality Animation" loading="lazy">
+          <img src="assets/l1_linf_polar_swap.gif" alt="Polar Duality Animation" loading="lazy" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
         </div>
         <figcaption><i>Animation:</i> The polar of the $\ell_1$ ball is the $\ell_\infty$ ball, and vice versa. This geometric duality underpins the relationship between sparse primal solutions and box-constrained dual variables.</figcaption>
       </figure>
@@ -1256,10 +1285,34 @@
 
   <div class="solution-box">
     <h4>Solution</h4>
-    <p>Lagrangian: $L = \sum x_i \log x_i + \nu(\sum x_i - 1) + \lambda^\top (Ax - b)$. (Note: minimizing neg entropy).
-    <br>Stationarity: $1 + \log x_i + \nu + (A^\top \lambda)_i = 0$.
-    <br>Solving for $x_i$: $\log x_i = -1 - \nu - (A^\top \lambda)_i \implies x_i = \exp(\dots)$.
-    <br>Constraints: $\lambda \ge 0$, $\lambda^\top (Ax - b) = 0$, primal feasibility.</p>
+    <div class="proof-step">
+      <strong>Step 1: Construct the Lagrangian.</strong>
+      We first convert the maximization problem to minimization:
+      $$ \min \sum_{i=1}^n x_i \log x_i \quad \text{s.t.} \quad \mathbf{1}^\top x = 1, \quad Ax \le b $$
+      The Lagrangian is:
+      $$ L(x, \lambda, \nu) = \sum_{i=1}^n x_i \log x_i + \nu(\sum x_i - 1) + \lambda^\top (Ax - b) $$
+      Note: We use $\nu$ for the equality constraint and $\lambda \ge 0$ for the inequality.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Stationarity Condition.</strong>
+      The gradient with respect to $x_i$ must be zero at the optimum:
+      $$ \frac{\partial L}{\partial x_i} = (1 + \log x_i) + \nu + (A^\top \lambda)_i = 0 $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Solve for Primal Variables.</strong>
+      Rearranging the stationarity equation:
+      $$ \log x_i = -1 - \nu - (A^\top \lambda)_i $$
+      $$ x_i^* = \exp\left( -1 - \nu - (A^\top \lambda)_i \right) $$
+      This shows that the optimal distribution lies in an exponential family parameterized by the dual variables.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Other KKT Conditions.</strong>
+      <ul>
+        <li><b>Primal Feasibility:</b> $\sum x_i^* = 1$ (used to solve for $\nu$), $Ax^* \le b$.</li>
+        <li><b>Dual Feasibility:</b> $\lambda \ge 0$.</li>
+        <li><b>Complementary Slackness:</b> $\lambda_j (A_j^\top x^* - b_j) = 0$.</li>
+      </ul>
+    </div>
   </div>
 </div>
 
@@ -1279,10 +1332,28 @@
 
   <div class="solution-box">
     <h4>Solution</h4>
-    <p>$L(x, \lambda) = x^2 + \lambda(x+1)$. $\nabla_x L = 2x + \lambda = 0 \implies x = -\lambda/2$.
-    <br>Dual $g(\lambda) = \lambda^2/4 - \lambda^2/2 + \lambda = -1/4 \lambda^2 + \lambda$.
-    <br>Max at $\lambda^* = 2$. Dual value $-1 + 2 = 1 = p^*$.
-    <br>Sensitivity: $p^*(u) \approx 1 - \lambda^* u = 1 - 2u$. Matches first order expansion of $(1-u)^2$.</p>
+    <div class="proof-step">
+      <strong>Step 1: Compute Dual Optimal.</strong>
+      Original problem: $\min x^2$ s.t. $x \le -1$.
+      Lagrangian: $L(x, \lambda) = x^2 + \lambda(x+1)$.
+      Minimize over $x$: $\nabla_x L = 2x + \lambda = 0 \implies x^* = -\lambda/2$.
+      Dual function: $g(\lambda) = (-\lambda/2)^2 + \lambda(-\lambda/2 + 1) = \frac{\lambda^2}{4} - \frac{\lambda^2}{2} + \lambda = -\frac{\lambda^2}{4} + \lambda$.
+      Maximize $g(\lambda)$ for $\lambda \ge 0$: $g'(\lambda) = -\frac{\lambda}{2} + 1 = 0 \implies \lambda^* = 2$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Predict Perturbed Value.</strong>
+      The sensitivity theorem states $p^*(u) \ge p^*(0) - \lambda^* u$.
+      For convex problems with strong duality, this is a first-order approximation:
+      $$ p^*(u) \approx p^*(0) - \lambda^* u = 1 - 2u $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Verify with Direct Calculation.</strong>
+      Perturbed problem: $\min x^2$ s.t. $x \le -1 + u$.
+      For small $u$, the constraint is active: $x^*(u) = -1 + u$.
+      Optimal value: $p^*(u) = (-1+u)^2 = 1 - 2u + u^2$.
+      Linear approximation: $p^*(u) \approx 1 - 2u$.
+      This matches the prediction using $\lambda^* = 2$. The Lagrange multiplier is exactly the rate of change of the optimal value.
+    </div>
   </div>
         </div>
         <div class="problem">

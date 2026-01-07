@@ -176,7 +176,7 @@
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
                alt="Schematic overview of the optimization problem landscape"
-               style="max-width: 100%; height: auto; border-radius: 8px;" />
+               style="max-width: 800px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 1:</i> The optimization landscape—convex vs. nonconvex problems represent fundamentally different computational complexity classes.</figcaption>
         </figure>
 
@@ -317,7 +317,7 @@
             <li><b>Barycentric Coordinates:</b> Observe the weights $\theta_i$. Inside the hull, all $\theta_i \ge 0$. Outside, at least one is negative.</li>
           </ul>
           <p><i>Geometric intuition:</i> A set is convex if it contains all convex combinations of its points. This prevents "holes" or "dents" that could trap optimization algorithms.</p>
-          <div id="widget-convex-combination" style="width: 100%; height: 450px; position: relative;"></div>
+          <div id="widget-convex-combination" style="width: 100%; height: 450px; position: relative; max-width: 800px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
       </section>
 
@@ -415,7 +415,7 @@
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_function_illustration.svg"
                alt="Visualization of the chord property for convex functions"
-               style="max-width: 100%; height: auto; border-radius: 8px;" />
+               style="max-width: 600px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 2:</i> The chord between any two points on a convex function's graph lies above the function—this geometric property ensures no local minima can exist.</figcaption>
         </figure>
 
@@ -427,7 +427,7 @@
             <li><b>The Consequence (3D):</b> See what this means for optimization. Drop a marble on a <b>Convex Bowl</b> and it always finds the bottom (Global Minimum). Drop it on a <b>Non-Convex Landscape</b> and it gets stuck in local dips.</li>
           </ul>
           <p><i>Key Insight:</i> The simple 1D geometric property (chord above curve) guarantees that in ANY dimension, there are no local traps. Local optimality implies global optimality.</p>
-          <div id="widget-optimization-landscape" style="width: 100%; position: relative;"></div>
+          <div id="widget-optimization-landscape" style="width: 100%; height: 500px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
 
         <div class="widget-container" style="margin: 24px 0;">
@@ -450,7 +450,7 @@
             </li>
           </ul>
           <p><i>Convergence guarantees:</i> For strongly convex problems, gradient descent achieves linear convergence: $f(x_k) - f(x^*) \le (1-\mu/L)^k (f(x_0) - f(x^*))$ where $\mu$ is the strong convexity parameter and $L$ is the Lipschitz constant.</p>
-          <div id="widget-convergence-comparison" style="width: 100%; height: 450px; position: relative;"></div>
+          <div id="widget-convergence-comparison" style="width: 100%; height: 450px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
       </section>
 
@@ -462,7 +462,7 @@
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/hierarchy-of-convex-optimization-problems-dark.svg"
                alt="Hierarchy diagram showing relationships between LP, QP, SOCP, and SDP"
-               style="max-width: 100%; height: auto; border-radius: 8px;" />
+               style="max-width: 800px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
           <figcaption><i>Figure 3:</i> The hierarchy of convex optimization: each class contains the previous ones as special cases. LP ⊂ QP ⊂ SOCP ⊂ SDP ⊂ General Convex.</figcaption>
         </figure>
 
@@ -696,7 +696,7 @@
             <li>SOCP: Moderate, hundreds of thousands of variables</li>
             <li>SDP: Slowest (due to matrix size), but still polynomial-time</li>
           </ul>
-          <div id="widget-problem-flowchart" style="width: 100%; height: 500px; position: relative;"></div>
+          <div id="widget-problem-flowchart" style="width: 100%; height: 600px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
       </section>
 
@@ -1350,6 +1350,54 @@ print(f"Optimal weights: {w.value}")</code></pre>
           <p><b>Issue:</b> This is equivalent to $\min -f(x)$ where $-f$ is concave (non-convex).</p>
           <p><b>Fix:</b> Either minimize instead, or reformulate.</p>
         </div>
+
+        <h3>8.3 Hands-On Verification: The "Parser" Method</h3>
+        <p>Verifying convexity manually is like parsing a sentence: you break it down into atomic parts and verify the grammar rules (composition rules) at each step. Let's walk through a complex example.</p>
+
+        <div class="proof-box">
+          <h4>Walkthrough: Verifying the Log-Barrier of a Paraboloid</h4>
+          <p><b>Function:</b> $f(x, y) = -\log(y - \|x\|_2^2)$
+          <br><b>Domain:</b> $\{(x, y) \in \mathbb{R}^n \times \mathbb{R} \mid y > \|x\|_2^2\}$.
+          <br><b>Goal:</b> Prove $f$ is convex.</p>
+
+          <div class="proof-step">
+            <strong>Step 1: Identify the innermost components.</strong>
+            <br>Term 1: $g_1(x) = \|x\|_2^2$. This is a convex quadratic form ($x^\top I x$).
+            <br>Term 2: $g_2(y) = y$. This is affine (convex and concave).
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 2: Analyze the inner combination.</strong>
+            Let $u(x, y) = y - \|x\|_2^2$.
+            <br>This is a linear combination: $(+1) \cdot \text{Affine} + (-1) \cdot \text{Convex}$.
+            <br>Since the negative of a convex function is concave, $u(x, y)$ is the sum of a concave function ($y$) and a concave function ($-\|x\|^2$).
+            <br><b>Result:</b> $u(x, y)$ is <b>concave</b>.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 3: Analyze the outer function.</strong>
+            Let $h(u) = -\log(u)$.
+            <br>Derivative: $h'(u) = -1/u$. Second derivative: $h''(u) = 1/u^2$.
+            <br>Since $h''(u) > 0$ for all $u$ in the domain ($u > 0$), $h$ is <b>convex</b>.
+            <br>Crucially, we must check monotonicity. $h'(u) = -1/u < 0$, so $h$ is <b>decreasing</b>.
+          </div>
+
+          <div class="proof-step">
+            <strong>Step 4: Apply the Composition Rule.</strong>
+            Rule: $f = h(u(x))$ is convex if:
+            <ul>
+              <li>$h$ is convex and non-decreasing, and $u$ is convex. (Not applicable here)</li>
+              <li>$h$ is convex and <b>non-increasing</b>, and $u$ is <b>concave</b>. (Matches!)</li>
+            </ul>
+            Here, $h=-\log(\cdot)$ is convex decreasing, and $u(x,y)$ is concave.
+          </div>
+
+          <div class="proof-step">
+            <strong>Conclusion:</strong>
+            The function $f(x, y) = -\log(y - \|x\|_2^2)$ is convex.
+            <br><i>Geometric Interpretation:</i> This function acts as a "barrier" that blows up as $(x,y)$ approaches the boundary of the epigraph of the parabola $y \ge x^2$. Barriers for convex sets are generally convex functions.
+          </div>
+        </div>
       </section>
 
       <section class="section-card" id="section-9">
@@ -1525,11 +1573,33 @@ print(f"Optimal weights: {w.value}")</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <ol type="a">
-      <li><b>✅ Convex.</b> The objective $\|Ax - b\|_2^2$ is a convex quadratic function (composition of convex $\|\cdot\|_2^2$ with affine $Ax - b$), and the constraint $Fx = g$ is affine.</li>
-      <li><b>❌ Not Convex.</b> The objective function $-\|x\|_2$ is concave (negative of a convex function), making this a concave maximization problem.</li>
-      <li><b>✅ Convex.</b> Both $\|x\|_1$ and $\|Bx - c\|_\infty$ are norms (hence convex), and the constraint $\|Bx - c\|_\infty \le 1$ defines a convex set (sublevel set of a norm).</li>
-      <li><b>❌ Not Convex.</b> The quadratic form $x^\top Q x$ is only guaranteed to be convex if $Q \succeq 0$ (positive semidefinite). Without this assumption, the problem is nonconvex.</li>
-      <li><b>❌ Not Convex.</b> The integer constraint $x_i \in \{0, 1\}$ makes the feasible set non-convex (it's a finite set of points, not a convex set).</li>
+      <li><b>✅ Convex.</b>
+        <ul>
+          <li><b>Objective:</b> $\|Ax - b\|_2^2$ is the composition of the convex function $g(u) = \|u\|_2^2$ with the affine mapping $u(x) = Ax - b$. Since affine composition preserves convexity, the objective is convex. Alternatively, its Hessian is $2A^\top A$, which is always Positive Semidefinite (PSD).</li>
+          <li><b>Constraints:</b> $Fx = g$ describes a hyperplane (affine set), which is convex.</li>
+        </ul>
+      </li>
+      <li><b>❌ Not Convex.</b>
+        <ul>
+          <li><b>Objective:</b> $f(x) = -\|x\|_2$ is a concave function (the negation of a convex norm). Minimizing a concave function is equivalent to maximizing a convex function, which generally pushes solutions to the boundary and creates local optima.</li>
+        </ul>
+      </li>
+      <li><b>✅ Convex.</b>
+        <ul>
+          <li><b>Objective:</b> $\|x\|_1$ is a norm, hence convex.</li>
+          <li><b>Constraints:</b> The inequality $\|Bx - c\|_\infty \le 1$ describes the sublevel set of a convex function (composition of $\ell_\infty$ norm with affine map). Sublevel sets of convex functions are convex sets.</li>
+        </ul>
+      </li>
+      <li><b>❌ Not Convex.</b>
+        <ul>
+          <li><b>Objective:</b> The quadratic form $x^\top Q x$ is convex if and only if $Q \succeq 0$ (PSD). If $Q$ has a negative eigenvalue, the function has a saddle point or curves downward in some direction, creating local minima. Since $Q$ is generic, we cannot assume convexity.</li>
+        </ul>
+      </li>
+      <li><b>❌ Not Convex.</b>
+        <ul>
+          <li><b>Constraints:</b> The constraint $x_i \in \{0, 1\}$ forces the domain to be a discrete set of vertices. A set is convex only if it contains the line segment connecting any two points. The segment connecting $0$ and $1$ contains $0.5$, which is not in the set. Thus, this is a combinatorial optimization problem.</li>
+        </ul>
+      </li>
     </ol>
   </div>
 </div>
@@ -1550,7 +1620,13 @@ print(f"Optimal weights: {w.value}")</code></pre>
     <div class="proof-step"><strong>Step 1: Define decision variable.</strong> Let $x \in \mathbb{R}^2$ be the warehouse location (coordinates in the plane).</div>
     <div class="proof-step"><strong>Step 2: Write the objective.</strong> The sum of squared distances to the retail locations is:
     $$ f_0(x) = \sum_{i=1}^k \|x - r_i\|_2^2 $$</div>
-    <div class="proof-step"><strong>Step 3: Verify convexity of objective.</strong> Each term $\|x - r_i\|_2^2$ is convex (composition of convex $\|\cdot\|_2^2$ with affine $x - r_i$). The sum of convex functions is convex.</div>
+    <div class="proof-step"><strong>Step 3: Verify convexity of objective.</strong>
+      <ol>
+        <li>Consider the base function $h(u) = \|u\|_2^2$. This is convex (Hessian is $2I \succ 0$).</li>
+        <li>Each term $f_i(x) = h(x - r_i)$ is the composition of the convex function $h$ with the affine map $x \mapsto x - r_i$. Affine composition preserves convexity.</li>
+        <li>The total objective $f_0(x) = \sum_{i=1}^k f_i(x)$ is the sum of convex functions, which is convex.</li>
+      </ol>
+    </div>
     <div class="proof-step"><strong>Step 4: State the constraints.</strong> The warehouse must satisfy $Cx \le d$ (linear inequalities).</div>
     <div class="proof-step"><strong>Step 5: Complete formulation.</strong> The convex optimization problem is:
     $$ \begin{aligned} \min_{x \in \mathbb{R}^2} \quad & \sum_{i=1}^k \|x - r_i\|_2^2 \\ \text{s.t.} \quad & Cx \le d \end{aligned} $$
@@ -1651,12 +1727,14 @@ print(f"Optimal weights: {w.value}")</code></pre>
     <div class="proof-step"><strong>Step 2: Formulate the negative log-likelihood.</strong> Maximizing likelihood is equivalent to minimizing negative log-likelihood:
     $$ \ell(w) = -\log L(w) = -\sum_{i=1}^m \log\left( \frac{1}{1 + e^{-y_i w^\top x_i}} \right) $$
     $$ \ell(w) = \sum_{i=1}^m \log(1 + e^{-y_i w^\top x_i}) $$</div>
-    <div class="proof-step"><strong>Step 3: Verify convexity.</strong> The function $f(z) = \log(1+e^z)$ (softplus) is convex.
-    We compute the gradient and Hessian to verify:
-    $$ f'(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}} \quad (\text{sigmoid function}) $$
-    $$ f''(z) = \frac{e^z(1+e^z) - e^z(e^z)}{(1+e^z)^2} = \frac{e^z}{(1+e^z)^2} > 0 $$
-    Our objective is a sum of terms $f(-y_i \mathbf{w}^\top \mathbf{x}_i)$. Since $f$ is convex and the argument $-y_i \mathbf{w}^\top \mathbf{x}_i$ is affine in $\mathbf{w}$, the composition is convex.
-    The sum of convex functions is convex.</div>
+    <div class="proof-step"><strong>Step 3: Verify convexity.</strong> We prove the convexity of the "softplus" function $f(z) = \log(1+e^z)$.
+    <br><b>First Derivative (Sigmoid):</b>
+    $$ f'(z) = \frac{d}{dz} \log(1+e^z) = \frac{1}{1+e^z} \cdot e^z = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}} = \sigma(z) $$
+    <b>Second Derivative (Hessian):</b> Using the quotient rule on $\frac{e^z}{1+e^z}$:
+    $$ f''(z) = \frac{(e^z)(1+e^z) - (e^z)(e^z)}{(1+e^z)^2} = \frac{e^z + e^{2z} - e^{2z}}{(1+e^z)^2} = \frac{e^z}{(1+e^z)^2} $$
+    Since $e^z > 0$ for all $z$, $f''(z) > 0$. Thus $f(z)$ is strictly convex.
+    <br><b>Composition:</b> The objective is a sum of terms $L_i(\mathbf{w}) = f(z_i(\mathbf{w}))$, where $z_i(\mathbf{w}) = -y_i \mathbf{x}_i^\top \mathbf{w}$ is an affine function of $\mathbf{w}$.
+    <br>Since $f$ is convex and $z_i$ is affine, $L_i$ is convex. The sum of convex functions is convex.</div>
     <div class="proof-step"><strong>Conclusion:</strong> The optimization problem is:
     $$ \min_{w \in \mathbb{R}^n} \sum_{i=1}^m \log(1 + e^{-y_i w^\top x_i}) $$
     This is an unconstrained convex optimization problem.</div>

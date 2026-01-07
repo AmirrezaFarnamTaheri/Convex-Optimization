@@ -157,17 +157,17 @@
           <br>This cone is fundamental for modeling quadratic constraints like $x^T x \le yz$ (geometric mean bounds).</p>
         </div>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
-             <figure style="text-align: center; flex: 1;">
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/second-order-cone.png"
                     alt="3D visualization of the second-order cone (ice cream cone)"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 5:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/hyperbolic-cone.png"
                     alt="3D visualization of a hyperbolic cone"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 6:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
              </figure>
         </div>
@@ -194,7 +194,7 @@
         <figure style="text-align: center; margin: 24px 0;">
              <img src="assets/cone-zoo.png"
                   alt="Examples of proper and improper cones"
-                  style="max-width: 90%; height: auto; border-radius: 8px;" />
+                  style="max-width: 800px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
              <figcaption><i>Figure 7:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
         </figure>
 
@@ -248,17 +248,17 @@
 
         <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \geq 0$) produces Pareto optimal points by varying weights.</p>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
-             <figure style="text-align: center; flex: 1;">
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/generalized-inequality-cone.png"
                     alt="Visualizing generalized inequality"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 8:</i> Visualizing $\mathbf{x} \preceq_K \mathbf{y}$. The point $\mathbf{x}$ must lie in the "shadow" of $\mathbf{y}$ cast by the cone $-K$.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/matrix-inequality-cone.png"
                     alt="Matrix inequality ordering"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 9:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
              </figure>
         </div>
@@ -269,7 +269,7 @@
              <figure style="text-align: center; margin: 24px 0;">
                   <img src="assets/minimum-vs-minimal.png"
                        alt="Minimum vs minimal elements"
-                       style="max-width: 60%; height: auto; border-radius: 8px;" />
+                       style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                   <figcaption><i>Figure 10:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
              </figure>
         </div>
@@ -381,7 +381,7 @@
         <figure style="text-align: center; margin: 24px 0;">
              <img src="assets/dual-cone-geometry.png"
                   alt="Geometry of primal and dual cones"
-                  style="max-width: 50%; height: auto; border-radius: 8px;" />
+                  style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
              <figcaption><i>Figure 11:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
         </figure>
 
@@ -468,17 +468,17 @@
           </div>
         </div>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0;">
-             <figure style="text-align: center; flex: 1;">
+        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/self-dual-cones.png"
                     alt="The three major self-dual cones"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 800px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 12:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1;">
+             <figure style="text-align: center; flex: 1; min-width: 280px;">
                <img src="assets/dual-norm-cones.png"
                     alt="Dual relationship between L1 and L-infinity cones"
-                    style="width: 100%; height: auto; border-radius: 8px;" />
+                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
                <figcaption><i>Figure 13:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
              </figure>
         </div>
@@ -682,7 +682,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/supporting-hyperplane-tangent.png"
              alt="Illustration of the Supporting Hyperplane Theorem"
-             style="max-width: 80%; height: auto; border-radius: 8px;" />
+             style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
@@ -1047,10 +1047,16 @@
 
 <div class="problem">
   <h3>P4.24 — Converse Supporting Hyperplane Theorem</h3>
-  <p>Let $C$ be a closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
+  <p>Let $C$ be a connected closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
   <div class="solution-box">
     <h4>Solution</h4>
-    <p>This is the Tietze-Nakajima Theorem. The local existence of supporting hyperplanes everywhere on the boundary implies global convexity for connected closed sets with interior.</p>
+    <p>This is the <b>Tietze-Nakajima Theorem</b>.
+    <br><b>Intuition:</b> If a set is non-convex, it must have a "dent". At the deepest part of the dent (a point of non-convexity), any hyperplane passing through it would cut into the set, making it impossible to support the set.
+    <br>However, this requires the set to be <b>connected</b>.
+    <br><b>Counterexample (without connectedness):</b> Let $C$ be the union of two disjoint closed balls. Every boundary point has a supporting hyperplane (the tangent plane to the ball). However, $C$ is not convex.
+    <br><b>Proof Sketch:</b>
+    Assume $C$ is connected and has interior points. If $C$ is not convex, there exist $x, y \in C$ such that the segment $[x,y]$ is not contained in $C$.
+    One can define a "visibility" function or use a topological argument to show that if every boundary point has a support, the "kernel" of the set (points that can see every other point) must be the whole set.</p>
   </div>
 </div>
 
@@ -1090,11 +1096,47 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      The constraint can be written as $(f_i^\top x + g_i, D_i x + e_i) \in \mathcal{Q}$.
-      Let $z_i = (f_i^\top x + g_i, D_i x + e_i)$.
-      The Lagrangian involves multipliers $\lambda_i \in \mathcal{Q}^* = \mathcal{Q}$ and $\nu$ for the equality.
-      $$ L(x, \lambda, \nu) = c^\top x + \nu^\top (b - Ax) - \sum \lambda_i^\top z_i $$
-      Minimizing over $x$ gives the dual equality constraint. The condition $\lambda_i \in \mathcal{Q}$ is explicitly an SOC constraint.
+      <strong>Step 1: Conic Formulation.</strong>
+      Rewrite the SOC constraint as membership in the second-order cone $\mathcal{Q}_{k_i+1}$:
+      $$ (D_i x + e_i, f_i^\top x + g_i) \in \mathcal{Q}_{k_i+1} $$
+      Note the order: typically we write $(t, \mathbf{u}) \in \mathcal{Q}$ where $t \ge \|\mathbf{u}\|$. Here $t = f_i^\top x + g_i$ and $\mathbf{u} = D_i x + e_i$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 2: Dual Variables.</strong>
+      Associate a dual variable $\nu \in \mathbb{R}^m$ with the equality $Ax=b$.
+      Associate a dual variable $\mathbf{z}_i = (\mathbf{u}_i, t_i) \in \mathcal{Q}_{k_i+1}^*$ with each conic constraint.
+      Since $\mathcal{Q}$ is self-dual, the condition is simply $\|\mathbf{u}_i\|_2 \le t_i$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 3: The Lagrangian.</strong>
+      The Lagrangian is $L(x, \nu, \mathbf{z}) = c^\top x + \nu^\top (b - Ax) - \sum_{i=1}^m \mathbf{z}_i^\top (D_i x + e_i, f_i^\top x + g_i)$.
+      Recall the inner product in the cone is just the dot product.
+      $$ \mathbf{z}_i^\top (\dots) = \mathbf{u}_i^\top (D_i x + e_i) + t_i (f_i^\top x + g_i) $$
+      Grouping terms by $x$:
+      $$ L = \left( c - A^\top \nu - \sum_{i=1}^m (D_i^\top \mathbf{u}_i + t_i f_i) \right)^\top x + \left( \nu^\top b - \sum_{i=1}^m (\mathbf{u}_i^\top e_i + t_i g_i) \right) $$
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 4: The Dual Function.</strong>
+      The dual function $g(\nu, \mathbf{z}) = \inf_x L(x, \nu, \mathbf{z})$.
+      Since $L$ is affine in $x$, the infimum is $-\infty$ unless the coefficient of $x$ is zero.
+      Dual constraint: $c - A^\top \nu - \sum (D_i^\top \mathbf{u}_i + t_i f_i) = 0$.
+      If this holds, $g(\nu, \mathbf{z}) = \nu^\top b - \sum (\mathbf{u}_i^\top e_i + t_i g_i)$.
+    </div>
+
+    <div class="proof-step">
+      <strong>Step 5: Final Dual Problem.</strong>
+      Maximize the dual function subject to constraints:
+      $$
+      \begin{aligned}
+      \max_{\nu, \mathbf{u}_i, t_i} \quad & b^\top \nu - \sum_{i=1}^m (e_i^\top \mathbf{u}_i + g_i t_i) \\
+      \text{s.t.} \quad & A^\top \nu + \sum_{i=1}^m (D_i^\top \mathbf{u}_i + f_i t_i) = c \\
+      & \|\mathbf{u}_i\|_2 \le t_i, \quad i=1,\dots,m
+      \end{aligned}
+      $$
+      This is clearly another SOCP (linear objective, linear equalities, SOC constraints).
     </div>
   </div>
 </div>
@@ -1148,7 +1190,12 @@
       <ul class="link-list">
         <li><strong>Required Reading:</strong> Boyd & Vandenberghe, Chapter 2 (Convex Sets, specifically Cones and Dual Cones).</li>
         <li><strong>Supplementary:</strong> Rockafellar, <em>Convex Analysis</em>, Sections 11 (Separation Theorems) and 14 (Cones).</li>
-        <li><strong>Interactive:</strong> Use the <a href="#widget-separating-hyperplane">Separating Hyperplane Explorer</a> to test intuition.</li>
+        <li><strong>Interactive:</strong> Use the Separating Hyperplane Explorer below to test intuition.</li>
+        <div class="widget-container" style="margin: 24px 0;">
+          <h3 style="margin-top: 0;">Interactive Demo: Separating Hyperplanes</h3>
+          <p>This widget demonstrates the Separating Hyperplane Theorem in 2D. Add points to two sets, compute their convex hulls, and find the separating line.</p>
+          <div id="widget-separating-hyperplane" style="width: 100%; height: 600px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
+        </div>
       </ul>
     </section>
 

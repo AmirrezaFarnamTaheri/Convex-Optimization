@@ -540,7 +540,7 @@
             <li><b>Quadratic Bound:</b> A quadratic bowl sits below the function, pushing it up. (See <a href="../06-convex-functions-advanced/index.html">Lecture 06</a> for strong convexity.)</li>
           </ul>
           <p><i>Note:</i> Select different functions to see how non-convex functions violate these conditions!</p>
-          <div id="widget-convex-function-inspector" style="width: 100%; position: relative;"></div>
+          <div id="widget-convex-function-inspector" style="width: 100%; height: 500px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
       </section>
 
@@ -837,6 +837,14 @@
             $$ \log\left(\sum e^{x_i}\right) = \log\left(e^M \sum e^{x_i - M}\right) = M + \log\left(\sum e^{x_i - M}\right) $$
             Since $x_i - M \le 0$, each term $e^{x_i-M} \le 1$. The sum is at least 1 (the max term is $e^0=1$) and at most $n$.
             Thus $0 \le \log(\sum \dots) \le \log n$. Adding $M$ gives the result.</p>
+
+            <div class="insight" style="margin-top: 12px; border-left: 3px solid var(--primary);">
+              <h4 style="margin-top: 0; font-size: 0.95em;">Geometric Intuition: Softmax Temperature</h4>
+              <p>The "softness" of the approximation can be tuned. Define $f_\gamma(x) = \gamma \log \sum e^{x_i/\gamma}$.
+              <br>As $\gamma \to 0^+$, $f_\gamma(x) \to \max_i x_i$. The error is bounded by $\gamma \log n$.
+              <br>This is widely used in physics (free energy) and machine learning (attention mechanisms) to replace non-differentiable max functions with smooth convex surrogates.</p>
+            </div>
+
             <p><b>Failure Mode:</b> Confusing with $\log(\sum x_i)$ (concave) or $\sum \log x_i$ (concave).</p>
         </div>
 
@@ -1316,13 +1324,13 @@
             <figure style="flex: 1; min-width: 300px; text-align: center;">
               <img src="assets/convex_composition_case1.png"
                    alt="Composition Case 1: Convex inner + Convex Increasing outer"
-                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
+                   style="max-width: 500px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
               <figcaption><i>Figure 1:</i> Case 1. The convex inner function "curves up". The increasing outer function preserves this order, and its own convexity amplifies the curvature.</figcaption>
             </figure>
             <figure style="flex: 1; min-width: 300px; text-align: center;">
               <img src="assets/convex_composition_case2.png"
                    alt="Composition Case 2: Concave inner + Convex Decreasing outer"
-                   style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: white;" />
+                   style="max-width: 500px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
               <figcaption><i>Figure 2:</i> Case 2. The concave inner function "curves down". The decreasing outer function flips this to "curve up", and its own convexity reinforces the result.</figcaption>
             </figure>
           </div>
@@ -2110,7 +2118,7 @@
             <li><b>Global convexity:</b> A function is convex if the entire region is blue/green (no red)</li>
           </ul>
           <p><i>Practical insight:</i> This is exactly how numerical optimization libraries verify convexity in practice—by checking that all eigenvalues of the Hessian are non-negative!</p>
-          <div id="widget-hessian-heatmap" style="width: 100%; height: 450px; position: relative;"></div>
+          <div id="widget-hessian-heatmap" style="width: 100%; height: 550px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
 
         <div class="warning-box">
@@ -2332,7 +2340,7 @@
             <li><b>Export formula:</b> Get the mathematical expression for the constructed function</li>
           </ul>
           <p><i>Modeling power:</i> Almost every convex function you'll encounter in practice can be built using these operations! This is the foundation of disciplined convex programming (DCP) in tools like CVXPY.</p>
-          <div id="widget-operations-preserving" style="width: 100%; height: 500px; position: relative;"></div>
+          <div id="widget-operations-preserving" style="width: 100%; height: 600px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;"></div>
         </div>
 
         <h3>8.3 Standard Epigraph Modeling Patterns</h3>
@@ -2411,16 +2419,23 @@
             <h4>Solution</h4>
             <ul>
               <li><b>(a) Convex:</b> $f''(x) = a^2 e^{ax} \ge 0$.</li>
-              <li><b>(b) Depends on $a$:</b> $f''(x) = a(a-1)x^{a-2}$.
+              <li><b>(b) Depends on $a$:</b> We compute the second derivative: $f'(x) = a x^{a-1}$ and $f''(x) = a(a-1)x^{a-2}$. Since $x > 0$, the sign depends on the factor $a(a-1)$.
                 <ul>
-                  <li>Convex if $a \ge 1$ or $a \le 0$.</li>
-                  <li>Concave if $0 \le a \le 1$.</li>
+                  <li><b>Convex ($f'' \ge 0$):</b> Requires $a(a-1) \ge 0$. This holds when $a \ge 1$ or $a \le 0$.</li>
+                  <li><b>Concave ($f'' \le 0$):</b> Requires $a(a-1) \le 0$. This holds when $0 \le a \le 1$.</li>
                 </ul>
               </li>
               <li><b>(c) Convex:</b> Composition of convex $g(u)=u^p$ ($p \ge 1$) and convex $h(x)=|x|$. Since $g$ is increasing on $\mathbb{R}_+$, convexity is preserved.</li>
               <li><b>(d) Convex:</b> $f'(x) = 1 + \log x$, $f''(x) = 1/x > 0$. (Negative entropy).</li>
               <li><b>(e) Concave:</b> $u' = x^{\alpha-1} > 0$, $u'' = (\alpha-1)x^{\alpha-2}$. Since $\alpha \le 1$, $u'' \le 0$. Note: As $\alpha \to 0$, this approaches $\log x$.</li>
-              <li><b>(f) Quadratic Minimization:</b> $\nabla f(x) = Px + q$. If $P \succ 0$, $\nabla^2 f(x) = P \succ 0$, so $f$ is strictly convex. Minimizer: $x^\star = -P^{-1}q$.</li>
+              <li><b>(f) Quadratic Minimization:</b>
+                <ul>
+                  <li><b>Convexity:</b> The Hessian is $\nabla^2 f(x) = P$. Since $P \in \mathbb{S}^n_{++}$ (given), $P \succ 0$, so $f$ is strictly convex.</li>
+                  <li><b>Minimizer:</b> For a convex function, the global minimum occurs where the gradient is zero.
+                  $$ \nabla f(x) = Px + q = 0 \implies Px = -q \implies x^\star = -P^{-1}q $$
+                  This is the unique global minimizer.</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
@@ -2723,13 +2738,16 @@
       <ul>
         <li>Factor the expression: $t^p - \|x\|_p^p = t^{p-1} (t - \|x\|_p^p/t^{p-1})$.</li>
         <li>The term $q(x,t) = \|x\|_p^p/t^{p-1}$ is the perspective of the convex function $\|x\|_p^p$, so $q$ is convex.</li>
-        <li>Thus $r(x,t) = t - q(x,t)$ is concave and positive on the domain.</li>
+        <li>Thus $r(x,t) = t - q(x,t)$ is <b>concave</b> (affine minus convex) and positive on the domain.</li>
         <li>We can write $s(x,t) = (t^{p-1} r(x,t))^{1/p} = t^{(p-1)/p} r(x,t)^{1/p}$.</li>
-        <li>This is the composition of the function $\Phi(a,b) = a^{(p-1)/p} b^{1/p}$ with $a=t$ (affine) and $b=r(x,t)$ (concave).</li>
-        <li>$\Phi(a,b)$ is a weighted geometric mean, which is concave and non-decreasing in both arguments.</li>
-        <li>Therefore, by the composition rule (concave non-decreasing outer $\circ$ concave inner), $s(x,t)$ is concave.</li>
+        <li>This is the composition of the outer function $\Phi(a,b) = a^{(p-1)/p} b^{1/p}$ with inner functions $a(x,t)=t$ and $b(x,t)=r(x,t)$.</li>
+        <li><b>Check Outer Function $\Phi$:</b> This is a weighted geometric mean (Cobb-Douglas type).
+          <br>Hessian check or log-concavity shows $\Phi$ is <b>concave</b>.
+          <br>Monotonicity: $\partial \Phi / \partial a > 0$ and $\partial \Phi / \partial b > 0$ for $a,b > 0$. It is <b>non-decreasing</b>.</li>
+        <li><b>Check Inner Functions:</b> $a(x,t)=t$ is affine (concave). $b(x,t)=r(x,t)$ is concave.</li>
+        <li><b>Apply Rule:</b> Concave non-decreasing outer function $\Phi$ composed with concave inner functions $\implies$ <b>Concave</b> result.</li>
       </ul>
-      <p><b>Conclusion:</b> $f = -s$ is <b>Convex</b>.</p>
+      <p><b>Conclusion:</b> Since $s(x,t)$ is concave, $f = -s$ is <b>Convex</b>.</p>
     </div>
 
     <div class="proof-step">
@@ -2810,22 +2828,25 @@
 
     <div class="proof-step">
       <strong>Step 2: Compute the Hessian Entry-by-Entry.</strong>
-      We need $h_{ij}(x) = \frac{\partial}{\partial x_j} \left( \frac{f_i(x)}{f(x)} \right)$.
-      Using the product rule on $f_i(x) \cdot (f(x))^{-1}$:
-      $$ h_{ij} = \frac{\partial f_i}{\partial x_j} \cdot \frac{1}{f} + f_i \cdot \frac{\partial}{\partial x_j} (f^{-1}) $$
-      The first term uses the second partial derivative $f_{ij}$:
-      $$ \frac{\partial f_i}{\partial x_j} \frac{1}{f} = \frac{f_{ij}}{f} $$
-      The second term uses the chain rule on the inverse:
-      $$ \frac{\partial}{\partial x_j} (f(x)^{-1}) = -f(x)^{-2} f_j(x) = -\frac{f_j}{f^2} $$
-      Combining these:
-      $$ h_{ij} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
+      We compute the partial derivative of the $i$-th gradient component $h_i(x) = f_i(x) / f(x)$ with respect to $x_j$:
+      $$ h_{ij}(x) = \frac{\partial}{\partial x_j} \left( \frac{f_i(x)}{f(x)} \right) $$
+      Using the <b>Quotient Rule</b> $(u/v)' = (u'v - uv')/v^2$:
+      <ul>
+        <li>Numerator part 1: $\frac{\partial f_i}{\partial x_j} f(x) = f_{ij}(x) f(x)$.</li>
+        <li>Numerator part 2: $f_i(x) \frac{\partial f}{\partial x_j} = f_i(x) f_j(x)$.</li>
+      </ul>
+      Substituting back:
+      $$ h_{ij} = \frac{f_{ij} f - f_i f_j}{f^2} = \frac{f_{ij}}{f} - \frac{f_i f_j}{f^2} $$
     </div>
 
     <div class="proof-step">
       <strong>Step 3: Convert to Matrix Form.</strong>
-      The term $f_{ij}$ corresponds to the matrix $\nabla^2 f(x)$.
-      The term $f_i f_j$ corresponds to the rank-1 matrix $\nabla f(x) \nabla f(x)^\top$.
-      Thus:
+      We recognize the terms in the expression for $h_{ij}$:
+      <ul>
+        <li>$f_{ij}$ are the entries of the Hessian matrix $\nabla^2 f(x)$.</li>
+        <li>$f_i f_j$ are the entries of the outer product matrix $\nabla f(x) \nabla f(x)^\top$.</li>
+      </ul>
+      Thus, in matrix notation:
       $$ \nabla^2 h(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top $$
     </div>
 

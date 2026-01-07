@@ -275,8 +275,11 @@
       $$
       f(\theta \mathbf{x} + (1-\theta)\mathbf{y}) < \theta f(\mathbf{x}) + (1-\theta)f(\mathbf{y})
       $$
+      <div id="widget-convex-function-inspector" style="width: 100%; height: 500px; position: relative; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0;"></div>
       <p><b>Implication:</b> Strictly convex functions have at most one minimizer (uniqueness of optimal solution).</p>
       <p><b>Hessian Criterion:</b> If $\nabla^2 f(\mathbf{x}) \succ 0$ (positive definite) for all $\mathbf{x} \in \mathrm{dom}\, f$, then $f$ is strictly convex. <b>Note:</b> The converse is false! $f(x) = x^4$ is strictly convex but $f''(0) = 0$.</p>
+
+      <div id="widget-hessian-heatmap" style="width: 100%; height: 550px; position: relative; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0;"></div>
 
       <h3>2.2 Strongly Convex Functions</h3>
       <p>A function $f$ is <a href="#" class="definition-link">strongly convex</a> (with parameter $m > 0$) if for all $\mathbf{x}, \mathbf{y} \in \mathrm{dom}\, f$ and $\theta \in [0, 1]$:</p>
@@ -358,7 +361,7 @@
       <figure style="text-align: center; margin: 24px 0;">
         <img src="assets/epigraph_dual_norm.gif"
              alt="Animation showing the conjugate as the maximum gap between the function and a line"
-             style="max-width: 80%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
+             style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
         <figcaption><i>Animation:</i> The conjugate $f^*(y)$ is the maximum vertical distance between the linear function $y^\top x$ and the function $f(x)$. Varying $y$ changes the slope of the line, and $f^*(y)$ records the intercept of the supporting hyperplane.</figcaption>
       </figure>
 
@@ -653,8 +656,16 @@
       <ul>
           <li>The gradient maps are inverses: $\nabla f^*(y) = x$ where $y = \nabla f(x)$. So $\nabla f^* = (\nabla f)^{-1}$.</li>
           <li>At the optimum, Fenchel's inequality holds with equality: $f(x) + f^*(y) = x^\top y$ where $y = \nabla f(x)$.</li>
-      </ul>
-      This transformation connects Lagrangian and Hamiltonian mechanics.</p>
+      </ul></p>
+
+      <div class="insight">
+        <h4>Physics Interpretation: Lagrangian to Hamiltonian</h4>
+        <p>In classical mechanics, the state is described by position $q$ and velocity $\dot{q}$. The <b>Lagrangian</b> $L(q, \dot{q})$ captures the energy balance ($T-V$).
+        <br>To switch to the <b>Hamiltonian</b> formulation (position $q$ and momentum $p$), we take the Legendre transform with respect to velocity:
+        $$ p = \nabla_{\dot{q}} L(q, \dot{q}) \quad (\text{Momentum is gradient of Lagrangian}) $$
+        $$ H(q, p) = p^\top \dot{q} - L(q, \dot{q}) \quad (\text{Hamiltonian is conjugate}) $$
+        This change of variables (from $\dot{q}$ to $p$) is valid because the kinetic energy term is typically strictly convex in $\dot{q}$.</p>
+      </div>
 
       <h4>3.5.2 The Master Identity: Infimum via Conjugate</h4>
 
@@ -826,6 +837,7 @@
         then $f$ is <b>strictly quasiconvex</b>. This ensures no "flat" regions along the contours that could hide non-convexity.</p>
 
         <h3>4.5 Operations Preserving Quasiconvexity</h3>
+      <div id="widget-operations-preserving" style="width: 100%; height: 600px; position: relative; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0;"></div>
         <ul>
             <li><b>Max:</b> $f(x) = \max_i f_i(x)$ is quasiconvex (Intersection of convex sublevel sets).</li>
             <li><b>Composition:</b> $g(h(x))$ is quasiconvex if $h$ is quasiconvex and $g$ is <b>non-decreasing</b>.</li>

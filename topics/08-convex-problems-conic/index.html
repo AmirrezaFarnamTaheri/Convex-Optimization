@@ -273,8 +273,15 @@
         \end{aligned}
         $
       </p>
-      <p>Note: The inequality constraints must define a convex set, so we typically require $f_i$ to be convex, not merely quasiconvex (since sublevel sets of individual quasiconvex functions are convex, but their intersection might not have nice properties without stronger assumptions, though technically intersection of convex sets is convex. Standard form usually requires convex constraints).</p>
-      <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{L}^{n+1}$.</p>
+      <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{Q}^{n+1}$.</p>
+
+      <h4>Example 4.3: Mechanical Equilibrium with Friction (Robotics)</h4>
+      <p>In mechanics, a contact force $\mathbf{f} \in \mathbb{R}^3$ at a contact point must satisfy the Coulomb friction model to avoid slipping.
+      <br>Decompose $\mathbf{f}$ into a normal component $f_n$ and a tangential component $\mathbf{f}_t \in \mathbb{R}^2$.
+      <br><b>Constraint:</b> $\|\mathbf{f}_t\|_2 \le \mu f_n$, where $\mu$ is the friction coefficient.
+      <br>This is exactly a Second-Order Cone constraint:
+      $$ (f_n, \frac{1}{\mu}\mathbf{f}_t) \in \mathcal{Q}^3 $$
+      Robotic grasping and structural stability problems are often modeled as SOCPs because of this "friction cone" geometry.</p>
 
       <h3>1.5 Application: Robust Optimization via Dual Norms</h3>
       <p>Robust optimization addresses optimization under uncertainty by requiring constraints to hold for all possible parameter values. When uncertainty sets are norm balls, robustification leads naturally to SOCP formulations through the dual norm lemma.</p>
@@ -448,7 +455,7 @@
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Schur Complement Feasibility</h3>
         <p>Explore the feasible region of the parameter $t$ that makes the block matrix PSD. The threshold $t^*$ is exactly the Schur complement condition.</p>
-        <iframe src="../01-linear-algebra-advanced/widgets/la_batch3.html?mode=schur" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14;"></iframe>
+        <iframe src="../01-linear-algebra-advanced/widgets/la_batch3.html?mode=schur" width="100%" height="550" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <div class="proof-box">
@@ -606,6 +613,23 @@
         </div>
       </div>
 
+      <h4>Example: MAX-CUT Relaxation (Combinatorics)</h4>
+      <p>The MAX-CUT problem asks to partition graph vertices into two sets to maximize the number of edges crossing the cut.
+      <br><b>Integer Formulation:</b> $\max \frac{1}{2} \sum_{(i,j) \in E} (1 - x_i x_j)$ subject to $x_i \in \{-1, 1\}$.
+      <br>This is equivalent to $\max \frac{1}{4} x^\top L x$ subject to $x_i^2 = 1$, where $L$ is the graph Laplacian.
+      <br><b>Semidefinite Relaxation (Goemans-Williamson):</b>
+      Lift the variable $x$ to a matrix $X = xx^\top$.
+      Properties of $X$: $X \succeq 0$, $\text{rank}(X)=1$, $X_{ii} = x_i^2 = 1$.
+      <br>Relax the hard rank constraint ($\text{rank}(X)=1$) to a convex constraint ($X \succeq 0$).
+      $$
+      \begin{aligned}
+      \text{maximize} \quad & \frac{1}{4} \text{tr}(LX) \\
+      \text{subject to} \quad & X_{ii} = 1, \quad i=1,\dots,n \\
+      & X \succeq 0
+      \end{aligned}
+      $$
+      This is an SDP. The solution provides a high-quality upper bound and can be rounded to a valid cut (with guaranteed approximation ratio 0.878).</p>
+
 
       <!-- Widget 5: SDP Visualizer -->
       <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
@@ -618,7 +642,7 @@
           <li>Understand how SDP constraints restrict feasible matrices</li>
           <li>Connect eigenvalues to cone membership</li>
         </ul>
-        <div id="widget-5" style="width: 100%; height: 400px; position: relative;">
+        <div id="widget-5" style="width: 100%; height: 600px; position: relative; max-width: 900px; margin: 0 auto; border-radius: 8px;">
           <!-- Widget will be rendered here -->
         </div>
       </div>
@@ -1086,26 +1110,28 @@ problem.solve()</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-            <strong>Part (a): Convexity.</strong> The function $f(x) = \max_{i=1,\dots,m} |a_i^\top x - b_i|$ is the pointwise maximum of functions $|a_i^\top x - b_i|$. Since $|a_i^\top x - b_i|$ is convex (it's the composition of the absolute value function with an affine function), and the pointwise maximum of convex functions is convex, $f(x)$ is convex. Thus, this is a convex optimization problem.
+            <strong>Part (a): Convexity.</strong>
+            The objective function is $f(x) = \max_{i=1,\dots,m} |a_i^\top x - b_i|$.
+            Each term $g_i(x) = |a_i^\top x - b_i|$ is the composition of the convex absolute value function with an affine mapping, so $g_i$ is convex.
+            The function $f(x)$ is the pointwise maximum of a finite set of convex functions $\{g_1, \dots, g_m\}$. Since the maximum of convex functions is convex, $f(x)$ is convex.
+            Thus, minimizing $f(x)$ is a convex optimization problem.
           </div>
 
           <div class="proof-step">
-            <strong>Part (b): LP reformulation.</strong> We reformulate using epigraph form and absolute value splitting:
-            $
-            \begin{aligned}
-            \text{minimize} \quad & t \\
-            \text{subject to} \quad & -t \le a_i^\top x - b_i \le t, \quad i = 1, \dots, m
-            \end{aligned}
-            $
-            This is equivalent to:
-            $
+            <strong>Part (b): LP reformulation.</strong>
+            We use the standard epigraph reformulation for minimizing a maximum.
+            Introduce a scalar variable $t$ to represent the upper bound.
+            $$ \min_x \max_i |r_i(x)| \iff \min_{x,t} t \quad \text{s.t.} \quad |r_i(x)| \le t \ \forall i $$
+            The absolute value inequality $|u| \le t$ is equivalent to the pair of linear inequalities $-t \le u \le t$.
+            Applying this to each residual $r_i(x) = a_i^\top x - b_i$:
+            $$
             \begin{aligned}
             \text{minimize} \quad & t \\
             \text{subject to} \quad & a_i^\top x - b_i \le t, \quad i = 1, \dots, m \\
-            & -a_i^\top x + b_i \le t, \quad i = 1, \dots, m
+            & -(a_i^\top x - b_i) \le t, \quad i = 1, \dots, m
             \end{aligned}
-            $
-            This is an LP in variables $(x, t) \in \mathbb{R}^{n+1}$.
+            $$
+            This is a Linear Program (LP) with variables $x \in \mathbb{R}^n, t \in \mathbb{R}$ and $2m$ linear inequality constraints.
           </div>
   </div>
 </div>
@@ -1152,23 +1178,24 @@ problem.solve()</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-            <strong>Part (a): QP formulation.</strong> Expand the objective:
-            $
-            \|Ax - b\|_2^2 = (Ax - b)^\top (Ax - b) = x^\top A^\top A x - 2 b^\top A x + b^\top b
-            $
-            The constant $b^\top b$ doesn't affect the minimizer, so we can write:
-            $
-            \begin{aligned}
-            \text{minimize} \quad & x^\top (A^\top A) x - 2 (A^\top b)^\top x \\
-            \text{subject to} \quad & x \succeq l \\
-            & -x \succeq -u
-            \end{aligned}
-            $
-            In standard QP form with $P = 2 A^\top A$, $q = -2 A^\top b$, and inequality constraints $x \ge l$, $x \le u$.
+            <strong>Part (a): QP formulation.</strong>
+            We expand the squared Euclidean norm:
+            $$ \|Ax - b\|_2^2 = (Ax - b)^\top (Ax - b) = x^\top A^\top A x - 2 b^\top A x + b^\top b $$
+            Discarding the constant term $b^\top b$, the objective is $x^\top (A^\top A) x - 2(A^\top b)^\top x$.
+            This matches the standard QP form $\frac{1}{2}x^\top P x + q^\top x$ with:
+            $$ P = 2 A^\top A, \quad q = -2 A^\top b $$
+            The box constraints $l \le x \le u$ are linear inequalities:
+            $$ x \ge l \iff -x \le -l $$
+            $$ x \le u \iff x \le u $$
+            Combining these, we have the standard QP.
           </div>
 
           <div class="proof-step">
-            <strong>Part (b): Strict convexity.</strong> The Hessian is $\nabla^2 f(x) = 2 A^\top A$. The problem is strictly convex if and only if $A^\top A \succ 0$, which occurs when $A$ has full column rank (i.e., $\text{rank}(A) = n$).
+            <strong>Part (b): Strict convexity.</strong>
+            The objective function is strictly convex if and only if its Hessian matrix $P = 2A^\top A$ is positive definite ($P \succ 0$).
+            Since $A^\top A$ is always positive semidefinite, positive definiteness requires that $x^\top A^\top A x = \|Ax\|^2 > 0$ for all $x \ne 0$.
+            This condition holds if and only if $Ax \ne 0$ for all $x \ne 0$, which means $A$ must have a trivial nullspace.
+            Thus, the problem is strictly convex (and has a unique solution) if and only if $A$ has **full column rank** ($\text{rank}(A) = n$).
           </div>
   </div>
 </div>
@@ -1197,19 +1224,29 @@ problem.solve()</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-            <strong>Part (a): SOCP reformulation.</strong> Introduce auxiliary variables $t_1, t_2$ for the two norms:
-            $
+            <strong>Part (a): SOCP reformulation.</strong>
+            We use the epigraph transformation on each norm term individually.
+            Introduce scalar variables $t_1$ and $t_2$ to bound the norms:
+            $$ t_1 \ge \|Ax - b\|_2, \quad t_2 \ge \|x\|_2 $$
+            The objective becomes linear: minimize $t_1 + \lambda t_2$.
+            The constraints are standard second-order cone constraints:
+            $$ (t_1, Ax-b) \in \mathcal{Q}^{m+1}, \quad (t_2, x) \in \mathcal{Q}^{n+1} $$
+            The full problem is:
+            $$
             \begin{aligned}
             \text{minimize} \quad & t_1 + \lambda t_2 \\
             \text{subject to} \quad & \|Ax - b\|_2 \le t_1 \\
             & \|x\|_2 \le t_2
             \end{aligned}
-            $
-            Both constraints are second-order cone constraints, so this is an SOCP in variables $(x, t_1, t_2)$.
+            $$
+            This is a standard SOCP with variables $(x, t_1, t_2)$.
           </div>
 
           <div class="proof-step">
-            <strong>Part (b): Comparison to QP.</strong> Tikhonov regularization $\|Ax - b\|_2^2 + \lambda \|x\|_2^2$ is a QP (quadratic objective). The $\ell_2$ regularized version $\|Ax - b\|_2 + \lambda \|x\|_2$ is not a QP but an SOCP. Both are convex; the choice depends on application requirements (e.g., sparsity-promoting properties differ).
+            <strong>Part (b): Comparison to QP.</strong>
+            The Tikhonov regularized problem uses squared norms: $\|Ax - b\|_2^2 + \lambda \|x\|_2^2$. This is a Quadratic Program (QP) because the objective is a quadratic form $x^\top (A^\top A + \lambda I) x - 2b^\top A x + b^\top b$.
+            <br>
+            The sum-of-norms formulation (SOCP) behaves differently. While squaring penalizes large errors more heavily, the unsquared norm formulation is more robust to outliers (similar to the difference between mean and median). However, solving the SOCP is computationally more expensive than solving the unconstrained QP (which reduces to a linear system).
           </div>
   </div>
 </div>

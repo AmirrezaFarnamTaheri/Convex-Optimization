@@ -415,13 +415,25 @@
         <li>$Q \in \mathbb{R}^{m \times n}$ has <b>orthonormal columns</b> ($Q^\top Q = I_n$). This represents an isometric embedding.</li>
         <li>$R \in \mathbb{R}^{n \times n}$ is <b>upper triangular</b> with positive diagonal entries. This represents coordinates in the orthonormal basis.</li>
       </ul>
-      <p><b>Proof by Geometry (Gram-Schmidt as Projection):</b> Let $a_1, \dots, a_n$ be the columns of $A$. At each step $k$, we seek a vector $q_k$ that captures the "new direction" of $a_k$ orthogonal to the previous subspace $W_{k-1} = \mathrm{span}(a_1, \dots, a_{k-1})$.
-      <br>There is exactly one way to do this:
-      $$ u_k = a_k - \operatorname{proj}_{W_{k-1}}(a_k) $$
-      This residual $u_k$ is orthogonal to $W_{k-1}$ by the projection theorem. Normalizing it gives $q_k = u_k / \|u_k\|$.
-      <br>Since $a_k$ is a linear combination of $q_k$ and the previous basis vectors ($q_1, \dots, q_{k-1}$), we have a triangular relation:
-      $$ a_k = \sum_{j=1}^k r_{jk} q_j $$
-      where $r_{jk} = \langle q_j, a_k \rangle$. This forces the matrix form $A=QR$, where $R$ is upper triangular. The diagonal entries $r_{kk} = \|u_k\|$ are positive, ensuring uniqueness.</p>
+      <div class="proof-box">
+        <h4>Proof by Geometry (Gram-Schmidt as Projection)</h4>
+        <div class="proof-step">
+          <strong>Step 1: Recursive Construction.</strong>
+          Let $a_1, \dots, a_n$ be the columns of $A$. At each step $k$, we seek a vector $q_k$ that captures the "new direction" of $a_k$ orthogonal to the previous subspace $W_{k-1} = \mathrm{span}(a_1, \dots, a_{k-1})$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Orthogonalize.</strong>
+          There is exactly one way to do this:
+          $$ u_k = a_k - \operatorname{proj}_{W_{k-1}}(a_k) $$
+          This residual $u_k$ is orthogonal to $W_{k-1}$ by the projection theorem. Normalizing it gives $q_k = u_k / \|u_k\|$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Triangular Structure.</strong>
+          Since $a_k$ is a linear combination of $q_k$ and the previous basis vectors ($q_1, \dots, q_{k-1}$), we have a triangular relation:
+          $$ a_k = \sum_{j=1}^k r_{jk} q_j $$
+          where $r_{jk} = \langle q_j, a_k \rangle$. This forces the matrix form $A=QR$, where $R$ is upper triangular. The diagonal entries $r_{kk} = \|u_k\|$ are positive, ensuring uniqueness.
+        </div>
+      </div>
 
       <h3>4.2 Why QR is the "Correct" Way to Solve Least Squares</h3>
       <p>Consider $\min \|A\mathbf{x} - \mathbf{b}\|_2$.
@@ -777,7 +789,15 @@
           $AY = (AY)^\top = Y^\top A^\top$.
           <br>So $X = XAX = (XA)X = (XA)^\top X = A^\top X^\top X$.
           Substitute $A^\top = (AYA)^\top = A^\top Y^\top A^\top$:
-          $$ X = (A^\top Y^\top A^\top) X^\top X = A^\top Y^\top (A^\top X^\top X) = A^\top Y^\top (XA)^\top X = A^\top Y^\top XA X = A^\top Y^\top X = (YA)^\top X = Y A X $$
+          $$ \begin{aligned}
+          X &= (A^\top Y^\top A^\top) X^\top X \\
+            &= A^\top Y^\top (A^\top X^\top X) \\
+            &= A^\top Y^\top (XA)^\top X \\
+            &= A^\top Y^\top XA X \\
+            &= A^\top Y^\top X \\
+            &= (YA)^\top X \\
+            &= Y A X
+          \end{aligned} $$
           So $X = YAX$.
         </div>
         <div class="proof-step">
@@ -915,7 +935,7 @@
       </div>
     </section>
 
-    <!-- SECTION 9: REVIEW -->
+    <!-- SECTION 7: REVIEW -->
     <section class="section-card" id="section-review">
       <h2>7. Review & Cheat Sheet</h2>
 
@@ -991,7 +1011,7 @@
       </table>
     </section>
 
-    <!-- SECTION 10: EXERCISES -->
+    <!-- SECTION 8: EXERCISES -->
     <section class="section-card" id="section-exercises"><h2><i data-feather="edit-3"></i> 8. Exercises</h2>
       <div class="insight">
         <h4>Recap & Key Concepts</h4>

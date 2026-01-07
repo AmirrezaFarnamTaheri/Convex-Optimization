@@ -1252,17 +1252,33 @@
         <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
       </ol>
 
+      <div class="proof-box">
         <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
-        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
-        <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
-        Expanding using bilinearity:
-        $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since the parabola never dips below zero, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
-        $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
-        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
-        <br><b>Equality Condition:</b> Discriminant is 0 iff the quadratic has a real root, meaning $\phi(t)=0$ for some $t$, i.e., $x-ty=0$. Thus equality holds iff $x$ and $y$ are linearly dependent.</p>
+        <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.</p>
+        <div class="proof-step">
+          <strong>Step 1: Construct a quadratic function.</strong>
+          Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness of the norm, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
+        </div>
+        <div class="proof-step">
+          <strong>Step 2: Expand using bilinearity.</strong>
+          We expand the inner product:
+          $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
+          This is a quadratic polynomial $P(t) = at^2 + bt + c$ in the variable $t$, where:
+          $$ a = \|y\|^2, \quad b = -2\langle x,y\rangle, \quad c = \|x\|^2 $$
+        </div>
+        <div class="proof-step">
+          <strong>Step 3: Analyze the discriminant.</strong>
+          Since the parabola $\phi(t)$ is always non-negative ($\phi(t) \ge 0$), it cannot have two distinct real roots. Therefore, its discriminant must be non-positive ($b^2 - 4ac \le 0$).
+          $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
+          Simplifying:
+          $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
+          Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
+        </div>
+        <div class="proof-step">
+          <strong>Equality Condition:</strong>
+          The discriminant is 0 if and only if the quadratic has exactly one real root (where it touches zero). This means $\phi(t) = \|x - ty\|^2 = 0$ for some $t$, which implies $x - ty = 0$. Thus, equality holds if and only if $x$ is a scalar multiple of $y$ (i.e., they are linearly dependent).
+        </div>
+      </div>
 
         <h4>Derivation: Triangle Inequality</h4>
         <p>Now we can prove the final norm axiom.
@@ -2503,9 +2519,13 @@
       </div>
 
       <h3>8.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
-      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank:
-      $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
-      </p>
+      <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank, the projection matrix $P$ onto the column space $\mathcal{R}(A)$ is given by:
+      $$ P = A(A^\top A)^{-1} A^\top $$
+      The projection of a vector $\mathbf{b}$ is then $\mathbf{p} = P\mathbf{b}$.</p>
+      <p><b>Connection to Least Squares:</b> This formula comes directly from solving the normal equations $A^\top A \mathbf{x} = A^\top \mathbf{b}$ derived in <b>Section 9</b>.
+      <br>1. Solve for the coefficients: $\mathbf{x}^* = (A^\top A)^{-1} A^\top \mathbf{b}$.
+      <br>2. Map the coefficients back to the subspace: $\mathbf{p} = A\mathbf{x}^* = A(A^\top A)^{-1} A^\top \mathbf{b}$.
+      <br>Thus, the matrix $P = A(A^\top A)^{-1} A^\top$ is the operator that maps a vector $\mathbf{b}$ to its orthogonal projection in $\mathcal{R}(A)$.</p>
 
       <h3>8.3 Projection onto Closed Convex Sets</h3>
       <p>The concept of projection extends beyond subspaces. For any nonempty, closed convex set $C$, and any point $y$, the projection $\Pi_C(y)$ is the unique point in $C$ closest to $y$.

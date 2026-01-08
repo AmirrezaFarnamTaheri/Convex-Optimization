@@ -1,229 +1,203 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>12. Applications III: Geometric Problems — Convex Optimization</title>
-  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>12. Applications III: Geometric Problems — Convex Optimization</title>
+<link href="../../static/css/convex-unified.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" rel="stylesheet"/>
 </head>
 <body>
-  <!-- Header with navigation -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <a href="../../index.html">Convex Optimization</a>
-      </div>
-      <nav class="nav">
-        <a href="../../index.html">All Lectures</a>
-        <a href="#widgets">Interactive</a>
-        <a href="#readings">Readings</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Main content -->
-  <main class="container" style="padding: 32px 0 60px;">
-    <!-- Lecture header -->
-    <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">12. Applications III: Geometric Problems</h1>
-      <div class="meta">
+<!-- Header with navigation -->
+<header class="site-header">
+<div class="container header-inner">
+<div class="brand">
+<a href="../../index.html">Convex Optimization</a>
+</div>
+<nav class="nav">
+<a href="../../index.html">All Lectures</a>
+<a href="#widgets">Interactive</a>
+<a href="#readings">Readings</a>
+</nav>
+</div>
+</header>
+<!-- Main content -->
+<main class="container" style="padding: 32px 0 60px;">
+<!-- Lecture header -->
+<article class="section-card" style="margin-bottom: 32px;">
+<h1 style="margin-top: 0;">12. Applications III: Geometric Problems</h1>
+<div class="meta">
         Date: 2025-12-09 · Duration: 90 min · Tags: applications, geometry
       </div>
-
-      <!-- Brief introduction -->
-      <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> MVEE, Chebyshev center, best-fit shapes, distance problems—geometry via optimization.</p>
-        <p><strong>Prerequisites:</strong> <a href="../03-convex-sets-geometry/index.html">Lecture 03</a>, <a href="../11-statistical-estimation/index.html">Lecture 11</a></p>
-      </section>
-    </article>
-
-    <!-- Learning objectives -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Learning Objectives</h2>
-      <p>After this lecture, you should understand:</p>
-      <ul style="line-height: 1.8;">
-        <li>How to formulate geometric problems like projection, distance, and containment as convex problems.</li>
-        <li>The formulation of the Minimum Volume Enclosing Ellipsoid (MVEE) and Maximum Volume Inscribed Ellipsoid (MVIE).</li>
-        <li>How to solve center finding problems (Chebyshev center) using linear programming.</li>
-      </ul>
-    </section>
-
-    <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Key Concepts</h2>
-
-      <h3>1. Distance Between Convex Sets</h3>
-      <p>The distance between two convex sets $\mathcal{C}_1$ and $\mathcal{C}_2$ is $d(\mathcal{C}_1, \mathcal{C}_2) = \min \{ \|x_1 - x_2\|_2 : x_1 \in \mathcal{C}_1, x_2 \in \mathcal{C}_2 \}$. This is a convex problem. If the sets are polyhedra defined by inequalities, it is a QP. If the distance is positive, there exists a separating hyperplane.</p>
-
-      <h3>2. Euclidean Projection</h3>
-      <p>The projection of a point $x_0$ onto a convex set $\mathcal{C}$ is $P_{\mathcal{C}}(x_0) = \text{argmin}_{x \in \mathcal{C}} \|x - x_0\|_2^2$. By the Hilbert Projection Theorem, $z = P_{\mathcal{C}}(x_0)$ iff $(x_0 - z)^\top (y - z) \le 0$ for all $y \in \mathcal{C}$. This is a crucial primitive in algorithms (Projected Gradient Descent).</p>
-
-      <h3>3. Minimum Volume Enclosing Ellipsoid (MVEE)</h3>
-      <p>For a set of points $S = \{x_1, \ldots, x_m\}$, the MVEE (Löwner-John ellipsoid) is found by minimizing the volume of $\mathcal{E} = \{v : \|Av + b\|_2 \le 1\}$. This is equivalent to maximizing $\det(A)$ (or minimizing $-\log\det(A)$) subject to $\|Ax_i + b\|_2 \le 1$. This is a convex problem (SDP-like) solvable via interior-point methods.</p>
-
-      <h3>4. Chebyshev Center</h3>
-      <p>The Chebyshev center of a set $\mathcal{C}$ is the center of the largest Euclidean ball inscribed in $\mathcal{C}$. For a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$, finding the center $x_c$ and radius $r$ is an LP:
+<!-- Brief introduction -->
+<section style="margin-top: 16px;">
+<p><strong>Overview:</strong> MVEE, Chebyshev center, best-fit shapes, distance problems—geometry via optimization.</p>
+<p><strong>Prerequisites:</strong> <a href="../03-convex-sets-geometry/index.html">Lecture 03</a>, <a href="../11-statistical-estimation/index.html">Lecture 11</a></p>
+</section>
+</article>
+<!-- Learning objectives -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Learning Objectives</h2>
+<p>After this lecture, you should understand:</p>
+<ul style="line-height: 1.8;">
+<li>How to formulate geometric problems like projection, distance, and containment as convex problems.</li>
+<li>The formulation of the Minimum Volume Enclosing Ellipsoid (MVEE) and Maximum Volume Inscribed Ellipsoid (MVIE).</li>
+<li>How to solve center finding problems (Chebyshev center) using linear programming.</li>
+</ul>
+</section>
+<!-- Main lecture content -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Key Concepts</h2>
+<h3>1. Distance Between Convex Sets</h3>
+<p>The distance between two convex sets $\mathcal{C}_1$ and $\mathcal{C}_2$ is $d(\mathcal{C}_1, \mathcal{C}_2) = \min \{ \|x_1 - x_2\|_2 : x_1 \in \mathcal{C}_1, x_2 \in \mathcal{C}_2 \}$. This is a convex problem. If the sets are polyhedra defined by inequalities, it is a QP. If the distance is positive, there exists a separating hyperplane.</p>
+<h3>2. Euclidean Projection</h3>
+<p>The projection of a point $x_0$ onto a convex set $\mathcal{C}$ is $P_{\mathcal{C}}(x_0) = \text{argmin}_{x \in \mathcal{C}} \|x - x_0\|_2^2$. By the Hilbert Projection Theorem, $z = P_{\mathcal{C}}(x_0)$ iff $(x_0 - z)^\top (y - z) \le 0$ for all $y \in \mathcal{C}$. This is a crucial primitive in algorithms (Projected Gradient Descent).</p>
+<h3>3. Minimum Volume Enclosing Ellipsoid (MVEE)</h3>
+<p>For a set of points $S = \{x_1, \ldots, x_m\}$, the MVEE (Löwner-John ellipsoid) is found by minimizing the volume of $\mathcal{E} = \{v : \|Av + b\|_2 \le 1\}$. This is equivalent to maximizing $\det(A)$ (or minimizing $-\log\det(A)$) subject to $\|Ax_i + b\|_2 \le 1$. This is a convex problem (SDP-like) solvable via interior-point methods.</p>
+<h3>4. Chebyshev Center</h3>
+<p>The Chebyshev center of a set $\mathcal{C}$ is the center of the largest Euclidean ball inscribed in $\mathcal{C}$. For a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$, finding the center $x_c$ and radius $r$ is an LP:
       $$ \max r \quad \text{s.t.} \quad a_i^\top x_c + r\|a_i\|_2 \le b_i, \quad r \ge 0 $$</p>
-
-      <h3>5. Separating and Supporting Hyperplanes</h3>
-      <p>Two disjoint convex sets $\mathcal{C}_1, \mathcal{C}_2$ can be separated by a hyperplane $a^\top x = b$. The maximum margin separating hyperplane minimizes $\|a\|_2$ subject to separation constraints (SVM). For general sets, finding a separating hyperplane is equivalent to finding a point in the Minkowski difference $\mathcal{C}_1 - \mathcal{C}_2$ closest to the origin.</p>
-
-      <h3>6. Extremal Volume Ellipsoids</h3>
-      <p>The Maximum Volume Inscribed Ellipsoid (MVIE) inside a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$ is found by maximizing $\det(A)$ subject to $\sup_{\|u\| \le 1} a_i^\top (Au + d) \le b_i$, which simplifies to $\|A a_i\|_2 + a_i^\top d \le b_i$. This is a convex problem in $A, d$.</p>
-
-      <h3>7. Placement and Location Problems</h3>
-      <p>Facility location problems minimize a cost function of distances $\sum_i w_i \|x - x_i\|$ (Weber problem) or $\max_i w_i \|x - x_i\|$. The Weber problem is a Second-Order Cone Program (SOCP). The Minimax problem can be solved as an SOCP or geometrically as the Smallest Enclosing Circle.</p>
-
-      <h3>8. Geometric Fitting</h3>
-      <p>Fitting a shape to data minimizes the sum of squared distances. For lines/planes, this is Total Least Squares (PCA). For circles/ellipses, the geometric error is non-convex, but algebraic error approximations allow convex formulations.</p>
-    </section>
-
-    <!-- Interactive widgets -->
-    <section class="section-card" id="widgets" style="margin-bottom: 32px;">
-      <h2>Interactive Widgets</h2>
-      <p>Below are tools to explore the concepts interactively.</p>
-
-      <!-- Widget 1 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">MVEE Visualizer</h3>
-        <p>Visualize the minimum volume enclosing ellipsoid for a set of points.</p>
-        <div id="widget-1" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 2 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Chebyshev Center</h3>
-        <p>Find the Chebyshev center of a polyhedron.</p>
-        <div id="widget-2" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 3 (if exists) -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Distance Between Convex Sets</h3>
-        <p>Calculates and visualizes the shortest distance between two convex sets.</p>
-        <div id="widget-3" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Readings -->
-    <section class="section-card" id="readings" style="margin-bottom: 32px;">
-      <h2>Readings & Resources</h2>
-      <ul class="link-list">
-        <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 8 — Geometric Problems</li>
-        <li><strong>Course slides:</strong> <a href="https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">PDF</a></li>
-      </ul>
-    </section>
-
-    <!-- Example problems -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Example Problems</h2>
-
-      <div class="example-problem">
-        <h3>Example 12.1: Euclidean Projection onto a Simplex</h3>
-        <p><strong>Problem:</strong> Project $y \in \mathbb{R}^n$ onto the simplex $\Delta = \{x : x \ge 0, \sum x_i = 1\}$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Problem: $\min \frac{1}{2}\|x - y\|^2$ s.t. $\sum x_i = 1, x_i \ge 0$.
+<h3>5. Separating and Supporting Hyperplanes</h3>
+<p>Two disjoint convex sets $\mathcal{C}_1, \mathcal{C}_2$ can be separated by a hyperplane $a^\top x = b$. The maximum margin separating hyperplane minimizes $\|a\|_2$ subject to separation constraints (SVM). For general sets, finding a separating hyperplane is equivalent to finding a point in the Minkowski difference $\mathcal{C}_1 - \mathcal{C}_2$ closest to the origin.</p>
+<h3>6. Extremal Volume Ellipsoids</h3>
+<p>The Maximum Volume Inscribed Ellipsoid (MVIE) inside a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$ is found by maximizing $\det(A)$ subject to $\sup_{\|u\| \le 1} a_i^\top (Au + d) \le b_i$, which simplifies to $\|A a_i\|_2 + a_i^\top d \le b_i$. This is a convex problem in $A, d$.</p>
+<h3>7. Placement and Location Problems</h3>
+<p>Facility location problems minimize a cost function of distances $\sum_i w_i \|x - x_i\|$ (Weber problem) or $\max_i w_i \|x - x_i\|$. The Weber problem is a Second-Order Cone Program (SOCP). The Minimax problem can be solved as an SOCP or geometrically as the Smallest Enclosing Circle.</p>
+<h3>8. Geometric Fitting</h3>
+<p>Fitting a shape to data minimizes the sum of squared distances. For lines/planes, this is Total Least Squares (PCA). For circles/ellipses, the geometric error is non-convex, but algebraic error approximations allow convex formulations.</p>
+</section>
+<!-- Interactive widgets -->
+<section class="section-card" id="widgets" style="margin-bottom: 32px;">
+<h2>Interactive Widgets</h2>
+<p>Below are tools to explore the concepts interactively.</p>
+<!-- Widget 1 -->
+<div>
+<h3 style="margin-top: 0;">MVEE Visualizer</h3>
+<p>Visualize the minimum volume enclosing ellipsoid for a set of points.</p>
+<div id="widget-1">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 2 -->
+<div>
+<h3 style="margin-top: 0;">Chebyshev Center</h3>
+<p>Find the Chebyshev center of a polyhedron.</p>
+<div id="widget-2">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 3 (if exists) -->
+<div>
+<h3 style="margin-top: 0;">Distance Between Convex Sets</h3>
+<p>Calculates and visualizes the shortest distance between two convex sets.</p>
+<div id="widget-3">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+</section>
+<!-- Readings -->
+<section class="section-card" id="readings" style="margin-bottom: 32px;">
+<h2>Readings &amp; Resources</h2>
+<ul class="link-list">
+<li><strong>Boyd &amp; Vandenberghe, Convex Optimization:</strong> Chapter 8 — Geometric Problems</li>
+<li><strong>Course slides:</strong> <a href="https://stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">PDF</a></li>
+</ul>
+</section>
+<!-- Example problems -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Example Problems</h2>
+<div class="example-problem">
+<h3>Example 12.1: Euclidean Projection onto a Simplex</h3>
+<p><strong>Problem:</strong> Project $y \in \mathbb{R}^n$ onto the simplex $\Delta = \{x : x \ge 0, \sum x_i = 1\}$.</p>
+<p><strong>Solution:</strong></p>
+<p>Problem: $\min \frac{1}{2}\|x - y\|^2$ s.t. $\sum x_i = 1, x_i \ge 0$.
         Lagrangian: $L = \frac{1}{2}\|x-y\|^2 - \sum \lambda_i x_i + \nu(\sum x_i - 1)$.
         Optimality: $x_i - y_i - \lambda_i + \nu = 0 \implies x_i = y_i + \lambda_i - \nu$.
         Since $\lambda_i \ge 0, x_i \ge 0$ and $\lambda_i x_i = 0$, we have $x_i = \max(0, y_i - \nu)$.
         Find $\nu$ such that $\sum \max(0, y_i - \nu) = 1$.
         This is solved by sorting $y$ and a water-filling algorithm in $O(n \log n)$.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.2: Distance Between Two Polyhedra</h3>
-        <p><strong>Problem:</strong> Formulate the distance between $\mathcal{P}_1 = \{x : A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{x : A_2 x \le b_2\}$ as a QP.</p>
-        <p><strong>Solution:</strong></p>
-        <p>We minimize $\|x_1 - x_2\|_2^2$ subject to $A_1 x_1 \le b_1$ and $A_2 x_2 \le b_2$.
-        Define $z = [x_1^\top, x_2^\top]^\top$. Objective is $z^\top Q z$ where $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$.
+</div>
+<div class="example-problem">
+<h3>Example 12.2: Distance Between Two Polyhedra</h3>
+<p><strong>Problem:</strong> Formulate the distance between $\mathcal{P}_1 = \{x : A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{x : A_2 x \le b_2\}$ as a QP.</p>
+<p><strong>Solution:</strong></p>
+<p>We minimize $\|x_1 - x_2\|_2^2$ subject to $A_1 x_1 \le b_1$ and $A_2 x_2 \le b_2$.
+        Define $z = [x_1^\top, x_2^\top]^\top$. Objective is $z^\top Q z$ where $Q = \begin{bmatrix} I &amp; -I \\ -I &amp; I \end{bmatrix}$.
         Constraints are block diagonal linear inequalities.
         This is a convex QP. The dual variables provide the separating hyperplane.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.3: Chebyshev Center of Triangle</h3>
-        <p><strong>Problem:</strong> Find the largest circle inside a triangle defined by $a_i^\top x \le b_i, i=1,2,3$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Maximize $r$. Constraints: The distance from center $x_c$ to line $a_i^\top x = b_i$ must be at least $r$.
+</div>
+<div class="example-problem">
+<h3>Example 12.3: Chebyshev Center of Triangle</h3>
+<p><strong>Problem:</strong> Find the largest circle inside a triangle defined by $a_i^\top x \le b_i, i=1,2,3$.</p>
+<p><strong>Solution:</strong></p>
+<p>Maximize $r$. Constraints: The distance from center $x_c$ to line $a_i^\top x = b_i$ must be at least $r$.
         Algebraically: $a_i^\top x_c + r\|a_i\|_2 \le b_i$.
         This is an LP with variables $x_c \in \mathbb{R}^2, r \in \mathbb{R}$.
-        Maximize $r$ subject to $\begin{bmatrix} a_i^\top & \|a_i\|_2 \end{bmatrix} \begin{bmatrix} x_c \\ r \end{bmatrix} \le b_i$.
+        Maximize $r$ subject to $\begin{bmatrix} a_i^\top &amp; \|a_i\|_2 \end{bmatrix} \begin{bmatrix} x_c \\ r \end{bmatrix} \le b_i$.
         The optimal $x_c$ is the incenter.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.4: MVEE for Points</h3>
-        <p><strong>Problem:</strong> Find the minimum volume ellipsoid covering points $x_1, \ldots, x_m$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Parametrize ellipsoid as $\mathcal{E} = \{x : \|Ax+b\|_2 \le 1\}$. Volume $\propto \det(A^{-1})$.
+</div>
+<div class="example-problem">
+<h3>Example 12.4: MVEE for Points</h3>
+<p><strong>Problem:</strong> Find the minimum volume ellipsoid covering points $x_1, \ldots, x_m$.</p>
+<p><strong>Solution:</strong></p>
+<p>Parametrize ellipsoid as $\mathcal{E} = \{x : \|Ax+b\|_2 \le 1\}$. Volume $\propto \det(A^{-1})$.
         Maximize $\log\det(A)$ subject to $\|Ax_i + b\|_2 \le 1$ for all $i$.
         Variables: $A \in \mathbb{S}^n_{++}, b \in \mathbb{R}^n$.
         Constraints are second-order cone constraints on $(A,b)$.
         Objective is convex (log-det is concave).
         This is a MAXDET problem, solvable via interior point methods.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.5: Separating Hyperplane</h3>
-        <p><strong>Problem:</strong> Find a separating hyperplane for two sets of points $\{x_i\}$ and $\{y_j\}$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>We want $a^\top x_i + b \ge 1$ and $a^\top y_j + b \le -1$.
+</div>
+<div class="example-problem">
+<h3>Example 12.5: Separating Hyperplane</h3>
+<p><strong>Problem:</strong> Find a separating hyperplane for two sets of points $\{x_i\}$ and $\{y_j\}$.</p>
+<p><strong>Solution:</strong></p>
+<p>We want $a^\top x_i + b \ge 1$ and $a^\top y_j + b \le -1$.
         To maximize margin, minimize $\|a\|_2$.
         Problem: $\min \|a\|_2$ subject to $a^\top x_i + b \ge 1$, $a^\top y_j + b \le -1$.
         This is the hard-margin SVM formulation. If sets intersect, relax with slack variables (Soft margin).</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.6: Weber Problem (Facility Location)</h3>
-        <p><strong>Problem:</strong> Minimize $f(x) = \sum_{i=1}^m w_i \|x - p_i\|_2$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>This is the sum of Euclidean norms.
+</div>
+<div class="example-problem">
+<h3>Example 12.6: Weber Problem (Facility Location)</h3>
+<p><strong>Problem:</strong> Minimize $f(x) = \sum_{i=1}^m w_i \|x - p_i\|_2$.</p>
+<p><strong>Solution:</strong></p>
+<p>This is the sum of Euclidean norms.
         Introduce auxiliary variables $t_i \ge \|x - p_i\|_2$.
         Minimize $\sum w_i t_i$ subject to $\|x - p_i\|_2 \le t_i$.
         This is an SOCP (Second-Order Cone Program).
         Alternatively, use iterative reweighted least squares (Weiszfeld's algorithm), which is a gradient method on smoothed approximation.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.7: Total Least Squares</h3>
-        <p><strong>Problem:</strong> Fit a line $a^\top x = b$ minimizing sum of squared perpendicular distances to points $x_i$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Minimize $\sum_i (a^\top x_i - b)^2 / \|a\|_2^2$. Assume $x_i$ centered, so $b=0$.
+</div>
+<div class="example-problem">
+<h3>Example 12.7: Total Least Squares</h3>
+<p><strong>Problem:</strong> Fit a line $a^\top x = b$ minimizing sum of squared perpendicular distances to points $x_i$.</p>
+<p><strong>Solution:</strong></p>
+<p>Minimize $\sum_i (a^\top x_i - b)^2 / \|a\|_2^2$. Assume $x_i$ centered, so $b=0$.
         Maximize $a^\top (\sum x_i x_i^\top) a$ subject to $\|a\|_2 = 1$.
         Solution is the eigenvector of $\sum x_i x_i^\top$ corresponding to the smallest eigenvalue.
         This is SVD/PCA. While non-convex generally, the spectral solution is global.</p>
-      </div>
-
-      <div class="example-problem">
-        <h3>Example 12.8: MVIE for Cube</h3>
-        <p><strong>Problem:</strong> Find the largest ellipsoid inside the unit cube $[-1, 1]^n$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Cube faces: $e_i^\top x \le 1$ and $-e_i^\top x \le 1$.
+</div>
+<div class="example-problem">
+<h3>Example 12.8: MVIE for Cube</h3>
+<p><strong>Problem:</strong> Find the largest ellipsoid inside the unit cube $[-1, 1]^n$.</p>
+<p><strong>Solution:</strong></p>
+<p>Cube faces: $e_i^\top x \le 1$ and $-e_i^\top x \le 1$.
         MVIE maximizes $\log\det(A)$ s.t. $\|A a_k\|_2 + a_k^\top d \le b_k$.
         Here $a_k = \pm e_i, b_k = 1$.
         Symmetry implies $d=0$ and $A$ is diagonal.
         Problem becomes $\max \sum \log A_{ii}$ s.t. $A_{ii} \le 1$.
         Optimal $A = I$. The MVIE is the unit ball.</p>
-      </div>
-    </section>
-
-    <!-- Exercises -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Exercises</h2>
-      <ol style="line-height: 2;">
-        <li>
-          <strong>Projection Non-expansiveness:</strong><br>
+</div>
+</section>
+<!-- Exercises -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Exercises</h2>
+<ol style="line-height: 2;">
+<li>
+<strong>Projection Non-expansiveness:</strong><br/>
           Prove that for a convex set $C$, $\|P_C(x) - P_C(y)\|_2 \le \|x - y\|_2$.
-          <br><em>Solution:</em>
+          <br/><em>Solution:</em>
           Let $u = P_C(x)$ and $v = P_C(y)$. By variational inequality:
           $(x - u)^\top (v - u) \le 0$ and $(y - v)^\top (u - v) \le 0$.
           Summing: $(x - u)^\top (v - u) + (y - v)^\top (u - v) \le 0$.
@@ -231,10 +205,10 @@
           $\|u-v\|^2 \le (x-y)^\top (u-v) \le \|x-y\|\|u-v\|$.
           Divide by $\|u-v\|$: $\|u-v\| \le \|x-y\|$.
         </li>
-        <li>
-          <strong>Chebyshev Center of Polyhedron:</strong><br>
+<li>
+<strong>Chebyshev Center of Polyhedron:</strong><br/>
           Explicitly write the LP for the Chebyshev center of the box $\{x : 0 \le x \le 1\}$. Verify the solution is center $(0.5, \dots)$ with radius $0.5$.
-          <br><em>Solution:</em>
+          <br/><em>Solution:</em>
           Constraints: $x_i \ge 0, -x_i \ge -1$. Normal forms: $-e_i^\top x \le 0, e_i^\top x \le 1$.
           Normals have length 1.
           LP: $\max r$ s.t. $-x_i + r \le 0$ and $x_i + r \le 1$.
@@ -242,86 +216,82 @@
           Summing: $2r \le 1 \implies r \le 0.5$.
           Max $r=0.5$ attained at $x_i = 0.5$.
         </li>
-        <li>
-          <strong>Convexity of MVEE Objective:</strong><br>
+<li>
+<strong>Convexity of MVEE Objective:</strong><br/>
           Prove that $f(A) = -\log\det(A)$ is convex on $\mathbb{S}_{++}^n$.
-          <br><em>Solution:</em>
+          <br/><em>Solution:</em>
           Consider line $Z = A + tV$. $g(t) = -\log\det(A+tV) = -\log\det(A) - \log\det(I + tA^{-1/2}VA^{-1/2})$.
           Let $\lambda_i$ be eigenvalues of $A^{-1/2}VA^{-1/2}$.
           $g(t) = -\sum \log(1 + t\lambda_i)$.
           $g''(t) = \sum \frac{\lambda_i^2}{(1+t\lambda_i)^2} \ge 0$.
           Since second derivative along any line is non-negative, $f(A)$ is convex.
         </li>
-        <li>
-          <strong>Distance Implies Intersection:</strong><br>
+<li>
+<strong>Distance Implies Intersection:</strong><br/>
           Show that if $d(C_1, C_2) = 0$ and sets are closed/compact, then $C_1 \cap C_2 \ne \emptyset$.
-          <br><em>Solution:</em>
+          <br/><em>Solution:</em>
           $d(C_1, C_2) = \min \|x_1 - x_2\|$. Since $f(x_1, x_2) = \|x_1 - x_2\|$ is continuous and domain is compact, min is attained at some $x_1^*, x_2^*$.
           If min is 0, then $\|x_1^* - x_2^*\| = 0 \implies x_1^* = x_2^*$.
           Thus there exists a point in both sets.
         </li>
-        <li>
-          <strong>Weber Problem Reformulation:</strong><br>
+<li>
+<strong>Weber Problem Reformulation:</strong><br/>
           Show that $\min \sum w_i \|x - p_i\|$ can be cast as an SOCP.
-          <br><em>Solution:</em>
+          <br/><em>Solution:</em>
           Let $t_i$ be auxiliary scalar variables.
           Min $\sum w_i t_i$.
           Subject to $\|x - p_i\|_2 \le t_i$.
           The constraint is a second-order cone constraint $(t_i, x - p_i) \in \mathcal{K}$.
           The objective is linear. This is exactly an SOCP.
         </li>
-      </ol>
-    </section>
-  </main></div>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p style="margin: 0;">
-        © <span id="year"></a> Convex Optimization Course ·
+</ol>
+</section>
+</main>
+<!-- Footer -->
+<footer class="site-footer">
+<div class="container">
+<p style="margin: 0;">
+        © <span id="year"> Convex Optimization Course ·
         <a href="../../README.md" style="color: var(--brand);">About</a>
-      </p>
-    </div>
-  </footer>
-
-  <!-- Load Pyodide for Python widgets (optional) -->
-  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
-
-  <!-- Widget loaders -->
-  <script type="module">
+</span></p>
+</div>
+</footer>
+<!-- Load Pyodide for Python widgets (optional) -->
+<script defer="" src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<!-- Widget loaders -->
+<script type="module">
     import { initMVEEVisualizer } from './widgets/js/mvee-visualizer.js';
     initMVEEVisualizer('widget-1');
   </script>
-  <script type="module">
+<script type="module">
     import { initDistanceBetweenSets } from './widgets/js/distance-between-sets.js';
     initDistanceBetweenSets('widget-3');
   </script>
-  <script type="module">
+<script type="module">
     import { initChebyshevCenter } from './widgets/js/chebyshev-center.js';
     initChebyshevCenter('widget-2');
   </script>
-  <script type="module">
+<script type="module">
     import { initBestFitShapeFinder } from './widgets/js/best-fit-shape.js';
     initBestFitShapeFinder('widget-4');
   </script>
-  <script type="module">
+<script type="module">
     import { initMatrixRankMinimization } from './widgets/js/rank-minimization.js';
     initMatrixRankMinimization('widget-5');
   </script>
-  <script type="module">
+<script type="module">
     import { initRobustGeometryOptimizer } from './widgets/js/robust-geometry.js';
     initRobustGeometryOptimizer('widget-6');
   </script>
-
-  <!-- Global utilities -->
-  <script src="../../static/js/math-renderer.js"></script>
+<!-- Global utilities -->
+<script src="../../static/js/math-renderer.js"></script>
 <script src="../../static/js/ui.js"></script>
 <script src="../../static/js/toc.js"></script>
 <script src="../../static/js/ui.js"></script>
-  <script>
+<script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
-  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/glossary-loader.js"></script>
 <script src="../../static/js/notes-widget.js"></script>
 <script src="../../static/js/pomodoro.js"></script>
 <script src="../../static/js/progress-tracker.js"></script>

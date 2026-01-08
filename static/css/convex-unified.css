@@ -1365,3 +1365,34 @@ body.hide-theorems .theorem-box { display: none; }
 .sidebar-expand-trigger.hidden {
     transform: translateX(-100%);
 }
+
+/* ====================
+   CARD GRID (For Gifs/Comparison)
+   ==================== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.card-grid > div {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card-grid > div:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+}
+
+.card-grid img {
+  border-radius: var(--radius-md);
+  margin-top: var(--space-4);
+  width: 100%;
+  height: auto;
+}

@@ -1,539 +1,496 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>06. Applications I: Approximation & Fitting — Convex Optimization</title>
-  <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>06. Applications I: Approximation &amp; Fitting — Convex Optimization</title>
+<link href="../../static/css/convex-unified.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" rel="stylesheet"/>
 </head>
 <body>
-  <!-- Header with navigation -->
-  <header class="site-header sticky">
-    <div class="container">
-      <div class="brand">
-        <a href="../../index.html">Convex Optimization</a>
-      </div>
-      <nav class="nav">
-        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
-        <a href="../09-duality/index.html"><i data-feather="arrow-left"></i> Previous</a>
-        <a href="../11-statistical-estimation/index.html">Next <i data-feather="arrow-right"></i></a>
-      </nav>
-    </div>
-  </header>
-
-  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
-    <header class="lecture-header section-card">
-      <h1>10. Applications I: Approximation & Fitting</h1>
-      <div class="lecture-meta">
-        <span>Date: 2025-11-25</span>
-        <span>Duration: 90 min</span>
-        <span>Tags: applications, fitting</span>
-      </div>
-      <div class="lecture-summary">
-        <p><strong>Overview:</strong> This lecture applies convex optimization to approximation and fitting problems. We explore the geometry of least squares, the impact of regularization (Ridge, LASSO) on solution properties, and robust regression techniques. We also introduce sparse signal recovery and total variation denoising.</p>
-        <p><strong>Prerequisites:</strong> <a href="../00-linear-algebra-basics/index.html">Lecture 00</a> (Norms), <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (Standard Forms), <a href="../09-duality/index.html">Lecture 09</a> (Duality).</p>
-      </div>
-    </header>
-
-    <!-- Learning objectives -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Learning Objectives</h2>
-      <p>After this lecture, you should understand:</p>
-      <ul style="line-height: 1.8;">
-        <li>How to formulate and solve least squares problems.</li>
-        <li>The use of regularization to prevent overfitting.</li>
-        <li>How to formulate and solve robust regression problems.</li>
-      </ul>
-    </section>
-
-    <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Key Concepts</h2>
-
-      <h3>1. Least Squares and Projections</h3>
-      <p>The least squares problem minimizes the Euclidean norm of the residual:
+<!-- Header with navigation -->
+<header class="site-header sticky">
+<div class="container">
+<div class="brand">
+<a href="../../index.html">Convex Optimization</a>
+</div>
+<nav class="nav">
+<a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+<a href="../09-duality/index.html"><i data-feather="arrow-left"></i> Previous</a>
+<a href="../11-statistical-estimation/index.html">Next <i data-feather="arrow-right"></i></a>
+</nav>
+</div>
+</header>
+<div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+<header class="lecture-header section-card">
+<h1>10. Applications I: Approximation &amp; Fitting</h1>
+<div class="lecture-meta">
+<span>Date: 2025-11-25</span>
+<span>Duration: 90 min</span>
+<span>Tags: applications, fitting</span>
+</div>
+<div class="lecture-summary">
+<p><strong>Overview:</strong> This lecture applies convex optimization to approximation and fitting problems. We explore the geometry of least squares, the impact of regularization (Ridge, LASSO) on solution properties, and robust regression techniques. We also introduce sparse signal recovery and total variation denoising.</p>
+<p><strong>Prerequisites:</strong> <a href="../00-linear-algebra-basics/index.html">Lecture 00</a> (Norms), <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (Standard Forms), <a href="../09-duality/index.html">Lecture 09</a> (Duality).</p>
+</div>
+</header>
+<!-- Learning objectives -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Learning Objectives</h2>
+<p>After this lecture, you should understand:</p>
+<ul style="line-height: 1.8;">
+<li>How to formulate and solve least squares problems.</li>
+<li>The use of regularization to prevent overfitting.</li>
+<li>How to formulate and solve robust regression problems.</li>
+</ul>
+</section>
+<!-- Main lecture content -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Key Concepts</h2>
+<h3>1. Least Squares and Projections</h3>
+<p>The least squares problem minimizes the Euclidean norm of the residual:
       $$ \min_x \|Ax - b\|_2^2 = \min_x \sum_{i=1}^m (a_i^\top x - b_i)^2 $$
       Geometrically, this finds the orthogonal projection of the vector $b$ onto the range of $A$.
-      <br><b>Solution:</b> The optimality condition is the <b>normal equations</b> $A^\top A x = A^\top b$.
-      <br><b>Algorithms:</b> Solved via Cholesky factorization of $A^\top A$ or, for better stability, QR factorization of $A$.</p>
-
-      <figure style="margin: 16px 0; text-align: center;">
-        <img src="../../static/assets/topics/10-approximation-fitting/least-squares-fit.gif" alt="Animation of a least squares fit" style="max-width: 500px; height: auto; border-radius: 8px;" />
-        <figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+      <br/><b>Solution:</b> The optimality condition is the <b>normal equations</b> $A^\top A x = A^\top b$.
+      <br/><b>Algorithms:</b> Solved via Cholesky factorization of $A^\top A$ or, for better stability, QR factorization of $A$.</p>
+<figure>
+<img alt="Animation of a least squares fit" src="../../static/assets/topics/10-approximation-fitting/least-squares-fit.gif"/>
+<figcaption style="font-size: 13px; color: var(--muted); margin-top: 8px;"><b>Figure 42: </b>
           Least squares finds the line that minimizes the sum of squared vertical distances to the data points.
         </figcaption>
-      </figure>
-
-      <h3>2. Regularization and Trade-offs</h3>
-      <p>Regularization adds a penalty term $\phi(x)$ to the objective to control the properties of the solution (smoothness, size, sparsity) and prevent overfitting.
+</figure>
+<h3>2. Regularization and Trade-offs</h3>
+<p>Regularization adds a penalty term $\phi(x)$ to the objective to control the properties of the solution (smoothness, size, sparsity) and prevent overfitting.
       $$ \min_x \|Ax - b\|_2^2 + \lambda \phi(x) $$
       As $\lambda$ varies, the solution $x^*(\lambda)$ traces a <b>regularization path</b>. This path represents the Pareto frontier between the fitting error and the complexity penalty.</p>
-      <ul>
-        <li><b>Ridge (Tikhonov):</b> $\phi(x) = \|x\|_2^2$. Shrinks coefficients, handles collinearity.</li>
-        <li><b>LASSO:</b> $\phi(x) = \|x\|_1$. Induces sparsity (feature selection).</li>
-      </ul>
-
-      <h3>3. Robust Fitting</h3>
-      <p>Standard least squares is sensitive to outliers because the squared error grows quadratically. <b>Robust regression</b> uses penalty functions that grow more slowly.
-      <br><b>$\ell_1$ Regression:</b> $\min \|Ax - b\|_1$. Equivalent to an LP. Robust but non-differentiable at 0.
-      <br><b>Huber Loss:</b> A hybrid penalty that is quadratic for small errors and linear for large errors.
-      $$ \phi_{hub}(u) = \begin{cases} u^2 & |u| \le M \\ 2M|u| - M^2 & |u| > M \end{cases} $$
+<ul>
+<li><b>Ridge (Tikhonov):</b> $\phi(x) = \|x\|_2^2$. Shrinks coefficients, handles collinearity.</li>
+<li><b>LASSO:</b> $\phi(x) = \|x\|_1$. Induces sparsity (feature selection).</li>
+</ul>
+<h3>3. Robust Fitting</h3>
+<p>Standard least squares is sensitive to outliers because the squared error grows quadratically. <b>Robust regression</b> uses penalty functions that grow more slowly.
+      <br/><b>$\ell_1$ Regression:</b> $\min \|Ax - b\|_1$. Equivalent to an LP. Robust but non-differentiable at 0.
+      <br/><b>Huber Loss:</b> A hybrid penalty that is quadratic for small errors and linear for large errors.
+      $$ \phi_{hub}(u) = \begin{cases} u^2 &amp; |u| \le M \\ 2M|u| - M^2 &amp; |u| &gt; M \end{cases} $$
       This combines the efficiency of LS with the robustness of $\ell_1$.</p>
-
-      <h3>4. Sparse Recovery (Compressed Sensing)</h3>
-      <p>We often want to find the sparsest solution to an underdetermined system $Ax = b$ ($m < n$).
-      <br><b>$\ell_0$ Minimization:</b> $\min \|x\|_0$ s.t. $Ax=b$. This is NP-Hard (combinatorial).
-      <br><b>$\ell_1$ Relaxation (Basis Pursuit):</b> $\min \|x\|_1$ s.t. $Ax=b$. This is a convex LP.
-      <br><b>Theory:</b> Under conditions like the Restricted Isometry Property (RIP), the $\ell_1$ solution <b>is</b> the $\ell_0$ solution. This discovery launched the field of Compressed Sensing.</p>
-
-      <h3>5. Total Variation (TV) Denoising</h3>
-      <p>Used in image processing to remove noise while preserving edges.
+<h3>4. Sparse Recovery (Compressed Sensing)</h3>
+<p>We often want to find the sparsest solution to an underdetermined system $Ax = b$ ($m &lt; n$).
+      <br/><b>$\ell_0$ Minimization:</b> $\min \|x\|_0$ s.t. $Ax=b$. This is NP-Hard (combinatorial).
+      <br/><b>$\ell_1$ Relaxation (Basis Pursuit):</b> $\min \|x\|_1$ s.t. $Ax=b$. This is a convex LP.
+      <br/><b>Theory:</b> Under conditions like the Restricted Isometry Property (RIP), the $\ell_1$ solution <b>is</b> the $\ell_0$ solution. This discovery launched the field of Compressed Sensing.</p>
+<h3>5. Total Variation (TV) Denoising</h3>
+<p>Used in image processing to remove noise while preserving edges.
       $$ \min_x \|x - x_{corrupt}\|_2^2 + \lambda \sum |x_{i+1} - x_i| $$
       The TV penalty $\sum |x_{i+1} - x_i| = \|Dx\|_1$ promotes piecewise-constant solutions (sparse derivatives), avoiding the "blurring" effect of Tikhonov smoothing.</p>
-
-      <h3>6. Matrix Approximation and Completion</h3>
-      <p>We seek a low-rank matrix $X$ that approximates data $A$.
-      <br><b>PCA:</b> $\min \|A - X\|_F$ s.t. $\text{rank}(X) \le k$. Solved via SVD.
-      <br><b>Matrix Completion:</b> Recover missing entries. Rank minimization is hard.
-      <br><b>Nuclear Norm Relaxation:</b> Minimize $\|X\|_* = \sum \sigma_i(X)$ (sum of singular values). This is the convex envelope of rank on the unit ball, analogous to $\ell_1$ for vectors.</p>
-    </section>
-
-    <!-- Interactive widgets -->
-    <section class="section-card" id="widgets" style="margin-bottom: 32px;">
-      <h2>Interactive Widgets</h2>
-      <p>Below are tools to explore the concepts interactively. Try tweaking parameters to build intuition.</p>
-
-      <!-- Widget 1 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Least Squares Regularization</h3>
-        <p>Explore the effect of L1 and L2 regularization on the solution of a least squares problem.</p>
-        <div id="widget-1" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 2 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Robust Regression</h3>
-        <p>Compare the solution of a least squares problem with the solution of a robust regression problem in the presence of outliers.</p>
-        <div id="widget-2" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 3 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Sparse Recovery Demo</h3>
-        <p>Demonstrates how L1 regularization can recover a sparse signal from a limited number of measurements.</p>
-        <div id="widget-3" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 4 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Matrix Completion Visualizer</h3>
-        <p>Users can hide entries of a low-rank matrix (e.g., an image) and watch an algorithm recover the missing values.</p>
-        <div id="widget-4" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-
-      <!-- Widget 5 -->
-      <div style="margin: 24px 0; padding: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;">
-        <h3 style="margin-top: 0;">Regularization Theory Tool</h3>
-        <p>Visualizes the geometry of different regularizers (L1, L2, Elastic Net).</p>
-        <div id="widget-5" style="width: 100%; height: 400px; position: relative;">
-          <!-- Widget will be rendered here -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Readings -->
-    <section class="section-card" id="readings" style="margin-bottom: 32px;">
-      <h2>Readings & Resources</h2>
-      <ul class="link-list">
-        <li><strong>Boyd & Vandenberghe, Convex Optimization:</strong> Chapter 6 — Approximation and Fitting</li>
-        <li><strong>Course slides:</strong> [Link if available]</li>
-      </ul>
-    </section>
-
-    <!-- Example problems -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Example Problems</h2>
-
-      <div class="problem">
-      <h3>Example 6.1: Ridge Regression (Tikhonov Regularization)</h3>
-      <p><strong>Problem:</strong> Derive the closed-form solution for Ridge regression:
+<h3>6. Matrix Approximation and Completion</h3>
+<p>We seek a low-rank matrix $X$ that approximates data $A$.
+      <br/><b>PCA:</b> $\min \|A - X\|_F$ s.t. $\text{rank}(X) \le k$. Solved via SVD.
+      <br/><b>Matrix Completion:</b> Recover missing entries. Rank minimization is hard.
+      <br/><b>Nuclear Norm Relaxation:</b> Minimize $\|X\|_* = \sum \sigma_i(X)$ (sum of singular values). This is the convex envelope of rank on the unit ball, analogous to $\ell_1$ for vectors.</p>
+</section>
+<!-- Interactive widgets -->
+<section class="section-card" id="widgets" style="margin-bottom: 32px;">
+<h2>Interactive Widgets</h2>
+<p>Below are tools to explore the concepts interactively. Try tweaking parameters to build intuition.</p>
+<!-- Widget 1 -->
+<div>
+<h3 style="margin-top: 0;">Least Squares Regularization</h3>
+<p>Explore the effect of L1 and L2 regularization on the solution of a least squares problem.</p>
+<div id="widget-1">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 2 -->
+<div>
+<h3 style="margin-top: 0;">Robust Regression</h3>
+<p>Compare the solution of a least squares problem with the solution of a robust regression problem in the presence of outliers.</p>
+<div id="widget-2">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 3 -->
+<div>
+<h3 style="margin-top: 0;">Sparse Recovery Demo</h3>
+<p>Demonstrates how L1 regularization can recover a sparse signal from a limited number of measurements.</p>
+<div id="widget-3">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 4 -->
+<div>
+<h3 style="margin-top: 0;">Matrix Completion Visualizer</h3>
+<p>Users can hide entries of a low-rank matrix (e.g., an image) and watch an algorithm recover the missing values.</p>
+<div id="widget-4">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+<!-- Widget 5 -->
+<div>
+<h3 style="margin-top: 0;">Regularization Theory Tool</h3>
+<p>Visualizes the geometry of different regularizers (L1, L2, Elastic Net).</p>
+<div id="widget-5">
+<!-- Widget will be rendered here -->
+</div>
+</div>
+</section>
+<!-- Readings -->
+<section class="section-card" id="readings" style="margin-bottom: 32px;">
+<h2>Readings &amp; Resources</h2>
+<ul class="link-list">
+<li><strong>Boyd &amp; Vandenberghe, Convex Optimization:</strong> Chapter 6 — Approximation and Fitting</li>
+<li><strong>Course slides:</strong> [Link if available]</li>
+</ul>
+</section>
+<!-- Example problems -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2>Example Problems</h2>
+<div class="problem">
+<h3>Example 6.1: Ridge Regression (Tikhonov Regularization)</h3>
+<p><strong>Problem:</strong> Derive the closed-form solution for Ridge regression:
       $$ \min_x \|Ax-b\|_2^2 + \lambda\|x\|_2^2 $$
-      Explain how $\lambda > 0$ affects the existence of a solution and the condition number.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Reformulate as Least Squares.</strong>
+      Explain how $\lambda &gt; 0$ affects the existence of a solution and the condition number.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Reformulate as Least Squares.</strong>
             We can rewrite the objective as a single squared Euclidean norm:
             $$ \|Ax-b\|_2^2 + \|\sqrt{\lambda} x\|_2^2 = \left\| \begin{bmatrix} A \\ \sqrt{\lambda} I \end{bmatrix} x - \begin{bmatrix} b \\ 0 \end{bmatrix} \right\|_2^2 $$
             Let $\tilde{A} = \begin{bmatrix} A \\ \sqrt{\lambda} I \end{bmatrix}$ and $\tilde{b} = \begin{bmatrix} b \\ 0 \end{bmatrix}$.
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Normal Equations.</strong>
+<div class="proof-step">
+<strong>Step 2: Normal Equations.</strong>
             The solution satisfies $\tilde{A}^\top \tilde{A} x = \tilde{A}^\top \tilde{b}$.
-            $$ \tilde{A}^\top \tilde{A} = \begin{bmatrix} A^\top & \sqrt{\lambda} I \end{bmatrix} \begin{bmatrix} A \\ \sqrt{\lambda} I \end{bmatrix} = A^\top A + \lambda I $$
-            $$ \tilde{A}^\top \tilde{b} = \begin{bmatrix} A^\top & \sqrt{\lambda} I \end{bmatrix} \begin{bmatrix} b \\ 0 \end{bmatrix} = A^\top b $$
+            $$ \tilde{A}^\top \tilde{A} = \begin{bmatrix} A^\top &amp; \sqrt{\lambda} I \end{bmatrix} \begin{bmatrix} A \\ \sqrt{\lambda} I \end{bmatrix} = A^\top A + \lambda I $$
+            $$ \tilde{A}^\top \tilde{b} = \begin{bmatrix} A^\top &amp; \sqrt{\lambda} I \end{bmatrix} \begin{bmatrix} b \\ 0 \end{bmatrix} = A^\top b $$
             Thus, $(A^\top A + \lambda I) x = A^\top b$.
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Solution and Stability.</strong>
-            Since $A^\top A \succeq 0$ and $\lambda > 0$, the matrix $A^\top A + \lambda I$ has eigenvalues $\sigma_i^2 + \lambda \ge \lambda > 0$. It is always invertible.
+<div class="proof-step">
+<strong>Step 3: Solution and Stability.</strong>
+            Since $A^\top A \succeq 0$ and $\lambda &gt; 0$, the matrix $A^\top A + \lambda I$ has eigenvalues $\sigma_i^2 + \lambda \ge \lambda &gt; 0$. It is always invertible.
             $$ x_{\text{ridge}} = (A^\top A + \lambda I)^{-1} A^\top b $$
             <b>Conditioning:</b> The condition number of the problem matrix is $\kappa(\tilde{A}) = \sqrt{\frac{\sigma_{\max}^2 + \lambda}{\sigma_{\min}^2 + \lambda}}$.
             If $A$ is rank deficient ($\sigma_{\min}=0$), the original $\kappa(A) = \infty$. With regularization, $\kappa \approx \sigma_{\max} / \sqrt{\lambda}$, which is finite. This makes the numerical solution stable.
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.2: The LASSO Path and Soft Thresholding</h3>
-      <p><strong>Problem:</strong> Consider the simplified LASSO problem with orthogonal design ($A=I$):
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.2: The LASSO Path and Soft Thresholding</h3>
+<p><strong>Problem:</strong> Consider the simplified LASSO problem with orthogonal design ($A=I$):
       $$ \min_x \frac{1}{2}\|x-b\|_2^2 + \lambda \|x\|_1 $$
       Derive the explicit solution $x^*(\lambda)$ and sketch the solution path as $\lambda$ increases.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Separability.</strong>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Separability.</strong>
             The objective separates into a sum of 1D problems:
             $$ \sum_{i=1}^n \left( \frac{1}{2}(x_i - b_i)^2 + \lambda |x_i| \right) $$
             We can solve for each $x_i$ independently.
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Subgradient Optimality.</strong>
+<div class="proof-step">
+<strong>Step 2: Subgradient Optimality.</strong>
             For a scalar problem $\min_x \frac{1}{2}(x-b)^2 + \lambda |x|$, the condition $0 \in \partial f(x)$ is:
             $$ 0 \in (x-b) + \lambda \partial |x| \iff b-x \in \lambda \partial |x| $$
             where $\partial |x|$ is $\text{sign}(x)$ if $x \ne 0$, and $[-1, 1]$ if $x=0$.
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Case Analysis (Soft Thresholding).</strong>
-            <ul>
-                <li>If $x > 0$: $b-x = \lambda \implies x = b - \lambda$. Valid if $b - \lambda > 0 \iff b > \lambda$.</li>
-                <li>If $x < 0$: $b-x = -\lambda \implies x = b + \lambda$. Valid if $b + \lambda < 0 \iff b < -\lambda$.</li>
-                <li>If $x = 0$: $b \in [-\lambda, \lambda] \iff |b| \le \lambda$.</li>
-            </ul>
+<div class="proof-step">
+<strong>Step 3: Case Analysis (Soft Thresholding).</strong>
+<ul>
+<li>If $x &gt; 0$: $b-x = \lambda \implies x = b - \lambda$. Valid if $b - \lambda &gt; 0 \iff b &gt; \lambda$.</li>
+<li>If $x &lt; 0$: $b-x = -\lambda \implies x = b + \lambda$. Valid if $b + \lambda &lt; 0 \iff b &lt; -\lambda$.</li>
+<li>If $x = 0$: $b \in [-\lambda, \lambda] \iff |b| \le \lambda$.</li>
+</ul>
             Combining these, we get the <b>Soft Thresholding Operator</b> $\mathcal{S}_\lambda(b)$:
-            $$ x_i^* = \begin{cases} b_i - \lambda & b_i > \lambda \\ 0 & |b_i| \le \lambda \\ b_i + \lambda & b_i < -\lambda \end{cases} = \text{sign}(b_i) \max(|b_i| - \lambda, 0) $$
+            $$ x_i^* = \begin{cases} b_i - \lambda &amp; b_i &gt; \lambda \\ 0 &amp; |b_i| \le \lambda \\ b_i + \lambda &amp; b_i &lt; -\lambda \end{cases} = \text{sign}(b_i) \max(|b_i| - \lambda, 0) $$
         </div>
-        <div class="proof-step">
-            <strong>Step 4: The Sparsity Path.</strong>
+<div class="proof-step">
+<strong>Step 4: The Sparsity Path.</strong>
             As $\lambda$ increases from 0:
             <ul>
-                <li>At $\lambda=0$, $x^* = b$.</li>
-                <li>As $\lambda$ grows, all coefficients shrink toward zero.</li>
-                <li>When $\lambda$ crosses the threshold $|b_i|$, the coordinate $x_i$ snaps to zero and stays there.</li>
-                <li>For $\lambda \ge \|b\|_\infty$, the solution is the zero vector.</li>
-            </ul>
+<li>At $\lambda=0$, $x^* = b$.</li>
+<li>As $\lambda$ grows, all coefficients shrink toward zero.</li>
+<li>When $\lambda$ crosses the threshold $|b_i|$, the coordinate $x_i$ snaps to zero and stays there.</li>
+<li>For $\lambda \ge \|b\|_\infty$, the solution is the zero vector.</li>
+</ul>
             This proves that $\ell_1$ regularization produces exact zeros (sparsity).
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.3: Weighted Least Squares (BLUE)</h3>
-      <p><strong>Problem:</strong> Suppose measurements $y_i = a_i^\top x + v_i$ have independent noise with variance $\sigma_i^2$. We want the Best Linear Unbiased Estimator (BLUE). This corresponds to minimizing the $\chi^2$ statistic:
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.3: Weighted Least Squares (BLUE)</h3>
+<p><strong>Problem:</strong> Suppose measurements $y_i = a_i^\top x + v_i$ have independent noise with variance $\sigma_i^2$. We want the Best Linear Unbiased Estimator (BLUE). This corresponds to minimizing the $\chi^2$ statistic:
       $$ \min_x \sum_{i=1}^m \frac{(a_i^\top x - b_i)^2}{\sigma_i^2} $$
       Formulate this in matrix notation and find the solution.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Matrix Formulation.</strong>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Matrix Formulation.</strong>
             Let $W = \text{diag}(1/\sigma_1^2, \dots, 1/\sigma_m^2)$ be the inverse covariance matrix.
             The objective is $(Ax-b)^\top W (Ax-b) = \|W^{1/2}(Ax-b)\|_2^2$.
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Gradient.</strong>
+<div class="proof-step">
+<strong>Step 2: Gradient.</strong>
             $\nabla f(x) = 2 A^\top W (Ax - b)$.
             Setting to zero gives the normal equations:
             $$ (A^\top W A) x = A^\top W b $$
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Solution.</strong>
+<div class="proof-step">
+<strong>Step 3: Solution.</strong>
             $$ x^* = (A^\top W A)^{-1} A^\top W b $$
             <b>Interpretation:</b> Measurements with high variance (large $\sigma_i$) get small weight ($1/\sigma_i^2$) in the optimization. The estimate is pulled towards high-precision data points.
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.4: Robust Regression with Huber Loss</h3>
-      <p><strong>Problem:</strong> Standard Least Squares is sensitive to outliers because the quadratic cost grows rapidly. The Huber loss function is defined as:
-      $$ \phi_{hub}(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.4: Robust Regression with Huber Loss</h3>
+<p><strong>Problem:</strong> Standard Least Squares is sensitive to outliers because the quadratic cost grows rapidly. The Huber loss function is defined as:
+      $$ \phi_{hub}(u) = \begin{cases} u^2 &amp; |u| \le M \\ M(2|u| - M) &amp; |u| &gt; M \end{cases} $$
       Formulate the robust regression problem $\min_x \sum \phi_{hub}(a_i^\top x - b_i)$ as a Quadratic Program (QP).</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Variational Definition.</strong>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Variational Definition.</strong>
             The Huber function is the <b>infimal convolution</b> of the squared function and the absolute value function:
             $$ \phi_{hub}(u) = \inf_{v} \left( (u-v)^2 + 2M|v| \right) $$
             Basically, we split the residual $u$ into a "small" part $(u-v)$ and a "large" part $v$.
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Problem Reformulation.</strong>
+<div class="proof-step">
+<strong>Step 2: Problem Reformulation.</strong>
             Substitute $u_i = a_i^\top x - b_i$. We minimize $\sum_i ((u_i - v_i)^2 + 2M|v_i|)$ over $x$ and $v$.
             Let $z_i = u_i - v_i$. Then $u_i = z_i + v_i$.
             We minimize $\sum z_i^2 + 2M \sum |v_i|$ subject to $a_i^\top x - b_i = z_i + v_i$.
         </div>
-        <div class="proof-step">
-            <strong>Step 3: QP Form.</strong>
+<div class="proof-step">
+<strong>Step 3: QP Form.</strong>
             To make it a standard QP, we handle $|v_i|$ by splitting $v_i = v_i^+ - v_i^-$ with $v_i^+, v_i^- \ge 0$.
             $$
             \begin{aligned}
-            \min_{x, z, v^+, v^-} \quad & \sum z_i^2 + 2M \sum (v_i^+ + v_i^-) \\
-            \text{subject to} \quad & Ax - b = z + v^+ - v^- \\
-            & v^+ \ge 0, \ v^- \ge 0
+            \min_{x, z, v^+, v^-} \quad &amp; \sum z_i^2 + 2M \sum (v_i^+ + v_i^-) \\
+            \text{subject to} \quad &amp; Ax - b = z + v^+ - v^- \\
+            &amp; v^+ \ge 0, \ v^- \ge 0
             \end{aligned}
             $$
             This is a convex QP. The vector $z$ captures inlier noise (Gaussian), while $v$ captures sparse outliers (Laplacian).
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.5: Sparse Signal Recovery via Basis Pursuit</h3>
-      <p><strong>Problem:</strong> A 100-dimensional signal $x_{true}$ with only 10 nonzero entries is measured via 30 random Gaussian measurements $y = Ax_{true}$. We wish to recover $x_{true}$.
-      <br>Since $30 < 100$, the system $Ax=y$ is underdetermined. The sparsest solution ($\min \|x\|_0$) is NP-hard to find.
-      <br>Formulate the <b>Basis Pursuit</b> relaxation and explain why it works.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Convex Relaxation.</strong>
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.5: Sparse Signal Recovery via Basis Pursuit</h3>
+<p><strong>Problem:</strong> A 100-dimensional signal $x_{true}$ with only 10 nonzero entries is measured via 30 random Gaussian measurements $y = Ax_{true}$. We wish to recover $x_{true}$.
+      <br/>Since $30 &lt; 100$, the system $Ax=y$ is underdetermined. The sparsest solution ($\min \|x\|_0$) is NP-hard to find.
+      <br/>Formulate the <b>Basis Pursuit</b> relaxation and explain why it works.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Convex Relaxation.</strong>
             We replace the non-convex $\ell_0$ "norm" (count of non-zeros) with the $\ell_1$ norm (sum of magnitudes), which is the tightest convex relaxation (convex envelope over the unit ball).
             $$ \min_x \|x\|_1 \quad \text{subject to} \quad Ax = y $$
         </div>
-        <div class="proof-step">
-            <strong>Step 2: LP Formulation.</strong>
+<div class="proof-step">
+<strong>Step 2: LP Formulation.</strong>
             This is equivalent to the Linear Program:
             $$
             \begin{aligned}
-            \min_{x, t} \quad & \mathbf{1}^\top t \\
-            \text{subject to} \quad & -t \le x \le t \\
-            & Ax = y
+            \min_{x, t} \quad &amp; \mathbf{1}^\top t \\
+            \text{subject to} \quad &amp; -t \le x \le t \\
+            &amp; Ax = y
             \end{aligned}
             $$
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Exact Recovery (Theory).</strong>
+<div class="proof-step">
+<strong>Step 3: Exact Recovery (Theory).</strong>
             Under conditions like the <b>Restricted Isometry Property (RIP)</b> or Incoherence, the solution to the $\ell_1$ problem is exactly $x_{true}$ with high probability, even though the number of measurements ($m=30$) is much less than the dimension ($n=100$).
-            <br><i>Intuition:</i> The $\ell_1$ ball is "pointy". A random subspace (defined by $Ax=y$) is statistically likely to touch the $\ell_1$ ball at a vertex (a sparse vector) rather than a face.
+            <br/><i>Intuition:</i> The $\ell_1$ ball is "pointy". A random subspace (defined by $Ax=y$) is statistically likely to touch the $\ell_1$ ball at a vertex (a sparse vector) rather than a face.
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.6: Total Variation (TV) Denoising</h3>
-      <p><strong>Problem:</strong> We observe a noisy signal $y = x_{true} + \nu$, where $x_{true}$ is piecewise constant (like a step function). We want to recover $x$ by minimizing the Total Variation. Formulate this as a convex problem.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Total Variation Definition.</strong>
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.6: Total Variation (TV) Denoising</h3>
+<p><strong>Problem:</strong> We observe a noisy signal $y = x_{true} + \nu$, where $x_{true}$ is piecewise constant (like a step function). We want to recover $x$ by minimizing the Total Variation. Formulate this as a convex problem.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Total Variation Definition.</strong>
             The Total Variation of a 1D signal is the sum of absolute differences between adjacent values:
             $$ \text{TV}(x) = \sum_{i=1}^{n-1} |x_{i+1} - x_i| = \|Dx\|_1 $$
             where $D$ is the finite difference matrix ($D_{i,i}=-1, D_{i,i+1}=1$).
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Optimization Problem.</strong>
+<div class="proof-step">
+<strong>Step 2: Optimization Problem.</strong>
             We balance data fidelity (Least Squares) with the TV prior:
             $$ \min_x \frac{1}{2}\|x - y\|_2^2 + \lambda \|Dx\|_1 $$
         </div>
-        <div class="proof-step">
-            <strong>Step 3: QP Formulation.</strong>
+<div class="proof-step">
+<strong>Step 3: QP Formulation.</strong>
             This is a quadratic program. Introduce $u$ for the absolute differences:
             $$
             \begin{aligned}
-            \min_{x, u} \quad & \frac{1}{2}x^\top x - y^\top x + \lambda \mathbf{1}^\top u \\
-            \text{subject to} \quad & -u \le Dx \le u
+            \min_{x, u} \quad &amp; \frac{1}{2}x^\top x - y^\top x + \lambda \mathbf{1}^\top u \\
+            \text{subject to} \quad &amp; -u \le Dx \le u
             \end{aligned}
             $$
             Solving this yields a piecewise constant solution that preserves sharp edges, unlike Ridge regularization ($\|Dx\|_2^2$) which would smooth them out.
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.7: Low-Rank Matrix Approximation (Eckart-Young)</h3>
-      <p><strong>Problem:</strong> Given a matrix $A \in \mathbb{R}^{m \times n}$, find the matrix $X$ of rank at most $k$ that minimizes the Frobenius norm error $\|A - X\|_F$. Prove the optimality of the truncated SVD.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: SVD Decomposition.</strong>
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.7: Low-Rank Matrix Approximation (Eckart-Young)</h3>
+<p><strong>Problem:</strong> Given a matrix $A \in \mathbb{R}^{m \times n}$, find the matrix $X$ of rank at most $k$ that minimizes the Frobenius norm error $\|A - X\|_F$. Prove the optimality of the truncated SVD.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: SVD Decomposition.</strong>
             Let $A = U \Sigma V^\top = \sum_{i=1}^r \sigma_i u_i v_i^\top$, where $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Truncated SVD.</strong>
+<div class="proof-step">
+<strong>Step 2: Truncated SVD.</strong>
             Define $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$. This matrix clearly has rank $k$.
             The error is $A - A_k = \sum_{i=k+1}^r \sigma_i u_i v_i^\top$.
             The Frobenius norm of the error is $\sqrt{\sum_{i=k+1}^r \sigma_i^2}$.
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Eckart-Young-Mirsky Theorem.</strong>
+<div class="proof-step">
+<strong>Step 3: Eckart-Young-Mirsky Theorem.</strong>
             The theorem states that for any $X$ with rank $k$:
             $$ \|A - X\|_F^2 \ge \sum_{i=k+1}^r \sigma_i^2 $$
             Thus, the truncated SVD $A_k$ is the global minimizer. It is also optimal in the Spectral norm ($\|A - A_k\|_2 = \sigma_{k+1}$).
         </div>
-      </div>
-      </div>
-
-      <div class="problem">
-      <h3>Example 6.8: Polynomial Fitting with Regularization</h3>
-      <p><strong>Problem:</strong> Fit a polynomial $p(t) = \sum_{j=0}^d x_j t^j$ to data points $(t_i, y_i)$. Discuss the conditioning of the problem and the effect of regularization.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Vandermonde Matrix.</strong>
+</div>
+</div>
+<div class="problem">
+<h3>Example 6.8: Polynomial Fitting with Regularization</h3>
+<p><strong>Problem:</strong> Fit a polynomial $p(t) = \sum_{j=0}^d x_j t^j$ to data points $(t_i, y_i)$. Discuss the conditioning of the problem and the effect of regularization.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Step 1: Vandermonde Matrix.</strong>
             The linear system is $Ax \approx y$, where $A$ is the Vandermonde matrix:
             $$ A_{ij} = t_i^{j-1} $$
         </div>
-        <div class="proof-step">
-            <strong>Step 2: Ill-Conditioning.</strong>
+<div class="proof-step">
+<strong>Step 2: Ill-Conditioning.</strong>
             Vandermonde matrices are notoriously ill-conditioned. The columns $1, t, t^2, \dots$ become nearly parallel for large $t$ or $d$.
             Solving $A^\top A x = A^\top y$ directly can lead to huge numerical errors and "wobbly" polynomials (overfitting).
         </div>
-        <div class="proof-step">
-            <strong>Step 3: Ridge Regularization.</strong>
+<div class="proof-step">
+<strong>Step 3: Ridge Regularization.</strong>
             Minimizing $\|Ax - y\|_2^2 + \lambda \|x\|_2^2$ stabilizes the inversion:
             $$ x = (A^\top A + \lambda I)^{-1} A^\top y $$
             Adding $\lambda I$ to the eigenvalues of $A^\top A$ prevents division by near-zero values, smoothing the resulting polynomial and reducing variance.
         </div>
-      </div>
-      </div>
-    </section>
-
-    <!-- Exercises -->
-    <section class="section-card" style="margin-bottom: 32px;">
-      <h2><i data-feather="edit-3"></i> Exercises</h2>
-
-      <div class="problem">
-        <h3>P10.1 — Ridge Regression Uniqueness</h3>
-        <p>Show that the solution to $\min_x \|Ax-b\|_2^2 + \lambda\|x\|_2^2$ is unique for any $\lambda > 0$, even if $A$ is rank-deficient.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <p>The objective is $f(x) = x^\top (A^\top A + \lambda I) x - 2(A^\top b)^\top x + b^\top b$.
+</div>
+</div>
+</section>
+<!-- Exercises -->
+<section class="section-card" style="margin-bottom: 32px;">
+<h2><i data-feather="edit-3"></i> Exercises</h2>
+<div class="problem">
+<h3>P10.1 — Ridge Regression Uniqueness</h3>
+<p>Show that the solution to $\min_x \|Ax-b\|_2^2 + \lambda\|x\|_2^2$ is unique for any $\lambda &gt; 0$, even if $A$ is rank-deficient.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<p>The objective is $f(x) = x^\top (A^\top A + \lambda I) x - 2(A^\top b)^\top x + b^\top b$.
           The Hessian is $\nabla^2 f(x) = 2(A^\top A + \lambda I)$.
-          Since $A^\top A \succeq 0$ and $\lambda > 0$, the eigenvalues of the Hessian are $\sigma_i^2 + \lambda \ge \lambda > 0$.
+          Since $A^\top A \succeq 0$ and $\lambda &gt; 0$, the eigenvalues of the Hessian are $\sigma_i^2 + \lambda \ge \lambda &gt; 0$.
           Thus the Hessian is positive definite, implying strict convexity and a unique global minimizer.</p>
-        </div>
-      </div>
-
-      <div class="problem">
-        <h3>P10.2 — Equivalence of Penalized and Constrained Forms</h3>
-        <p>Prove that for every $\lambda > 0$, there exists a $t \ge 0$ such that the solution to $\min_x \|Ax-b\|_2^2 + \lambda \|x\|_1$ is also a solution to $\min_x \|Ax-b\|_2^2$ subject to $\|x\|_1 \le t$.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <p>This follows from Lagrange Duality. Let $x^*$ be the solution to the penalized problem.
+</div>
+</div>
+<div class="problem">
+<h3>P10.2 — Equivalence of Penalized and Constrained Forms</h3>
+<p>Prove that for every $\lambda &gt; 0$, there exists a $t \ge 0$ such that the solution to $\min_x \|Ax-b\|_2^2 + \lambda \|x\|_1$ is also a solution to $\min_x \|Ax-b\|_2^2$ subject to $\|x\|_1 \le t$.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<p>This follows from Lagrange Duality. Let $x^*$ be the solution to the penalized problem.
           Set $t = \|x^*\|_1$.
           The penalized problem is the Lagrangian relaxation of the constrained problem with multiplier $\lambda$.
-          Since the problem is convex and Slater's condition holds (for $t>0$), strong duality applies.
+          Since the problem is convex and Slater's condition holds (for $t&gt;0$), strong duality applies.
           By the KKT conditions, if $\lambda$ is the optimal dual variable corresponding to the constraint $\|x\|_1 \le t$, then $x^*$ is optimal for the primal.
           Thus, the regularization path traces the curve of optimal solutions for the constrained problem.</p>
-        </div>
-      </div>
-
-      <div class="problem">
-        <h3>P10.3 — Weighted Least Squares and MLE</h3>
-        <p>Derive the solution to $\min_x (Ax-b)^\top W (Ax-b)$ for diagonal $W \succ 0$. Show that this corresponds to Maximum Likelihood Estimation (MLE) for $y = Ax + \nu$ where $\nu_i \sim \mathcal{N}(0, \sigma_i^2)$.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <div class="proof-step">
-            <strong>Part 1: Solution.</strong> Gradient is $2A^\top W (Ax - b) = 0 \implies A^\top W A x = A^\top W b \implies x = (A^\top W A)^{-1} A^\top W b$.
+</div>
+</div>
+<div class="problem">
+<h3>P10.3 — Weighted Least Squares and MLE</h3>
+<p>Derive the solution to $\min_x (Ax-b)^\top W (Ax-b)$ for diagonal $W \succ 0$. Show that this corresponds to Maximum Likelihood Estimation (MLE) for $y = Ax + \nu$ where $\nu_i \sim \mathcal{N}(0, \sigma_i^2)$.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<div class="proof-step">
+<strong>Part 1: Solution.</strong> Gradient is $2A^\top W (Ax - b) = 0 \implies A^\top W A x = A^\top W b \implies x = (A^\top W A)^{-1} A^\top W b$.
           </div>
-          <div class="proof-step">
-            <strong>Part 2: MLE.</strong> Likelihood $L(x) = \prod \frac{1}{\sqrt{2\pi}\sigma_i} \exp\left(-\frac{(y_i - a_i^\top x)^2}{2\sigma_i^2}\right)$.
+<div class="proof-step">
+<strong>Part 2: MLE.</strong> Likelihood $L(x) = \prod \frac{1}{\sqrt{2\pi}\sigma_i} \exp\left(-\frac{(y_i - a_i^\top x)^2}{2\sigma_i^2}\right)$.
             Log-likelihood: $\ell(x) = -\frac{1}{2} \sum \frac{(y_i - a_i^\top x)^2}{\sigma_i^2} + C$.
             Maximizing $\ell(x)$ is equivalent to minimizing $\sum \frac{1}{\sigma_i^2} (y_i - a_i^\top x)^2$.
             This matches the weighted least squares objective with $W_{ii} = 1/\sigma_i^2$.
           </div>
-        </div>
-      </div>
-
-      <div class="problem">
-        <h3>P10.4 — Subdifferential of $\ell_1$ Norm</h3>
-        <p>Derive the subdifferential $\partial \|x\|_1$. Use it to state the optimality condition for Basis Pursuit Denoising: $\min \frac{1}{2}\|Ax-y\|_2^2 + \lambda \|x\|_1$.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <p>$\|x\|_1 = \sum |x_i|$. The subdifferential separates: $\partial \|x\|_1 = \times_i \partial |x_i|$.
-          $$ \partial |u| = \begin{cases} \{1\} & u > 0 \\ \{-1\} & u < 0 \\ [-1, 1] & u = 0 \end{cases} $$
+</div>
+</div>
+<div class="problem">
+<h3>P10.4 — Subdifferential of $\ell_1$ Norm</h3>
+<p>Derive the subdifferential $\partial \|x\|_1$. Use it to state the optimality condition for Basis Pursuit Denoising: $\min \frac{1}{2}\|Ax-y\|_2^2 + \lambda \|x\|_1$.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<p>$\|x\|_1 = \sum |x_i|$. The subdifferential separates: $\partial \|x\|_1 = \times_i \partial |x_i|$.
+          $$ \partial |u| = \begin{cases} \{1\} &amp; u &gt; 0 \\ \{-1\} &amp; u &lt; 0 \\ [-1, 1] &amp; u = 0 \end{cases} $$
           <b>Optimality Condition:</b> $0 \in A^\top (Ax - y) + \lambda \partial \|x\|_1$.
           Let $r = y - Ax$ (residual). Then $A^\top r \in \lambda \partial \|x\|_1$.
           Component-wise: $|(A^\top r)_i| \le \lambda$ for all $i$. If $x_i \ne 0$, then $(A^\top r)_i = \lambda \text{sign}(x_i)$.
           This means the residual is highly correlated with the active features.</p>
-        </div>
-      </div>
-
-      <div class="problem">
-        <h3>P10.5 — Total Variation vs. Ridge</h3>
-        <p>Explain why TV denoising ($\lambda \|Dx\|_1$) preserves edges while Ridge ($\lambda \|Dx\|_2^2$) blurs them.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <p>Consider a step function $x$. The derivative $Dx$ is sparse (mostly zeros, large spike at the jump).
-          <br><b>Ridge ($\ell_2$):</b> Penalizes the square of the jump. It prefers many small jumps to one large jump (e.g., $1^2+1^2=2 < 2^2=4$). This smooths out the step into a ramp (blur).
-          <br><b>TV ($\ell_1$):</b> Penalizes the absolute sum. It is indifferent between one big jump and many small ones ($1+1=2$). However, combined with the data fidelity term, it prefers the single jump because it fits the step data better without incurring extra penalty cost. This allows sharp edges to persist.</p>
-        </div>
-      </div>
-    </section>
-  </main></div>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p style="margin: 0;">
-        © <span id="year"></a> Convex Optimization Course ·
+</div>
+</div>
+<div class="problem">
+<h3>P10.5 — Total Variation vs. Ridge</h3>
+<p>Explain why TV denoising ($\lambda \|Dx\|_1$) preserves edges while Ridge ($\lambda \|Dx\|_2^2$) blurs them.</p>
+<div class="solution-box">
+<h4>Solution</h4>
+<p>Consider a step function $x$. The derivative $Dx$ is sparse (mostly zeros, large spike at the jump).
+          <br/><b>Ridge ($\ell_2$):</b> Penalizes the square of the jump. It prefers many small jumps to one large jump (e.g., $1^2+1^2=2 &lt; 2^2=4$). This smooths out the step into a ramp (blur).
+          <br/><b>TV ($\ell_1$):</b> Penalizes the absolute sum. It is indifferent between one big jump and many small ones ($1+1=2$). However, combined with the data fidelity term, it prefers the single jump because it fits the step data better without incurring extra penalty cost. This allows sharp edges to persist.</p>
+</div>
+</div>
+</section>
+</main></div>
+<!-- Footer -->
+<footer class="site-footer">
+<div class="container">
+<p style="margin: 0;">
+        © <span id="year"> Convex Optimization Course ·
         <a href="../../README.md" style="color: var(--brand);">About</a>
-      </p>
-    </div>
-  </footer>
-
-  <!-- Load Pyodide for Python widgets (optional) -->
-  <script defer src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
-
-  <!-- Widget loaders -->
-  <script type="module">
+</span></p>
+</div>
+</footer>
+<!-- Load Pyodide for Python widgets (optional) -->
+<script defer="" src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<!-- Widget loaders -->
+<script type="module">
     import { initLeastSquaresPlayground } from './widgets/js/least-squares-regularization.js';
     initLeastSquaresPlayground('widget-1');
   </script>
-  <script type="module">
+<script type="module">
     import { initRobustRegression } from './widgets/js/robust-regression.js';
     initRobustRegression('widget-2');
   </script>
-  <script type="module">
+<script type="module">
     import { initSparseRecoveryDemo } from './widgets/js/sparse-recovery.js';
     initSparseRecoveryDemo('widget-3');
   </script>
-  <script type="module">
+<script type="module">
     import { initMatrixCompletionVisualizer } from './widgets/js/matrix-completion.js';
     initMatrixCompletionVisualizer('widget-4');
   </script>
-  <script type="module">
+<script type="module">
     import { initRegularizationTheoryTool } from './widgets/js/regularization-theory.js';
     initRegularizationTheoryTool('widget-5');
   </script>
-
-  <!-- Global utilities -->
-  <script src="../../static/js/math-renderer.js"></script>
+<!-- Global utilities -->
+<script src="../../static/js/math-renderer.js"></script>
 <script src="../../static/js/ui.js"></script>
 <script src="../../static/js/toc.js"></script>
 <script src="../../static/js/ui.js"></script>
-  <script>
+<script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
-  <script src="../../static/js/glossary-loader.js"></script>
+<script src="../../static/js/glossary-loader.js"></script>
 <script src="../../static/js/notes-widget.js"></script>
 <script src="../../static/js/pomodoro.js"></script>
 <script src="../../static/js/progress-tracker.js"></script>

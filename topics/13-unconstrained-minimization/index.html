@@ -46,13 +46,13 @@
     <!-- Learning objectives -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Learning Objectives</h2>
-      <p>After this lecture, you should understand:</p>
+      <p>After this lecture, you will have a deep, step-by-step understanding of:</p>
       <ul style="line-height: 1.8;">
-        <li>The rigorous derivations of convergence rates for gradient descent under strong convexity and smoothness using Taylor's theorem.</li>
-        <li>How the condition number $\kappa$ and the geometry of sublevel sets (width) dictate convergence speed.</li>
-        <li>The duality between choosing a norm for steepest descent and choosing a preconditioner.</li>
-        <li>Newton's method as steepest descent in the Hessian geometry, and its two-phase convergence behavior.</li>
-        <li>How to implement and benchmark these algorithms (Gradient Descent, Newton's Method) on problems like Analytic Centering.</li>
+        <li><strong>Convergence Analysis:</strong> The rigorous, mathematical derivations of convergence rates for gradient descent. We will use Taylor's theorem to prove exactly how fast these methods approach the solution under strong convexity and smoothness assumptions.</li>
+        <li><strong>Geometry of Optimization:</strong> How the shape of the function (specifically its "condition number" $\kappa$ and the width of its sublevel sets) directly controls the speed of convergence. We will visualize why "skinny" valleys are hard to optimize.</li>
+        <li><strong>Steepest Descent & Norms:</strong> The profound connection between the choice of a norm (Euclidean, $\ell_1$, Quadratic) and the resulting optimization algorithm. We will see how "steepest descent" changes depending on how you measure distance.</li>
+        <li><strong>Newton's Method:</strong> A deep dive into Newton's method, interpreting it as steepest descent in a changing "Hessian geometry." We will explain its "two-phase" behavior: a linear phase followed by a rapid quadratic phase.</li>
+        <li><strong>Practical Implementation:</strong> How to turn these mathematical concepts into working Python code, benchmarking algorithms like Gradient Descent and Newton's Method on real problems such as Analytic Centering.</li>
       </ul>
     </section>
 
@@ -62,25 +62,42 @@
 
       <h3>0. Notation and the "Model"</h3>
       <p>
-        We study the problem of minimizing a function
+        We study the unconstrained optimization problem:
         $$ p^\star = \inf_{x\in \mathrm{dom}\,f} f(x) \tag{9.1} $$
-        under the following assumptions:
+        To analyze algorithms rigorously, we make specific assumptions about the function $f$. These are not just bureaucratic details; they are the mathematical foundation that allows us to prove convergence.
       </p>
       <ul>
-        <li>$f$ is <strong>convex</strong> on $\mathrm{dom}\,f$ (meaning the domain is a convex set and the function satisfies the Jensen's inequality).</li>
-        <li>$f$ is <strong>twice continuously differentiable</strong> ($f \in C^2(\mathrm{dom}\,f)$). We need this to use the Gradient $\nabla f$ and Hessian $\nabla^2 f$ in our algorithms.</li>
-        <li>$\mathrm{dom}\,f$ is <strong>open</strong>. This is critical. It ensures that for any point $x$ in the domain, we can take a small step in <em>any</em> direction without leaving the set. This allows derivatives to be well-defined in all directions.</li>
-        <li>The problem is <strong>solvable</strong>: the optimal value $p^\star = \min_x f(x)$ is finite and attained at some $x^\star$. Not all convex problems are solvable (e.g., $e^{-x}$ on $\mathbb{R}$ is bounded below by 0 but never reaches it).</li>
+        <li><strong>Convexity:</strong> $f$ is convex on $\mathrm{dom}\,f$. This means the domain is a convex set and the function curves "upward" (satisfying Jensen's inequality). Crucially, it implies that <em>any local minimum is a global minimum</em>.</li>
+        <li><strong>Twice Continuously Differentiable ($C^2$):</strong> We assume $f \in C^2(\mathrm{dom}\,f)$.
+            <ul>
+                <li>The <strong>Gradient</strong> $\nabla f(x)$ exists and is continuous. This gives us the "slope" or direction of steepest increase.</li>
+                <li>The <strong>Hessian</strong> $\nabla^2 f(x)$ exists and is continuous. This gives us the "curvature" information.</li>
+            </ul>
+        </li>
+        <li><strong>Open Domain:</strong> $\mathrm{dom}\,f$ is an <strong>open set</strong>.
+            <br><em>Why this matters:</em> An open set does not include its boundary. For any point $x$ in an open domain, there is a tiny ball around $x$ that is entirely contained within the domain. This ensures that we can always take a step $\epsilon$ in <em>any</em> direction without "falling off the edge" of the feasible set. Without this, standard derivatives (which rely on limits from all directions) would not be well-defined at the boundary.
+        </li>
+        <li><strong>Solvability:</strong> The problem is <strong>solvable</strong>, meaning the optimal value $p^\star = \min_x f(x)$ is finite and is actually achieved at some point $x^\star$. (Counter-example: $f(x) = e^{-x}$ is bounded below by 0, but never reaches it, so no $x^\star$ exists. Our theory assumes an $x^\star$ exists).</li>
       </ul>
       <p>
-        <strong>Important Subtlety:</strong> If $f: \mathbb{R}^n \to \mathbb{R}$, then $\mathrm{dom}\,f = \mathbb{R}^n$ is automatically open. In the broader convex-analysis setting, we often allow <strong>extended-valued</strong> convex functions $f:\mathbb{R}^n\to\mathbb{R}\cup\{+\infty\}$, where $\mathrm{dom}\,f=\{x:f(x)<+\infty\}$ can be a strict open subset. For example, the logarithmic barrier $f(x) = -\sum \log(x_i)$ is only defined on the open positive orthant $\mathbb{R}^n_{++}$. Twice differentiability forces us to work on an open set.
+        <strong>Important Subtlety on Domains & Extended Values:</strong> Strictly speaking, if $f$ is a map $\mathbb{R}^n \to \mathbb{R}$, its domain is the entire space. In convex analysis, we essentially work with <strong>extended-valued</strong> functions $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, where the effective domain is $\mathrm{dom}\,f = \{x \mid f(x) < +\infty\}$.
+        <br>For example, the logarithmic barrier $f(x) = -\sum \log(x_i)$ is formally defined as $+\infty$ if any $x_i \le 0$. Its effective domain is the open positive orthant $\mathbb{R}^n_{++}$. Twice differentiability forces us to restrict our attention to this open set where derivatives are well-defined. Our algorithms must stay strictly inside this open set; stepping onto the boundary (where $f=+\infty$) is forbidden.
       </p>
       <p>
-        The analysis repeatedly refers to a set $S$. In this chapter, $S$ is typically a <strong>sublevel set</strong> that contains all iterates of the algorithm:
+        <strong>The "Container" Set $S$:</strong>
+        One of the most important moves in the analysis is "localizing" all claims to the initial sublevel set:
         $$ S=\{x\in\mathrm{dom}\,f \mid f(x)\le f(x^{(0)})\} \tag{9.3} $$
-        <strong>Why do we care about $S$?</strong>
-        <br>
-        Most "global" convergence proofs actually rely on local properties. We don't need the function to be strongly convex <em>everywhere</em> in the universe. We only need it to be well-behaved (strongly convex, smooth) in the region where the algorithm actually travels. Since descent algorithms decrease the objective value $f(x^{(k)})$ at every step, the sequence of iterates $x^{(0)}, x^{(1)}, \dots$ will remain trapped inside the initial sublevel set $S$. Thus, bounds that hold on $S$ are sufficient for convergence.
+        <strong>Why is this set so critical?</strong>
+        <ol>
+            <li><strong>The Trap (Descent Property):</strong> Most methods in Chapter 9 are <strong>descent methods</strong>, enforcing $f(x^{(k+1)}) \le f(x^{(k)})$. Inductively, $f(x^{(k)}) \le f(x^{(0)})$, so every iterate $x^{(k)}$ lives inside $S$. Any property we assume "for all $x \in S$" automatically applies to every point the algorithm visits.</li>
+            <li><strong>Closedness & Compactness:</strong> We typically assume $f$ is a <strong>closed function</strong> (meaning its epigraph is closed, or equivalently, its sublevel sets are closed).
+                <ul>
+                    <li>If we assume Strong Convexity (Section 3), $S$ becomes bounded.</li>
+                    <li>A closed and bounded set in $\mathbb{R}^n$ is <strong>compact</strong>.</li>
+                    <li>Compactness is the magic property that guarantees continuous functions (like $\lambda_{\max}(\nabla^2 f(x))$) attain their maximum and minimum. This allows us to rigorously define constants $m$ and $M$ such that $mI \preceq \nabla^2 f(x) \preceq MI$ everywhere in $S$.</li>
+                </ul>
+            </li>
+        </ol>
       </p>
 
       <h3>1. The Core Equivalence (Optimality Conditions)</h3>
@@ -122,11 +139,20 @@
               Since $f(y) \ge f(x^\star)$ for all $y$, $x^\star$ is a global minimizer.
           </li>
           <li><strong>Necessity (Min $\Rightarrow \nabla f(x^\star)=0$):</strong>
-              Assume $x^\star$ is a local minimizer. Since $\mathrm{dom}\,f$ is <strong>open</strong>, for any direction vector $v$, the point $x^\star + tv$ is inside the domain for small enough $t$.
-              Define the scalar function $\phi(t)=f(x^\star+tv)$. Since $x^\star$ minimizes $f$, $t=0$ must minimize $\phi(t)$.
-              From single-variable calculus, if $t=0$ is an interior minimum, then $\phi'(0)=0$.
-              By the chain rule: $\phi'(0)=\nabla f(x^\star)^T v = 0$.
-              Since the dot product $\nabla f(x^\star)^T v$ is zero for <em>every</em> possible direction vector $v$ (we can choose basis vectors $e_1, \dots, e_n$), the gradient vector itself must be zero: $\nabla f(x^\star)=0$.
+              We prove this by contradiction. Assume $x^\star$ is a local minimizer but $\nabla f(x^\star) \neq 0$.
+              <ol>
+                  <li><strong>Open Domain:</strong> Since $\mathrm{dom}\,f$ is open, for any direction $v$, we can move a small distance $t$ in that direction without leaving the domain.</li>
+                  <li><strong>Choose Descent Direction:</strong> Let $v = -\nabla f(x^\star)$. This is the direction of steepest descent.</li>
+                  <li><strong>Single-Variable Function:</strong> Define $\phi(t) = f(x^\star + tv)$. Since $x^\star$ is a minimizer, $\phi(t)$ must have a minimum at $t=0$.</li>
+                  <li><strong>First Derivative Test:</strong> Calculus tells us that for $t=0$ to be a minimum, $\phi'(0)$ must be 0 (or $\ge 0$ if constrained, but we are unconstrained).
+                      $$ \phi'(0) = \nabla f(x^\star)^T v = \nabla f(x^\star)^T (-\nabla f(x^\star)) = -\|\nabla f(x^\star)\|_2^2 $$
+                  </li>
+                  <li><strong>Contradiction:</strong> If $\nabla f(x^\star) \neq 0$, then $- \|\nabla f(x^\star)\|_2^2 < 0$. This means $\phi'(0) < 0$.
+                      <br>
+                      Since the derivative is negative, the function is <em>decreasing</em> at $t=0$. For a very small $t > 0$, we must have $\phi(t) < \phi(0)$, which means $f(x^\star + tv) < f(x^\star)$.
+                  </li>
+                  <li><strong>Conclusion:</strong> This contradicts the assumption that $x^\star$ is a minimizer. Therefore, $\nabla f(x^\star)$ must be 0.</li>
+              </ol>
           </li>
       </ul>
 
@@ -137,10 +163,19 @@
         The most basic convex optimization problem is the unconstrained quadratic program:
         $$ \min_x \ f(x) = \frac12 x^T P x + q^T x + r,\qquad P\in S^n_+ \tag{9.4} $$
         where $P$ is symmetric positive semidefinite ($P \succeq 0$).
+      </p>
+      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
+        <strong>Step-by-Step Derivation of Gradient:</strong>
         <br>
-        <strong>Derivation of Gradient:</strong>
-        Using the fact that $\nabla_x (x^T P x) = 2Px$ (for symmetric $P$) and $\nabla_x (q^T x) = q$:
-        $$ \nabla f(x)=Px+q $$
+        Let's compute $\nabla (\frac{1}{2} x^T P x)$. Write it in scalar sum notation:
+        $$ \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n P_{ij} x_i x_j $$
+        Now take the partial derivative with respect to $x_k$:
+        $$ \frac{\partial}{\partial x_k} \left( \frac{1}{2} \sum_{i,j} P_{ij} x_i x_j \right) = \frac{1}{2} \sum_{j} P_{kj} x_j + \frac{1}{2} \sum_{i} P_{ik} x_i $$
+        Using symmetry ($P_{ij} = P_{ji}$), both sums are equal to the $k$-th row of $P$ dot product with $x$.
+        $$ = \sum_{j} P_{kj} x_j = (Px)_k $$
+        Thus, the vector gradient is $\nabla f(x) = Px + q$.
+      </div>
+      <p>
         Setting the gradient to zero gives the linear system:
         $$ Px^\star = -q $$
       </p>
@@ -173,8 +208,12 @@
         This function approximates the "max" function ($\max_i (a_i^T x + b_i)$) but is smooth and convex:
         $$ f(x)=\log\Big(\sum_{i=1}^m e^{a_i^T x+b_i}\Big) $$
         <strong>Gradient Interpretation:</strong> The gradient is a probability-weighted sum of the vectors $a_i$:
-        $$ \nabla f(x) = \sum_{i=1}^m w_i(x) a_i, \quad \text{where } w_i(x) = \frac{e^{a_i^T x+b_i}}{\sum_j e^{a_j^T x+b_j}} $$
-        The weights $w_i(x)$ sum to 1. This is effectively the expected value of $a_i$ under the "softmax" distribution.
+        $$ \nabla f(x) = \sum_{i=1}^m w_i(x) a_i $$
+        where the weights $w_i(x)$ are given by the <strong>Softmax</strong> function:
+        $$ w_i(x) = \frac{e^{a_i^T x+b_i}}{\sum_j e^{a_j^T x+b_j}} $$
+        Note that $w_i(x) > 0$ and $\sum w_i(x) = 1$.
+        <br>
+        <strong>Meaning:</strong> The gradient is a <strong>convex combination</strong> (weighted average) of the vectors $a_i$. If one term $k$ is significantly larger than the others, $w_k \approx 1$ and the others $\approx 0$, so $\nabla f(x) \approx a_k$ (which is the gradient of the pure $\max$ function).
         <br>
         <strong>Hessian:</strong> The Hessian turns out to be the covariance matrix of the vectors $a_i$ under this distribution. Since covariance matrices are always PSD, $\nabla^2 f(x) \succeq 0$, proving convexity.
       </p>
@@ -200,14 +239,12 @@
       <h4>3.1 From Taylor’s Theorem to the Quadratic Lower Bound</h4>
       <p>
         Let's derive the most important consequence of strong convexity.
-        Consider two points $x,y\in S$. Taylor’s theorem with Lagrange remainder states that:
-        $$ f(y)=f(x)+\nabla f(x)^T(y-x)+\frac12 (y-x)^T\nabla^2 f(z)(y-x) $$
-        where $z$ is some point on the line segment connecting $x$ and $y$.
-        <br>
-        Since $z \in S$ (by convexity of $S$), we can apply our strong convexity assumption ($\nabla^2 f(z) \succeq mI$):
-        $$ (y-x)^T\nabla^2 f(z)(y-x)\ \ge\ m\|y-x\|_2^2 $$
-        Substituting this back into the Taylor expansion yields the <strong>Quadratic Lower Bound</strong>:
-        $$ f(y)\ \ge\ f(x)+\nabla f(x)^T(y-x)+\frac{m}{2}\|y-x\|_2^2 \tag{9.8} $$
+        Consider two points $x,y\in S$. Taylor’s theorem with the <strong>Lagrange remainder form</strong> states that there exists a point $z$ on the line segment connecting $x$ and $y$ such that:
+        $$ f(y) = f(x) + \nabla f(x)^T(y-x) + \underbrace{\frac{1}{2} (y-x)^T \nabla^2 f(z) (y-x)}_{\text{Remainder Term } R_1(y)} $$
+        Because $z \in S$ (due to convexity of $S$), we can apply our strong convexity assumption ($\nabla^2 f(z) \succeq mI$). This allows us to bound the remainder term from below:
+        $$ (y-x)^T \nabla^2 f(z) (y-x) \ge m \|y-x\|_2^2 $$
+        Substituting this lower bound into the Taylor expansion yields the <strong>Quadratic Lower Bound</strong>:
+        $$ f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{m}{2} \|y-x\|_2^2 \tag{9.8} $$
         <strong>Geometric Interpretation:</strong>
         <ul>
             <li>For a standard convex function ($m=0$), the graph sits above the tangent plane: $f(y) \ge f(x) + \nabla f(x)^T(y-x)$.</li>
@@ -220,27 +257,33 @@
         The quadratic lower bound allows us to bound how far we are from the solution, both in terms of function value and distance in $\mathbb{R}^n$.
         <br>
         <strong>1. Suboptimality Bound ($f(x) - p^\star$):</strong>
-        Fix $x$. The right-hand side of (9.8) is a function of $y$: $g(y) = f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2$.
-        Since $f(y) \ge g(y)$ for all $y$, it must be that $\min_y f(y) \ge \min_y g(y)$, so $p^\star \ge \min_y g(y)$.
-        The function $g(y)$ is a simple quadratic. Its minimum occurs where its gradient is zero:
-        $$ \nabla_y g(y) = \nabla f(x) + m(y-x) = 0 \implies \tilde{y} = x - \frac{1}{m}\nabla f(x) $$
-        Plugging $\tilde{y}$ back into $g(y)$:
-        $$ \min_y g(y) = f(x) - \frac{1}{m}\|\nabla f(x)\|^2 + \frac{m}{2}\frac{1}{m^2}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2m}\|\nabla f(x)\|^2 $$
-        Therefore:
-        $$ p^\*\ \ge\ f(x)-\frac{1}{2m}\|\nabla f(x)\|_2^2 \implies f(x)-p^\*\ \le\ \frac{1}{2m}\|\nabla f(x)\|_2^2 \tag{9.9} $$
+        Fix $x$. The right-hand side of (9.8) is a function of $y$:
+        $$ g(y) = f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2 $$
+        Since $f(y) \ge g(y)$ for all $y$, minimizing both sides implies that $\min_y f(y) \ge \min_y g(y)$, so $p^\star \ge \min_y g(y)$.
+        <br>
+        To find $\min_y g(y)$, we set its gradient to zero:
+        $$ \nabla_y g(y) = \nabla f(x) + m(y-x) = 0 $$
+        Solving for the optimal $y$ (let's call it $\tilde{y}$):
+        $$ \tilde{y} = x - \frac{1}{m}\nabla f(x) $$
+        Plugging $\tilde{y}$ back into the expression for $g(y)$:
+        $$ \min_y g(y) = f(x) + \nabla f(x)^T \left(-\frac{1}{m}\nabla f(x)\right) + \frac{m}{2} \left\|-\frac{1}{m}\nabla f(x)\right\|^2 $$
+        $$ = f(x) - \frac{1}{m}\|\nabla f(x)\|^2 + \frac{1}{2m}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2m}\|\nabla f(x)\|^2 $$
+        Therefore, since $p^\star \ge \min_y g(y)$:
+        $$ p^\star \ge f(x) - \frac{1}{2m}\|\nabla f(x)\|_2^2 \implies f(x)-p^\star \le \frac{1}{2m}\|\nabla f(x)\|_2^2 \tag{9.9} $$
         This is incredibly useful. It tells us that if the gradient is small, the function value is close to optimal. We can use $\|\nabla f(x)\|_2 \le \sqrt{2m\epsilon}$ as a rigorous stopping criterion.
       </p>
       <p>
         <strong>2. Distance to Optimizer ($\|x - x^\star\|$):</strong>
         Applying the master inequality (9.8) with $y=x^\star$:
-        $$ p^\* \ge f(x)+\nabla f(x)^T(x^\*-x)+\frac{m}{2}\|x^\*-x\|^2 $$
+        $$ p^\star \ge f(x)+\nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
         Since $p^\star \le f(x)$, we have:
-        $$ 0 \ge \nabla f(x)^T(x^\*-x)+\frac{m}{2}\|x^\*-x\|^2 $$
-        $$ -\nabla f(x)^T(x^\*-x) \ge \frac{m}{2}\|x^\*-x\|^2 $$
-        Using Cauchy-Schwarz ($a^Tb \le \|a\|\|b\|$):
-        $$ \|\nabla f(x)\|_2 \|x^\*-x\|_2 \ge \frac{m}{2}\|x^\*-x\|_2^2 $$
-        Dividing by $\|x^\star - x\|_2$ (assuming $x \neq x^\star$):
-        $$ \|x-x^\*\|_2 \le \frac{2}{m}\|\nabla f(x)\|_2 \tag{9.11} $$
+        $$ 0 \ge \nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
+        Rearranging:
+        $$ -\nabla f(x)^T(x^\star-x) \ge \frac{m}{2}\|x^\star-x\|^2 $$
+        Using the Cauchy-Schwarz inequality ($|a^Tb| \le \|a\|\|b\|$):
+        $$ \|\nabla f(x)\|_2 \|x^\star-x\|_2 \ge \frac{m}{2}\|x^\star-x\|_2^2 $$
+        Dividing both sides by $\|x^\star - x\|_2$ (assuming $x \neq x^\star$):
+        $$ \|x-x^\star\|_2 \le \frac{2}{m}\|\nabla f(x)\|_2 \tag{9.11} $$
         This implies the optimizer $x^\star$ is <strong>unique</strong>.
       </p>
 
@@ -254,20 +297,24 @@
       <h4>4.1 Quadratic Upper Bound</h4>
       <p>
         Using Taylor's theorem in the exact same way as before, but using the upper bound on the Hessian:
-        $$ f(y)\ \le\ f(x)+\nabla f(x)^T(y-x)+\frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
+        $$ f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
         <strong>The Sandwich Principle:</strong> Combining (9.8) and (9.13), we see that the function $f(y)$ is <strong>sandwiched</strong> between two quadratic bowls anchored at $x$:
-        $$ f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2 \le f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|^2 $$
-        <br>
+      </p>
+      <div style="text-align: center; margin: 16px 0; padding: 12px; background: var(--panel); border-radius: 8px;">
+          $$ \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Lower Paraboloid (Blue)}} \le f(y) \le \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|^2}_{\text{Upper Paraboloid (Red)}} $$
+          <p style="font-size: 0.9em; color: #666; margin-top: 8px;">The function lives in the "Goldilocks zone" between these two quadratics.</p>
+      </div>
+      <p>
         <strong>Implication for Descent:</strong> The upper bound guarantees that if we take a small enough step opposite to the gradient, the function value <em>must</em> decrease.
         Minimizing the quadratic upper bound (RHS of 9.13) with respect to $y$ gives $y = x - \frac{1}{M}\nabla f(x)$. Plugging this specific $y$ into the inequality:
         $$ f\left(x - \frac{1}{M}\nabla f(x)\right) \le f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{M}{2}\frac{1}{M^2}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
         This implies:
-        $$ p^\*\ \le\ f(x)-\frac{1}{2M}\|\nabla f(x)\|_2^2 \tag{9.14} $$
+        $$ p^\star \le f(x) - \frac{1}{2M}\|\nabla f(x)\|_2^2 \tag{9.14} $$
         So, a single gradient step reduces the function value by at least $\frac{1}{2M}\|\nabla f(x)\|^2$.
       </p>
       <p>
         <strong>Summary of Bounds:</strong>
-        $$ \frac{1}{2M}\|\nabla f(x)\|^2 \ \le\ f(x)-p^\* \ \le\ \frac{1}{2m}\|\nabla f(x)\|^2 $$
+        $$ \frac{1}{2M}\|\nabla f(x)\|^2 \le f(x)-p^\star \le \frac{1}{2m}\|\nabla f(x)\|^2 $$
       </p>
 
       <h3>5. Condition Number of Sublevel Sets</h3>
@@ -277,21 +324,26 @@
         $$ \kappa(\nabla^2 f(x))=\frac{\lambda_{\max}(\nabla^2 f(x))}{\lambda_{\min}(\nabla^2 f(x))}\le \frac{M}{m} $$
         We call this upper bound $\kappa$ the condition number of the problem (on $S$).
       </p>
-      <h4>5.1 Geometric Meaning: Eccentricity and "Skinniness"</h4>
+      <h4>5.1 Geometric Meaning: Width and Eccentricity</h4>
       <p>
-        The condition number $\kappa$ measures the <strong>anisotropy</strong> (direction-dependence) of the function's curvature.
-        <ul>
-            <li><strong>$\kappa \approx 1$:</strong> The function is shaped like a nice, round bowl (spherical level sets). The gradient points straight to the minimum.</li>
-            <li><strong>$\kappa \gg 1$:</strong> The function is shaped like a narrow, deep valley (elongated ellipsoidal level sets). The gradient is nearly orthogonal to the direction of the minimum.</li>
-        </ul>
-        Geometrically, any sublevel set $C_\alpha = \{x : f(x) \le \alpha\}$ contains a ball of radius $r$ and is contained in a ball of radius $R$. The ratio $R^2/r^2$ is bounded by $\kappa = M/m$. Thus, $\sqrt{\kappa}$ represents the maximum "aspect ratio" or eccentricity of the level sets.
+        The condition number $\kappa$ measures the <strong>anisotropy</strong> of the function's curvature. We can formalize this using the concept of the <strong>width</strong> of a convex set.
+        <br>
+        For a convex set $C \subseteq \mathbb{R}^n$ and a unit direction $q$ ($\|q\|=1$), the width of $C$ in direction $q$ is:
+        $$ W(C,q) = \sup_{z\in C} q^T z - \inf_{z\in C} q^T z $$
+        The <strong>condition number of a set</strong> $C$ is defined as the square of the ratio of its maximum width to its minimum width:
+        $$ \mathrm{cond}(C) = \frac{W_{\max}^2}{W_{\min}^2}, \quad \text{where } W_{\max} = \sup_{\|q\|=1} W(C,q), \ W_{\min} = \inf_{\|q\|=1} W(C,q) $$
       </p>
       <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
-        <strong>Example: Width of an Ellipsoid.</strong> Let $\mathcal{E}=\{x\mid (x-x_0)^T A^{-1}(x-x_0)\le 1\}$ with $A \in S^n_{++}$.
-        The "width" of the ellipsoid varies with direction.
-        The condition number of the set is exactly the condition number of the matrix $A$:
-        $$ \mathrm{cond}(\mathcal{E}) = \frac{\lambda_{\max}(A)}{\lambda_{\min}(A)} = \kappa(A) $$
-        If $\kappa = 100$, the ellipsoid is 10 times longer in one direction than another ($\sqrt{100}=10$). Gradient descent will "bounce" back and forth across the narrow valley rather than moving down it.
+        <strong>Example 9.1: Width of an Ellipsoid.</strong>
+        <br>Consider the ellipsoid $\mathcal{E}=\{x\mid (x-x_0)^T A^{-1}(x-x_0)\le 1\}$ with $A \in S^n_{++}$.
+        <br><strong>1. Maximize/Minimize Linear Function:</strong> To find the width, we maximize/minimize $q^T z$ over $\mathcal{E}$.
+        Let $z = x_0 + A^{1/2}u$ with $\|u\|_2 \le 1$. Then $q^T z = q^T x_0 + (A^{1/2}q)^T u$.
+        <br>The max is $q^T x_0 + \|A^{1/2}q\|_2$, and the min is $q^T x_0 - \|A^{1/2}q\|_2$.
+        <br><strong>2. Width:</strong> $W(\mathcal{E}, q) = 2\|A^{1/2}q\|_2 = 2\sqrt{q^T A q}$.
+        <br><strong>3. Extremes:</strong> The maximum width is $2\sqrt{\lambda_{\max}(A)}$ and the minimum is $2\sqrt{\lambda_{\min}(A)}$.
+        <br><strong>4. Condition Number:</strong>
+        $$ \mathrm{cond}(\mathcal{E}) = \frac{(2\sqrt{\lambda_{\max}})^2}{(2\sqrt{\lambda_{\min}})^2} = \frac{\lambda_{\max}(A)}{\lambda_{\min}(A)} = \kappa(A) $$
+        Geometrically, $\mathrm{cond}(C_\alpha) \le M/m$ for sublevel sets of our function. Gradient descent performance is dictated by this "skinniness."
       </div>
 
       <figure style="margin: 24px auto; text-align: center; max-width: 600px;">
@@ -309,13 +361,18 @@ def descent_method(f, gradient, x0, tol=1e-6):
     x = x0
     while True:
         # 1. Compute Descent Direction
-        delta_x = compute_direction(x)  # e.g., -gradient(x)
+        # For standard gradient descent, this is simply -gradient(x)
+        delta_x = compute_direction(x)
 
         # 2. Check Stopping Criterion
+        # Why this formula? Recall bound (9.9): f(x) - p* <= (1/2m) * ||grad||^2
+        # In Newton's method, -g.dot(dx) / 2 is exactly the "Newton Decrement" squared.
+        # It's a rigorous estimate of the suboptimality gap.
         if -gradient(x).dot(delta_x) / 2 <= tol:
             break
 
         # 3. Line Search (Step Size)
+        # Find a scalar t > 0 such that f(x + t*delta_x) < f(x)
         t = line_search(f, x, delta_x)
 
         # 4. Update
@@ -327,53 +384,82 @@ def descent_method(f, gradient, x0, tol=1e-6):
 
       <h4>6.1 Exact Line Search: A Rigorous Proof of Linear Convergence</h4>
       <p>
-        Suppose we choose step size $t$ to minimize $f$ exactly along the ray. How fast does the error decay?
+        Suppose we choose step size $t$ to minimize $f$ exactly along the ray (i.e., $t = \text{argmin}_{s \ge 0} f(x + s \Delta x)$). How fast does the error decay?
         <br>
-        <strong>Proof Step 1: Guaranteed Decrease.</strong>
-        From the smoothness upper bound (9.13), taking step $t = 1/M$ along the gradient direction $g = \nabla f(x)$ gives:
-        $$ f(x - \frac{1}{M}g) \le f(x) - \frac{1}{2M}\|g\|^2 $$
-        Since exact line search finds the <em>optimal</em> $t$, it must do at least as well as this specific choice:
-        $$ f(x^+) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
+        <strong>Proof Step 1: Guaranteed Decrease from Smoothness.</strong>
+        We don't know the exact optimal step $t$, but we know exact line search performs <em>at least as well</em> as any specific step choice.
+        Let's test the specific step $t = 1/M$. From the smoothness upper bound (9.13), taking step $t = 1/M$ along the descent direction $d = -\nabla f(x)$ gives:
+        $$ f(x - \frac{1}{M}\nabla f(x)) \le f(x) + \nabla f(x)^T(-\frac{1}{M}\nabla f(x)) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
+        $$ = f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{1}{2M}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
+        Since the exact line search finds the global minimum along the line, it satisfies:
+        $$ f(x_{\text{next}}) \le f(x - \frac{1}{M}\nabla f(x)) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
         <br>
         <strong>Proof Step 2: Relating Gradient to Optimality Gap.</strong>
-        Recall strong convexity (9.9): $\|\nabla f(x)\|^2 \ge 2m(f(x) - p^\star)$. Substituting this into the inequality:
-        $$ f(x^+) \le f(x) - \frac{1}{2M} \left( 2m(f(x) - p^\star) \right) = f(x) - \frac{m}{M}(f(x) - p^\star) $$
+        We need to relate $\|\nabla f(x)\|^2$ to the error $f(x) - p^\star$.
+        Recall the Strong Convexity bound (9.9):
+        $$ f(x) - p^\star \le \frac{1}{2m}\|\nabla f(x)\|^2 \implies \|\nabla f(x)\|^2 \ge 2m(f(x) - p^\star) $$
+        Substituting this into our inequality from Step 1:
+        $$ f(x_{\text{next}}) \le f(x) - \frac{1}{2M} \left( 2m(f(x) - p^\star) \right) = f(x) - \frac{m}{M}(f(x) - p^\star) $$
         <br>
         <strong>Proof Step 3: Subtracting $p^\star$.</strong>
         Subtract $p^\star$ from both sides to see the evolution of the error $\epsilon_k = f(x^{(k)}) - p^\star$:
-        $$ f(x^+) - p^\star \le (f(x) - p^\star) - \frac{m}{M}(f(x) - p^\star) $$
+        $$ f(x_{\text{next}}) - p^\star \le (f(x) - p^\star) - \frac{m}{M}(f(x) - p^\star) $$
         $$ \epsilon_{k+1} \le \left(1 - \frac{m}{M}\right) \epsilon_k $$
         This is <strong>Linear Convergence</strong>. The error contracts by a fixed factor $c = 1 - m/M < 1$ at every step.
-        (Note: $m/M = 1/\kappa$, so the rate depends on the condition number. If $\kappa$ is large, $c \approx 1$, and convergence is slow).
+        <br>
+        <em>Note:</em> The contraction factor $1 - 1/\kappa$ depends directly on the condition number.
+        <ul>
+            <li>If $\kappa=1$ (perfectly spherical), error becomes 0 in one step.</li>
+            <li>If $\kappa=1000$ (ill-conditioned), $c = 0.999$, so we only remove 0.1% of the error per step.</li>
+        </ul>
       </p>
 
-      <h4>6.2 Backtracking (Armijo) Line Search</h4>
+      <h4>6.2 Backtracking (Armijo) Line Search: Proof of Termination and Convergence</h4>
       <p>
-        Exact minimization is usually too expensive. Instead, we use <strong>Backtracking Line Search</strong>. It guarantees a "sufficient decrease" without finding the exact minimum.
-        <br>
-        <strong>The Algorithm:</strong>
-        <pre><code class="language-python">
+        Exact minimization is usually too expensive. Instead, we use <strong>Backtracking Line Search</strong>. It shrinks the step size $t$ until the "Armijo sufficient decrease condition" is met:
+        $$ f(x+t\Delta x) \le f(x) + \alpha t \nabla f(x)^T \Delta x, \qquad 0 < \alpha < 0.5, \ \ 0 < \beta < 1 $$
+        We must prove two things: (1) the loop eventually terminates, and (2) the accepted step is "large enough" to guarantee linear convergence.
+      </p>
+      <p>
+        <strong>1. Termination Proof (Why Armijo holds for small $t$):</strong>
+        Let $g = \nabla f(x)$ and $\Delta x = -g$.
+        From the smoothness bound (9.17) along the ray:
+        $$ f(x-tg) \le f(x) - t\|g\|^2 + \frac{M t^2}{2}\|g\|^2 $$
+        We want this to be $\le f(x) - \alpha t \|g\|^2$.
+        $$ f(x) - t\|g\|^2 + \frac{M t^2}{2}\|g\|^2 \le f(x) - \alpha t \|g\|^2 $$
+        Subtracting $f(x)$ and dividing by $t\|g\|^2$ (assuming $g \neq 0$):
+        $$ -1 + \frac{M t}{2} \le -\alpha \implies \frac{M t}{2} \le 1 - \alpha \implies t \le \frac{2(1-\alpha)}{M} $$
+        Since $\alpha < 0.5$, the RHS is positive. Thus, for any $t \le \frac{2(1-\alpha)}{M}$, the Armijo condition <strong>must</strong> hold. The backtracking loop (which shrinks $t$ by $\beta$) will eventually produce a $t$ below this threshold.
+      </p>
+      <p>
+        <strong>2. Lower Bound on Accepted Step Size:</strong>
+        Let $t_0 = \frac{2(1-\alpha)}{M}$.
+        <ul>
+            <li>If the initial $t=1$ works, $t \ge 1$.</li>
+            <li>If we backtrack, the loop stops at the <em>first</em> $t$ such that $t \le t_0$ (approximately). Since the previous step $t/\beta$ was rejected (meaning $t/\beta > t_0$), the accepted $t$ must satisfy $t > \beta t_0$.</li>
+        </ul>
+        Thus, the accepted step is bounded below:
+        $$ t \ge \min\left(1, \frac{2\beta(1-\alpha)}{M}\right) $$
+      </p>
+      <p>
+        <strong>3. Convergence Rate:</strong>
+        The Armijo condition guarantees a decrease of at least $-\alpha t \|g\|^2$. Using the lower bound on $t$:
+        $$ f(x^+) - f(x) \le -\alpha \min\left(1, \frac{2\beta(1-\alpha)}{M}\right) \|g\|^2 $$
+        Combining this with the Strong Convexity property $\|\nabla f(x)\|^2 \ge 2m(f(x)-p^\star)$, we get:
+        $$ f(x^+) - p^\star \le f(x) - p^\star - C \cdot 2m (f(x) - p^\star) = (1 - 2mC) (f(x) - p^\star) $$
+        where $C$ is the constant derived above. This proves <strong>Linear Convergence</strong> for backtracking line search.
+      </p>
+      <pre><code class="language-python">
 def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
-    """
-    alpha: Fraction of decrease we demand (0 < alpha < 0.5)
-           Usually 0.01 to 0.3.
-    beta:  Shrink factor (0 < beta < 1).
-           Usually 0.1 to 0.8.
-    """
-    t = 1.0  # Start with full step
+    t = 1.0
     current_f = f(x)
+    # The required slope is shallower than the true slope
     linear_term = alpha * gradient.dot(delta_x)
 
-    # While function is above the "Armijo Line"
     while f(x + t * delta_x) > current_f + t * linear_term:
-        t = t * beta  # Reduce step size
-
+        t = t * beta
     return t
-        </code></pre>
-        <strong>Geometric Interpretation:</strong>
-        The condition $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^T \Delta x$ forces the function value to lie below a linear ray starting at $f(x)$ with slope $\alpha \nabla f^T \Delta x$.
-        Since the actual slope of the function at $t=0$ is $\nabla f^T \Delta x$ (which is steeper/more negative than $\alpha \nabla f^T \Delta x$ because $\alpha < 1$), the condition <strong>must</strong> hold for sufficiently small $t$. The loop is guaranteed to terminate.
-      </p>
+      </code></pre>
       <figure style="margin: 24px auto; text-align: center; max-width: 600px;">
         <img src="assets/backtracking_armijo.gif" alt="Backtracking line search visualization" style="width: 100%; border-radius: 8px; border: 1px solid #ddd;">
         <figcaption style="margin-top: 8px; color: #666; font-size: 0.9em;">Backtracking reduces step size $t$ until the function value drops below the linear extrapolation (Armijo line).</figcaption>
@@ -387,8 +473,12 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         $$ \Delta x_{\mathrm{nsd}} = \text{argmin}_{v} \{ \nabla f(x)^T v \mid \|v\| \le 1 \} $$
         It is the direction that yields the most negative directional derivative per unit of "length."
         <br>
-        <strong>Dual Norm Derivation:</strong>
-        By the definition of the dual norm $\|z\|_* = \sup \{z^T x \mid \|x\| \le 1\}$, the optimal value of the minimization problem above is simply $-\|\nabla f(x)\|_*$.
+        <strong>Intuition of Dual Norms:</strong>
+        We are minimizing a linear function $\nabla f(x)^T v$ over a unit ball defined by a norm $\|\cdot\|$.
+        Recall the definition of the <strong>dual norm</strong>:
+        $$ \|z\|_* = \sup \{z^T x \mid \|x\| \le 1\} $$
+        The maximum value of $z^T x$ over the unit ball is $\|z\|_*$.
+        Since we want to <em>minimize</em> $\nabla f(x)^T v$, we want to achieve $-\|\nabla f(x)\|_*$.
       </p>
 
       <h4>7.1 Unnormalized Step and Cases</h4>
@@ -437,6 +527,29 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         </div>
       </div>
 
+      <h4>7.2 Convergence Analysis for Steepest Descent under General Norms</h4>
+      <p>
+        Does changing the norm change the convergence rate? Yes, but it's subtle. The rate is still linear, but the constant depends on how well the norm matches the geometry of the function.
+        <br>
+        <strong>1. Norm Equivalence:</strong> Since all norms on $\mathbb{R}^n$ are equivalent, there exist constants $\gamma, \tilde{\gamma} \in (0,1]$ such that:
+        $$ \|u\| \ge \gamma \|u\|_2 \quad \text{and} \quad \|z\|_* \ge \tilde{\gamma} \|z\|_2 $$
+        <strong>2. Smoothness Bound in General Norm:</strong>
+        The standard smoothness bound uses Euclidean norm. We convert it:
+        $$ f(x+v) \le f(x) + \nabla f(x)^T v + \frac{M}{2} \|v\|_2^2 \le f(x) + \nabla f(x)^T v + \frac{M}{2\gamma^2} \|v\|^2 $$
+        <strong>3. Decrease Step:</strong>
+        Taking the unnormalized steepest descent step $\Delta x_{\mathrm{sd}}$ with step size $t$:
+        <ul>
+            <li>$\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$</li>
+            <li>$\|\Delta x_{\mathrm{sd}}\| = \|\nabla f\|_*$</li>
+        </ul>
+        Plugging this into the bound:
+        $$ f(x+t\Delta x_{\mathrm{sd}}) \le f(x) - t\|\nabla f\|_*^2 + \frac{M t^2}{2\gamma^2} \|\nabla f\|_*^2 = f(x) - \|\nabla f\|_*^2 \left( t - \frac{M t^2}{2\gamma^2} \right) $$
+        Optimizing $t$ yields a guaranteed decrease proportional to $\|\nabla f\|_*^2$.
+        <br>
+        <strong>Conclusion:</strong> We still get linear convergence $f(x^{(k)}) - p^\star \le c^k (f(x^{(0)}) - p^\star)$. The constant $c$ depends on the condition number $M/m$ and the "norm distortion" constants $\gamma, \tilde{\gamma}$.
+        <br><em>Key Takeaway:</em> If we choose a norm (like the quadratic norm defined by the Hessian) where $\gamma \approx 1$ and the condition number is small, convergence is lightning fast. This is the justification for Newton's method.
+      </p>
+
       <h3>8. Newton's Method</h3>
       <p>
         Newton's method is the gold standard for unconstrained minimization. It uses curvature information (the Hessian) to take much smarter steps than gradient descent.
@@ -462,12 +575,21 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
           A crucial property. If we change coordinates $x = Ty$ (where $T$ is invertible), the algorithm produces the exact same sequence of points (mapped through $T$).
           <br>
           <strong>Proof of Affine Invariance:</strong>
-          Let $g(y) = f(Ty)$. Then:
-          $$ \nabla g(y) = T^T \nabla f(x), \quad \nabla^2 g(y) = T^T \nabla^2 f(x) T $$
-          The Newton step for $g$ at $y$ is:
+          Let $g(y) = f(Ty)$ be the function in the new coordinates.
+          <br>
+          1. <strong>Gradients:</strong> By chain rule, $\nabla g(y) = T^T \nabla f(x)$.
+          <br>
+          2. <strong>Hessians:</strong> $\nabla^2 g(y) = T^T \nabla^2 f(x) T$.
+          <br>
+          3. <strong>Newton Step for $g$:</strong>
           $$ \Delta y_{\mathrm{nt}} = -(\nabla^2 g(y))^{-1} \nabla g(y) = -(T^T \nabla^2 f(x) T)^{-1} (T^T \nabla f(x)) $$
-          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^T) \nabla f(x) = -T^{-1} (\nabla^2 f(x))^{-1} \nabla f(x) = T^{-1} \Delta x_{\mathrm{nt}} $$
-          Since $\Delta x = T \Delta y$, the steps correspond perfectly. Gradient descent <strong>does not</strong> have this property.
+          Using $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$:
+          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^T) \nabla f(x) $$
+          $$ = -T^{-1} (\nabla^2 f(x))^{-1} \nabla f(x) $$
+          $$ = T^{-1} \Delta x_{\mathrm{nt}} $$
+          Since $x = Ty$, a displacement of $\Delta y$ corresponds to a displacement of $T \Delta y = \Delta x$. The steps correspond perfectly!
+          <br>
+          <em>Contrast with Gradient Descent:</em> The gradient descent step is $\Delta y = -T^T \nabla f(x)$. This involves $T^T$, not $T^{-1}$. It does <strong>not</strong> transform correctly.
           </li>
       </ol>
 
@@ -501,36 +623,72 @@ def newton_step(f, grad, hess, x):
 
       <h3>9. Convergence Analysis & Self-Concordance</h3>
       <p>
-        Newton's method has a unique two-phase convergence behavior.
+        Newton's method is famous for its speed, but analyzing it reveals a fascinating "two-phase" structure. Unlike gradient descent, which chips away at the error at a constant rate (linear convergence), Newton's method accelerates as it gets closer to the solution.
       </p>
-      <h4>9.1 The Two Phases</h4>
+      <h4>9.1 The Two Phases of Newton's Method</h4>
       <ul>
-          <li><strong>Damped Phase (Far from $x^\star$):</strong>
-          When gradient is large, we must use a step size $t < 1$ (via backtracking). The function value decreases by a constant amount at each step. This phase is linear, but transient.
+          <li><strong>Phase 1: Damped Newton (Far from $x^\star$):</strong>
+          <br>When we are far from the solution, the quadratic approximation might be poor. The "full" Newton step ($t=1$) might overshoot or even increase the function value.
+          <br>During this phase, <strong>backtracking line search</strong> chooses a step size $t < 1$.
+          <br>The algorithm behaves like a descent method with a guaranteed constant decrease in function value at every step. It is robust but not yet "fast."
           </li>
-          <li><strong>Pure Newton Phase (Close to $x^\star$):</strong>
-          Once we get close enough (specifically, when $\lambda(x) < 0.68$), the backtracking search will always accept $t=1$.
-          Convergence becomes <strong>Quadratic</strong>. The number of correct digits doubles at every iteration.
-          $$ \frac{\epsilon_{k+1}}{\epsilon_k^2} \le C \quad \implies \quad \epsilon_{k+1} \approx \epsilon_k^2 $$
-          In practice, this means you go from 1 digit of accuracy to 2, then 4, then 8, then 16 (machine precision) in just 4-5 steps.
+          <li><strong>Phase 2: Quadratically Convergent (Close to $x^\star$):</strong>
+          <br>Once we enter the region of strong convexity around $x^\star$ (specifically, when the Newton decrement $\lambda(x) < 0.68$), magic happens. The backtracking line search <strong>always</strong> selects $t=1$, and the algorithm converges <strong>quadratically</strong>.
+          <br><strong>Derivation of Quadratic Convergence:</strong>
+          Assume $\nabla^2 f(x)$ is Lipschitz continuous with constant $L$.
+          <br>1. <strong>Fundamental Identity:</strong> By the fundamental theorem of calculus applied to the gradient:
+          $$ \nabla f(x+d) = \nabla f(x) + \int_0^1 \nabla^2 f(x+td) d \, dt = \nabla f(x) + \nabla^2 f(x)d + \int_0^1 (\nabla^2 f(x+td) - \nabla^2 f(x)) d \, dt $$
+          <br>2. <strong>Newton Step:</strong> We chose $d = \Delta x_{\mathrm{nt}} = -(\nabla^2 f(x))^{-1} \nabla f(x)$, so $\nabla f(x) + \nabla^2 f(x)d = 0$.
+          <br>3. <strong>Residual Bound:</strong>
+          $$ \|\nabla f(x+d)\|_2 = \left\| \int_0^1 (\nabla^2 f(x+td) - \nabla^2 f(x)) d \, dt \right\|_2 \le \int_0^1 \|\nabla^2 f(x+td) - \nabla^2 f(x)\|_2 \|d\|_2 dt $$
+          Using the Lipschitz condition $\|H(y)-H(x)\|_2 \le L\|y-x\|_2$:
+          $$ \le \int_0^1 L (t\|d\|_2) \|d\|_2 dt = L \|d\|_2^2 \int_0^1 t dt = \frac{L}{2} \|\Delta x_{\mathrm{nt}}\|_2^2 $$
+          <br>4. <strong>Result:</strong> Since $\|\Delta x_{\mathrm{nt}}\|_2 \le \frac{1}{m} \|\nabla f(x)\|_2$, we get:
+          $$ \|\nabla f(x_{k+1})\|_2 \le \frac{L}{2m^2} \|\nabla f(x_k)\|_2^2 $$
+          This inequality $u_{k+1} \le C u_k^2$ implies that the number of correct digits <strong>doubles</strong> at every iteration.
           </li>
       </ul>
 
-      <h4>9.2 Self-Concordance: Theoretical Rigor</h4>
+      <h4>9.2 Self-Concordance: Removing the Unknown Constants</h4>
       <p>
-        Classical convergence proofs rely on unknown constants $m, M, L$. <strong>Self-Concordance</strong> is a scale-invariant property that limits how fast the Hessian changes:
-        $$ |f'''(x)[h,h,h]| \le 2 (f''(x)[h,h])^{3/2} $$
-        Functions like $-\log(x)$ and linear/quadratic functions satisfy this.
+        Classical convergence proofs rely on constants like $m$ (strong convexity) and $M$ (smoothness). These constants are often unknown or hard to estimate, and they are <strong>not affine invariant</strong> (scaling $x$ by 100 changes $M$ by 10000).
         <br>
-        <strong>Why it matters:</strong> It allows us to prove complexity bounds that depend <strong>only</strong> on the problem structure (e.g., number of constraints) and not on the data values. It is the theoretical foundation of Interior Point Methods.
+        Nesterov and Nemirovski introduced <strong>Self-Concordance</strong> to fix this. It is a property that limits how fast the curvature (Hessian) changes relative to the curvature itself.
+      </p>
+      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
+        <strong>Definition (1D):</strong> A convex function $\phi: \mathbb{R} \to \mathbb{R}$ is self-concordant if:
+        $$ |\phi'''(x)| \le 2 (\phi''(x))^{3/2} $$
+        <strong>Affine Invariance:</strong> If $f$ is self-concordant, then $g(y) = f(Ay+b)$ is also self-concordant.
+      </div>
+      <p>
+        <strong>Why it matters:</strong>
+        <ol>
+            <li><strong>Universal Constants:</strong> For <em>any</em> self-concordant function, Newton's method is guaranteed to enter the quadratic convergence phase once $\lambda(x) < 0.68$. No need to know $m$ or $L$.</li>
+            <li><strong>Complexity Theory:</strong> It allows us to prove that the number of Newton steps required to solve a problem depends only on the <em>structure</em> of the problem (e.g., number of log-barrier terms), not on the specific values of the data matrix $A$ or vector $b$. This is the foundation of <strong>Interior Point Methods</strong>.</li>
+            <li><strong>Examples:</strong> Linear and quadratic functions (3rd derivative is 0) are self-concordant. The logarithmic barrier $-\sum \log x_i$ is self-concordant.</li>
+        </ol>
       </p>
 
       <h4>9.3 Quasi-Newton Methods (BFGS)</h4>
       <p>
-        If $N$ is large ($> 1000$), computing $\nabla^2 f^{-1}$ ($O(N^3)$) is too slow.
-        <strong>Quasi-Newton methods</strong> update an approximation of the Hessian $B \approx \nabla^2 f$ using the change in gradients ($\Delta g = B \Delta x$).
+        For very large problems ($n > 1000$), storing the Hessian matrix ($n^2$ floats) and solving the linear system ($n^3$ flops) is too expensive.
+        <strong>Quasi-Newton methods</strong> aim to replicate the superlinear speed of Newton's method without computing the Hessian explicitly.
         <br>
-        <strong>BFGS Update:</strong> A rank-2 update rule that preserves symmetry and positive definiteness. It converges <strong>superlinearly</strong> (faster than gradient descent, but no quadratic doubling).
+        <strong>The Secant Equation:</strong>
+        We want to build an approximation $B_{k+1} \approx \nabla^2 f(x_{k+1})$ based on the information gained from the last step.
+        Let $s_k = x_{k+1} - x_k$ (change in position) and $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ (change in gradient).
+        By Taylor's theorem, $\nabla f(x_{k+1}) \approx \nabla f(x_k) + \nabla^2 f(x_{k+1}) (x_{k+1} - x_k)$.
+        Thus, we require our approximation $B_{k+1}$ to satisfy:
+        $$ B_{k+1} s_k = y_k $$
+        <br>
+        <strong>BFGS (Broyden–Fletcher–Goldfarb–Shanno):</strong>
+        This is the most popular update rule. It updates the <em>inverse</em> Hessian approximation $H_k \approx (\nabla^2 f)^{-1}$ directly:
+        $$ H_{k+1} = (I - \rho_k s_k y_k^T) H_k (I - \rho_k y_k s_k^T) + \rho_k s_k s_k^T, \quad \text{where } \rho_k = \frac{1}{y_k^T s_k} $$
+        <ul>
+            <li><strong>Cost:</strong> $O(n^2)$ per iteration (matrix-vector multiplication).</li>
+            <li><strong>Convergence:</strong> Superlinear (faster than linear, slower than quadratic).</li>
+            <li><strong>Memory:</strong> L-BFGS (Limited-memory BFGS) stores only the last $m$ pairs of $(s_k, y_k)$ vectors, reducing memory to $O(mn)$, enabling optimization with millions of variables.</li>
+        </ul>
       </p>
 
     </section>
@@ -599,6 +757,27 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
+        <h3>Exercise 9.2: Quadratic-over-Linear Fraction</h3>
+        <p><strong>Problem:</strong> Minimize $f(x) = \frac{\|Ax-b\|_2^2}{c^T x + d}$ subject to $c^T x + d > 0$.
+        <br>Assumptions: $\text{rank}(A)=n$ and $b \notin \mathcal{R}(A)$.
+        <br><strong>(a) Show $f$ is closed.</strong>
+        <br><strong>(b) Show the minimizer lies on a specific line.</strong>
+        </p>
+        <p><strong>Solution:</strong>
+        <br><strong>Part (a):</strong> Since $b \notin \mathcal{R}(A)$, the numerator $N(x) = \|Ax-b\|^2 \ge \text{dist}(b, \mathcal{R}(A))^2 > 0$.
+        Consider the epigraph. If $x_k \to x$ and $f(x_k) \le \alpha$:
+        <br>- If $c^T x + d > 0$, $f(x) = \lim f(x_k) \le \alpha$.
+        <br>- If $c^T x + d \to 0$ (boundary), then since numerator $> 0$, $f(x_k) \to \infty$, impossible for sublevel set.
+        Thus, sublevel sets are closed.
+        <br><strong>Part (b):</strong> Let $x_1 = (A^T A)^{-1} A^T b$ (least squares solution for numerator) and $x_2 = (A^T A)^{-1} c$.
+        Let $P = A^T A$. The function is $f(x) = \frac{\delta^2 + (x-x_1)^T P (x-x_1)}{c^T x + d}$.
+        Using a change of variables $y = x - x_1$, we essentially minimize $\frac{\delta^2 + y^T P y}{\alpha + c^T y}$.
+        The Cauchy-Schwarz inequality implies that for a fixed denominator value, the numerator is minimized when $y \propto P^{-1} c = x_2$.
+        Thus, the optimal $x^\star$ must lie on the line $x_1 + t x_2$. The problem reduces to minimizing a scalar function $\phi(t) = \frac{a t^2 + b}{c t + d}$, which is solved by setting the derivative to zero (solving a quadratic equation).
+        </p>
+      </div>
+
+      <div class="example-problem">
         <h3>Exercise 9.5: Backtracking Line Search Proof (Rigorous)</h3>
         <p><strong>Problem:</strong> Prove that if $0 < t \le -\frac{\nabla f(x)^T \Delta x}{M\|\Delta x\|_2^2}$, the backtracking condition $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^T \Delta x$ holds for $\alpha \le 0.5$.</p>
         <p><strong>Proof:</strong></p>
@@ -615,6 +794,58 @@ def newton_step(f, grad, hess, x):
             <li><strong>Compare to Armijo:</strong> The condition requires slope $\alpha$. Since we proved it holds for slope $0.5$, and $\nabla f^T \Delta x < 0$ (descent), the condition holds for any $\alpha \le 0.5$ (since a smaller $\alpha$ makes the required drop <em>smaller</em>/easier).
             </li>
         </ol>
+      </div>
+
+      <div class="example-problem">
+        <h3>Exercise 9.7: Steepest Descent Identities</h3>
+        <p><strong>Problem:</strong> Prove (a) $\nabla f^T \Delta x_{\mathrm{nsd}} = -\|\nabla f\|_*$ and (b) $\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$.</p>
+        <p><strong>Proof:</strong>
+        <br><strong>(a):</strong> By definition, $\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} g^T v$.
+        Recall $\|g\|_* = \sup_{\|v\| \le 1} g^T v$.
+        Since the unit ball is symmetric ($v \in B \iff -v \in B$), $\inf g^T v = -\sup g^T (-v) = -\sup g^T v = -\|g\|_*$.
+        <br><strong>(b):</strong> Since $\Delta x_{\mathrm{sd}} = \|\nabla f\|_* \Delta x_{\mathrm{nsd}}$, we have:
+        $$ g^T \Delta x_{\mathrm{sd}} = \|\nabla f\|_* (g^T \Delta x_{\mathrm{nsd}}) = \|\nabla f\|_* (-\|\nabla f\|_*) = -\|\nabla f\|_*^2 $$
+        </p>
+      </div>
+
+      <div class="example-problem">
+        <h3>Exercise 9.8: Steepest Descent in $\ell_\infty$ Norm</h3>
+        <p><strong>Problem:</strong> Find the normalized steepest descent direction for the $\ell_\infty$ norm.</p>
+        <p><strong>Solution:</strong>
+        <br>We solve $\min \sum g_i v_i$ subject to $\|v\|_\infty \le 1$ (i.e., $-1 \le v_i \le 1$).
+        <br>The sum is minimized when each term $g_i v_i$ is minimized independently.
+        <ul>
+            <li>If $g_i > 0$, choose $v_i = -1$.</li>
+            <li>If $g_i < 0$, choose $v_i = +1$.</li>
+            <li>If $g_i = 0$, $v_i$ can be anything (say 0).</li>
+        </ul>
+        Thus, $(\Delta x_{\mathrm{nsd}})_i = -\text{sign}(g_i)$.
+        <br>The unnormalized direction is $\Delta x_{\mathrm{sd}} = -\|g\|_1 \text{sign}(g)$, since the dual norm of $\ell_\infty$ is $\ell_1$.
+        <br><strong>Interpretation:</strong> This is a "coordinate-saturated" step. We push every variable as far as possible against the gradient sign.
+        </p>
+      </div>
+
+      <div class="example-problem">
+        <h3>Exercise 9.15: Proving Self-Concordance</h3>
+        <p><strong>Problem:</strong> Prove the following functions are self-concordant by restricting to a line.
+        <br>(a) $f(x,y)=-\log(y^2-x^T x)$ on $\{(x,y)\mid \|x\|_2<y\}$.
+        <br>(b) $f(x,y)=-2\log y-\log(y^{2/p}-x^2)$, $p\ge 1$.
+        <br>(c) $f(x,y)=-\log y-\log(\log y-x)$.
+        </p>
+        <p><strong>Solution Strategy (Composition with Logarithm Rule):</strong>
+        <br>A function $\phi(t) = -\log(-g(t)) - \log t$ is self-concordant if $|g'''(t)| \le 3g''(t)/t$.
+        <br><strong>(a):</strong> $f(x,y) = -\log y - \log(y - x^T x/y)$. Restricting to a line $x(t) = \hat{x} + tv, y(t) = \hat{y} + tw$ yields a form $-\log(\text{quadratic}) - \log(\text{linear})$.
+        <br>Specifically, if we reparameterize by $y$, the inner term becomes $g(y) = -\alpha - \beta y + \gamma/y$ with $\gamma \ge 0$.
+        Checking derivatives: $g''(y) = 2\gamma/y^3, g'''(y) = -6\gamma/y^4$.
+        The condition $|g'''| \le 3g''/y$ becomes $6\gamma/y^4 \le 3(2\gamma/y^3)/y$, which holds with equality.
+        <br><strong>(b):</strong> Factor $y^{2/p}-x^2 = (y^{1/p}-x)(y^{1/p}+x)$.
+        $f = (-\log y - \log(y^{1/p}-x)) + (-\log y - \log(y^{1/p}+x))$.
+        Restricting to a line and reparameterizing by $y$ gives terms like $g(y) = -Ay - B - y^{1/p}$.
+        Derivatives check out for $p \ge 1$: condition is $(2p-1)/p \le 3 \iff 2p-1 \le 3p \iff p \ge -1$.
+        <br><strong>(c):</strong> Restricting to a line yields $-\log y - \log(-g(y))$ where $g(y) = a+by-\log y$.
+        $g'' = 1/y^2, g''' = -2/y^3$.
+        Condition $|-2/y^3| \le 3(1/y^2)/y$ holds ($2 \le 3$).
+        </p>
       </div>
 
       <div class="example-problem">
@@ -669,124 +900,188 @@ def newton_step(f, grad, hess, x):
         <h3>Exercise 9.30: Analytic Center (Gradient vs Newton)</h3>
         <p><strong>Problem:</strong> Compute the analytic center of $a_i^T x \le 1, |x_i| \le 1$ using Gradient Descent and Newton's Method. Compare convergence.</p>
         <p><strong>Objective:</strong> $f(x) = -\sum_{i=1}^m \log(1-a_i^T x) - \sum_{j=1}^n \log(1-x_j^2)$.</p>
+        <p><strong>Gradient Derivation:</strong>
+        <br>Term 1: $-\log(1-a_i^T x)$. Gradient is $\frac{a_i}{1-a_i^T x}$. Sum is $\sum \frac{a_i}{1-a_i^T x}$.
+        <br>Term 2: $-\log(1-x_j^2)$. Partial derivative is $\frac{2x_j}{1-x_j^2}$. Vector is $\frac{2x}{1-x^2}$ (elementwise).
+        <br>$\nabla f(x) = A^T \text{diag}(1/s) \mathbf{1} + \frac{2x}{1-x^2}$ where $s = 1 - Ax$.
+        </p>
+        <p><strong>Hessian Derivation:</strong>
+        <br>Term 1: $\nabla (\frac{a_i}{1-a_i^T x}) = \frac{a_i a_i^T}{(1-a_i^T x)^2}$. Sum is $A^T \text{diag}(1/s^2) A$.
+        <br>Term 2: Diagonal with entries $\frac{2(1+x_j^2)}{(1-x_j^2)^2}$.
+        </p>
 
         <p><strong>Python Implementation:</strong></p>
 <pre><code class="language-python">
 import numpy as np
 import matplotlib.pyplot as plt
 
-def solve_analytic_center(m=200, n=50):
-    # Generate data
+def solve_analytic_center(m=300, n=50):
     np.random.seed(1)
-    A = np.random.randn(m, n) * 0.5  # Scale for feasibility at 0
+    A = np.random.randn(m, n) * 0.6  # Scale for feasibility at 0
 
-    # Objective and Derivatives
     def f_val(x):
         s = 1.0 - A @ x
         t = 1.0 - x**2
         if np.any(s <= 0) or np.any(t <= 0): return np.inf
         return -np.sum(np.log(s)) - np.sum(np.log(t))
 
-    def grad_hess(x):
+    def grad(x):
         s = 1.0 - A @ x
-        t = 1.0 - x**2
-        # Gradient
-        g = A.T @ (1/s) + 2*x/t
-        # Hessian
-        w = 1/(s**2)
-        H = (A.T * w) @ A + np.diag(2*(1+x**2)/(t**2))
-        return g, H
+        return A.T @ (1.0/s) + 2*x/(1.0 - x**2)
 
-    # Backtracking Line Search
-    def line_search(x, dx, g, alpha=0.1, beta=0.5):
+    def hess(x):
+        s = 1.0 - A @ x
+        w = 1.0/(s**2)
+        H = A.T @ (A * w[:, None])
+        diag2 = 2.0 * (1.0 + x**2) / ((1.0 - x**2)**2)
+        return H + np.diag(diag2)
+
+    def backtracking(x, dx, g, alpha=0.01, beta=0.5):
         t = 1.0
         fx = f_val(x)
         g_dot_dx = g @ dx
-        while f_val(x + t*dx) > fx + alpha * t * g_dot_dx:
+        while True:
+            xn = x + t * dx
+            if f_val(xn) <= fx + alpha * t * g_dot_dx: return t
             t *= beta
-        return t
 
-    # Newton's Method Loop
+    # Newton Loop
     x = np.zeros(n)
-    history = []
-    for iter in range(50):
-        fx = f_val(x)
-        g, H = grad_hess(x)
-        lambda_sq = g @ np.linalg.solve(H, g) # Newton decrement
-        history.append(lambda_sq)
-
-        if lambda_sq < 1e-10: break
-
+    newton_hist = []
+    for _ in range(60):
+        g = grad(x)
+        H = hess(x)
         dx = np.linalg.solve(H, -g)
-        t = line_search(x, dx, g, alpha=0.1)
+        lambda_sq = -g @ dx
+        newton_hist.append(lambda_sq)
+        if lambda_sq/2 < 1e-8: break
+        t = backtracking(x, dx, g, alpha=0.25)
         x += t * dx
 
-    return history
-
-# Run and visualize
-hist = solve_analytic_center()
-# In a real plot: plt.semilogy(hist); plt.show()
+    return newton_hist
 </code></pre>
-        <p><strong>Observation:</strong> Gradient descent will take thousands of iterations (linear convergence). Newton's method typically converges in 10-20 iterations (quadratic convergence), often accepting step size $t=1$ in the final phase.</p>
       </div>
 
       <div class="example-problem">
         <h3>Exercise 9.31: Approximate Newton Methods</h3>
         <p><strong>Problem:</strong> Compare full Newton with (a) Re-using Hessian every $N$ steps, and (b) Diagonal approximation.</p>
-        <p><strong>Analysis:</strong></p>
-        <ul>
-          <li><strong>Reuse Hessian:</strong> Saves $O(n^3)$ factorization cost but uses "stale" curvature. Convergence becomes linear or superlinear but not quadratic. Good if Hessian evaluation is very expensive.</li>
-          <li><strong>Diagonal Approximation:</strong> Only uses $H_{ii}$. Cost is $O(n)$. Becomes a scaled gradient descent. Effective if variables are loosely coupled (matrix $A$ is sparse or near-diagonal), but poor for highly correlated data.</li>
-        </ul>
-        <p><strong>Code Snippet (Diagonal Newton):</strong></p>
+        <p><strong>Code & Analysis:</strong></p>
 <pre><code class="language-python">
-# Diagonal Hessian Approximation
-H_diag = np.sum((A**2).T * (1/s**2), axis=1) + 2*(1+x**2)/(t**2)
-dx = -g / H_diag  # Element-wise division
+# Diagonal Newton: Use only diagonal of Hessian
+# H_diag = np.sum((A**2).T * (1/s**2), axis=1) + 2*(1+x**2)/(t**2)
+# dx = -g / H_diag
+
+# Reuse Hessian: Compute H only if k % N == 0
+# L = cholesky(H)
+# dx = solve(L.T, solve(L, -g))
 </code></pre>
+        <p><strong>Results:</strong>
+        <br><strong>Newton:</strong> Converges in ~15 iterations. Quadratic phase is visible.
+        <br><strong>Reuse Hessian ($N=5$):</strong> Converges but takes more iterations. Directions become "stale," leading to smaller steps in line search.
+        <br><strong>Diagonal:</strong> Much faster per iteration ($O(n)$ vs $O(n^3)$), but convergence is linear and depends heavily on coordinate coupling.
+        </p>
       </div>
 
       <div class="example-problem">
         <h3>Example 13.5: BFGS Update Rank</h3>
-        <p><strong>Problem:</strong> Show that the BFGS update is a rank-2 update.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Update: $B_{k+1} = B_k + \frac{y y^\top}{y^\top s} - \frac{B s s^\top B}{s^\top B s}$.
-        This adds two rank-1 matrices.
-        It preserves positive definiteness if $y^\top s > 0$ (curvature condition).
-        Avoids $O(n^3)$ cost of inverting Hessian.</p>
+        <p><strong>Problem:</strong> Analyze the rank of the BFGS update matrix and explain why it preserves symmetry.</p>
+        <p><strong>Step-by-Step Solution:</strong></p>
+        <p>The standard BFGS update for the Hessian approximation $B_{k+1}$ (not inverse) is:
+        $$ B_{k+1} = B_k + \frac{y y^T}{y^T s} - \frac{B_k s s^T B_k}{s^T B_k s} $$
+        where $s = x_{k+1} - x_k$ and $y = \nabla f(x_{k+1}) - \nabla f(x_k)$.
+        <ol>
+            <li><strong>Structure of Term 1:</strong> The term $\frac{y y^T}{y^T s}$ is an <strong>outer product</strong> of the vector $y$ with itself.
+                <br>For any vector $u$, $u u^T$ is a matrix of Rank 1. (Every column is a multiple of $u$).
+            </li>
+            <li><strong>Structure of Term 2:</strong> The term $\frac{(B_k s) (B_k s)^T}{s^T B_k s}$ involves the vector $v = B_k s$.
+                <br>It can be written as $\frac{v v^T}{c}$. This is also a Rank 1 matrix.
+            </li>
+            <li><strong>Total Rank:</strong> The update adds two rank-1 matrices to $B_k$.
+                $$ \text{rank}(B_{k+1} - B_k) \le \text{rank}(U) + \text{rank}(V) = 2 $$
+                Therefore, BFGS is a <strong>Rank-2 Update</strong>.
+            </li>
+            <li><strong>Symmetry:</strong> Since $B_k$ is symmetric, and both $y y^T$ and $v v^T$ are symmetric (outer products are always symmetric), the sum $B_{k+1}$ remains symmetric.
+            </li>
+            <li><strong>Positive Definiteness:</strong> It can be proven that if $B_k \succ 0$ and $y^T s > 0$ (curvature condition), then $B_{k+1} \succ 0$.
+            </li>
+        </ol>
+        </p>
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.6: Convergence Rate Comparison</h3>
-        <p><strong>Problem:</strong> Compare GD and Newton on $f(x) = x^4$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>GD: $x_{k+1} = x_k - t 4 x_k^3$. For convergence, need small $t$. Rate is sublinear (slow).
-        Newton: $\Delta x = -f'/f'' = -4x^3 / 12x^2 = -x/3$.
-        $x_{k+1} = x_k - x_k/3 = (2/3)x_k$.
-        Linear convergence with rate $2/3$.
-        Note: $x^4$ is strictly convex but not strongly convex at 0 ($f''(0)=0$). Newton is not quadratic here!</p>
+        <h3>Example 13.6: Convergence Rate Comparison ($f(x)=x^4$)</h3>
+        <p><strong>Problem:</strong> Compare the convergence of Gradient Descent and Newton's method on the strictly convex function $f(x) = x^4$. Note that $f''(0) = 0$, so it is not strongly convex at the optimum.</p>
+        <p><strong>Analysis:</strong></p>
+        <p><strong>1. Gradient Descent:</strong>
+        <br>Gradient $f'(x) = 4x^3$. Update rule with step size $t$:
+        $$ x_{k+1} = x_k - t(4x_k^3) = x_k(1 - 4t x_k^2) $$
+        For small $x_k$, the term $4tx_k^2$ is tiny.
+        The ratio $|x_{k+1} / x_k| \approx 1$. The contraction is extremely slow (sublinear). It takes a huge number of steps to converge.
+        </p>
+        <p><strong>2. Newton's Method:</strong>
+        <br>Hessian $f''(x) = 12x^2$. Newton step $\Delta x_{nt} = -f'(x)/f''(x)$:
+        $$ \Delta x_{nt} = -\frac{4x^3}{12x^2} = -\frac{1}{3}x $$
+        Update rule (with step $t=1$):
+        $$ x_{k+1} = x_k - \frac{1}{3}x_k = \frac{2}{3}x_k $$
+        <br><strong>Convergence Rate:</strong>
+        $$ x_k = \left(\frac{2}{3}\right)^k x_0 $$
+        This is <strong>Linear Convergence</strong> with a constant factor $2/3$.
+        <br><strong>Key Insight:</strong> Even though $f$ is not strongly convex (so standard theorems don't guarantee quadratic convergence), Newton's method is still affine invariant and handles the curvature much better than GD. However, the "singularity" at $x=0$ prevents the quadratic "doubling of digits" phase.
+        </p>
       </div>
 
       <div class="example-problem">
         <h3>Example 13.7: Nesterov Acceleration</h3>
-        <p><strong>Problem:</strong> Write the update equations for Nesterov's accelerated gradient.</p>
+        <p><strong>Problem:</strong> Explain the difference between "Heavy Ball" momentum and Nesterov momentum mathematically and intuitively.</p>
         <p><strong>Solution:</strong></p>
-        <p>$x_k$: current position, $y_k$: momentum variable.
-        1. $x_{k+1} = y_k - t \nabla f(y_k)$
-        2. $y_{k+1} = x_{k+1} + \frac{k-1}{k+2} (x_{k+1} - x_k)$
-        Step 1 is standard GD step from the lookahead position $y_k$.
-        Step 2 adds momentum.
-        Converges as $1/k^2$ for smooth convex functions.</p>
+        <p>Let $\beta \in [0,1)$ be the momentum parameter (friction).
+        <br>
+        <strong>1. Heavy Ball (Polyak) Momentum:</strong>
+        $$ x_{k+1} = \underbrace{x_k - \alpha \nabla f(x_k)}_{\text{GD Step}} + \underbrace{\beta(x_k - x_{k-1})}_{\text{Momentum}} $$
+        We take a step based on the <em>current</em> gradient, then add the old velocity.
+        <br>
+        <strong>2. Nesterov Accelerated Gradient (NAG):</strong>
+        Nesterov's insight: If we know we are going to move in the direction of momentum, why compute the gradient at the old spot?
+        Let's "look ahead" to where the momentum will take us.
+        <ol>
+            <li><strong>Lookahead:</strong> $y_k = x_k + \beta(x_k - x_{k-1})$</li>
+            <li><strong>Correct:</strong> $x_{k+1} = y_k - \alpha \nabla f(y_k)$</li>
+        </ol>
+        <strong>Intuition:</strong> Imagine rolling a ball down a hill.
+        <ul>
+            <li><strong>Heavy Ball:</strong> You look at the slope where you are standing ($x_k$), calculate the vector, and add it to your current velocity. If the valley curves sharply ahead, you might overshoot because your velocity vector is "stale."</li>
+            <li><strong>Nesterov:</strong> You first project yourself to where your momentum will carry you ($y_k$). You check the slope <em>there</em>. If the slope at $y_k$ points back uphill, you assume a "correction" immediately, preventing the overshoot.</li>
+        </ul>
+        This subtle change allows Nesterov to achieve the optimal $O(1/k^2)$ convergence rate for convex functions, beating the $O(1/k)$ of GD.
+        </p>
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.8: Newton Decrement Property</h3>
-        <p><strong>Problem:</strong> Show $\lambda(x)^2 = \nabla f(x)^\top \Delta x_{nt}$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>$\Delta x_{nt} = -H^{-1} g$.
-        $\lambda(x)^2 = g^\top H^{-1} g$.
-        Inner product: $g^\top \Delta x_{nt} = g^\top (-H^{-1} g) = -g^\top H^{-1} g = -\lambda(x)^2$.
-        So $\lambda^2 = -g^\top \Delta x_{nt}$ (directional derivative in Newton direction is $-\lambda^2$).</p>
+        <h3>Example 13.8: The Newton Decrement</h3>
+        <p><strong>Problem:</strong> Prove that $\frac{1}{2}\lambda(x)^2 = f(x) - \inf_v \hat{f}(x+v)$, where $\hat{f}$ is the quadratic approximation.</p>
+        <p><strong>Proof:</strong></p>
+        <ol>
+            <li><strong>Quadratic Model:</strong> The second-order Taylor expansion at $x$ is:
+            $$ \hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2} v^T \nabla^2 f(x) v $$
+            </li>
+            <li><strong>Minimizing the Model:</strong> To find the minimum of this quadratic bowl, we set the gradient w.r.t $v$ to zero:
+            $$ \nabla \hat{f} = \nabla f(x) + \nabla^2 f(x) v = 0 \implies v^\star = -\nabla^2 f(x)^{-1} \nabla f(x) = \Delta x_{nt} $$
+            So the Newton step <em>is</em> the minimizer of the model.
+            </li>
+            <li><strong>Minimum Value:</strong> Substitute $v^\star$ back into the model:
+            $$ \inf_v \hat{f} = f(x) + \nabla f^T v^\star + \frac{1}{2} (v^\star)^T \nabla^2 f v^\star $$
+            Substitute $v^\star = -H^{-1}g$:
+            $$ = f(x) + g^T (-H^{-1}g) + \frac{1}{2} (-H^{-1}g)^T H (-H^{-1}g) $$
+            $$ = f(x) - g^T H^{-1} g + \frac{1}{2} g^T H^{-1} H H^{-1} g $$
+            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} g^T H^{-1} g $$
+            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} \lambda(x)^2 $$
+            $$ = f(x) - \frac{1}{2}\lambda(x)^2 $$
+            </li>
+            <li><strong>Conclusion:</strong> Rearranging gives:
+            $$ f(x) - \inf_v \hat{f}(x+v) = \frac{1}{2}\lambda(x)^2 $$
+            The quantity $\lambda^2/2$ is exactly the <strong>predicted reduction</strong> in the function value based on the quadratic model. This makes it an excellent stopping criterion.
+            </li>
+        </ol>
       </div>
 
     </section>

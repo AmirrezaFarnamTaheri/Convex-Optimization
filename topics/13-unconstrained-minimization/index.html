@@ -46,13 +46,13 @@
     <!-- Learning objectives -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Learning Objectives</h2>
-      <p>After this lecture, you should understand:</p>
+      <p>After this lecture, you will have a deep, step-by-step understanding of:</p>
       <ul style="line-height: 1.8;">
-        <li>The rigorous derivations of convergence rates for gradient descent under strong convexity and smoothness using Taylor's theorem.</li>
-        <li>How the condition number $\kappa$ and the geometry of sublevel sets (width) dictate convergence speed.</li>
-        <li>The duality between choosing a norm for steepest descent and choosing a preconditioner.</li>
-        <li>Newton's method as steepest descent in the Hessian geometry, and its two-phase convergence behavior.</li>
-        <li>How to implement and benchmark these algorithms (Gradient Descent, Newton's Method) on problems like Analytic Centering.</li>
+        <li><strong>Convergence Analysis:</strong> The rigorous, mathematical derivations of convergence rates for gradient descent. We will use Taylor's theorem to prove exactly how fast these methods approach the solution under strong convexity and smoothness assumptions.</li>
+        <li><strong>Geometry of Optimization:</strong> How the shape of the function (specifically its "condition number" $\kappa$ and the width of its sublevel sets) directly controls the speed of convergence. We will visualize why "skinny" valleys are hard to optimize.</li>
+        <li><strong>Steepest Descent & Norms:</strong> The profound connection between the choice of a norm (Euclidean, $\ell_1$, Quadratic) and the resulting optimization algorithm. We will see how "steepest descent" changes depending on how you measure distance.</li>
+        <li><strong>Newton's Method:</strong> A deep dive into Newton's method, interpreting it as steepest descent in a changing "Hessian geometry." We will explain its "two-phase" behavior: a linear phase followed by a rapid quadratic phase.</li>
+        <li><strong>Practical Implementation:</strong> How to turn these mathematical concepts into working Python code, benchmarking algorithms like Gradient Descent and Newton's Method on real problems such as Analytic Centering.</li>
       </ul>
     </section>
 
@@ -62,25 +62,38 @@
 
       <h3>0. Notation and the "Model"</h3>
       <p>
-        We study the problem of minimizing a function
+        We study the unconstrained optimization problem:
         $$ p^\star = \inf_{x\in \mathrm{dom}\,f} f(x) \tag{9.1} $$
-        under the following assumptions:
+        To analyze algorithms rigorously, we make specific assumptions about the function $f$. These are not just bureaucratic details; they are the mathematical foundation that allows us to prove convergence.
       </p>
       <ul>
-        <li>$f$ is <strong>convex</strong> on $\mathrm{dom}\,f$ (meaning the domain is a convex set and the function satisfies the Jensen's inequality).</li>
-        <li>$f$ is <strong>twice continuously differentiable</strong> ($f \in C^2(\mathrm{dom}\,f)$). We need this to use the Gradient $\nabla f$ and Hessian $\nabla^2 f$ in our algorithms.</li>
-        <li>$\mathrm{dom}\,f$ is <strong>open</strong>. This is critical. It ensures that for any point $x$ in the domain, we can take a small step in <em>any</em> direction without leaving the set. This allows derivatives to be well-defined in all directions.</li>
-        <li>The problem is <strong>solvable</strong>: the optimal value $p^\star = \min_x f(x)$ is finite and attained at some $x^\star$. Not all convex problems are solvable (e.g., $e^{-x}$ on $\mathbb{R}$ is bounded below by 0 but never reaches it).</li>
+        <li><strong>Convexity:</strong> $f$ is convex on $\mathrm{dom}\,f$. This means the domain is a convex set and the function curves "upward" (satisfying Jensen's inequality). Crucially, it implies that <em>any local minimum is a global minimum</em>.</li>
+        <li><strong>Twice Continuously Differentiable ($C^2$):</strong> We assume $f \in C^2(\mathrm{dom}\,f)$.
+            <ul>
+                <li>The <strong>Gradient</strong> $\nabla f(x)$ exists and is continuous. This gives us the "slope" or direction of steepest increase.</li>
+                <li>The <strong>Hessian</strong> $\nabla^2 f(x)$ exists and is continuous. This gives us the "curvature" information.</li>
+            </ul>
+        </li>
+        <li><strong>Open Domain:</strong> $\mathrm{dom}\,f$ is an <strong>open set</strong>.
+            <br><em>Why this matters:</em> An open set does not include its boundary. For any point $x$ in an open domain, there is a tiny ball around $x$ that is entirely contained within the domain. This ensures that we can always take a step $\epsilon$ in <em>any</em> direction without "falling off the edge" of the feasible set. Without this, standard derivatives (which rely on limits from all directions) would not be well-defined at the boundary.
+        </li>
+        <li><strong>Solvability:</strong> The problem is <strong>solvable</strong>, meaning the optimal value $p^\star = \min_x f(x)$ is finite and is actually achieved at some point $x^\star$. (Counter-example: $f(x) = e^{-x}$ is bounded below by 0, but never reaches it, so no $x^\star$ exists. Our theory assumes an $x^\star$ exists).</li>
       </ul>
       <p>
-        <strong>Important Subtlety:</strong> If $f: \mathbb{R}^n \to \mathbb{R}$, then $\mathrm{dom}\,f = \mathbb{R}^n$ is automatically open. In the broader convex-analysis setting, we often allow <strong>extended-valued</strong> convex functions $f:\mathbb{R}^n\to\mathbb{R}\cup\{+\infty\}$, where $\mathrm{dom}\,f=\{x:f(x)<+\infty\}$ can be a strict open subset. For example, the logarithmic barrier $f(x) = -\sum \log(x_i)$ is only defined on the open positive orthant $\mathbb{R}^n_{++}$. Twice differentiability forces us to work on an open set.
+        <strong>Important Subtlety on Domains:</strong> If $f$ is a standard function like $x^2$ on $\mathbb{R}^n$, the domain is naturally all of $\mathbb{R}^n$, which is open. However, in convex analysis, we often deal with functions like the logarithmic barrier $f(x) = -\sum \log(x_i)$. This function is only defined when all $x_i > 0$. The domain is the "positive orthant" $\mathbb{R}^n_{++}$, which is a strict open subset of $\mathbb{R}^n$. Our algorithms must stay strictly inside this open set.
       </p>
       <p>
-        The analysis repeatedly refers to a set $S$. In this chapter, $S$ is typically a <strong>sublevel set</strong> that contains all iterates of the algorithm:
+        <strong>The "Container" Set $S$:</strong>
+        The analysis repeatedly refers to a set $S$. In this chapter, $S$ is the <strong>initial sublevel set</strong>:
         $$ S=\{x\in\mathrm{dom}\,f \mid f(x)\le f(x^{(0)})\} \tag{9.3} $$
         <strong>Why do we care about $S$?</strong>
         <br>
-        Most "global" convergence proofs actually rely on local properties. We don't need the function to be strongly convex <em>everywhere</em> in the universe. We only need it to be well-behaved (strongly convex, smooth) in the region where the algorithm actually travels. Since descent algorithms decrease the objective value $f(x^{(k)})$ at every step, the sequence of iterates $x^{(0)}, x^{(1)}, \dots$ will remain trapped inside the initial sublevel set $S$. Thus, bounds that hold on $S$ are sufficient for convergence.
+        Think of $S$ as a "container" or "trap" for our algorithm.
+        <ol>
+            <li><strong>Descent Property:</strong> Our algorithms are "descent methods," meaning $f(x^{(k+1)}) < f(x^{(k)})$.</li>
+            <li><strong>Trapped:</strong> Because the function value keeps dropping, the algorithm can never climb back up to a height greater than where it started ($f(x^{(0)})$). Therefore, the entire sequence of iterates $x^{(0)}, x^{(1)}, \dots$ stays permanently inside $S$.</li>
+            <li><strong>Local becomes Global:</strong> This allows us to make assumptions (like strong convexity) only on $S$, rather than on the entire universe $\mathbb{R}^n$. If the function is well-behaved <em>inside the container</em>, the algorithm will converge.</li>
+        </ol>
       </p>
 
       <h3>1. The Core Equivalence (Optimality Conditions)</h3>
@@ -122,11 +135,20 @@
               Since $f(y) \ge f(x^\star)$ for all $y$, $x^\star$ is a global minimizer.
           </li>
           <li><strong>Necessity (Min $\Rightarrow \nabla f(x^\star)=0$):</strong>
-              Assume $x^\star$ is a local minimizer. Since $\mathrm{dom}\,f$ is <strong>open</strong>, for any direction vector $v$, the point $x^\star + tv$ is inside the domain for small enough $t$.
-              Define the scalar function $\phi(t)=f(x^\star+tv)$. Since $x^\star$ minimizes $f$, $t=0$ must minimize $\phi(t)$.
-              From single-variable calculus, if $t=0$ is an interior minimum, then $\phi'(0)=0$.
-              By the chain rule: $\phi'(0)=\nabla f(x^\star)^T v = 0$.
-              Since the dot product $\nabla f(x^\star)^T v$ is zero for <em>every</em> possible direction vector $v$ (we can choose basis vectors $e_1, \dots, e_n$), the gradient vector itself must be zero: $\nabla f(x^\star)=0$.
+              We prove this by contradiction. Assume $x^\star$ is a local minimizer but $\nabla f(x^\star) \neq 0$.
+              <ol>
+                  <li><strong>Open Domain:</strong> Since $\mathrm{dom}\,f$ is open, for any direction $v$, we can move a small distance $t$ in that direction without leaving the domain.</li>
+                  <li><strong>Choose Descent Direction:</strong> Let $v = -\nabla f(x^\star)$. This is the direction of steepest descent.</li>
+                  <li><strong>Single-Variable Function:</strong> Define $\phi(t) = f(x^\star + tv)$. Since $x^\star$ is a minimizer, $\phi(t)$ must have a minimum at $t=0$.</li>
+                  <li><strong>First Derivative Test:</strong> Calculus tells us that for $t=0$ to be a minimum, $\phi'(0)$ must be 0 (or $\ge 0$ if constrained, but we are unconstrained).
+                      $$ \phi'(0) = \nabla f(x^\star)^T v = \nabla f(x^\star)^T (-\nabla f(x^\star)) = -\|\nabla f(x^\star)\|_2^2 $$
+                  </li>
+                  <li><strong>Contradiction:</strong> If $\nabla f(x^\star) \neq 0$, then $- \|\nabla f(x^\star)\|_2^2 < 0$. This means $\phi'(0) < 0$.
+                      <br>
+                      Since the derivative is negative, the function is <em>decreasing</em> at $t=0$. For a very small $t > 0$, we must have $\phi(t) < \phi(0)$, which means $f(x^\star + tv) < f(x^\star)$.
+                  </li>
+                  <li><strong>Conclusion:</strong> This contradicts the assumption that $x^\star$ is a minimizer. Therefore, $\nabla f(x^\star)$ must be 0.</li>
+              </ol>
           </li>
       </ul>
 
@@ -137,10 +159,19 @@
         The most basic convex optimization problem is the unconstrained quadratic program:
         $$ \min_x \ f(x) = \frac12 x^T P x + q^T x + r,\qquad P\in S^n_+ \tag{9.4} $$
         where $P$ is symmetric positive semidefinite ($P \succeq 0$).
+      </p>
+      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
+        <strong>Step-by-Step Derivation of Gradient:</strong>
         <br>
-        <strong>Derivation of Gradient:</strong>
-        Using the fact that $\nabla_x (x^T P x) = 2Px$ (for symmetric $P$) and $\nabla_x (q^T x) = q$:
-        $$ \nabla f(x)=Px+q $$
+        Let's compute $\nabla (\frac{1}{2} x^T P x)$. Write it in scalar sum notation:
+        $$ \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n P_{ij} x_i x_j $$
+        Now take the partial derivative with respect to $x_k$:
+        $$ \frac{\partial}{\partial x_k} \left( \frac{1}{2} \sum_{i,j} P_{ij} x_i x_j \right) = \frac{1}{2} \sum_{j} P_{kj} x_j + \frac{1}{2} \sum_{i} P_{ik} x_i $$
+        Using symmetry ($P_{ij} = P_{ji}$), both sums are equal to the $k$-th row of $P$ dot product with $x$.
+        $$ = \sum_{j} P_{kj} x_j = (Px)_k $$
+        Thus, the vector gradient is $\nabla f(x) = Px + q$.
+      </div>
+      <p>
         Setting the gradient to zero gives the linear system:
         $$ Px^\star = -q $$
       </p>
@@ -173,8 +204,12 @@
         This function approximates the "max" function ($\max_i (a_i^T x + b_i)$) but is smooth and convex:
         $$ f(x)=\log\Big(\sum_{i=1}^m e^{a_i^T x+b_i}\Big) $$
         <strong>Gradient Interpretation:</strong> The gradient is a probability-weighted sum of the vectors $a_i$:
-        $$ \nabla f(x) = \sum_{i=1}^m w_i(x) a_i, \quad \text{where } w_i(x) = \frac{e^{a_i^T x+b_i}}{\sum_j e^{a_j^T x+b_j}} $$
-        The weights $w_i(x)$ sum to 1. This is effectively the expected value of $a_i$ under the "softmax" distribution.
+        $$ \nabla f(x) = \sum_{i=1}^m w_i(x) a_i $$
+        where the weights $w_i(x)$ are given by the <strong>Softmax</strong> function:
+        $$ w_i(x) = \frac{e^{a_i^T x+b_i}}{\sum_j e^{a_j^T x+b_j}} $$
+        Note that $w_i(x) > 0$ and $\sum w_i(x) = 1$.
+        <br>
+        <strong>Meaning:</strong> The gradient is a <strong>convex combination</strong> (weighted average) of the vectors $a_i$. If one term $k$ is significantly larger than the others, $w_k \approx 1$ and the others $\approx 0$, so $\nabla f(x) \approx a_k$ (which is the gradient of the pure $\max$ function).
         <br>
         <strong>Hessian:</strong> The Hessian turns out to be the covariance matrix of the vectors $a_i$ under this distribution. Since covariance matrices are always PSD, $\nabla^2 f(x) \succeq 0$, proving convexity.
       </p>
@@ -200,14 +235,12 @@
       <h4>3.1 From Taylor’s Theorem to the Quadratic Lower Bound</h4>
       <p>
         Let's derive the most important consequence of strong convexity.
-        Consider two points $x,y\in S$. Taylor’s theorem with Lagrange remainder states that:
-        $$ f(y)=f(x)+\nabla f(x)^T(y-x)+\frac12 (y-x)^T\nabla^2 f(z)(y-x) $$
-        where $z$ is some point on the line segment connecting $x$ and $y$.
-        <br>
-        Since $z \in S$ (by convexity of $S$), we can apply our strong convexity assumption ($\nabla^2 f(z) \succeq mI$):
-        $$ (y-x)^T\nabla^2 f(z)(y-x)\ \ge\ m\|y-x\|_2^2 $$
-        Substituting this back into the Taylor expansion yields the <strong>Quadratic Lower Bound</strong>:
-        $$ f(y)\ \ge\ f(x)+\nabla f(x)^T(y-x)+\frac{m}{2}\|y-x\|_2^2 \tag{9.8} $$
+        Consider two points $x,y\in S$. Taylor’s theorem with the <strong>Lagrange remainder form</strong> states that there exists a point $z$ on the line segment connecting $x$ and $y$ such that:
+        $$ f(y) = f(x) + \nabla f(x)^T(y-x) + \underbrace{\frac{1}{2} (y-x)^T \nabla^2 f(z) (y-x)}_{\text{Remainder Term } R_1(y)} $$
+        Because $z \in S$ (due to convexity of $S$), we can apply our strong convexity assumption ($\nabla^2 f(z) \succeq mI$). This allows us to bound the remainder term from below:
+        $$ (y-x)^T \nabla^2 f(z) (y-x) \ge m \|y-x\|_2^2 $$
+        Substituting this lower bound into the Taylor expansion yields the <strong>Quadratic Lower Bound</strong>:
+        $$ f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{m}{2} \|y-x\|_2^2 \tag{9.8} $$
         <strong>Geometric Interpretation:</strong>
         <ul>
             <li>For a standard convex function ($m=0$), the graph sits above the tangent plane: $f(y) \ge f(x) + \nabla f(x)^T(y-x)$.</li>
@@ -220,27 +253,33 @@
         The quadratic lower bound allows us to bound how far we are from the solution, both in terms of function value and distance in $\mathbb{R}^n$.
         <br>
         <strong>1. Suboptimality Bound ($f(x) - p^\star$):</strong>
-        Fix $x$. The right-hand side of (9.8) is a function of $y$: $g(y) = f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2$.
-        Since $f(y) \ge g(y)$ for all $y$, it must be that $\min_y f(y) \ge \min_y g(y)$, so $p^\star \ge \min_y g(y)$.
-        The function $g(y)$ is a simple quadratic. Its minimum occurs where its gradient is zero:
-        $$ \nabla_y g(y) = \nabla f(x) + m(y-x) = 0 \implies \tilde{y} = x - \frac{1}{m}\nabla f(x) $$
-        Plugging $\tilde{y}$ back into $g(y)$:
-        $$ \min_y g(y) = f(x) - \frac{1}{m}\|\nabla f(x)\|^2 + \frac{m}{2}\frac{1}{m^2}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2m}\|\nabla f(x)\|^2 $$
-        Therefore:
-        $$ p^\*\ \ge\ f(x)-\frac{1}{2m}\|\nabla f(x)\|_2^2 \implies f(x)-p^\*\ \le\ \frac{1}{2m}\|\nabla f(x)\|_2^2 \tag{9.9} $$
+        Fix $x$. The right-hand side of (9.8) is a function of $y$:
+        $$ g(y) = f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2 $$
+        Since $f(y) \ge g(y)$ for all $y$, minimizing both sides implies that $\min_y f(y) \ge \min_y g(y)$, so $p^\star \ge \min_y g(y)$.
+        <br>
+        To find $\min_y g(y)$, we set its gradient to zero:
+        $$ \nabla_y g(y) = \nabla f(x) + m(y-x) = 0 $$
+        Solving for the optimal $y$ (let's call it $\tilde{y}$):
+        $$ \tilde{y} = x - \frac{1}{m}\nabla f(x) $$
+        Plugging $\tilde{y}$ back into the expression for $g(y)$:
+        $$ \min_y g(y) = f(x) + \nabla f(x)^T \left(-\frac{1}{m}\nabla f(x)\right) + \frac{m}{2} \left\|-\frac{1}{m}\nabla f(x)\right\|^2 $$
+        $$ = f(x) - \frac{1}{m}\|\nabla f(x)\|^2 + \frac{1}{2m}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2m}\|\nabla f(x)\|^2 $$
+        Therefore, since $p^\star \ge \min_y g(y)$:
+        $$ p^\star \ge f(x) - \frac{1}{2m}\|\nabla f(x)\|_2^2 \implies f(x)-p^\star \le \frac{1}{2m}\|\nabla f(x)\|_2^2 \tag{9.9} $$
         This is incredibly useful. It tells us that if the gradient is small, the function value is close to optimal. We can use $\|\nabla f(x)\|_2 \le \sqrt{2m\epsilon}$ as a rigorous stopping criterion.
       </p>
       <p>
         <strong>2. Distance to Optimizer ($\|x - x^\star\|$):</strong>
         Applying the master inequality (9.8) with $y=x^\star$:
-        $$ p^\* \ge f(x)+\nabla f(x)^T(x^\*-x)+\frac{m}{2}\|x^\*-x\|^2 $$
+        $$ p^\star \ge f(x)+\nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
         Since $p^\star \le f(x)$, we have:
-        $$ 0 \ge \nabla f(x)^T(x^\*-x)+\frac{m}{2}\|x^\*-x\|^2 $$
-        $$ -\nabla f(x)^T(x^\*-x) \ge \frac{m}{2}\|x^\*-x\|^2 $$
-        Using Cauchy-Schwarz ($a^Tb \le \|a\|\|b\|$):
-        $$ \|\nabla f(x)\|_2 \|x^\*-x\|_2 \ge \frac{m}{2}\|x^\*-x\|_2^2 $$
-        Dividing by $\|x^\star - x\|_2$ (assuming $x \neq x^\star$):
-        $$ \|x-x^\*\|_2 \le \frac{2}{m}\|\nabla f(x)\|_2 \tag{9.11} $$
+        $$ 0 \ge \nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
+        Rearranging:
+        $$ -\nabla f(x)^T(x^\star-x) \ge \frac{m}{2}\|x^\star-x\|^2 $$
+        Using the Cauchy-Schwarz inequality ($|a^Tb| \le \|a\|\|b\|$):
+        $$ \|\nabla f(x)\|_2 \|x^\star-x\|_2 \ge \frac{m}{2}\|x^\star-x\|_2^2 $$
+        Dividing both sides by $\|x^\star - x\|_2$ (assuming $x \neq x^\star$):
+        $$ \|x-x^\star\|_2 \le \frac{2}{m}\|\nabla f(x)\|_2 \tag{9.11} $$
         This implies the optimizer $x^\star$ is <strong>unique</strong>.
       </p>
 
@@ -254,20 +293,24 @@
       <h4>4.1 Quadratic Upper Bound</h4>
       <p>
         Using Taylor's theorem in the exact same way as before, but using the upper bound on the Hessian:
-        $$ f(y)\ \le\ f(x)+\nabla f(x)^T(y-x)+\frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
+        $$ f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
         <strong>The Sandwich Principle:</strong> Combining (9.8) and (9.13), we see that the function $f(y)$ is <strong>sandwiched</strong> between two quadratic bowls anchored at $x$:
-        $$ f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2 \le f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|^2 $$
-        <br>
+      </p>
+      <div style="text-align: center; margin: 16px 0; padding: 12px; background: var(--panel); border-radius: 8px;">
+          $$ \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Lower Paraboloid (Blue)}} \le f(y) \le \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|^2}_{\text{Upper Paraboloid (Red)}} $$
+          <p style="font-size: 0.9em; color: #666; margin-top: 8px;">The function lives in the "Goldilocks zone" between these two quadratics.</p>
+      </div>
+      <p>
         <strong>Implication for Descent:</strong> The upper bound guarantees that if we take a small enough step opposite to the gradient, the function value <em>must</em> decrease.
         Minimizing the quadratic upper bound (RHS of 9.13) with respect to $y$ gives $y = x - \frac{1}{M}\nabla f(x)$. Plugging this specific $y$ into the inequality:
         $$ f\left(x - \frac{1}{M}\nabla f(x)\right) \le f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{M}{2}\frac{1}{M^2}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
         This implies:
-        $$ p^\*\ \le\ f(x)-\frac{1}{2M}\|\nabla f(x)\|_2^2 \tag{9.14} $$
+        $$ p^\star \le f(x) - \frac{1}{2M}\|\nabla f(x)\|_2^2 \tag{9.14} $$
         So, a single gradient step reduces the function value by at least $\frac{1}{2M}\|\nabla f(x)\|^2$.
       </p>
       <p>
         <strong>Summary of Bounds:</strong>
-        $$ \frac{1}{2M}\|\nabla f(x)\|^2 \ \le\ f(x)-p^\* \ \le\ \frac{1}{2m}\|\nabla f(x)\|^2 $$
+        $$ \frac{1}{2M}\|\nabla f(x)\|^2 \le f(x)-p^\star \le \frac{1}{2m}\|\nabla f(x)\|^2 $$
       </p>
 
       <h3>5. Condition Number of Sublevel Sets</h3>
@@ -281,8 +324,8 @@
       <p>
         The condition number $\kappa$ measures the <strong>anisotropy</strong> (direction-dependence) of the function's curvature.
         <ul>
-            <li><strong>$\kappa \approx 1$:</strong> The function is shaped like a nice, round bowl (spherical level sets). The gradient points straight to the minimum.</li>
-            <li><strong>$\kappa \gg 1$:</strong> The function is shaped like a narrow, deep valley (elongated ellipsoidal level sets). The gradient is nearly orthogonal to the direction of the minimum.</li>
+            <li><strong>$\kappa \approx 1$ (Isotropic):</strong> The function is shaped like a nice, round bowl (spherical level sets). The gradient points straight to the minimum. Walking towards the minimum is like walking across a soccer field—easy and direct.</li>
+            <li><strong>$\kappa \gg 1$ (Anisotropic):</strong> The function is shaped like a narrow, deep valley (elongated ellipsoidal level sets). The gradient is nearly orthogonal to the direction of the minimum. Walking towards the minimum is like navigating a long, narrow hallway; you bounce off the walls if you aren't perfectly aligned.</li>
         </ul>
         Geometrically, any sublevel set $C_\alpha = \{x : f(x) \le \alpha\}$ contains a ball of radius $r$ and is contained in a ball of radius $R$. The ratio $R^2/r^2$ is bounded by $\kappa = M/m$. Thus, $\sqrt{\kappa}$ represents the maximum "aspect ratio" or eccentricity of the level sets.
       </p>
@@ -309,13 +352,18 @@ def descent_method(f, gradient, x0, tol=1e-6):
     x = x0
     while True:
         # 1. Compute Descent Direction
-        delta_x = compute_direction(x)  # e.g., -gradient(x)
+        # For standard gradient descent, this is simply -gradient(x)
+        delta_x = compute_direction(x)
 
         # 2. Check Stopping Criterion
+        # Why this formula? Recall bound (9.9): f(x) - p* <= (1/2m) * ||grad||^2
+        # In Newton's method, -g.dot(dx) / 2 is exactly the "Newton Decrement" squared.
+        # It's a rigorous estimate of the suboptimality gap.
         if -gradient(x).dot(delta_x) / 2 <= tol:
             break
 
         # 3. Line Search (Step Size)
+        # Find a scalar t > 0 such that f(x + t*delta_x) < f(x)
         t = line_search(f, x, delta_x)
 
         # 4. Update
@@ -327,24 +375,34 @@ def descent_method(f, gradient, x0, tol=1e-6):
 
       <h4>6.1 Exact Line Search: A Rigorous Proof of Linear Convergence</h4>
       <p>
-        Suppose we choose step size $t$ to minimize $f$ exactly along the ray. How fast does the error decay?
+        Suppose we choose step size $t$ to minimize $f$ exactly along the ray (i.e., $t = \text{argmin}_{s \ge 0} f(x + s \Delta x)$). How fast does the error decay?
         <br>
-        <strong>Proof Step 1: Guaranteed Decrease.</strong>
-        From the smoothness upper bound (9.13), taking step $t = 1/M$ along the gradient direction $g = \nabla f(x)$ gives:
-        $$ f(x - \frac{1}{M}g) \le f(x) - \frac{1}{2M}\|g\|^2 $$
-        Since exact line search finds the <em>optimal</em> $t$, it must do at least as well as this specific choice:
-        $$ f(x^+) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
+        <strong>Proof Step 1: Guaranteed Decrease from Smoothness.</strong>
+        We don't know the exact optimal step $t$, but we know exact line search performs <em>at least as well</em> as any specific step choice.
+        Let's test the specific step $t = 1/M$. From the smoothness upper bound (9.13), taking step $t = 1/M$ along the descent direction $d = -\nabla f(x)$ gives:
+        $$ f(x - \frac{1}{M}\nabla f(x)) \le f(x) + \nabla f(x)^T(-\frac{1}{M}\nabla f(x)) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
+        $$ = f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{1}{2M}\|\nabla f(x)\|^2 = f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
+        Since the exact line search finds the global minimum along the line, it satisfies:
+        $$ f(x_{\text{next}}) \le f(x - \frac{1}{M}\nabla f(x)) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
         <br>
         <strong>Proof Step 2: Relating Gradient to Optimality Gap.</strong>
-        Recall strong convexity (9.9): $\|\nabla f(x)\|^2 \ge 2m(f(x) - p^\star)$. Substituting this into the inequality:
-        $$ f(x^+) \le f(x) - \frac{1}{2M} \left( 2m(f(x) - p^\star) \right) = f(x) - \frac{m}{M}(f(x) - p^\star) $$
+        We need to relate $\|\nabla f(x)\|^2$ to the error $f(x) - p^\star$.
+        Recall the Strong Convexity bound (9.9):
+        $$ f(x) - p^\star \le \frac{1}{2m}\|\nabla f(x)\|^2 \implies \|\nabla f(x)\|^2 \ge 2m(f(x) - p^\star) $$
+        Substituting this into our inequality from Step 1:
+        $$ f(x_{\text{next}}) \le f(x) - \frac{1}{2M} \left( 2m(f(x) - p^\star) \right) = f(x) - \frac{m}{M}(f(x) - p^\star) $$
         <br>
         <strong>Proof Step 3: Subtracting $p^\star$.</strong>
         Subtract $p^\star$ from both sides to see the evolution of the error $\epsilon_k = f(x^{(k)}) - p^\star$:
-        $$ f(x^+) - p^\star \le (f(x) - p^\star) - \frac{m}{M}(f(x) - p^\star) $$
+        $$ f(x_{\text{next}}) - p^\star \le (f(x) - p^\star) - \frac{m}{M}(f(x) - p^\star) $$
         $$ \epsilon_{k+1} \le \left(1 - \frac{m}{M}\right) \epsilon_k $$
         This is <strong>Linear Convergence</strong>. The error contracts by a fixed factor $c = 1 - m/M < 1$ at every step.
-        (Note: $m/M = 1/\kappa$, so the rate depends on the condition number. If $\kappa$ is large, $c \approx 1$, and convergence is slow).
+        <br>
+        <em>Note:</em> The contraction factor $1 - 1/\kappa$ depends directly on the condition number.
+        <ul>
+            <li>If $\kappa=1$ (perfectly spherical), error becomes 0 in one step.</li>
+            <li>If $\kappa=1000$ (ill-conditioned), $c = 0.999$, so we only remove 0.1% of the error per step.</li>
+        </ul>
       </p>
 
       <h4>6.2 Backtracking (Armijo) Line Search</h4>
@@ -387,8 +445,12 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         $$ \Delta x_{\mathrm{nsd}} = \text{argmin}_{v} \{ \nabla f(x)^T v \mid \|v\| \le 1 \} $$
         It is the direction that yields the most negative directional derivative per unit of "length."
         <br>
-        <strong>Dual Norm Derivation:</strong>
-        By the definition of the dual norm $\|z\|_* = \sup \{z^T x \mid \|x\| \le 1\}$, the optimal value of the minimization problem above is simply $-\|\nabla f(x)\|_*$.
+        <strong>Intuition of Dual Norms:</strong>
+        We are minimizing a linear function $\nabla f(x)^T v$ over a unit ball defined by a norm $\|\cdot\|$.
+        Recall the definition of the <strong>dual norm</strong>:
+        $$ \|z\|_* = \sup \{z^T x \mid \|x\| \le 1\} $$
+        The maximum value of $z^T x$ over the unit ball is $\|z\|_*$.
+        Since we want to <em>minimize</em> $\nabla f(x)^T v$, we want to achieve $-\|\nabla f(x)\|_*$.
       </p>
 
       <h4>7.1 Unnormalized Step and Cases</h4>
@@ -462,12 +524,21 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
           A crucial property. If we change coordinates $x = Ty$ (where $T$ is invertible), the algorithm produces the exact same sequence of points (mapped through $T$).
           <br>
           <strong>Proof of Affine Invariance:</strong>
-          Let $g(y) = f(Ty)$. Then:
-          $$ \nabla g(y) = T^T \nabla f(x), \quad \nabla^2 g(y) = T^T \nabla^2 f(x) T $$
-          The Newton step for $g$ at $y$ is:
+          Let $g(y) = f(Ty)$ be the function in the new coordinates.
+          <br>
+          1. <strong>Gradients:</strong> By chain rule, $\nabla g(y) = T^T \nabla f(x)$.
+          <br>
+          2. <strong>Hessians:</strong> $\nabla^2 g(y) = T^T \nabla^2 f(x) T$.
+          <br>
+          3. <strong>Newton Step for $g$:</strong>
           $$ \Delta y_{\mathrm{nt}} = -(\nabla^2 g(y))^{-1} \nabla g(y) = -(T^T \nabla^2 f(x) T)^{-1} (T^T \nabla f(x)) $$
-          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^T) \nabla f(x) = -T^{-1} (\nabla^2 f(x))^{-1} \nabla f(x) = T^{-1} \Delta x_{\mathrm{nt}} $$
-          Since $\Delta x = T \Delta y$, the steps correspond perfectly. Gradient descent <strong>does not</strong> have this property.
+          Using $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$:
+          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^T) \nabla f(x) $$
+          $$ = -T^{-1} (\nabla^2 f(x))^{-1} \nabla f(x) $$
+          $$ = T^{-1} \Delta x_{\mathrm{nt}} $$
+          Since $x = Ty$, a displacement of $\Delta y$ corresponds to a displacement of $T \Delta y = \Delta x$. The steps correspond perfectly!
+          <br>
+          <em>Contrast with Gradient Descent:</em> The gradient descent step is $\Delta y = -T^T \nabla f(x)$. This involves $T^T$, not $T^{-1}$. It does <strong>not</strong> transform correctly.
           </li>
       </ol>
 

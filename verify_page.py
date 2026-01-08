@@ -5,19 +5,25 @@ def run():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        # Create an absolute path to the file
-        file_path = os.path.abspath("topics/13-unconstrained-minimization/index.html")
-        page.goto(f"file://{file_path}")
 
-        # Wait for content to load - specifically check for the main content
+        # Check index.html
+        file_path_index = os.path.abspath("index.html")
+        print(f"Checking {file_path_index}...")
+        page.goto(f"file://{file_path_index}")
         page.wait_for_selector('main')
         page.wait_for_selector('h1')
-
-        # Take a full page screenshot
         os.makedirs("verification", exist_ok=True)
-        screenshot_path = "verification/verification_fixed.png"
-        page.screenshot(path=screenshot_path, full_page=True)
-        print(f"Screenshot saved to {screenshot_path}")
+        page.screenshot(path="verification/verification_index.png", full_page=True)
+        print("Screenshot saved to verification/verification_index.png")
+
+        # Check a topic page
+        file_path_topic = os.path.abspath("topics/00-linear-algebra-basics/index.html")
+        print(f"Checking {file_path_topic}...")
+        page.goto(f"file://{file_path_topic}")
+        page.wait_for_selector('main')
+        page.wait_for_selector('h1')
+        page.screenshot(path="verification/verification_topic.png", full_page=True)
+        print("Screenshot saved to verification/verification_topic.png")
 
         browser.close()
 

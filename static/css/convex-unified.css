@@ -108,7 +108,7 @@
 
   /* Customizable Dimensions */
   --container-width: 1200px;
-  --line-height: var(--leading-normal);
+  --line-height: 1.7;
   --paragraph-spacing: var(--space-4);
 
   /* Legacy */
@@ -134,13 +134,13 @@
   --radius-full: 9999px;
 
   /* === Effects === */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
   --shadow-glow: 0 0 25px rgba(59, 130, 246, 0.25);
   
-  --backdrop-blur: 20px;
+  --backdrop-blur: 24px;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -532,7 +532,7 @@ pre code {
   background: var(--bg-surface-1);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
+  padding: var(--space-10);
   margin-bottom: var(--space-8);
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
@@ -728,7 +728,7 @@ pre code {
    ==================== */
 .proof-box, .theorem-box, .example-box, .solution-box, .recap-box, .intuition-box {
   background: var(--bg-surface-2);
-  border: 1px solid var(--border-subtle);
+  border: 2px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   margin: var(--space-8) 0;
   position: relative;
@@ -784,11 +784,11 @@ pre code {
 
 /* 1. THEOREM: Authoritative, Emerald/Green */
 .theorem-box {
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 2px solid rgba(16, 185, 129, 0.3);
   background: linear-gradient(180deg, rgba(16, 185, 129, 0.02) 0%, var(--bg-surface-2) 100%);
 }
 [data-theme="paper"] .theorem-box {
-    border: 1px solid var(--accent-600);
+    border: 2px solid var(--accent-600);
     background: var(--bg-surface-1);
 }
 
@@ -801,10 +801,10 @@ pre code {
 
 /* 2. PROOF: Logical, Blue */
 .proof-box {
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 2px solid rgba(59, 130, 246, 0.3);
 }
 [data-theme="paper"] .proof-box {
-    border: 1px solid var(--primary-600);
+    border: 2px solid var(--primary-600);
 }
 
 .proof-box::before {
@@ -816,7 +816,7 @@ pre code {
 
 /* 3. EXAMPLE: illustrative, Sky Blue */
 .example-box {
-  border: 1px solid rgba(96, 165, 250, 0.3);
+  border: 2px solid rgba(96, 165, 250, 0.3);
 }
 .example-box::before {
   content: 'Example';
@@ -827,7 +827,7 @@ pre code {
 
 /* 4. SOLUTION: Warm, Amber */
 .solution-box {
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 2px solid rgba(245, 158, 11, 0.3);
 }
 .solution-box::before {
   content: 'Solution';
@@ -882,6 +882,11 @@ pre code {
   background: var(--bg-surface-3);
   color: var(--text-primary);
   transform: scale(1.1);
+}
+
+/* Button Hover Lift */
+.btn:hover {
+  transform: translateY(-2px);
 }
 
 /* ====================

@@ -572,36 +572,64 @@ def newton_step(f, grad, hess, x):
 
       <h3>9. Convergence Analysis & Self-Concordance</h3>
       <p>
-        Newton's method has a unique two-phase convergence behavior.
+        Newton's method is famous for its speed, but analyzing it reveals a fascinating "two-phase" structure. Unlike gradient descent, which chips away at the error at a constant rate (linear convergence), Newton's method accelerates as it gets closer to the solution.
       </p>
-      <h4>9.1 The Two Phases</h4>
+      <h4>9.1 The Two Phases of Newton's Method</h4>
       <ul>
-          <li><strong>Damped Phase (Far from $x^\star$):</strong>
-          When gradient is large, we must use a step size $t < 1$ (via backtracking). The function value decreases by a constant amount at each step. This phase is linear, but transient.
+          <li><strong>Phase 1: Damped Newton (Far from $x^\star$):</strong>
+          <br>When we are far from the solution, the quadratic approximation might be poor. The "full" Newton step ($t=1$) might overshoot or even increase the function value.
+          <br>During this phase, <strong>backtracking line search</strong> chooses a step size $t < 1$.
+          <br>The algorithm behaves like a descent method with a guaranteed constant decrease in function value at every step. It is robust but not yet "fast."
           </li>
-          <li><strong>Pure Newton Phase (Close to $x^\star$):</strong>
-          Once we get close enough (specifically, when $\lambda(x) < 0.68$), the backtracking search will always accept $t=1$.
-          Convergence becomes <strong>Quadratic</strong>. The number of correct digits doubles at every iteration.
-          $$ \frac{\epsilon_{k+1}}{\epsilon_k^2} \le C \quad \implies \quad \epsilon_{k+1} \approx \epsilon_k^2 $$
-          In practice, this means you go from 1 digit of accuracy to 2, then 4, then 8, then 16 (machine precision) in just 4-5 steps.
+          <li><strong>Phase 2: Quadratically Convergent (Close to $x^\star$):</strong>
+          <br>Once we enter the region of strong convexity around $x^\star$ (specifically, when the Newton decrement $\lambda(x) < 0.68$), magic happens.
+          <br>The backtracking line search <strong>always</strong> selects $t=1$. The algorithm converges <strong>quadratically</strong>:
+          $$ \frac{\|\nabla f(x_{k+1})\|_2}{\|\nabla f(x_k)\|_2^2} \le C \quad \implies \quad \epsilon_{k+1} \approx C \epsilon_k^2 $$
+          This means the number of correct digits <strong>doubles</strong> at every iteration.
+          <br><em>Practical Consequence:</em> Once you hit this phase, you are effectively done. It typically takes only 5-6 iterations to go from "somewhat close" to "machine precision" (16 decimal places).
           </li>
       </ul>
 
-      <h4>9.2 Self-Concordance: Theoretical Rigor</h4>
+      <h4>9.2 Self-Concordance: Removing the Unknown Constants</h4>
       <p>
-        Classical convergence proofs rely on unknown constants $m, M, L$. <strong>Self-Concordance</strong> is a scale-invariant property that limits how fast the Hessian changes:
-        $$ |f'''(x)[h,h,h]| \le 2 (f''(x)[h,h])^{3/2} $$
-        Functions like $-\log(x)$ and linear/quadratic functions satisfy this.
+        Classical convergence proofs rely on constants like $m$ (strong convexity) and $M$ (smoothness). These constants are often unknown or hard to estimate, and they are <strong>not affine invariant</strong> (scaling $x$ by 100 changes $M$ by 10000).
         <br>
-        <strong>Why it matters:</strong> It allows us to prove complexity bounds that depend <strong>only</strong> on the problem structure (e.g., number of constraints) and not on the data values. It is the theoretical foundation of Interior Point Methods.
+        Nesterov and Nemirovski introduced <strong>Self-Concordance</strong> to fix this. It is a property that limits how fast the curvature (Hessian) changes relative to the curvature itself.
+      </p>
+      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
+        <strong>Definition (1D):</strong> A convex function $\phi: \mathbb{R} \to \mathbb{R}$ is self-concordant if:
+        $$ |\phi'''(x)| \le 2 (\phi''(x))^{3/2} $$
+        <strong>Affine Invariance:</strong> If $f$ is self-concordant, then $g(y) = f(Ay+b)$ is also self-concordant.
+      </div>
+      <p>
+        <strong>Why it matters:</strong>
+        <ol>
+            <li><strong>Universal Constants:</strong> For <em>any</em> self-concordant function, Newton's method is guaranteed to enter the quadratic convergence phase once $\lambda(x) < 0.68$. No need to know $m$ or $L$.</li>
+            <li><strong>Complexity Theory:</strong> It allows us to prove that the number of Newton steps required to solve a problem depends only on the <em>structure</em> of the problem (e.g., number of log-barrier terms), not on the specific values of the data matrix $A$ or vector $b$. This is the foundation of <strong>Interior Point Methods</strong>.</li>
+            <li><strong>Examples:</strong> Linear and quadratic functions (3rd derivative is 0) are self-concordant. The logarithmic barrier $-\sum \log x_i$ is self-concordant.</li>
+        </ol>
       </p>
 
       <h4>9.3 Quasi-Newton Methods (BFGS)</h4>
       <p>
-        If $N$ is large ($> 1000$), computing $\nabla^2 f^{-1}$ ($O(N^3)$) is too slow.
-        <strong>Quasi-Newton methods</strong> update an approximation of the Hessian $B \approx \nabla^2 f$ using the change in gradients ($\Delta g = B \Delta x$).
+        For very large problems ($n > 1000$), storing the Hessian matrix ($n^2$ floats) and solving the linear system ($n^3$ flops) is too expensive.
+        <strong>Quasi-Newton methods</strong> aim to replicate the superlinear speed of Newton's method without computing the Hessian explicitly.
         <br>
-        <strong>BFGS Update:</strong> A rank-2 update rule that preserves symmetry and positive definiteness. It converges <strong>superlinearly</strong> (faster than gradient descent, but no quadratic doubling).
+        <strong>The Secant Equation:</strong>
+        We want to build an approximation $B_{k+1} \approx \nabla^2 f(x_{k+1})$ based on the information gained from the last step.
+        Let $s_k = x_{k+1} - x_k$ (change in position) and $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$ (change in gradient).
+        By Taylor's theorem, $\nabla f(x_{k+1}) \approx \nabla f(x_k) + \nabla^2 f(x_{k+1}) (x_{k+1} - x_k)$.
+        Thus, we require our approximation $B_{k+1}$ to satisfy:
+        $$ B_{k+1} s_k = y_k $$
+        <br>
+        <strong>BFGS (Broyden–Fletcher–Goldfarb–Shanno):</strong>
+        This is the most popular update rule. It updates the <em>inverse</em> Hessian approximation $H_k \approx (\nabla^2 f)^{-1}$ directly:
+        $$ H_{k+1} = (I - \rho_k s_k y_k^T) H_k (I - \rho_k y_k s_k^T) + \rho_k s_k s_k^T, \quad \text{where } \rho_k = \frac{1}{y_k^T s_k} $$
+        <ul>
+            <li><strong>Cost:</strong> $O(n^2)$ per iteration (matrix-vector multiplication).</li>
+            <li><strong>Convergence:</strong> Superlinear (faster than linear, slower than quadratic).</li>
+            <li><strong>Memory:</strong> L-BFGS (Limited-memory BFGS) stores only the last $m$ pairs of $(s_k, y_k)$ vectors, reducing memory to $O(mn)$, enabling optimization with millions of variables.</li>
+        </ul>
       </p>
 
     </section>
@@ -819,45 +847,104 @@ dx = -g / H_diag  # Element-wise division
 
       <div class="example-problem">
         <h3>Example 13.5: BFGS Update Rank</h3>
-        <p><strong>Problem:</strong> Show that the BFGS update is a rank-2 update.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Update: $B_{k+1} = B_k + \frac{y y^\top}{y^\top s} - \frac{B s s^\top B}{s^\top B s}$.
-        This adds two rank-1 matrices.
-        It preserves positive definiteness if $y^\top s > 0$ (curvature condition).
-        Avoids $O(n^3)$ cost of inverting Hessian.</p>
+        <p><strong>Problem:</strong> Analyze the rank of the BFGS update matrix and explain why it preserves symmetry.</p>
+        <p><strong>Step-by-Step Solution:</strong></p>
+        <p>The standard BFGS update for the Hessian approximation $B_{k+1}$ (not inverse) is:
+        $$ B_{k+1} = B_k + \frac{y y^T}{y^T s} - \frac{B_k s s^T B_k}{s^T B_k s} $$
+        where $s = x_{k+1} - x_k$ and $y = \nabla f(x_{k+1}) - \nabla f(x_k)$.
+        <ol>
+            <li><strong>Structure of Term 1:</strong> The term $\frac{y y^T}{y^T s}$ is an <strong>outer product</strong> of the vector $y$ with itself.
+                <br>For any vector $u$, $u u^T$ is a matrix of Rank 1. (Every column is a multiple of $u$).
+            </li>
+            <li><strong>Structure of Term 2:</strong> The term $\frac{(B_k s) (B_k s)^T}{s^T B_k s}$ involves the vector $v = B_k s$.
+                <br>It can be written as $\frac{v v^T}{c}$. This is also a Rank 1 matrix.
+            </li>
+            <li><strong>Total Rank:</strong> The update adds two rank-1 matrices to $B_k$.
+                $$ \text{rank}(B_{k+1} - B_k) \le \text{rank}(U) + \text{rank}(V) = 2 $$
+                Therefore, BFGS is a <strong>Rank-2 Update</strong>.
+            </li>
+            <li><strong>Symmetry:</strong> Since $B_k$ is symmetric, and both $y y^T$ and $v v^T$ are symmetric (outer products are always symmetric), the sum $B_{k+1}$ remains symmetric.
+            </li>
+            <li><strong>Positive Definiteness:</strong> It can be proven that if $B_k \succ 0$ and $y^T s > 0$ (curvature condition), then $B_{k+1} \succ 0$.
+            </li>
+        </ol>
+        </p>
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.6: Convergence Rate Comparison</h3>
-        <p><strong>Problem:</strong> Compare GD and Newton on $f(x) = x^4$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>GD: $x_{k+1} = x_k - t 4 x_k^3$. For convergence, need small $t$. Rate is sublinear (slow).
-        Newton: $\Delta x = -f'/f'' = -4x^3 / 12x^2 = -x/3$.
-        $x_{k+1} = x_k - x_k/3 = (2/3)x_k$.
-        Linear convergence with rate $2/3$.
-        Note: $x^4$ is strictly convex but not strongly convex at 0 ($f''(0)=0$). Newton is not quadratic here!</p>
+        <h3>Example 13.6: Convergence Rate Comparison ($f(x)=x^4$)</h3>
+        <p><strong>Problem:</strong> Compare the convergence of Gradient Descent and Newton's method on the strictly convex function $f(x) = x^4$. Note that $f''(0) = 0$, so it is not strongly convex at the optimum.</p>
+        <p><strong>Analysis:</strong></p>
+        <p><strong>1. Gradient Descent:</strong>
+        <br>Gradient $f'(x) = 4x^3$. Update rule with step size $t$:
+        $$ x_{k+1} = x_k - t(4x_k^3) = x_k(1 - 4t x_k^2) $$
+        For small $x_k$, the term $4tx_k^2$ is tiny.
+        The ratio $|x_{k+1} / x_k| \approx 1$. The contraction is extremely slow (sublinear). It takes a huge number of steps to converge.
+        </p>
+        <p><strong>2. Newton's Method:</strong>
+        <br>Hessian $f''(x) = 12x^2$. Newton step $\Delta x_{nt} = -f'(x)/f''(x)$:
+        $$ \Delta x_{nt} = -\frac{4x^3}{12x^2} = -\frac{1}{3}x $$
+        Update rule (with step $t=1$):
+        $$ x_{k+1} = x_k - \frac{1}{3}x_k = \frac{2}{3}x_k $$
+        <br><strong>Convergence Rate:</strong>
+        $$ x_k = \left(\frac{2}{3}\right)^k x_0 $$
+        This is <strong>Linear Convergence</strong> with a constant factor $2/3$.
+        <br><strong>Key Insight:</strong> Even though $f$ is not strongly convex (so standard theorems don't guarantee quadratic convergence), Newton's method is still affine invariant and handles the curvature much better than GD. However, the "singularity" at $x=0$ prevents the quadratic "doubling of digits" phase.
+        </p>
       </div>
 
       <div class="example-problem">
         <h3>Example 13.7: Nesterov Acceleration</h3>
-        <p><strong>Problem:</strong> Write the update equations for Nesterov's accelerated gradient.</p>
+        <p><strong>Problem:</strong> Explain the difference between "Heavy Ball" momentum and Nesterov momentum mathematically and intuitively.</p>
         <p><strong>Solution:</strong></p>
-        <p>$x_k$: current position, $y_k$: momentum variable.
-        1. $x_{k+1} = y_k - t \nabla f(y_k)$
-        2. $y_{k+1} = x_{k+1} + \frac{k-1}{k+2} (x_{k+1} - x_k)$
-        Step 1 is standard GD step from the lookahead position $y_k$.
-        Step 2 adds momentum.
-        Converges as $1/k^2$ for smooth convex functions.</p>
+        <p>Let $\beta \in [0,1)$ be the momentum parameter (friction).
+        <br>
+        <strong>1. Heavy Ball (Polyak) Momentum:</strong>
+        $$ x_{k+1} = \underbrace{x_k - \alpha \nabla f(x_k)}_{\text{GD Step}} + \underbrace{\beta(x_k - x_{k-1})}_{\text{Momentum}} $$
+        We take a step based on the <em>current</em> gradient, then add the old velocity.
+        <br>
+        <strong>2. Nesterov Accelerated Gradient (NAG):</strong>
+        Nesterov's insight: If we know we are going to move in the direction of momentum, why compute the gradient at the old spot?
+        Let's "look ahead" to where the momentum will take us.
+        <ol>
+            <li><strong>Lookahead:</strong> $y_k = x_k + \beta(x_k - x_{k-1})$</li>
+            <li><strong>Correct:</strong> $x_{k+1} = y_k - \alpha \nabla f(y_k)$</li>
+        </ol>
+        <strong>Intuition:</strong> Imagine rolling a ball down a hill.
+        <ul>
+            <li><strong>Heavy Ball:</strong> You look at the slope where you are standing ($x_k$), calculate the vector, and add it to your current velocity. If the valley curves sharply ahead, you might overshoot because your velocity vector is "stale."</li>
+            <li><strong>Nesterov:</strong> You first project yourself to where your momentum will carry you ($y_k$). You check the slope <em>there</em>. If the slope at $y_k$ points back uphill, you assume a "correction" immediately, preventing the overshoot.</li>
+        </ul>
+        This subtle change allows Nesterov to achieve the optimal $O(1/k^2)$ convergence rate for convex functions, beating the $O(1/k)$ of GD.
+        </p>
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.8: Newton Decrement Property</h3>
-        <p><strong>Problem:</strong> Show $\lambda(x)^2 = \nabla f(x)^\top \Delta x_{nt}$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>$\Delta x_{nt} = -H^{-1} g$.
-        $\lambda(x)^2 = g^\top H^{-1} g$.
-        Inner product: $g^\top \Delta x_{nt} = g^\top (-H^{-1} g) = -g^\top H^{-1} g = -\lambda(x)^2$.
-        So $\lambda^2 = -g^\top \Delta x_{nt}$ (directional derivative in Newton direction is $-\lambda^2$).</p>
+        <h3>Example 13.8: The Newton Decrement</h3>
+        <p><strong>Problem:</strong> Prove that $\frac{1}{2}\lambda(x)^2 = f(x) - \inf_v \hat{f}(x+v)$, where $\hat{f}$ is the quadratic approximation.</p>
+        <p><strong>Proof:</strong></p>
+        <ol>
+            <li><strong>Quadratic Model:</strong> The second-order Taylor expansion at $x$ is:
+            $$ \hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2} v^T \nabla^2 f(x) v $$
+            </li>
+            <li><strong>Minimizing the Model:</strong> To find the minimum of this quadratic bowl, we set the gradient w.r.t $v$ to zero:
+            $$ \nabla \hat{f} = \nabla f(x) + \nabla^2 f(x) v = 0 \implies v^\star = -\nabla^2 f(x)^{-1} \nabla f(x) = \Delta x_{nt} $$
+            So the Newton step <em>is</em> the minimizer of the model.
+            </li>
+            <li><strong>Minimum Value:</strong> Substitute $v^\star$ back into the model:
+            $$ \inf_v \hat{f} = f(x) + \nabla f^T v^\star + \frac{1}{2} (v^\star)^T \nabla^2 f v^\star $$
+            Substitute $v^\star = -H^{-1}g$:
+            $$ = f(x) + g^T (-H^{-1}g) + \frac{1}{2} (-H^{-1}g)^T H (-H^{-1}g) $$
+            $$ = f(x) - g^T H^{-1} g + \frac{1}{2} g^T H^{-1} H H^{-1} g $$
+            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} g^T H^{-1} g $$
+            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} \lambda(x)^2 $$
+            $$ = f(x) - \frac{1}{2}\lambda(x)^2 $$
+            </li>
+            <li><strong>Conclusion:</strong> Rearranging gives:
+            $$ f(x) - \inf_v \hat{f}(x+v) = \frac{1}{2}\lambda(x)^2 $$
+            The quantity $\lambda^2/2$ is exactly the <strong>predicted reduction</strong> in the function value based on the quadratic model. This makes it an excellent stopping criterion.
+            </li>
+        </ol>
       </div>
 
     </section>

@@ -1,64 +1,76 @@
-export function initGradientDescentVisualizer(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>GD zig-zag on ill-conditioned quadratic</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    canvas { border: 1px solid #ccc; border-radius: 8px; }
+    .panel { display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
+    label { display: inline-flex; gap: 8px; align-items: center; }
+    input[type="range"] { width: 260px; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h2>Gradient Descent: condition number ⇒ zig-zag tax</h2>
 
-  container.innerHTML = `
-    <div style="font-family: system-ui, sans-serif;">
-      <div style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
-        <canvas id="${containerId}-cv" width="680" height="680" style="border: 1px solid #ccc; border-radius: 8px; max-width: 100%; height: auto;"></canvas>
+  <div class="row">
+    <canvas id="cv" width="680" height="680"></canvas>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px;">
-          <div style="display: inline-flex; gap: 8px; align-items: center;">
-            <label>
-              γ (anisotropy)
-              <input id="${containerId}-gamma" type="range" min="1" max="200" value="20" style="width: 200px;" />
-              <span id="${containerId}-gammaVal">20</span>
-            </label>
-          </div>
-
-          <div style="display: inline-flex; gap: 8px; align-items: center;">
-            <label>
-              Step rule
-              <select id="${containerId}-rule">
-                <option value="exact">Exact line search (quadratic)</option>
-                <option value="fixed">Fixed step t = 1/M</option>
-              </select>
-            </label>
-          </div>
-
-          <div style="display: flex; gap: 8px;">
-            <button id="${containerId}-reset">Reset</button>
-            <button id="${containerId}-step">Step</button>
-            <button id="${containerId}-play">Play</button>
-            <button id="${containerId}-pause">Pause</button>
-          </div>
-
-          <div style="background: #f6f6f6; padding: 8px; border-radius: 6px; font-size: 0.9em;">
-            Model: <code>f(x1,x2)=0.5*(x1^2 + γ x2^2)</code>, gradient <code>g=[x1, γx2]</code>.
-            <br/>
-            For exact line search along <code>Δ=-g</code> (quadratic), step:
-            <br/>
-            <code>t = (gᵀg)/(gᵀQ g)</code> with <code>Q=diag(1,γ)</code>.
-          </div>
-
-          <div id="${containerId}-status" style="font-size: 0.9em;"></div>
-        </div>
+    <div class="panel">
+      <div class="row">
+        <label>
+          γ (anisotropy)
+          <input id="gamma" type="range" min="1" max="200" value="20" />
+          <span id="gammaVal"></span>
+        </label>
       </div>
-    </div>
-  `;
 
-  const cv = document.getElementById(`${containerId}-cv`);
+      <div class="row">
+        <label>
+          Step rule
+          <select id="rule">
+            <option value="exact">Exact line search (quadratic)</option>
+            <option value="fixed">Fixed step t = 1/M</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="reset">Reset</button>
+        <button id="step">Step</button>
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+      </div>
+
+      <div>
+        Model: <code>f(x1,x2)=0.5*(x1^2 + γ x2^2)</code>, gradient <code>g=[x1, γx2]</code>.
+        <br/>
+        For exact line search along <code>Δ=-g</code> (quadratic), step:
+        <br/>
+        <code>t = (gᵀg)/(gᵀQ g)</code> with <code>Q=diag(1,γ)</code>.
+      </div>
+
+      <div id="status"></div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const cv = document.getElementById("cv");
   const ctx = cv.getContext("2d");
 
-  const gammaSlider = document.getElementById(`${containerId}-gamma`);
-  const gammaVal = document.getElementById(`${containerId}-gammaVal`);
-  const ruleSel = document.getElementById(`${containerId}-rule`);
-  const status = document.getElementById(`${containerId}-status`);
+  const gammaSlider = document.getElementById("gamma");
+  const gammaVal = document.getElementById("gammaVal");
+  const ruleSel = document.getElementById("rule");
+  const status = document.getElementById("status");
 
-  const btnReset = document.getElementById(`${containerId}-reset`);
-  const btnStep  = document.getElementById(`${containerId}-step`);
-  const btnPlay  = document.getElementById(`${containerId}-play`);
-  const btnPause = document.getElementById(`${containerId}-pause`);
+  const btnReset = document.getElementById("reset");
+  const btnStep  = document.getElementById("step");
+  const btnPlay  = document.getElementById("play");
+  const btnPause = document.getElementById("pause");
 
   // World-to-canvas mapping
   function makeView(range) {
@@ -89,7 +101,6 @@ export function initGradientDescentVisualizer(containerId) {
   let x = [1.2, 1.0];        // start point (kept modest so plots remain visible)
   let path = [x.slice()];
   let playing = false;
-  let animationId = null;
 
   function reset() {
     gamma = +gammaSlider.value;
@@ -209,16 +220,19 @@ export function initGradientDescentVisualizer(containerId) {
 
   function tick() {
     if (playing) stepOnce();
-    // Slow down the animation loop for visibility
-    animationId = setTimeout(() => requestAnimationFrame(tick), 200);
+    requestAnimationFrame(tick);
   }
 
   btnReset.onclick = reset;
   btnStep.onclick  = stepOnce;
-  btnPlay.onclick  = () => { if(!playing) { playing = true; tick(); } };
-  btnPause.onclick = () => { playing = false; clearTimeout(animationId); };
+  btnPlay.onclick  = () => playing = true;
+  btnPause.onclick = () => playing = false;
   gammaSlider.oninput = () => { gamma = +gammaSlider.value; draw(); };
   ruleSel.onchange = () => draw();
 
   reset();
-}
+  tick();
+})();
+</script>
+</body>
+</html>

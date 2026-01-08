@@ -157,18 +157,16 @@
           <br>This cone is fundamental for modeling quadratic constraints like $x^T x \le yz$ (geometric mean bounds).</p>
         </div>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+        <div class="row">
+             <figure>
                <img src="assets/second-order-cone.png"
-                    alt="3D visualization of the second-order cone (ice cream cone)"
-                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 5:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
+                    alt="3D visualization of the second-order cone (ice cream cone)" />
+               <figcaption><i>Figure 26:</i> The Second-Order Cone in $\mathbb{R}^3$ (ice-cream cone) is defined by $\|x\|_2 \le t$.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+             <figure>
                <img src="assets/hyperbolic-cone.png"
-                    alt="3D visualization of a hyperbolic cone"
-                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 6:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
+                    alt="3D visualization of a hyperbolic cone" />
+               <figcaption><i>Figure 27:</i> A Hyperbolic Cone. Cones are not limited to straight lines; they can have curved boundaries as long as they are closed under scaling.</figcaption>
              </figure>
         </div>
 
@@ -191,11 +189,10 @@
           <p><b>Decision/economic view:</b> Think of $K$ as the set of "acceptable improvements" (e.g., more output, less cost, lower risk). Then $\mathbf{x} \preceq_K \mathbf{y}$ means "$\mathbf{y}$ dominates $\mathbf{x}$ up to an improvement in $K$." Properness ensures this dominance relation is non-degenerate and supports optimization and "Pareto" style comparisons.</p>
         </div>
 
-        <figure style="text-align: center; margin: 24px 0;">
+        <figure>
              <img src="assets/cone-zoo.png"
-                  alt="Examples of proper and improper cones"
-                  style="max-width: 800px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-             <figcaption><i>Figure 7:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
+                  alt="Examples of proper and improper cones" />
+             <figcaption><i>Figure 28:</i> The "Cone Zoo". Left: A proper cone (closed, pointed, solid). Center: A wedge (not pointed, contains a line). Right: A flat slice (not solid, empty interior).</figcaption>
         </figure>
 
         <h3>1.3 Generalized Inequalities</h3>
@@ -256,29 +253,26 @@
 
         <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \geq 0$) produces Pareto optimal points by varying weights.</p>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+        <div class="row">
+             <figure>
                <img src="assets/generalized-inequality-cone.png"
-                    alt="Visualizing generalized inequality"
-                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 8:</i> Visualizing $\mathbf{x} \preceq_K \mathbf{y}$. The point $\mathbf{x}$ must lie in the "shadow" of $\mathbf{y}$ cast by the cone $-K$.</figcaption>
+                    alt="Visualizing generalized inequality" />
+               <figcaption><i>Figure 29:</i> Visualizing $\mathbf{x} \preceq_K \mathbf{y}$. The point $\mathbf{x}$ must lie in the "shadow" of $\mathbf{y}$ cast by the cone $-K$.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+             <figure>
                <img src="assets/matrix-inequality-cone.png"
-                    alt="Matrix inequality ordering"
-                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 9:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
+                    alt="Matrix inequality ordering" />
+               <figcaption><i>Figure 30:</i> Partial ordering in the PSD cone. $A \preceq B$ means $B-A$ is in the PSD cone.</figcaption>
              </figure>
         </div>
 
         <div class="insight">
              <h4>Minimum vs. Minimal</h4>
              <p>Because the ordering is partial, we distinguish between a <b>minimum</b> element (smaller than everyone, e.g., the origin in $\mathbb{R}^n_+$) and a <b>minimal</b> element (nothing is smaller than it, but it might not compare to everyone).</p>
-             <figure style="text-align: center; margin: 24px 0;">
+             <figure>
                   <img src="assets/minimum-vs-minimal.png"
-                       alt="Minimum vs minimal elements"
-                       style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-                  <figcaption><i>Figure 10:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
+                       alt="Minimum vs minimal elements" />
+                  <figcaption><i>Figure 31:</i> Left: Minimum element (unique). Right: Minimal elements (red boundary). In vector optimization (Pareto optimality), we seek minimal elements.</figcaption>
              </figure>
         </div>
       </section>
@@ -400,11 +394,10 @@
           <p><b>Prices/supporting weights:</b> If $K$ represents "nonnegative" directions (improvements), then $K^*$ is the set of linear functionals that assign <i>nonnegative value</i> to every improvement: $\mathbf{y}^\top \mathbf{x} \ge 0$ for all $\mathbf{x}\in K$. A key consequence used later in duality is: if $\mathbf{x} \preceq_K \mathbf{y}$ then $\mathbf{w}^\top \mathbf{x} \le \mathbf{w}^\top \mathbf{y}$ for every $\mathbf{w} \in K^*$ (dual cone weights turn vector dominance into scalar inequalities).</p>
         </div>
 
-        <figure style="text-align: center; margin: 24px 0;">
+        <figure>
              <img src="assets/dual-cone-geometry.png"
-                  alt="Geometry of primal and dual cones"
-                  style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-             <figcaption><i>Figure 11:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
+                  alt="Geometry of primal and dual cones" />
+             <figcaption><i>Figure 32:</i> The dual cone $K^*$ (red) consists of vectors that make an angle $\le 90^\circ$ with every vector in $K$ (blue).</figcaption>
         </figure>
 
         <div class="theorem-box">
@@ -501,18 +494,16 @@
           </div>
         </div>
 
-        <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+        <div class="row">
+             <figure>
                <img src="assets/self-dual-cones.png"
-                    alt="The three major self-dual cones"
-                    style="max-width: 800px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 12:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
+                    alt="The three major self-dual cones" />
+               <figcaption><i>Figure 33:</i> The Big Three self-dual cones: Nonnegative Orthant, Second-Order Cone, and PSD Cone.</figcaption>
              </figure>
-             <figure style="text-align: center; flex: 1; min-width: 280px;">
+             <figure>
                <img src="assets/dual-norm-cones.png"
-                    alt="Dual relationship between L1 and L-infinity cones"
-                    style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-               <figcaption><i>Figure 13:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
+                    alt="Dual relationship between L1 and L-infinity cones" />
+               <figcaption><i>Figure 34:</i> Duality of Norm Cones: The dual of the $L_1$ cone is the $L_\infty$ cone.</figcaption>
              </figure>
         </div>
 
@@ -728,11 +719,10 @@
         </p>
       </div>
 
-      <figure style="text-align: center; margin: 24px 0;">
+      <figure>
         <img src="assets/supporting-hyperplane-tangent.png"
-             alt="Illustration of the Supporting Hyperplane Theorem"
-             style="max-width: 700px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Figure 14:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
+             alt="Illustration of the Supporting Hyperplane Theorem" />
+        <figcaption><i>Figure 35:</i> A supporting hyperplane "kisses" the convex set at the boundary without cutting through it. The normal vector points outward.</figcaption>
       </figure>
 
       <h3>3.3 Constraints as Geometry (Normal Cones)</h3>

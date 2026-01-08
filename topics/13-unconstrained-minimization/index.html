@@ -80,19 +80,23 @@
         <li><strong>Solvability:</strong> The problem is <strong>solvable</strong>, meaning the optimal value $p^\star = \min_x f(x)$ is finite and is actually achieved at some point $x^\star$. (Counter-example: $f(x) = e^{-x}$ is bounded below by 0, but never reaches it, so no $x^\star$ exists. Our theory assumes an $x^\star$ exists).</li>
       </ul>
       <p>
-        <strong>Important Subtlety on Domains:</strong> If $f$ is a standard function like $x^2$ on $\mathbb{R}^n$, the domain is naturally all of $\mathbb{R}^n$, which is open. However, in convex analysis, we often deal with functions like the logarithmic barrier $f(x) = -\sum \log(x_i)$. This function is only defined when all $x_i > 0$. The domain is the "positive orthant" $\mathbb{R}^n_{++}$, which is a strict open subset of $\mathbb{R}^n$. Our algorithms must stay strictly inside this open set.
+        <strong>Important Subtlety on Domains & Extended Values:</strong> Strictly speaking, if $f$ is a map $\mathbb{R}^n \to \mathbb{R}$, its domain is the entire space. In convex analysis, we essentially work with <strong>extended-valued</strong> functions $f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}$, where the effective domain is $\mathrm{dom}\,f = \{x \mid f(x) < +\infty\}$.
+        <br>For example, the logarithmic barrier $f(x) = -\sum \log(x_i)$ is formally defined as $+\infty$ if any $x_i \le 0$. Its effective domain is the open positive orthant $\mathbb{R}^n_{++}$. Twice differentiability forces us to restrict our attention to this open set where derivatives are well-defined. Our algorithms must stay strictly inside this open set; stepping onto the boundary (where $f=+\infty$) is forbidden.
       </p>
       <p>
         <strong>The "Container" Set $S$:</strong>
-        The analysis repeatedly refers to a set $S$. In this chapter, $S$ is the <strong>initial sublevel set</strong>:
+        One of the most important moves in the analysis is "localizing" all claims to the initial sublevel set:
         $$ S=\{x\in\mathrm{dom}\,f \mid f(x)\le f(x^{(0)})\} \tag{9.3} $$
-        <strong>Why do we care about $S$?</strong>
-        <br>
-        Think of $S$ as a "container" or "trap" for our algorithm.
+        <strong>Why is this set so critical?</strong>
         <ol>
-            <li><strong>Descent Property:</strong> Our algorithms are "descent methods," meaning $f(x^{(k+1)}) < f(x^{(k)})$.</li>
-            <li><strong>Trapped:</strong> Because the function value keeps dropping, the algorithm can never climb back up to a height greater than where it started ($f(x^{(0)})$). Therefore, the entire sequence of iterates $x^{(0)}, x^{(1)}, \dots$ stays permanently inside $S$.</li>
-            <li><strong>Local becomes Global:</strong> This allows us to make assumptions (like strong convexity) only on $S$, rather than on the entire universe $\mathbb{R}^n$. If the function is well-behaved <em>inside the container</em>, the algorithm will converge.</li>
+            <li><strong>The Trap (Descent Property):</strong> Most methods in Chapter 9 are <strong>descent methods</strong>, enforcing $f(x^{(k+1)}) \le f(x^{(k)})$. Inductively, $f(x^{(k)}) \le f(x^{(0)})$, so every iterate $x^{(k)}$ lives inside $S$. Any property we assume "for all $x \in S$" automatically applies to every point the algorithm visits.</li>
+            <li><strong>Closedness & Compactness:</strong> We typically assume $f$ is a <strong>closed function</strong> (meaning its epigraph is closed, or equivalently, its sublevel sets are closed).
+                <ul>
+                    <li>If we assume Strong Convexity (Section 3), $S$ becomes bounded.</li>
+                    <li>A closed and bounded set in $\mathbb{R}^n$ is <strong>compact</strong>.</li>
+                    <li>Compactness is the magic property that guarantees continuous functions (like $\lambda_{\max}(\nabla^2 f(x))$) attain their maximum and minimum. This allows us to rigorously define constants $m$ and $M$ such that $mI \preceq \nabla^2 f(x) \preceq MI$ everywhere in $S$.</li>
+                </ul>
+            </li>
         </ol>
       </p>
 
@@ -405,33 +409,52 @@ def descent_method(f, gradient, x0, tol=1e-6):
         </ul>
       </p>
 
-      <h4>6.2 Backtracking (Armijo) Line Search</h4>
+      <h4>6.2 Backtracking (Armijo) Line Search: Proof of Termination and Convergence</h4>
       <p>
-        Exact minimization is usually too expensive. Instead, we use <strong>Backtracking Line Search</strong>. It guarantees a "sufficient decrease" without finding the exact minimum.
-        <br>
-        <strong>The Algorithm:</strong>
-        <pre><code class="language-python">
+        Exact minimization is usually too expensive. Instead, we use <strong>Backtracking Line Search</strong>. It shrinks the step size $t$ until the "Armijo sufficient decrease condition" is met:
+        $$ f(x+t\Delta x) \le f(x) + \alpha t \nabla f(x)^T \Delta x, \qquad 0 < \alpha < 0.5, \ \ 0 < \beta < 1 $$
+        We must prove two things: (1) the loop eventually terminates, and (2) the accepted step is "large enough" to guarantee linear convergence.
+      </p>
+      <p>
+        <strong>1. Termination Proof (Why Armijo holds for small $t$):</strong>
+        Let $g = \nabla f(x)$ and $\Delta x = -g$.
+        From the smoothness bound (9.17) along the ray:
+        $$ f(x-tg) \le f(x) - t\|g\|^2 + \frac{M t^2}{2}\|g\|^2 $$
+        We want this to be $\le f(x) - \alpha t \|g\|^2$.
+        $$ f(x) - t\|g\|^2 + \frac{M t^2}{2}\|g\|^2 \le f(x) - \alpha t \|g\|^2 $$
+        Subtracting $f(x)$ and dividing by $t\|g\|^2$ (assuming $g \neq 0$):
+        $$ -1 + \frac{M t}{2} \le -\alpha \implies \frac{M t}{2} \le 1 - \alpha \implies t \le \frac{2(1-\alpha)}{M} $$
+        Since $\alpha < 0.5$, the RHS is positive. Thus, for any $t \le \frac{2(1-\alpha)}{M}$, the Armijo condition <strong>must</strong> hold. The backtracking loop (which shrinks $t$ by $\beta$) will eventually produce a $t$ below this threshold.
+      </p>
+      <p>
+        <strong>2. Lower Bound on Accepted Step Size:</strong>
+        Let $t_0 = \frac{2(1-\alpha)}{M}$.
+        <ul>
+            <li>If the initial $t=1$ works, $t \ge 1$.</li>
+            <li>If we backtrack, the loop stops at the <em>first</em> $t$ such that $t \le t_0$ (approximately). Since the previous step $t/\beta$ was rejected (meaning $t/\beta > t_0$), the accepted $t$ must satisfy $t > \beta t_0$.</li>
+        </ul>
+        Thus, the accepted step is bounded below:
+        $$ t \ge \min\left(1, \frac{2\beta(1-\alpha)}{M}\right) $$
+      </p>
+      <p>
+        <strong>3. Convergence Rate:</strong>
+        The Armijo condition guarantees a decrease of at least $-\alpha t \|g\|^2$. Using the lower bound on $t$:
+        $$ f(x^+) - f(x) \le -\alpha \min\left(1, \frac{2\beta(1-\alpha)}{M}\right) \|g\|^2 $$
+        Combining this with the Strong Convexity property $\|\nabla f(x)\|^2 \ge 2m(f(x)-p^\star)$, we get:
+        $$ f(x^+) - p^\star \le f(x) - p^\star - C \cdot 2m (f(x) - p^\star) = (1 - 2mC) (f(x) - p^\star) $$
+        where $C$ is the constant derived above. This proves <strong>Linear Convergence</strong> for backtracking line search.
+      </p>
+      <pre><code class="language-python">
 def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
-    """
-    alpha: Fraction of decrease we demand (0 < alpha < 0.5)
-           Usually 0.01 to 0.3.
-    beta:  Shrink factor (0 < beta < 1).
-           Usually 0.1 to 0.8.
-    """
-    t = 1.0  # Start with full step
+    t = 1.0
     current_f = f(x)
+    # The required slope is shallower than the true slope
     linear_term = alpha * gradient.dot(delta_x)
 
-    # While function is above the "Armijo Line"
     while f(x + t * delta_x) > current_f + t * linear_term:
-        t = t * beta  # Reduce step size
-
+        t = t * beta
     return t
-        </code></pre>
-        <strong>Geometric Interpretation:</strong>
-        The condition $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^T \Delta x$ forces the function value to lie below a linear ray starting at $f(x)$ with slope $\alpha \nabla f^T \Delta x$.
-        Since the actual slope of the function at $t=0$ is $\nabla f^T \Delta x$ (which is steeper/more negative than $\alpha \nabla f^T \Delta x$ because $\alpha < 1$), the condition <strong>must</strong> hold for sufficiently small $t$. The loop is guaranteed to terminate.
-      </p>
+      </code></pre>
       <figure style="margin: 24px auto; text-align: center; max-width: 600px;">
         <img src="assets/backtracking_armijo.gif" alt="Backtracking line search visualization" style="width: 100%; border-radius: 8px; border: 1px solid #ddd;">
         <figcaption style="margin-top: 8px; color: #666; font-size: 0.9em;">Backtracking reduces step size $t$ until the function value drops below the linear extrapolation (Armijo line).</figcaption>
@@ -498,6 +521,29 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
             </figure>
         </div>
       </div>
+
+      <h4>7.2 Convergence Analysis for Steepest Descent under General Norms</h4>
+      <p>
+        Does changing the norm change the convergence rate? Yes, but it's subtle. The rate is still linear, but the constant depends on how well the norm matches the geometry of the function.
+        <br>
+        <strong>1. Norm Equivalence:</strong> Since all norms on $\mathbb{R}^n$ are equivalent, there exist constants $\gamma, \tilde{\gamma} \in (0,1]$ such that:
+        $$ \|u\| \ge \gamma \|u\|_2 \quad \text{and} \quad \|z\|_* \ge \tilde{\gamma} \|z\|_2 $$
+        <strong>2. Smoothness Bound in General Norm:</strong>
+        The standard smoothness bound uses Euclidean norm. We convert it:
+        $$ f(x+v) \le f(x) + \nabla f(x)^T v + \frac{M}{2} \|v\|_2^2 \le f(x) + \nabla f(x)^T v + \frac{M}{2\gamma^2} \|v\|^2 $$
+        <strong>3. Decrease Step:</strong>
+        Taking the unnormalized steepest descent step $\Delta x_{\mathrm{sd}}$ with step size $t$:
+        <ul>
+            <li>$\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$</li>
+            <li>$\|\Delta x_{\mathrm{sd}}\| = \|\nabla f\|_*$</li>
+        </ul>
+        Plugging this into the bound:
+        $$ f(x+t\Delta x_{\mathrm{sd}}) \le f(x) - t\|\nabla f\|_*^2 + \frac{M t^2}{2\gamma^2} \|\nabla f\|_*^2 = f(x) - \|\nabla f\|_*^2 \left( t - \frac{M t^2}{2\gamma^2} \right) $$
+        Optimizing $t$ yields a guaranteed decrease proportional to $\|\nabla f\|_*^2$.
+        <br>
+        <strong>Conclusion:</strong> We still get linear convergence $f(x^{(k)}) - p^\star \le c^k (f(x^{(0)}) - p^\star)$. The constant $c$ depends on the condition number $M/m$ and the "norm distortion" constants $\gamma, \tilde{\gamma}$.
+        <br><em>Key Takeaway:</em> If we choose a norm (like the quadratic norm defined by the Hessian) where $\gamma \approx 1$ and the condition number is small, convergence is lightning fast. This is the justification for Newton's method.
+      </p>
 
       <h3>8. Newton's Method</h3>
       <p>
@@ -582,11 +628,19 @@ def newton_step(f, grad, hess, x):
           <br>The algorithm behaves like a descent method with a guaranteed constant decrease in function value at every step. It is robust but not yet "fast."
           </li>
           <li><strong>Phase 2: Quadratically Convergent (Close to $x^\star$):</strong>
-          <br>Once we enter the region of strong convexity around $x^\star$ (specifically, when the Newton decrement $\lambda(x) < 0.68$), magic happens.
-          <br>The backtracking line search <strong>always</strong> selects $t=1$. The algorithm converges <strong>quadratically</strong>:
-          $$ \frac{\|\nabla f(x_{k+1})\|_2}{\|\nabla f(x_k)\|_2^2} \le C \quad \implies \quad \epsilon_{k+1} \approx C \epsilon_k^2 $$
-          This means the number of correct digits <strong>doubles</strong> at every iteration.
-          <br><em>Practical Consequence:</em> Once you hit this phase, you are effectively done. It typically takes only 5-6 iterations to go from "somewhat close" to "machine precision" (16 decimal places).
+          <br>Once we enter the region of strong convexity around $x^\star$ (specifically, when the Newton decrement $\lambda(x) < 0.68$), magic happens. The backtracking line search <strong>always</strong> selects $t=1$, and the algorithm converges <strong>quadratically</strong>.
+          <br><strong>Derivation of Quadratic Convergence:</strong>
+          Assume $\nabla^2 f(x)$ is Lipschitz continuous with constant $L$.
+          <br>1. <strong>Fundamental Identity:</strong> By the fundamental theorem of calculus applied to the gradient:
+          $$ \nabla f(x+d) = \nabla f(x) + \int_0^1 \nabla^2 f(x+td) d \, dt = \nabla f(x) + \nabla^2 f(x)d + \int_0^1 (\nabla^2 f(x+td) - \nabla^2 f(x)) d \, dt $$
+          <br>2. <strong>Newton Step:</strong> We chose $d = \Delta x_{\mathrm{nt}} = -(\nabla^2 f(x))^{-1} \nabla f(x)$, so $\nabla f(x) + \nabla^2 f(x)d = 0$.
+          <br>3. <strong>Residual Bound:</strong>
+          $$ \|\nabla f(x+d)\|_2 = \left\| \int_0^1 (\nabla^2 f(x+td) - \nabla^2 f(x)) d \, dt \right\|_2 \le \int_0^1 \|\nabla^2 f(x+td) - \nabla^2 f(x)\|_2 \|d\|_2 dt $$
+          Using the Lipschitz condition $\|H(y)-H(x)\|_2 \le L\|y-x\|_2$:
+          $$ \le \int_0^1 L (t\|d\|_2) \|d\|_2 dt = L \|d\|_2^2 \int_0^1 t dt = \frac{L}{2} \|\Delta x_{\mathrm{nt}}\|_2^2 $$
+          <br>4. <strong>Result:</strong> Since $\|\Delta x_{\mathrm{nt}}\|_2 \le \frac{1}{m} \|\nabla f(x)\|_2$, we get:
+          $$ \|\nabla f(x_{k+1})\|_2 \le \frac{L}{2m^2} \|\nabla f(x_k)\|_2^2 $$
+          This inequality $u_{k+1} \le C u_k^2$ implies that the number of correct digits <strong>doubles</strong> at every iteration.
           </li>
       </ul>
 
@@ -698,6 +752,27 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
+        <h3>Exercise 9.2: Quadratic-over-Linear Fraction</h3>
+        <p><strong>Problem:</strong> Minimize $f(x) = \frac{\|Ax-b\|_2^2}{c^T x + d}$ subject to $c^T x + d > 0$.
+        <br>Assumptions: $\text{rank}(A)=n$ and $b \notin \mathcal{R}(A)$.
+        <br><strong>(a) Show $f$ is closed.</strong>
+        <br><strong>(b) Show the minimizer lies on a specific line.</strong>
+        </p>
+        <p><strong>Solution:</strong>
+        <br><strong>Part (a):</strong> Since $b \notin \mathcal{R}(A)$, the numerator $N(x) = \|Ax-b\|^2 \ge \text{dist}(b, \mathcal{R}(A))^2 > 0$.
+        Consider the epigraph. If $x_k \to x$ and $f(x_k) \le \alpha$:
+        <br>- If $c^T x + d > 0$, $f(x) = \lim f(x_k) \le \alpha$.
+        <br>- If $c^T x + d \to 0$ (boundary), then since numerator $> 0$, $f(x_k) \to \infty$, impossible for sublevel set.
+        Thus, sublevel sets are closed.
+        <br><strong>Part (b):</strong> Let $x_1 = (A^T A)^{-1} A^T b$ (least squares solution for numerator) and $x_2 = (A^T A)^{-1} c$.
+        Let $P = A^T A$. The function is $f(x) = \frac{\delta^2 + (x-x_1)^T P (x-x_1)}{c^T x + d}$.
+        Using a change of variables $y = x - x_1$, we essentially minimize $\frac{\delta^2 + y^T P y}{\alpha + c^T y}$.
+        The Cauchy-Schwarz inequality implies that for a fixed denominator value, the numerator is minimized when $y \propto P^{-1} c = x_2$.
+        Thus, the optimal $x^\star$ must lie on the line $x_1 + t x_2$. The problem reduces to minimizing a scalar function $\phi(t) = \frac{a t^2 + b}{c t + d}$, which is solved by setting the derivative to zero (solving a quadratic equation).
+        </p>
+      </div>
+
+      <div class="example-problem">
         <h3>Exercise 9.5: Backtracking Line Search Proof (Rigorous)</h3>
         <p><strong>Problem:</strong> Prove that if $0 < t \le -\frac{\nabla f(x)^T \Delta x}{M\|\Delta x\|_2^2}$, the backtracking condition $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^T \Delta x$ holds for $\alpha \le 0.5$.</p>
         <p><strong>Proof:</strong></p>
@@ -714,6 +789,18 @@ def newton_step(f, grad, hess, x):
             <li><strong>Compare to Armijo:</strong> The condition requires slope $\alpha$. Since we proved it holds for slope $0.5$, and $\nabla f^T \Delta x < 0$ (descent), the condition holds for any $\alpha \le 0.5$ (since a smaller $\alpha$ makes the required drop <em>smaller</em>/easier).
             </li>
         </ol>
+      </div>
+
+      <div class="example-problem">
+        <h3>Exercise 9.7: Steepest Descent Identities</h3>
+        <p><strong>Problem:</strong> Prove (a) $\nabla f^T \Delta x_{\mathrm{nsd}} = -\|\nabla f\|_*$ and (b) $\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$.</p>
+        <p><strong>Proof:</strong>
+        <br><strong>(a):</strong> By definition, $\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} g^T v$.
+        Recall $\|g\|_* = \sup_{\|v\| \le 1} g^T v$.
+        Since the unit ball is symmetric ($v \in B \iff -v \in B$), $\inf g^T v = -\sup g^T (-v) = -\sup g^T v = -\|g\|_*$.
+        <br><strong>(b):</strong> Since $\Delta x_{\mathrm{sd}} = \|\nabla f\|_* \Delta x_{\mathrm{nsd}}$, we have:
+        $$ g^T \Delta x_{\mathrm{sd}} = \|\nabla f\|_* (g^T \Delta x_{\mathrm{nsd}}) = \|\nabla f\|_* (-\|\nabla f\|_*) = -\|\nabla f\|_*^2 $$
+        </p>
       </div>
 
       <div class="example-problem">

@@ -324,21 +324,26 @@
         $$ \kappa(\nabla^2 f(x))=\frac{\lambda_{\max}(\nabla^2 f(x))}{\lambda_{\min}(\nabla^2 f(x))}\le \frac{M}{m} $$
         We call this upper bound $\kappa$ the condition number of the problem (on $S$).
       </p>
-      <h4>5.1 Geometric Meaning: Eccentricity and "Skinniness"</h4>
+      <h4>5.1 Geometric Meaning: Width and Eccentricity</h4>
       <p>
-        The condition number $\kappa$ measures the <strong>anisotropy</strong> (direction-dependence) of the function's curvature.
-        <ul>
-            <li><strong>$\kappa \approx 1$ (Isotropic):</strong> The function is shaped like a nice, round bowl (spherical level sets). The gradient points straight to the minimum. Walking towards the minimum is like walking across a soccer field—easy and direct.</li>
-            <li><strong>$\kappa \gg 1$ (Anisotropic):</strong> The function is shaped like a narrow, deep valley (elongated ellipsoidal level sets). The gradient is nearly orthogonal to the direction of the minimum. Walking towards the minimum is like navigating a long, narrow hallway; you bounce off the walls if you aren't perfectly aligned.</li>
-        </ul>
-        Geometrically, any sublevel set $C_\alpha = \{x : f(x) \le \alpha\}$ contains a ball of radius $r$ and is contained in a ball of radius $R$. The ratio $R^2/r^2$ is bounded by $\kappa = M/m$. Thus, $\sqrt{\kappa}$ represents the maximum "aspect ratio" or eccentricity of the level sets.
+        The condition number $\kappa$ measures the <strong>anisotropy</strong> of the function's curvature. We can formalize this using the concept of the <strong>width</strong> of a convex set.
+        <br>
+        For a convex set $C \subseteq \mathbb{R}^n$ and a unit direction $q$ ($\|q\|=1$), the width of $C$ in direction $q$ is:
+        $$ W(C,q) = \sup_{z\in C} q^T z - \inf_{z\in C} q^T z $$
+        The <strong>condition number of a set</strong> $C$ is defined as the square of the ratio of its maximum width to its minimum width:
+        $$ \mathrm{cond}(C) = \frac{W_{\max}^2}{W_{\min}^2}, \quad \text{where } W_{\max} = \sup_{\|q\|=1} W(C,q), \ W_{\min} = \inf_{\|q\|=1} W(C,q) $$
       </p>
       <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
-        <strong>Example: Width of an Ellipsoid.</strong> Let $\mathcal{E}=\{x\mid (x-x_0)^T A^{-1}(x-x_0)\le 1\}$ with $A \in S^n_{++}$.
-        The "width" of the ellipsoid varies with direction.
-        The condition number of the set is exactly the condition number of the matrix $A$:
-        $$ \mathrm{cond}(\mathcal{E}) = \frac{\lambda_{\max}(A)}{\lambda_{\min}(A)} = \kappa(A) $$
-        If $\kappa = 100$, the ellipsoid is 10 times longer in one direction than another ($\sqrt{100}=10$). Gradient descent will "bounce" back and forth across the narrow valley rather than moving down it.
+        <strong>Example 9.1: Width of an Ellipsoid.</strong>
+        <br>Consider the ellipsoid $\mathcal{E}=\{x\mid (x-x_0)^T A^{-1}(x-x_0)\le 1\}$ with $A \in S^n_{++}$.
+        <br><strong>1. Maximize/Minimize Linear Function:</strong> To find the width, we maximize/minimize $q^T z$ over $\mathcal{E}$.
+        Let $z = x_0 + A^{1/2}u$ with $\|u\|_2 \le 1$. Then $q^T z = q^T x_0 + (A^{1/2}q)^T u$.
+        <br>The max is $q^T x_0 + \|A^{1/2}q\|_2$, and the min is $q^T x_0 - \|A^{1/2}q\|_2$.
+        <br><strong>2. Width:</strong> $W(\mathcal{E}, q) = 2\|A^{1/2}q\|_2 = 2\sqrt{q^T A q}$.
+        <br><strong>3. Extremes:</strong> The maximum width is $2\sqrt{\lambda_{\max}(A)}$ and the minimum is $2\sqrt{\lambda_{\min}(A)}$.
+        <br><strong>4. Condition Number:</strong>
+        $$ \mathrm{cond}(\mathcal{E}) = \frac{(2\sqrt{\lambda_{\max}})^2}{(2\sqrt{\lambda_{\min}})^2} = \frac{\lambda_{\max}(A)}{\lambda_{\min}(A)} = \kappa(A) $$
+        Geometrically, $\mathrm{cond}(C_\alpha) \le M/m$ for sublevel sets of our function. Gradient descent performance is dictated by this "skinniness."
       </div>
 
       <figure style="margin: 24px auto; text-align: center; max-width: 600px;">
@@ -804,6 +809,46 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
+        <h3>Exercise 9.8: Steepest Descent in $\ell_\infty$ Norm</h3>
+        <p><strong>Problem:</strong> Find the normalized steepest descent direction for the $\ell_\infty$ norm.</p>
+        <p><strong>Solution:</strong>
+        <br>We solve $\min \sum g_i v_i$ subject to $\|v\|_\infty \le 1$ (i.e., $-1 \le v_i \le 1$).
+        <br>The sum is minimized when each term $g_i v_i$ is minimized independently.
+        <ul>
+            <li>If $g_i > 0$, choose $v_i = -1$.</li>
+            <li>If $g_i < 0$, choose $v_i = +1$.</li>
+            <li>If $g_i = 0$, $v_i$ can be anything (say 0).</li>
+        </ul>
+        Thus, $(\Delta x_{\mathrm{nsd}})_i = -\text{sign}(g_i)$.
+        <br>The unnormalized direction is $\Delta x_{\mathrm{sd}} = -\|g\|_1 \text{sign}(g)$, since the dual norm of $\ell_\infty$ is $\ell_1$.
+        <br><strong>Interpretation:</strong> This is a "coordinate-saturated" step. We push every variable as far as possible against the gradient sign.
+        </p>
+      </div>
+
+      <div class="example-problem">
+        <h3>Exercise 9.15: Proving Self-Concordance</h3>
+        <p><strong>Problem:</strong> Prove the following functions are self-concordant by restricting to a line.
+        <br>(a) $f(x,y)=-\log(y^2-x^T x)$ on $\{(x,y)\mid \|x\|_2<y\}$.
+        <br>(b) $f(x,y)=-2\log y-\log(y^{2/p}-x^2)$, $p\ge 1$.
+        <br>(c) $f(x,y)=-\log y-\log(\log y-x)$.
+        </p>
+        <p><strong>Solution Strategy (Composition with Logarithm Rule):</strong>
+        <br>A function $\phi(t) = -\log(-g(t)) - \log t$ is self-concordant if $|g'''(t)| \le 3g''(t)/t$.
+        <br><strong>(a):</strong> $f(x,y) = -\log y - \log(y - x^T x/y)$. Restricting to a line $x(t) = \hat{x} + tv, y(t) = \hat{y} + tw$ yields a form $-\log(\text{quadratic}) - \log(\text{linear})$.
+        <br>Specifically, if we reparameterize by $y$, the inner term becomes $g(y) = -\alpha - \beta y + \gamma/y$ with $\gamma \ge 0$.
+        Checking derivatives: $g''(y) = 2\gamma/y^3, g'''(y) = -6\gamma/y^4$.
+        The condition $|g'''| \le 3g''/y$ becomes $6\gamma/y^4 \le 3(2\gamma/y^3)/y$, which holds with equality.
+        <br><strong>(b):</strong> Factor $y^{2/p}-x^2 = (y^{1/p}-x)(y^{1/p}+x)$.
+        $f = (-\log y - \log(y^{1/p}-x)) + (-\log y - \log(y^{1/p}+x))$.
+        Restricting to a line and reparameterizing by $y$ gives terms like $g(y) = -Ay - B - y^{1/p}$.
+        Derivatives check out for $p \ge 1$: condition is $(2p-1)/p \le 3 \iff 2p-1 \le 3p \iff p \ge -1$.
+        <br><strong>(c):</strong> Restricting to a line yields $-\log y - \log(-g(y))$ where $g(y) = a+by-\log y$.
+        $g'' = 1/y^2, g''' = -2/y^3$.
+        Condition $|-2/y^3| \le 3(1/y^2)/y$ holds ($2 \le 3$).
+        </p>
+      </div>
+
+      <div class="example-problem">
         <h3>Example 13.2: Newton's Method for Logistic Regression</h3>
         <p><strong>Problem:</strong> Derive the Newton step for Logistic Regression explicitly.</p>
         <p><strong>Solution:</strong></p>
@@ -855,81 +900,86 @@ def newton_step(f, grad, hess, x):
         <h3>Exercise 9.30: Analytic Center (Gradient vs Newton)</h3>
         <p><strong>Problem:</strong> Compute the analytic center of $a_i^T x \le 1, |x_i| \le 1$ using Gradient Descent and Newton's Method. Compare convergence.</p>
         <p><strong>Objective:</strong> $f(x) = -\sum_{i=1}^m \log(1-a_i^T x) - \sum_{j=1}^n \log(1-x_j^2)$.</p>
+        <p><strong>Gradient Derivation:</strong>
+        <br>Term 1: $-\log(1-a_i^T x)$. Gradient is $\frac{a_i}{1-a_i^T x}$. Sum is $\sum \frac{a_i}{1-a_i^T x}$.
+        <br>Term 2: $-\log(1-x_j^2)$. Partial derivative is $\frac{2x_j}{1-x_j^2}$. Vector is $\frac{2x}{1-x^2}$ (elementwise).
+        <br>$\nabla f(x) = A^T \text{diag}(1/s) \mathbf{1} + \frac{2x}{1-x^2}$ where $s = 1 - Ax$.
+        </p>
+        <p><strong>Hessian Derivation:</strong>
+        <br>Term 1: $\nabla (\frac{a_i}{1-a_i^T x}) = \frac{a_i a_i^T}{(1-a_i^T x)^2}$. Sum is $A^T \text{diag}(1/s^2) A$.
+        <br>Term 2: Diagonal with entries $\frac{2(1+x_j^2)}{(1-x_j^2)^2}$.
+        </p>
 
         <p><strong>Python Implementation:</strong></p>
 <pre><code class="language-python">
 import numpy as np
 import matplotlib.pyplot as plt
 
-def solve_analytic_center(m=200, n=50):
-    # Generate data
+def solve_analytic_center(m=300, n=50):
     np.random.seed(1)
-    A = np.random.randn(m, n) * 0.5  # Scale for feasibility at 0
+    A = np.random.randn(m, n) * 0.6  # Scale for feasibility at 0
 
-    # Objective and Derivatives
     def f_val(x):
         s = 1.0 - A @ x
         t = 1.0 - x**2
         if np.any(s <= 0) or np.any(t <= 0): return np.inf
         return -np.sum(np.log(s)) - np.sum(np.log(t))
 
-    def grad_hess(x):
+    def grad(x):
         s = 1.0 - A @ x
-        t = 1.0 - x**2
-        # Gradient
-        g = A.T @ (1/s) + 2*x/t
-        # Hessian
-        w = 1/(s**2)
-        H = (A.T * w) @ A + np.diag(2*(1+x**2)/(t**2))
-        return g, H
+        return A.T @ (1.0/s) + 2*x/(1.0 - x**2)
 
-    # Backtracking Line Search
-    def line_search(x, dx, g, alpha=0.1, beta=0.5):
+    def hess(x):
+        s = 1.0 - A @ x
+        w = 1.0/(s**2)
+        H = A.T @ (A * w[:, None])
+        diag2 = 2.0 * (1.0 + x**2) / ((1.0 - x**2)**2)
+        return H + np.diag(diag2)
+
+    def backtracking(x, dx, g, alpha=0.01, beta=0.5):
         t = 1.0
         fx = f_val(x)
         g_dot_dx = g @ dx
-        while f_val(x + t*dx) > fx + alpha * t * g_dot_dx:
+        while True:
+            xn = x + t * dx
+            if f_val(xn) <= fx + alpha * t * g_dot_dx: return t
             t *= beta
-        return t
 
-    # Newton's Method Loop
+    # Newton Loop
     x = np.zeros(n)
-    history = []
-    for iter in range(50):
-        fx = f_val(x)
-        g, H = grad_hess(x)
-        lambda_sq = g @ np.linalg.solve(H, g) # Newton decrement
-        history.append(lambda_sq)
-
-        if lambda_sq < 1e-10: break
-
+    newton_hist = []
+    for _ in range(60):
+        g = grad(x)
+        H = hess(x)
         dx = np.linalg.solve(H, -g)
-        t = line_search(x, dx, g, alpha=0.1)
+        lambda_sq = -g @ dx
+        newton_hist.append(lambda_sq)
+        if lambda_sq/2 < 1e-8: break
+        t = backtracking(x, dx, g, alpha=0.25)
         x += t * dx
 
-    return history
-
-# Run and visualize
-hist = solve_analytic_center()
-# In a real plot: plt.semilogy(hist); plt.show()
+    return newton_hist
 </code></pre>
-        <p><strong>Observation:</strong> Gradient descent will take thousands of iterations (linear convergence). Newton's method typically converges in 10-20 iterations (quadratic convergence), often accepting step size $t=1$ in the final phase.</p>
       </div>
 
       <div class="example-problem">
         <h3>Exercise 9.31: Approximate Newton Methods</h3>
         <p><strong>Problem:</strong> Compare full Newton with (a) Re-using Hessian every $N$ steps, and (b) Diagonal approximation.</p>
-        <p><strong>Analysis:</strong></p>
-        <ul>
-          <li><strong>Reuse Hessian:</strong> Saves $O(n^3)$ factorization cost but uses "stale" curvature. Convergence becomes linear or superlinear but not quadratic. Good if Hessian evaluation is very expensive.</li>
-          <li><strong>Diagonal Approximation:</strong> Only uses $H_{ii}$. Cost is $O(n)$. Becomes a scaled gradient descent. Effective if variables are loosely coupled (matrix $A$ is sparse or near-diagonal), but poor for highly correlated data.</li>
-        </ul>
-        <p><strong>Code Snippet (Diagonal Newton):</strong></p>
+        <p><strong>Code & Analysis:</strong></p>
 <pre><code class="language-python">
-# Diagonal Hessian Approximation
-H_diag = np.sum((A**2).T * (1/s**2), axis=1) + 2*(1+x**2)/(t**2)
-dx = -g / H_diag  # Element-wise division
+# Diagonal Newton: Use only diagonal of Hessian
+# H_diag = np.sum((A**2).T * (1/s**2), axis=1) + 2*(1+x**2)/(t**2)
+# dx = -g / H_diag
+
+# Reuse Hessian: Compute H only if k % N == 0
+# L = cholesky(H)
+# dx = solve(L.T, solve(L, -g))
 </code></pre>
+        <p><strong>Results:</strong>
+        <br><strong>Newton:</strong> Converges in ~15 iterations. Quadratic phase is visible.
+        <br><strong>Reuse Hessian ($N=5$):</strong> Converges but takes more iterations. Directions become "stale," leading to smaller steps in line search.
+        <br><strong>Diagonal:</strong> Much faster per iteration ($O(n)$ vs $O(n^3)$), but convergence is linear and depends heavily on coordinate coupling.
+        </p>
       </div>
 
       <div class="example-problem">

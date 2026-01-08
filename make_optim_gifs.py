@@ -397,7 +397,7 @@ def make_gif_kappa_effect(path="kappa_effect_paths.gif"):
         return ax.lines
 
     anim1 = FuncAnimation(fig, update1, frames=frames1, interval=70, blit=False)
-    save_gif(anim1, path, fps=10) # 45 frames / 10 fps = 4.5 sec
+    save_gif(anim1, path, fps=2) # 45 frames / 2 fps = 22.5 sec
     plt.close(fig)
 
 # ============================================================
@@ -447,7 +447,7 @@ def make_gif_precond(path="preconditioning_comparison.gif"):
         return ax.lines
 
     anim2 = FuncAnimation(fig, update2, frames=K2+1, interval=90, blit=False)
-    save_gif(anim2, path, fps=5) # 25 frames / 5 fps = 5 sec
+    save_gif(anim2, path, fps=1) # 25 frames / 1 fps = 25 sec
     plt.close(fig)
 
 # ============================================================
@@ -492,7 +492,7 @@ def make_gif_l1_vs_gd(path="l1_coordinate_descent_vs_gd.gif"):
         return ax.lines
 
     anim3 = FuncAnimation(fig, update3, frames=K3+1, interval=90, blit=False)
-    save_gif(anim3, path, fps=5)
+    save_gif(anim3, path, fps=1)
     plt.close(fig)
 
 # ============================================================
@@ -581,7 +581,7 @@ def make_gif_damped_newton(path="damped_newton_backtracking_2d.gif"):
         return ax.lines
 
     anim4 = FuncAnimation(fig, update4, frames=len(xsN), interval=130, blit=False)
-    save_gif(anim4, path, fps=4) # 18 frames / 4 fps = 4.5 sec
+    save_gif(anim4, path, fps=1) # 18 frames / 1 fps = 18 sec
     plt.close(fig)
 
 if __name__ == "__main__":

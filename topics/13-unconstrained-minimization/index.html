@@ -5,43 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>13. Algorithms I: Unconstrained Minimization — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="../../static/lib/feather/feather.min.js"></script>
 </head>
 <body>
-  <!-- Header with navigation -->
-  <header class="site-header">
-    <div class="container header-inner">
+  <header class="site-header sticky">
+    <div class="container">
       <div class="brand">
         <a href="../../index.html">Convex Optimization</a>
       </div>
       <nav class="nav">
-        <a href="../../index.html">All Lectures</a>
-        <a href="#widgets">Interactive</a>
-        <a href="#readings">Readings</a>
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../12-geometric-problems/index.html"><i data-feather="arrow-left"></i> Previous</a>
+        <a href="../14-equality-constrained-minimization/index.html">Next <i data-feather="arrow-right"></i></a>
       </nav>
     </div>
   </header>
 
-  <!-- Main content -->
-  <main class="container" style="padding: 32px 0 60px;">
-    <!-- Lecture header -->
-    <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">13. Algorithms I: Unconstrained Minimization</h1>
-      <div class="meta">
-        Date: 2025-12-16 · Duration: 90 min · Tags: algorithms, unconstrained, strong-convexity, newton-method
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>13. Algorithms I: Unconstrained Minimization</h1>
+      <div class="lecture-meta">
+        <span>Date: 2026-01-27</span>
+        <span>Duration: 90 min</span>
+        <span>Tags: algorithms, unconstrained, strong-convexity, newton-method</span>
       </div>
-
-      <!-- Brief introduction -->
-      <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> A rigorous "zero-to-hero" analysis of descent methods for unconstrained convex optimization. Covers gradient descent, steepest descent, and Newton's method with full convergence proofs, including detailed derivations of strong convexity implications and self-concordance.</p>
+      <div class="lecture-summary">
+        <p><strong>Overview:</strong> A rigorous zero‑to‑hero analysis of descent methods for unconstrained convex optimization. Covers gradient descent, steepest descent, and Newton's method with full convergence proofs, including strong convexity implications and self‑concordance.</p>
         <p><strong>Prerequisites:</strong> <a href="../05-convex-functions-basics/index.html">Lecture 05</a></p>
-      </section>
-    </article>
+      </div>
+    </header>
 
     <!-- Learning objectives -->
     <section class="section-card" style="margin-bottom: 32px;">

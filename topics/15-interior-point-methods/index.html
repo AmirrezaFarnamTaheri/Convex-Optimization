@@ -5,45 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>15. Algorithms III: Interior-Point Methods — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="../../static/lib/feather/feather.min.js"></script>
 </head>
 <body>
-  <!-- Header with navigation -->
-  <header class="site-header">
-    <div class="container header-inner">
+  <header class="site-header sticky">
+    <div class="container">
       <div class="brand">
         <a href="../../index.html">Convex Optimization</a>
       </div>
       <nav class="nav">
-        <a href="../../index.html">All Lectures</a>
-        <a href="#widgets">Interactive</a>
-        <a href="#readings">Readings</a>
+        <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
+        <a href="../14-equality-constrained-minimization/index.html"><i data-feather="arrow-left"></i> Previous</a>
       </nav>
     </div>
   </header>
 
-  <!-- Main content -->
-  <main class="container" style="padding: 32px 0 60px;">
-    <!-- Lecture header -->
-    <article class="section-card" style="margin-bottom: 32px;">
-      <h1 style="margin-top: 0;">15. Algorithms III: Interior-Point Methods</h1>
-      <div class="meta">
-        Date: 2026-01-13 · Duration: 90 min · Tags: algorithms, interior-point
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+    <header class="lecture-header section-card">
+      <h1>15. Algorithms III: Interior-Point Methods</h1>
+      <div class="lecture-meta">
+        <span>Date: 2026-02-10</span>
+        <span>Duration: 90 min</span>
+        <span>Tags: algorithms, interior-point</span>
       </div>
-
-      <!-- Brief introduction -->
-      <section style="margin-top: 16px;">
-        <p><strong>Overview:</strong> Barrier methods, central path, self-concordance, and primal-dual methods.</p>
+      <div class="lecture-summary">
+        <p><strong>Overview:</strong> Barrier methods, the central path, self‑concordance, and primal‑dual methods.</p>
         <p><strong>Prerequisites:</strong> <a href="../14-equality-constrained-minimization/index.html">Lecture 14</a></p>
-      </section>
-    </article>
+      </div>
+    </header>
 
     <!-- Learning objectives -->
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Learning Objectives</h2>
-      <p>After this lecture, you should understand:</p>
+      <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
         <li>How to solve inequality-constrained problems using the barrier method.</li>
         <li>The concept and properties of the central path.</li>
@@ -275,7 +272,7 @@
   <footer class="site-footer">
     <div class="container">
       <p style="margin: 0;">
-        © <span id="year"></a> Convex Optimization Course ·
+        © <span id="year"></span> Convex Optimization Course ·
         <a href="../../README.md" style="color: var(--brand);">About</a>
       </p>
     </div>
@@ -302,7 +299,7 @@
   <script src="../../static/js/math-renderer.js"></script>
 <script src="../../static/js/ui.js"></script>
 <script src="../../static/js/toc.js"></script>
-<script src="../../static/js/ui.js"></script>
+
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>

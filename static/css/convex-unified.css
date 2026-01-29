@@ -85,6 +85,14 @@
   --text-inverse: #0f172a;
   --text-heading: #ffffff;
 
+  /* === Legacy Alias Tokens (compatibility) === */
+  --panel: var(--bg-surface-2);
+  --border: var(--border-subtle);
+  --brand: var(--primary-500);
+  --muted: var(--text-tertiary);
+  --accent: var(--accent-500);
+  --code-bg: var(--bg-surface-2);
+
   /* === Typography === */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Crimson Pro', Georgia, serif;

@@ -1,60 +1,24 @@
 # Setup
 
-## Quick-Start Commands
+## Quick Start
 
-Copy-paste these commands to get started:
+1. **Run a local server** (required for module imports and widget assets):
+   ```bash
+   python -m http.server 8000
+   ```
+   (If `python` points to Python 2 on your system, use `python3` instead.)
 
-```bash
-# Create project directory
-mkdir convex-optimization-course
-cd convex-optimization-course
-
-# Initialize Git
-git init
-git remote add origin https://github.com/[YOUR-GITHUB]/convex-optimization-course.git
-
-# Create directory structure
-mkdir -p {content,topics,static/{css,js,img},lib,data,docs,widgets/{js,py}}
-
-# Topics: Create skeleton for all 11 lectures
-for i in {00..11}; do
-  mkdir -p "topics/$i-slug/images/{diagrams,examples}"
-  mkdir -p "topics/$i-slug/widgets/{js,py}"
-done
-
-# Start local server
-python -m http.server 8010
-# Open http://localhost:8010 in browser
+2. **Open the site**:
+   - Visit `http://localhost:8000`
 
 ## Why a Local Server?
 
-We use a local server (not opening files directly) because the JavaScript fetch() function for loading lectures.json is blocked by browsers' Cross-Origin Resource Sharing (CORS) policy for file:// URLs. Running a local server emulates HTTP serving, allowing fetch() to work.
+Browsers block `fetch()` and module imports from `file://` URLs. Serving the site over HTTP avoids CORS issues and ensures widgets, JSON assets, and KaTeX render correctly.
 
-# Create initial content files (copy templates above)
-# Copy lecture template to each topics/NN-slug/index.html
-# Create content/lectures.json from template
-# Create static/css/styles.css and static/js/app.js
+## Sanity Checks
 
-# Test setup
-# Open localhost:8010 in browser
-# Check console for errors
+- LaTeX equations render (KaTeX).
+- Widgets load without console errors.
+- Navigation links resolve correctly.
 
-# Commit initial structure
-git add .
-git commit -m "Initial project structure: 11 lectures, templates, styling"
-git push -u origin main
-
-# Deploy to GitHub Pages (if using)
-# Push to gh-pages branch or configure Pages in repo settings
-```
-
-## Technical Setup
-
-Before publishing the first lecture, ensure you have:
-
-- [ ] Git repository initialized, pushed to GitHub
-- [ ] GitHub Pages / Netlify configured and working
-- [ ] Local server running (`python -m http.server 8010`) for testing
-- [ ] Pyodide loading correctly; test with simple Python widget
-- [ ] KaTeX rendering LaTeX equations in lectures
-- [ ] All relative paths working (no hardcoded URLs)
+If you see errors, check your browser console first—missing files or blocked requests are the most common causes.

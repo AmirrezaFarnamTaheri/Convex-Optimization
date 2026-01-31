@@ -847,7 +847,7 @@ def newton_step(f, grad, hess, x):
       <h2>Solved Exercises & Example Problems</h2>
 
       <div class="example-problem">
-        <h3>Exercise 9.1: Minimizing a Quadratic Function (Detailed)</h3>
+        <h3>P13.1 — Minimizing a Quadratic Function (Detailed)</h3>
         <p><strong>Problem:</strong> Consider minimizing $f(x)=\frac{1}{2}x^T P x+q^T x+r$ where $P \in S^n$.
         <br>(a) Show that if $P \not\succeq 0$, the problem is unbounded below.
         <br>(b) Suppose $P \succeq 0$ but $Px = -q$ has no solution. Show it is unbounded below.</p>
@@ -877,7 +877,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.2: Quadratic-over-Linear Fraction</h3>
+        <h3>P13.2 — Quadratic-over-Linear Fraction</h3>
         <p><strong>Problem:</strong> Minimize $f(x) = \frac{\|Ax-b\|_2^2}{c^T x + d}$ subject to $c^T x + d > 0$.
         <br>Assumptions: $\text{rank}(A)=n$ and $b \notin \mathcal{R}(A)$.
         <br><strong>(a) Show $f$ is closed.</strong>
@@ -903,7 +903,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.5: Backtracking Line Search Proof (Rigorous)</h3>
+        <h3>P13.3 — Backtracking Line Search Proof (Rigorous)</h3>
         <p><strong>Problem:</strong> Prove that if $0 < t \le -\frac{\nabla f(x)^T \Delta x}{M\|\Delta x\|_2^2}$, the backtracking condition holds for $\alpha \le 0.5$.</p>
         <p><strong>Proof:</strong></p>
         <ol>
@@ -927,7 +927,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.7: Steepest Descent Identities</h3>
+        <h3>P13.4 — Steepest Descent Identities</h3>
         <p><strong>Problem:</strong> Prove (a) $\nabla f^T \Delta x_{\mathrm{nsd}} = -\|\nabla f\|_*$ and (b) $\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$.</p>
         <p><strong>Proof:</strong>
         <br><strong>(a):</strong> By definition, $\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} g^T v$.
@@ -939,7 +939,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.8: Steepest Descent in $\ell_\infty$ Norm</h3>
+        <h3>P13.5 — Steepest Descent in $\ell_\infty$ Norm</h3>
         <p><strong>Problem:</strong> Find the normalized steepest descent direction for the $\ell_\infty$ norm.</p>
         <p><strong>Solution:</strong>
         <br>We solve $\min \sum g_i v_i$ subject to $\|v\|_\infty \le 1$ (i.e., $-1 \le v_i \le 1$).
@@ -956,7 +956,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.15: Proving Self-Concordance</h3>
+        <h3>P13.6 — Proving Self-Concordance</h3>
         <p><strong>Problem:</strong> Prove the following functions are self-concordant by restricting to a line.
         <br>(a) $f(x,y)=-\log(y^2-x^T x)$ on $\{(x,y)\mid \|x\|_2<y\}$.
         <br>(b) $f(x,y)=-2\log y-\log(y^{2/p}-x^2)$, $p\ge 1$.
@@ -979,7 +979,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.2: Newton's Method for Logistic Regression</h3>
+        <h3>P13.7 — Newton's Method for Logistic Regression</h3>
         <p><strong>Problem:</strong> Derive the Newton step for Logistic Regression explicitly.</p>
         <p><strong>Solution:</strong></p>
         <p><strong>Objective:</strong> $f(w) = \sum_{i=1}^m \log(1 + \exp(w^T x_i)) - y_i w^T x_i$.
@@ -996,7 +996,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.3: Steepest Descent in $\ell_\infty$ Norm</h3>
+        <h3>P13.8 — Steepest Descent in $\ell_\infty$ Norm</h3>
         <p><strong>Problem:</strong> Explicitly derive the steepest descent direction for the $\ell_\infty$ norm.</p>
         <p><strong>Solution:</strong></p>
         <p>We solve $\min \nabla f^T v$ s.t. $\|v\|_\infty \le 1$.
@@ -1014,7 +1014,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.15: Proving Self-Concordance</h3>
+        <h3>P13.9 — Proving Self-Concordance (Hypograph)</h3>
         <p><strong>Problem:</strong> Prove $f(x,y) = -\log(y^2 - x^T x)$ is self-concordant.</p>
         <p><strong>Solution Strategy:</strong></p>
         <p>We use the <strong>barrier method</strong> logic.
@@ -1027,7 +1027,7 @@ def newton_step(f, grad, hess, x):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.30: Analytic Center (Gradient vs Newton)</h3>
+        <h3>P13.10 — Analytic Center (Gradient vs Newton)</h3>
         <p><strong>Problem:</strong> Compute the analytic center of $a_i^T x \le 1, |x_i| \le 1$ using Gradient Descent and Newton's Method. Compare convergence.</p>
         <p><strong>Objective:</strong> $f(x) = -\sum_{i=1}^m \log(1-a_i^T x) - \sum_{j=1}^n \log(1-x_j^2)$.</p>
         <p><strong>Gradient Derivation:</strong>
@@ -1093,7 +1093,7 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
       <div class="example-problem">
-        <h3>Exercise 9.31: Approximate Newton Methods</h3>
+        <h3>P13.11 — Approximate Newton Methods</h3>
         <p><strong>Problem:</strong> Compare full Newton with (a) Re-using Hessian every $N$ steps, and (b) Diagonal approximation.</p>
         <p><strong>Code & Analysis:</strong></p>
 <pre><code class="language-python">
@@ -1113,7 +1113,7 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.5: BFGS Update Rank</h3>
+        <h3>P13.12 — BFGS Update Rank</h3>
         <p><strong>Problem:</strong> Analyze the rank of the BFGS update matrix and explain why it preserves symmetry.</p>
         <p><strong>Step-by-Step Solution:</strong></p>
         <p>The standard BFGS update for the Hessian approximation $B_{k+1}$ (not inverse) is:
@@ -1139,7 +1139,7 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.6: Convergence Rate Comparison ($f(x)=x^4$)</h3>
+        <h3>P13.13 — Convergence Rate Comparison ($f(x)=x^4$)</h3>
         <p><strong>Problem:</strong> Compare the convergence of Gradient Descent and Newton's method on the strictly convex function $f(x) = x^4$. Note that $f''(0) = 0$, so it is not strongly convex at the optimum.</p>
         <p><strong>Analysis:</strong></p>
         <p><strong>1. Gradient Descent:</strong>
@@ -1161,7 +1161,7 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.7: Nesterov Acceleration</h3>
+        <h3>P13.14 — Nesterov Acceleration</h3>
         <p><strong>Problem:</strong> Explain the difference between "Heavy Ball" momentum and Nesterov momentum mathematically and intuitively.</p>
         <p><strong>Solution:</strong></p>
         <p>Let $\beta \in [0,1)$ be the momentum parameter (friction).
@@ -1187,7 +1187,7 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
       <div class="example-problem">
-        <h3>Example 13.8: The Newton Decrement</h3>
+        <h3>P13.15 — The Newton Decrement</h3>
         <p><strong>Problem:</strong> Prove that $\frac{1}{2}\lambda(x)^2 = f(x) - \inf_v \hat{f}(x+v)$, where $\hat{f}$ is the quadratic approximation.</p>
         <p><strong>Proof:</strong></p>
         <ol>

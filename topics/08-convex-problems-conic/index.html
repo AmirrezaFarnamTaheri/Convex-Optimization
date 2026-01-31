@@ -210,14 +210,14 @@
           </ul>
       </div>
 
-      <h3>1.4 Key Properties</h3>
+      <h3>1.4 Key Properties of SOCP</h3>
       <ul>
         <li><strong>Generality:</strong> SOCP subsumes LP and QP</li>
         <li><strong>Solvers:</strong> Efficiently solved by interior-point methods</li>
         <li><strong>Applications:</strong> Robust optimization, robust least squares, $\ell_1$ and $\ell_\infty$ norm minimization</li>
       </ul>
 
-      <h3>1.4 Standard SOCP Examples</h3>
+      <h3>1.5 Standard SOCP Examples</h3>
 
       <h4>Example 4.1: Robust Least Squares</h4>
       <p>Consider the least-squares problem where the matrix $A$ is subject to unstructured uncertainty bounded by a spectral norm $\|\Delta A\|_2 \le \rho$. The <strong>robust</strong> problem is:</p>
@@ -302,7 +302,7 @@
       $$ (f_n, \frac{1}{\mu}\mathbf{f}_t) \in \mathcal{Q}^3 $$
       Robotic grasping and structural stability problems are often modeled as SOCPs because of this "friction cone" geometry.</p>
 
-      <h3>1.5 Application: Robust Optimization via Dual Norms</h3>
+      <h3>1.6 Application: Robust Optimization via Dual Norms</h3>
       <p>Robust optimization addresses optimization under uncertainty by requiring constraints to hold for all possible parameter values. When uncertainty sets are norm balls, robustification leads naturally to SOCP formulations through the dual norm lemma.</p>
       <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
@@ -844,7 +844,7 @@
     <section class="section-card" id="section-3">
       <h2>3. Exponential Cone Programming</h2>
 
-      <h3>4.1 The Exponential Cone</h3>
+      <h3>3.1 The Exponential Cone</h3>
       <p>The <strong>exponential cone</strong> $K_{\text{exp}}$ is a three-dimensional cone defined as:</p>
       <p style="text-align: center;">
         $$
@@ -872,7 +872,7 @@
         <p><b>Takeaway:</b> If your problem involves $e^x$, $\log x$, entropy, or geometric means, the exponential cone is your gateway to efficient convex optimization.</p>
       </div>
 
-      <h3>4.2 Exponential Cone Programs</h3>
+      <h3>3.2 Exponential Cone Programs</h3>
       <p>An <strong>Exponential Cone Program (ECP)</strong> is a convex optimization problem with constraints involving the exponential cone:</p>
       <p style="text-align: center;">
         $$
@@ -885,7 +885,7 @@
       </p>
       <p>where the constraints ensure that the affine combinations lie in the exponential cone.</p>
 
-      <h3>4.3 Key Applications</h3>
+      <h3>3.3 Key Applications</h3>
 
       <div class="example">
         <h4>Example 1: Entropy Maximization</h4>
@@ -937,7 +937,7 @@
         <p>After the standard log transformation $y_i = \log x_i$, this becomes a convex problem. The exponential terms $e^{a_{ik}^\top \mathbf{y}}$ can be expressed using exponential cone constraints, making it an exponential cone program.</p>
       </div>
 
-      <h3>4.4 Relationship to Other Cones</h3>
+      <h3>3.4 Relationship to Other Cones</h3>
       <p>The exponential cone is a fundamental cone in conic programming, alongside the nonnegative orthant, second-order cone, and PSD cone. Modern solvers (e.g., MOSEK, ECOS) support exponential cone constraints, enabling efficient solution of problems involving exponentials and logarithms.</p>
       <p><b>Note:</b> Unlike SOCP and SDP, the exponential cone cannot be embedded into the PSD cone in a simple way, making it a distinct and important problem class.</p>
     </section>
@@ -948,7 +948,7 @@
       <section class="section-card" id="section-4">
       <h2>4. Quasiconvex Optimization</h2>
 
-       <h3>5.1 Quasiconvex Functions</h3>
+       <h3>4.1 Quasiconvex Functions</h3>
       <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{\mathbf{x} \mid f(\mathbf{x}) \le \alpha\}$ are convex.</p>
 
       <p><strong>Examples:</strong></p>
@@ -958,7 +958,7 @@
         <li>$x^3$ on $\mathbb{R}$ (not quasiconvex; sublevel sets are not convex)</li>
       </ul>
 
-      <h3>5.2 Quasiconvex Optimization Problems</h3>
+      <h3>4.2 Quasiconvex Optimization Problems</h3>
       <p>A problem is <strong>quasiconvex</strong> if the objective is quasiconvex and the feasible set is convex:</p>
       <p style="text-align: center;">
         $
@@ -970,7 +970,7 @@
         $
       </p>
 
-      <h3>5.3 Phase 6.2: The Bisection Algorithm</h3>
+      <h3>4.3 Phase 6.2: The Bisection Algorithm</h3>
       <p>Quasiconvex optimization is solved by a sequence of convex feasibility problems.
       <br><b>The Logic:</b> The feasibility predicate $\Phi(\alpha) = [\exists x \in \mathcal{F} : f_0(x) \le \alpha]$ is <b>monotone</b> in $\alpha$. We want to find the threshold $p^\star$ where $\Phi$ switches from False to True.</p>
 
@@ -1140,7 +1140,7 @@ objective = cp.Maximize(mu @ w - gamma * cp.quad_form(w, Sigma))
 
 # Constraints
 constraints = [cp.sum(w) == 1,  # budget
-               w >= 0]           # long-only
+               w >= 0]          # long-only
 
 # Solve
 problem = cp.Problem(objective, constraints)
@@ -1288,29 +1288,6 @@ problem.solve()</code></pre>
   </div>
 </div>
 
-<div class="problem">
-  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
-  <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
-  <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      The condition is $\sup_{a \in \mathcal{E}} a^\top x \le b$.
-      Substitute the parametrization of $a$:
-      $$ \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top P^\top x $$
-    </div>
-    <div class="proof-step">
-      The supremum of a linear function $v^\top u$ over the unit ball $\|u\|_2 \le 1$ is the dual norm, which is $\|v\|_2$.
-      Here $v = P^\top x$.
-      $$ \sup_{\|u\|_2 \le 1} u^\top (P^\top x) = \|P^\top x\|_2 $$
-    </div>
-    <div class="proof-step">
-      Thus the robust constraint is:
-      $$ \bar{a}^\top x + \|P^\top x\|_2 \le b $$
-      This is exactly an SOC constraint $\|P^\top x\|_2 \le b - \bar{a}^\top x$.
-    </div>
-  </div>
-</div>
 
 <div class="problem">
   <h3>P8.2 — QP Formulation: Constrained Least Squares</h3>
@@ -2030,6 +2007,30 @@ problem.solve()</code></pre>
     <div class="proof-step">
       <strong>Volume Ratio:</strong> Since $\text{vol} \propto e^{p/2}$:
       $$ \frac{\text{vol}(X_{\text{sim}})}{\text{vol}(X^\star)} = \exp\left(\frac{p_{\text{sim}} - p^\star}{2}\right) \le \exp\left(\frac{n}{2}\log\frac{m}{n}\right) = \left(\frac{m}{n}\right)^{n/2} $$
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
+  <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
+  <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      The condition is $\sup_{a \in \mathcal{E}} a^\top x \le b$.
+      Substitute the parametrization of $a$:
+      $$ \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top P^\top x $$
+    </div>
+    <div class="proof-step">
+      The supremum of a linear function $v^\top u$ over the unit ball $\|u\|_2 \le 1$ is the dual norm, which is $\|v\|_2$.
+      Here $v = P^\top x$.
+      $$ \sup_{\|u\|_2 \le 1} u^\top (P^\top x) = \|P^\top x\|_2 $$
+    </div>
+    <div class="proof-step">
+      Thus the robust constraint is:
+      $$ \bar{a}^\top x + \|P^\top x\|_2 \le b $$
+      This is exactly an SOC constraint $\|P^\top x\|_2 \le b - \bar{a}^\top x$.
     </div>
   </div>
 </div>

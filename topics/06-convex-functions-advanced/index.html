@@ -492,25 +492,6 @@
         <p><b>Result:</b> $f^*(y) = -1 - \log(-y)$ for $y < 0$. Domain $(-\infty, 0)$.</p>
       </div>
 
-      <h4>3.3.2 Two-Dimensional Examples (Visualizing Scaling)</h4>
-      <p>Before jumping to matrices, let's see how scaling affects the conjugate in 2D.</p>
-
-      <div class="example">
-        <h4>(a) Isotropic Quadratic: $f(x) = \frac{1}{2}(x_1^2 + x_2^2)$</h4>
-        <p>This separates into $f_1(x_1) + f_2(x_2)$.
-        <br>$f^*(y) = \sup (y_1 x_1 - x_1^2/2) + \sup (y_2 x_2 - x_2^2/2) = \frac{1}{2}y_1^2 + \frac{1}{2}y_2^2 = \frac{1}{2}\|y\|_2^2$.
-        <br><b>Lesson:</b> The conjugate of a standard quadratic is itself.</p>
-      </div>
-
-      <div class="example">
-        <h4>(b) Scaled Quadratic: $f(x) = \frac{1}{2}(x_1^2 + 10x_2^2)$</h4>
-        <p>Here $x_2$ is "steep" (high curvature).
-        <br>Conjugate: $f^*(y) = \frac{1}{2}y_1^2 + \frac{1}{2(10)}y_2^2 = \frac{1}{2}y_1^2 + \frac{1}{20}y_2^2$.
-        <br><b>Lesson:</b> High curvature in primal ($\lambda=10$) becomes low curvature in dual ($1/\lambda=0.1$). Steep valleys become shallow hills.</p>
-      </div>
-
-      <h4>3.3.3 Matrix and Vector Examples</h4>
-
       <div class="example">
         <h4>(c) Exponential: $f(x) = e^x$ on $\mathbb{R}$</h4>
         <p>We compute $f^*(y) = \sup_{x} (yx - e^x)$. Let $\phi(x) = yx - e^x$.</p>
@@ -524,8 +505,6 @@
         </ol>
         <p><b>Result:</b> $f^*(y) = y \log y - y$ for $y \ge 0$, else $\infty$. Domain $[0, \infty)$.</p>
       </div>
-
-
 
       <div class="example">
         <h4>(d) Reciprocal: $f(x) = 1/x$ on $(0,\infty)$</h4>
@@ -546,7 +525,24 @@
         <p><b>Result:</b> $f^*(y) = -2\sqrt{-y}$ for $y \le 0$ (with value 0 at $y=0$), else $\infty$. Domain $(-\infty, 0]$.</p>
       </div>
 
-      <h4>3.3.2 Quadratic and Matrix Functions</h4>
+      <h4>3.3.2 Two-Dimensional Examples (Visualizing Scaling)</h4>
+      <p>Before jumping to matrices, let's see how scaling affects the conjugate in 2D.</p>
+
+      <div class="example">
+        <h4>(a) Isotropic Quadratic: $f(x) = \frac{1}{2}(x_1^2 + x_2^2)$</h4>
+        <p>This separates into $f_1(x_1) + f_2(x_2)$.
+        <br>$f^*(y) = \sup (y_1 x_1 - x_1^2/2) + \sup (y_2 x_2 - x_2^2/2) = \frac{1}{2}y_1^2 + \frac{1}{2}y_2^2 = \frac{1}{2}\|y\|_2^2$.
+        <br><b>Lesson:</b> The conjugate of a standard quadratic is itself.</p>
+      </div>
+
+      <div class="example">
+        <h4>(b) Scaled Quadratic: $f(x) = \frac{1}{2}(x_1^2 + 10x_2^2)$</h4>
+        <p>Here $x_2$ is "steep" (high curvature).
+        <br>Conjugate: $f^*(y) = \frac{1}{2}y_1^2 + \frac{1}{2(10)}y_2^2 = \frac{1}{2}y_1^2 + \frac{1}{20}y_2^2$.
+        <br><b>Lesson:</b> High curvature in primal ($\lambda=10$) becomes low curvature in dual ($1/\lambda=0.1$). Steep valleys become shallow hills.</p>
+      </div>
+
+      <h4>3.3.3 Vector and Matrix Functions</h4>
 
       <div class="example">
         <h4>(a) Quadratic: $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$</h4>

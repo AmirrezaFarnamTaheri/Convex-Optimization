@@ -547,7 +547,7 @@
       This atom converts piecewise-linear convex costs (like hinge loss) into linear constraints.
       </p>
 
-      <h4>Example 2.2: L-infinity Minimization</h4>
+      <h4>Example 3.1: L-infinity Minimization</h4>
       <p>Find $\mathbf{x} \in \mathbb{R}^n$ minimizing $\|A\mathbf{x} - \mathbf{b}\|_\infty$. This can be reformulated as:</p>
       <p style="text-align: center;">
         $
@@ -600,7 +600,7 @@
 
       <h3>3.3 Standard LP Examples</h3>
 
-      <h4>Example 2.1: The Diet Problem</h4>
+      <h4>Example 3.2: The Diet Problem</h4>
       <p>Setup:
       <ul>
           <li>There are $n$ different foods. Variable $x_j \ge 0$ is the quantity of food $j$.</li>
@@ -624,7 +624,7 @@
       </p>
       <p>Interpretation: We search over the polyhedron of healthy diets to find the one that the cost hyperplane hits first.</p>
 
-      <h4>Example 2.3: Chebyshev Center of a Polyhedron</h4>
+      <h4>Example 3.3: Chebyshev Center of a Polyhedron</h4>
       <p>We want to find the largest Euclidean ball inside a polyhedron $\mathcal{P} = \{x \mid a_i^\top x \le b_i, i=1,\dots,m\}$. This is called the <strong>Chebyshev center</strong>.</p>
       <p>Let the ball be $\mathcal{B} = \{x_c + u \mid \|u\|_2 \le r\}$, centered at $x_c$ with radius $r$.
       We want to maximize $r$ subject to $\mathcal{B} \subseteq \mathcal{P}$.</p>
@@ -1233,7 +1233,7 @@
       <h3>5.1 The Geometric Perspective</h3>
       <p>The linear-fractional function arises from the <strong>perspective map</strong>. To see this, let's start with 1D.</p>
 
-      <h4>4.1.1 The 1D Case</h4>
+      <h4>5.1.1 The 1D Case</h4>
       <p>Consider $f(x) = \frac{x}{ax + b}$ with domain $ax+b > 0$. We can visualize this construction in three steps:</p>
       <ol>
         <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$. (Note: $x$ is scalar here)</li>
@@ -1242,7 +1242,7 @@
       </ol>
       <p>The intersection point is $(\frac{x}{ax+b}, 1)$. The x-coordinate is exactly our function value! This geometric operation—projecting onto a plane through the origin—is the definition of the perspective map.</p>
 
-      <h4>4.1.2 The General Case</h4>
+      <h4>5.1.2 The General Case</h4>
       <p>In higher dimensions ($\mathbf{x} \in \mathbb{R}^n$), we do the same:</p>
       <ul>
           <li>Map $\mathbf{x} \in \mathbb{R}^n$ to $(\mathbf{c}^\top \mathbf{x} + d, \mathbf{e}^\top \mathbf{x} + f)$ in $\mathbb{R}^2$.</li>

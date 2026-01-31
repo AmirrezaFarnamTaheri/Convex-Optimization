@@ -98,8 +98,8 @@
       <h3>1.3 Examples</h3>
 
       <div class="example">
-        <h4>(a) Absolute Value: $f(x) = |x|$</h4>
-        <p>At $x = 0$, the subdifferential is the interval $[-1, 1]$:
+        <h4>Example 6.1: Absolute Value</h4>
+        <p>Let $f(x) = |x|$. At $x = 0$, the subdifferential is the interval $[-1, 1]$:
         $$ \partial |0| = \{g \in \mathbb{R} \mid |y| \ge 0 + g \cdot y \ \forall y\} = [-1, 1] $$
         At $x > 0$, we have $\partial |x| = \{1\}$ (the derivative).
         At $x < 0$, we have $\partial |x| = \{-1\}$.</p>
@@ -107,8 +107,8 @@
       </div>
 
       <div class="example">
-        <h4>(b) $\ell_1$ Norm: $f(\mathbf{x}) = \|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$</h4>
-        <p>The subdifferential is the Cartesian product of subdifferentials:
+        <h4>Example 6.2: $\ell_1$ Norm</h4>
+        <p>Let $f(\mathbf{x}) = \|\mathbf{x}\|_1 = \sum_{i=1}^n |x_i|$. The subdifferential is the Cartesian product of subdifferentials:
         $$ \partial \|\mathbf{x}\|_1 = \partial |x_1| \times \partial |x_2| \times \cdots \times \partial |x_n| $$
         At $\mathbf{x} = 0$, we get:
         $$ \partial \|0\|_1 = [-1, 1]^n $$
@@ -116,7 +116,7 @@
       </div>
 
       <div class="example">
-        <h4>(c) Indicator Function: $f(\mathbf{x}) = I_C(\mathbf{x})$</h4>
+        <h4>Example 6.3: Indicator Function</h4>
         <p>For a convex set $C$, the indicator function is:
         $$ I_C(\mathbf{x}) = \begin{cases} 0 & \mathbf{x} \in C \\ +\infty & \mathbf{x} \notin C \end{cases} $$
         The subdifferential at $\mathbf{x} \in C$ is the <b>normal cone</b> to $C$ at $\mathbf{x}$:
@@ -191,7 +191,7 @@
       </div>
 
       <div class="example-box">
-        <h4>Example: Ridge Regression Subdifferential</h4>
+        <h4>Example 6.4: Ridge Regression Subdifferential</h4>
         <p>Consider $f(x) = \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$.
         <br><b>Step 1:</b> Subdifferential of $h(r) = \frac{1}{2}\|r\|_2^2$ is $\partial h(r) = \{r\}$ (since $h$ is differentiable).
         <br><b>Step 2:</b> By affine composition with $r = Ax - b$:
@@ -211,7 +211,7 @@
       <p><b>Interpretation:</b> The subdifferential is the convex hull of the subdifferentials of the active functions. If only one function is active (say $f_1(x) > f_i(x)$ for $i \neq 1$), then $\partial f(x) = \partial f_1(x)$.</p>
 
       <div class="example-box">
-        <h4>Example: Hinge Loss</h4>
+        <h4>Example 6.5: Hinge Loss</h4>
         <p>The hinge loss $f(z) = \max\{0, 1-z\}$ is used in SVMs. Let $f_1(z) = 0$ and $f_2(z) = 1-z$.
         <br><b>Case 1:</b> $z > 1$. Then $f(z) = 0$ (only $f_1$ active), so $\partial f(z) = \{0\}$.
         <br><b>Case 2:</b> $z < 1$. Then $f(z) = 1-z$ (only $f_2$ active), so $\partial f(z) = \{-1\}$.
@@ -235,7 +235,7 @@
       <p><b>Warning:</b> The chain rule for subdifferentials requires monotonicity of the outer function $h$. Unlike smooth calculus, $\partial (h \circ f)$ does NOT always equal $h'(f(x)) \cdot \partial f(x)$ for general $h$.</p>
 
       <div class="example-box">
-        <h4>Example: Subgradient of $e^{|x|}$</h4>
+        <h4>Example 6.6: Subgradient of $e^{|x|}$</h4>
         <p>Let $g(x) = e^{|x|}$. This is the composition of $h(u) = e^u$ (convex, non-decreasing) and $f(x) = |x|$ (convex).
         <br>We compute $\partial g(0)$ using the chain rule.
         <ul>
@@ -347,7 +347,7 @@
       <p><b>Stability:</b> The solution is stable to perturbations in the objective. A small change $\epsilon$ in the gradient moves the minimizer by at most $\epsilon/m$.</p>
 
       <div class="example">
-        <h4>Example: Strictly Convex but Not Strongly Convex</h4>
+        <h4>Example 6.7: Strictly Convex but Not Strongly Convex</h4>
         <p>Consider $f(x) = x^4$ on $\mathbb{R}$. This function is strictly convex (has a unique minimizer at $x=0$), but it is <b>not</b> strongly convex. To see this, note that $f''(x) = 12x^2$, which equals $0$ at $x=0$. There is no $m > 0$ such that $f''(x) \ge m$ for all $x$ near $0$.</p>
         <p>Strong convexity requires uniform lower curvature everywhere, while strict convexity only requires the function to "curve upward" (but the curvature can approach zero).</p>
       </div>
@@ -465,8 +465,8 @@
       <h4>3.3.1 One-Dimensional Functions</h4>
 
       <div class="example">
-        <h4>(a) Affine function $f(x) = ax + b$</h4>
-        <p>Compute $f^*(y) = \sup_{x} (yx - (ax+b)) = \sup_x ((y-a)x - b)$.</p>
+        <h4>Example 6.8: Affine Function</h4>
+        <p>Let $f(x) = ax + b$. Compute $f^*(y) = \sup_{x} (yx - (ax+b)) = \sup_x ((y-a)x - b)$.</p>
         <ul>
               <li><b>Case 1: $y \ne a$.</b> The term $((y-a)x - b)$ is a line with nonzero slope. As $x \to \pm \infty$, this goes to $+\infty$ (since we can choose sign of $x$ to match sign of slope). So $f^*(y) = +\infty$.</li>
               <li><b>Case 2: $y = a$.</b> The term simplifies to $0 \cdot x - b = -b$. Supremum is $-b$.</li>
@@ -475,8 +475,8 @@
       </div>
 
       <div class="example">
-        <h4>(b) Negative Log: $f(x) = -\log x$ on $(0,\infty)$</h4>
-        <p>We compute $f^*(y) = \sup_{x>0} (yx + \log x)$. Let $\phi(x) = yx + \log x$.</p>
+        <h4>Example 6.9: Negative Log</h4>
+        <p>Let $f(x) = -\log x$ on $(0,\infty)$. We compute $f^*(y) = \sup_{x>0} (yx + \log x)$. Let $\phi(x) = yx + \log x$.</p>
         <ol>
           <li><b>Derivative:</b> $\phi'(x) = y + 1/x$. Setting to zero gives $x = -1/y$.</li>
           <li><b>Domain Check:</b> Since we require $x > 0$, we must have $y < 0$.
@@ -493,8 +493,8 @@
       </div>
 
       <div class="example">
-        <h4>(c) Exponential: $f(x) = e^x$ on $\mathbb{R}$</h4>
-        <p>We compute $f^*(y) = \sup_{x} (yx - e^x)$. Let $\phi(x) = yx - e^x$.</p>
+        <h4>Example 6.10: Exponential</h4>
+        <p>Let $f(x) = e^x$ on $\mathbb{R}$. We compute $f^*(y) = \sup_{x} (yx - e^x)$. Let $\phi(x) = yx - e^x$.</p>
         <ol>
           <li><b>Derivative:</b> $\phi'(x) = y - e^x$. Setting to zero gives $e^x = y$, or $x = \log y$. This requires $y > 0$.</li>
           <li><b>Case $y > 0$:</b> The critical point $x^* = \log y$ is a global max ($\phi'' = -e^x < 0$).
@@ -507,8 +507,8 @@
       </div>
 
       <div class="example">
-        <h4>(d) Reciprocal: $f(x) = 1/x$ on $(0,\infty)$</h4>
-        <p>We compute $f^*(y) = \sup_{x>0} (yx - 1/x)$. Let $\phi(x) = yx - 1/x$.</p>
+        <h4>Example 6.11: Reciprocal</h4>
+        <p>Let $f(x) = 1/x$ on $(0,\infty)$. We compute $f^*(y) = \sup_{x>0} (yx - 1/x)$. Let $\phi(x) = yx - 1/x$.</p>
         <ol>
           <li><b>Derivative:</b> $\phi'(x) = y + 1/x^2$. Setting to zero gives $x^2 = -1/y$, so $x = \sqrt{-1/y}$. This requires $y < 0$.</li>
           <li><b>Domain Analysis:</b>
@@ -529,15 +529,15 @@
       <p>Before jumping to matrices, let's see how scaling affects the conjugate in 2D.</p>
 
       <div class="example">
-        <h4>(a) Isotropic Quadratic: $f(x) = \frac{1}{2}(x_1^2 + x_2^2)$</h4>
-        <p>This separates into $f_1(x_1) + f_2(x_2)$.
+        <h4>Example 6.12: Isotropic Quadratic</h4>
+        <p>Let $f(x) = \frac{1}{2}(x_1^2 + x_2^2)$. This separates into $f_1(x_1) + f_2(x_2)$.
         <br>$f^*(y) = \sup (y_1 x_1 - x_1^2/2) + \sup (y_2 x_2 - x_2^2/2) = \frac{1}{2}y_1^2 + \frac{1}{2}y_2^2 = \frac{1}{2}\|y\|_2^2$.
         <br><b>Lesson:</b> The conjugate of a standard quadratic is itself.</p>
       </div>
 
       <div class="example">
-        <h4>(b) Scaled Quadratic: $f(x) = \frac{1}{2}(x_1^2 + 10x_2^2)$</h4>
-        <p>Here $x_2$ is "steep" (high curvature).
+        <h4>Example 6.13: Scaled Quadratic</h4>
+        <p>Let $f(x) = \frac{1}{2}(x_1^2 + 10x_2^2)$. Here $x_2$ is "steep" (high curvature).
         <br>Conjugate: $f^*(y) = \frac{1}{2}y_1^2 + \frac{1}{2(10)}y_2^2 = \frac{1}{2}y_1^2 + \frac{1}{20}y_2^2$.
         <br><b>Lesson:</b> High curvature in primal ($\lambda=10$) becomes low curvature in dual ($1/\lambda=0.1$). Steep valleys become shallow hills.</p>
       </div>
@@ -545,16 +545,16 @@
       <h4>3.3.3 Vector and Matrix Functions</h4>
 
       <div class="example">
-        <h4>(a) Quadratic: $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$</h4>
-        <p>Maximize $\phi(x) = y^\top x - \frac{1}{2} x^\top Q x$. This is a concave quadratic.
+        <h4>Example 6.14: General Quadratic</h4>
+        <p>Let $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$. Maximize $\phi(x) = y^\top x - \frac{1}{2} x^\top Q x$. This is a concave quadratic.
         <br>Gradient $\nabla \phi(x) = y - Qx = 0 \implies x^* = Q^{-1}y$.
         <br>Value: $y^\top (Q^{-1}y) - \frac{1}{2} (Q^{-1}y)^\top Q (Q^{-1}y) = y^\top Q^{-1} y - \frac{1}{2} y^\top Q^{-1} y = \frac{1}{2} y^\top Q^{-1} y$.
         <br><b>Result:</b> Quadratic with matrix $Q$ conjugates to quadratic with $Q^{-1}$.</p>
       </div>
 
       <div class="example">
-        <h4>(b) Log-Determinant: $f(X) = -\log \det X$ on $\mathbb{S}^n_{++}$</h4>
-        <p>Maximize $\mathrm{tr}(YX) + \log \det X$ over $X \succ 0$.
+        <h4>Example 6.15: Log-Determinant</h4>
+        <p>Let $f(X) = -\log \det X$ on $\mathbb{S}^n_{++}$. Maximize $\mathrm{tr}(YX) + \log \det X$ over $X \succ 0$.
         <br>Gradient: $Y + X^{-1} = 0 \implies X = -Y^{-1}$.
         <br>Requires $Y$ invertible and $-Y^{-1} \succ 0 \implies Y \prec 0$ (negative definite).
         <br>Value: $\mathrm{tr}(Y(-Y^{-1})) + \log \det (-Y^{-1}) = -n - \log \det(-Y)$.
@@ -562,14 +562,14 @@
       </div>
 
       <div class="example">
-        <h4>(c) Indicator $\leftrightarrow$ Support Function</h4>
+        <h4>Example 6.16: Indicator $\leftrightarrow$ Support Function</h4>
         <p>Let $I_S(x)$ be the indicator of a set $S$ (0 if $x \in S$, $+\infty$ else).
         <br>$I_S^*(y) = \sup_x (y^\top x - I_S(x)) = \sup_{x \in S} (y^\top x)$.
         <br><b>Result:</b> $I_S^* = \sigma_S$, the support function of $S$.</p>
       </div>
 
       <div class="example">
-        <h4>(d) Norm $\leftrightarrow$ Indicator of Dual Ball</h4>
+        <h4>Example 6.17: Norm $\leftrightarrow$ Indicator of Dual Ball</h4>
         <p>Let $f(x) = \|x\|$. Dual norm definition: $\|y\|_* = \sup_{\|x\|\le 1} y^\top x$.
         <br>$f^*(y) = \sup_x (y^\top x - \|x\|)$.
         <br>Case 1: $\|y\|_* \le 1$. Then $y^\top x \le \|y\|_* \|x\| \le \|x\|$. So $y^\top x - \|x\| \le 0$. Max is 0 (at $x=0$).
@@ -579,7 +579,7 @@
       </div>
 
       <div class="example">
-        <h4>(e) Negative Entropy & Log-Sum-Exp</h4>
+        <h4>Example 6.18: Negative Entropy & Log-Sum-Exp</h4>
           <p>Let $f(x) = \sum_{i=1}^n x_i \log x_i$ on the probability simplex $\Delta_n = \{x \mid x \ge 0, \sum x_i = 1\}$. This is the negative Shannon entropy.
           <br><b>Conjugate Derivation:</b>
           We wish to calculate $f^*(y) = \sup_{x \in \Delta_n} (y^\top x - \sum x_i \log x_i)$. This is a constrained optimization problem:
@@ -616,7 +616,7 @@
       </div>
 
       <div class="example">
-        <h4>(f) Geometric Mean via Conjugates</h4>
+        <h4>Example 6.19: Geometric Mean via Conjugates</h4>
         <p>Consider the negative geometric mean $f(x) = -(\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We wish to compute its conjugate to prove $f$ is convex.
         $$ f^*(y) = \sup_{x \succ 0} \left( y^\top x + \left(\prod_{i=1}^n x_i\right)^{1/n} \right) $$
         <br><b>Step 1: Homogeneity and Domain.</b>
@@ -784,7 +784,7 @@
           where $\Delta = \{\lambda \ge 0 : \sum_i \lambda_i = 1\}$ is the probability simplex.
         </div>
         <div class="proof-step">
-          <strong>Interpretation:</strong> The log-sum-exp function is the <b>conjugate</b> of the negative entropy function restricted to the simplex (see Example 3.3.2(e) above). The maximizer is the <b>softmax</b>: $\lambda_i^* = e^{u_i} / \sum_j e^{u_j}$.
+          <strong>Interpretation:</strong> The log-sum-exp function is the <b>conjugate</b> of the negative entropy function restricted to the simplex (see Example 6.18 above). The maximizer is the <b>softmax</b>: $\lambda_i^* = e^{u_i} / \sum_j e^{u_j}$.
         </div>
         <div class="proof-step">
           <strong>Connection to Smoothing:</strong> This explains why log-sum-exp is a "smooth max": it replaces the non-smooth max with an entropy-regularized objective. The regularization spreads probability across indices rather than concentrating on the maximum.
@@ -829,32 +829,32 @@
 
         <h3>4.3 Simple 1D Examples</h3>
         <div class="example">
-            <h4>(a) Logarithm: $f(x) = \log x$</h4>
-            <p>Sublevel set $\{x > 0 \mid \log x \le \alpha\} = \{x \mid x \le e^\alpha\} = (0, e^\alpha]$. This is a convex interval.
+            <h4>Example 6.20: Logarithm</h4>
+            <p>$f(x) = \log x$. Sublevel set $\{x > 0 \mid \log x \le \alpha\} = \{x \mid x \le e^\alpha\} = (0, e^\alpha]$. This is a convex interval.
             <br>So $\log x$ is quasiconvex. (It is also concave, so $-\log x$ is convex).</p>
         </div>
         <div class="example">
-            <h4>(b) Ceiling: $f(x) = \lceil x \rceil$</h4>
-            <p>Sublevel set $\{x \mid \lceil x \rceil \le k\} = (-\infty, k]$. This is an interval.
+            <h4>Example 6.21: Ceiling Function</h4>
+            <p>$f(x) = \lceil x \rceil$. Sublevel set $\{x \mid \lceil x \rceil \le k\} = (-\infty, k]$. This is an interval.
             <br>So $\lceil x \rceil$ is quasiconvex. (It is step-like and definitely not convex).</p>
         </div>
 
         <h3>4.4 Vector Examples</h3>
         <div class="example">
-            <h4>1. Length of a Vector</h4>
+            <h4>Example 6.22: Length of a Vector</h4>
             <p>Define len$(x) = \max\{i \mid x_i \ne 0\}$ (index of last nonzero element).
             <br>Sublevel set $\{x \mid \text{len}(x) \le k\} = \{x \mid x_{k+1} = \dots = x_n = 0\}$.
             <br>This is a linear subspace, hence convex. So len$(x)$ is quasiconvex.</p>
         </div>
         <div class="example">
-            <h4>2. Bilinear: $f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$</h4>
-            <p>Hessian is indefinite (not convex).
+            <h4>Example 6.23: Bilinear Function</h4>
+            <p>$f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$. Hessian is indefinite (not convex).
             <br>Superlevel set $\{x \in \mathbb{R}^2_{++} \mid x_1 x_2 \ge \alpha\}$ is convex (bounded by hyperbola).
             <br>Thus $f$ is <b>quasiconcave</b> on the positive quadrant.</p>
         </div>
         <div class="example">
-            <h4>3. Linear-Fractional: $f(x) = \frac{a^\top x + b}{c^\top x + d}$</h4>
-            <p>Defined on the halfspace $D = \{x \mid c^\top x + d > 0\}$.
+            <h4>Example 6.24: Linear-Fractional</h4>
+            <p>$f(x) = \frac{a^\top x + b}{c^\top x + d}$. Defined on the halfspace $D = \{x \mid c^\top x + d > 0\}$.
             <br>Consider the sublevel set $S_\alpha = \{x \in D \mid \frac{a^\top x + b}{c^\top x + d} \le \alpha\}$.
             $$ \frac{a^\top x + b}{c^\top x + d} \le \alpha \iff a^\top x + b \le \alpha (c^\top x + d) \iff (a - \alpha c)^\top x + (b - \alpha d) \le 0 $$
             This is a linear inequality, which defines a closed halfspace (if $a-\alpha c \ne 0$) or the whole space/empty set (degenerate cases).
@@ -863,7 +863,7 @@
             <br><b>Trap:</b> If the domain allows $c^\top x + d < 0$, the inequality flips, and the set becomes a union of disjoint regions (not convex).</p>
         </div>
         <div class="example">
-            <h4>4. Distance Ratio (Rigorous Analysis)</h4>
+            <h4>Example 6.25: Distance Ratio</h4>
             <p>Let $f(x) = \frac{\|x-a\|_2}{\|x-b\|_2}$. We analyze the sublevel set $S_\alpha = \{x \mid \|x-a\| \le \alpha \|x-b\|\}$.
             <br>Squaring leads to the quadratic inequality:
             $$ (1-\alpha^2)x^\top x + 2(\alpha^2 b - a)^\top x + (\|a\|^2 - \alpha^2 \|b\|^2) \le 0 $$
@@ -879,7 +879,7 @@
         <p><b>Conclusion:</b> The distance ratio function is <b>quasiconvex</b> only on the set $\{x \mid f(x) \le 1\}$ (the Voronoi region of $a$). It is not globally quasiconvex on $\mathbb{R}^n$. This subtle distinction is important in facility location problems.</p>
         </div>
         <div class="example">
-            <h4>5. Generalized Eigenvalue</h4>
+            <h4>Example 6.26: Generalized Eigenvalue</h4>
             <p>Let $\lambda_{\max}(A, B) = \sup \{ \lambda \mid \det(\lambda B - A) = 0 \} = \sup_{x \ne 0} \frac{x^\top A x}{x^\top B x}$ for $B \succ 0$.
             <br>The sublevel set is $\{x \mid x^\top A x \le \alpha x^\top B x\} = \{x \mid x^\top (A - \alpha B) x \le 0\}$.
             This is not generally convex for the vector $x$.
@@ -887,14 +887,14 @@
             Sublevel set: $A \preceq \alpha B$, which is a convex cone in $(A, B)$.</p>
         </div>
         <div class="example">
-            <h4>5. Norm-Ratio (Signal-to-Noise)</h4>
+            <h4>Example 6.27: Norm-Ratio (Signal-to-Noise)</h4>
             <p>$f(x) = \frac{\|Ax-b\|_2}{c^\top x + d}$ on $c^\top x + d > 0$.
             <br>Sublevel set: $\|Ax-b\|_2 \le \alpha(c^\top x + d)$.
             For $\alpha \ge 0$, this is exactly a Second-Order Cone constraint.
             Thus sublevel sets are convex (specifically, SOC-representable).</p>
         </div>
         <div class="example">
-            <h4>7. Internal Rate of Return (IRR)</h4>
+            <h4>Example 6.28: Internal Rate of Return (IRR)</h4>
             <p>Let $x = (x_0, \dots, x_n)$ be a cash flow stream.
             <br>Present value at rate $r$: $PV(x, r) = \sum_{i=0}^n x_i (1+r)^{-i}$.
             <br>IRR is defined as $\mathrm{IRR}(x) = \inf \{r \ge 0 \mid PV(x, r) = 0\}$.
@@ -936,42 +936,48 @@
         <p>Determine the convexity properties of the following functions.</p>
 
         <div class="example">
-            <h4>(a) $f(x) = e^x - 1$ on $\mathbb{R}$</h4>
-            <p><b>Analysis:</b> $f'(x) = e^x$, $f''(x) = e^x > 0$.
+            <h4>Example 6.29: Exponential minus One</h4>
+            <p><b>(a)</b> $f(x) = e^x - 1$ on $\mathbb{R}$.
+            <br><b>Analysis:</b> $f'(x) = e^x$, $f''(x) = e^x > 0$.
             <br>Strictly convex. Since it is monotone increasing, it is also both quasiconvex and quasiconcave.</p>
         </div>
 
         <div class="example">
-            <h4>(b) $f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$</h4>
-            <p><b>Analysis:</b> Hessian is indefinite ($\det = -1$). Not convex or concave.
+            <h4>Example 6.30: Product</h4>
+            <p><b>(b)</b> $f(x_1, x_2) = x_1 x_2$ on $\mathbb{R}^2_{++}$.
+            <br><b>Analysis:</b> Hessian is indefinite ($\det = -1$). Not convex or concave.
             <br>Sublevel sets ($x_1 x_2 \le \alpha$) are non-convex (region under hyperbola). Not quasiconvex.
             <br>Superlevel sets ($x_1 x_2 \ge \alpha$) are convex (region above hyperbola). <b>Quasiconcave</b>.</p>
         </div>
 
         <div class="example">
-            <h4>(c) $f(x_1, x_2) = 1/(x_1 x_2)$ on $\mathbb{R}^2_{++}$</h4>
-            <p><b>Analysis:</b> $f(x) = (x_1 x_2)^{-1}$. The Hessian is $H = \begin{bmatrix} 2x_1^{-3}x_2^{-1} & x_1^{-2}x_2^{-2} \\ x_1^{-2}x_2^{-2} & 2x_1^{-1}x_2^{-3} \end{bmatrix}$. $\det(H) = 3(x_1 x_2)^{-4} > 0$. Trace $> 0$.
+            <h4>Example 6.31: Inverse Product</h4>
+            <p><b>(c)</b> $f(x_1, x_2) = 1/(x_1 x_2)$ on $\mathbb{R}^2_{++}$.
+            <br><b>Analysis:</b> $f(x) = (x_1 x_2)^{-1}$. The Hessian is $H = \begin{bmatrix} 2x_1^{-3}x_2^{-1} & x_1^{-2}x_2^{-2} \\ x_1^{-2}x_2^{-2} & 2x_1^{-1}x_2^{-3} \end{bmatrix}$. $\det(H) = 3(x_1 x_2)^{-4} > 0$. Trace $> 0$.
             <br><b>Convex</b> (and thus quasiconvex).
             <br>Superlevel sets are the same as sublevel sets of $x_1 x_2$. Non-convex. Not quasiconcave.</p>
         </div>
 
         <div class="example">
-            <h4>(d) $f(x_1, x_2) = x_1 / x_2$ on $\mathbb{R}_{++}^2$</h4>
-            <p><b>Analysis:</b> Linear-fractional function.
+            <h4>Example 6.32: Ratio</h4>
+            <p><b>(d)</b> $f(x_1, x_2) = x_1 / x_2$ on $\mathbb{R}_{++}^2$.
+            <br><b>Analysis:</b> Linear-fractional function.
             <br>Sublevel sets $x_1 \le \alpha x_2$ are halfspaces (convex).
             <br>Superlevel sets $x_1 \ge \alpha x_2$ are halfspaces (convex).
             <br><b>Quasilinear</b> (both quasiconvex and quasiconcave). Not convex/concave.</p>
         </div>
 
         <div class="example">
-            <h4>(e) $f(x_1, x_2) = x_1^2 / x_2$ on $\mathbb{R} \times \mathbb{R}_{++}$</h4>
-            <p><b>Analysis:</b> This is the perspective of the square function $h(u)=u^2$.
+            <h4>Example 6.33: Quadratic over Linear</h4>
+            <p><b>(e)</b> $f(x_1, x_2) = x_1^2 / x_2$ on $\mathbb{R} \times \mathbb{R}_{++}$.
+            <br><b>Analysis:</b> This is the perspective of the square function $h(u)=u^2$.
             <br>Since $h$ is convex, its perspective is <b>convex</b>.</p>
         </div>
 
         <div class="example">
-            <h4>(f) $f(x_1, x_2) = x_1^\alpha x_2^{1-\alpha}$ on $\mathbb{R}^2_{++}$ for $\alpha \in [0,1]$</h4>
-            <p><b>Analysis:</b> Geometric mean (Cobb-Douglas function).
+            <h4>Example 6.34: Cobb-Douglas</h4>
+            <p><b>(f)</b> $f(x_1, x_2) = x_1^\alpha x_2^{1-\alpha}$ on $\mathbb{R}^2_{++}$ for $\alpha \in [0,1]$.
+            <br><b>Analysis:</b> Geometric mean (Cobb-Douglas function).
             <br>It is <b>concave</b> (Hessian is negative semidefinite).
             <br>Thus it is <b>quasiconcave</b>. It is generally not quasiconvex.</p>
         </div>
@@ -1055,13 +1061,13 @@
 
         <h3>5.2 Examples</h3>
         <div class="example">
-            <h4>1. Uniform Distribution on Convex Set</h4>
+            <h4>Example 6.35: Uniform Distribution on Convex Set</h4>
             <p>Let $C$ be convex. $f(x) = 1/\alpha$ if $x \in C$, else 0.
             <br>$\log f(x) = -\log \alpha$ on $C$, $-\infty$ outside.
             <br>This is a concave function (indicator of convex set). So uniform density is log-concave.</p>
         </div>
         <div class="example">
-            <h4>2. Wishart Distribution</h4>
+            <h4>Example 6.36: Wishart Distribution</h4>
             <p>Density $f(X) \propto (\det X)^{k} e^{-\mathrm{tr}(\Sigma^{-1}X)}$.
             <br>$\log f(X) = c + k \log \det X - \mathrm{tr}(\Sigma^{-1}X)$.
             <br>$\log \det$ is concave; trace is linear. Sum is concave.
@@ -1098,7 +1104,7 @@
 
         <h3>5.4 Probability Examples</h3>
         <div class="example">
-            <h4>(a) Hitting a Convex Set with Log-Concave Noise</h4>
+            <h4>Example 6.37: Hitting a Convex Set with Log-Concave Noise</h4>
             <p>Let $w$ be a random vector with log-concave density $p(w)$. Let $C$ be a convex set. Define:
             $$ f(x) = \mathbb{P}(x + w \in C) $$
             We can express this as a convolution:
@@ -1115,7 +1121,7 @@
             <br><i>Interpretation:</i> The probability of a random point landing in a moving target $C$ varies "smoothly" (unimodally) as we shift the center $x$.</p>
         </div>
         <div class="example">
-            <h4>(b) Cumulative Distribution Function (CDF)</h4>
+            <h4>Example 6.38: Cumulative Distribution Function (CDF)</h4>
             <p>If a PDF $p(z)$ is log-concave on $\mathbb{R}^n$, then its CDF is log-concave:
             $$ F(x) = \mathbb{P}(w \preceq x) = \int \mathbf{1}_{(-\infty, x]}(z) p(z) dz $$
             We can view the indicator $\mathbf{1}_{(-\infty, x]}(z)$ as the function:
@@ -1536,7 +1542,7 @@
     </div>
     <div class="proof-step">
       <strong>Conclusion:</strong>
-      This matches the result from Example 1.4(a). The Legendre transform provides a mechanical way to compute conjugates for smooth strictly convex functions.
+      This matches the result from Example 6.8. The Legendre transform provides a mechanical way to compute conjugates for smooth strictly convex functions.
     </div>
   </div>
 </div>
@@ -1665,7 +1671,7 @@
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      See Example 3.3.3(e) for the derivation. The key steps are:
+      See Example 6.18 for the derivation. The key steps are:
       1. Gradient condition $y = \nabla f(x)$ implies $y$ is a probability vector.
       2. If $y$ is not a probability vector, the supremum is infinite.
       3. Substituting $x$ back gives the negative entropy term.

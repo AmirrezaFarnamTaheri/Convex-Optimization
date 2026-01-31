@@ -324,7 +324,7 @@
         <p>Jensen's inequality is a powerful engine for generating algebraic inequalities.</p>
 
         <div class="example">
-          <h4>1. Arithmetic-Geometric Mean (AM-GM)</h4>
+          <h4>Example 5.1: Arithmetic-Geometric Mean (AM-GM)</h4>
           <p>We prove the generalized weighted AM-GM inequality using the concavity of the logarithm.</p>
           <div class="proof-step">
             <strong>Step 1: Setup.</strong> Let $f(x) = \log x$. Since $f''(x) = -1/x^2 < 0$, $f$ is concave.
@@ -343,7 +343,7 @@
         </div>
 
         <div class="example">
-          <h4>2. From AM-GM to Hölder's Inequality</h4>
+          <h4>Example 5.2: From AM-GM to Hölder's Inequality</h4>
           <p>We build up to Hölder's inequality in two steps.</p>
 
           <p><b>Step A: Young's Inequality.</b> Let $p, q > 1$ with $1/p + 1/q = 1$. For $a, b \ge 0$:
@@ -364,7 +364,7 @@
           </p>
         </div>
         <div class="insight">
-          <h4>Example 3: The Variance Conjecture (A Cautionary Tale)</h4>
+          <h4>Example 5.3: The Variance Conjecture (A Cautionary Tale)</h4>
           <p>Jensen's inequality says $\mathbb{E} f(\mathbf{x}_0 + \mathbf{v}) \ge f(\mathbf{x}_0)$ for zero-mean noise $\mathbf{v}$.
           <br>Does larger variance imply a larger expected value?
           <br><b>Conjecture:</b> If $\mathrm{var}(\mathbf{v}) > \mathrm{var}(\mathbf{w})$, then $\mathbb{E} f(\mathbf{x}_0+\mathbf{v}) > \mathbb{E} f(\mathbf{x}_0+\mathbf{w})$?
@@ -641,7 +641,7 @@
         </div>
         <p><b>Note:</b> The converse is false. $f(x) = \log x$ has convex sublevel sets (intervals) but is concave. Functions with convex sublevel sets are called <b>quasiconvex</b>.</p>
 
-        <h3>2.4 Convex Hull of a Function (Example 3.30)</h3>
+        <h3>2.4 Convex Hull of a Function</h3>
         <p>Similar to how we can define the convex hull of a set, we can define the <a href="#" class="definition-link" data-term="convex envelope">convex hull (or convex envelope)</a> of a function $f: \mathbb{R}^n \to \mathbb{R}$ via its epigraph.</p>
         $$ g(x) = \inf \{ t \mid (x, t) \in \text{conv epi } f \} $$
         <p><b>Geometric Intuition:</b> Imagine "shrink-wrapping" the graph of $f$ from below. The function $g$ is the <b>greatest convex underestimator</b> of $f$. This concept is crucial in relaxation techniques for non-convex optimization (e.g., replacing a non-convex constraint with its convex hull).</p>
@@ -675,7 +675,7 @@
         </div>
 
         <div class="proof-box">
-          <h4>Example: Homogeneous Envelope (Exercise 3.31)</h4>
+          <h4>Example 5.4: Homogeneous Envelope (Exercise 3.31)</h4>
           <p>Given a convex function $f$ (with $f(0)=0$), its <b>homogeneous envelope</b> is defined as:
           $$ g(x) = \inf_{\alpha > 0} \frac{f(\alpha x)}{\alpha} $$
           This function is the "tightest" homogeneous function that stays below $f$.</p>
@@ -824,7 +824,7 @@
         <br><b>Fact:</b> Every sublinear function is convex.
         <br><b>Examples:</b> Norms, support functions $S_C(x) = \sup_{y \in C} y^\top x$, and maximum of linear functions.</p>
 
-        <h4>Examples with Proof Content</h4>
+        <h4>Example 5.5: Standard Norms</h4>
         <div class="example-box">
             <ul>
                 <li><b>$\ell_1$ Norm:</b> $\|x\|_1 = \sum |x_i|$. Convexity follows from $|a+b| \le |a|+|b|$.
@@ -840,7 +840,7 @@
         <h3>3.2 Other Standard Atoms</h3>
 
         <div class="example-box">
-            <h4>2. Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
+            <h4>Example 5.6: Log-Sum-Exp ($\text{lse}(x) = \log \sum e^{x_i}$)</h4>
             <p>This function acts as a smooth approximation of the maximum function. Its convexity is a crucial result used in logistic regression and geometric programming.</p>
 
             <div class="proof-box">
@@ -886,7 +886,7 @@
         </div>
 
         <div class="example-box">
-            <h4>3. Quadratic-over-Linear ($f(x,y) = x^\top x / y$)</h4>
+            <h4>Example 5.7: Quadratic-over-Linear ($f(x,y) = x^\top x / y$)</h4>
             <p>This function appears in variance minimization and robust optimization.</p>
             <p><b>Domain:</b> $y > 0$ (Crucial!). Not convex for $y < 0$.</p>
 
@@ -904,7 +904,7 @@
         </div>
 
         <div class="example-box">
-            <h4>4. Power Functions ($x^p$)</h4>
+            <h4>Example 5.8: Power Functions ($x^p$)</h4>
             <p><b>Domain:</b> $x > 0$.</p>
             <ul>
                 <li>$p \ge 1$: Convex.</li>
@@ -942,7 +942,7 @@
         <p><b>Rule:</b> The sum of convex functions (with non-negative weights) is convex.</p>
 
         <div class="example-box">
-          <h4>Example: Sum of Norms</h4>
+          <h4>Example 5.9: Sum of Norms</h4>
           <p>Let $f(x) = 3x^2 + 5|x|$.
           <br>Since $f_1(x) = x^2$ is convex and $f_2(x) = |x|$ is convex, and weights $3, 5 \ge 0$, the sum is convex.</p>
         </div>
@@ -973,7 +973,7 @@
         <p><b>Rule:</b> The pointwise maximum of any number of convex functions is convex.</p>
 
         <div class="example-box">
-          <h4>Example: Max of Power and Absolute Value</h4>
+          <h4>Example 5.10: Max of Power and Absolute Value</h4>
           <p>Let $f(x) = \max\{x^2, |x|\}$.
           <br>Since $f_1(x) = x^2$ and $f_2(x) = |x|$ are both convex, their pointwise maximum is convex.
           <br><i>Visual Check:</i> Graph both functions. The region "above both" (epigraph) is the intersection of two convex regions (bowls), which is still a convex region.</p>
@@ -1029,7 +1029,7 @@
 
         <h4>Examples of Pointwise Maxima</h4>
         <div class="example">
-          <h4>Example 1: Piecewise-Linear (Max of Affine Functions)</h4>
+          <h4>Example 5.11: Piecewise-Linear (Max of Affine Functions)</h4>
           <p>Let $\ell_i(x) = a_i^\top x + b_i$ for $i=1,\dots,m$. Define:</p>
           $$ f(x) = \max_{1\le i\le m} (a_i^\top x + b_i) $$
           <p>Each $\ell_i$ is convex, so $f$ is convex. Geometrically, this is a polyhedral convex function (its epigraph is a polyhedron).
@@ -1039,14 +1039,14 @@
         </div>
 
         <div class="example">
-          <h4>Example 2: The $\ell_p$-type Mean ($p < 1$)</h4>
+          <h4>Example 5.12: The $\ell_p$-type Mean ($p < 1$)</h4>
           <p>Consider the function $f(x) = \left(\sum x_i^p\right)^{1/p}$ for $0 < p < 1$ on $\mathbb{R}^n_{++}$.
           <br>This function is <b>concave</b>.
           <br><i>Note:</i> For $p \ge 1$, this is the $\ell_p$ norm, which is convex. The switch in curvature for $p < 1$ is a subtle but important distinction. The proof involves checking the Hessian or using a variation of Minkowski's inequality.</p>
         </div>
 
         <div class="example">
-          <h4>Example 3: Sum of the $r$ Largest Components (Ky Fan Norm)</h4>
+          <h4>Example 5.13: Sum of the $r$ Largest Components (Ky Fan Norm)</h4>
           <p>For $x \in \mathbb{R}^n$, let $x_{[1]} \ge x_{[2]} \ge \dots \ge x_{[n]}$ denote components sorted in descending order. Define:
           $$ f(x) = \sum_{k=1}^r x_{[k]} $$
           This function is convex and coordinate-wise nondecreasing.</p>
@@ -1088,17 +1088,17 @@
 
         <h4>Examples of Pointwise Supremum</h4>
         <div class="example">
-          <h4>1. Support Function</h4>
+          <h4>Example 5.14: Support Function</h4>
           <p>For any set $C \subset \mathbb{R}^n$, the support function $S_C(\mathbf{x}) = \sup_{\mathbf{y} \in C} \mathbf{y}^\top \mathbf{x}$ is the pointwise supremum of linear functions $\mathbf{x} \mapsto \mathbf{y}^\top \mathbf{x}$ indexed by $\mathbf{y} \in C$. Thus $S_C$ is always convex, regardless of whether $C$ is convex.</p>
         </div>
 
         <div class="example">
-          <h4>2. Distance to Farthest Point</h4>
+          <h4>Example 5.15: Distance to Farthest Point</h4>
           <p>Let $C \subset \mathbb{R}^n$. The function $f(\mathbf{x}) = \sup_{\mathbf{y} \in C} \|\mathbf{x} - \mathbf{y}\|$ (distance to the farthest point in $C$) is convex, because for each fixed $\mathbf{y}$, $\mathbf{x} \mapsto \|\mathbf{x} - \mathbf{y}\|$ is convex.</p>
         </div>
 
         <div class="example">
-          <h4>3. Maximum Eigenvalue</h4>
+          <h4>Example 5.16: Maximum Eigenvalue</h4>
           <p>For $X \in \mathbb{S}^n$, the maximum eigenvalue $\lambda_{\max}(X)$ is convex. We use its variational representation:</p>
           $$ f(X) = \lambda_{\max}(X) = \sup_{\|y\|_2=1} y^\top X y $$
           <p>For any fixed unit vector $y$, define $g_y(X) = y^\top X y$. Note that:
@@ -1108,7 +1108,7 @@
         </div>
 
         <div class="example">
-          <h4>4. Induced Matrix Norms</h4>
+          <h4>Example 5.17: Induced Matrix Norms</h4>
           <p>Let $\|X\|_{a,b} = \sup_{\|v\|_b=1} \|Xv\|_a$ be the operator norm induced by vector norms $\|\cdot\|_a$ and $\|\cdot\|_b$.
           <br>Using the definition of the dual norm $\|\cdot\|_{a^*}$, we can write $\|z\|_a = \sup_{\|u\|_{a^*} \le 1} u^\top z$.
           $$ \|X\|_{a,b} = \sup_{\|v\|_b=1} \left( \sup_{\|u\|_{a^*} \le 1} u^\top X v \right) = \sup_{\|v\|_b=1, \ \|u\|_{a^*} \le 1} u^\top X v $$
@@ -1143,13 +1143,13 @@
 
         <h4>Examples of Partial Minimization</h4>
         <div class="example">
-          <h4>1. Distance to a Convex Set</h4>
+          <h4>Example 5.18: Distance to a Convex Set</h4>
           <p>For a convex set $S$, $d(x, S) = \inf_{y \in S} \|x - y\|$.
           <br>Here $f(x, y) = \|x - y\|$ is convex in $(x, y)$ and $S$ is convex. Thus $d(x, S)$ is convex.</p>
         </div>
 
         <div class="example">
-          <h4>2. Schur Complement via Quadratic Minimization</h4>
+          <h4>Example 5.19: Schur Complement via Quadratic Minimization</h4>
           <p>Let $f(x, y) = x^\top A x + 2x^\top B y + y^\top C y$ with $C \succ 0$. We want to find $g(x) = \inf_y f(x, y)$.
           <br>We "complete the square" in $y$. Let $u = y + C^{-1}B^\top x$. Then $y = u - C^{-1}B^\top x$.
           $$ y^\top C y = (u - C^{-1}B^\top x)^\top C (u - C^{-1}B^\top x) = u^\top C u - 2x^\top B u + x^\top B C^{-1} B^\top x $$
@@ -1162,7 +1162,7 @@
         </div>
 
         <div class="example">
-          <h4>3. Infimum over an Affine Constraint (Example 3.17)</h4>
+          <h4>Example 5.20: Infimum over an Affine Constraint</h4>
           <p>Let $f(x) = \inf \{ h(y) \mid Ay = x \}$, where $h$ is a convex function.
           <br>This can be viewed as partial minimization of the function $F(x, y) = h(y) + \delta_{\{Ay=x\}}(x,y)$.
           <br>The set $\{(x, y) \mid Ay=x\}$ is an affine subspace, so its indicator function is convex.
@@ -1332,7 +1332,7 @@
           <p>If $f: \mathbb{R}^k \to \mathbb{R}$ is convex, and $x \mapsto Ax + b$ is an affine map, then the composition $g(x) = f(Ax + b)$ is convex.</p>
 
           <div class="example-box">
-            <h4>Example: Least Squares</h4>
+            <h4>Example 5.21: Least Squares</h4>
             <p>Let $f(z) = \|z\|_2^2$ (convex). Let $z = Ax - b$ (affine).
             <br>Then $g(x) = \|Ax - b\|_2^2$ is convex.</p>
           </div>
@@ -1359,7 +1359,7 @@
           <p>Let $g: \mathbb{R}^n \to \mathbb{R}$ and $h: \mathbb{R} \to \mathbb{R}$. Then $f(x) = h(g(x))$ is convex if:</p>
 
           <div class="example-box">
-            <h4>Example: Exponential of a Convex Function</h4>
+            <h4>Example 5.22: Exponential of a Convex Function</h4>
             <p>Let $f(x) = e^{x^2}$.
             <br>Inner: $g(x) = x^2$ is convex.
             <br>Outer: $h(u) = e^u$ is convex and <b>non-decreasing</b>.
@@ -1367,7 +1367,7 @@
           </div>
 
           <div class="example-box">
-            <h4>Example: Reciprocal of a Concave Function</h4>
+            <h4>Example 5.23: Reciprocal of a Concave Function</h4>
             <p>Let $f(x) = \frac{1}{1-x^2}$ on $(-1, 1)$.
             <br>Inner: $g(x) = 1-x^2$ is concave.
             <br>Outer: $h(u) = 1/u$ is convex and <b>non-increasing</b> (for $u > 0$).
@@ -1466,7 +1466,7 @@
         </div>
 
         <div class="example">
-          <h4>Example: Log-Log-Sum-Exp (Step-by-Step Analysis)</h4>
+          <h4>Example 5.24: Log-Log-Sum-Exp (Step-by-Step Analysis)</h4>
           <p>Consider the function $f(x) = -\log(-\log(\sum_{i=1}^m e^{a_i^\top x + b_i}))$. We verify convexity by decomposing it into layers:</p>
 
           <div class="proof-box">
@@ -1537,7 +1537,7 @@
         </div>
 
         <div class="example">
-          <h4>Example 1: Sum of Logs (Concave)</h4>
+          <h4>Example 5.25: Sum of Logs (Concave)</h4>
           <p>Let $u(x) = \sum_{i=1}^m \log g_i(x)$ where each $g_i$ is concave and positive.</p>
           <ul>
             <li>Inner map: $g(x) = (g_1(x), \dots, g_m(x))$ is concave.</li>
@@ -1547,7 +1547,7 @@
         </div>
 
         <div class="example">
-          <h4>Example 2: Log-Sum-Exp of Convex Functions (Detailed Check)</h4>
+          <h4>Example 5.26: Log-Sum-Exp of Convex Functions</h4>
           <p>Let $f(x) = \log\left(\sum_{i=1}^m \exp(g_i(x))\right)$ where each $g_i$ is convex. We verify the vector composition rule conditions:</p>
           <ol>
             <li><b>Convexity of Outer Function $h$:</b> $h(z) = \log(\sum e^{z_i})$ is convex (Log-Sum-Exp).
@@ -1560,7 +1560,7 @@
         </div>
 
         <div class="example">
-          <h4>Example 3: $p$-Means ($h(z) = (\sum z_i^p)^{1/p}$)</h4>
+          <h4>Example 5.27: $p$-Means ($h(z) = (\sum z_i^p)^{1/p}$)</h4>
           <p>Consider $f(x) = (\sum_{i=1}^k g_i(x)^p)^{1/p}$ where $g_i(x) \ge 0$. We rely on the convexity/concavity and monotonicity of the outer function $h(z) = (\sum z_i^p)^{1/p}$.</p>
           <ul>
             <li><b>Case $p \ge 1$ (Convex):</b>
@@ -1576,7 +1576,7 @@
         </div>
 
         <div class="example">
-          <h4>Example 4: Geometric Mean ($h(z) = (\prod z_i)^{1/k}$)</h4>
+          <h4>Example 5.28: Geometric Mean ($h(z) = (\prod z_i)^{1/k}$)</h4>
           <p>Consider $f(x) = (\prod_{i=1}^k g_i(x))^{1/k}$ where $g_i(x) > 0$.
           <br>The outer function $h(z) = (\prod z_i)^{1/k}$ is <b>concave</b> and <b>non-decreasing</b> on $\mathbb{R}_{++}^k$.
           <br><b>Proof check:</b>
@@ -1653,7 +1653,7 @@
         <p>The perspective transform allows us to solve problems involving ratios with positive denominators by <b>linearizing</b> the denominator into a variable $t$.</p>
 
         <div class="example">
-          <h4>Template: Linear-Fractional Programming</h4>
+          <h4>Example 5.29: Linear-Fractional Programming</h4>
           <p>Minimize $\frac{a^\top x + b}{c^\top x + d}$ subject to $c^\top x + d > 0$ and convex constraints $x \in C$.
           <br><b>Substitution:</b> Let $t = \frac{1}{c^\top x + d}$ and $y = tx$.
           <br><b>Constraints:</b>
@@ -1667,7 +1667,7 @@
         </div>
 
         <div class="example">
-          <h4>Template: Norm-Ratio Minimization</h4>
+          <h4>Example 5.30: Norm-Ratio Minimization</h4>
           <p>Minimize $\frac{\|Ax - b\|_2}{c^\top x + d}$.
           <br><b>Substitution:</b> $t = \frac{1}{c^\top x + d}$, $y = tx$.
           <br><b>Objective:</b> $t \|A(y/t) - b\|_2 = \|Ay - bt\|_2$.
@@ -1676,14 +1676,14 @@
         </div>
 
         <div class="example">
-          <h4>Example: Relative Entropy</h4>
+          <h4>Example 5.31: Relative Entropy</h4>
           <p>Let $f(u) = -\log u$, which is convex. Its perspective is:
           $$ g(x, t) = t f(x/t) = -t \log(x/t) = t \log t - t \log x $$
           This is related to the relative entropy function $x \log(x/y)$, which is jointly convex.</p>
         </div>
 
         <div class="example">
-          <h4>Example: Power-over-Linear (Deconstruction)</h4>
+          <h4>Example 5.32: Power-over-Linear (Deconstruction)</h4>
           <p>The function $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ (where $p > 1, t > 0$) is convex. Here is how to recognize it:</p>
           <div class="proof-box">
             <div class="proof-step">
@@ -1708,7 +1708,7 @@
         </div>
 
         <div class="example">
-          <h4>Example: Quadratic-over-Linear</h4>
+          <h4>Example 5.33: Quadratic-over-Linear</h4>
           <p>The function $f(x, y) = \frac{x^2}{y}$ for $y > 0$ is convex (Perspective of $x^2$).
           <br>More generally, $f(x) = \frac{\|Ax+b\|_2^2}{c^\top x + d}$ is convex (Affine composition of perspective).</p>
         </div>
@@ -1942,7 +1942,7 @@
         <h3>6.3 Consequences and Applications</h3>
 
         <div class="example">
-          <h4>Application 1: Proving a Function is Convex</h4>
+          <h4>Example 5.34: Proving $e^x$ is Convex</h4>
           <p>Show that $f(x) = e^x$ is convex on $\mathbb{R}$.</p>
           <p><b>Solution:</b> We verify the first-order condition. For any $x, y \in \mathbb{R}$:</p>
           $$
@@ -1956,7 +1956,7 @@
         </div>
 
         <div class="example">
-          <h4>Application 2: PSD Quadratic (The Canonical Atom)</h4>
+          <h4>Example 5.35: PSD Quadratic (The Canonical Atom)</h4>
           <p>Let $f(x) = \frac{1}{2} x^\top Q x + c^\top x + r$ with $Q \succeq 0$.
           <br>Gradient: $\nabla f(x) = Qx + c$.
           <br>Tangent underestimator gap (Bregman Divergence):
@@ -1967,7 +1967,7 @@
         </div>
 
         <div class="example">
-          <h4>Application 2: Optimality Condition</h4>
+          <h4>Example 5.36: Optimality Condition</h4>
           <p>If $f$ is convex and differentiable, then $x^*$ minimizes $f$ over a convex set $C$ if and only if:</p>
           $$
           \nabla f(x^*)^\top (y - x^*) \ge 0 \quad \forall y \in C
@@ -2048,7 +2048,7 @@
         <h3>7.2 Practical Verification</h3>
 
         <div class="proof-box">
-          <h4>Example 1: Quadratic Function $f(x) = \|Ax - b\|_2^2$</h4>
+          <h4>Example 5.37: Quadratic Function $f(x) = \|Ax - b\|_2^2$</h4>
           <p>We derive the Hessian explicitly to show convexity.</p>
           <div class="proof-step">
             <strong>Step 1: Expand.</strong>
@@ -2067,7 +2067,7 @@
         </div>
 
         <div class="proof-box">
-          <h4>Example 2: Log Barrier of Affine ($-\sum \log(b_i - a_i^\top x)$)</h4>
+          <h4>Example 5.38: Log Barrier of Affine</h4>
           <p>Let $f(x) = -\log(b - a^\top x)$ on domain $a^\top x < b$.
           <br>Gradient: $\nabla f(x) = \frac{a}{b-a^\top x}$.
           <br>Hessian: $\nabla^2 f(x) = \frac{aa^\top}{(b-a^\top x)^2}$.
@@ -2076,7 +2076,7 @@
         </div>
 
         <div class="proof-box">
-          <h4>Example 3: Log-Sum-Exp (Full Derivation)</h4>
+          <h4>Example 5.39: Log-Sum-Exp (Full Derivation)</h4>
           <p>Let $f(x) = \log \left(\sum_{k=1}^n e^{x_k}\right)$. This function is a smooth approximation of the maximum function $\max(x)$.
           <br><b>Smooth Max Intuition:</b> $\max(x) \le f(x) \le \max(x) + \log n$. As we scale $x$, $f(x)$ hugs the max function.</p>
           <p>Define $z_k = e^{x_k}$ and $S = \sum_{k=1}^n z_k$. Then $f(x) = \log S$.</p>
@@ -2160,7 +2160,7 @@
         </div>
 
         <div class="example">
-            <h4>Example 4: Trace of Inverse</h4>
+            <h4>Example 5.40: Trace of Inverse</h4>
             <p>Let $f(X) = \mathrm{tr}(X^{-1})$ on $\mathbb{S}^n_{++}$. We can establish convexity in two ways:</p>
             <p><strong>Method 1: Spectral Functions</strong><br>
             The function $f(X)$ is a spectral function corresponding to the scalar function $g(x) = 1/x$. Since $g(x)$ is convex on $(0, \infty)$, the corresponding matrix trace function $f(X) = \sum_{i=1}^n g(\lambda_i(X))$ is convex on $\mathbb{S}^n_{++}$.</p>
@@ -2190,7 +2190,7 @@
         </div>
 
         <div class="example">
-            <h4>Example 5: Geometric Mean of Eigenvalues</h4>
+            <h4>Example 5.41: Geometric Mean of Eigenvalues</h4>
             <p>Let $f(X) = (\det X)^{1/n}$ on $\mathbb{S}^n_{++}$.
             <br>This function is <b>concave</b>.
             <br><i>Proof:</i> This follows from the Minkowski Determinant Inequality:
@@ -2248,7 +2248,7 @@
 
 
 <div class="example-box">
-          <h4>Example: Log Barrier Hessian</h4>
+          <h4>Example 5.42: Log Barrier Hessian</h4>
           <p>Consider $f(x) = -\sum \log(b_i - a_i^\top x)$. The domain is the open polyhedron $\{x \mid Ax < b\}$.</p>
           <p>Gradient: $\nabla f(x) = \sum \frac{a_i}{b_i - a_i^\top x}$.</p>
           <p>Hessian: $\nabla^2 f(x) = \sum \frac{a_i a_i^\top}{(b_i - a_i^\top x)^2}$.</p>
@@ -2373,7 +2373,7 @@
 
         <h4>Examples: Applying the Decision Tree</h4>
         <div class="example-box" style="margin-top: 16px;">
-          <p><b>Example 1:</b> $f(x) = |x|$ on $\mathbb{R}$</p>
+          <p><b>Example 5.43:</b> $f(x) = |x|$ on $\mathbb{R}$</p>
           <ul>
             <li><b>Step 1:</b> Is $f$ twice differentiable? No (not even differentiable at $x=0$).</li>
             <li><b>Step 2:</b> Is $f$ differentiable? No.</li>
@@ -2385,7 +2385,7 @@
         </div>
 
         <div class="example-box" style="margin-top: 16px;">
-          <p><b>Example 2:</b> $f(x) = x^2$ on $\mathbb{R}$</p>
+          <p><b>Example 5.44:</b> $f(x) = x^2$ on $\mathbb{R}$</p>
           <ul>
             <li><b>Step 1:</b> Is $f$ twice differentiable? Yes.</li>
             <li><b>Use second-order condition:</b> $\nabla^2 f(x) = 2 > 0$ for all $x$. ✓ Convex (in fact, strictly convex).</li>
@@ -2394,7 +2394,7 @@
         </div>
 
         <div class="example-box" style="margin-top: 16px;">
-          <p><b>Example 3:</b> $f(x) = e^{x^\top Q x}$ where $Q \succeq 0$ (implicitly defined via exponentiation of quadratic)</p>
+          <p><b>Example 5.45:</b> $f(x) = e^{x^\top Q x}$ where $Q \succeq 0$ (implicitly defined via exponentiation of quadratic)</p>
           <ul>
             <li><b>Step 1:</b> Is $f$ twice differentiable? Yes.</li>
             <li><b>But:</b> Computing the Hessian of $e^{x^\top Q x}$ is tedious (chain rule + product rule).</li>
@@ -2406,7 +2406,7 @@
         <h3>8.2 Pitfalls and Illegal Moves</h3>
         <p>A common pitfall is to assume the <b>minimum</b> of convex functions is convex. It is generally <b>not</b>.</p>
         <div class="insight">
-          <h4>Counterexample</h4>
+          <h4>Example 5.46: Counterexample (Minimum of Convex Functions)</h4>
           <p>Let $f_1(x) = (x-1)^2$ and $f_2(x) = (x+1)^2$. Both are convex. Their minimum $g(x) = \min((x-1)^2, (x+1)^2)$ is "W"-shaped. At $x=0$, $g(0)=1$. However, at $x=1$ and $x=-1$, $g(\pm 1)=0$. The convex combination of minimal points gives $0 \cdot \frac{1}{2} + 0 \cdot \frac{1}{2} = 0$, but $g(0)=1 > 0$, violating the convexity inequality.</p>
         </div>
 
@@ -2470,7 +2470,7 @@
         <p>This section provides the exact "compiler rules" to translate mathematical expressions into standard LP/SOCP/SDP atoms. These are not heuristics; they are exact algebraic equivalences.</p>
 
         <div class="example-box">
-            <h4>Phase 5.1: The Absolute Value Atom (LP)</h4>
+            <h4>Example 5.47: The Absolute Value Atom (LP)</h4>
             <p>The absolute value $|u|$ is the simplest non-linear convex function. It represents a "kink". LPs cannot see kinks, but they can see intersections of halfspaces.</p>
             <p><b>The Atomic Equivalence:</b> For any scalar $u$ and $s$:</p>
             $$ \boxed{|u| \le s \quad \Longleftrightarrow \quad -s \le u \le s \quad \Longleftrightarrow \quad \begin{cases} u \le s \\ -u \le s \end{cases}} $$
@@ -2479,7 +2479,7 @@
         </div>
 
         <div class="example-box">
-            <h4>Phase 5.2: The $\ell_1$ and $\ell_\infty$ Norms (LP)</h4>
+            <h4>Example 5.48: The $\ell_1$ and $\ell_\infty$ Norms (LP)</h4>
             <p>These norms are "polyhedral norms" and can be modeled entirely with LPs.</p>
 
             <p><b>1. $\ell_\infty$ Norm (Max-Absolute):</b></p>
@@ -2497,7 +2497,7 @@
         </div>
 
         <div class="example-box">
-            <h4>Phase 5.3: The Euclidean Norm Atom (SOCP)</h4>
+            <h4>Example 5.49: The Euclidean Norm Atom (SOCP)</h4>
             <p>The Euclidean norm $\|x\|_2$ corresponds to the <b>Second-Order Cone (SOC)</b>. This is not polyhedral.</p>
             <p><b>The Atom:</b> $\|Ax+b\|_2 \le c^\top x + d$ is exactly the constraint:</p>
             $$ (c^\top x + d, \ Ax+b) \in \mathcal{Q}_{m+1} $$

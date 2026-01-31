@@ -240,7 +240,7 @@
         </div>
 
         <div class="example-box">
-          <h4>Example: Portfolio Optimization (Risk vs. Return)</h4>
+          <h4>Example 4.1: Portfolio Optimization (Risk vs. Return)</h4>
           <p>Consider minimizing $f(x) = (\text{risk}(x), -\text{return}(x))$ where $x$ is a portfolio allocation.
           <br>Using $K = \mathbb{R}^2_+$ (component-wise ordering):
           <ul>
@@ -300,7 +300,7 @@
         $$
 
         <div class="example-box">
-          <h4>Geometric Example: 2D Wedges</h4>
+          <h4>Example 4.2: 2D Wedges</h4>
           <p>Consider a cone $K$ in $\mathbb{R}^2$ spanned by two vectors $v_1 = (1, 0)$ and $v_2 = (1, 1)$. This is a $45^\circ$ wedge.
           <br>The dual cone $K^*$ consists of all $y$ such that $y^\top v_1 \ge 0$ and $y^\top v_2 \ge 0$.
           <br>$\bullet$ $y^\top (1, 0) \ge 0 \implies y_1 \ge 0$.
@@ -726,7 +726,7 @@
       </div>
 
       <div class="example-box">
-        <h4>Example: Supporting Hyperplanes of the Unit Ball</h4>
+        <h4>Example 4.3: Supporting Hyperplanes of the Unit Ball</h4>
         <p>Consider $C = \{x \mid \|x\|_2 \le 1\}$ (unit ball). For any $x_0$ with $\|x_0\|_2 = 1$, the supporting hyperplane is:
         $$ \{x \mid x_0^\top x = 1\} $$
         <b>Normal vector:</b> $a = x_0$. This hyperplane is perpendicular to the radius at $x_0$ and tangent to the sphere.
@@ -820,7 +820,7 @@
       <h2><i data-feather="edit-3"></i> 5. Exercises</h2>
 
 <div class="problem">
-  <h3>P4.2 — Dual of a Subspace</h3>
+  <h3>P4.1 — Dual of a Subspace</h3>
   <p>Let $V \subseteq \mathbb{R}^n$ be a linear subspace. Prove that its dual cone is the orthogonal complement $V^\perp$.</p>
 
       <div class="recap-box">
@@ -844,7 +844,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.3 — Self-Duality of Second-Order Cone</h3>
+  <h3>P4.2 — Self-Duality of Second-Order Cone</h3>
   <p>Prove that the second-order cone $\mathcal{Q} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$ is self-dual: $\mathcal{Q}^* = \mathcal{Q}$.</p>
 
       <div class="recap-box">
@@ -884,7 +884,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.4 — Dual Cone Identities</h3>
+  <h3>P4.3 — Dual Cone Identities</h3>
   <p>For closed convex cones $K_1, K_2$, prove $(K_1 + K_2)^* = K_1^* \cap K_2^*$.</p>
 
   <div class="recap-box">
@@ -914,7 +914,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.5 — Generalized Inequality Properties</h3>
+  <h3>P4.4 — Generalized Inequality Properties</h3>
   <p>Let $K$ be a proper cone. Prove $\preceq_K$ is antisymmetric: $x \preceq_K y \land y \preceq_K x \implies x=y$.</p>
 
   <div class="recap-box">
@@ -936,7 +936,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.6 — Norm Cone (Epigraph of Norm)</h3>
+  <h3>P4.5 — Norm Cone (Epigraph of Norm)</h3>
   <p>Show that the set $C = \{(x,t) \mid \|x\| \le t\}$ is a convex cone.</p>
 
   <div class="recap-box">
@@ -959,7 +959,7 @@
 
 
 <div class="problem">
-  <h3>P4.9 — Cones in $\mathbb{R}^2$</h3>
+  <h3>P4.6 — Cones in $\mathbb{R}^2$</h3>
   <p>Describe all closed convex cones in $\mathbb{R}^2$.</p>
 
   <div class="recap-box">
@@ -985,7 +985,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.10 — Properties of Dual Cones</h3>
+  <h3>P4.7 — Properties of Dual Cones</h3>
   <p>Prove that if $\mathrm{int}(K) \neq \emptyset$, then $K^*$ is pointed.</p>
 
   <div class="recap-box">
@@ -1018,7 +1018,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.11 — Dual Cone of Generated Cone</h3>
+  <h3>P4.8 — Dual Cone of Generated Cone</h3>
   <p>Let $K = \{Ax \mid x \ge 0\}$. Show $K^* = \{y \mid A^\top y \ge 0\}$.</p>
 
   <div class="recap-box">
@@ -1051,7 +1051,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.12 — The Monotone Nonnegative Cone</h3>
+  <h3>P4.9 — The Monotone Nonnegative Cone</h3>
   <p>Find the dual of $K = \{x \in \mathbb{R}^n \mid x_1 \ge x_2 \ge \dots \ge 0\}$.</p>
 
   <div class="recap-box">
@@ -1069,7 +1069,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.13 — The Lexicographic Cone</h3>
+  <h3>P4.10 — The Lexicographic Cone</h3>
   <p>Let $K_{lex} = \{0\} \cup \{x \mid \text{first nonzero of } x > 0\}$. Find $K_{lex}^*$.</p>
 
   <div class="recap-box">
@@ -1089,7 +1089,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.14 — Dual of Intersection</h3>
+  <h3>P4.11 — Dual of Intersection</h3>
   <p>Let $K_1, K_2$ be closed convex cones. Prove that $(K_1 \cap K_2)^* = \mathrm{cl}(K_1^* + K_2^*)$.</p>
 
   <div class="recap-box">
@@ -1123,7 +1123,7 @@
 
 
 <div class="problem">
-  <h3>P4.22 — Separation by Projection</h3>
+  <h3>P4.12 — Separation by Projection</h3>
   <p>Let $C \subseteq \mathbb{R}^n$ be a closed convex set and $x \notin C$. Prove that there exists a hyperplane strictly separating $x$ from $C$. Specifically, show that with $p = \Pi_C(x)$, the hyperplane through $p$ with normal $x-p$ separates them.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1141,7 +1141,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.23 — Support Function Determines Set</h3>
+  <h3>P4.13 — Support Function Determines Set</h3>
   <p>Let $C, D$ be closed convex sets. Show that if their support functions are equal, $\sigma_C(a) = \sigma_D(a)$ for all $a$, then $C = D$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1152,7 +1152,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.24 — Converse Supporting Hyperplane Theorem</h3>
+  <h3>P4.14 — Converse Supporting Hyperplane Theorem</h3>
   <p>Let $C$ be a connected closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
   <div class="solution-box">
     <h4>Solution</h4>

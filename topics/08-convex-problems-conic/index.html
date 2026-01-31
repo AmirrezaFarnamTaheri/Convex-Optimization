@@ -219,7 +219,7 @@
 
       <h3>1.5 Standard SOCP Examples</h3>
 
-      <h4>Example 4.1: Robust Least Squares</h4>
+      <h4>Example 8.1: Robust Least Squares</h4>
       <p>Consider the least-squares problem where the matrix $A$ is subject to unstructured uncertainty bounded by a spectral norm $\|\Delta A\|_2 \le \rho$. The <strong>robust</strong> problem is:</p>
       <p style="text-align: center;">
         $
@@ -276,7 +276,7 @@
         </div>
       </div>
 
-      <h4>Example 4.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
+      <h4>Example 8.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
       <p>Consider the problem of finding a point $\mathbf{x}$ that minimizes the sum of Euclidean distances to a set of fixed points $\mathbf{p}_1, \dots, \mathbf{p}_k$:</p>
       <p style="text-align: center;">
         $
@@ -294,7 +294,7 @@
       </p>
       <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{Q}^{n+1}$.</p>
 
-      <h4>Example 4.3: Mechanical Equilibrium with Friction (Robotics)</h4>
+      <h4>Example 8.3: Mechanical Equilibrium with Friction (Robotics)</h4>
       <p>In mechanics, a contact force $\mathbf{f} \in \mathbb{R}^3$ at a contact point must satisfy the Coulomb friction model to avoid slipping.
       <br>Decompose $\mathbf{f}$ into a normal component $f_n$ and a tangential component $\mathbf{f}_t \in \mathbb{R}^2$.
       <br><b>Constraint:</b> $\|\mathbf{f}_t\|_2 \le \mu f_n$, where $\mu$ is the friction coefficient.
@@ -588,7 +588,7 @@
 
       <h3>2.6 Standard SDP Examples</h3>
 
-      <h4>Example: Lyapunov Stability Analysis (Control Theory)</h4>
+      <h4>Example 8.4: Lyapunov Stability Analysis (Control Theory)</h4>
       <p>A linear dynamical system $\dot{x} = Ax$ is asymptotically stable (all trajectories converge to zero) if and only if there exists a quadratic Lyapunov function $V(x) = x^\top P x$ with $P \succ 0$ such that $\dot{V}(x) < 0$ for all $x \neq 0$.
       <br>Differentiation gives $\dot{V}(x) = x^\top (A^\top P + PA) x$. The condition becomes an LMI feasibility problem:</p>
       $$
@@ -600,7 +600,7 @@
       $$
       <p>This is a pure feasibility SDP. If a solution $P$ exists, the system is stable.</p>
 
-      <h4>Example: Eigenvalue Minimization</h4>
+      <h4>Example 8.5: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
       $$ \min_{\mathbf{x}} \lambda_{\max}(A(\mathbf{x})) $$
 
@@ -627,7 +627,7 @@
         </div>
       </div>
 
-      <h4>Example: Matrix Norm Minimization</h4>
+      <h4>Example 8.6: Matrix Norm Minimization</h4>
       <p>Minimize the spectral norm (largest singular value) of $A(x) \in \mathbb{R}^{p \times q}$.</p>
       $$ \min_x \|A(x)\|_2 = \min_x \sqrt{\lambda_{\max}(A(x)^\top A(x))} $$
 
@@ -711,7 +711,7 @@
         </div>
       </div>
 
-      <h4>Example: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
+      <h4>Example 8.12: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
       <p>Given points $a_1, \ldots, a_m \in \mathbb{R}^n$ spanning $\mathbb{R}^n$, find the smallest ellipsoid centered at the origin that contains all points.</p>
       
       <div class="proof-box">
@@ -888,7 +888,7 @@
       <h3>3.3 Key Applications</h3>
 
       <div class="example">
-        <h4>Example 1: Entropy Maximization</h4>
+        <h4>Example 8.7: Entropy Maximization</h4>
         <p>Consider the problem of maximizing entropy subject to linear constraints:</p>
         <p style="text-align: center;">
           $$
@@ -908,7 +908,7 @@
       </div>
 
       <div class="example">
-        <h4>Example 2: Log-Sum-Exp</h4>
+        <h4>Example 8.8: Log-Sum-Exp</h4>
         <p>The log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ is convex and can be expressed using the exponential cone. To minimize $\log(\sum_{i=1}^n e^{x_i})$, we introduce a variable $t$ and constraints:</p>
         <p style="text-align: center;">
           $$
@@ -923,7 +923,7 @@
       </div>
 
       <div class="example">
-        <h4>Example 3: Geometric Programming (Conic Form)</h4>
+        <h4>Example 8.9: Geometric Programming (Conic Form)</h4>
         <p>Geometric programs can be transformed into exponential cone programs. A geometric program in posynomial form:</p>
         <p style="text-align: center;">
           $$
@@ -1012,7 +1012,7 @@
       </ul>
 
       <div class="example-box">
-        <h4>Example: From DCP to SOC</h4>
+        <h4>Example 8.10: From DCP to SOC</h4>
         <p>Consider the DCP expression in CVXPY:
         <pre><code>minimize(norm(A @ x - b, 2) + gamma * norm(x, 2))</code></pre>
         The framework automatically recognizes this as an SOCP and reformulates it:
@@ -1120,7 +1120,7 @@
       <p>If DCP verification fails (e.g., you wrote <code>exp(norm(x))</code>, which is neither convex nor concave), the framework rejects the problem <i>before</i> calling the solver, saving you from silently getting wrong answers.</p>
 
       <div class="example-box">
-        <h4>Example: Portfolio Optimization with DCP</h4>
+        <h4>Example 8.11: Portfolio Optimization with DCP</h4>
         <p>A classic Markowitz portfolio problem in CVXPY:
         <pre><code>import cvxpy as cp
 import numpy as np
@@ -1997,7 +1997,7 @@ problem.solve()</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      <strong>Feasibility:</strong> We showed in Example 3.3 that $X_{\text{sim}}$ is feasible.
+      <strong>Feasibility:</strong> We showed in Example 8.12 that $X_{\text{sim}}$ is feasible.
     </div>
     <div class="proof-step">
       <strong>Objective Gap:</strong> By restricting the dual to $\lambda_i = t$, we found a lower bound on the optimal value $p^\star \ge \log\det S - n\log(m/n)$, where $S = \sum a_k a_k^\top$.

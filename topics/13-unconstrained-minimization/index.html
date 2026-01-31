@@ -132,7 +132,7 @@
         However, <strong>convexity upgrades "stationary point" to "global minimizer."</strong> There are no local traps. If the slope is zero, you are at the absolute bottom.
         <br><br>
         This relies on the <strong>first-order characterization of convexity</strong>:
-        $$ f(y) \ge f(x) + \nabla f(x)^T (y-x) \qquad (\star) $$
+        $$ f(y) \ge f(x) + \nabla f(x)^\top (y-x) \qquad (\star) $$
         Geometrically, this inequality says that the first-order Taylor approximation (the tangent hyperplane) is a <strong>global underestimator</strong> of the function. The graph of the function lies entirely <em>above</em> its tangent plane at any point $x$.
       </p>
 
@@ -152,12 +152,12 @@
               </li>
               <li><strong>Take the Limit ($t \to 0$):</strong> Now, let $t$ approach 0 from the positive side ($t \downarrow 0$).
                   <br>The Left Hand Side is exactly the definition of the <strong>directional derivative</strong> of $f$ at $x$ in the direction $(y-x)$.
-                  $$ \lim_{t \to 0} \frac{f(x+t(y-x))-f(x)}{t} = \nabla f(x)^T(y-x) $$
+                  $$ \lim_{t \to 0} \frac{f(x+t(y-x))-f(x)}{t} = \nabla f(x)^\top(y-x) $$
               </li>
               <li><strong>Conclusion:</strong> Substituting the limit back into the inequality:
-                  $$ \nabla f(x)^T(y-x) \le f(y) - f(x) $$
+                  $$ \nabla f(x)^\top(y-x) \le f(y) - f(x) $$
                   Rearranging gives the result:
-                  $$ f(y) \ge f(x) + \nabla f(x)^T (y-x) $$
+                  $$ f(y) \ge f(x) + \nabla f(x)^\top (y-x) $$
               </li>
           </ol>
       </div>
@@ -167,7 +167,7 @@
           <li><strong>Sufficiency ($\nabla f(x^\star)=0 \Rightarrow$ Min):</strong>
               <br>Suppose we found a point $x^\star$ where the gradient is zero. Does this guarantee it's the best point?
               <br>Yes. We simply plug $\nabla f(x^\star) = 0$ into the convexity inequality $(\star)$. For <em>any</em> other point $y$ in the domain:
-              $$ f(y) \ge f(x^\star) + \underbrace{\nabla f(x^\star)^T}_{0} (y-x^\star) $$
+              $$ f(y) \ge f(x^\star) + \underbrace{\nabla f(x^\star)^\top}_{0} (y-x^\star) $$
               $$ f(y) \ge f(x^\star) $$
               Since $f(y)$ is always greater than or equal to $f(x^\star)$, $x^\star$ must be a global minimizer.
           </li>
@@ -181,7 +181,7 @@
                       <br>Since $x^\star$ (where $t=0$) is a minimizer, $\phi(t)$ must have a local minimum at $t=0$.</li>
                   <li><strong>First Derivative Test:</strong> Calculus tells us that for $t=0$ to be a minimum, the derivative $\phi'(0)$ must be 0.
                       <br>Let's compute $\phi'(0)$ using the chain rule:
-                      $$ \phi'(0) = \nabla f(x^\star)^T v = \nabla f(x^\star)^T (-\nabla f(x^\star)) = -\|\nabla f(x^\star)\|_2^2 $$
+                      $$ \phi'(0) = \nabla f(x^\star)^\top v = \nabla f(x^\star)^\top (-\nabla f(x^\star)) = -\|\nabla f(x^\star)\|_2^2 $$
                   </li>
                   <li><strong>Contradiction:</strong> We assumed $\nabla f(x^\star) \neq 0$, so the squared norm $\|\nabla f(x^\star)\|_2^2$ is strictly positive.
                       <br>Thus, $\phi'(0) < 0$.
@@ -197,15 +197,15 @@
       <h4>2.1 Quadratic Minimization</h4>
       <p>
         The most basic convex optimization problem is the unconstrained quadratic program:
-        $$ \min_x \ f(x) = \frac12 x^T P x + q^T x + r,\qquad P\in S^n_+ \tag{9.4} $$
+        $$ \min_x \ f(x) = \frac12 x^\top P x + q^\top x + r,\qquad P\in S^n_+ \tag{9.4} $$
         where $P$ is symmetric positive semidefinite ($P \succeq 0$). This is the "Hello World" of optimization.
       </p>
       <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
         <strong>Step-by-Step Derivation of the Gradient $\nabla f(x)$:</strong>
         <br>
-        1. <strong>Linear Term:</strong> The gradient of $q^T x = \sum q_i x_i$ is simply the vector $q$.
+        1. <strong>Linear Term:</strong> The gradient of $q^\top x = \sum q_i x_i$ is simply the vector $q$.
         <br>
-        2. <strong>Quadratic Term:</strong> Let's compute $\nabla (\frac{1}{2} x^T P x)$. It helps to write it in scalar sum notation:
+        2. <strong>Quadratic Term:</strong> Let's compute $\nabla (\frac{1}{2} x^\top P x)$. It helps to write it in scalar sum notation:
         $$ \phi(x) = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n P_{ij} x_i x_j $$
         Now take the partial derivative with respect to a specific variable $x_k$. We need to find all terms in the sum that contain $x_k$.
         <br>
@@ -239,25 +239,25 @@
       <p>
         $$ \min_x \|Ax-b\|_2^2 $$
         This is the foundation of regression and data fitting. We can expand the squared norm to reveal it is just a specific type of quadratic function:
-        $$ f(x) = (Ax-b)^T (Ax-b) = x^T A^T A x - 2b^T A x + b^T b $$
+        $$ f(x) = (Ax-b)^\top (Ax-b) = x^\top A^\top A x - 2b^\top A x + b^\top b $$
         Comparing this to the standard form in 2.1:
         <ul>
-            <li>$P = 2A^T A$ (Note: $A^T A$ is always symmetric positive semidefinite).</li>
-            <li>$q = -2A^T b$.</li>
-            <li>$r = b^T b$.</li>
+            <li>$P = 2A^\top A$ (Note: $A^\top A$ is always symmetric positive semidefinite).</li>
+            <li>$q = -2A^\top b$.</li>
+            <li>$r = b^\top b$.</li>
         </ul>
         The optimality condition $\nabla f(x) = 0$ becomes the famous <strong>Normal Equations</strong>:
-        $$ 2A^T A x - 2A^T b = 0 \implies A^T A x = A^T b $$
+        $$ 2A^\top A x - 2A^\top b = 0 \implies A^\top A x = A^\top b $$
       </p>
 
       <h4>2.3 Log-Sum-Exp (Softmax)</h4>
       <p>
-        This function approximates the "max" function ($\max_i (a_i^T x + b_i)$) but is smooth and convex:
-        $$ f(x)=\log\Big(\sum_{i=1}^m e^{a_i^T x+b_i}\Big) $$
+        This function approximates the "max" function ($\max_i (a_i^\top x + b_i)$) but is smooth and convex:
+        $$ f(x)=\log\Big(\sum_{i=1}^m e^{a_i^\top x+b_i}\Big) $$
         This is crucial in Machine Learning (e.g., Logistic Regression, Neural Networks) where it acts as a loss function.
         <br><br>
         <strong>Gradient Interpretation:</strong>
-        Let $z_i = a_i^T x + b_i$. By the chain rule:
+        Let $z_i = a_i^\top x + b_i$. By the chain rule:
         $$ \nabla f(x) = \frac{1}{\sum_j e^{z_j}} \sum_{i=1}^m e^{z_i} a_i = \sum_{i=1}^m \left( \frac{e^{z_i}}{\sum_j e^{z_j}} \right) a_i $$
         We define the weights $w_i(x)$ as the <strong>Softmax</strong> function probabilities:
         $$ w_i(x) = \frac{e^{z_i}}{\sum_j e^{z_j}} $$
@@ -272,14 +272,14 @@
 
       <h4>2.4 Analytic Centers (Logarithmic Barriers)</h4>
       <p>
-        $$ f(x) = -\sum_{i=1}^m \log(b_i - a_i^T x) $$
-        defined on the polyhedron $\mathcal{P} = \{x \mid a_i^T x < b_i \forall i\}$.
+        $$ f(x) = -\sum_{i=1}^m \log(b_i - a_i^\top x) $$
+        defined on the polyhedron $\mathcal{P} = \{x \mid a_i^\top x < b_i \forall i\}$.
         <br>
         <strong>Intuition:</strong>
-        Each term $-\log(b_i - a_i^T x)$ acts as a <strong>repulsive force field</strong>.
+        Each term $-\log(b_i - a_i^\top x)$ acts as a <strong>repulsive force field</strong>.
         <ul>
-            <li>If $x$ is far from the wall $a_i^T x = b_i$, the term is small.</li>
-            <li>As $x$ approaches the wall ($a_i^T x \to b_i$), the value explodes to $+\infty$.</li>
+            <li>If $x$ is far from the wall $a_i^\top x = b_i$, the term is small.</li>
+            <li>As $x$ approaches the wall ($a_i^\top x \to b_i$), the value explodes to $+\infty$.</li>
         </ul>
         Minimizing $f(x)$ finds a point $x^\star$ that is "maximally inside" the set, balancing the repulsion from all walls simultaneously. This point is called the <strong>Analytic Center</strong>. This concept is the engine behind <strong>Interior Point Methods</strong>, which solve constrained problems by following a path of analytic centers.
       </p>
@@ -304,18 +304,18 @@
         Let's derive the most important consequence of strong convexity. It states that the function lies <em>above</em> a paraboloid.
         <br>
         Consider two points $x$ (our current location) and $y$ (any other point). Taylor’s theorem states:
-        $$ f(y) = f(x) + \nabla f(x)^T(y-x) + \underbrace{\frac{1}{2} (y-x)^T \nabla^2 f(z) (y-x)}_{\text{Second Order Term}} $$
+        $$ f(y) = f(x) + \nabla f(x)^\top(y-x) + \underbrace{\frac{1}{2} (y-x)^\top \nabla^2 f(z) (y-x)}_{\text{Second Order Term}} $$
         where $z$ is some point on the line segment between $x$ and $y$.
         <br><br>
         <strong>Applying the Assumption:</strong>
-        Since we assume $\nabla^2 f(z) \succeq mI$, we know that for any vector $v$, $v^T \nabla^2 f(z) v \ge m \|v\|_2^2$.
+        Since we assume $\nabla^2 f(z) \succeq mI$, we know that for any vector $v$, $v^\top \nabla^2 f(z) v \ge m \|v\|_2^2$.
         Setting $v = y-x$:
-        $$ (y-x)^T \nabla^2 f(z) (y-x) \ge m \|y-x\|_2^2 $$
+        $$ (y-x)^\top \nabla^2 f(z) (y-x) \ge m \|y-x\|_2^2 $$
         Substituting this back into the Taylor expansion gives the <strong>Quadratic Lower Bound</strong>:
-        $$ f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{m}{2} \|y-x\|_2^2 \tag{9.8} $$
+        $$ f(y) \ge f(x) + \nabla f(x)^\top(y-x) + \frac{m}{2} \|y-x\|_2^2 \tag{9.8} $$
         <strong>Comparison:</strong>
         <ul>
-            <li><strong>Convexity ($m=0$):</strong> $f(y) \ge f(x) + \nabla f(x)^T(y-x)$. The graph is above the flat tangent plane.</li>
+            <li><strong>Convexity ($m=0$):</strong> $f(y) \ge f(x) + \nabla f(x)^\top(y-x)$. The graph is above the flat tangent plane.</li>
             <li><strong>Strong Convexity ($m>0$):</strong> The graph is above a specific upward-curving paraboloid touching at $x$.</li>
         </ul>
       </p>
@@ -327,13 +327,13 @@
         <strong>1. Suboptimality Bound ($f(x) - p^\star$):</strong>
         <br>
         Fix $x$. The inequality (9.8) holds for <em>all</em> $y$.
-        $$ f(y) \ge \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Let's call this RHS } g(y)} $$
+        $$ f(y) \ge \underbrace{f(x) + \nabla f(x)^\top(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Let's call this RHS } g(y)} $$
         Since $f(y) \ge g(y)$, the minimum of $f$ must be greater than the minimum of $g$:
         $$ p^\star = \min_y f(y) \ge \min_y g(y) $$
         $g(y)$ is a simple quadratic function of $y$. We can find its minimum easily by setting its gradient to zero:
         $$ \nabla g(y) = \nabla f(x) + m(y-x) = 0 \implies \tilde{y} = x - \frac{1}{m}\nabla f(x) $$
         Plugging this optimal $\tilde{y}$ back into $g(y)$:
-        $$ \min_y g(y) = g(\tilde{y}) = f(x) + \nabla f(x)^T \left(-\frac{1}{m}\nabla f(x)\right) + \frac{m}{2} \left\|-\frac{1}{m}\nabla f(x)\right\|^2 $$
+        $$ \min_y g(y) = g(\tilde{y}) = f(x) + \nabla f(x)^\top \left(-\frac{1}{m}\nabla f(x)\right) + \frac{m}{2} \left\|-\frac{1}{m}\nabla f(x)\right\|^2 $$
         $$ = f(x) - \frac{1}{m}\|\nabla f(x)\|^2 + \frac{1}{2m}\|\nabla f(x)\|^2 $$
         $$ = f(x) - \frac{1}{2m}\|\nabla f(x)\|^2 $$
         So we have:
@@ -347,12 +347,12 @@
         <br>
         We can also bound the distance in the domain.
         Apply the master inequality (9.8) specifically at $y=x^\star$:
-        $$ p^\star \ge f(x)+\nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
+        $$ p^\star \ge f(x)+\nabla f(x)^\top(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
         Since $p^\star \le f(x)$ (obviously), we have:
-        $$ 0 \ge \nabla f(x)^T(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
+        $$ 0 \ge \nabla f(x)^\top(x^\star-x)+\frac{m}{2}\|x^\star-x\|^2 $$
         Move the dot product to the other side:
-        $$ -\nabla f(x)^T(x^\star-x) \ge \frac{m}{2}\|x^\star-x\|^2 $$
-        Use the Cauchy-Schwarz inequality on the left ($|a^Tb| \le \|a\|\|b\|$):
+        $$ -\nabla f(x)^\top(x^\star-x) \ge \frac{m}{2}\|x^\star-x\|^2 $$
+        Use the Cauchy-Schwarz inequality on the left ($|a^\top b| \le \|a\|\|b\|$):
         $$ \|\nabla f(x)\|_2 \|x^\star-x\|_2 \ge \frac{m}{2}\|x^\star-x\|_2^2 $$
         Divide both sides by $\|x^\star - x\|_2$ (assuming we aren't already at the optimum):
         $$ \|\nabla f(x)\|_2 \ge \frac{m}{2}\|x^\star-x\|_2 $$
@@ -375,12 +375,12 @@
       <h4>4.1 Quadratic Upper Bound</h4>
       <p>
         Using Taylor's theorem exactly as before, but substituting the upper bound $\nabla^2 f(z) \preceq MI$:
-        $$ f(y) \le f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
+        $$ f(y) \le f(x) + \nabla f(x)^\top(y-x) + \frac{M}{2}\|y-x\|_2^2 \tag{9.13} $$
 
         <div style="border: 2px solid var(--border); padding: 16px; border-radius: 8px; margin: 16px 0;">
         <strong>The Sandwich Principle:</strong>
         <br>Combining (9.8) and (9.13), we see that the function $f(y)$ is <strong>sandwiched</strong> between two quadratic bowls anchored at $x$:
-        $$ \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Lower Paraboloid (Blue)}} \le f(y) \le \underbrace{f(x) + \nabla f(x)^T(y-x) + \frac{M}{2}\|y-x\|^2}_{\text{Upper Paraboloid (Red)}} $$
+        $$ \underbrace{f(x) + \nabla f(x)^\top(y-x) + \frac{m}{2}\|y-x\|^2}_{\text{Lower Paraboloid (Blue)}} \le f(y) \le \underbrace{f(x) + \nabla f(x)^\top(y-x) + \frac{M}{2}\|y-x\|^2}_{\text{Upper Paraboloid (Red)}} $$
         The function lives in the "Goldilocks zone" between these two quadratics.
         </div>
       </p>
@@ -390,7 +390,7 @@
         Let's try to minimize the Upper Bound (the Red Paraboloid). The minimum occurs at $y = x - \frac{1}{M}\nabla f(x)$.
         <br>
         Plugging this specific step into the inequality (9.13):
-        $$ f\left(x - \frac{1}{M}\nabla f(x)\right) \le f(x) + \nabla f(x)^T\left(-\frac{1}{M}\nabla f(x)\right) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
+        $$ f\left(x - \frac{1}{M}\nabla f(x)\right) \le f(x) + \nabla f(x)^\top\left(-\frac{1}{M}\nabla f(x)\right) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
         $$ = f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{M}{2}\frac{1}{M^2}\|\nabla f(x)\|^2 $$
         $$ = f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{1}{2M}\|\nabla f(x)\|^2 $$
         $$ f(x_{\text{next}}) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 \tag{9.14} $$
@@ -426,8 +426,8 @@
       </p>
       <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
         <strong>Example 13.1: Width of an Ellipsoid.</strong>
-        <br>Consider the ellipsoid $\mathcal{E}=\{x\mid (x-x_0)^T A^{-1}(x-x_0)\le 1\}$ with positive definite matrix $A$.
-        <br><strong>1. Width Calculation:</strong> The width in direction $q$ (unit vector) is given by $W(\mathcal{E}, q) = 2\sqrt{q^T A q}$.
+        <br>Consider the ellipsoid $\mathcal{E}=\{x\mid (x-x_0)^\top A^{-1}(x-x_0)\le 1\}$ with positive definite matrix $A$.
+        <br><strong>1. Width Calculation:</strong> The width in direction $q$ (unit vector) is given by $W(\mathcal{E}, q) = 2\sqrt{q^\top A q}$.
         <br><strong>2. Extremes:</strong>
         <br>- The maximum width corresponds to the largest eigenvalue of $A$: $W_{\max} = 2\sqrt{\lambda_{\max}(A)}$.
         <br>- The minimum width corresponds to the smallest eigenvalue: $W_{\min} = 2\sqrt{\lambda_{\min}(A)}$.
@@ -470,7 +470,7 @@ def descent_method(f, gradient, x0, tol=1e-6):
         x = x + t * delta_x
     return x
         </code></pre>
-        The search direction $\Delta x$ must be a <strong>descent direction</strong>: $\nabla f(x)^T \Delta x < 0$. This ensures that the angle between the step and the gradient is greater than 90 degrees (going "downhill"), so for small enough steps, the function value decreases.
+        The search direction $\Delta x$ must be a <strong>descent direction</strong>: $\nabla f(x)^\top \Delta x < 0$. This ensures that the angle between the step and the gradient is greater than 90 degrees (going "downhill"), so for small enough steps, the function value decreases.
       </p>
 
       <h4>6.1 Exact Line Search: A Rigorous Proof of Linear Convergence</h4>
@@ -484,7 +484,7 @@ def descent_method(f, gradient, x0, tol=1e-6):
         We don't know the <em>exact</em> optimal $t$, but we know it must be <em>at least as good</em> as any arbitrary guess. Let's test the specific guess $t = 1/M$.
         <br>
         From the smoothness upper bound (9.13), taking a step of size $1/M$ along the direction $d = -\nabla f(x)$ gives:
-        $$ f(x - \frac{1}{M}\nabla f(x)) \le f(x) + \nabla f(x)^T(-\frac{1}{M}\nabla f(x)) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
+        $$ f(x - \frac{1}{M}\nabla f(x)) \le f(x) + \nabla f(x)^\top(-\frac{1}{M}\nabla f(x)) + \frac{M}{2}\left\|-\frac{1}{M}\nabla f(x)\right\|^2 $$
         $$ = f(x) - \frac{1}{M}\|\nabla f(x)\|^2 + \frac{1}{2M}\|\nabla f(x)\|^2 $$
         $$ = f(x) - \frac{1}{2M}\|\nabla f(x)\|^2 $$
         Since the Exact Line Search finds the <em>best</em> $t$, the resulting function value $f(x_{\text{next}})$ must be even lower than this specific guess:
@@ -514,7 +514,7 @@ def descent_method(f, gradient, x0, tol=1e-6):
       <h4>6.2 Backtracking (Armijo) Line Search: Proof of Termination and Convergence</h4>
       <p>
         Exact minimization is usually too expensive. Instead, we use <strong>Backtracking Line Search</strong>. It shrinks the step size $t$ until the "Armijo sufficient decrease condition" is met:
-        $$ f(x+t\Delta x) \le f(x) + \alpha t \nabla f(x)^T \Delta x, \qquad 0 < \alpha < 0.5, \ \ 0 < \beta < 1 $$
+        $$ f(x+t\Delta x) \le f(x) + \alpha t \nabla f(x)^\top \Delta x, \qquad 0 < \alpha < 0.5, \ \ 0 < \beta < 1 $$
         We must prove two things: (1) the loop eventually terminates, and (2) the accepted step is "large enough" to guarantee linear convergence.
       </p>
       <p>
@@ -571,7 +571,7 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         Standard gradient descent moves in the direction $-\nabla f(x)$, which is the steepest direction <strong>only if distance is measured in the Euclidean norm ($\ell_2$)</strong>.
         <br><br>
         <strong>Definition:</strong> The normalized steepest descent direction $\Delta x_{\mathrm{nsd}}$ solves the problem:
-        $$ \Delta x_{\mathrm{nsd}} = \text{argmin}_{v} \{ \nabla f(x)^T v \mid \|v\| \le 1 \} $$
+        $$ \Delta x_{\mathrm{nsd}} = \text{argmin}_{v} \{ \nabla f(x)^\top v \mid \|v\| \le 1 \} $$
         In plain English: "Among all steps of length 1, which one reduces the function value the most?"
       </p>
 
@@ -580,10 +580,10 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         To solve the minimization problem above, we need the concept of <strong>Dual Norms</strong>.
         <br>
         Recall that for any norm $\|\cdot\|$, its dual norm $\|\cdot\|_*$ is defined as:
-        $$ \|z\|_* = \sup \{z^T x \mid \|x\| \le 1\} $$
-        This definition implies the generalized Cauchy-Schwarz inequality: $|z^T x| \le \|z\|_* \|x\|$.
+        $$ \|z\|_* = \sup \{z^\top x \mid \|x\| \le 1\} $$
+        This definition implies the generalized Cauchy-Schwarz inequality: $|z^\top x| \le \|z\|_* \|x\|$.
         <br><br>
-        Since we want to minimize $\nabla f(x)^T v$, we are looking for the vector $v$ that aligns most negatively with the gradient. The minimum value attained is exactly $-\|\nabla f(x)\|_*$.
+        Since we want to minimize $\nabla f(x)^\top v$, we are looking for the vector $v$ that aligns most negatively with the gradient. The minimum value attained is exactly $-\|\nabla f(x)\|_*$.
       </p>
 
       <h4>7.2 Unnormalized Step and Cases</h4>
@@ -591,7 +591,7 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         For convenience, we define the <strong>unnormalized</strong> steepest descent step $\Delta x_{\mathrm{sd}}$ by scaling the normalized direction by the magnitude of the gradient (measured in the dual norm):
         $$ \Delta x_{\mathrm{sd}} = \|\nabla f(x)\|_* \Delta x_{\mathrm{nsd}} $$
         This ensures that the predicted drop in function value is:
-        $$ \nabla f(x)^T \Delta x_{\mathrm{sd}} = \|\nabla f(x)\|_* (\nabla f(x)^T \Delta x_{\mathrm{nsd}}) = \|\nabla f(x)\|_* (-\|\nabla f(x)\|_* ) = -\|\nabla f(x)\|_*^2 $$
+        $$ \nabla f(x)^\top \Delta x_{\mathrm{sd}} = \|\nabla f(x)\|_* (\nabla f(x)^\top \Delta x_{\mathrm{nsd}}) = \|\nabla f(x)\|_* (-\|\nabla f(x)\|_* ) = -\|\nabla f(x)\|_*^2 $$
       </p>
 
       <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
@@ -599,9 +599,9 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         <!-- Case 1: L2 Norm -->
         <div style="background: var(--panel); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
             <h4 style="margin-top: 0;">1. Euclidean Norm ($\ell_2$)</h4>
-            <p><strong>Norm:</strong> $\|v\|_2 = \sqrt{v^T v}$. <strong>Dual:</strong> $\|g\|_2$.</p>
+            <p><strong>Norm:</strong> $\|v\|_2 = \sqrt{v^\top v}$. <strong>Dual:</strong> $\|g\|_2$.</p>
             <p><strong>Geometry:</strong> The unit ball is a perfect sphere.</p>
-            <p><strong>Direction:</strong> The vector that minimizes $g^T v$ over the sphere is simply opposite to $g$.
+            <p><strong>Direction:</strong> The vector that minimizes $g^\top v$ over the sphere is simply opposite to $g$.
             $$ \Delta x_{\mathrm{sd}} = -\nabla f(x) $$</p>
             <p><strong>Result:</strong> Standard Gradient Descent. The gradient is perpendicular to the tangent plane of the level set.</p>
         </div>
@@ -609,8 +609,8 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         <!-- Case 2: Quadratic Norm -->
         <div style="background: var(--panel); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
             <h4 style="margin-top: 0;">2. Quadratic Norm (Preconditioning)</h4>
-            <p><strong>Norm:</strong> $\|v\|_P = \sqrt{v^T P v}$ ($P \in S^n_{++}$). <strong>Dual:</strong> $\|g\|_{P^{-1}} = \sqrt{g^T P^{-1} g}$.</p>
-            <p><strong>Geometry:</strong> The unit ball is an ellipsoid $\{v \mid v^T P v \le 1\}$.</p>
+            <p><strong>Norm:</strong> $\|v\|_P = \sqrt{v^\top P v}$ ($P \in S^n_{++}$). <strong>Dual:</strong> $\|g\|_{P^{-1}} = \sqrt{g^\top P^{-1} g}$.</p>
+            <p><strong>Geometry:</strong> The unit ball is an ellipsoid $\{v \mid v^\top P v \le 1\}$.</p>
             <p><strong>Direction:</strong> The direction is skewed by the inverse of $P$.
             $$ \Delta x_{\mathrm{sd}} = -P^{-1}\nabla f(x) $$</p>
             <p><strong>Result:</strong> Preconditioned Gradient Descent. By choosing $P \approx \nabla^2 f(x)$, we align the "metric" with the function's curvature, effectively turning the elongated level sets into circles.</p>
@@ -642,11 +642,11 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
         $$ \|u\| \ge \gamma \|u\|_2 \quad \text{and} \quad \|z\|_* \ge \tilde{\gamma} \|z\|_2 $$
         <strong>2. Smoothness Bound in General Norm:</strong>
         The standard smoothness bound uses Euclidean norm. We convert it:
-        $$ f(x+v) \le f(x) + \nabla f(x)^T v + \frac{M}{2} \|v\|_2^2 \le f(x) + \nabla f(x)^T v + \frac{M}{2\gamma^2} \|v\|^2 $$
+        $$ f(x+v) \le f(x) + \nabla f(x)^\top v + \frac{M}{2} \|v\|_2^2 \le f(x) + \nabla f(x)^\top v + \frac{M}{2\gamma^2} \|v\|^2 $$
         <strong>3. Decrease Step:</strong>
         Taking the unnormalized steepest descent step $\Delta x_{\mathrm{sd}}$ with step size $t$:
         <ul>
-            <li>$\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$</li>
+            <li>$\nabla f^\top \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$</li>
             <li>$\|\Delta x_{\mathrm{sd}}\| = \|\nabla f\|_*$</li>
         </ul>
         Plugging this into the bound:
@@ -667,7 +667,7 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
       <ol>
           <li><strong>Minimizing the Quadratic Model (Local Approximation):</strong>
           <br>We approximate $f$ near $x$ by its second-order Taylor expansion (a parabola):
-          $$ \hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2}v^T \nabla^2 f(x) v $$
+          $$ \hat{f}(x+v) = f(x) + \nabla f(x)^\top v + \frac{1}{2}v^\top \nabla^2 f(x) v $$
           Instead of just moving "down", we jump directly to the bottom of this bowl.
           <br>To find the minimum, set the derivative with respect to $v$ to zero:
           $$ \nabla \hat{f}(v) = \nabla f(x) + \nabla^2 f(x) v = 0 \implies v = -\nabla^2 f(x)^{-1} \nabla f(x) $$
@@ -679,7 +679,7 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
 
           <li style="margin-top: 24px;"><strong>Steepest Descent in Hessian Norm (Geometry-Adaptive):</strong>
           <br>Recall that "steepest descent" depends on the norm. If we choose the norm based on the local curvature:
-          $$ \|v\|_H = \sqrt{v^T \nabla^2 f(x) v} $$
+          $$ \|v\|_H = \sqrt{v^\top \nabla^2 f(x) v} $$
           Then the steepest descent direction is exactly the Newton step.
           <br><strong>Interpretation:</strong> Newton's method resizes the coordinate system at every step to make the function look spherical. It turns long narrow valleys into nice round bowls locally.
           </li>
@@ -691,30 +691,30 @@ def backtracking_line_search(f, x, delta_x, gradient, alpha=0.3, beta=0.8):
           <strong>Proof of Affine Invariance:</strong>
           Let $g(y) = f(Ty)$ be the function in the new coordinates.
           <br>
-          1. <strong>Gradients:</strong> By chain rule, $\nabla g(y) = T^T \nabla f(x)$.
+          1. <strong>Gradients:</strong> By chain rule, $\nabla g(y) = T^\top \nabla f(x)$.
           <br>
-          2. <strong>Hessians:</strong> $\nabla^2 g(y) = T^T \nabla^2 f(x) T$.
+          2. <strong>Hessians:</strong> $\nabla^2 g(y) = T^\top \nabla^2 f(x) T$.
           <br>
           3. <strong>Newton Step for $g$:</strong>
-          $$ \Delta y_{\mathrm{nt}} = -(\nabla^2 g(y))^{-1} \nabla g(y) = -(T^T \nabla^2 f(x) T)^{-1} (T^T \nabla f(x)) $$
+          $$ \Delta y_{\mathrm{nt}} = -(\nabla^2 g(y))^{-1} \nabla g(y) = -(T^\top \nabla^2 f(x) T)^{-1} (T^\top \nabla f(x)) $$
           Using the matrix inverse property $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$:
-          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^T) \nabla f(x) $$
+          $$ = -T^{-1} (\nabla^2 f(x))^{-1} (T^{-T} T^\top) \nabla f(x) $$
           $$ = -T^{-1} (\nabla^2 f(x))^{-1} \nabla f(x) = T^{-1} \Delta x_{\mathrm{nt}} $$
           Since $x = Ty$, a displacement of $\Delta y$ corresponds to a physical displacement of $T \Delta y = \Delta x$. The steps correspond perfectly!
           <br>
-          <em>Contrast with Gradient Descent:</em> The gradient descent step is $\Delta y = -T^T \nabla f(x)$. This involves $T^T$, not $T^{-1}$. It does <strong>not</strong> transform correctly.
+          <em>Contrast with Gradient Descent:</em> The gradient descent step is $\Delta y = -T^\top \nabla f(x)$. This involves $T^\top$, not $T^{-1}$. It does <strong>not</strong> transform correctly.
           </li>
       </ol>
 
       <h4>8.2 The Newton Decrement $\lambda(x)$</h4>
       <p>
         We define the <strong>Newton Decrement</strong> $\lambda(x)$ as:
-        $$ \lambda(x) = \sqrt{\nabla f(x)^T (\nabla^2 f(x))^{-1} \nabla f(x)} $$
+        $$ \lambda(x) = \sqrt{\nabla f(x)^\top (\nabla^2 f(x))^{-1} \nabla f(x)} $$
         This single number plays a dual role:
         <ul>
             <li><strong>Stopping Criterion:</strong> It is an affine-invariant measure of how close we are to the solution. Specifically, $\frac{1}{2}\lambda(x)^2$ is exactly the vertical distance between $f(x)$ and the minimum of the quadratic model. If $\lambda(x)^2/2 < 10^{-6}$, we are effectively done.</li>
             <li><strong>Directional Derivative:</strong> The slope of the function in the Newton direction is $-\lambda(x)^2$.
-            $$ \nabla f(x)^T \Delta x_{\mathrm{nt}} = -\nabla f(x)^T (\nabla^2 f)^{-1} \nabla f(x) = -\lambda(x)^2 $$
+            $$ \nabla f(x)^\top \Delta x_{\mathrm{nt}} = -\nabla f(x)^\top (\nabla^2 f)^{-1} \nabla f(x) = -\lambda(x)^2 $$
             This guarantees it is always a descent direction (unless $\lambda=0$, meaning we are at the optimum).
             </li>
         </ul>
@@ -731,7 +731,7 @@ def newton_step(f, grad, hess, x):
     delta_x = np.linalg.solve(H, -g)
 
     # Compute Newton Decrement for stopping
-    # lambda^2 = g^T * H^-1 * g = g^T * (-dx)
+    # lambda^2 = g^\top * H^-1 * g = g^\top * (-dx)
     lambda_sq = -g.dot(delta_x)
 
     return delta_x, lambda_sq
@@ -798,7 +798,7 @@ def newton_step(f, grad, hess, x):
         <br>
         <strong>BFGS (Broyden–Fletcher–Goldfarb–Shanno):</strong>
         This is the most popular update rule. It updates the <em>inverse</em> Hessian approximation $H_k \approx (\nabla^2 f)^{-1}$ directly, which allows us to find the search direction $\Delta x = -H_k \nabla f(x)$ in $O(n^2)$ time.
-        $$ H_{k+1} = (I - \rho_k s_k y_k^T) H_k (I - \rho_k y_k s_k^T) + \rho_k s_k s_k^T, \quad \text{where } \rho_k = \frac{1}{y_k^T s_k} $$
+        $$ H_{k+1} = (I - \rho_k s_k y_k^\top) H_k (I - \rho_k y_k s_k^\top) + \rho_k s_k s_k^\top, \quad \text{where } \rho_k = \frac{1}{y_k^\top s_k} $$
         <ul>
             <li><strong>Cost:</strong> $O(n^2)$ per iteration (matrix-vector multiplication).</li>
             <li><strong>Convergence:</strong> Superlinear (faster than linear, slower than quadratic). It typically finds the solution in very few steps compared to GD.</li>
@@ -846,19 +846,19 @@ def newton_step(f, grad, hess, x):
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Solved Exercises & Example Problems</h2>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.1 — Minimizing a Quadratic Function (Detailed)</h3>
-        <p><strong>Problem:</strong> Consider minimizing $f(x)=\frac{1}{2}x^T P x+q^T x+r$ where $P \in S^n$.
+        <p><strong>Problem:</strong> Consider minimizing $f(x)=\frac{1}{2}x^\top P x+q^\top x+r$ where $P \in S^n$.
         <br>(a) Show that if $P \not\succeq 0$, the problem is unbounded below.
         <br>(b) Suppose $P \succeq 0$ but $Px = -q$ has no solution. Show it is unbounded below.</p>
 
         <p><strong>Step-by-Step Solution:</strong></p>
         <p><strong>Part (a): $P \not\succeq 0$ (Negative Eigenvalue).</strong>
-        <br>1. <strong>Eigen Decomposition:</strong> If $P$ is not positive semidefinite, there exists at least one eigenvector $v$ with a negative eigenvalue $\lambda < 0$. Thus, $v^T P v = \lambda \|v\|^2 < 0$.
+        <br>1. <strong>Eigen Decomposition:</strong> If $P$ is not positive semidefinite, there exists at least one eigenvector $v$ with a negative eigenvalue $\lambda < 0$. Thus, $v^\top P v = \lambda \|v\|^2 < 0$.
         <br>2. <strong>Construct Ray:</strong> Consider the path $x(t) = tv$ for $t > 0$.
         <br>3. <strong>Evaluate Function:</strong>
-        $$ f(tv) = \frac{1}{2}t^2 (v^T P v) + t(q^T v) + r $$
-        <br>4. <strong>Limit:</strong> As $t \to \infty$, the term $t^2 (v^T P v)$ is negative and grows quadratically. The linear term $t(q^T v)$ grows slower.
+        $$ f(tv) = \frac{1}{2}t^2 (v^\top P v) + t(q^\top v) + r $$
+        <br>4. <strong>Limit:</strong> As $t \to \infty$, the term $t^2 (v^\top P v)$ is negative and grows quadratically. The linear term $t(q^\top v)$ grows slower.
         <br>Thus, $f(tv) \to -\infty$. The function has no minimum.
         </p>
 
@@ -866,19 +866,19 @@ def newton_step(f, grad, hess, x):
         <br>1. <strong>Linear Algebra Fact:</strong> Since $P$ is symmetric, the nullspace $\mathcal{N}(P)$ is orthogonal to the range $\mathcal{R}(P)$. Any vector $q$ can be decomposed into $q_{\text{range}} + q_{\text{null}}$. If $q \notin \mathcal{R}(P)$, then $q_{\text{null}} \neq 0$.
         <br>2. <strong>Pick Direction:</strong> Let $z = -q_{\text{null}}$. Note that $Pz = 0$ (by definition of nullspace).
         <br>3. <strong>Evaluate Function along $x(t) = tz$:</strong>
-        $$ f(tz) = \frac{1}{2}t^2 (z^T P z) + t(q^T z) + r $$
-        Since $Pz = 0$, the quadratic term vanishes ($z^T P z = z^T 0 = 0$).
-        $$ f(tz) = 0 + t(q^T z) + r $$
-        <br>4. <strong>Analyze Slope:</strong> $q^T z = (q_{\text{range}} + q_{\text{null}})^T (-q_{\text{null}}) = -q_{\text{range}}^T q_{\text{null}} - \|q_{\text{null}}\|^2$.
-        Since range and nullspace are orthogonal, $q_{\text{range}}^T q_{\text{null}} = 0$.
-        Thus, $q^T z = -\|q_{\text{null}}\|^2 < 0$.
+        $$ f(tz) = \frac{1}{2}t^2 (z^\top P z) + t(q^\top z) + r $$
+        Since $Pz = 0$, the quadratic term vanishes ($z^\top P z = z^\top 0 = 0$).
+        $$ f(tz) = 0 + t(q^\top z) + r $$
+        <br>4. <strong>Analyze Slope:</strong> $q^\top z = (q_{\text{range}} + q_{\text{null}})^\top (-q_{\text{null}}) = -q_{\text{range}}^\top q_{\text{null}} - \|q_{\text{null}}\|^2$.
+        Since range and nullspace are orthogonal, $q_{\text{range}}^\top q_{\text{null}} = 0$.
+        Thus, $q^\top z = -\|q_{\text{null}}\|^2 < 0$.
         <br>5. <strong>Limit:</strong> As $t \to \infty$, $f(tz) \to -\infty$ linearly.
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.2 — Quadratic-over-Linear Fraction</h3>
-        <p><strong>Problem:</strong> Minimize $f(x) = \frac{\|Ax-b\|_2^2}{c^T x + d}$ subject to $c^T x + d > 0$.
+        <p><strong>Problem:</strong> Minimize $f(x) = \frac{\|Ax-b\|_2^2}{c^\top x + d}$ subject to $c^\top x + d > 0$.
         <br>Assumptions: $\text{rank}(A)=n$ and $b \notin \mathcal{R}(A)$.
         <br><strong>(a) Show $f$ is closed.</strong>
         <br><strong>(b) Show the minimizer lies on a specific line.</strong>
@@ -887,58 +887,58 @@ def newton_step(f, grad, hess, x):
         <br><strong>Part (a):</strong>
         Since $b \notin \mathcal{R}(A)$, the numerator $N(x) = \|Ax-b\|^2$ is always strictly positive (bounded below by $\text{dist}(b, \mathcal{R}(A))^2 > 0$).
         Consider the sublevel set $S_\alpha = \{x \mid f(x) \le \alpha\}$.
-        As $x$ approaches the boundary where $c^T x + d \to 0$, the denominator vanishes while the numerator stays positive. Thus $f(x) \to +\infty$.
+        As $x$ approaches the boundary where $c^\top x + d \to 0$, the denominator vanishes while the numerator stays positive. Thus $f(x) \to +\infty$.
         This means no sequence in $S_\alpha$ can approach the boundary. The sublevel sets are closed.
         <br><br>
         <strong>Part (b):</strong>
-        Let $x_1 = (A^T A)^{-1} A^T b$. This is the unconstrained minimizer of the numerator (Least Squares solution).
-        Let $x_2 = (A^T A)^{-1} c$. This vector is related to the gradient of the denominator transformed by the Hessian of the numerator.
+        Let $x_1 = (A^\top A)^{-1} A^\top b$. This is the unconstrained minimizer of the numerator (Least Squares solution).
+        Let $x_2 = (A^\top A)^{-1} c$. This vector is related to the gradient of the denominator transformed by the Hessian of the numerator.
         <br>
-        Let $P = A^T A$. The function is $f(x) = \frac{\delta^2 + (x-x_1)^T P (x-x_1)}{c^T x + d}$.
-        Using a change of variables $y = x - x_1$, we essentially minimize $\frac{\delta^2 + y^T P y}{\alpha + c^T y}$.
+        Let $P = A^\top A$. The function is $f(x) = \frac{\delta^2 + (x-x_1)^\top P (x-x_1)}{c^\top x + d}$.
+        Using a change of variables $y = x - x_1$, we essentially minimize $\frac{\delta^2 + y^\top P y}{\alpha + c^\top y}$.
         The Cauchy-Schwarz inequality (applied in the $P$-norm) implies that for any fixed value of the denominator, the numerator is minimized when $y$ is parallel to $P^{-1} c$.
         Thus, the optimal $x^\star$ must lie on the line passing through $x_1$ in the direction of $x_2$.
         The problem reduces to minimizing a scalar function $\phi(t)$ along this line.
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.3 — Backtracking Line Search Proof (Rigorous)</h3>
-        <p><strong>Problem:</strong> Prove that if $0 < t \le -\frac{\nabla f(x)^T \Delta x}{M\|\Delta x\|_2^2}$, the backtracking condition holds for $\alpha \le 0.5$.</p>
+        <p><strong>Problem:</strong> Prove that if $0 < t \le -\frac{\nabla f(x)^\top \Delta x}{M\|\Delta x\|_2^2}$, the backtracking condition holds for $\alpha \le 0.5$.</p>
         <p><strong>Proof:</strong></p>
         <ol>
             <li><strong>Smoothness Upper Bound:</strong> Start with the M-smoothness bound (9.13) along direction $\Delta x$:
-            $$ f(x+t\Delta x) \le f(x) + t\nabla f^T \Delta x + \frac{M}{2}t^2\|\Delta x\|^2 $$
+            $$ f(x+t\Delta x) \le f(x) + t\nabla f^\top \Delta x + \frac{M}{2}t^2\|\Delta x\|^2 $$
             </li>
-            <li><strong>Substitute $t$ bound:</strong> We are given $t \le \frac{-\nabla f^T \Delta x}{M\|\Delta x\|^2}$. Multiply by $\frac{M}{2}t\|\Delta x\|^2$:
-            $$ \frac{M}{2}t^2\|\Delta x\|^2 \le \frac{1}{2}t (-\nabla f^T \Delta x) $$
+            <li><strong>Substitute $t$ bound:</strong> We are given $t \le \frac{-\nabla f^\top \Delta x}{M\|\Delta x\|^2}$. Multiply by $\frac{M}{2}t\|\Delta x\|^2$:
+            $$ \frac{M}{2}t^2\|\Delta x\|^2 \le \frac{1}{2}t (-\nabla f^\top \Delta x) $$
             </li>
             <li><strong>Plug into Upper Bound:</strong> Substitute this inequality back into Step 1:
-            $$ f(x+t\Delta x) \le f(x) + t\nabla f^T \Delta x - \frac{1}{2}t \nabla f^T \Delta x $$
-            $$ f(x+t\Delta x) \le f(x) + \frac{1}{2}t\nabla f^T \Delta x $$
+            $$ f(x+t\Delta x) \le f(x) + t\nabla f^\top \Delta x - \frac{1}{2}t \nabla f^\top \Delta x $$
+            $$ f(x+t\Delta x) \le f(x) + \frac{1}{2}t\nabla f^\top \Delta x $$
             </li>
-            <li><strong>Compare to Armijo:</strong> The Armijo condition is $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^T \Delta x$.
+            <li><strong>Compare to Armijo:</strong> The Armijo condition is $f(x+t\Delta x) \le f(x) + \alpha t \nabla f^\top \Delta x$.
             We just proved it holds for $\alpha = 0.5$.
-            Since $\nabla f^T \Delta x < 0$ (descent), adding $\alpha t \nabla f^T \Delta x$ with a <em>smaller</em> $\alpha$ (e.g., 0.1) results in a larger (easier to satisfy) RHS.
-            $$ f(x) + 0.5 t \nabla f^T \Delta x \le f(x) + \alpha t \nabla f^T \Delta x \quad (\text{for } \alpha \le 0.5) $$
+            Since $\nabla f^\top \Delta x < 0$ (descent), adding $\alpha t \nabla f^\top \Delta x$ with a <em>smaller</em> $\alpha$ (e.g., 0.1) results in a larger (easier to satisfy) RHS.
+            $$ f(x) + 0.5 t \nabla f^\top \Delta x \le f(x) + \alpha t \nabla f^\top \Delta x \quad (\text{for } \alpha \le 0.5) $$
             Thus, the condition holds.
             </li>
         </ol>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.4 — Steepest Descent Identities</h3>
-        <p><strong>Problem:</strong> Prove (a) $\nabla f^T \Delta x_{\mathrm{nsd}} = -\|\nabla f\|_*$ and (b) $\nabla f^T \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$.</p>
+        <p><strong>Problem:</strong> Prove (a) $\nabla f^\top \Delta x_{\mathrm{nsd}} = -\|\nabla f\|_*$ and (b) $\nabla f^\top \Delta x_{\mathrm{sd}} = -\|\nabla f\|_*^2$.</p>
         <p><strong>Proof:</strong>
-        <br><strong>(a):</strong> By definition, $\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} g^T v$.
-        Recall $\|g\|_* = \sup_{\|v\| \le 1} g^T v$.
-        Since the unit ball is symmetric ($v \in B \iff -v \in B$), $\inf g^T v = -\sup g^T (-v) = -\sup g^T v = -\|g\|_*$.
+        <br><strong>(a):</strong> By definition, $\Delta x_{\mathrm{nsd}} = \text{argmin}_{\|v\| \le 1} g^\top v$.
+        Recall $\|g\|_* = \sup_{\|v\| \le 1} g^\top v$.
+        Since the unit ball is symmetric ($v \in B \iff -v \in B$), $\inf g^\top v = -\sup g^\top (-v) = -\sup g^\top v = -\|g\|_*$.
         <br><strong>(b):</strong> Since $\Delta x_{\mathrm{sd}} = \|\nabla f\|_* \Delta x_{\mathrm{nsd}}$, we have:
-        $$ g^T \Delta x_{\mathrm{sd}} = \|\nabla f\|_* (g^T \Delta x_{\mathrm{nsd}}) = \|\nabla f\|_* (-\|\nabla f\|_*) = -\|\nabla f\|_*^2 $$
+        $$ g^\top \Delta x_{\mathrm{sd}} = \|\nabla f\|_* (g^\top \Delta x_{\mathrm{nsd}}) = \|\nabla f\|_* (-\|\nabla f\|_*) = -\|\nabla f\|_*^2 $$
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.5 — Steepest Descent in $\ell_\infty$ Norm</h3>
         <p><strong>Problem:</strong> Find the normalized steepest descent direction for the $\ell_\infty$ norm.</p>
         <p><strong>Solution:</strong>
@@ -955,16 +955,16 @@ def newton_step(f, grad, hess, x):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.6 — Proving Self-Concordance</h3>
         <p><strong>Problem:</strong> Prove the following functions are self-concordant by restricting to a line.
-        <br>(a) $f(x,y)=-\log(y^2-x^T x)$ on $\{(x,y)\mid \|x\|_2<y\}$.
+        <br>(a) $f(x,y)=-\log(y^2-x^\top x)$ on $\{(x,y)\mid \|x\|_2<y\}$.
         <br>(b) $f(x,y)=-2\log y-\log(y^{2/p}-x^2)$, $p\ge 1$.
         <br>(c) $f(x,y)=-\log y-\log(\log y-x)$.
         </p>
         <p><strong>Solution Strategy (Composition with Logarithm Rule):</strong>
         <br>A function $\phi(t) = -\log(-g(t)) - \log t$ is self-concordant if $|g'''(t)| \le 3g''(t)/t$.
-        <br><strong>(a):</strong> $f(x,y) = -\log y - \log(y - x^T x/y)$. Restricting to a line $x(t) = \hat{x} + tv, y(t) = \hat{y} + tw$ yields a form $-\log(\text{quadratic}) - \log(\text{linear})$.
+        <br><strong>(a):</strong> $f(x,y) = -\log y - \log(y - x^\top x/y)$. Restricting to a line $x(t) = \hat{x} + tv, y(t) = \hat{y} + tw$ yields a form $-\log(\text{quadratic}) - \log(\text{linear})$.
         <br>Specifically, if we reparameterize by $y$, the inner term becomes $g(y) = -\alpha - \beta y + \gamma/y$ with $\gamma \ge 0$.
         Checking derivatives: $g''(y) = 2\gamma/y^3, g'''(y) = -6\gamma/y^4$.
         The condition $|g'''| \le 3g''/y$ becomes $6\gamma/y^4 \le 3(2\gamma/y^3)/y$, which holds with equality.
@@ -978,28 +978,28 @@ def newton_step(f, grad, hess, x):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.7 — Newton's Method for Logistic Regression</h3>
         <p><strong>Problem:</strong> Derive the Newton step for Logistic Regression explicitly.</p>
         <p><strong>Solution:</strong></p>
-        <p><strong>Objective:</strong> $f(w) = \sum_{i=1}^m \log(1 + \exp(w^T x_i)) - y_i w^T x_i$.
-        <br>Let $z_i = w^T x_i$. The sigmoid function is $p_i(w) = \sigma(z_i) = \frac{1}{1+e^{-z_i}}$.
+        <p><strong>Objective:</strong> $f(w) = \sum_{i=1}^m \log(1 + \exp(w^\top x_i)) - y_i w^\top x_i$.
+        <br>Let $z_i = w^\top x_i$. The sigmoid function is $p_i(w) = \sigma(z_i) = \frac{1}{1+e^{-z_i}}$.
         <br><strong>Gradient:</strong>
-        $$ \frac{\partial f}{\partial w} = \sum_{i=1}^m (p_i - y_i) x_i = X^T (p - y) $$
+        $$ \frac{\partial f}{\partial w} = \sum_{i=1}^m (p_i - y_i) x_i = X^\top (p - y) $$
         <br><strong>Hessian:</strong>
-        $$ \frac{\partial^2 f}{\partial w^2} = \sum_{i=1}^m \frac{\partial p_i}{\partial z_i} x_i x_i^T = \sum_{i=1}^m p_i(1-p_i) x_i x_i^T = X^T D X $$
+        $$ \frac{\partial^2 f}{\partial w^2} = \sum_{i=1}^m \frac{\partial p_i}{\partial z_i} x_i x_i^\top = \sum_{i=1}^m p_i(1-p_i) x_i x_i^\top = X^\top D X $$
         where $D$ is diagonal with $D_{ii} = p_i(1-p_i)$.
         <br><strong>Newton Step:</strong>
-        $$ \Delta w = -(X^T D X)^{-1} X^T (p - y) $$
+        $$ \Delta w = -(X^\top D X)^{-1} X^\top (p - y) $$
         This formula is the basis for the <strong>Iteratively Reweighted Least Squares (IRLS)</strong> algorithm used by standard statistical packages.
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.8 — Steepest Descent in $\ell_\infty$ Norm</h3>
         <p><strong>Problem:</strong> Explicitly derive the steepest descent direction for the $\ell_\infty$ norm.</p>
         <p><strong>Solution:</strong></p>
-        <p>We solve $\min \nabla f^T v$ s.t. $\|v\|_\infty \le 1$.
+        <p>We solve $\min \nabla f^\top v$ s.t. $\|v\|_\infty \le 1$.
         The objective is $\sum_{i=1}^n (\nabla f)_i v_i$.
         Since the variables $v_i$ are constrained independently ($|v_i| \le 1$), we can minimize the sum by minimizing each term separately.
         To minimize $c_i v_i$ subject to $v_i \in [-1, 1]$:
@@ -1013,30 +1013,30 @@ def newton_step(f, grad, hess, x):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.9 — Proving Self-Concordance (Hypograph)</h3>
-        <p><strong>Problem:</strong> Prove $f(x,y) = -\log(y^2 - x^T x)$ is self-concordant.</p>
+        <p><strong>Problem:</strong> Prove $f(x,y) = -\log(y^2 - x^\top x)$ is self-concordant.</p>
         <p><strong>Solution Strategy:</strong></p>
         <p>We use the <strong>barrier method</strong> logic.
         1. <strong>Restrict to a line:</strong> $x(t) = \hat{x} + tv$, $y(t) = \hat{y} + tw$.
         2. <strong>Composition with Log:</strong> Use the property that $-\log(-g(t)) - \log t$ is self-concordant if $|g'''| \le 3g''/t$.
-        3. <strong>Algebra:</strong> Factor $y^2 - x^T x$ into geometric components.
+        3. <strong>Algebra:</strong> Factor $y^2 - x^\top x$ into geometric components.
         For $f(x,y)$, restricting to a line yields a function of the form $-\log(\text{quadratic})$.
         Since $-\log(y)$ is SC and affine transformations preserve SC, the result holds.
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.10 — Analytic Center (Gradient vs Newton)</h3>
-        <p><strong>Problem:</strong> Compute the analytic center of $a_i^T x \le 1, |x_i| \le 1$ using Gradient Descent and Newton's Method. Compare convergence.</p>
-        <p><strong>Objective:</strong> $f(x) = -\sum_{i=1}^m \log(1-a_i^T x) - \sum_{j=1}^n \log(1-x_j^2)$.</p>
+        <p><strong>Problem:</strong> Compute the analytic center of $a_i^\top x \le 1, |x_i| \le 1$ using Gradient Descent and Newton's Method. Compare convergence.</p>
+        <p><strong>Objective:</strong> $f(x) = -\sum_{i=1}^m \log(1-a_i^\top x) - \sum_{j=1}^n \log(1-x_j^2)$.</p>
         <p><strong>Gradient Derivation:</strong>
-        <br>Term 1: $-\log(1-a_i^T x)$. Gradient is $\frac{a_i}{1-a_i^T x}$. Sum is $\sum \frac{a_i}{1-a_i^T x}$.
+        <br>Term 1: $-\log(1-a_i^\top x)$. Gradient is $\frac{a_i}{1-a_i^\top x}$. Sum is $\sum \frac{a_i}{1-a_i^\top x}$.
         <br>Term 2: $-\log(1-x_j^2)$. Partial derivative is $\frac{2x_j}{1-x_j^2}$. Vector is $\frac{2x}{1-x^2}$ (elementwise).
-        <br>$\nabla f(x) = A^T \text{diag}(1/s) \mathbf{1} + \frac{2x}{1-x^2}$ where $s = 1 - Ax$.
+        <br>$\nabla f(x) = A^\top \text{diag}(1/s) \mathbf{1} + \frac{2x}{1-x^2}$ where $s = 1 - Ax$.
         </p>
         <p><strong>Hessian Derivation:</strong>
-        <br>Term 1: $\nabla (\frac{a_i}{1-a_i^T x}) = \frac{a_i a_i^T}{(1-a_i^T x)^2}$. Sum is $A^T \text{diag}(1/s^2) A$.
+        <br>Term 1: $\nabla (\frac{a_i}{1-a_i^\top x}) = \frac{a_i a_i^\top}{(1-a_i^\top x)^2}$. Sum is $A^\top \text{diag}(1/s^2) A$.
         <br>Term 2: Diagonal with entries $\frac{2(1+x_j^2)}{(1-x_j^2)^2}$.
         </p>
 
@@ -1092,7 +1092,7 @@ def solve_analytic_center(m=300, n=50):
 </code></pre>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.11 — Approximate Newton Methods</h3>
         <p><strong>Problem:</strong> Compare full Newton with (a) Re-using Hessian every $N$ steps, and (b) Diagonal approximation.</p>
         <p><strong>Code & Analysis:</strong></p>
@@ -1112,33 +1112,33 @@ def solve_analytic_center(m=300, n=50):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.12 — BFGS Update Rank</h3>
         <p><strong>Problem:</strong> Analyze the rank of the BFGS update matrix and explain why it preserves symmetry.</p>
         <p><strong>Step-by-Step Solution:</strong></p>
         <p>The standard BFGS update for the Hessian approximation $B_{k+1}$ (not inverse) is:
-        $$ B_{k+1} = B_k + \frac{y y^T}{y^T s} - \frac{B_k s s^T B_k}{s^T B_k s} $$
+        $$ B_{k+1} = B_k + \frac{y y^\top}{y^\top s} - \frac{B_k s s^\top B_k}{s^\top B_k s} $$
         where $s = x_{k+1} - x_k$ and $y = \nabla f(x_{k+1}) - \nabla f(x_k)$.
         <ol>
-            <li><strong>Structure of Term 1:</strong> The term $\frac{y y^T}{y^T s}$ is an <strong>outer product</strong> of the vector $y$ with itself.
-                <br>For any vector $u$, $u u^T$ is a matrix of Rank 1. (Every column is a multiple of $u$).
+            <li><strong>Structure of Term 1:</strong> The term $\frac{y y^\top}{y^\top s}$ is an <strong>outer product</strong> of the vector $y$ with itself.
+                <br>For any vector $u$, $u u^\top$ is a matrix of Rank 1. (Every column is a multiple of $u$).
             </li>
-            <li><strong>Structure of Term 2:</strong> The term $\frac{(B_k s) (B_k s)^T}{s^T B_k s}$ involves the vector $v = B_k s$.
-                <br>It can be written as $\frac{v v^T}{c}$. This is also a Rank 1 matrix.
+            <li><strong>Structure of Term 2:</strong> The term $\frac{(B_k s) (B_k s)^\top}{s^\top B_k s}$ involves the vector $v = B_k s$.
+                <br>It can be written as $\frac{v v^\top}{c}$. This is also a Rank 1 matrix.
             </li>
             <li><strong>Total Rank:</strong> The update adds two rank-1 matrices to $B_k$.
                 $$ \text{rank}(B_{k+1} - B_k) \le \text{rank}(U) + \text{rank}(V) = 2 $$
                 Therefore, BFGS is a <strong>Rank-2 Update</strong>.
             </li>
-            <li><strong>Symmetry:</strong> Since $B_k$ is symmetric, and both $y y^T$ and $v v^T$ are symmetric (outer products are always symmetric), the sum $B_{k+1}$ remains symmetric.
+            <li><strong>Symmetry:</strong> Since $B_k$ is symmetric, and both $y y^\top$ and $v v^\top$ are symmetric (outer products are always symmetric), the sum $B_{k+1}$ remains symmetric.
             </li>
-            <li><strong>Positive Definiteness:</strong> It can be proven that if $B_k \succ 0$ and $y^T s > 0$ (curvature condition), then $B_{k+1} \succ 0$.
+            <li><strong>Positive Definiteness:</strong> It can be proven that if $B_k \succ 0$ and $y^\top s > 0$ (curvature condition), then $B_{k+1} \succ 0$.
             </li>
         </ol>
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.13 — Convergence Rate Comparison ($f(x)=x^4$)</h3>
         <p><strong>Problem:</strong> Compare the convergence of Gradient Descent and Newton's method on the strictly convex function $f(x) = x^4$. Note that $f''(0) = 0$, so it is not strongly convex at the optimum.</p>
         <p><strong>Analysis:</strong></p>
@@ -1160,7 +1160,7 @@ def solve_analytic_center(m=300, n=50):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.14 — Nesterov Acceleration</h3>
         <p><strong>Problem:</strong> Explain the difference between "Heavy Ball" momentum and Nesterov momentum mathematically and intuitively.</p>
         <p><strong>Solution:</strong></p>
@@ -1186,24 +1186,24 @@ def solve_analytic_center(m=300, n=50):
         </p>
       </div>
 
-      <div class="example-problem">
+      <div class="problem">
         <h3>P13.15 — The Newton Decrement</h3>
         <p><strong>Problem:</strong> Prove that $\frac{1}{2}\lambda(x)^2 = f(x) - \inf_v \hat{f}(x+v)$, where $\hat{f}$ is the quadratic approximation.</p>
         <p><strong>Proof:</strong></p>
         <ol>
             <li><strong>Quadratic Model:</strong> The second-order Taylor expansion at $x$ is:
-            $$ \hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2} v^T \nabla^2 f(x) v $$
+            $$ \hat{f}(x+v) = f(x) + \nabla f(x)^\top v + \frac{1}{2} v^\top \nabla^2 f(x) v $$
             </li>
             <li><strong>Minimizing the Model:</strong> To find the minimum of this quadratic bowl, we set the gradient w.r.t $v$ to zero:
             $$ \nabla \hat{f} = \nabla f(x) + \nabla^2 f(x) v = 0 \implies v^\star = -\nabla^2 f(x)^{-1} \nabla f(x) = \Delta x_{nt} $$
             So the Newton step <em>is</em> the minimizer of the model.
             </li>
             <li><strong>Minimum Value:</strong> Substitute $v^\star$ back into the model:
-            $$ \inf_v \hat{f} = f(x) + \nabla f^T v^\star + \frac{1}{2} (v^\star)^T \nabla^2 f v^\star $$
+            $$ \inf_v \hat{f} = f(x) + \nabla f^\top v^\star + \frac{1}{2} (v^\star)^\top \nabla^2 f v^\star $$
             Substitute $v^\star = -H^{-1}g$:
-            $$ = f(x) + g^T (-H^{-1}g) + \frac{1}{2} (-H^{-1}g)^T H (-H^{-1}g) $$
-            $$ = f(x) - g^T H^{-1} g + \frac{1}{2} g^T H^{-1} H H^{-1} g $$
-            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} g^T H^{-1} g $$
+            $$ = f(x) + g^\top (-H^{-1}g) + \frac{1}{2} (-H^{-1}g)^\top H (-H^{-1}g) $$
+            $$ = f(x) - g^\top H^{-1} g + \frac{1}{2} g^\top H^{-1} H H^{-1} g $$
+            $$ = f(x) - \lambda(x)^2 + \frac{1}{2} g^\top H^{-1} g $$
             $$ = f(x) - \lambda(x)^2 + \frac{1}{2} \lambda(x)^2 $$
             $$ = f(x) - \frac{1}{2}\lambda(x)^2 $$
             </li>

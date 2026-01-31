@@ -130,8 +130,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 15.1: Log-Barrier Gradient and Hessian</h3>
+      <div class="example-box">
+        <h4>Example 15.1: Log-Barrier Gradient and Hessian</h4>
         <p><strong>Problem:</strong> Derive $\nabla \phi(x)$ and $\nabla^2 \phi(x)$ for $\phi(x) = -\sum \log(b_i - a_i^\top x)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Let $s_i = b_i - a_i^\top x$. Then $\phi = -\sum \log s_i$.
@@ -140,8 +140,8 @@
         This structure $A^\top D A$ is typical for interior-point methods.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.2: Central Path for 1D Problem</h3>
+      <div class="example-box">
+        <h4>Example 15.2: Central Path for 1D Problem</h4>
         <p><strong>Problem:</strong> $\min x$ subject to $x \ge 0$. Find central path.</p>
         <p><strong>Solution:</strong></p>
         <p>Barrier problem: $\min t x - \log x$.
@@ -150,8 +150,8 @@
         Duality gap $1 \times (1/t) \times 1 = 1/t$. Matches theory.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.3: Analytic Center of Cube</h3>
+      <div class="example-box">
+        <h4>Example 15.3: Analytic Center of Cube</h4>
         <p><strong>Problem:</strong> Find analytic center of unit cube $-1 \le x_i \le 1$.</p>
         <p><strong>Solution:</strong></p>
         <p>Constraints: $1-x_i \ge 0, 1+x_i \ge 0$.
@@ -161,8 +161,8 @@
         Center is the origin.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.4: Duality Gap Property</h3>
+      <div class="example-box">
+        <h4>Example 15.4: Duality Gap Property</h4>
         <p><strong>Problem:</strong> Prove gap is $m/t$ for $x^*(t)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Lagrangian of original: $L(x, \lambda) = f_0(x) + \sum \lambda_i f_i(x)$.
@@ -173,8 +173,8 @@
         Substitute $\lambda_i^*$: $-\sum (-1/(t f_i)) f_i = \sum (1/t) = m/t$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.5: Phase I Method</h3>
+      <div class="example-box">
+        <h4>Example 15.5: Phase I Method</h4>
         <p><strong>Problem:</strong> Formulate Phase I for $Ax \le b$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $s$ subject to $a_i^\top x - b_i \le s$.
@@ -183,8 +183,8 @@
         If optimal $s^* < 0$, we have a strictly feasible point for Phase II.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.6: Newton Step Cost</h3>
+      <div class="example-box">
+        <h4>Example 15.6: Newton Step Cost</h4>
         <p><strong>Problem:</strong> Cost of computing Newton step for LP barrier with $A \in \mathbb{R}^{m \times n}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Hessian is $H = A^\top D A + \text{regularizer}$.
@@ -194,8 +194,8 @@
         Much faster if $A$ is sparse.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.7: Primal-Dual System</h3>
+      <div class="example-box">
+        <h4>Example 15.7: Primal-Dual System</h4>
         <p><strong>Problem:</strong> Write the perturbed KKT conditions for Primal-Dual method.</p>
         <p><strong>Solution:</strong></p>
         <p>Standard form LP: $\min c^\top x$ s.t. $Ax=b, x \ge 0$.
@@ -206,8 +206,8 @@
         We linearize this nonlinear system to find $(\Delta x, \Delta y, \Delta s)$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.8: SDP Barrier Derivative</h3>
+      <div class="example-box">
+        <h4>Example 15.8: SDP Barrier Derivative</h4>
         <p><strong>Problem:</strong> Derivative of $-\log\det(X)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Differential $d(-\log\det X) = -\text{tr}(X^{-1} dX)$.

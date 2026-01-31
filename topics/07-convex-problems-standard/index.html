@@ -58,7 +58,7 @@
       <h2>1. The Standard Form and The Epigraph Transformation</h2>
 
       <h3>1.1 Definition: Standard Convex Form</h3>
-      <p>A <strong>convex optimization problem</strong> in <a href="#" class="definition-link">standard form</a> is:</p>
+      <p>A <strong>convex optimization problem</strong> in <a href="javascript:void(0)" class="definition-link">standard form</a> is:</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -75,7 +75,7 @@
       <p>where:</p>
       <ul>
         <li>The variable is $\mathbf{x} \in \mathbb{R}^n$</li>
-        <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="#" class="definition-link" data-term="convex function">convex</a>)</li>
+        <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="javascript:void(0)" class="definition-link" data-term="convex function">convex</a>)</li>
         <li>$f_i: \mathbb{R}^n \to \mathbb{R}$, $i = 1, \dots, m$ are <strong>inequality constraint functions</strong> (all convex)</li>
         <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(\mathbf{x}) = \mathbf{a}_j^\top \mathbf{x} - b_j$)</li>
       </ul>
@@ -92,7 +92,7 @@
       </div>
 
       <h3>1.2 The Epigraph Standard Form (The Universal Translator)</h3>
-      <p>Optimization solvers do not natively understand "minimize a convex function." They understand linear objectives and specific <b>conic constraints</b>. The <a href="#" class="definition-link">epigraph transformation</a> is the universal adapter that moves all complexity from the objective into the constraints.</p>
+      <p>Optimization solvers do not natively understand "minimize a convex function." They understand linear objectives and specific <b>conic constraints</b>. The <a href="javascript:void(0)" class="definition-link">epigraph transformation</a> is the universal adapter that moves all complexity from the objective into the constraints.</p>
 
       <div style="padding: 16px; background: var(--surface-2); border-left: 4px solid var(--primary-300); margin: 16px 0;">
           <p><strong>Transformation:</strong> Replace the objective $f_0(x)$ with a linear variable $t$:</p>
@@ -402,7 +402,7 @@
       <h2>3. Linear Programs (LP): The Polyhedral Language</h2>
 
       <h3>3.1 Definition and Geometry</h3>
-      <p>A <strong>Linear Program (<a href="#" class="definition-link">LP</a>)</strong> is an optimization problem where the objective and all constraint functions are affine.</p>
+      <p>A <strong>Linear Program (<a href="javascript:void(0)" class="definition-link">LP</a>)</strong> is an optimization problem where the objective and all constraint functions are affine.</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -880,7 +880,7 @@
             This separates the "absolute value" logic from the "piecewise cost" logic, making it cleaner than listing 4 affine inequalities for $u$.
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 7.7: Trust-Region QCQP</h4>
           <p>Minimize a quadratic over the unit ball (trust region):</p>
           $$ \min_x \frac{1}{2}x^\top P x + q^\top x + r \quad \text{s.t.} \quad x^\top x \le 1 $$
@@ -1349,7 +1349,7 @@
           </li>
       </ul>
 
-      <div class="example">
+      <div class="example-box">
         <h4>Example 7.9: Von Neumann Growth Model</h4>
         <p>Consider an economy with $n$ sectors.
         <ul>
@@ -1593,7 +1593,7 @@
           </ol>
       </div>
 
-      <div class="example">
+      <div class="example-box">
         <h4>Example 7.11: Box Volume Maximization</h4>
         <p>We want to maximize the volume of a box ($xyz$) subject to area limits.
         <br><b>Objective:</b> Maximize $xyz \iff$ Minimize $x^{-1}y^{-1}z^{-1}$ (Monomial).

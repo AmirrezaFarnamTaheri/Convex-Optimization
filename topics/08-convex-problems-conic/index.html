@@ -58,7 +58,7 @@
       <h2>1. Second-Order Cone Programs (SOCP): The Geometry of Norms</h2>
 
       <h3>1.1 Definition: Norms Made Conic</h3>
-      <p>A <strong>Second-Order Cone Program (<a href="#" class="definition-link" data-term="socp">SOCP</a>)</strong> minimizes a linear function over the intersection of an affine set and the product of second-order cones.</p>
+      <p>A <strong>Second-Order Cone Program (<a href="javascript:void(0)" class="definition-link" data-term="socp">SOCP</a>)</strong> minimizes a linear function over the intersection of an affine set and the product of second-order cones.</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -429,7 +429,7 @@
       </div>
 
       <h3>2.1 Definition: Linear Matrix Inequalities</h3>
-      <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
+      <p>A <strong>Semidefinite Program (<a href="javascript:void(0)" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -887,7 +887,7 @@
 
       <h3>3.3 Key Applications</h3>
 
-      <div class="example">
+      <div class="example-box">
         <h4>Example 8.7: Entropy Maximization</h4>
         <p>Consider the problem of maximizing entropy subject to linear constraints:</p>
         <p style="text-align: center;">
@@ -907,7 +907,7 @@
         </ul>
       </div>
 
-      <div class="example">
+      <div class="example-box">
         <h4>Example 8.8: Log-Sum-Exp</h4>
         <p>The log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ is convex and can be expressed using the exponential cone. To minimize $\log(\sum_{i=1}^n e^{x_i})$, we introduce a variable $t$ and constraints:</p>
         <p style="text-align: center;">
@@ -922,7 +922,7 @@
         <p>where each constraint $(x_i, 1, u_i) \in K_{\text{exp}}$ means $u_i \ge e^{x_i}$, so $\sum u_i \ge \sum e^{x_i}$, and minimizing $t$ such that $\sum u_i \le 1$ gives $t = \log(\sum e^{x_i})$.</p>
       </div>
 
-      <div class="example">
+      <div class="example-box">
         <h4>Example 8.9: Geometric Programming (Conic Form)</h4>
         <p>Geometric programs can be transformed into exponential cone programs. A geometric program in posynomial form:</p>
         <p style="text-align: center;">

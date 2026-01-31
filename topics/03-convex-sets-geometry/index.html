@@ -66,7 +66,7 @@
 
         <h3>1.1 Affine Combinations and Affine Sets</h3>
 
-        <p>An <a href="#" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one. Geometrically, this operation generates lines, planes, and hyperplanes passing through the given points, without reference to the origin.</p>
+        <p>An <a href="javascript:void(0)" class="definition-link">affine combination</a> is a linear combination of points where the coefficients sum to exactly one. Geometrically, this operation generates lines, planes, and hyperplanes passing through the given points, without reference to the origin.</p>
         $$
         \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \sum_{i=1}^k \theta_i = 1
         $$
@@ -93,7 +93,7 @@
 
         <div class="theorem-box">
           <h4>Definition (Affine Set)</h4>
-          <p>A set $C$ is <a href="#" class="definition-link">affine</a> if it contains all affine combinations of its points. Equivalently, the <b>infinite line</b> passing through any two points in $C$ lies entirely in $C$.</p>
+          <p>A set $C$ is <a href="javascript:void(0)" class="definition-link">affine</a> if it contains all affine combinations of its points. Equivalently, the <b>infinite line</b> passing through any two points in $C$ lies entirely in $C$.</p>
           $$ x_1, x_2 \in C, \ \theta \in \mathbb{R} \implies \theta x_1 + (1-\theta)x_2 \in C $$
         </div>
 
@@ -153,7 +153,7 @@
           <figcaption><i>Figure 1:</i> An affine set $C$ (red) is a subspace $V$ (blue) translated by a vector $x_0$. Note that $V$ passes through the origin, while $C$ does not necessarily.</figcaption>
         </figure>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.1: Affine Sets</h4>
           <ul>
             <li><b>Solution set of linear equations:</b> $C = \{x \mid Ax = b\}$. If $x_0$ is a particular solution ($Ax_0 = b$), then $C = x_0 + \mathcal{N}(A)$, where the nullspace $\mathcal{N}(A)$ is the associated subspace.</li>
@@ -164,7 +164,7 @@
 
         <h3>1.2 Convex Combinations and Convex Sets</h3>
 
-        <p>A <a href="#" class="definition-link">convex combination</a> is an affine combination with the additional constraint that all weights are nonnegative:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">convex combination</a> is an affine combination with the additional constraint that all weights are nonnegative:</p>
         $$
         \sum_{i=1}^k \theta_i x_i \quad \text{where} \quad \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1
         $$
@@ -228,7 +228,7 @@
 
         <div class="theorem-box">
           <h4>Definition (Convex Set)</h4>
-          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="#" class="definition-link" data-term="convex set">convex</a> if for any two points $x, y \in C$ and any $\theta \in [0,1]$:</p>
+          <p>A set $C \subseteq \mathbb{R}^n$ is <a href="javascript:void(0)" class="definition-link" data-term="convex set">convex</a> if for any two points $x, y \in C$ and any $\theta \in [0,1]$:</p>
           $$
           \theta x + (1-\theta)y \in C
           $$
@@ -264,7 +264,7 @@
 
         <h3>1.3 Convex Hull</h3>
 
-        <p>The <a href="#" class="definition-link">convex hull</a> of a set $S$ is the smallest convex set that contains $S$. Intuitively, it is the shape formed by "shrink-wrapping" the set $S$ or stretching a rubber band around it. Mathematically, it is the set of all possible convex combinations of points in $S$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">convex hull</a> of a set $S$ is the smallest convex set that contains $S$. Intuitively, it is the shape formed by "shrink-wrapping" the set $S$ or stretching a rubber band around it. Mathematically, it is the set of all possible convex combinations of points in $S$:</p>
         $$
         \mathrm{conv}(S) = \left\{\sum_{i=1}^k \theta_i x_i \ \bigg| \ x_i \in S, \ \theta_i \ge 0, \ \sum_{i=1}^k \theta_i = 1, \ k \in \mathbb{N}\right\}
         $$
@@ -287,7 +287,7 @@
           <h4>Theorem (Carathéodory's Theorem)</h4>
           <p>If $S \subseteq \mathbb{R}^n$, then every point in $\mathrm{conv}(S)$ can be written as a convex combination of at most $n+1$ points from $S$.</p>
           <p><b>Implication:</b> To describe any point in the convex hull, we never need more than $n+1$ points, regardless of how large $S$ is!</p>
-          <div class="example">
+          <div class="example-box">
             <h4>Example 3.2: Carathéodory in $\mathbb{R}^2$</h4>
             <p>In 2D, $n=2$, so we need at most $n+1=3$ points.
             <br>Consider a cloud of 100 points. The convex hull is a polygon. Any point <i>inside</i> that polygon can be covered by a triangle formed by just 3 of the original vertices. You don't need all 100.</p>
@@ -377,7 +377,7 @@
         <p>A powerful way to generate convex sets is to derive them from convex functions (<a href="../05-convex-functions-basics/index.html">Lecture 05</a>). Two primary objects bridge the gap between sets and functions: sublevel sets and epigraphs.</p>
 
         <h4>(a) Sublevel Sets</h4>
-        <p>The $\alpha$-<a href="#" class="definition-link">sublevel set</a> of a function $f : \mathbb{R}^n \to \mathbb{R}$ is the set of all points where the function value is below a threshold $\alpha$:</p>
+        <p>The $\alpha$-<a href="javascript:void(0)" class="definition-link">sublevel set</a> of a function $f : \mathbb{R}^n \to \mathbb{R}$ is the set of all points where the function value is below a threshold $\alpha$:</p>
         $$
         C_\alpha = \{x \in \mathrm{dom} f \mid f(x) \le \alpha\}
         $$
@@ -396,7 +396,7 @@
         </figure>
 
         <h4>(b) Epigraphs</h4>
-        <p>The <a href="#" class="definition-link">epigraph</a> of a function $f$ is the set of points lying on or above its graph in $\mathbb{R}^{n+1}$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">epigraph</a> of a function $f$ is the set of points lying on or above its graph in $\mathbb{R}^{n+1}$:</p>
         $$
         \mathrm{epi}(f) = \{(x, t) \in \mathbb{R}^{n+1} \mid x \in \mathrm{dom} f, \ f(x) \le t\}
         $$
@@ -433,7 +433,7 @@
 
         <h3>2.1 Hyperplanes and Halfspaces</h3>
 
-        <p>A <a href="#" class="definition-link">hyperplane</a> is a set of the form:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">hyperplane</a> is a set of the form:</p>
         $$
         H = \{x \in \mathbb{R}^n \mid a^\top x = b\}
         $$
@@ -460,7 +460,7 @@
           The distance is $\|y-x^*\| = \|\lambda a\| = |\lambda| \|a\| = \frac{|a^\top y - b|}{\|a\|}$.</p>
         </div>
 
-        <p>A <a href="#" class="definition-link">halfspace</a> is a set of the form:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">halfspace</a> is a set of the form:</p>
         $$
         H^- = \{x \in \mathbb{R}^n \mid a^\top x \le b\}
         $$
@@ -501,7 +501,7 @@
 
         <h3>2.2 Norm Balls: The Geometric Machine</h3>
 
-        <p>A <a href="#" class="definition-link" data-term="norm ball">norm ball</a> centered at $x_c$ with radius $r$ is:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link" data-term="norm ball">norm ball</a> centered at $x_c$ with radius $r$ is:</p>
         $$
         B(x_c, r) = \{x \in \mathbb{R}^n \mid \|x - x_c\| \le r\}
         $$
@@ -679,7 +679,7 @@
             </p>
         </div>
 
-        <div class="example">
+        <div class="example-box">
             <h4>Example 3.3: Robust Linear Constraint</h4>
             <p>Consider a constraint $a^\top x \le b$ where $a$ is uncertain: $a = \bar{a} + u$, with perturbation $\|u\| \le \rho$.
             We require the constraint to hold for <i>all</i> perturbations:
@@ -691,7 +691,7 @@
         </div>
 
         <h3>2.4 Ellipsoids</h3>
-        <p>An <a href="#" class="definition-link">ellipsoid</a> is the image of a Euclidean ball under an invertible affine map. It is defined as:</p>
+        <p>An <a href="javascript:void(0)" class="definition-link">ellipsoid</a> is the image of a Euclidean ball under an invertible affine map. It is defined as:</p>
         $$
         \mathcal{E} = \{x \in \mathbb{R}^n \mid (x - x_c)^\top P^{-1} (x - x_c) \le 1\}
         $$
@@ -723,7 +723,7 @@
 
         <h3>2.5 Polyhedra</h3>
 
-        <p>A <a href="#" class="definition-link">polyhedron</a> is the solution set of finitely many linear inequalities and equalities:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">polyhedron</a> is the solution set of finitely many linear inequalities and equalities:</p>
         $$
         \mathcal{P} = \{x \in \mathbb{R}^n \mid Ax \le b, \ Cx = d\}
         $$
@@ -743,7 +743,7 @@
         </div>
 
         <h3>Polytope vs. Polyhedron: H-Rep and V-Rep</h3>
-        <p>A <a href="#" class="definition-link">polytope</a> is a bounded polyhedron.</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">polytope</a> is a bounded polyhedron.</p>
         <ul>
             <li><b>H-Representation (Intersection):</b> $\mathcal{P} = \{x \mid Ax \le b\}$. This describes the set by its "walls" (facets). It is efficient for checking if a point is in the set ($Ax \le b$?) but hard for generating points.</li>
             <li><b>V-Representation (Hull):</b> $\mathcal{P} = \mathrm{conv}\{v_1, \dots, v_k\}$. This describes the set by its "corners" (vertices). It is efficient for generating points (just mix the vertices) but hard for checking membership.</li>
@@ -802,9 +802,9 @@
           </div>
         </div>
 
-        <div class="example">
+        <div class="example-box">
             <h4>Example 3.4: Spectrahedra</h4>
-            <p>The intersection of the PSD cone with an affine subspace is called a <a href="#" class="definition-link">spectrahedron</a>. These are the feasible sets for Semidefinite Programs (SDPs). Unlike polyhedra, they have smooth, curved boundaries.</p>
+            <p>The intersection of the PSD cone with an affine subspace is called a <a href="javascript:void(0)" class="definition-link">spectrahedron</a>. These are the feasible sets for Semidefinite Programs (SDPs). Unlike polyhedra, they have smooth, curved boundaries.</p>
             <figure style="text-align: center; margin: 24px 0;">
               <img src="assets/spectrahedron.png"
                    alt="A spectrahedron (feasible set of an LMI)"
@@ -850,7 +850,7 @@
           </div>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.5: Trigonometric Polynomials</h4>
           <p>Consider the set of coefficients $x \in \mathbb{R}^m$ such that the trigonometric polynomial $p_x(t) = \sum_{k=1}^m x_k \cos(kt)$ is bounded by 1 on an interval:</p>
           $$
@@ -926,7 +926,7 @@
           </div>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.6: Ellipsoids from Preimages</h4>
           <p>An ellipsoid $\mathcal{E} = \{x \mid (x - x_c)^\top P^{-1} (x - x_c) \le 1\}$ where $P \succ 0$ can be written as:</p>
           $$
@@ -1044,7 +1044,7 @@
           </div>
         </div>
 
-        <p>A <a href="#" class="definition-link">linear-fractional function</a> is a composition of perspective with an affine function:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">linear-fractional function</a> is a composition of perspective with an affine function:</p>
         $$
         f(x) = \frac{Ax + b}{c^\top x + d}
         $$
@@ -1057,7 +1057,7 @@
              <figcaption><i>Figure 22:</i> Linear-fractional functions are built by composing an affine map $g(x)$ with the perspective map $P$.</figcaption>
         </figure>
 
-        <div class="example">
+        <div class="example-box">
              <h4>Example 3.7: Projective Geometry</h4>
              <p>Linear-fractional maps can distort space significantly, turning parallel lines into converging ones (like train tracks on a horizon), yet they strictly preserve the convexity of sets.</p>
              <figure style="text-align: center; margin: 24px 0;">
@@ -1069,7 +1069,7 @@
         </div>
 
         <h3>3.4 Minkowski Sum</h3>
-        <p>The <a href="#" class="definition-link">Minkowski sum</a> of two sets $C, D \subseteq \mathbb{R}^n$ is the set of all vector sums:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">Minkowski sum</a> of two sets $C, D \subseteq \mathbb{R}^n$ is the set of all vector sums:</p>
         $$ C + D = \{x + y \mid x \in C, y \in D\} $$
 
         <div class="intuition-box">
@@ -1166,21 +1166,21 @@
 
         <h4>Examples</h4>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.8: Product of Intervals</h4>
           <p>Consider two closed intervals on the real line: $C = [a, b] \subseteq \mathbb{R}$ and $D = [c, d] \subseteq \mathbb{R}$. Their Cartesian product is:
           $$ C \times D = [a, b] \times [c, d] = \{(x, y) \in \mathbb{R}^2 \mid a \le x \le b, \ c \le y \le d\} $$
           This is a <b>rectangle</b> (or "box") in $\mathbb{R}^2$ with corners at $(a, c), (a, d), (b, c), (b, d)$. Since intervals are convex (in fact, they are line segments), the theorem guarantees that this rectangle is convex—which is geometrically obvious.</p>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.9: Box in $\mathbb{R}^n$</h4>
           <p>Generalizing the rectangle, the product of $n$ intervals:
           $$ \prod_{i=1}^n [a_i, b_i] = [a_1, b_1] \times [a_2, b_2] \times \cdots \times [a_n, b_n] $$
           is an $n$-dimensional <b>hyperrectangle</b> or <b>box</b> in $\mathbb{R}^n$. This is the set of all points $\mathbf{x} = (x_1, \dots, x_n)$ satisfying $a_i \le x_i \le b_i$ for each $i$. Boxes are fundamental in optimization for defining simple bound constraints.</p>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.10: Product of Simplices</h4>
           <p>Let $\Delta_n = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x} \ge 0, \ \sum x_i = 1\}$ be the standard $(n-1)$-simplex (the probability simplex) in $\mathbb{R}^n$. The product of two simplices:
           $$ \Delta_2 \times \Delta_3 \subseteq \mathbb{R}^5 $$
@@ -1199,7 +1199,7 @@
         $$ C_1 \times C_2 \times \cdots \times C_k = \{(\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_k) \mid \mathbf{x}_i \in C_i \ \forall i\} \subseteq \mathbb{R}^{n_1 + n_2 + \cdots + n_k} $$
         is convex. The proof follows the same component-wise argument: convex combinations are taken independently in each coordinate block, and since each $C_i$ is convex, the componentwise convex combinations remain inside each $C_i$.</p>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.11: Polyhedra as Products</h4>
           <p>In optimization, box constraints like:
           $$ 0 \le x_1 \le 5, \quad -2 \le x_2 \le 3, \quad 1 \le x_3 \le 4 $$
@@ -1265,7 +1265,7 @@
           <li><b>Relative interior</b> $\mathrm{ri}(C)$: The interior of $C$ <i>relative to</i> $\mathrm{aff}(C)$. Points strictly inside when viewed in the affine hull.</li>
         </ul>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.12: Line Segment in $\mathbb{R}^2$</h4>
           <p>Consider $C = \{(t, 0) \mid 0 \le t \le 1\}$ (a line segment on the $x$-axis).</p>
           <ul>
@@ -1275,7 +1275,7 @@
           </ul>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.13: A Flat Disk in 3D (The "Frisbee" Intuition)</h4>
           <p>Imagine a Frisbee floating in the air. Mathematically, this is the set $C = \{(x, y, 0) \mid x^2 + y^2 \le 1\} \subset \mathbb{R}^3$.</p>
           <ul>
@@ -1286,7 +1286,7 @@
           <p><i>Why this matters:</i> Optimization solvers (like interior-point methods) move through the <i>relative</i> interior of the feasible set. They don't care that the set has no volume in the full space, as long as it has volume in its "native" subspace.</p>
         </div>
 
-        <div class="example">
+        <div class="example-box">
           <h4>Example 3.14: Standard Simplex</h4>
           <p>$\Delta^n = \{x \in \mathbb{R}^n \mid x \ge 0, \mathbf{1}^\top x = 1\}$.</p>
           <ul>

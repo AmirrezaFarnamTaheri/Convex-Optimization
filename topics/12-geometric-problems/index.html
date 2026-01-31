@@ -153,8 +153,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 12.1: Euclidean Projection onto a Simplex</h3>
+      <div class="example-box">
+        <h4>Example 12.1: Euclidean Projection onto a Simplex</h4>
         <p><strong>Problem:</strong> Project $y \in \mathbb{R}^n$ onto the simplex $\Delta = \{x : x \ge 0, \sum x_i = 1\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Problem: $\min \frac{1}{2}\|x - y\|^2$ s.t. $\sum x_i = 1, x_i \ge 0$.
@@ -165,8 +165,8 @@
         This is solved by sorting $y$ and a water-filling algorithm in $O(n \log n)$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.2: Distance Between Two Polyhedra</h3>
+      <div class="example-box">
+        <h4>Example 12.2: Distance Between Two Polyhedra</h4>
         <p><strong>Problem:</strong> Formulate the distance between $\mathcal{P}_1 = \{x : A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{x : A_2 x \le b_2\}$ as a QP.</p>
         <p><strong>Solution:</strong></p>
         <p>We minimize $\|x_1 - x_2\|_2^2$ subject to $A_1 x_1 \le b_1$ and $A_2 x_2 \le b_2$.
@@ -175,8 +175,8 @@
         This is a convex QP. The dual variables provide the separating hyperplane.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.3: Chebyshev Center of Triangle</h3>
+      <div class="example-box">
+        <h4>Example 12.3: Chebyshev Center of Triangle</h4>
         <p><strong>Problem:</strong> Find the largest circle inside a triangle defined by $a_i^\top x \le b_i, i=1,2,3$.</p>
         <p><strong>Solution:</strong></p>
         <p>Maximize $r$. Constraints: The distance from center $x_c$ to line $a_i^\top x = b_i$ must be at least $r$.
@@ -186,8 +186,8 @@
         The optimal $x_c$ is the incenter.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.4: MVEE for Points</h3>
+      <div class="example-box">
+        <h4>Example 12.4: MVEE for Points</h4>
         <p><strong>Problem:</strong> Find the minimum volume ellipsoid covering points $x_1, \ldots, x_m$.</p>
         <p><strong>Solution:</strong></p>
         <p>Parametrize ellipsoid as $\mathcal{E} = \{x : \|Ax+b\|_2 \le 1\}$. Volume $\propto \det(A^{-1})$.
@@ -198,8 +198,8 @@
         This is a MAXDET problem, solvable via interior point methods.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.5: Separating Hyperplane</h3>
+      <div class="example-box">
+        <h4>Example 12.5: Separating Hyperplane</h4>
         <p><strong>Problem:</strong> Find a separating hyperplane for two sets of points $\{x_i\}$ and $\{y_j\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>We want $a^\top x_i + b \ge 1$ and $a^\top y_j + b \le -1$.
@@ -208,8 +208,8 @@
         This is the hard-margin SVM formulation. If sets intersect, relax with slack variables (Soft margin).</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.6: Weber Problem (Facility Location)</h3>
+      <div class="example-box">
+        <h4>Example 12.6: Weber Problem (Facility Location)</h4>
         <p><strong>Problem:</strong> Minimize $f(x) = \sum_{i=1}^m w_i \|x - p_i\|_2$.</p>
         <p><strong>Solution:</strong></p>
         <p>This is the sum of Euclidean norms.
@@ -219,8 +219,8 @@
         Alternatively, use iterative reweighted least squares (Weiszfeld's algorithm), which is a gradient method on smoothed approximation.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.7: Total Least Squares</h3>
+      <div class="example-box">
+        <h4>Example 12.7: Total Least Squares</h4>
         <p><strong>Problem:</strong> Fit a line $a^\top x = b$ minimizing sum of squared perpendicular distances to points $x_i$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $\sum_i (a^\top x_i - b)^2 / \|a\|_2^2$. Assume $x_i$ centered, so $b=0$.
@@ -229,8 +229,8 @@
         This is SVD/PCA. While non-convex generally, the spectral solution is global.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.8: MVIE for Cube</h3>
+      <div class="example-box">
+        <h4>Example 12.8: MVIE for Cube</h4>
         <p><strong>Problem:</strong> Find the largest ellipsoid inside the unit cube $[-1, 1]^n$.</p>
         <p><strong>Solution:</strong></p>
         <p>Cube faces: $e_i^\top x \le 1$ and $-e_i^\top x \le 1$.

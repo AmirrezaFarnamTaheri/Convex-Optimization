@@ -119,11 +119,11 @@
 
         <h3>1.1 Cones and Convex Cones</h3>
 
-        <p>A set $K \subseteq \mathbb{R}^n$ is a <a href="#" class="definition-link">cone</a> if it is closed under non-negative scaling:</p>
+        <p>A set $K \subseteq \mathbb{R}^n$ is a <a href="javascript:void(0)" class="definition-link">cone</a> if it is closed under non-negative scaling:</p>
         $$ x \in K, \ \alpha \ge 0 \implies \alpha x \in K $$
         <p><b>Note:</b> A cone can be wildly non-convex (e.g., a union of two lines). Optimization requires convexity.</p>
 
-        <p>A <a href="#" class="definition-link">convex cone</a> is a cone that is also a convex set. Equivalently, it is closed under non-negative linear combinations (conic combinations):</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">convex cone</a> is a cone that is also a convex set. Equivalently, it is closed under non-negative linear combinations (conic combinations):</p>
         $$ x, y \in K, \ \alpha, \beta \ge 0 \implies \alpha x + \beta y \in K $$
         <p><b>Why this definition is equivalent:</b>
         <br>($\Rightarrow$) If $K$ is a convex cone, scaling gives $\alpha x, \beta y \in K$. Convexity gives $\frac{1}{2}(\alpha x + \beta y) \in K$. Scaling by 2 gives $\alpha x + \beta y \in K$.
@@ -160,7 +160,7 @@
           Let $u = (y+z)/2$ and $v = (y-z)/2$. Then $y = u+v, z = u-v$.
           The inequality $\|x\|^2 \le yz$ becomes $\|x\|^2 \le u^2 - v^2$, or $\|x\|^2 + v^2 \le u^2$.
           This is exactly $\|(x, v)\|_2 \le u$, which is the standard SOC in coordinates $(x, v, u)$.
-          <br>This cone is fundamental for modeling quadratic constraints like $x^T x \le yz$ (geometric mean bounds).</p>
+          <br>This cone is fundamental for modeling quadratic constraints like $x^\top x \le yz$ (geometric mean bounds).</p>
         </div>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
@@ -180,7 +180,7 @@
 
         <h3>1.2 Proper Cones</h3>
 
-        <p>A <a href="#" class="definition-link">proper cone</a> is a convex cone $K$ that satisfies three additional properties:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">proper cone</a> is a convex cone $K$ that satisfies three additional properties:</p>
         <ol>
           <li><b>Closed:</b> $K$ contains its boundary.</li>
           <li><b>Pointed:</b> $K$ contains no lines ($K \cap -K = \{0\}$).</li>
@@ -260,7 +260,7 @@
           <br>In practice, when objectives conflict (reduce cost vs. increase quality), the decision-maker must choose a point on the Pareto frontier based on preferences or trade-off weights.</p>
         </div>
 
-        <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \geq 0$) produces Pareto optimal points by varying weights.</p>
+        <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \ge 0$) produces Pareto optimal points by varying weights.</p>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
              <figure style="text-align: center; flex: 1; min-width: 280px;">
@@ -294,7 +294,7 @@
 
         <h3>2.1 The Dual Cone</h3>
 
-        <p>The <a href="#" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
         $$
         K^* = \{y \in \mathbb{R}^n \mid y^\top x \ge 0 \ \forall x \in K\}
         $$
@@ -380,7 +380,7 @@
         </div>
 
       <h4>The Polar Cone</h4>
-      <p>The <a href="#" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
+      <p>The <a href="javascript:void(0)" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
       $$ K^\circ = -K^* = \{\mathbf{y} \in \mathbb{R}^n \mid \mathbf{y}^\top \mathbf{x} \le 0 \ \forall \mathbf{x} \in K\} $$
       <p>It contains all vectors making an obtuse angle with $K$. It is related to the normal cone at the origin: $K^\circ = N_K(0)$ for a convex cone $K$.</p>
 

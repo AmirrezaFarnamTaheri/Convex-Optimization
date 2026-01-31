@@ -128,8 +128,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 14.1: KKT System for QP</h3>
+      <div class="example-box">
+        <h4>Example 14.1: KKT System for QP</h4>
         <p><strong>Problem:</strong> Solve $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax = b$ analytically.</p>
         <p><strong>Solution:</strong></p>
         <p>KKT conditions:
@@ -142,8 +142,8 @@
         Then substitute $\nu$ back to find $x$. This is the method of Lagrange multipliers.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.2: Null-Space Basis Construction</h3>
+      <div class="example-box">
+        <h4>Example 14.2: Null-Space Basis Construction</h4>
         <p><strong>Problem:</strong> Construct a null-space matrix $F$ for $A = [1, 1, 1]$.</p>
         <p><strong>Solution:</strong></p>
         <p>We need $F \in \mathbb{R}^{3 \times 2}$ such that $AF = 0$ and $F$ has rank 2.
@@ -153,8 +153,8 @@
         Allows solving unconstrained problem in $\mathbb{R}^2$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.3: Projected Gradient vs Newton</h3>
+      <div class="example-box">
+        <h4>Example 14.3: Projected Gradient vs Newton</h4>
         <p><strong>Problem:</strong> Compare projected gradient descent with Newton for minimizing $\|x\|^2$ s.t. $Ax=b$.</p>
         <p><strong>Solution:</strong></p>
         <p>Objective is quadratic with Hessian $2I$.
@@ -164,8 +164,8 @@
         Newton solves the KKT system directly, which is equivalent to the analytic solution here.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.4: Augmented Lagrangian</h3>
+      <div class="example-box">
+        <h4>Example 14.4: Augmented Lagrangian</h4>
         <p><strong>Problem:</strong> Define the augmented Lagrangian and explain why it helps.</p>
         <p><strong>Solution:</strong></p>
         <p>$L_\rho(x, \nu) = f(x) + \nu^\top(Ax-b) + \frac{\rho}{2}\|Ax-b\|^2$.
@@ -174,8 +174,8 @@
         Unlike pure penalty ($\nu=0$), $\rho$ doesn't need to go to infinity, avoiding ill-conditioning.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.5: Infeasible Start Newton Residual</h3>
+      <div class="example-box">
+        <h4>Example 14.5: Infeasible Start Newton Residual</h4>
         <p><strong>Problem:</strong> How does the residual decrease in infeasible start Newton method?</p>
         <p><strong>Solution:</strong></p>
         <p>Residual $r(x, \nu) = (r_{dual}, r_{pri}) = (\nabla f + A^\top \nu, Ax - b)$.
@@ -184,8 +184,8 @@
         Thus the residual norm decreases linearly (or better) to zero.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.6: Analytic Center with Equality</h3>
+      <div class="example-box">
+        <h4>Example 14.6: Analytic Center with Equality</h4>
         <p><strong>Problem:</strong> Find the analytic center of $\{x : x \ge 0, \mathbf{1}^\top x = 1\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $-\sum \log x_i$ subject to $\sum x_i = 1$.
@@ -194,8 +194,8 @@
         So $x_i = 1/n$. Center is uniform distribution.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.7: Schur Complement Solver</h3>
+      <div class="example-box">
+        <h4>Example 14.7: Schur Complement Solver</h4>
         <p><strong>Problem:</strong> How to solve KKT system if $H = \nabla^2 f$ is diagonal?</p>
         <p><strong>Solution:</strong></p>
         <p>System: $\begin{bmatrix} D & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x \\ w \end{bmatrix} = \begin{bmatrix} -g \\ 0 \end{bmatrix}$.
@@ -206,8 +206,8 @@
         Requires solving system size $p \times p$ instead of $(n+p) \times (n+p)$. Efficient if $p \ll n$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.8: Complexity Analysis</h3>
+      <div class="example-box">
+        <h4>Example 14.8: Complexity Analysis</h4>
         <p><strong>Problem:</strong> Compare elimination vs KKT for dense $A \in \mathbb{R}^{p \times n}$.</p>
         <p><strong>Solution:</strong></p>
         <p>1. <strong>Elimination:</strong> Form $H_{red} = F^\top H F$ ($O(n^2(n-p))$), factor $H_{red}$ ($O((n-p)^3)$).

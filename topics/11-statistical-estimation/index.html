@@ -136,8 +136,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 11.1: MLE for Gaussian Distribution</h3>
+      <div class="example-box">
+        <h4>Example 11.1: MLE for Gaussian Distribution</h4>
         <p><strong>Problem:</strong> Given $n$ i.i.d. samples $y_1, \ldots, y_n$ from $\mathcal{N}(\mu, \Sigma)$, formulate the MLE problem for estimating $\mu$ and $\Sigma$. Show it is convex in terms of natural parameters.</p>
         <p><strong>Solution:</strong></p>
         <p>The log-likelihood is:
@@ -150,8 +150,8 @@
         Wait, for Gaussian, usually we fix mean or covariance. If both vary, the problem is not jointly convex in standard parameters. However, optimizing $\mu$ gives $\hat{\mu} = \bar{y}$. Then optimizing $\Sigma$ gives $\hat{\Sigma} = \frac{1}{n}\sum (y_i-\bar{y})(y_i-\bar{y})^\top$. The problem is convex in $P = \Sigma^{-1}$ if $\mu$ is known.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.2: Logistic Regression Gradient</h3>
+      <div class="example-box">
+        <h4>Example 11.2: Logistic Regression Gradient</h4>
         <p><strong>Problem:</strong> Derive the gradient of the negative log-likelihood for logistic regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Loss function: $J(w) = \sum_{i=1}^n \left( -y_i \log(\sigma(z_i)) - (1-y_i) \log(1-\sigma(z_i)) \right)$ where $z_i = w^\top x_i$.
@@ -162,8 +162,8 @@
         The Hessian is $\nabla^2 J(w) = X^\top \text{diag}(\sigma(z_i)(1-\sigma(z_i))) X$, which is PSD.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.3: Hard-Margin SVM Dual</h3>
+      <div class="example-box">
+        <h4>Example 11.3: Hard-Margin SVM Dual</h4>
         <p><strong>Problem:</strong> Derive the dual of $\min \frac{1}{2}\|w\|_2^2$ s.t. $y_i(w^\top x_i + b) \ge 1$.</p>
         <p><strong>Solution:</strong></p>
         <p>Lagrangian: $L(w,b,\alpha) = \frac{1}{2}\|w\|^2 - \sum_i \alpha_i [y_i(w^\top x_i + b) - 1]$ with $\alpha_i \ge 0$.
@@ -178,8 +178,8 @@
         Subject to: $\alpha_i \ge 0$, $\sum \alpha_i y_i = 0$. This is a QP.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.4: Soft-Margin SVM as Unconstrained Problem</h3>
+      <div class="example-box">
+        <h4>Example 11.4: Soft-Margin SVM as Unconstrained Problem</h4>
         <p><strong>Problem:</strong> Show that soft-margin SVM is equivalent to minimizing hinge loss + L2 regularization.</p>
         <p><strong>Solution:</strong></p>
         <p>Primal: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1 - \xi_i, \xi_i \ge 0$.
@@ -191,8 +191,8 @@
         This is unconstrained minimization of (Regularizer + $C \times$ Hinge Loss).</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.5: Poisson Regression</h3>
+      <div class="example-box">
+        <h4>Example 11.5: Poisson Regression</h4>
         <p><strong>Problem:</strong> Derive the loss function for Poisson regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Model: $y \sim \text{Poisson}(\lambda)$ with $\lambda = e^{w^\top x}$.
@@ -204,8 +204,8 @@
         This is convex.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.6: Softmax Regression Gradient</h3>
+      <div class="example-box">
+        <h4>Example 11.6: Softmax Regression Gradient</h4>
         <p><strong>Problem:</strong> Compute gradient for cross-entropy loss with softmax.</p>
         <p><strong>Solution:</strong></p>
         <p>Softmax: $p_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$ where $z_k = w_k^\top x$.
@@ -217,8 +217,8 @@
         This leads to the standard update rule.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.7: Regularized Logistic (L1)</h3>
+      <div class="example-box">
+        <h4>Example 11.7: Regularized Logistic (L1)</h4>
         <p><strong>Problem:</strong> Formulate L1-regularized logistic regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Objective: $f(w) = \sum \log(1+e^{-y_i w^\top x_i}) + \lambda \|w\|_1$.
@@ -230,8 +230,8 @@
         This induces sparsity in $w$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.8: Robust MLE with Huber Loss</h3>
+      <div class="example-box">
+        <h4>Example 11.8: Robust MLE with Huber Loss</h4>
         <p><strong>Problem:</strong> Define the Huber loss and its use in robust regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Huber loss $H_\delta(u)$:

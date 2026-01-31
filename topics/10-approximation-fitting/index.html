@@ -45,9 +45,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
-        <li>How to formulate and solve least squares problems.</li>
-        <li>The use of regularization to prevent overfitting.</li>
-        <li>How to formulate and solve robust regression problems.</li>
+        <li>Formulate and solve least squares problems.</li>
+        <li>Apply regularization (Ridge, LASSO) to prevent overfitting.</li>
+        <li>Formulate and solve robust regression problems.</li>
       </ul>
     </section>
 
@@ -167,8 +167,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="problem">
-      <h3>Example 6.1: Ridge Regression (Tikhonov Regularization)</h3>
+      <div class="example-box">
+      <h4>Example 10.1: Ridge Regression (Tikhonov Regularization)</h4>
       <p><strong>Problem:</strong> Derive the closed-form solution for Ridge regression:
       $$ \min_x \|Ax-b\|_2^2 + \lambda\|x\|_2^2 $$
       Explain how $\lambda > 0$ affects the existence of a solution and the condition number.</p>
@@ -198,8 +198,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.2: The LASSO Path and Soft Thresholding</h3>
+      <div class="example-box">
+      <h4>Example 10.2: The LASSO Path and Soft Thresholding</h4>
       <p><strong>Problem:</strong> Consider the simplified LASSO problem with orthogonal design ($A=I$):
       $$ \min_x \frac{1}{2}\|x-b\|_2^2 + \lambda \|x\|_1 $$
       Derive the explicit solution $x^*(\lambda)$ and sketch the solution path as $\lambda$ increases.</p>
@@ -242,8 +242,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.3: Weighted Least Squares (BLUE)</h3>
+      <div class="example-box">
+      <h4>Example 10.3: Weighted Least Squares (BLUE)</h4>
       <p><strong>Problem:</strong> Suppose measurements $y_i = a_i^\top x + v_i$ have independent noise with variance $\sigma_i^2$. We want the Best Linear Unbiased Estimator (BLUE). This corresponds to minimizing the $\chi^2$ statistic:
       $$ \min_x \sum_{i=1}^m \frac{(a_i^\top x - b_i)^2}{\sigma_i^2} $$
       Formulate this in matrix notation and find the solution.</p>
@@ -269,8 +269,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.4: Robust Regression with Huber Loss</h3>
+      <div class="example-box">
+      <h4>Example 10.4: Robust Regression with Huber Loss</h4>
       <p><strong>Problem:</strong> Standard Least Squares is sensitive to outliers because the quadratic cost grows rapidly. The Huber loss function is defined as:
       $$ \phi_{hub}(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
       Formulate the robust regression problem $\min_x \sum \phi_{hub}(a_i^\top x - b_i)$ as a Quadratic Program (QP).</p>
@@ -304,8 +304,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.5: Sparse Signal Recovery via Basis Pursuit</h3>
+      <div class="example-box">
+      <h4>Example 10.5: Sparse Signal Recovery via Basis Pursuit</h4>
       <p><strong>Problem:</strong> A 100-dimensional signal $x_{true}$ with only 10 nonzero entries is measured via 30 random Gaussian measurements $y = Ax_{true}$. We wish to recover $x_{true}$.
       <br>Since $30 < 100$, the system $Ax=y$ is underdetermined. The sparsest solution ($\min \|x\|_0$) is NP-hard to find.
       <br>Formulate the <b>Basis Pursuit</b> relaxation and explain why it works.</p>
@@ -336,8 +336,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.6: Total Variation (TV) Denoising</h3>
+      <div class="example-box">
+      <h4>Example 10.6: Total Variation (TV) Denoising</h4>
       <p><strong>Problem:</strong> We observe a noisy signal $y = x_{true} + \nu$, where $x_{true}$ is piecewise constant (like a step function). We want to recover $x$ by minimizing the Total Variation. Formulate this as a convex problem.</p>
 
       <div class="solution-box">
@@ -367,8 +367,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.7: Low-Rank Matrix Approximation (Eckart-Young)</h3>
+      <div class="example-box">
+      <h4>Example 10.7: Low-Rank Matrix Approximation (Eckart-Young)</h4>
       <p><strong>Problem:</strong> Given a matrix $A \in \mathbb{R}^{m \times n}$, find the matrix $X$ of rank at most $k$ that minimizes the Frobenius norm error $\|A - X\|_F$. Prove the optimality of the truncated SVD.</p>
 
       <div class="solution-box">
@@ -392,8 +392,8 @@
       </div>
       </div>
 
-      <div class="problem">
-      <h3>Example 6.8: Polynomial Fitting with Regularization</h3>
+      <div class="example-box">
+      <h4>Example 10.8: Polynomial Fitting with Regularization</h4>
       <p><strong>Problem:</strong> Fit a polynomial $p(t) = \sum_{j=0}^d x_j t^j$ to data points $(t_i, y_i)$. Discuss the conditioning of the problem and the effect of regularization.</p>
 
       <div class="solution-box">

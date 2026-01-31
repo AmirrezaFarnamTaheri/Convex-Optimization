@@ -119,11 +119,11 @@
 
         <h3>1.1 Cones and Convex Cones</h3>
 
-        <p>A set $K \subseteq \mathbb{R}^n$ is a <a href="#" class="definition-link">cone</a> if it is closed under non-negative scaling:</p>
+        <p>A set $K \subseteq \mathbb{R}^n$ is a <a href="javascript:void(0)" class="definition-link">cone</a> if it is closed under non-negative scaling:</p>
         $$ x \in K, \ \alpha \ge 0 \implies \alpha x \in K $$
         <p><b>Note:</b> A cone can be wildly non-convex (e.g., a union of two lines). Optimization requires convexity.</p>
 
-        <p>A <a href="#" class="definition-link">convex cone</a> is a cone that is also a convex set. Equivalently, it is closed under non-negative linear combinations (conic combinations):</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">convex cone</a> is a cone that is also a convex set. Equivalently, it is closed under non-negative linear combinations (conic combinations):</p>
         $$ x, y \in K, \ \alpha, \beta \ge 0 \implies \alpha x + \beta y \in K $$
         <p><b>Why this definition is equivalent:</b>
         <br>($\Rightarrow$) If $K$ is a convex cone, scaling gives $\alpha x, \beta y \in K$. Convexity gives $\frac{1}{2}(\alpha x + \beta y) \in K$. Scaling by 2 gives $\alpha x + \beta y \in K$.
@@ -160,7 +160,7 @@
           Let $u = (y+z)/2$ and $v = (y-z)/2$. Then $y = u+v, z = u-v$.
           The inequality $\|x\|^2 \le yz$ becomes $\|x\|^2 \le u^2 - v^2$, or $\|x\|^2 + v^2 \le u^2$.
           This is exactly $\|(x, v)\|_2 \le u$, which is the standard SOC in coordinates $(x, v, u)$.
-          <br>This cone is fundamental for modeling quadratic constraints like $x^T x \le yz$ (geometric mean bounds).</p>
+          <br>This cone is fundamental for modeling quadratic constraints like $x^\top x \le yz$ (geometric mean bounds).</p>
         </div>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
@@ -180,7 +180,7 @@
 
         <h3>1.2 Proper Cones</h3>
 
-        <p>A <a href="#" class="definition-link">proper cone</a> is a convex cone $K$ that satisfies three additional properties:</p>
+        <p>A <a href="javascript:void(0)" class="definition-link">proper cone</a> is a convex cone $K$ that satisfies three additional properties:</p>
         <ol>
           <li><b>Closed:</b> $K$ contains its boundary.</li>
           <li><b>Pointed:</b> $K$ contains no lines ($K \cap -K = \{0\}$).</li>
@@ -240,7 +240,7 @@
         </div>
 
         <div class="example-box">
-          <h4>Example: Portfolio Optimization (Risk vs. Return)</h4>
+          <h4>Example 4.1: Portfolio Optimization (Risk vs. Return)</h4>
           <p>Consider minimizing $f(x) = (\text{risk}(x), -\text{return}(x))$ where $x$ is a portfolio allocation.
           <br>Using $K = \mathbb{R}^2_+$ (component-wise ordering):
           <ul>
@@ -260,7 +260,7 @@
           <br>In practice, when objectives conflict (reduce cost vs. increase quality), the decision-maker must choose a point on the Pareto frontier based on preferences or trade-off weights.</p>
         </div>
 
-        <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \geq 0$) produces Pareto optimal points by varying weights.</p>
+        <p><b>Connection to Standard Optimization:</b> For $K = \mathbb{R}^n_+$ (component-wise ordering), this recovers standard multi-objective optimization. Scalarization (forming $\sum w_i f_i(x)$ with $w \ge 0$) produces Pareto optimal points by varying weights.</p>
 
         <div class="row" style="display: flex; gap: 20px; justify-content: center; margin: 24px 0; flex-wrap: wrap;">
              <figure style="text-align: center; flex: 1; min-width: 280px;">
@@ -294,13 +294,13 @@
 
         <h3>2.1 The Dual Cone</h3>
 
-        <p>The <a href="#" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">dual cone</a> of a cone $K$ is the set of all vectors making a non-obtuse angle with every vector in $K$:</p>
         $$
         K^* = \{y \in \mathbb{R}^n \mid y^\top x \ge 0 \ \forall x \in K\}
         $$
 
         <div class="example-box">
-          <h4>Geometric Example: 2D Wedges</h4>
+          <h4>Example 4.2: 2D Wedges</h4>
           <p>Consider a cone $K$ in $\mathbb{R}^2$ spanned by two vectors $v_1 = (1, 0)$ and $v_2 = (1, 1)$. This is a $45^\circ$ wedge.
           <br>The dual cone $K^*$ consists of all $y$ such that $y^\top v_1 \ge 0$ and $y^\top v_2 \ge 0$.
           <br>$\bullet$ $y^\top (1, 0) \ge 0 \implies y_1 \ge 0$.
@@ -380,7 +380,7 @@
         </div>
 
       <h4>The Polar Cone</h4>
-      <p>The <a href="#" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
+      <p>The <a href="javascript:void(0)" class="definition-link">polar cone</a> is the negative of the dual cone:</p>
       $$ K^\circ = -K^* = \{\mathbf{y} \in \mathbb{R}^n \mid \mathbf{y}^\top \mathbf{x} \le 0 \ \forall \mathbf{x} \in K\} $$
       <p>It contains all vectors making an obtuse angle with $K$. It is related to the normal cone at the origin: $K^\circ = N_K(0)$ for a convex cone $K$.</p>
 
@@ -726,7 +726,7 @@
       </div>
 
       <div class="example-box">
-        <h4>Example: Supporting Hyperplanes of the Unit Ball</h4>
+        <h4>Example 4.3: Supporting Hyperplanes of the Unit Ball</h4>
         <p>Consider $C = \{x \mid \|x\|_2 \le 1\}$ (unit ball). For any $x_0$ with $\|x_0\|_2 = 1$, the supporting hyperplane is:
         $$ \{x \mid x_0^\top x = 1\} $$
         <b>Normal vector:</b> $a = x_0$. This hyperplane is perpendicular to the radius at $x_0$ and tangent to the sphere.
@@ -820,7 +820,7 @@
       <h2><i data-feather="edit-3"></i> 5. Exercises</h2>
 
 <div class="problem">
-  <h3>P4.2 — Dual of a Subspace</h3>
+  <h3>P4.1 — Dual of a Subspace</h3>
   <p>Let $V \subseteq \mathbb{R}^n$ be a linear subspace. Prove that its dual cone is the orthogonal complement $V^\perp$.</p>
 
       <div class="recap-box">
@@ -844,7 +844,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.3 — Self-Duality of Second-Order Cone</h3>
+  <h3>P4.2 — Self-Duality of Second-Order Cone</h3>
   <p>Prove that the second-order cone $\mathcal{Q} = \{(x, t) \in \mathbb{R}^{n+1} \mid \|x\|_2 \le t\}$ is self-dual: $\mathcal{Q}^* = \mathcal{Q}$.</p>
 
       <div class="recap-box">
@@ -884,7 +884,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.4 — Dual Cone Identities</h3>
+  <h3>P4.3 — Dual Cone Identities</h3>
   <p>For closed convex cones $K_1, K_2$, prove $(K_1 + K_2)^* = K_1^* \cap K_2^*$.</p>
 
   <div class="recap-box">
@@ -914,7 +914,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.5 — Generalized Inequality Properties</h3>
+  <h3>P4.4 — Generalized Inequality Properties</h3>
   <p>Let $K$ be a proper cone. Prove $\preceq_K$ is antisymmetric: $x \preceq_K y \land y \preceq_K x \implies x=y$.</p>
 
   <div class="recap-box">
@@ -936,7 +936,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.6 — Norm Cone (Epigraph of Norm)</h3>
+  <h3>P4.5 — Norm Cone (Epigraph of Norm)</h3>
   <p>Show that the set $C = \{(x,t) \mid \|x\| \le t\}$ is a convex cone.</p>
 
   <div class="recap-box">
@@ -959,7 +959,7 @@
 
 
 <div class="problem">
-  <h3>P4.9 — Cones in $\mathbb{R}^2$</h3>
+  <h3>P4.6 — Cones in $\mathbb{R}^2$</h3>
   <p>Describe all closed convex cones in $\mathbb{R}^2$.</p>
 
   <div class="recap-box">
@@ -985,7 +985,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.10 — Properties of Dual Cones</h3>
+  <h3>P4.7 — Properties of Dual Cones</h3>
   <p>Prove that if $\mathrm{int}(K) \neq \emptyset$, then $K^*$ is pointed.</p>
 
   <div class="recap-box">
@@ -1018,7 +1018,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.11 — Dual Cone of Generated Cone</h3>
+  <h3>P4.8 — Dual Cone of Generated Cone</h3>
   <p>Let $K = \{Ax \mid x \ge 0\}$. Show $K^* = \{y \mid A^\top y \ge 0\}$.</p>
 
   <div class="recap-box">
@@ -1051,7 +1051,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.12 — The Monotone Nonnegative Cone</h3>
+  <h3>P4.9 — The Monotone Nonnegative Cone</h3>
   <p>Find the dual of $K = \{x \in \mathbb{R}^n \mid x_1 \ge x_2 \ge \dots \ge 0\}$.</p>
 
   <div class="recap-box">
@@ -1069,7 +1069,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.13 — The Lexicographic Cone</h3>
+  <h3>P4.10 — The Lexicographic Cone</h3>
   <p>Let $K_{lex} = \{0\} \cup \{x \mid \text{first nonzero of } x > 0\}$. Find $K_{lex}^*$.</p>
 
   <div class="recap-box">
@@ -1089,7 +1089,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.14 — Dual of Intersection</h3>
+  <h3>P4.11 — Dual of Intersection</h3>
   <p>Let $K_1, K_2$ be closed convex cones. Prove that $(K_1 \cap K_2)^* = \mathrm{cl}(K_1^* + K_2^*)$.</p>
 
   <div class="recap-box">
@@ -1123,7 +1123,7 @@
 
 
 <div class="problem">
-  <h3>P4.22 — Separation by Projection</h3>
+  <h3>P4.12 — Separation by Projection</h3>
   <p>Let $C \subseteq \mathbb{R}^n$ be a closed convex set and $x \notin C$. Prove that there exists a hyperplane strictly separating $x$ from $C$. Specifically, show that with $p = \Pi_C(x)$, the hyperplane through $p$ with normal $x-p$ separates them.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1141,7 +1141,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.23 — Support Function Determines Set</h3>
+  <h3>P4.13 — Support Function Determines Set</h3>
   <p>Let $C, D$ be closed convex sets. Show that if their support functions are equal, $\sigma_C(a) = \sigma_D(a)$ for all $a$, then $C = D$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1152,7 +1152,7 @@
 </div>
 
 <div class="problem">
-  <h3>P4.24 — Converse Supporting Hyperplane Theorem</h3>
+  <h3>P4.14 — Converse Supporting Hyperplane Theorem</h3>
   <p>Let $C$ be a connected closed set with non-empty interior. Prove that if every boundary point of $C$ has a supporting hyperplane, then $C$ is convex.</p>
   <div class="solution-box">
     <h4>Solution</h4>

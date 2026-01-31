@@ -44,9 +44,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
-        <li>How to formulate and solve the Newton step for equality constrained problems using KKT systems.</li>
-        <li>The distinction between feasible-start and infeasible-start Newton methods.</li>
-        <li>The elimination method (null-space method) and its relation to the KKT system.</li>
+        <li>Formulate and solve the Newton step for equality constrained problems using KKT systems.</li>
+        <li>Distinguish between feasible-start and infeasible-start Newton methods.</li>
+        <li>Apply the elimination method (null-space method) and relate it to the KKT system.</li>
       </ul>
     </section>
 
@@ -128,8 +128,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 14.1: KKT System for QP</h3>
+      <div class="example-box">
+        <h4>Example 14.1: KKT System for QP</h4>
         <p><strong>Problem:</strong> Solve $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax = b$ analytically.</p>
         <p><strong>Solution:</strong></p>
         <p>KKT conditions:
@@ -142,8 +142,8 @@
         Then substitute $\nu$ back to find $x$. This is the method of Lagrange multipliers.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.2: Null-Space Basis Construction</h3>
+      <div class="example-box">
+        <h4>Example 14.2: Null-Space Basis Construction</h4>
         <p><strong>Problem:</strong> Construct a null-space matrix $F$ for $A = [1, 1, 1]$.</p>
         <p><strong>Solution:</strong></p>
         <p>We need $F \in \mathbb{R}^{3 \times 2}$ such that $AF = 0$ and $F$ has rank 2.
@@ -153,8 +153,8 @@
         Allows solving unconstrained problem in $\mathbb{R}^2$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.3: Projected Gradient vs Newton</h3>
+      <div class="example-box">
+        <h4>Example 14.3: Projected Gradient vs Newton</h4>
         <p><strong>Problem:</strong> Compare projected gradient descent with Newton for minimizing $\|x\|^2$ s.t. $Ax=b$.</p>
         <p><strong>Solution:</strong></p>
         <p>Objective is quadratic with Hessian $2I$.
@@ -164,8 +164,8 @@
         Newton solves the KKT system directly, which is equivalent to the analytic solution here.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.4: Augmented Lagrangian</h3>
+      <div class="example-box">
+        <h4>Example 14.4: Augmented Lagrangian</h4>
         <p><strong>Problem:</strong> Define the augmented Lagrangian and explain why it helps.</p>
         <p><strong>Solution:</strong></p>
         <p>$L_\rho(x, \nu) = f(x) + \nu^\top(Ax-b) + \frac{\rho}{2}\|Ax-b\|^2$.
@@ -174,8 +174,8 @@
         Unlike pure penalty ($\nu=0$), $\rho$ doesn't need to go to infinity, avoiding ill-conditioning.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.5: Infeasible Start Newton Residual</h3>
+      <div class="example-box">
+        <h4>Example 14.5: Infeasible Start Newton Residual</h4>
         <p><strong>Problem:</strong> How does the residual decrease in infeasible start Newton method?</p>
         <p><strong>Solution:</strong></p>
         <p>Residual $r(x, \nu) = (r_{dual}, r_{pri}) = (\nabla f + A^\top \nu, Ax - b)$.
@@ -184,8 +184,8 @@
         Thus the residual norm decreases linearly (or better) to zero.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.6: Analytic Center with Equality</h3>
+      <div class="example-box">
+        <h4>Example 14.6: Analytic Center with Equality</h4>
         <p><strong>Problem:</strong> Find the analytic center of $\{x : x \ge 0, \mathbf{1}^\top x = 1\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $-\sum \log x_i$ subject to $\sum x_i = 1$.
@@ -194,8 +194,8 @@
         So $x_i = 1/n$. Center is uniform distribution.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.7: Schur Complement Solver</h3>
+      <div class="example-box">
+        <h4>Example 14.7: Schur Complement Solver</h4>
         <p><strong>Problem:</strong> How to solve KKT system if $H = \nabla^2 f$ is diagonal?</p>
         <p><strong>Solution:</strong></p>
         <p>System: $\begin{bmatrix} D & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \Delta x \\ w \end{bmatrix} = \begin{bmatrix} -g \\ 0 \end{bmatrix}$.
@@ -206,8 +206,8 @@
         Requires solving system size $p \times p$ instead of $(n+p) \times (n+p)$. Efficient if $p \ll n$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 14.8: Complexity Analysis</h3>
+      <div class="example-box">
+        <h4>Example 14.8: Complexity Analysis</h4>
         <p><strong>Problem:</strong> Compare elimination vs KKT for dense $A \in \mathbb{R}^{p \times n}$.</p>
         <p><strong>Solution:</strong></p>
         <p>1. <strong>Elimination:</strong> Form $H_{red} = F^\top H F$ ($O(n^2(n-p))$), factor $H_{red}$ ($O((n-p)^3)$).
@@ -220,62 +220,105 @@
 
     <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Exercises</h2>
-      <ol style="line-height: 2;">
-        <li>
-          <strong>Invertibility of KKT Matrix:</strong><br>
-          Prove that $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix}$ is nonsingular if $P \succ 0$ and $A$ has full row rank.
-          <br><em>Solution:</em>
-          Suppose $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = 0$.
-          $Px + A^\top y = 0$ and $Ax = 0$.
-          Multiply first eq by $x^\top$: $x^\top P x + x^\top A^\top y = 0$.
-          Since $Ax=0$, $x^\top A^\top = 0$, so $x^\top P x = 0$.
-          Since $P \succ 0$, this implies $x=0$.
-          Then $A^\top y = 0$. Since $A$ has full row rank, $A^\top$ has full column rank, so $y=0$.
-          Thus only trivial solution exists $\implies$ Nonsingular.
-        </li>
-        <li>
-          <strong>Newton Step as Weighted Projection:</strong><br>
-          Show that the Newton step $\Delta x_{nt}$ minimizes the quadratic approximation of $f$ constrained to the linearized feasible set.
-          <br><em>Solution:</em>
-          Problem: $\min \nabla f^\top v + \frac{1}{2}v^\top \nabla^2 f v$ s.t. $A(x+v) = b$.
-          Since $Ax=b$ (feasible start), constraint is $Av=0$.
-          Lagrangian: $L(v, w) = \nabla f^\top v + \frac{1}{2}v^\top H v + w^\top Av$.
-          Optimality: $H v + \nabla f + A^\top w = 0$ and $Av = 0$.
-          This is exactly the KKT system for the Newton step.
-          So $\Delta x_{nt}$ is the solution to this constrained QP.
-        </li>
-        <li>
-          <strong>Projection Operator Derivation:</strong><br>
-          Derive the projection of $y$ onto $\{x : Ax=b\}$: $\Pi(y) = y - A^\top(AA^\top)^{-1}(Ay-b)$.
-          <br><em>Solution:</em>
-          $\min \frac{1}{2}\|x-y\|^2$ s.t. $Ax=b$.
-          KKT: $(x-y) + A^\top \nu = 0 \implies x = y - A^\top \nu$.
-          $A(y - A^\top \nu) = b \implies Ay - AA^\top \nu = b$.
-          $AA^\top \nu = Ay - b \implies \nu = (AA^\top)^{-1}(Ay - b)$.
-          Substitute $\nu$ back: $x = y - A^\top(AA^\top)^{-1}(Ay-b)$.
-        </li>
-        <li>
-          <strong>Penalty Method Convergence:</strong><br>
-          Explain why the condition number of the Hessian in the quadratic penalty method diverges as $\rho \to \infty$.
-          <br><em>Solution:</em>
-          $f_\rho(x) = f(x) + \frac{\rho}{2}\|Ax-b\|^2$.
-          $\nabla^2 f_\rho(x) = \nabla^2 f(x) + \rho A^\top A$.
-          Eigenvalues of $A^\top A$ are non-negative.
-          Eigenvalues corresponding to the range of $A^\top$ scale with $\rho$.
-          Eigenvalues in the null space of $A$ depend on $\nabla^2 f$ and don't scale with $\rho$.
-          Ratio $\lambda_{\max}/\lambda_{\min} \propto \rho$. Ill-conditioning grows linearly with $\rho$.
-        </li>
-        <li>
-          <strong>Null-Space Operation Count:</strong><br>
-          Confirm that solving the reduced Newton system requires $O((n-p)^3)$ operations.
-          <br><em>Solution:</em>
-          Reduced system is $H_{red} \Delta z = -g_{red}$ where $H_{red} \in \mathbb{R}^{(n-p) \times (n-p)}$.
-          Cholesky factorization of $H_{red}$ takes $(1/3)(n-p)^3$ flops.
-          Back-substitution takes $O((n-p)^2)$.
-          Dominant term is the factorization, cubic in the dimension of the null space.
-        </li>
-      </ol>
+      <h2><i data-feather="edit-3"></i> Exercises</h2>
+
+      <div class="problem">
+        <h3>P14.1 — Invertibility of KKT Matrix</h3>
+        <p>Prove that $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix}$ is nonsingular if $P \succ 0$ and $A$ has full row rank.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Suppose $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = 0$.
+            $Px + A^\top y = 0$ and $Ax = 0$.
+          </div>
+          <div class="proof-step">
+            Multiply first eq by $x^\top$: $x^\top P x + x^\top A^\top y = 0$.
+            Since $Ax=0$, $x^\top A^\top = 0$, so $x^\top P x = 0$.
+            Since $P \succ 0$, this implies $x=0$.
+          </div>
+          <div class="proof-step">
+            Then $A^\top y = 0$. Since $A$ has full row rank, $A^\top$ has full column rank, so $y=0$.
+            Thus only trivial solution exists $\implies$ Nonsingular.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P14.2 — Newton Step as Weighted Projection</h3>
+        <p>Show that the Newton step $\Delta x_{nt}$ minimizes the quadratic approximation of $f$ constrained to the linearized feasible set.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Problem: $\min \nabla f^\top v + \frac{1}{2}v^\top \nabla^2 f v$ s.t. $A(x+v) = b$.
+            Since $Ax=b$ (feasible start), constraint is $Av=0$.
+          </div>
+          <div class="proof-step">
+            Lagrangian: $L(v, w) = \nabla f^\top v + \frac{1}{2}v^\top H v + w^\top Av$.
+            Optimality: $H v + \nabla f + A^\top w = 0$ and $Av = 0$.
+          </div>
+          <div class="proof-step">
+            This is exactly the KKT system for the Newton step.
+            So $\Delta x_{nt}$ is the solution to this constrained QP.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P14.3 — Projection Operator Derivation</h3>
+        <p>Derive the projection of $y$ onto $\{x : Ax=b\}$: $\Pi(y) = y - A^\top(AA^\top)^{-1}(Ay-b)$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            $\min \frac{1}{2}\|x-y\|^2$ s.t. $Ax=b$.
+            KKT: $(x-y) + A^\top \nu = 0 \implies x = y - A^\top \nu$.
+          </div>
+          <div class="proof-step">
+            $A(y - A^\top \nu) = b \implies Ay - AA^\top \nu = b$.
+            $AA^\top \nu = Ay - b \implies \nu = (AA^\top)^{-1}(Ay - b)$.
+          </div>
+          <div class="proof-step">
+            Substitute $\nu$ back: $x = y - A^\top(AA^\top)^{-1}(Ay-b)$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P14.4 — Penalty Method Convergence</h3>
+        <p>Explain why the condition number of the Hessian in the quadratic penalty method diverges as $\rho \to \infty$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            $f_\rho(x) = f(x) + \frac{\rho}{2}\|Ax-b\|^2$.
+            $\nabla^2 f_\rho(x) = \nabla^2 f(x) + \rho A^\top A$.
+          </div>
+          <div class="proof-step">
+            Eigenvalues of $A^\top A$ are non-negative.
+            Eigenvalues corresponding to the range of $A^\top$ scale with $\rho$.
+            Eigenvalues in the null space of $A$ depend on $\nabla^2 f$ and don't scale with $\rho$.
+          </div>
+          <div class="proof-step">
+            Ratio $\lambda_{\max}/\lambda_{\min} \propto \rho$. Ill-conditioning grows linearly with $\rho$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P14.5 — Null-Space Operation Count</h3>
+        <p>Confirm that solving the reduced Newton system requires $O((n-p)^3)$ operations.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Reduced system is $H_{red} \Delta z = -g_{red}$ where $H_{red} \in \mathbb{R}^{(n-p) \times (n-p)}$.
+          </div>
+          <div class="proof-step">
+            Cholesky factorization of $H_{red}$ takes $(1/3)(n-p)^3$ flops.
+            Back-substitution takes $O((n-p)^2)$.
+          </div>
+          <div class="proof-step">
+            Dominant term is the factorization, cubic in the dimension of the null space.
+          </div>
+        </div>
+      </div>
     </section>
   </main></div>
 

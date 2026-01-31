@@ -58,7 +58,7 @@
       <h2>1. Second-Order Cone Programs (SOCP): The Geometry of Norms</h2>
 
       <h3>1.1 Definition: Norms Made Conic</h3>
-      <p>A <strong>Second-Order Cone Program (<a href="#" class="definition-link" data-term="socp">SOCP</a>)</strong> minimizes a linear function over the intersection of an affine set and the product of second-order cones.</p>
+      <p>A <strong>Second-Order Cone Program (<a href="javascript:void(0)" class="definition-link" data-term="socp">SOCP</a>)</strong> minimizes a linear function over the intersection of an affine set and the product of second-order cones.</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -210,16 +210,16 @@
           </ul>
       </div>
 
-      <h3>1.4 Key Properties</h3>
+      <h3>1.4 Key Properties of SOCP</h3>
       <ul>
         <li><strong>Generality:</strong> SOCP subsumes LP and QP</li>
         <li><strong>Solvers:</strong> Efficiently solved by interior-point methods</li>
         <li><strong>Applications:</strong> Robust optimization, robust least squares, $\ell_1$ and $\ell_\infty$ norm minimization</li>
       </ul>
 
-      <h3>1.4 Standard SOCP Examples</h3>
+      <h3>1.5 Standard SOCP Examples</h3>
 
-      <h4>Example 4.1: Robust Least Squares</h4>
+      <h4>Example 8.1: Robust Least Squares</h4>
       <p>Consider the least-squares problem where the matrix $A$ is subject to unstructured uncertainty bounded by a spectral norm $\|\Delta A\|_2 \le \rho$. The <strong>robust</strong> problem is:</p>
       <p style="text-align: center;">
         $
@@ -276,7 +276,7 @@
         </div>
       </div>
 
-      <h4>Example 4.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
+      <h4>Example 8.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
       <p>Consider the problem of finding a point $\mathbf{x}$ that minimizes the sum of Euclidean distances to a set of fixed points $\mathbf{p}_1, \dots, \mathbf{p}_k$:</p>
       <p style="text-align: center;">
         $
@@ -294,7 +294,7 @@
       </p>
       <p>The constraints $\|\mathbf{x} - \mathbf{p}_i\|_2 \le t_i$ are standard second-order cone constraints $(\mathbf{x} - \mathbf{p}_i, t_i) \in \mathcal{Q}^{n+1}$.</p>
 
-      <h4>Example 4.3: Mechanical Equilibrium with Friction (Robotics)</h4>
+      <h4>Example 8.3: Mechanical Equilibrium with Friction (Robotics)</h4>
       <p>In mechanics, a contact force $\mathbf{f} \in \mathbb{R}^3$ at a contact point must satisfy the Coulomb friction model to avoid slipping.
       <br>Decompose $\mathbf{f}$ into a normal component $f_n$ and a tangential component $\mathbf{f}_t \in \mathbb{R}^2$.
       <br><b>Constraint:</b> $\|\mathbf{f}_t\|_2 \le \mu f_n$, where $\mu$ is the friction coefficient.
@@ -302,7 +302,7 @@
       $$ (f_n, \frac{1}{\mu}\mathbf{f}_t) \in \mathcal{Q}^3 $$
       Robotic grasping and structural stability problems are often modeled as SOCPs because of this "friction cone" geometry.</p>
 
-      <h3>1.5 Application: Robust Optimization via Dual Norms</h3>
+      <h3>1.6 Application: Robust Optimization via Dual Norms</h3>
       <p>Robust optimization addresses optimization under uncertainty by requiring constraints to hold for all possible parameter values. When uncertainty sets are norm balls, robustification leads naturally to SOCP formulations through the dual norm lemma.</p>
       <p>Robust optimization seeks a solution that remains feasible for all possible realizations of the data within an uncertainty set. This turns infinite constraints (one for each realization) into a single finite constraint involving a dual norm.</p>
 
@@ -429,7 +429,7 @@
       </div>
 
       <h3>2.1 Definition: Linear Matrix Inequalities</h3>
-      <p>A <strong>Semidefinite Program (<a href="#" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
+      <p>A <strong>Semidefinite Program (<a href="javascript:void(0)" class="definition-link" data-term="sdp">SDP</a>)</strong> generalizes linear programming by replacing vector inequalities ($\ge 0$) with matrix inequalities ($\succeq 0$).</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -588,7 +588,7 @@
 
       <h3>2.6 Standard SDP Examples</h3>
 
-      <h4>Example: Lyapunov Stability Analysis (Control Theory)</h4>
+      <h4>Example 8.4: Lyapunov Stability Analysis (Control Theory)</h4>
       <p>A linear dynamical system $\dot{x} = Ax$ is asymptotically stable (all trajectories converge to zero) if and only if there exists a quadratic Lyapunov function $V(x) = x^\top P x$ with $P \succ 0$ such that $\dot{V}(x) < 0$ for all $x \neq 0$.
       <br>Differentiation gives $\dot{V}(x) = x^\top (A^\top P + PA) x$. The condition becomes an LMI feasibility problem:</p>
       $$
@@ -600,7 +600,7 @@
       $$
       <p>This is a pure feasibility SDP. If a solution $P$ exists, the system is stable.</p>
 
-      <h4>Example: Eigenvalue Minimization</h4>
+      <h4>Example 8.5: Eigenvalue Minimization</h4>
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
       $$ \min_{\mathbf{x}} \lambda_{\max}(A(\mathbf{x})) $$
 
@@ -627,7 +627,7 @@
         </div>
       </div>
 
-      <h4>Example: Matrix Norm Minimization</h4>
+      <h4>Example 8.6: Matrix Norm Minimization</h4>
       <p>Minimize the spectral norm (largest singular value) of $A(x) \in \mathbb{R}^{p \times q}$.</p>
       $$ \min_x \|A(x)\|_2 = \min_x \sqrt{\lambda_{\max}(A(x)^\top A(x))} $$
 
@@ -711,7 +711,7 @@
         </div>
       </div>
 
-      <h4>Example: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
+      <h4>Example 8.12: Minimum-Volume Ellipsoid Containing Points (Problem 5.9)</h4>
       <p>Given points $a_1, \ldots, a_m \in \mathbb{R}^n$ spanning $\mathbb{R}^n$, find the smallest ellipsoid centered at the origin that contains all points.</p>
       
       <div class="proof-box">
@@ -844,7 +844,7 @@
     <section class="section-card" id="section-3">
       <h2>3. Exponential Cone Programming</h2>
 
-      <h3>4.1 The Exponential Cone</h3>
+      <h3>3.1 The Exponential Cone</h3>
       <p>The <strong>exponential cone</strong> $K_{\text{exp}}$ is a three-dimensional cone defined as:</p>
       <p style="text-align: center;">
         $$
@@ -872,7 +872,7 @@
         <p><b>Takeaway:</b> If your problem involves $e^x$, $\log x$, entropy, or geometric means, the exponential cone is your gateway to efficient convex optimization.</p>
       </div>
 
-      <h3>4.2 Exponential Cone Programs</h3>
+      <h3>3.2 Exponential Cone Programs</h3>
       <p>An <strong>Exponential Cone Program (ECP)</strong> is a convex optimization problem with constraints involving the exponential cone:</p>
       <p style="text-align: center;">
         $$
@@ -885,10 +885,10 @@
       </p>
       <p>where the constraints ensure that the affine combinations lie in the exponential cone.</p>
 
-      <h3>4.3 Key Applications</h3>
+      <h3>3.3 Key Applications</h3>
 
-      <div class="example">
-        <h4>Example 1: Entropy Maximization</h4>
+      <div class="example-box">
+        <h4>Example 8.7: Entropy Maximization</h4>
         <p>Consider the problem of maximizing entropy subject to linear constraints:</p>
         <p style="text-align: center;">
           $$
@@ -907,8 +907,8 @@
         </ul>
       </div>
 
-      <div class="example">
-        <h4>Example 2: Log-Sum-Exp</h4>
+      <div class="example-box">
+        <h4>Example 8.8: Log-Sum-Exp</h4>
         <p>The log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ is convex and can be expressed using the exponential cone. To minimize $\log(\sum_{i=1}^n e^{x_i})$, we introduce a variable $t$ and constraints:</p>
         <p style="text-align: center;">
           $$
@@ -922,8 +922,8 @@
         <p>where each constraint $(x_i, 1, u_i) \in K_{\text{exp}}$ means $u_i \ge e^{x_i}$, so $\sum u_i \ge \sum e^{x_i}$, and minimizing $t$ such that $\sum u_i \le 1$ gives $t = \log(\sum e^{x_i})$.</p>
       </div>
 
-      <div class="example">
-        <h4>Example 3: Geometric Programming (Conic Form)</h4>
+      <div class="example-box">
+        <h4>Example 8.9: Geometric Programming (Conic Form)</h4>
         <p>Geometric programs can be transformed into exponential cone programs. A geometric program in posynomial form:</p>
         <p style="text-align: center;">
           $$
@@ -937,7 +937,7 @@
         <p>After the standard log transformation $y_i = \log x_i$, this becomes a convex problem. The exponential terms $e^{a_{ik}^\top \mathbf{y}}$ can be expressed using exponential cone constraints, making it an exponential cone program.</p>
       </div>
 
-      <h3>4.4 Relationship to Other Cones</h3>
+      <h3>3.4 Relationship to Other Cones</h3>
       <p>The exponential cone is a fundamental cone in conic programming, alongside the nonnegative orthant, second-order cone, and PSD cone. Modern solvers (e.g., MOSEK, ECOS) support exponential cone constraints, enabling efficient solution of problems involving exponentials and logarithms.</p>
       <p><b>Note:</b> Unlike SOCP and SDP, the exponential cone cannot be embedded into the PSD cone in a simple way, making it a distinct and important problem class.</p>
     </section>
@@ -948,7 +948,7 @@
       <section class="section-card" id="section-4">
       <h2>4. Quasiconvex Optimization</h2>
 
-       <h3>5.1 Quasiconvex Functions</h3>
+       <h3>4.1 Quasiconvex Functions</h3>
       <p>A function $f: \mathbb{R}^n \to \mathbb{R}$ is <strong>quasiconvex</strong> if its domain and all sublevel sets $\{\mathbf{x} \mid f(\mathbf{x}) \le \alpha\}$ are convex.</p>
 
       <p><strong>Examples:</strong></p>
@@ -958,7 +958,7 @@
         <li>$x^3$ on $\mathbb{R}$ (not quasiconvex; sublevel sets are not convex)</li>
       </ul>
 
-      <h3>5.2 Quasiconvex Optimization Problems</h3>
+      <h3>4.2 Quasiconvex Optimization Problems</h3>
       <p>A problem is <strong>quasiconvex</strong> if the objective is quasiconvex and the feasible set is convex:</p>
       <p style="text-align: center;">
         $
@@ -970,7 +970,7 @@
         $
       </p>
 
-      <h3>5.3 Phase 6.2: The Bisection Algorithm</h3>
+      <h3>4.3 Phase 6.2: The Bisection Algorithm</h3>
       <p>Quasiconvex optimization is solved by a sequence of convex feasibility problems.
       <br><b>The Logic:</b> The feasibility predicate $\Phi(\alpha) = [\exists x \in \mathcal{F} : f_0(x) \le \alpha]$ is <b>monotone</b> in $\alpha$. We want to find the threshold $p^\star$ where $\Phi$ switches from False to True.</p>
 
@@ -1012,7 +1012,7 @@
       </ul>
 
       <div class="example-box">
-        <h4>Example: From DCP to SOC</h4>
+        <h4>Example 8.10: From DCP to SOC</h4>
         <p>Consider the DCP expression in CVXPY:
         <pre><code>minimize(norm(A @ x - b, 2) + gamma * norm(x, 2))</code></pre>
         The framework automatically recognizes this as an SOCP and reformulates it:
@@ -1120,7 +1120,7 @@
       <p>If DCP verification fails (e.g., you wrote <code>exp(norm(x))</code>, which is neither convex nor concave), the framework rejects the problem <i>before</i> calling the solver, saving you from silently getting wrong answers.</p>
 
       <div class="example-box">
-        <h4>Example: Portfolio Optimization with DCP</h4>
+        <h4>Example 8.11: Portfolio Optimization with DCP</h4>
         <p>A classic Markowitz portfolio problem in CVXPY:
         <pre><code>import cvxpy as cp
 import numpy as np
@@ -1140,7 +1140,7 @@ objective = cp.Maximize(mu @ w - gamma * cp.quad_form(w, Sigma))
 
 # Constraints
 constraints = [cp.sum(w) == 1,  # budget
-               w >= 0]           # long-only
+               w >= 0]          # long-only
 
 # Solve
 problem = cp.Problem(objective, constraints)
@@ -1288,29 +1288,6 @@ problem.solve()</code></pre>
   </div>
 </div>
 
-<div class="problem">
-  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
-  <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
-  <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      The condition is $\sup_{a \in \mathcal{E}} a^\top x \le b$.
-      Substitute the parametrization of $a$:
-      $$ \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top P^\top x $$
-    </div>
-    <div class="proof-step">
-      The supremum of a linear function $v^\top u$ over the unit ball $\|u\|_2 \le 1$ is the dual norm, which is $\|v\|_2$.
-      Here $v = P^\top x$.
-      $$ \sup_{\|u\|_2 \le 1} u^\top (P^\top x) = \|P^\top x\|_2 $$
-    </div>
-    <div class="proof-step">
-      Thus the robust constraint is:
-      $$ \bar{a}^\top x + \|P^\top x\|_2 \le b $$
-      This is exactly an SOC constraint $\|P^\top x\|_2 \le b - \bar{a}^\top x$.
-    </div>
-  </div>
-</div>
 
 <div class="problem">
   <h3>P8.2 — QP Formulation: Constrained Least Squares</h3>
@@ -2020,7 +1997,7 @@ problem.solve()</code></pre>
   <div class="solution-box">
     <h4>Solution</h4>
     <div class="proof-step">
-      <strong>Feasibility:</strong> We showed in Example 3.3 that $X_{\text{sim}}$ is feasible.
+      <strong>Feasibility:</strong> We showed in Example 8.12 that $X_{\text{sim}}$ is feasible.
     </div>
     <div class="proof-step">
       <strong>Objective Gap:</strong> By restricting the dual to $\lambda_i = t$, we found a lower bound on the optimal value $p^\star \ge \log\det S - n\log(m/n)$, where $S = \sum a_k a_k^\top$.
@@ -2030,6 +2007,30 @@ problem.solve()</code></pre>
     <div class="proof-step">
       <strong>Volume Ratio:</strong> Since $\text{vol} \propto e^{p/2}$:
       $$ \frac{\text{vol}(X_{\text{sim}})}{\text{vol}(X^\star)} = \exp\left(\frac{p_{\text{sim}} - p^\star}{2}\right) \le \exp\left(\frac{n}{2}\log\frac{m}{n}\right) = \left(\frac{m}{n}\right)^{n/2} $$
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
+  <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
+  <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      The condition is $\sup_{a \in \mathcal{E}} a^\top x \le b$.
+      Substitute the parametrization of $a$:
+      $$ \sup_{\|u\|_2 \le 1} (\bar{a} + Pu)^\top x = \bar{a}^\top x + \sup_{\|u\|_2 \le 1} u^\top P^\top x $$
+    </div>
+    <div class="proof-step">
+      The supremum of a linear function $v^\top u$ over the unit ball $\|u\|_2 \le 1$ is the dual norm, which is $\|v\|_2$.
+      Here $v = P^\top x$.
+      $$ \sup_{\|u\|_2 \le 1} u^\top (P^\top x) = \|P^\top x\|_2 $$
+    </div>
+    <div class="proof-step">
+      Thus the robust constraint is:
+      $$ \bar{a}^\top x + \|P^\top x\|_2 \le b $$
+      This is exactly an SOC constraint $\|P^\top x\|_2 \le b - \bar{a}^\top x$.
     </div>
   </div>
 </div>

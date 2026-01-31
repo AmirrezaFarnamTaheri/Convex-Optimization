@@ -44,9 +44,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
-        <li>How to formulate maximum likelihood estimation (MLE) as a convex optimization problem, particularly for exponential families.</li>
-        <li>The mathematical derivations of logistic regression, support vector machines (SVM), and their duals.</li>
-        <li>The application of convex optimization in experiment design (A-opt, D-opt, E-opt).</li>
+        <li>Formulate maximum likelihood estimation (MLE) as a convex optimization problem, particularly for exponential families.</li>
+        <li>Derive the mathematical formulations of logistic regression, support vector machines (SVM), and their duals.</li>
+        <li>Apply convex optimization to experiment design (A-opt, D-opt, E-opt).</li>
       </ul>
     </section>
 
@@ -136,8 +136,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 11.1: MLE for Gaussian Distribution</h3>
+      <div class="example-box">
+        <h4>Example 11.1: MLE for Gaussian Distribution</h4>
         <p><strong>Problem:</strong> Given $n$ i.i.d. samples $y_1, \ldots, y_n$ from $\mathcal{N}(\mu, \Sigma)$, formulate the MLE problem for estimating $\mu$ and $\Sigma$. Show it is convex in terms of natural parameters.</p>
         <p><strong>Solution:</strong></p>
         <p>The log-likelihood is:
@@ -150,8 +150,8 @@
         Wait, for Gaussian, usually we fix mean or covariance. If both vary, the problem is not jointly convex in standard parameters. However, optimizing $\mu$ gives $\hat{\mu} = \bar{y}$. Then optimizing $\Sigma$ gives $\hat{\Sigma} = \frac{1}{n}\sum (y_i-\bar{y})(y_i-\bar{y})^\top$. The problem is convex in $P = \Sigma^{-1}$ if $\mu$ is known.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.2: Logistic Regression Gradient</h3>
+      <div class="example-box">
+        <h4>Example 11.2: Logistic Regression Gradient</h4>
         <p><strong>Problem:</strong> Derive the gradient of the negative log-likelihood for logistic regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Loss function: $J(w) = \sum_{i=1}^n \left( -y_i \log(\sigma(z_i)) - (1-y_i) \log(1-\sigma(z_i)) \right)$ where $z_i = w^\top x_i$.
@@ -162,8 +162,8 @@
         The Hessian is $\nabla^2 J(w) = X^\top \text{diag}(\sigma(z_i)(1-\sigma(z_i))) X$, which is PSD.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.3: Hard-Margin SVM Dual</h3>
+      <div class="example-box">
+        <h4>Example 11.3: Hard-Margin SVM Dual</h4>
         <p><strong>Problem:</strong> Derive the dual of $\min \frac{1}{2}\|w\|_2^2$ s.t. $y_i(w^\top x_i + b) \ge 1$.</p>
         <p><strong>Solution:</strong></p>
         <p>Lagrangian: $L(w,b,\alpha) = \frac{1}{2}\|w\|^2 - \sum_i \alpha_i [y_i(w^\top x_i + b) - 1]$ with $\alpha_i \ge 0$.
@@ -178,8 +178,8 @@
         Subject to: $\alpha_i \ge 0$, $\sum \alpha_i y_i = 0$. This is a QP.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.4: Soft-Margin SVM as Unconstrained Problem</h3>
+      <div class="example-box">
+        <h4>Example 11.4: Soft-Margin SVM as Unconstrained Problem</h4>
         <p><strong>Problem:</strong> Show that soft-margin SVM is equivalent to minimizing hinge loss + L2 regularization.</p>
         <p><strong>Solution:</strong></p>
         <p>Primal: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1 - \xi_i, \xi_i \ge 0$.
@@ -191,8 +191,8 @@
         This is unconstrained minimization of (Regularizer + $C \times$ Hinge Loss).</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.5: Poisson Regression</h3>
+      <div class="example-box">
+        <h4>Example 11.5: Poisson Regression</h4>
         <p><strong>Problem:</strong> Derive the loss function for Poisson regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Model: $y \sim \text{Poisson}(\lambda)$ with $\lambda = e^{w^\top x}$.
@@ -204,8 +204,8 @@
         This is convex.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.6: Softmax Regression Gradient</h3>
+      <div class="example-box">
+        <h4>Example 11.6: Softmax Regression Gradient</h4>
         <p><strong>Problem:</strong> Compute gradient for cross-entropy loss with softmax.</p>
         <p><strong>Solution:</strong></p>
         <p>Softmax: $p_k = \frac{e^{z_k}}{\sum_j e^{z_j}}$ where $z_k = w_k^\top x$.
@@ -217,8 +217,8 @@
         This leads to the standard update rule.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.7: Regularized Logistic (L1)</h3>
+      <div class="example-box">
+        <h4>Example 11.7: Regularized Logistic (L1)</h4>
         <p><strong>Problem:</strong> Formulate L1-regularized logistic regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Objective: $f(w) = \sum \log(1+e^{-y_i w^\top x_i}) + \lambda \|w\|_1$.
@@ -230,8 +230,8 @@
         This induces sparsity in $w$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 11.8: Robust MLE with Huber Loss</h3>
+      <div class="example-box">
+        <h4>Example 11.8: Robust MLE with Huber Loss</h4>
         <p><strong>Problem:</strong> Define the Huber loss and its use in robust regression.</p>
         <p><strong>Solution:</strong></p>
         <p>Huber loss $H_\delta(u)$:
@@ -244,64 +244,95 @@
 
     <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Exercises</h2>
-      <ol style="line-height: 2;">
-        <li>
-          <strong>SVM Dual Derivation (Soft Margin):</strong><br>
-          Derive the dual of the soft-margin SVM: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1-\xi_i, \xi_i \ge 0$.
-          <br><em>Solution:</em>
-          Lagrangian: $L = \frac{1}{2}\|w\|^2 + C \sum \xi_i - \sum \alpha_i(y_i(w^\top x_i+b)-1+\xi_i) - \sum \mu_i \xi_i$.
-          Optimality:
-          1. $\nabla_w L = w - \sum \alpha_i y_i x_i = 0 \implies w = \sum \alpha_i y_i x_i$
-          2. $\nabla_b L = -\sum \alpha_i y_i = 0 \implies \sum \alpha_i y_i = 0$
-          3. $\nabla_{\xi_i} L = C - \alpha_i - \mu_i = 0 \implies \alpha_i = C - \mu_i$. Since $\mu_i \ge 0$, we get $\alpha_i \le C$.
-          Dual: $\max_\alpha \sum \alpha_i - \frac{1}{2}\sum_{ij} \alpha_i \alpha_j y_i y_j x_i^\top x_j$ s.t. $0 \le \alpha_i \le C$ and $\sum \alpha_i y_i = 0$.
-          The only difference from Hard-Margin is the box constraint $\alpha_i \le C$.
-        </li>
-        <li>
-          <strong>Logistic Hessian Analysis:</strong><br>
-          Prove that the Hessian of the logistic loss is strictly positive definite if $X$ has full rank.
-          <br><em>Solution:</em>
-          $\nabla^2 J(w) = X^\top D X$ where $D = \text{diag}(p_i(1-p_i))$.
-          For any $v \ne 0$: $v^\top \nabla^2 J(w) v = v^\top X^\top D X v = (Xv)^\top D (Xv)$.
-          Let $u = Xv$. Since $X$ is full rank, $u \ne 0$ for $v \ne 0$.
-          The term is $\sum u_i^2 p_i(1-p_i)$.
-          Since $0 < p_i < 1$ (for finite weights), $p_i(1-p_i) > 0$.
-          Thus the sum is strictly positive. $J(w)$ is strictly convex.
-        </li>
-        <li>
-          <strong>Poisson Regression Hessian:</strong><br>
-          Derive the Hessian for Poisson regression $\ell(w) = \sum (e^{w^\top x_i} - y_i w^\top x_i)$ and show convexity.
-          <br><em>Solution:</em>
-          $\nabla \ell(w) = \sum (e^{w^\top x_i} - y_i) x_i$.
-          $\nabla^2 \ell(w) = \sum e^{w^\top x_i} x_i x_i^\top$.
-          Let $v$ be any vector. $v^\top \nabla^2 \ell(w) v = \sum e^{w^\top x_i} (x_i^\top v)^2$.
-          Since exponential is positive and squared term is non-negative, the sum is $\ge 0$.
-          Thus Hessian is PSD $\implies$ Convex.
-        </li>
-        <li>
-          <strong>Experiment Design (A-optimal):</strong><br>
-          Formulate the A-optimal experiment design problem as an SDP.
-          <br><em>Solution:</em>
-          We want to minimize $\text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ s.t. $\sum \lambda_i = 1, \lambda_i \ge 0$.
-          Let $X = \sum \lambda_i v_i v_i^\top$. Minimize $\text{tr}(X^{-1})$.
-          Introduce variables $u_k$ to bound eigenvalues or use Schur complement.
-          More simply, cast as:
-          $\min \sum_k t_k$ s.t. $\begin{bmatrix} X & e_k \\ e_k^\top & t_k \end{bmatrix} \succeq 0$.
-          This is an SDP in $\lambda$ and auxiliary variables $t$.
-        </li>
-        <li>
-          <strong>L1 Proximal Operator:</strong><br>
-          Derive $\text{prox}_{\lambda \|\cdot\|_1}(v) = \text{argmin}_x \frac{1}{2}\|x-v\|^2 + \lambda \|x\|_1$.
-          <br><em>Solution:</em>
-          The problem separates by coordinate: $\min_{x_i} \frac{1}{2}(x_i - v_i)^2 + \lambda |x_i|$.
-          Subgradient optimality: $x_i - v_i + \lambda \partial |x_i| \ni 0$.
-          Case 1: $x_i > 0 \implies \partial = \{1\} \implies x_i - v_i + \lambda = 0 \implies x_i = v_i - \lambda$. Valid if $v_i > \lambda$.
-          Case 2: $x_i < 0 \implies \partial = \{-1\} \implies x_i - v_i - \lambda = 0 \implies x_i = v_i + \lambda$. Valid if $v_i < -\lambda$.
-          Case 3: $x_i = 0 \implies \partial = [-1, 1]$. Need $0 \in v_i - \lambda[-1, 1] \implies |v_i| \le \lambda$.
-          Combining: $x_i = \text{sign}(v_i)\max(|v_i|-\lambda, 0)$.
-        </li>
-      </ol>
+      <h2><i data-feather="edit-3"></i> Exercises</h2>
+
+      <div class="problem">
+        <h3>P11.1 — SVM Dual Derivation (Soft Margin)</h3>
+        <p>Derive the dual of the soft-margin SVM: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1-\xi_i, \xi_i \ge 0$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>Lagrangian: $L = \frac{1}{2}\|w\|^2 + C \sum \xi_i - \sum \alpha_i(y_i(w^\top x_i+b)-1+\xi_i) - \sum \mu_i \xi_i$.</p>
+          <div class="proof-step">
+            <strong>Optimality Conditions:</strong>
+            <ol>
+              <li>$\nabla_w L = w - \sum \alpha_i y_i x_i = 0 \implies w = \sum \alpha_i y_i x_i$</li>
+              <li>$\nabla_b L = -\sum \alpha_i y_i = 0 \implies \sum \alpha_i y_i = 0$</li>
+              <li>$\nabla_{\xi_i} L = C - \alpha_i - \mu_i = 0 \implies \alpha_i = C - \mu_i$. Since $\mu_i \ge 0$, we get $\alpha_i \le C$.</li>
+            </ol>
+          </div>
+          <div class="proof-step">
+            <strong>Dual Problem:</strong>
+            $$ \max_\alpha \sum \alpha_i - \frac{1}{2}\sum_{ij} \alpha_i \alpha_j y_i y_j x_i^\top x_j $$
+            Subject to: $0 \le \alpha_i \le C$ and $\sum \alpha_i y_i = 0$.
+            The only difference from Hard-Margin is the box constraint $\alpha_i \le C$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P11.2 — Logistic Hessian Analysis</h3>
+        <p>Prove that the Hessian of the logistic loss is strictly positive definite if $X$ has full rank.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>$\nabla^2 J(w) = X^\top D X$ where $D = \text{diag}(p_i(1-p_i))$.</p>
+          <div class="proof-step">
+            For any $v \ne 0$: $v^\top \nabla^2 J(w) v = v^\top X^\top D X v = (Xv)^\top D (Xv)$.
+            Let $u = Xv$. Since $X$ is full rank, $u \ne 0$ for $v \ne 0$.
+            The term is $\sum u_i^2 p_i(1-p_i)$.
+            Since $0 < p_i < 1$ (for finite weights), $p_i(1-p_i) > 0$.
+            Thus the sum is strictly positive. $J(w)$ is strictly convex.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P11.3 — Poisson Regression Hessian</h3>
+        <p>Derive the Hessian for Poisson regression $\ell(w) = \sum (e^{w^\top x_i} - y_i w^\top x_i)$ and show convexity.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>$\nabla \ell(w) = \sum (e^{w^\top x_i} - y_i) x_i$.</p>
+          <div class="proof-step">
+            $\nabla^2 \ell(w) = \sum e^{w^\top x_i} x_i x_i^\top$.
+            Let $v$ be any vector. $v^\top \nabla^2 \ell(w) v = \sum e^{w^\top x_i} (x_i^\top v)^2$.
+            Since exponential is positive and squared term is non-negative, the sum is $\ge 0$.
+            Thus Hessian is PSD $\implies$ Convex.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P11.4 — Experiment Design (A-optimal)</h3>
+        <p>Formulate the A-optimal experiment design problem as an SDP.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>We want to minimize $\text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ s.t. $\sum \lambda_i = 1, \lambda_i \ge 0$.</p>
+          <div class="proof-step">
+            Let $X = \sum \lambda_i v_i v_i^\top$. Minimize $\text{tr}(X^{-1})$.
+            Introduce variables $u_k$ to bound eigenvalues or use Schur complement.
+            More simply, cast as:
+            $$ \min \sum_k t_k \quad \text{s.t.} \quad \begin{bmatrix} X & e_k \\ e_k^\top & t_k \end{bmatrix} \succeq 0 $$
+            This is an SDP in $\lambda$ and auxiliary variables $t$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P11.5 — L1 Proximal Operator</h3>
+        <p>Derive $\text{prox}_{\lambda \|\cdot\|_1}(v) = \text{argmin}_x \frac{1}{2}\|x-v\|^2 + \lambda \|x\|_1$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <p>The problem separates by coordinate: $\min_{x_i} \frac{1}{2}(x_i - v_i)^2 + \lambda |x_i|$.</p>
+          <div class="proof-step">
+            Subgradient optimality: $x_i - v_i + \lambda \partial |x_i| \ni 0$.
+            <ul>
+              <li>Case 1: $x_i > 0 \implies \partial = \{1\} \implies x_i - v_i + \lambda = 0 \implies x_i = v_i - \lambda$. Valid if $v_i > \lambda$.</li>
+              <li>Case 2: $x_i < 0 \implies \partial = \{-1\} \implies x_i - v_i - \lambda = 0 \implies x_i = v_i + \lambda$. Valid if $v_i < -\lambda$.</li>
+              <li>Case 3: $x_i = 0 \implies \partial = [-1, 1]$. Need $0 \in v_i - \lambda[-1, 1] \implies |v_i| \le \lambda$.</li>
+            </ul>
+            Combining: $x_i = \text{sign}(v_i)\max(|v_i|-\lambda, 0)$.
+          </div>
+        </div>
+      </div>
     </section>
   </main></div>
 

@@ -44,9 +44,9 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
-        <li>How to formulate geometric problems like projection, distance, and containment as convex problems.</li>
-        <li>The formulation of the Minimum Volume Enclosing Ellipsoid (MVEE) and Maximum Volume Inscribed Ellipsoid (MVIE).</li>
-        <li>How to solve center finding problems (Chebyshev center) using linear programming.</li>
+        <li>Formulate geometric problems like projection, distance, and containment as convex problems.</li>
+        <li>Derive the formulations for the Minimum Volume Enclosing Ellipsoid (MVEE) and Maximum Volume Inscribed Ellipsoid (MVIE).</li>
+        <li>Solve center finding problems (Chebyshev center) using linear programming.</li>
       </ul>
     </section>
 
@@ -153,8 +153,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 12.1: Euclidean Projection onto a Simplex</h3>
+      <div class="example-box">
+        <h4>Example 12.1: Euclidean Projection onto a Simplex</h4>
         <p><strong>Problem:</strong> Project $y \in \mathbb{R}^n$ onto the simplex $\Delta = \{x : x \ge 0, \sum x_i = 1\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Problem: $\min \frac{1}{2}\|x - y\|^2$ s.t. $\sum x_i = 1, x_i \ge 0$.
@@ -165,8 +165,8 @@
         This is solved by sorting $y$ and a water-filling algorithm in $O(n \log n)$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.2: Distance Between Two Polyhedra</h3>
+      <div class="example-box">
+        <h4>Example 12.2: Distance Between Two Polyhedra</h4>
         <p><strong>Problem:</strong> Formulate the distance between $\mathcal{P}_1 = \{x : A_1 x \le b_1\}$ and $\mathcal{P}_2 = \{x : A_2 x \le b_2\}$ as a QP.</p>
         <p><strong>Solution:</strong></p>
         <p>We minimize $\|x_1 - x_2\|_2^2$ subject to $A_1 x_1 \le b_1$ and $A_2 x_2 \le b_2$.
@@ -175,8 +175,8 @@
         This is a convex QP. The dual variables provide the separating hyperplane.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.3: Chebyshev Center of Triangle</h3>
+      <div class="example-box">
+        <h4>Example 12.3: Chebyshev Center of Triangle</h4>
         <p><strong>Problem:</strong> Find the largest circle inside a triangle defined by $a_i^\top x \le b_i, i=1,2,3$.</p>
         <p><strong>Solution:</strong></p>
         <p>Maximize $r$. Constraints: The distance from center $x_c$ to line $a_i^\top x = b_i$ must be at least $r$.
@@ -186,8 +186,8 @@
         The optimal $x_c$ is the incenter.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.4: MVEE for Points</h3>
+      <div class="example-box">
+        <h4>Example 12.4: MVEE for Points</h4>
         <p><strong>Problem:</strong> Find the minimum volume ellipsoid covering points $x_1, \ldots, x_m$.</p>
         <p><strong>Solution:</strong></p>
         <p>Parametrize ellipsoid as $\mathcal{E} = \{x : \|Ax+b\|_2 \le 1\}$. Volume $\propto \det(A^{-1})$.
@@ -198,8 +198,8 @@
         This is a MAXDET problem, solvable via interior point methods.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.5: Separating Hyperplane</h3>
+      <div class="example-box">
+        <h4>Example 12.5: Separating Hyperplane</h4>
         <p><strong>Problem:</strong> Find a separating hyperplane for two sets of points $\{x_i\}$ and $\{y_j\}$.</p>
         <p><strong>Solution:</strong></p>
         <p>We want $a^\top x_i + b \ge 1$ and $a^\top y_j + b \le -1$.
@@ -208,8 +208,8 @@
         This is the hard-margin SVM formulation. If sets intersect, relax with slack variables (Soft margin).</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.6: Weber Problem (Facility Location)</h3>
+      <div class="example-box">
+        <h4>Example 12.6: Weber Problem (Facility Location)</h4>
         <p><strong>Problem:</strong> Minimize $f(x) = \sum_{i=1}^m w_i \|x - p_i\|_2$.</p>
         <p><strong>Solution:</strong></p>
         <p>This is the sum of Euclidean norms.
@@ -219,8 +219,8 @@
         Alternatively, use iterative reweighted least squares (Weiszfeld's algorithm), which is a gradient method on smoothed approximation.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.7: Total Least Squares</h3>
+      <div class="example-box">
+        <h4>Example 12.7: Total Least Squares</h4>
         <p><strong>Problem:</strong> Fit a line $a^\top x = b$ minimizing sum of squared perpendicular distances to points $x_i$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $\sum_i (a^\top x_i - b)^2 / \|a\|_2^2$. Assume $x_i$ centered, so $b=0$.
@@ -229,8 +229,8 @@
         This is SVD/PCA. While non-convex generally, the spectral solution is global.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 12.8: MVIE for Cube</h3>
+      <div class="example-box">
+        <h4>Example 12.8: MVIE for Cube</h4>
         <p><strong>Problem:</strong> Find the largest ellipsoid inside the unit cube $[-1, 1]^n$.</p>
         <p><strong>Solution:</strong></p>
         <p>Cube faces: $e_i^\top x \le 1$ and $-e_i^\top x \le 1$.
@@ -244,59 +244,125 @@
 
     <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Exercises</h2>
-      <ol style="line-height: 2;">
-        <li>
-          <strong>Projection Non-expansiveness:</strong><br>
-          Prove that for a convex set $C$, $\|P_C(x) - P_C(y)\|_2 \le \|x - y\|_2$.
-          <br><em>Solution:</em>
-          Let $u = P_C(x)$ and $v = P_C(y)$. By variational inequality:
-          $(x - u)^\top (v - u) \le 0$ and $(y - v)^\top (u - v) \le 0$.
-          Summing: $(x - u)^\top (v - u) + (y - v)^\top (u - v) \le 0$.
-          Rearrange: $(x - y - (u - v))^\top (v - u) \le 0 \implies (x-y)^\top (v-u) + \|u-v\|^2 \le 0$.
-          $\|u-v\|^2 \le (x-y)^\top (u-v) \le \|x-y\|\|u-v\|$.
-          Divide by $\|u-v\|$: $\|u-v\| \le \|x-y\|$.
-        </li>
-        <li>
-          <strong>Chebyshev Center of Polyhedron:</strong><br>
-          Explicitly write the LP for the Chebyshev center of the box $\{x : 0 \le x \le 1\}$. Verify the solution is center $(0.5, \dots)$ with radius $0.5$.
-          <br><em>Solution:</em>
-          Constraints: $x_i \ge 0, -x_i \ge -1$. Normal forms: $-e_i^\top x \le 0, e_i^\top x \le 1$.
-          Normals have length 1.
-          LP: $\max r$ s.t. $-x_i + r \le 0$ and $x_i + r \le 1$.
-          $\implies r \le x_i$ and $r \le 1 - x_i$.
-          Summing: $2r \le 1 \implies r \le 0.5$.
-          Max $r=0.5$ attained at $x_i = 0.5$.
-        </li>
-        <li>
-          <strong>Convexity of MVEE Objective:</strong><br>
-          Prove that $f(A) = -\log\det(A)$ is convex on $\mathbb{S}_{++}^n$.
-          <br><em>Solution:</em>
-          Consider line $Z = A + tV$. $g(t) = -\log\det(A+tV) = -\log\det(A) - \log\det(I + tA^{-1/2}VA^{-1/2})$.
-          Let $\lambda_i$ be eigenvalues of $A^{-1/2}VA^{-1/2}$.
-          $g(t) = -\sum \log(1 + t\lambda_i)$.
-          $g''(t) = \sum \frac{\lambda_i^2}{(1+t\lambda_i)^2} \ge 0$.
-          Since second derivative along any line is non-negative, $f(A)$ is convex.
-        </li>
-        <li>
-          <strong>Distance Implies Intersection:</strong><br>
-          Show that if $d(C_1, C_2) = 0$ and sets are closed/compact, then $C_1 \cap C_2 \ne \emptyset$.
-          <br><em>Solution:</em>
-          $d(C_1, C_2) = \min \|x_1 - x_2\|$. Since $f(x_1, x_2) = \|x_1 - x_2\|$ is continuous and domain is compact, min is attained at some $x_1^*, x_2^*$.
-          If min is 0, then $\|x_1^* - x_2^*\| = 0 \implies x_1^* = x_2^*$.
-          Thus there exists a point in both sets.
-        </li>
-        <li>
-          <strong>Weber Problem Reformulation:</strong><br>
-          Show that $\min \sum w_i \|x - p_i\|$ can be cast as an SOCP.
-          <br><em>Solution:</em>
-          Let $t_i$ be auxiliary scalar variables.
-          Min $\sum w_i t_i$.
-          Subject to $\|x - p_i\|_2 \le t_i$.
-          The constraint is a second-order cone constraint $(t_i, x - p_i) \in \mathcal{K}$.
-          The objective is linear. This is exactly an SOCP.
-        </li>
-      </ol>
+      <h2><i data-feather="edit-3"></i> Exercises</h2>
+
+      <div class="problem">
+        <h3>P12.1 — Projection Non-expansiveness</h3>
+        <p>Prove that for a convex set $C$, the projection operator is non-expansive: $\|P_C(x) - P_C(y)\|_2 \le \|x - y\|_2$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Let $u = P_C(x)$ and $v = P_C(y)$. By the variational inequality for projections:
+            $(x - u)^\top (v - u) \le 0$ and $(y - v)^\top (u - v) \le 0$.
+          </div>
+          <div class="proof-step">
+            Summing the inequalities:
+            $$ (x - u)^\top (v - u) + (y - v)^\top (u - v) \le 0 $$
+            Rearranging terms to group $(u-v)$:
+            $$ (x - u - (y - v))^\top (v - u) \le 0 \implies (x - y)^\top (v - u) + (v - u)^\top (v - u) \le 0 $$
+            $$ \|u - v\|_2^2 \le (x - y)^\top (u - v) $$
+          </div>
+          <div class="proof-step">
+            By Cauchy-Schwarz:
+            $$ \|u - v\|_2^2 \le \|x - y\|_2 \|u - v\|_2 $$
+            Dividing by $\|u - v\|_2$ (if non-zero) gives $\|u - v\|_2 \le \|x - y\|_2$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P12.2 — Chebyshev Center of Polyhedron</h3>
+        <p>Explicitly write the LP for the Chebyshev center of the unit box $\{x \in \mathbb{R}^n : 0 \le x \le 1\}$. Verify the solution is center $(0.5, \dots, 0.5)$ with radius $0.5$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            The box is defined by $2n$ inequalities: $x_i \ge 0$ and $x_i \le 1$.
+            In standard form $a_j^\top x \le b_j$:
+            <ul>
+                <li>$-e_i^\top x \le 0$ (normalized $a_j = -e_i$, length 1)</li>
+                <li>$e_i^\top x \le 1$ (normalized $a_j = e_i$, length 1)</li>
+            </ul>
+          </div>
+          <div class="proof-step">
+            The Chebyshev LP is $\max r$ subject to $a_j^\top x_c + r \|a_j\|_2 \le b_j$.
+            $$ -x_{c,i} + r \le 0 \implies r \le x_{c,i} $$
+            $$ x_{c,i} + r \le 1 \implies r \le 1 - x_{c,i} $$
+          </div>
+          <div class="proof-step">
+            Summing the inequalities for each $i$: $2r \le x_{c,i} + (1 - x_{c,i}) = 1 \implies r \le 0.5$.
+            Maximum radius $r=0.5$ is achieved when $x_{c,i} = 0.5$ for all $i$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P12.3 — Convexity of MVEE Objective</h3>
+        <p>Prove that $f(A) = -\log\det(A)$ is convex on the domain of positive definite matrices $\mathbb{S}_{++}^n$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Restrict $f$ to a line $Z(t) = A + tV$ where $A \succ 0$ and $V \in \mathbb{S}^n$.
+            $$ g(t) = -\log\det(A + tV) = -\log\det(A^{1/2}(I + t A^{-1/2} V A^{-1/2})A^{1/2}) $$
+            $$ = -\log\det(A) - \log\det(I + tM) $$
+            where $M = A^{-1/2} V A^{-1/2}$ has eigenvalues $\lambda_i$.
+          </div>
+          <div class="proof-step">
+            $$ g(t) = C - \sum_{i=1}^n \log(1 + t\lambda_i) $$
+            Differentating twice:
+            $$ g'(t) = -\sum \frac{\lambda_i}{1 + t\lambda_i}, \quad g''(t) = \sum \frac{\lambda_i^2}{(1 + t\lambda_i)^2} $$
+          </div>
+          <div class="proof-step">
+            Since squares are non-negative, $g''(t) \ge 0$.
+            A function is convex iff its restriction to any line is convex. Thus $f(A)$ is convex.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P12.4 — Distance Implies Intersection</h3>
+        <p>Show that if the distance between two compact convex sets $C_1, C_2$ is 0, then their intersection is non-empty.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            The distance function is defined as $d(C_1, C_2) = \min \{ \|x - y\|_2 : x \in C_1, y \in C_2 \}$.
+            Consider the function $f(x, y) = \|x - y\|_2$ defined on the product set $C_1 \times C_2$.
+          </div>
+          <div class="proof-step">
+            Since $C_1$ and $C_2$ are compact, their product $C_1 \times C_2$ is compact (in $\mathbb{R}^{2n}$).
+            The norm function is continuous. By the Weierstrass Extreme Value Theorem, a continuous function on a compact set attains its minimum.
+          </div>
+          <div class="proof-step">
+            Thus, there exist points $x^* \in C_1, y^* \in C_2$ such that $\|x^* - y^*\|_2 = d(C_1, C_2) = 0$.
+            This implies $x^* = y^*$. Let $p = x^*$. Then $p \in C_1$ and $p \in C_2$, so $C_1 \cap C_2 \ne \emptyset$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P12.5 — Weber Problem Reformulation</h3>
+        <p>Show that the Weber problem $\min_x \sum_{i=1}^m w_i \|x - p_i\|_2$ with $w_i \ge 0$ can be cast as a Second-Order Cone Program (SOCP).</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            We introduce auxiliary scalar variables $t_i$ to bound each distance term:
+            $$ t_i \ge \|x - p_i\|_2 $$
+            The objective becomes minimizing the linear function $\sum_{i=1}^m w_i t_i$.
+          </div>
+          <div class="proof-step">
+            The constraint $t_i \ge \|x - p_i\|_2$ is equivalent to saying the vector $(x - p_i, t_i)$ lies in the second-order cone (Lorentz cone) in $\mathbb{R}^{n+1}$.
+          </div>
+          <div class="proof-step">
+            <strong>SOCP Formulation:</strong>
+            $$
+            \begin{aligned}
+            \text{minimize} \quad & \sum_{i=1}^m w_i t_i \\
+            \text{subject to} \quad & \|x - p_i\|_2 \le t_i, \quad i=1,\dots,m
+            \end{aligned}
+            $$
+            This has linear objective and conic constraints, fitting the definition of SOCP.
+          </div>
+        </div>
+      </div>
     </section>
   </main></div>
 

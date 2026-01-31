@@ -43,10 +43,10 @@
       <h2>Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul style="line-height: 1.8;">
-        <li>How to solve inequality-constrained problems using the barrier method.</li>
-        <li>The concept and properties of the central path.</li>
-        <li>The role of Newton's method in centering steps and the complexity implications of self-concordance.</li>
-        <li>The structure of Primal-Dual Interior-Point methods.</li>
+        <li>Solve inequality-constrained problems using the barrier method.</li>
+        <li>Derive and interpret the central path and its properties.</li>
+        <li>Analyze the complexity of centering steps using Newton's method and self-concordance.</li>
+        <li>Describe the structure and advantages of Primal-Dual Interior-Point methods.</li>
       </ul>
     </section>
 
@@ -130,8 +130,8 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Example Problems</h2>
 
-      <div class="example-problem">
-        <h3>Example 15.1: Log-Barrier Gradient and Hessian</h3>
+      <div class="example-box">
+        <h4>Example 15.1: Log-Barrier Gradient and Hessian</h4>
         <p><strong>Problem:</strong> Derive $\nabla \phi(x)$ and $\nabla^2 \phi(x)$ for $\phi(x) = -\sum \log(b_i - a_i^\top x)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Let $s_i = b_i - a_i^\top x$. Then $\phi = -\sum \log s_i$.
@@ -140,8 +140,8 @@
         This structure $A^\top D A$ is typical for interior-point methods.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.2: Central Path for 1D Problem</h3>
+      <div class="example-box">
+        <h4>Example 15.2: Central Path for 1D Problem</h4>
         <p><strong>Problem:</strong> $\min x$ subject to $x \ge 0$. Find central path.</p>
         <p><strong>Solution:</strong></p>
         <p>Barrier problem: $\min t x - \log x$.
@@ -150,8 +150,8 @@
         Duality gap $1 \times (1/t) \times 1 = 1/t$. Matches theory.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.3: Analytic Center of Cube</h3>
+      <div class="example-box">
+        <h4>Example 15.3: Analytic Center of Cube</h4>
         <p><strong>Problem:</strong> Find analytic center of unit cube $-1 \le x_i \le 1$.</p>
         <p><strong>Solution:</strong></p>
         <p>Constraints: $1-x_i \ge 0, 1+x_i \ge 0$.
@@ -161,8 +161,8 @@
         Center is the origin.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.4: Duality Gap Property</h3>
+      <div class="example-box">
+        <h4>Example 15.4: Duality Gap Property</h4>
         <p><strong>Problem:</strong> Prove gap is $m/t$ for $x^*(t)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Lagrangian of original: $L(x, \lambda) = f_0(x) + \sum \lambda_i f_i(x)$.
@@ -173,8 +173,8 @@
         Substitute $\lambda_i^*$: $-\sum (-1/(t f_i)) f_i = \sum (1/t) = m/t$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.5: Phase I Method</h3>
+      <div class="example-box">
+        <h4>Example 15.5: Phase I Method</h4>
         <p><strong>Problem:</strong> Formulate Phase I for $Ax \le b$.</p>
         <p><strong>Solution:</strong></p>
         <p>Minimize $s$ subject to $a_i^\top x - b_i \le s$.
@@ -183,8 +183,8 @@
         If optimal $s^* < 0$, we have a strictly feasible point for Phase II.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.6: Newton Step Cost</h3>
+      <div class="example-box">
+        <h4>Example 15.6: Newton Step Cost</h4>
         <p><strong>Problem:</strong> Cost of computing Newton step for LP barrier with $A \in \mathbb{R}^{m \times n}$.</p>
         <p><strong>Solution:</strong></p>
         <p>Hessian is $H = A^\top D A + \text{regularizer}$.
@@ -194,8 +194,8 @@
         Much faster if $A$ is sparse.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.7: Primal-Dual System</h3>
+      <div class="example-box">
+        <h4>Example 15.7: Primal-Dual System</h4>
         <p><strong>Problem:</strong> Write the perturbed KKT conditions for Primal-Dual method.</p>
         <p><strong>Solution:</strong></p>
         <p>Standard form LP: $\min c^\top x$ s.t. $Ax=b, x \ge 0$.
@@ -206,8 +206,8 @@
         We linearize this nonlinear system to find $(\Delta x, \Delta y, \Delta s)$.</p>
       </div>
 
-      <div class="example-problem">
-        <h3>Example 15.8: SDP Barrier Derivative</h3>
+      <div class="example-box">
+        <h4>Example 15.8: SDP Barrier Derivative</h4>
         <p><strong>Problem:</strong> Derivative of $-\log\det(X)$.</p>
         <p><strong>Solution:</strong></p>
         <p>Differential $d(-\log\det X) = -\text{tr}(X^{-1} dX)$.
@@ -220,52 +220,91 @@
 
     <!-- Exercises -->
     <section class="section-card" style="margin-bottom: 32px;">
-      <h2>Exercises</h2>
-      <ol style="line-height: 2;">
-        <li>
-          <strong>Central Path Convergence:</strong><br>
-          Prove that if the feasible set is bounded, the central path $\{x^*(t)\}$ has a limit point as $t \to \infty$ which is optimal.
-          <br><em>Solution:</em>
-          Since $f_0(x^*(t)) - p^* \le m/t$, as $t \to \infty$, value converges to $p^*$.
-          Since set is compact, sequence has accumulation points.
-          Continuity of $f_0$ implies any accumulation point is optimal.
-          Uniqueness of central path (due to strict convexity of barrier) implies convergence to a specific optimal point (usually analytic center of optimal face).
-        </li>
-        <li>
-          <strong>Gradient of Log-Barrier:</strong><br>
-          Verify $\nabla \phi(x) = \sum_{i=1}^m \frac{1}{-f_i(x)} \nabla f_i(x)$.
-          <br><em>Solution:</em>
-          $\phi(x) = -\sum \log(-f_i(x))$.
-          $\frac{\partial \phi}{\partial x} = -\sum \frac{1}{-f_i(x)} \frac{\partial (-f_i)}{\partial x} = -\sum \frac{1}{-f_i(x)} (-\nabla f_i(x)) = \sum \frac{1}{-f_i(x)} \nabla f_i(x)$.
-        </li>
-        <li>
-          <strong>Complexity Bound:</strong><br>
-          Justify the iteration bound $O(\sqrt{m} \log(1/\epsilon))$.
-          <br><em>Solution:</em>
-          Self-concordance theory guarantees that if $t_{k+1} = \mu t_k$, we stay in the "quadratic convergence basin" of Newton's method for the new $t$ if $\mu$ is small enough (specifically $1 + 1/\sqrt{m}$).
-          Number of steps to increase $t$ from $t_0$ to $m/\epsilon$ is $\log_\mu (m/\epsilon t_0) \approx \sqrt{m} \log(m/\epsilon)$.
-          Each centering takes $O(1)$ Newton steps.
-        </li>
-        <li>
-          <strong>LP Central Path:</strong><br>
-          For $\min c^\top x$ s.t. $x \ge 0$, find the central path.
-          <br><em>Solution:</em>
-          Problem is unbounded unless $c \ge 0$.
-          Barrier $\min t c^\top x - \sum \log x_i$.
-          $t c_i - 1/x_i = 0 \implies x_i = 1/(t c_i)$.
-          Path is hyperbola $x_i(t) = 1/(t c_i)$.
-          Converges to 0 (optimum) as $t \to \infty$ assuming $c_i > 0$.
-        </li>
-        <li>
-          <strong>Primal-Dual Direction:</strong><br>
-          Show that the primal-dual direction reduces to the pure Newton centering direction if $x$ is feasible and $s = -1/(t f_i)$.
-          <br><em>Solution:</em>
-          PD system linearizes $x_i s_i - \tau = 0$.
-          If we are on central path, residuals are 0.
-          Then $\Delta x, \Delta s$ are corrections for new target $\tau' < \tau$.
-          The equations become essentially the same as linearizing optimality conditions for next $t$, which is what barrier method does.
-        </li>
-      </ol>
+      <h2><i data-feather="edit-3"></i> Exercises</h2>
+
+      <div class="problem">
+        <h3>P15.1 — Central Path Convergence</h3>
+        <p>Prove that if the feasible set is bounded, the central path $\{x^*(t)\}$ has a limit point as $t \to \infty$ which is optimal.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Since $f_0(x^*(t)) - p^* \le m/t$, as $t \to \infty$, value converges to $p^*$.
+          </div>
+          <div class="proof-step">
+            Since set is compact, sequence has accumulation points.
+            Continuity of $f_0$ implies any accumulation point is optimal.
+          </div>
+          <div class="proof-step">
+            Uniqueness of central path (due to strict convexity of barrier) implies convergence to a specific optimal point (usually analytic center of optimal face).
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P15.2 — Gradient of Log-Barrier</h3>
+        <p>Verify $\nabla \phi(x) = \sum_{i=1}^m \frac{1}{-f_i(x)} \nabla f_i(x)$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            $\phi(x) = -\sum \log(-f_i(x))$.
+          </div>
+          <div class="proof-step">
+            $\frac{\partial \phi}{\partial x} = -\sum \frac{1}{-f_i(x)} \frac{\partial (-f_i)}{\partial x} = -\sum \frac{1}{-f_i(x)} (-\nabla f_i(x)) = \sum \frac{1}{-f_i(x)} \nabla f_i(x)$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P15.3 — Complexity Bound</h3>
+        <p>Justify the iteration bound $O(\sqrt{m} \log(1/\epsilon))$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Self-concordance theory guarantees that if $t_{k+1} = \mu t_k$, we stay in the "quadratic convergence basin" of Newton's method for the new $t$ if $\mu$ is small enough (specifically $1 + 1/\sqrt{m}$).
+          </div>
+          <div class="proof-step">
+            Number of steps to increase $t$ from $t_0$ to $m/\epsilon$ is $\log_\mu (m/\epsilon t_0) \approx \sqrt{m} \log(m/\epsilon)$.
+            Each centering takes $O(1)$ Newton steps.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P15.4 — LP Central Path</h3>
+        <p>For $\min c^\top x$ s.t. $x \ge 0$, find the central path.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            Problem is unbounded unless $c \ge 0$.
+            Barrier $\min t c^\top x - \sum \log x_i$.
+          </div>
+          <div class="proof-step">
+            $t c_i - 1/x_i = 0 \implies x_i = 1/(t c_i)$.
+          </div>
+          <div class="proof-step">
+            Path is hyperbola $x_i(t) = 1/(t c_i)$.
+            Converges to 0 (optimum) as $t \to \infty$ assuming $c_i > 0$.
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <h3>P15.5 — Primal-Dual Direction</h3>
+        <p>Show that the primal-dual direction reduces to the pure Newton centering direction if $x$ is feasible and $s = -1/(t f_i)$.</p>
+        <div class="solution-box">
+          <h4>Solution</h4>
+          <div class="proof-step">
+            PD system linearizes $x_i s_i - \tau = 0$.
+          </div>
+          <div class="proof-step">
+            If we are on central path, residuals are 0.
+            Then $\Delta x, \Delta s$ are corrections for new target $\tau' < \tau$.
+          </div>
+          <div class="proof-step">
+            The equations become essentially the same as linearizing optimality conditions for next $t$, which is what barrier method does.
+          </div>
+        </div>
+      </div>
     </section>
   </main></div>
 

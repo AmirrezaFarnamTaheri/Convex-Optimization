@@ -58,7 +58,7 @@
       <h2>1. The Standard Form and The Epigraph Transformation</h2>
 
       <h3>1.1 Definition: Standard Convex Form</h3>
-      <p>A <strong>convex optimization problem</strong> in <a href="#" class="definition-link">standard form</a> is:</p>
+      <p>A <strong>convex optimization problem</strong> in <a href="javascript:void(0)" class="definition-link">standard form</a> is:</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -75,7 +75,7 @@
       <p>where:</p>
       <ul>
         <li>The variable is $\mathbf{x} \in \mathbb{R}^n$</li>
-        <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="#" class="definition-link" data-term="convex function">convex</a>)</li>
+        <li>$f_0: \mathbb{R}^n \to \mathbb{R}$ is the <strong>objective function</strong> (<a href="javascript:void(0)" class="definition-link" data-term="convex function">convex</a>)</li>
         <li>$f_i: \mathbb{R}^n \to \mathbb{R}$, $i = 1, \dots, m$ are <strong>inequality constraint functions</strong> (all convex)</li>
         <li>$h_j: \mathbb{R}^n \to \mathbb{R}$, $j = 1, \dots, p$ are <strong>equality constraint functions</strong> (all affine, i.e., $h_j(\mathbf{x}) = \mathbf{a}_j^\top \mathbf{x} - b_j$)</li>
       </ul>
@@ -92,7 +92,7 @@
       </div>
 
       <h3>1.2 The Epigraph Standard Form (The Universal Translator)</h3>
-      <p>Optimization solvers do not natively understand "minimize a convex function." They understand linear objectives and specific <b>conic constraints</b>. The <a href="#" class="definition-link">epigraph transformation</a> is the universal adapter that moves all complexity from the objective into the constraints.</p>
+      <p>Optimization solvers do not natively understand "minimize a convex function." They understand linear objectives and specific <b>conic constraints</b>. The <a href="javascript:void(0)" class="definition-link">epigraph transformation</a> is the universal adapter that moves all complexity from the objective into the constraints.</p>
 
       <div style="padding: 16px; background: var(--surface-2); border-left: 4px solid var(--primary-300); margin: 16px 0;">
           <p><strong>Transformation:</strong> Replace the objective $f_0(x)$ with a linear variable $t$:</p>
@@ -261,7 +261,7 @@
       </ul>
 
       <div class="example-box">
-        <h4>Example: Geometric Programming via Log Transform</h4>
+        <h4>Example 7.1: Geometric Programming via Log Transform</h4>
         <p>A <b>geometric program</b> (GP) in standard form is:
         $$
         \begin{aligned}
@@ -306,7 +306,7 @@
       <p>The equality constraint is now <b>eliminated</b>, and the problem becomes unconstrained (or has fewer constraints) in the variable $z$.</p>
 
       <div class="example-box">
-        <h4>Example: Portfolio Optimization with Budget Constraint</h4>
+        <h4>Example 7.2: Portfolio Optimization with Budget Constraint</h4>
         <p>Consider:
         $$
         \begin{aligned}
@@ -343,7 +343,7 @@
       where $g(x) = \inf_y f(x,y)$ is the <b>partially minimized objective</b>.</p>
 
       <div class="example-box">
-        <h4>Example: Least Squares with Regularization</h4>
+        <h4>Example 7.3: Least Squares with Regularization</h4>
         <p>Consider the problem:
         $$
         \min_{x,r} \frac{1}{2}\|r\|_2^2 + \frac{\lambda}{2}\|x\|_2^2 \quad \text{subject to} \quad r = Ax - b
@@ -402,7 +402,7 @@
       <h2>3. Linear Programs (LP): The Polyhedral Language</h2>
 
       <h3>3.1 Definition and Geometry</h3>
-      <p>A <strong>Linear Program (<a href="#" class="definition-link">LP</a>)</strong> is an optimization problem where the objective and all constraint functions are affine.</p>
+      <p>A <strong>Linear Program (<a href="javascript:void(0)" class="definition-link">LP</a>)</strong> is an optimization problem where the objective and all constraint functions are affine.</p>
 
       <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
         <p style="margin: 0;">
@@ -547,7 +547,7 @@
       This atom converts piecewise-linear convex costs (like hinge loss) into linear constraints.
       </p>
 
-      <h4>Example 2.2: L-infinity Minimization</h4>
+      <h4>Example 7.4: L-infinity Minimization</h4>
       <p>Find $\mathbf{x} \in \mathbb{R}^n$ minimizing $\|A\mathbf{x} - \mathbf{b}\|_\infty$. This can be reformulated as:</p>
       <p style="text-align: center;">
         $
@@ -600,7 +600,7 @@
 
       <h3>3.3 Standard LP Examples</h3>
 
-      <h4>Example 2.1: The Diet Problem</h4>
+      <h4>Example 7.5: The Diet Problem</h4>
       <p>Setup:
       <ul>
           <li>There are $n$ different foods. Variable $x_j \ge 0$ is the quantity of food $j$.</li>
@@ -624,7 +624,7 @@
       </p>
       <p>Interpretation: We search over the polyhedron of healthy diets to find the one that the cost hyperplane hits first.</p>
 
-      <h4>Example 2.3: Chebyshev Center of a Polyhedron</h4>
+      <h4>Example 7.6: Chebyshev Center of a Polyhedron</h4>
       <p>We want to find the largest Euclidean ball inside a polyhedron $\mathcal{P} = \{x \mid a_i^\top x \le b_i, i=1,\dots,m\}$. This is called the <strong>Chebyshev center</strong>.</p>
       <p>Let the ball be $\mathcal{B} = \{x_c + u \mid \|u\|_2 \le r\}$, centered at $x_c$ with radius $r$.
       We want to maximize $r$ subject to $\mathcal{B} \subseteq \mathcal{P}$.</p>
@@ -880,8 +880,8 @@
             This separates the "absolute value" logic from the "piecewise cost" logic, making it cleaner than listing 4 affine inequalities for $u$.
         </div>
 
-        <div class="example">
-          <h4>Example: Trust-Region QCQP</h4>
+        <div class="example-box">
+          <h4>Example 7.7: Trust-Region QCQP</h4>
           <p>Minimize a quadratic over the unit ball (trust region):</p>
           $$ \min_x \frac{1}{2}x^\top P x + q^\top x + r \quad \text{s.t.} \quad x^\top x \le 1 $$
           <p>This is a QP if $P \succeq 0$. If $P$ is indefinite, it is non-convex, but its dual is an SDP (strong duality holds by S-lemma).</p>
@@ -988,7 +988,7 @@
         $$ A^\top A x = A^\top b $$</p>
       </div>
 
-      <h4>Example: Markowitz Portfolio Optimization</h4>
+      <h4>Example 7.8: Markowitz Portfolio Optimization</h4>
       <p>A classic QP application: given $n$ assets with expected returns $\bar{p} \in \mathbb{R}^n$ and covariance matrix $\Sigma \succeq 0$, find portfolio weights $x$ minimizing variance subject to a return target:</p>
       $$
       \begin{aligned}
@@ -1233,7 +1233,7 @@
       <h3>5.1 The Geometric Perspective</h3>
       <p>The linear-fractional function arises from the <strong>perspective map</strong>. To see this, let's start with 1D.</p>
 
-      <h4>4.1.1 The 1D Case</h4>
+      <h4>5.1.1 The 1D Case</h4>
       <p>Consider $f(x) = \frac{x}{ax + b}$ with domain $ax+b > 0$. We can visualize this construction in three steps:</p>
       <ol>
         <li><strong>Embed:</strong> Map $x \in \mathbb{R}$ to the line $(x, ax+b)$ in $\mathbb{R}^2$. (Note: $x$ is scalar here)</li>
@@ -1242,7 +1242,7 @@
       </ol>
       <p>The intersection point is $(\frac{x}{ax+b}, 1)$. The x-coordinate is exactly our function value! This geometric operation—projecting onto a plane through the origin—is the definition of the perspective map.</p>
 
-      <h4>4.1.2 The General Case</h4>
+      <h4>5.1.2 The General Case</h4>
       <p>In higher dimensions ($\mathbf{x} \in \mathbb{R}^n$), we do the same:</p>
       <ul>
           <li>Map $\mathbf{x} \in \mathbb{R}^n$ to $(\mathbf{c}^\top \mathbf{x} + d, \mathbf{e}^\top \mathbf{x} + f)$ in $\mathbb{R}^2$.</li>
@@ -1349,8 +1349,8 @@
           </li>
       </ul>
 
-      <div class="example">
-        <h4>Case Study: Von Neumann Growth Model</h4>
+      <div class="example-box">
+        <h4>Example 7.9: Von Neumann Growth Model</h4>
         <p>Consider an economy with $n$ sectors.
         <ul>
             <li>$x \in \mathbb{R}^n$: Current activity levels.</li>
@@ -1440,7 +1440,7 @@
         </div>
       </div>
 
-      <h4>Example: Trace-Determinant Ratio</h4>
+      <h4>Example 7.10: Trace-Determinant Ratio</h4>
       <p>Consider minimizing the ratio of the arithmetic mean to the geometric mean of eigenvalues of a matrix $F(x) = F_0 + \sum x_i F_i$:</p>
       $$ \text{minimize} \quad \frac{\frac{1}{m}\text{tr}(F(x))}{\det(F(x))^{1/m}} $$
       <ul>
@@ -1593,8 +1593,8 @@
           </ol>
       </div>
 
-      <div class="example">
-        <h4>Example: Box Volume Maximization</h4>
+      <div class="example-box">
+        <h4>Example 7.11: Box Volume Maximization</h4>
         <p>We want to maximize the volume of a box ($xyz$) subject to area limits.
         <br><b>Objective:</b> Maximize $xyz \iff$ Minimize $x^{-1}y^{-1}z^{-1}$ (Monomial).
         <br><b>Constraints:</b>
@@ -1707,7 +1707,7 @@
 
       <div class="problem">
         <h3>P7.1 — Diet Problem (LP)</h3>
-        <p>Formulate the classic diet problem as an LP. (See Example 2.1 for the derivation).
+        <p>Formulate the classic diet problem as an LP. (See Example 7.5 for the derivation).
         Is the feasible set bounded?</p>
         <div class="recap-box">
           <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>

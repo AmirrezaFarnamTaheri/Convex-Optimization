@@ -51,13 +51,13 @@
       <h2><i data-feather="target"></i> Learning Objectives</h2>
       <p>After this lecture, you will be able to:</p>
       <ul>
-        <li><b>Define Convex Optimization Problems:</b> State the precise three-part definition (convex objective, convex inequality constraints, affine equality constraints) and distinguish convex from nonconvex problems.</li>
-        <li><b>Prove the Fundamental Theorem:</b> Show that every local minimum of a convex problem is a global minimum, providing the geometric intuition behind this powerful guarantee.</li>
+        <li><b>Define Convex Optimization Problems:</b> State the three-part definition (convex objective, convex inequalities, affine equalities) and distinguish convex from nonconvex problems.</li>
+        <li><b>Prove the Fundamental Theorem:</b> Show that every local minimum of a convex problem is a global minimum.</li>
         <li><b>Understand the Problem Hierarchy:</b> Identify and classify problems as Linear Programs (LP), Quadratic Programs (QP), Second-Order Cone Programs (SOCP), or Semidefinite Programs (SDP).</li>
-        <li><b>Apply the Loss + Regularizer Paradigm:</b> Formulate machine learning and statistical problems using the "loss + regularizer + constraints" template (e.g., LASSO, Ridge Regression).</li>
-        <li><b>Transform to Standard Forms:</b> Apply systematic reformulation techniques to convert non-standard terms (norms, absolute values, max functions) into standard convex forms.</li>
-        <li><b>Verify Problem Convexity:</b> Perform sanity checks for feasibility and unboundedness, and verify convexity using the definition or composition rules.</li>
-        <li><b>Understand Solver Architecture:</b> Grasp the "model → transform → canonicalize → solve → verify" pipeline used by modern convex optimization tools like CVX, CVXPY, and JuMP.</li>
+        <li><b>Apply the Loss + Regularizer Paradigm:</b> Formulate machine learning problems using the "loss + regularizer + constraints" template.</li>
+        <li><b>Transform to Standard Forms:</b> Apply reformulation techniques to convert non-standard terms (norms, max functions) into standard convex forms.</li>
+        <li><b>Verify Problem Convexity:</b> Perform sanity checks for feasibility and verify convexity using composition rules.</li>
+        <li><b>Understand Solver Architecture:</b> Grasp the "model → canonicalize → solve" pipeline used by tools like CVXPY.</li>
       </ul>
     </section>
 
@@ -118,8 +118,8 @@
         </table>
 
         <h3>1.2 Real-World Impact</h3>
-        <div class="example">
-          <h4>Example: Large-Scale Machine Learning</h4>
+        <div class="example-box">
+          <h4>Example 2.1: Large-Scale Machine Learning</h4>
           <p>Modern machine learning relies heavily on convex optimization:</p>
           <ul>
             <li><b>Support Vector Machines (SVM):</b> Formulated as a convex QP, SVMs are solved reliably for millions of training examples.</li>
@@ -248,8 +248,8 @@
                 The only functions that are both convex and concave are <b>affine</b> functions. Thus, equalities must be affine.
             </li>
           </ul>
-          <div class="example">
-            <h4>🚫 Counter-Example: The Circle Boundary</h4>
+          <div class="example-box">
+            <h4>🚫 Example 2.2: Counter-Example: The Circle Boundary</h4>
             <p>Consider the constraint $x_1^2 + x_2^2 = 1$. Let $h(x) = x_1^2 + x_2^2 - 1$. This function is convex.
             <br>The equality constraint $h(x)=0$ defines the <b>boundary</b> of the unit circle.</p>
             <ul>
@@ -272,7 +272,7 @@
         </div>
 
         <h3>2.4 The Feasible Set</h3>
-        <p>The <a href="#" class="definition-link">feasible set</a> (also called feasible region or constraint set) is:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">feasible set</a> (also called feasible region or constraint set) is:</p>
         $$
         \mathcal{F} = \{x \in \mathbb{R}^n \mid f_i(x) \le 0 \ \forall i, \ Ax = b\}
         $$
@@ -498,7 +498,7 @@
         </figure>
 
         <h3>4.1 Linear Programming (LP)</h3>
-        <p>The simplest convex problem has both a linear objective and linear constraints. A <a href="#" class="definition-link" data-term="linear program">Linear Program (LP)</a> is defined as:</p>
+        <p>The simplest convex problem has both a linear objective and linear constraints. A <a href="javascript:void(0)" class="definition-link" data-term="linear program">Linear Program (LP)</a> is defined as:</p>
         $$
         \begin{aligned}
         \min_{x} \quad & c^\top x \\
@@ -510,7 +510,7 @@
         <div class="subsection">
           <h4>Properties and Characteristics</h4>
           <ul>
-            <li><b>Feasible set:</b> A <a href="#" class="definition-link">polyhedron</a> (intersection of finitely many halfspaces and hyperplanes).</li>
+            <li><b>Feasible set:</b> A <a href="javascript:void(0)" class="definition-link">polyhedron</a> (intersection of finitely many halfspaces and hyperplanes).</li>
             <li><b>Optimal solution:</b> Always at a vertex (extreme point) if it exists.</li>
             <li><b>Algorithms:</b> Simplex method (exponential worst-case, fast in practice), Interior-point methods (polynomial-time).</li>
             <li><b>Complexity:</b> Polynomial time via interior-point methods.</li>
@@ -518,8 +518,8 @@
           </ul>
         </div>
 
-        <div class="example">
-          <h4>Example 1: Resource Allocation (Production Planning)</h4>
+        <div class="example-box">
+          <h4>Example 2.3: Resource Allocation (Production Planning)</h4>
           <p>Consider a simple factory producing two products: <b>Widgets</b> ($x_1$) and <b>Gadgets</b> ($x_2$).</p>
           <ul>
             <li><b>Profit:</b> \$3 per Widget, \$5 per Gadget. Objective: maximize $3x_1 + 5x_2$.</li>
@@ -534,8 +534,8 @@
           Geometrically, the feasible set is a polygon in the first quadrant. The optimal solution is at a vertex (intersection of constraints).</p>
         </div>
 
-        <div class="example">
-          <h4>Example 2: Network Flow</h4>
+        <div class="example-box">
+          <h4>Example 2.4: Network Flow</h4>
           <p>Find minimum-cost flow through a network from sources to sinks.</p>
           <ul>
             <li><b>Variables:</b> $f_{ij}$ = flow on edge $(i,j)$.</li>
@@ -550,7 +550,7 @@
         </div>
 
         <h3>4.2 Quadratic Programming (QP)</h3>
-        <p><a href="#" class="definition-link" data-term="quadratic program">Quadratic Programs (QP)</a> have a convex quadratic objective and linear constraints:</p>
+        <p><a href="javascript:void(0)" class="definition-link" data-term="quadratic program">Quadratic Programs (QP)</a> have a convex quadratic objective and linear constraints:</p>
         $$
         \begin{aligned}
         \min_{x} \quad & \frac{1}{2}x^\top Q x + c^\top x \\
@@ -571,8 +571,8 @@
           </ul>
         </div>
 
-        <div class="example">
-          <h4>Example 1: Markowitz Portfolio Optimization</h4>
+        <div class="example-box">
+          <h4>Example 2.5: Markowitz Portfolio Optimization</h4>
           <p>An investor allocates capital among $n$ assets to minimize risk for a target return.</p>
           <ul>
             <li><b>Decision variables:</b> $w_i$ = fraction of wealth in asset $i$.</li>
@@ -587,8 +587,8 @@
           </ul>
         </div>
 
-        <div class="example">
-          <h4>Example 2: Least Squares with Constraints</h4>
+        <div class="example-box">
+          <h4>Example 2.6: Least Squares with Constraints</h4>
           <p>Fit a model $\mathbf{y} \approx A\mathbf{x}$ minimizing squared error, subject to constraints on $\mathbf{x}$:</p>
           $$
           \min_{\mathbf{x}} \quad \|A\mathbf{x} - \mathbf{y}\|_2^2 \quad \text{s.t.} \quad \mathbf{x} \ge 0, \ \mathbf{1}^\top \mathbf{x} = 1
@@ -597,7 +597,7 @@
         </div>
 
         <h3>4.3 Second-Order Cone Programming (SOCP)</h3>
-        <p><a href="#" class="definition-link" data-term="socp">SOCPs</a> involve second-order cone constraints (Euclidean norm constraints):</p>
+        <p><a href="javascript:void(0)" class="definition-link" data-term="socp">SOCPs</a> involve second-order cone constraints (Euclidean norm constraints):</p>
         $$
         \begin{aligned}
         \min_{x} \quad & c^\top x \\
@@ -615,8 +615,8 @@
           <p>This cone is convex and self-dual (covered in <a href="../03-convex-sets-geometry/index.html">Lecture 03</a>).</p>
         </div>
 
-        <div class="example">
-          <h4>Example 1: Robust Least Squares</h4>
+        <div class="example-box">
+          <h4>Example 2.7: Robust Least Squares</h4>
           <p>When the data matrix $A$ is uncertain (known up to some perturbation), robust formulations protect against worst-case errors:</p>
           $$
           \min_{x} \max_{\|\Delta A\|_2 \le \rho} \|(A + \Delta A)x - b\|_2^2
@@ -624,8 +624,8 @@
           <p>This can be reformulated as an SOCP.</p>
         </div>
 
-        <div class="example">
-          <h4>Example 2: Antenna Array Weight Design</h4>
+        <div class="example-box">
+          <h4>Example 2.8: Antenna Array Weight Design</h4>
         <p>Design complex antenna weights $w \in \mathbb{C}^n$ to achieve a desired beam pattern.
         <br><b>Goal:</b> Minimize the maximum side lobe level while maintaining unity gain in the target direction $\theta_0$.
         <br><b>Formulation:</b>
@@ -634,7 +634,7 @@
         </div>
 
         <h3>4.4 Semidefinite Programming (SDP)</h3>
-        <p><a href="#" class="definition-link" data-term="sdp">SDPs</a> optimize over positive semidefinite matrix variables:</p>
+        <p><a href="javascript:void(0)" class="definition-link" data-term="sdp">SDPs</a> optimize over positive semidefinite matrix variables:</p>
         $$
         \begin{aligned}
         \min_{X} \quad & \langle C, X \rangle = \mathrm{tr}(C^\top X) \\
@@ -694,8 +694,8 @@
           </tbody>
         </table>
 
-        <div class="example">
-          <h4>Example: Minimum Volume Enclosing Ellipsoid (Löwner-John)</h4>
+        <div class="example-box">
+          <h4>Example 2.9: Minimum Volume Enclosing Ellipsoid (Löwner-John)</h4>
           <p>Find the ellipsoid of minimum volume that contains a set of points $\{x_1, \dots, x_N\}$.</p>
           <p><b>Parameterization:</b> $\mathcal{E} = \{x \mid \|Ax + b\|_2 \le 1\}$ with $A \in \mathbb{S}^n_{++}$. The volume is proportional to $\det(A^{-1})$.
           <br><b>Optimization Problem:</b> Maximize $\log \det A$ (minimize volume) subject to $x_i \in \mathcal{E}$.
@@ -864,8 +864,8 @@
           </div>
         </div>
 
-        <div class="example">
-          <h4>Example: LASSO Regression</h4>
+        <div class="example-box">
+          <h4>Example 2.10: LASSO Regression</h4>
           <p>The LASSO (Least Absolute Shrinkage and Selection Operator) combines least squares loss with $\ell_1$ regularization:</p>
           $$
           \min_{x} \quad \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1
@@ -919,8 +919,8 @@
           <p>Now it is a standard Linear Program (LP) with $2n$ variables ($\mathbf{x}$ and $\mathbf{t}$) and $2n$ linear inequality constraints.</p>
         </div>
 
-        <div class="example">
-          <h4>Example: $\ell_1$-Norm Minimization</h4>
+        <div class="example-box">
+          <h4>Example 2.11: $\ell_1$-Norm Minimization</h4>
           <p>The problem $\min \|Ax - b\|_1$ can be written as:</p>
           $$
           \begin{aligned}
@@ -939,8 +939,8 @@
           <p><b>Equivalent (LP-representable):</b> $-t \mathbf{1} \le x \le t \mathbf{1}$ (componentwise: $-t \le x_i \le t$ for all $i$).</p>
         </div>
 
-        <div class="example">
-          <h4>Example: Chebyshev Approximation</h4>
+        <div class="example-box">
+          <h4>Example 2.12: Chebyshev Approximation</h4>
           <p>Minimize the maximum absolute error: $\min \|Ax - b\|_\infty$</p>
           <p><b>Reformulation as LP:</b></p>
           $$
@@ -961,8 +961,8 @@
           $$
         </div>
 
-        <div class="example">
-          <h4>Example: Robust Least Squares (Walkthrough)</h4>
+        <div class="example-box">
+          <h4>Example 2.13: Robust Least Squares (Walkthrough)</h4>
           <p>We want to minimize the residual $\|Ax - b\|_2$, but we are uncertain about the matrix $A$. We model this uncertainty by assuming the true matrix is $A + \Delta$, where $\Delta$ is a perturbation with spectral norm bounded by $\rho$ (i.e., $\|\Delta\|_2 \le \rho$). Our goal is to minimize the <b>worst-case</b> error:</p>
           $$
           \min_{x} \left( \max_{\|\Delta\|_2 \le \rho} \|(A + \Delta)x - b\|_2 \right)
@@ -1063,8 +1063,8 @@
           </div>
         </div>
 
-        <div class="example">
-          <h4>Example: Minimax Linear Program</h4>
+        <div class="example-box">
+          <h4>Example 2.14: Minimax Linear Program</h4>
           <p>Minimize the maximum of several linear functions:</p>
           $$
           \min_{x} \max\{c_1^\top x, c_2^\top x, \ldots, c_m^\top x\}
@@ -1096,8 +1096,8 @@
           Dividing by $t$ (assuming $t>0$) recovers the original form $\frac{\|x\|_2^2}{t} \le s$.</p>
         </div>
 
-        <div class="example">
-          <h4>Example: Linear-Fractional Programming</h4>
+        <div class="example-box">
+          <h4>Example 2.15: Linear-Fractional Programming</h4>
           <p>Consider minimizing a ratio of affine functions over a polyhedron:</p>
           $$ \min_{x} \frac{c^\top x + d}{e^\top x + f} \quad \text{s.t.} \quad Ax \le b, \ e^\top x + f > 0 $$
           <p>This is <b>quasiconvex</b> but not convex. However, we can transform it into a Linear Program (LP).</p>
@@ -1283,7 +1283,7 @@
         <h3>7.3 A First Example: Portfolio Optimization</h3>
 
         <div class="example-box">
-          <h4>Example: Minimum Variance Portfolio</h4>
+          <h4>Example 2.16: Minimum Variance Portfolio</h4>
           <p>Consider the problem of allocating wealth across $n$ assets to minimize risk while achieving a target return:</p>
           <p>
             $$
@@ -1389,15 +1389,15 @@ print(f"Optimal weights: {w.value}")</code></pre>
 
         <h3>8.2 Common Pitfalls</h3>
 
-        <div class="example">
-          <h4>Pitfall 1: Nonconvex Equality Constraints</h4>
+        <div class="example-box">
+          <h4>Example 2.17: Pitfall 1: Nonconvex Equality Constraints</h4>
           <p><b>Problem:</b> $\min f_0(x)$ s.t. $f(x) = c$ where $f$ is convex but not affine.</p>
           <p><b>Issue:</b> The constraint set $\{x \mid f(x) = c\}$ is generally non-convex (only the epigraph is convex).</p>
           <p><b>Example:</b> $x^2 = 1$ defines $\{-1, +1\}$, a non-convex set.</p>
         </div>
 
-        <div class="example">
-          <h4>Pitfall 2: Maximizing a Convex Function</h4>
+        <div class="example-box">
+          <h4>Example 2.18: Pitfall 2: Maximizing a Convex Function</h4>
           <p><b>Problem:</b> $\max f(x)$ where $f$ is convex.</p>
           <p><b>Issue:</b> This is equivalent to $\min -f(x)$ where $-f$ is concave (non-convex).</p>
           <p><b>Fix:</b> Either minimize instead, or reformulate.</p>

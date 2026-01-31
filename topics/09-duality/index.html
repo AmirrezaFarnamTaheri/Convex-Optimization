@@ -222,7 +222,7 @@
             $
           </p>
         </div>
-        <p>The <a href="#" class="definition-link">Lagrangian</a> $\mathcal{L}: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R}$ augments the objective with a weighted sum of constraints:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">Lagrangian</a> $\mathcal{L}: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R}$ augments the objective with a weighted sum of constraints:</p>
         $$
         \mathcal{L}(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x)
         $$
@@ -248,8 +248,8 @@
 
         <img src="assets/duality_lagrangian_demo.gif" alt="Lagrangian as Lower Bound" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
 
-        <div class="example">
-          <h4>Motivating Example: Primal Dual Optimization Walkthrough</h4>
+        <div class="example-box">
+          <h4>Example 9.1: Primal Dual Optimization Walkthrough</h4>
           <p>Consider the simple problem:
           $$ \min_{x,y} x^2 + y^2 \quad \text{subject to} \quad x+y \ge 1 $$
           <br><b>1. Primal Problem:</b> The feasible region is the half-plane $x+y \ge 1$. The level sets of the objective are circles centered at the origin. Geometrically, the minimum is the point on the line $x+y=1$ closest to the origin, which is $(0.5, 0.5)$, yielding $p^* = 0.5$.</p>
@@ -311,7 +311,7 @@
         </div>
 
         <h3>3.1 Dual Function Definition</h3>
-        <p>The <a href="#" class="definition-link">Lagrange dual function</a> $g: \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R} \cup \{-\infty\}$ is defined as the pointwise infimum of the Lagrangian over $x$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">Lagrange dual function</a> $g: \mathbb{R}^m \times \mathbb{R}^p \to \mathbb{R} \cup \{-\infty\}$ is defined as the pointwise infimum of the Lagrangian over $x$:</p>
         $$
         g(\lambda, \nu) = \inf_{x \in \mathbb{R}^n} \mathcal{L}(x, \lambda, \nu) = \inf_{x \in \mathbb{R}^n} \left( f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x) \right)
         $$
@@ -410,8 +410,8 @@
         <h3>3.3 Examples of Dual Functions</h3>
         <p>Calculating the dual function means solving an unconstrained minimization problem parameterized by $\lambda, \nu$. There are three main patterns:</p>
 
-        <div class="example">
-          <h4>1. Least Squares (Quadratic)</h4>
+        <div class="example-box">
+          <h4>Example 9.5: Least Squares (Quadratic)</h4>
           <p>Primal: $\min x^\top x$ subject to $Ax = b$.
           <br>Lagrangian: $L(x, \nu) = x^\top x + \nu^\top (Ax - b)$.
           <br>Minimize over $\mathbf{x}$: $\nabla_{\mathbf{x}} L = 2\mathbf{x} + A^\top \nu = 0 \implies \mathbf{x} = -A^\top \nu / 2$.
@@ -421,8 +421,8 @@
           <br>Dual Problem: Maximize $g(\nu)$. Unconstrained quadratic maximization.</p>
         </div>
 
-        <div class="example">
-          <h4>2. Linear Program (Standard Form)</h4>
+        <div class="example-box">
+          <h4>Example 9.6: Linear Program (Standard Form)</h4>
           <p>Primal: $\min c^\top x$ s.t. $Ax = b, x \ge 0$.
           <br>Lagrangian: $L(x, \lambda, \nu) = c^\top x - \sum \lambda_i x_i + \nu^\top (Ax - b) = -b^\top \nu + (c + A^\top \nu - \lambda)^\top x$.
           <br>Dual function:
@@ -432,8 +432,8 @@
           <br>Usually written with $y = -\nu$: Maximize $b^\top y$ s.t. $A^\top y \le c$. Standard LP dual.</p>
         </div>
 
-        <div class="example">
-          <h4>3. Conjugate Functions</h4>
+        <div class="example-box">
+          <h4>Example 9.7: Conjugate Functions</h4>
           <p>Primal: $\min f(x)$ subject to $x = 0$ (constraint $x=0$).
           <br>Lagrangian: $L(x, \nu) = f(x) + \nu^\top x$.
           <br>Dual function: $g(\nu) = \inf_x (f(x) + \nu^\top x) = -\sup_x ((-\nu)^\top x - f(x)) = -f^*(-\nu)$.
@@ -453,7 +453,7 @@
         <h2>4. The Dual Problem and Strong Duality</h2>
 
         <h3>4.1 The Dual Problem</h3>
-        <p>The <a href="#" class="definition-link">Lagrange dual problem</a> is to find the best lower bound on $p^*$:</p>
+        <p>The <a href="javascript:void(0)" class="definition-link">Lagrange dual problem</a> is to find the best lower bound on $p^*$:</p>
         <div style="padding: 16px; background: var(--panel); border-left: 4px solid var(--brand); margin: 16px 0;">
           <p style="margin: 0;">
             $
@@ -466,8 +466,8 @@
         </div>
         <p>This is a <b>convex optimization problem</b>, regardless of the primal's properties.</p>
 
-        <div class="example">
-            <h4>Example: Non-Convex Problem with Duality Gap</h4>
+        <div class="example-box">
+            <h4>Example 9.2: Non-Convex Problem with Duality Gap</h4>
             <p>We illustrate the duality gap with a simple discrete optimization problem where the feasible set is not convex.</p>
             <p><b>Primal Problem:</b>
             $$ \min x \quad \text{s.t.} \quad 2x = 1, \ x \in \{0, 1\} $$
@@ -627,8 +627,8 @@
           The negative gradient of the objective (the "gravity" pulling the ball downhill) must be balanced by the reaction forces from the active constraints. The vector $\sum \lambda_i \nabla f_i(x^*)$ represents the normal force exerted by the "walls" of the feasible set. Optimality is simply <b>static equilibrium</b>: Net Force = 0.</p>
         </div>
 
-        <div class="example">
-          <h4>Application: Water-Filling (Channel Capacity)</h4>
+        <div class="example-box">
+          <h4>Example 9.3: Water-Filling (Channel Capacity)</h4>
           <p>Problem: $\min -\sum \log(\alpha_i + x_i)$ subject to $x \ge 0, \sum x_i = 1$.
           <br>Lagrangian: $L = -\sum \log(\alpha_i + x_i) - \sum \lambda_i x_i + \nu (\sum x_i - 1)$.
           <br>Stationarity: $\frac{-1}{\alpha_i + x_i} - \lambda_i + \nu = 0 \implies \alpha_i + x_i = \frac{1}{\nu - \lambda_i}$.
@@ -678,8 +678,8 @@
           </ul>
           </p>
 
-          <div class="example">
-            <h4>Economic Example: Resource Limits</h4>
+          <div class="example-box">
+            <h4>Example 9.4: Resource Limits</h4>
             <p>Maximize Profit $c^\top x$ subject to Resource Limit $Ax \le b$.
             <br>Dual variable $\lambda_i^*$ corresponds to the resource constraint $a_i^\top x \le b_i$.
             <br><b>Interpretation:</b> $\lambda_i^*$ is the <b>marginal value</b> of resource $i$. If you could buy $\epsilon$ more units of resource $i$, your profit would increase by $\lambda_i^* \epsilon$.
@@ -1288,142 +1288,6 @@
   </div>
 </div>
 
-<div class="problem">
-  <h3>P9.17 — Quadratic inequality via duality (Problem 5.4)</h3>
-  <p>Consider the quadratic inequality
-  $$
-  x^T Q x + 2 b^T x + c \le 0
-  $$
-  over all $x \in \mathbb R^n$.
-  <br><b>(a)</b> Derive a condition under which the inequality holds for all $x$ satisfying
-  $$ w^T x = \beta. $$
-  <b>(b)</b> Express this condition as a linear matrix inequality (LMI).
-  <br><b>(c)</b> Interpret the result geometrically and via the Lagrange dual.</p>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      <strong>Part (a): Deriving the Condition (The S-Procedure).</strong>
-      We are checking if the quadratic $f(x) = x^T Q x + 2b^T x + c$ is non-positive on the hyperplane $\mathcal{H} = \{x \mid w^T x - \beta = 0\}$.
-      <br>This is a theorem of alternatives (specifically, a variant of the S-Procedure for equality constraints). The condition holds if and only if there exists a multiplier $\lambda \in \mathbb{R}$ such that the "Lagrangian" is non-positive <b>everywhere</b> in $\mathbb{R}^n$:
-      $$ x^T Q x + 2b^T x + c + 2\lambda (w^T x - \beta) \le 0, \quad \forall x \in \mathbb{R}^n $$
-      <b>Why?</b>
-      <ul>
-        <li>($\Leftarrow$) If this global inequality holds, then for any $x \in \mathcal{H}$, the term $2\lambda(w^T x - \beta)$ vanishes, leaving $f(x) \le 0$.</li>
-        <li>($\Rightarrow$) This direction is deeper. If $f(x) \le 0$ on the affine space, the curvature of $f$ restricted to that space must be non-positive (concave). We can add a linear term $2\lambda w^T x$ to "tilt" the function without changing its curvature so that its unconstrained global maximum is $\le 0$.</li>
-      </ul>
-    </div>
-    <div class="proof-step">
-      <strong>Part (b): The Linear Matrix Inequality (LMI).</strong>
-      We regroup the terms in the global inequality to form a single quadratic form in $x$.
-      $$
-      \begin{aligned}
-      \text{LHS} &= x^T Q x + 2b^T x + c + 2\lambda w^T x - 2\lambda \beta \\
-      &= x^T Q x + 2(b + \lambda w)^T x + (c - 2\lambda \beta)
-      \end{aligned}
-      $$
-      A quadratic form $x^T A x + 2q^T x + r \le 0$ holds for all $x$ if and only if the "homogenized" matrix is negative semidefinite (NSD):
-      $$
-      \begin{bmatrix} Q & b + \lambda w \\ (b + \lambda w)^T & c - 2\lambda \beta \end{bmatrix} \preceq 0
-      $$
-      This constraint is linear in the unknown variable $\lambda$. Thus, the condition is the existence of $\lambda$ satisfying this LMI.
-    </div>
-    <div class="proof-step">
-      <strong>Part (c): Geometric and Dual Interpretation.</strong>
-      <ul>
-        <li><b>Geometric:</b> The region $\mathcal{R} = \{x \mid f(x) \le 0\}$ is a quadratic sublevel set (e.g., the exterior of an ellipsoid or a half-space defined by a hyperboloid). The problem asks if the hyperplane $\mathcal{H}$ is a subset of $\mathcal{R}$ ($\mathcal{H} \subseteq \mathcal{R}$). The LMI condition essentially checks if the quadratic defining the set "dominates" the quadratic defining the hyperplane (conceptually), wrapping around it.</li>
-        <li><b>Lagrange Dual:</b> Consider the maximization problem:
-        $$ p^* = \max_{x} \{ f(x) \mid w^T x = \beta \} $$
-        We want to verify $p^* \le 0$.
-        <br>The dual function $g(\lambda)$ provides an upper bound on $p^*$.
-        $$ g(\lambda) = \sup_x ( f(x) + 2\lambda(w^T x - \beta) ) $$
-        For this supremum to be finite, the quadratic in $x$ must be bounded above (NSD). If it is NSD, the supremum is finite.
-        <br>The LMI states exactly that the matrix representing this Lagrangian is NSD, ensuring the dual function is well-defined and non-positive. Thus, duality transforms a "local" check on a subspace into a "global" spectral check on a matrix.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="problem">
-  <h3>P9.16 — Conjugate-based dual of least-squares (Problem 5.3)</h3>
-  <p>Consider the least-squares problem
-  $$
-  \min_{x \in \mathbb R^n} \ \|Ax - b\|_2,
-  $$
-  where $A \in \mathbb R^{m\times n}$ and $b \in \mathbb R^m$.
-  <br>Using the conjugate representation of the norm, derive the dual problem and show that the dual is
-  $$
-  \max_{\nu} \; - b^T \nu
-  \quad \text{s.t.} \quad
-  \| \nu \|_2 \le 1, \;
-  A^T \nu = 0 .
-  $$
-  Show that strong duality holds.</p>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step">
-      <strong>Step 1: Strategic Reformulation.</strong>
-      The problem involves a composition of a norm with an affine transformation. While we could analyze it directly, it is cleaner to "lift" the problem by introducing an explicit variable for the residual.
-      <br>Let $y = Ax - b$. The problem becomes:
-      $$ \min_{x \in \mathbb{R}^n, y \in \mathbb{R}^m} \|y\|_2 \quad \text{s.t.} \quad y = Ax - b $$
-      This separates the "norm geometry" (in $y$) from the "linear subspace structure" (in $x$).
-    </div>
-    <div class="proof-step">
-      <strong>Step 2: Constructing the Lagrangian.</strong>
-      We assign a dual variable $\nu \in \mathbb{R}^m$ to the equality constraint $Ax - b - y = 0$. The Lagrangian is:
-      $$
-      \begin{aligned}
-      L(x, y, \nu) &= \|y\|_2 + \nu^\top (Ax - b - y) \\
-      &= \|y\|_2 - \nu^\top y + \nu^\top Ax - \nu^\top b \\
-      &= (\|y\|_2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu
-      \end{aligned}
-      $$
-      We have grouped terms by $y$ and $x$ to facilitate minimization.
-    </div>
-    <div class="proof-step">
-      <strong>Step 3: Deriving the Dual Function.</strong>
-      The dual function is $g(\nu) = \inf_{x, y} L(x, y, \nu)$. We minimize over $x$ and $y$ separately.
-      <ul>
-        <li><b>Minimizing over $x$:</b> The term $(A^\top \nu)^\top x$ is a linear function of $x$. Its infimum is $-\infty$ unless the gradient is zero.
-        $$ \inf_x (A^\top \nu)^\top x = \begin{cases} 0 & \text{if } A^\top \nu = 0 \\ -\infty & \text{otherwise} \end{cases} $$
-        This generates the constraint $A^\top \nu = 0$ (orthogonality to the range of $A$).
-        </li>
-        <li><b>Minimizing over $y$:</b> We need to evaluate $\inf_y (\|y\|_2 - \nu^\top y)$. This looks like the definition of the convex conjugate.
-        $$ \inf_y (\|y\|_2 - \nu^\top y) = - \sup_y (\nu^\top y - \|y\|_2) = - f^*(\nu) $$
-        where $f(y) = \|y\|_2$.
-        <br><b>Recall:</b> The conjugate of a norm $f(y) = \|y\|$ is the indicator function of the dual norm unit ball.
-        $$ f^*(\nu) = \begin{cases} 0 & \|\nu\|_* \le 1 \\ \infty & \text{otherwise} \end{cases} $$
-        For the $\ell_2$ norm, the dual is also the $\ell_2$ norm ($\|\nu\|_* = \|\nu\|_2$).
-        <br>Thus, the term is $0$ if $\|\nu\|_2 \le 1$ and $-\infty$ otherwise.
-        </li>
-      </ul>
-    </div>
-    <div class="proof-step">
-      <strong>Step 4: The Dual Problem.</strong>
-      Collecting the pieces, the dual function is finite only when $A^\top \nu = 0$ and $\|\nu\|_2 \le 1$. In that case, $g(\nu) = -b^\top \nu$.
-      $$
-      \begin{aligned}
-      \text{maximize} \quad & -b^\top \nu \\
-      \text{subject to} \quad & A^\top \nu = 0 \\
-      & \|\nu\|_2 \le 1
-      \end{aligned}
-      $$
-    </div>
-    <div class="proof-step">
-      <strong>Step 5: Strong Duality.</strong>
-      Does $p^\star = d^\star$? We check Slater's condition.
-      <br>The reformulated problem $\min \|y\|_2$ s.t. $y - Ax + b = 0$ is a convex optimization problem with:
-      <ul>
-        <li>Convex objective (norm).</li>
-        <li>Linear equality constraints.</li>
-        <li>No inequality constraints.</li>
-      </ul>
-      For problems with only linear equality constraints, Slater's condition is reduced to simple feasibility. Since for any $x$, we can find $y = Ax - b$, the problem is feasible.
-      <br>Thus, <b>Strong Duality holds</b>.
-    </div>
-  </div>
-</div>
         <div class="problem">
   <h3>P9.2 — KKT Conditions for Entropy Maximization</h3>
   <p>Maximize the entropy $-\sum x_i \log x_i$ subject to $\mathbf{1}^\top x = 1$ and $Ax \le b$.
@@ -1885,15 +1749,15 @@
     <div class="proof-step">
       <strong>Part (b): The Dual Lower Bound.</strong>
       The dual problem for Chebyshev approximation is:
-      $$ \max_{\nu} \ b^T \nu \quad \text{s.t.} \quad A^T \nu = 0, \ \|\nu\|_1 \le 1 $$
-      Any $\nu$ satisfying the constraints provides a lower bound $b^T \nu \le p^\star$.
+      $$ \max_{\nu} \ b^\top \nu \quad \text{s.t.} \quad A^\top \nu = 0, \ \|\nu\|_1 \le 1 $$
+      Any $\nu$ satisfying the constraints provides a lower bound $b^\top \nu \le p^\star$.
     </div>
 
     <div class="proof-step">
       <strong>Step 1: Manufacturing a Dual Candidate.</strong>
       We want to construct a feasible $\nu$ from the LS residual $r_{\rm ls} = b - Ax_{\rm ls}$.
-      <br><b>Constraint 1: Orthogonality ($A^T \nu = 0$).</b>
-      The LS residual satisfies the Normal Equations: $A^T (b - Ax_{\rm ls}) = 0$, so $A^T r_{\rm ls} = 0$.
+      <br><b>Constraint 1: Orthogonality ($A^\top \nu = 0$).</b>
+      The LS residual satisfies the Normal Equations: $A^\top (b - Ax_{\rm ls}) = 0$, so $A^\top r_{\rm ls} = 0$.
       Thus, $r_{\rm ls}$ already satisfies the orthogonality constraint! This is the "magic" of least squares.
       <br><b>Constraint 2: Norm ($|\nu|_1 \le 1$).</b>
       The vector $r_{\rm ls}$ might be too large. We simply scale it:
@@ -1904,11 +1768,11 @@
     <div class="proof-step">
       <strong>Step 2: Evaluating the Bound.</strong>
       The dual objective value is:
-      $$ b^T \hat{\nu} = \frac{b^T r_{\rm ls}}{\|r_{\rm ls}\|_1} $$
+      $$ b^\top \hat{\nu} = \frac{b^\top r_{\rm ls}}{\|r_{\rm ls}\|_1} $$
       We simplify the numerator. Since $r_{\rm ls} = b - Ax_{\rm ls}$, we have $b = r_{\rm ls} + Ax_{\rm ls}$.
-      $$ b^T r_{\rm ls} = (r_{\rm ls} + Ax_{\rm ls})^T r_{\rm ls} = r_{\rm ls}^T r_{\rm ls} + x_{\rm ls}^T A^T r_{\rm ls} $$
-      Since $A^T r_{\rm ls} = 0$, the second term vanishes.
-      $$ b^T \hat{\nu} = \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} $$
+      $$ b^\top r_{\rm ls} = (r_{\rm ls} + Ax_{\rm ls})^\top r_{\rm ls} = r_{\rm ls}^\top r_{\rm ls} + x_{\rm ls}^\top A^\top r_{\rm ls} $$
+      Since $A^\top r_{\rm ls} = 0$, the second term vanishes.
+      $$ b^\top \hat{\nu} = \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} $$
       By weak duality, this is a valid lower bound:
       $$ p^\star \ge \frac{\|r_{\rm ls}\|_2^2}{\|r_{\rm ls}\|_1} $$
     </div>
@@ -2129,6 +1993,143 @@
       \end{aligned}
       $$
       This problem has explicit equality constraints ($G^\top \lambda + A^\top \nu + c = 0$) which were implicit in the definition of the domain of $g$.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P9.16 — Conjugate-based dual of least-squares (Problem 5.3)</h3>
+  <p>Consider the least-squares problem
+  $$
+  \min_{x \in \mathbb R^n} \ \|Ax - b\|_2,
+  $$
+  where $A \in \mathbb R^{m\times n}$ and $b \in \mathbb R^m$.
+  <br>Using the conjugate representation of the norm, derive the dual problem and show that the dual is
+  $$
+  \max_{\nu} \; - b^\top \nu
+  \quad \text{s.t.} \quad
+  \| \nu \|_2 \le 1, \;
+  A^\top \nu = 0 .
+  $$
+  Show that strong duality holds.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Step 1: Strategic Reformulation.</strong>
+      The problem involves a composition of a norm with an affine transformation. While we could analyze it directly, it is cleaner to "lift" the problem by introducing an explicit variable for the residual.
+      <br>Let $y = Ax - b$. The problem becomes:
+      $$ \min_{x \in \mathbb{R}^n, y \in \mathbb{R}^m} \|y\|_2 \quad \text{s.t.} \quad y = Ax - b $$
+      This separates the "norm geometry" (in $y$) from the "linear subspace structure" (in $x$).
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Constructing the Lagrangian.</strong>
+      We assign a dual variable $\nu \in \mathbb{R}^m$ to the equality constraint $Ax - b - y = 0$. The Lagrangian is:
+      $$
+      \begin{aligned}
+      L(x, y, \nu) &= \|y\|_2 + \nu^\top (Ax - b - y) \\
+      &= \|y\|_2 - \nu^\top y + \nu^\top Ax - \nu^\top b \\
+      &= (\|y\|_2 - \nu^\top y) + (A^\top \nu)^\top x - b^\top \nu
+      \end{aligned}
+      $$
+      We have grouped terms by $y$ and $x$ to facilitate minimization.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Deriving the Dual Function.</strong>
+      The dual function is $g(\nu) = \inf_{x, y} L(x, y, \nu)$. We minimize over $x$ and $y$ separately.
+      <ul>
+        <li><b>Minimizing over $x$:</b> The term $(A^\top \nu)^\top x$ is a linear function of $x$. Its infimum is $-\infty$ unless the gradient is zero.
+        $$ \inf_x (A^\top \nu)^\top x = \begin{cases} 0 & \text{if } A^\top \nu = 0 \\ -\infty & \text{otherwise} \end{cases} $$
+        This generates the constraint $A^\top \nu = 0$ (orthogonality to the range of $A$).
+        </li>
+        <li><b>Minimizing over $y$:</b> We need to evaluate $\inf_y (\|y\|_2 - \nu^\top y)$. This looks like the definition of the convex conjugate.
+        $$ \inf_y (\|y\|_2 - \nu^\top y) = - \sup_y (\nu^\top y - \|y\|_2) = - f^*(\nu) $$
+        where $f(y) = \|y\|_2$.
+        <br><b>Recall:</b> The conjugate of a norm $f(y) = \|y\|$ is the indicator function of the dual norm unit ball.
+        $$ f^*(\nu) = \begin{cases} 0 & \|\nu\|_* \le 1 \\ \infty & \text{otherwise} \end{cases} $$
+        For the $\ell_2$ norm, the dual is also the $\ell_2$ norm ($\|\nu\|_* = \|\nu\|_2$).
+        <br>Thus, the term is $0$ if $\|\nu\|_2 \le 1$ and $-\infty$ otherwise.
+        </li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: The Dual Problem.</strong>
+      Collecting the pieces, the dual function is finite only when $A^\top \nu = 0$ and $\|\nu\|_2 \le 1$. In that case, $g(\nu) = -b^\top \nu$.
+      $$
+      \begin{aligned}
+      \text{maximize} \quad & -b^\top \nu \\
+      \text{subject to} \quad & A^\top \nu = 0 \\
+      & \|\nu\|_2 \le 1
+      \end{aligned}
+      $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 5: Strong Duality.</strong>
+      Does $p^\star = d^\star$? We check Slater's condition.
+      <br>The reformulated problem $\min \|y\|_2$ s.t. $y - Ax + b = 0$ is a convex optimization problem with:
+      <ul>
+        <li>Convex objective (norm).</li>
+        <li>Linear equality constraints.</li>
+        <li>No inequality constraints.</li>
+      </ul>
+      For problems with only linear equality constraints, Slater's condition is reduced to simple feasibility. Since for any $x$, we can find $y = Ax - b$, the problem is feasible.
+      <br>Thus, <b>Strong Duality holds</b>.
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <h3>P9.17 — Quadratic inequality via duality (Problem 5.4)</h3>
+  <p>Consider the quadratic inequality
+  $$
+  x^\top Q x + 2 b^\top x + c \le 0
+  $$
+  over all $x \in \mathbb R^n$.
+  <br><b>(a)</b> Derive a condition under which the inequality holds for all $x$ satisfying
+  $$ w^\top x = \beta. $$
+  <b>(b)</b> Express this condition as a linear matrix inequality (LMI).
+  <br><b>(c)</b> Interpret the result geometrically and via the Lagrange dual.</p>
+
+  <div class="solution-box">
+    <h4>Solution</h4>
+    <div class="proof-step">
+      <strong>Part (a): Deriving the Condition (The S-Procedure).</strong>
+      We are checking if the quadratic $f(x) = x^\top Q x + 2b^\top x + c$ is non-positive on the hyperplane $\mathcal{H} = \{x \mid w^\top x - \beta = 0\}$.
+      <br>This is a theorem of alternatives (specifically, a variant of the S-Procedure for equality constraints). The condition holds if and only if there exists a multiplier $\lambda \in \mathbb{R}$ such that the "Lagrangian" is non-positive <b>everywhere</b> in $\mathbb{R}^n$:
+      $$ x^\top Q x + 2b^\top x + c + 2\lambda (w^\top x - \beta) \le 0, \quad \forall x \in \mathbb{R}^n $$
+      <b>Why?</b>
+      <ul>
+        <li>($\Leftarrow$) If this global inequality holds, then for any $x \in \mathcal{H}$, the term $2\lambda(w^\top x - \beta)$ vanishes, leaving $f(x) \le 0$.</li>
+        <li>($\Rightarrow$) This direction is deeper. If $f(x) \le 0$ on the affine space, the curvature of $f$ restricted to that space must be non-positive (concave). We can add a linear term $2\lambda w^\top x$ to "tilt" the function without changing its curvature so that its unconstrained global maximum is $\le 0$.</li>
+      </ul>
+    </div>
+    <div class="proof-step">
+      <strong>Part (b): The Linear Matrix Inequality (LMI).</strong>
+      We regroup the terms in the global inequality to form a single quadratic form in $x$.
+      $$
+      \begin{aligned}
+      \text{LHS} &= x^\top Q x + 2b^\top x + c + 2\lambda w^\top x - 2\lambda \beta \\
+      &= x^\top Q x + 2(b + \lambda w)^\top x + (c - 2\lambda \beta)
+      \end{aligned}
+      $$
+      A quadratic form $x^\top A x + 2q^\top x + r \le 0$ holds for all $x$ if and only if the "homogenized" matrix is negative semidefinite (NSD):
+      $$
+      \begin{bmatrix} Q & b + \lambda w \\ (b + \lambda w)^\top & c - 2\lambda \beta \end{bmatrix} \preceq 0
+      $$
+      This constraint is linear in the unknown variable $\lambda$. Thus, the condition is the existence of $\lambda$ satisfying this LMI.
+    </div>
+    <div class="proof-step">
+      <strong>Part (c): Geometric and Dual Interpretation.</strong>
+      <ul>
+        <li><b>Geometric:</b> The region $\mathcal{R} = \{x \mid f(x) \le 0\}$ is a quadratic sublevel set (e.g., the exterior of an ellipsoid or a half-space defined by a hyperboloid). The problem asks if the hyperplane $\mathcal{H}$ is a subset of $\mathcal{R}$ ($\mathcal{H} \subseteq \mathcal{R}$). The LMI condition essentially checks if the quadratic defining the set "dominates" the quadratic defining the hyperplane (conceptually), wrapping around it.</li>
+        <li><b>Lagrange Dual:</b> Consider the maximization problem:
+        $$ p^* = \max_{x} \{ f(x) \mid w^\top x = \beta \} $$
+        We want to verify $p^* \le 0$.
+        <br>The dual function $g(\lambda)$ provides an upper bound on $p^*$.
+        $$ g(\lambda) = \sup_x ( f(x) + 2\lambda(w^\top x - \beta) ) $$
+        For this supremum to be finite, the quadratic in $x$ must be bounded above (NSD). If it is NSD, the supremum is finite.
+        <br>The LMI states exactly that the matrix representing this Lagrangian is NSD, ensuring the dual function is well-defined and non-positive. Thus, duality transforms a "local" check on a subspace into a "global" spectral check on a matrix.</li>
+      </ul>
     </div>
   </div>
 </div>

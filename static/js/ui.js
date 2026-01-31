@@ -84,7 +84,9 @@ function initCollapsibleEnvironments() {
         { selector: '.example', defaultCollapsed: false, label: 'Example' },
         { selector: '.example-box', defaultCollapsed: false, label: 'Example' },
         { selector: '.intuition-box', defaultCollapsed: false, label: 'Intuition' },
-        { selector: '.interpretation-box', defaultCollapsed: false, label: 'Interpretation' }
+        { selector: '.interpretation-box', defaultCollapsed: false, label: 'Interpretation' },
+        { selector: '.insight', defaultCollapsed: false, label: 'Insight' },
+        { selector: '.definition-box', defaultCollapsed: false, label: 'Definition' }
     ];
 
     collapsibleSelectors.forEach(config => {

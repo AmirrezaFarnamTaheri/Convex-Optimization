@@ -6,7 +6,7 @@
  *              Improved controls for precise constraint manipulation.
  * Version: 3.1.0 (Enhanced Dragging)
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 function clipPolygon(subjectPolygon, clipEdge) {
     const newPolygon = [];

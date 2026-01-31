@@ -4,7 +4,7 @@
  * Description: A side-by-side comparison of the path taken by the Simplex algorithm (along the exterior)
  *              and an interior-point method (through the interior).
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initSimplexVsIPM(containerId) {

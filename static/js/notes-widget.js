@@ -23,7 +23,10 @@ class NotesWidget {
         if (typeof marked === 'undefined') {
             return new Promise((resolve) => {
                 const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+                // Resolve relative to this script file
+                const myScript = document.querySelector('script[src*="notes-widget.js"]');
+                const baseUrl = myScript ? myScript.src.substring(0, myScript.src.lastIndexOf('/')) : 'static/js';
+                script.src = baseUrl + '/../lib/marked/marked.min.js';
                 script.onload = resolve;
                 script.onerror = () => { console.warn('Marked.js failed to load'); resolve(); };
                 document.head.appendChild(script);

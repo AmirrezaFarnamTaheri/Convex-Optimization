@@ -4,7 +4,7 @@
  * Description: A plot showing the number of iterations for an IPM as problem size grows,
  *              illustrating the near-constant iteration count.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initLargeScaleIpm(containerId) {

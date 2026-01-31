@@ -4,7 +4,7 @@
  * Description: Visualizes the geometry of L1 (Lasso) and L2 (Ridge) regularization.
  *              It shows the interplay between the least-squares objective contours and the regularization constraint boundaries.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.mjs";
 
 export function initRegularizationTheoryTool(containerId) {

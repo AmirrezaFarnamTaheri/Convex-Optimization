@@ -5,19 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Syllabus — Convex Optimization</title>
   <link rel="stylesheet" href="static/css/convex-unified.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="static/lib/katex/katex.min.css">
+  <script src="static/lib/feather/feather.min.js"></script>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <!-- Header with navigation -->
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <div class="container header-inner">
       <div class="brand">
-        <a href="index.html" style="text-decoration:none;color:inherit; display: flex; align-items: center; gap: 8px;">
-          <img src="static/assets/branding/logo.svg" class="logo" alt="logo" style="height: 32px;" />
-          <strong>Convex Optimization</strong>
+        <a href="index.html" aria-label="Convex Optimization Home">
+          <i data-feather="hexagon" style="color:var(--primary-500);"></i>
+          Convex Optimization
         </a>
       </div>
-      <nav class="nav">
+      <nav class="nav" role="navigation" aria-label="Main Navigation">
         <a href="index.html">Home</a>
         <a href="index.html#sessions">Lectures</a>
         <a href="syllabus.html" class="active">Syllabus</a>
@@ -26,7 +28,7 @@
   </header>
 
   <!-- Main content -->
-  <main class="container" style="padding: 32px 0 60px;">
+  <main id="main" class="container" role="main" style="padding: 100px 0 60px;">
     <section class="section-card">
       <h1>Course Syllabus</h1>
       <p>This course offers a comprehensive introduction to convex optimization, covering theory, algorithms, and applications. Below is the detailed curriculum overview.</p>
@@ -270,13 +272,16 @@
   <footer class="site-footer">
     <div class="container">
       <p style="margin: 0;">
-        © <span id="year"></span> Convex Optimization Course
+        © <span id="year"></span> Convex Optimization Course ·
+        <a href="README.md" style="color: var(--text-secondary);">About</a>
       </p>
     </div>
   </footer>
 
+  <script src="static/js/ui.js"></script>
   <script src="static/js/theme-switcher.js"></script>
   <script>
+    if (typeof feather !== 'undefined') feather.replace();
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>

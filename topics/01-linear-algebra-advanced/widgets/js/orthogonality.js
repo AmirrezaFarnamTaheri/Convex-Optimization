@@ -5,7 +5,7 @@
  *              Visualizes the geometric interpretation of the inner product.
  * Version: 3.0.1
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import katex from "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs";
 
 export function initOrthogonality(containerId) {

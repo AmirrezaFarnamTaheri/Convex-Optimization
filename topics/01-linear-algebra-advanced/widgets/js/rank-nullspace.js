@@ -6,9 +6,9 @@
  *              Demonstrates the orthogonality relationships and rank-nullity theorem.
  * Version: 3.0.0
  */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as THREE from "../../../../static/lib/three/three.module.js";
+import { OrbitControls } from "../../../../static/lib/three/examples/jsm/controls/OrbitControls.js";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initRankNullspace(containerId) {

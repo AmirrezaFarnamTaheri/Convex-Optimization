@@ -3,7 +3,7 @@
  *
  * Description: Animates the steps of coordinate descent, showing how it optimizes along one axis at a time.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initCoordinateDescent(containerId) {

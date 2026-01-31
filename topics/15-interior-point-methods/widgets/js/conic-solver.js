@@ -4,7 +4,7 @@
  * Description: A simple sandbox for solving a small conic problem (Smallest Enclosing Circle),
  *              which can be formulated as an SOCP.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initConicSolver(containerId) {

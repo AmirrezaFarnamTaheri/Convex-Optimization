@@ -4,7 +4,7 @@
  * Description: A toy example demonstrating rank minimization via the nuclear norm heuristic for matrix completion.
  */
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export async function initMatrixRankMinimization(containerId) {
     const container = document.getElementById(containerId);

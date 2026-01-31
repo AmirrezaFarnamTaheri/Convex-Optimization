@@ -256,7 +256,7 @@ export function debounce(func, wait = 300) {
  * @returns {Object} Object with svg, width, height, and chart group
  */
 export function createResponsiveSVG(container, margin = {top: 20, right: 20, bottom: 40, left: 40}) {
-    import('https://cdn.jsdelivr.net/npm/d3@7/+esm').then(d3 => {
+    import('../lib/d3/d3.esm.js').then(d3 => {
         const width = container.clientWidth - margin.left - margin.right;
         const height = (container.clientHeight || 400) - margin.top - margin.bottom;
 

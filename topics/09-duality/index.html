@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>09. Duality — Convex Optimization</title>
   <link rel="stylesheet" href="../../static/css/convex-unified.css" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="../../static/lib/katex/katex.min.js"></script>
+  <script defer src="../../static/lib/katex/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../../static/lib/katex/katex.min.css" />
   <script src="../../static/lib/feather/feather.min.js"></script>
   <script type="importmap">
     {
@@ -18,12 +18,13 @@
   </script>
 </head>
 <body>
-  <header class="site-header">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header sticky" role="banner">
     <div class="container header-inner">
       <div class="brand">
         <a href="../../index.html">Convex Optimization</a>
       </div>
-      <nav class="nav">
+      <nav class="nav" role="navigation" aria-label="Lecture Navigation">
         <a href="../../index.html"><i data-feather="grid"></i> All Lectures</a>
         <a href="../08-convex-problems-conic/index.html"><i data-feather="arrow-left"></i> Previous</a>
         <a href="../10-approximation-fitting/index.html">Next <i data-feather="arrow-right"></i></a>
@@ -31,7 +32,7 @@
     </div>
   </header>
 
-  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main class="lecture-content">
+  <div class="lecture-container"><aside class="sidebar"><div id="toc-container"><h2><i data-feather="list"></i> Table of Contents</h2><nav id="toc"></nav></div></aside><main id="main" class="lecture-content" role="main">
     <header class="lecture-header section-card">
       <h1>09. Duality</h1>
       <div class="lecture-meta">
@@ -59,7 +60,7 @@
     <div class="insight" style="margin-bottom: 24px;">
       <h4>The Meta-Question</h4>
       <p>Before we begin, we must fix the central question of this lecture:</p>
-      <blockquote style="border-left: 4px solid var(--accent); padding-left: 16px; margin: 16px 0; font-size: 1.1em; font-style: italic;">
+      <blockquote>
         "How can we certify optimality without solving the primal problem directly?"
       </blockquote>
       <p>Everything in primal–dual theory is an answer to that question.
@@ -531,7 +532,7 @@
             Apply this to the Slater point $\tilde{x}$ where $f_i(\tilde{x}) < 0$ and $h_j(\tilde{x}) = 0$:
             $$ \sum_{i=1}^m \lambda_i \underbrace{f_i(\tilde{x})}_{< 0} \ge 0 $$
             Since $\lambda_i \ge 0$ and $f_i(\tilde{x}) < 0$, each term in the sum is non-positive. For the sum to be non-negative, every term must be zero. Since $f_i(\tilde{x}) \ne 0$, we must have $\lambda_i = 0$ for all $i$.
-            <br>This implies $\lambda = 0, \mu = 0$. But if $\lambda=0$ and $\mu=0$, the separation inequality implies $\nu^\top h(\tilde{x}) \ge 0$, which is trivial ($0=0$). A deeper analysis shows $\nu$ must also be 0, contracting the fact that the separating vector $(\lambda, \nu, \mu)$ is non-zero.
+            <br>This implies $\lambda = 0, \mu = 0$. But if $\lambda=0$ and $\mu=0$, the separation inequality implies $\nu^\top h(\tilde{x}) \ge 0$, which is trivial ($0=0$). A deeper analysis shows $\nu$ must also be 0, contradicting the fact that the separating vector $(\lambda, \nu, \mu)$ is non-zero.
             <br><b>Conclusion:</b> We must have $\mu > 0$.
           </div>
           <div class="proof-step">
@@ -2135,7 +2136,7 @@
       </section>
 
       <section class="section-card" id="section-11">
-        <h2>11. Readings & Resources</h2>
+        <h2>Readings & Resources</h2>
         <div class="citation-box">
           <h3>Primary Textbook</h3>
           <ul>

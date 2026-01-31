@@ -5,7 +5,7 @@
  *              (Classical Momentum and Nesterov Accelerated Gradient).
  * Version: 1.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 import { showLoading, showError, createWidgetHeader, createInstructions } from "../../../../static/js/widget-enhancements.js";
 

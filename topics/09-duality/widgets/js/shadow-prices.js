@@ -5,7 +5,7 @@
  *              illustrating the concept of shadow prices (dual variables).
  * Version: 2.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initShadowPrices(containerId) {
     const container = document.getElementById(containerId);

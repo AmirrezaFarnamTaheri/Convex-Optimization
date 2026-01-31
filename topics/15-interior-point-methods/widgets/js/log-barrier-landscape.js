@@ -3,8 +3,8 @@
  *
  * Description: Visualizes the objective function combined with the logarithmic barrier function.
  */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "../../../../static/lib/three/three.module.js";
+import { OrbitControls } from "../../../../static/lib/three/examples/jsm/controls/OrbitControls.js";
 
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
@@ -37,8 +37,8 @@ export async function initLogBarrierLandscape(containerId) {
     const cVectorHandle = container.querySelector("#c-vector-handle");
 
     let c = [1, 0];
-    const THREE = await import("https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js");
-    const { OrbitControls } = await import("https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js");
+    const THREE = await import("../../../../static/lib/three/three.module.js");
+    const { OrbitControls } = await import("../../../../static/lib/three/examples/jsm/controls/OrbitControls.js");
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("hsl(225, 18%, 13%)");

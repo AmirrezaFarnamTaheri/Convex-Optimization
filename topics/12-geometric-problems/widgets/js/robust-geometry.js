@@ -4,7 +4,7 @@
  * Description: Compares a standard geometric optimization (Smallest Enclosing Circle)
  *              with its robust counterpart where point locations are uncertain.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initRobustGeometryOptimizer(containerId) {

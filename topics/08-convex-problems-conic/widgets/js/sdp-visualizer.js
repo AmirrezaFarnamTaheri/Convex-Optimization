@@ -5,8 +5,8 @@
  *              A matrix [[x, z], [z, y]] is PSD iff x≥0, y≥0, and xy - z² ≥ 0.
  * Version: 2.0.0
  */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "../../../../static/lib/three/three.module.js";
+import { OrbitControls } from "../../../../static/lib/three/examples/jsm/controls/OrbitControls.js";
 
 export function initSDPVisualizer(containerId) {
     const container = document.getElementById(containerId);

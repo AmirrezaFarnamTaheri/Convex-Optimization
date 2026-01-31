@@ -5,7 +5,7 @@
  *              and animate the steps of the simplex algorithm.
  * Version: 2.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { polygonClip } from "d3-polygon";
 
 export async function initLPVisualizer(containerId) {

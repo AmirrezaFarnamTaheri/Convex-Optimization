@@ -4,7 +4,7 @@
  * Description: An interactive decision tree to help users classify optimization problems.
  * Version: 3.1.0 (Styled)
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initProblemFlowchart(containerId) {
     const container = document.getElementById(containerId);

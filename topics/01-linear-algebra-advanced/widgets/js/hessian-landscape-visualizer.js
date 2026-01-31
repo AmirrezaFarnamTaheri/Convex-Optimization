@@ -7,8 +7,8 @@
  * Version: 3.0.0
  */
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "../../../../static/lib/three/three.module.js";
+import { OrbitControls } from "../../../../static/lib/three/examples/jsm/controls/OrbitControls.js";
 
 export function initHessianLandscapeVisualizer(containerId) {
     const container = document.getElementById(containerId);

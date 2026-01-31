@@ -3,7 +3,7 @@
  *
  * Description: A gallery comparing the paths taken by various first-order methods on the same problem.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initFirstOrderGallery(containerId) {

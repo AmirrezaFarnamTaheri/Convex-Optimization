@@ -1,19 +1,18 @@
-# Personal Notes for Convex Optimization
+## Convex Optimization — Interactive Lecture Notes
 
-**Course**: Convex Optimization
-**Instructor**: Prof. Hesam Rajabzadeh, TeIAS (2025)
-**Main Reference**: *Convex Optimization* by Stephen Boyd & Lieven Vandenberghe
+This repository is a self-contained, **static** website for interactive convex optimization lecture notes and widgets.
+It includes:
+- Lecture pages under `topics/*/index.html`
+- Interactive widgets under `topics/*/widgets/`
+- Shared UI and theming under `static/`
 
-## ⚠️ Disclaimer
-**These are personal study notes for the Convex Optimization course by Prof. Hesam Rajabzadeh (TeIAS, 2025).**
-
-They are **not official course materials** and may contain mistakes or omissions. I used automated tools (OpenAI GPT-5.1-Pro-Extended-Thinking and Google Gemini 3 Pro-Preview) for proofreading, but any remaining errors are my own.
+### Disclaimer
+These notes are **not official course materials** and may contain mistakes or omissions.
+They are provided as a study aid.
 
 ---
 
-## 📚 Course Structure & Breakdown
-
-These notes cover the following modules, with detailed breakdowns of the topics explored in each lecture.
+## Course structure (high-level)
 
 ### Part I: Mathematical Foundations
 * **Lecture 00: Linear Algebra Basics**
@@ -117,28 +116,25 @@ These notes cover the following modules, with detailed breakdowns of the topics 
 
 ---
 
-## 🚀 Usage
+## Run locally
 
-To view the course notes locally:
+Browsers block module imports and some fetch calls when opening pages via `file://`.
+Run a local server:
 
-1. **Clone the repository**:
-   ```bash
-   git clone <your-repo-url>
-   cd Convex-Optimization
-   ```
+```bash
+python -m http.server 8000
+```
 
-2. **Run a local server** (recommended for widgets/Pyodide):
-   ```bash
-   python3 -m http.server 8000
-   ```
+Then open `http://localhost:8000`.
 
-3. **Open in browser**:
-   Navigate to `http://localhost:8000`
+## Quality checks
 
----
+Run the local reference checker (lectures + widgets):
 
-## 📜 License
+```bash
+python verify_site.py
+```
 
-**License**: These notes are provided for personal study. Third‑party materials (figures, course structure, and references) remain the property of their respective owners.
+## License / attribution
 
-*Note: The original course structure and primary references belong to their respective authors. These notes are a personal study aid.*
+These notes are provided for personal study. Third‑party materials remain the property of their respective owners.

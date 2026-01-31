@@ -5,7 +5,7 @@
  *              like non-negative weighted sums, composition with affine maps, and pointwise maximum.
  * Version: 3.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initOperationsPreserving(containerId) {
     const container = document.getElementById(containerId);

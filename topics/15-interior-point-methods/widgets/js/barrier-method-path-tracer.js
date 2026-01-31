@@ -4,7 +4,7 @@
  * Description: Traces the central path as the barrier parameter `t` is increased,
  *              showing how the solutions approach the true optimum.
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initBarrierPathTracer(containerId) {

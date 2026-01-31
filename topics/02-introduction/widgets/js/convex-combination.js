@@ -6,7 +6,7 @@
  *              to see if it can be expressed as a convex combination of the vertices.
  * Version: 2.4.0 (Styled)
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initConvexCombination(containerId) {
     const container = document.getElementById(containerId);

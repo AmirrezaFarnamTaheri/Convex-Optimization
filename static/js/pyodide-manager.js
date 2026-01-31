@@ -4,7 +4,7 @@ let pyodideInstance = null;
 export async function getPyodide() {
   if (!pyodideInstance) {
     pyodideInstance = await loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
+      indexURL: new URL('../lib/pyodide/', import.meta.url).href
     });
     // Explicitly load packages before running code that uses them
     await pyodideInstance.loadPackage(["numpy", "scipy"]);

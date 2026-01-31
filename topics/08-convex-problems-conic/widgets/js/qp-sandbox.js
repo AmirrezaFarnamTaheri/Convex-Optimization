@@ -5,7 +5,7 @@
  *              Quadratic Program (QP).
  * Version: 2.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 import { polygonClip } from "d3-polygon";
 // NOTE: A full QP solver is complex. This widget will visualize the problem
 // and identify the solution by checking vertices, which is sufficient for this 2D case.

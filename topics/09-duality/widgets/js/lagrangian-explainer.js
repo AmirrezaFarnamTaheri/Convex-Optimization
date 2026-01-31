@@ -5,7 +5,7 @@
  *              Shows how the dual function g(ν) is the pointwise infimum of L(x, ν) over x.
  * Version: 2.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initLagrangianExplainer(containerId) {
     const container = document.getElementById(containerId);

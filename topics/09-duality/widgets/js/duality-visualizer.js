@@ -5,7 +5,7 @@
  *              showing their respective feasible regions and optimal solutions.
  * Version: 2.1.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initDualityVisualizer(containerId) {
     const container = document.getElementById(containerId);
@@ -126,16 +126,11 @@ export function initDualityVisualizer(containerId) {
         // Transpose A
         const At = A[0].map((_, colIndex) => A.map(row => row[colIndex]));
 
-        // We only visualize 2D projection (y3=0 slice for simplicity as placeholder)
-        // Correct dual constraints: At * y >= c => -At * y <= -c
-        // y >= 0
-
-        // Let's fake a 2D dual problem for visualization clarity if dimensions don't match
-        // Or actually calculate it properly. A is 3x2. A' is 2x3. y is R3.
-        // We can't easily visualize R3 on 2D plot.
-        // Let's fix y3 = 0.5 (arbitrary) or just show 2 variables.
-        // Actually, let's just show a schematic or a different 2D dual example.
-        // For educational purposes, let's change problem to 2x2.
+    // Dual visualization note:
+    // The primal example above uses A ∈ R^{3×2}, so the dual variable lives in R^3,
+    // which is awkward to visualize directly in 2D. For clarity, we display a
+    // self-contained 2×2 primal/dual pair below (both in R^2), so students can see
+    // the geometry of weak/strong duality on matched 2D plots.
 
         // Revised Problem for Visualization symmetry:
         // P: max c'x, Ax <= b. x in R2.

@@ -5,8 +5,8 @@
  *              and animate the steps of the simplex algorithm vertex traversal.
  * Version: 2.1.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-import { polygonClip } from "https://cdn.jsdelivr.net/npm/d3-polygon@3/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
+import { polygonClip } from "../../../../static/lib/d3/d3-polygon.esm.js";
 
 export async function initLPVisualizer(containerId) {
     const container = document.getElementById(containerId);

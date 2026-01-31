@@ -5,7 +5,7 @@
  *              Users can move the primal and dual solutions to see how the conditions hold or fail.
  * Version: 2.0.0
  */
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "../../../../static/lib/d3/d3.esm.js";
 
 export function initComplementarySlacknessExplorer(containerId) {
     const container = document.getElementById(containerId);

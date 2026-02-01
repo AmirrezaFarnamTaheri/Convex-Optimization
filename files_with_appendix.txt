@@ -1,0 +1,15 @@
+topics/00-linear-algebra-basics/index.html
+topics/01-linear-algebra-advanced/index.html
+topics/03-convex-sets-geometry/index.html
+topics/04-convex-sets-cones/index.html
+topics/05-convex-functions-basics/index.html
+topics/06-convex-functions-advanced/index.html
+topics/07-convex-problems-standard/index.html
+topics/08-convex-problems-conic/index.html
+topics/09-duality/index.html
+topics/10-approximation-fitting/index.html
+topics/11-statistical-estimation/index.html
+topics/12-geometric-problems/index.html
+topics/13-unconstrained-minimization/index.html
+topics/14-equality-constrained-minimization/index.html
+topics/15-interior-point-methods/index.html

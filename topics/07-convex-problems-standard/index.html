@@ -464,7 +464,7 @@
       <p>This is the single most important modeling atom in convex optimization. The absolute value $|u|$ is not linear (it has a kink at 0), but its epigraph is polyhedral—describable by finitely many linear inequalities.</p>
       
       <div class="theorem-box">
-        <h4>The Atomic Rewrite: Phase 5.1 Atom</h4>
+        <h4>The Atomic Rewrite: Linear-Fractional Transformation Atom</h4>
         <p>For scalar $u \in \mathbb{R}$ and scalar $t$:</p>
         $$ |u| \le t \iff -t \le u \le t \iff \begin{cases} u \le t \\ -u \le t \end{cases} $$
         <p><b>Why this matters:</b> Absolute value is not linear (it has a kink at 0). But its epigraph is polyhedral. By "lifting" the problem with an auxiliary variable $t$, we replace the non-smooth $|u|$ with two smooth linear inequalities. This is the gateway from non-smooth to LP-clean.</p>
@@ -569,7 +569,7 @@
       </div>
       
       <div class="warning-box">
-        <h4>Phase 5.2: Do Not Confuse $\ell_1$ and $\ell_\infty$</h4>
+        <h4>Common Pitfall: Do Not Confuse $\ell_1$ and $\ell_\infty$</h4>
         <ul>
           <li><b>$\ell_1$ (Sum of Magnitudes):</b> Needs <b>many slacks</b> $s_i$ (one per component), then sum them: $\sum s_i \le t$. Constraints: $-s_i \le x_i \le s_i$.</li>
           <li><b>$\ell_\infty$ (Max Magnitude):</b> Needs <b>one slack</b> $t$, then bound each component by that same $t$: $|x_i| \le t$ for all $i$. Constraints: $-t \le x_i \le t$.</li>
@@ -1287,7 +1287,7 @@
       </div>
       
       <div class="proof-box">
-        <h4>Phase 6.2: Bisection Algorithm for Quasiconvex Minimization</h4>
+        <h4>Bisection Algorithm for Quasiconvex Minimization</h4>
         <div class="proof-step">
           <strong>Setup:</strong> Define the feasibility oracle:
           $$ \Phi(\alpha) = \text{"Does there exist } x \in \mathcal{F} \text{ such that } f_0(x) \le \alpha\text{?"} $$
@@ -2154,4 +2154,3 @@
 <script src="../../static/js/progress-tracker.js"></script>
 </body>
 </html>
-<!-- Verified Phase 3 Content -->

@@ -132,20 +132,15 @@
         <h3>1.3 When Convexity is Lost</h3>
         <p>Certain structural features act as "kryptonite" to convexity. Recognizing these patterns allows you to immediately identify intractable components.</p>
         <ul>
-          <li><b>Integer constraints:</b> $x_i \in \mathbb{Z}$ or $x_i \in \{0,1\}$.
-            <br><i>The pathology:</i> <b>Disconnectedness.</b> Convex sets must be connected (you can walk between any two points). Integer sets are discrete islands.
-            <br><i>Why it breaks solvers:</i> Gradient descent relies on "sliding down the hill". If the variables are integers, there is no smooth hill—only discrete jumps. You cannot define a derivative on integers. This forces algorithms to use combinatorial enumeration (checking $2^n$ possibilities), leading to exponential time complexity.</li>
-          <li><b>Nonlinear Equality Constraints:</b> $h(x) = 0$ where $h$ is nonlinear.
-            <br><i>The pathology:</i> Curvature. The constraint $x_1^2 + x_2^2 = 1$ describes a circle. If you take two points on the circle, the line segment connecting them lies <i>inside</i> the circle, violating the constraint. Thus, the feasible set is not convex. Only <b>flat</b> surfaces (planes/affine sets) are valid equality constraints.</li>
-          <li><b>Maximizing a Convex Function:</b> $\max \|x\|_2$.
-            <br><i>The pathology:</i> Boundary solutions. A convex function (like a bowl) achieves its maximum at the <i>boundary</i> of the domain, usually at a vertex. Finding the furthest point from the center requires searching all boundary points, which is combinatorial and difficult. (Minimizing a convex function finds the center, which is easy).</li>
-          <li><b>Products of Variables:</b> $x \cdot y \ge 1$ (or bilinear terms).
-            <br><i>The pathology:</i> Indefinite curvature. The set $\{(x,y) \mid xy \ge 1\}$ defines a hyperbola, which consists of two disconnected components (if $x,y \ne 0$) or a non-convex shape. The Hessian of $f(x,y) = xy$ is $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, which has eigenvalues $+1$ and $-1$. This saddle-point geometry is the hallmark of non-convexity.</li>
+          <li><b>Integer constraints ($x_i \in \{0,1\}$):</b> <b>Disconnectedness.</b> Convex sets must be connected (you can walk between any two points). Integer sets are discrete islands. This breaks gradient-based methods, forcing exponential-time enumeration.</li>
+          <li><b>Nonlinear Equality Constraints ($h(x)=0$):</b> <b>Curvature.</b> The constraint $x_1^2 + x_2^2 = 1$ describes a circle. The chord between two points on the circle lies inside the disk, violating the equality. Thus, the feasible set is not convex. Only <b>flat</b> surfaces (affine sets) are valid.</li>
+          <li><b>Maximizing a Convex Function ($\max \|x\|_2$):</b> <b>Boundary Solutions.</b> A convex function (like a bowl) achieves its maximum at the boundary. Finding the furthest point from the center requires searching the entire boundary, which is combinatorial.</li>
+          <li><b>Products of Variables ($x \cdot y \ge 1$):</b> <b>Indefinite Curvature.</b> The set is hyperbolic (non-convex). The Hessian has eigenvalues $+1$ and $-1$, creating saddle points that confuse local search.</li>
         </ul>
 
         <div class="insight">
           <h4>⚠️ Convex Relaxations</h4>
-          <p>When faced with a nonconvex problem, a common strategy is <b>convex relaxation</b>—replacing non-convex constraints with convex approximations. The solution to the relaxed problem provides:</p>
+          <p>When faced with a nonconvex problem, a common strategy is <b>convex relaxation</b>—replacing non-convex constraints with convex approximations (e.g., replacing $\{0,1\}$ with $[0,1]$). The solution to the relaxed problem provides:</p>
           <ul>
             <li>A <b>lower bound</b> on the optimal value (for minimization).</li>
             <li>Often a <b>high-quality approximate solution</b>.</li>
@@ -173,7 +168,7 @@
           <li><b>Convex problems:</b> Solvable efficiently with guaranteed global optimality (polynomial-time algorithms).</li>
           <li><b>Nonconvex problems:</b> Generally NP-hard, prone to local minima, no worst-case guarantees.</li>
         </ul>
-        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure. We formalize this in <a href="#section-3">Section 3.1</a>.</p>
+        <p>This distinction determines whether a real-world problem can be solved reliably at scale. The key property that makes convexity special is the <b>local-to-global principle</b>: local information predicts global structure.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="../../static/assets/topics/02-introduction/convex_vs_nonconvex_schematic.svg"
@@ -191,15 +186,6 @@
         & A x = b && \text{(Equality constraints)}
         \end{aligned}
         $$
-        <div class="insight">
-          <h4>Why these specific conditions?</h4>
-          <p>Each condition serves a geometric purpose to ensure the "bowl" shape:</p>
-          <ul>
-            <li><b>Objective ($f_0$ convex):</b> Ensures that if you draw a line between any two points on the cost surface, the line stays <i>above</i> the surface. This prevents "bumps" that create local minima.</li>
-            <li><b>Inequalities ($f_i$ convex):</b> The constraint $f_i(x) \le 0$ defines the set of points "inside the bowl". The intersection of these sets is always convex. If we used concave functions ($f_i(x) \ge 0$), we would get the region "outside the bowl", which typically has holes.</li>
-            <li><b>Equalities ($Ax=b$):</b> Restricts the solution to a flat plane. A plane is the only surface that is simultaneously convex and concave, preserving the convexity of the intersection.</li>
-          </ul>
-        </div>
         <p>where three conditions must be satisfied:</p>
         <ol>
           <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. Geometrically, this means the graph of the function is bowl-shaped, ensuring that any local minimum is a global minimum.</li>
@@ -211,7 +197,26 @@
           </div>
           </li>
         </ol>
-        <p><i>Note:</i> Minimizing a concave function is generally non-convex. Equality constraints $h(x)=0$ where $h$ is convex (but not affine) are generally non-convex (see "Counter-Example Corner" below).</p>
+
+        <div class="insight">
+          <h4>Why these specific conditions?</h4>
+          <p>Each condition serves a geometric purpose to ensure the "bowl" shape:</p>
+          <ul>
+            <li><b>Objective ($f_0$ convex):</b> Ensures that if you draw a line between any two points on the cost surface, the line stays <i>above</i> the surface. This prevents "bumps" that create local minima.</li>
+            <li><b>Inequalities ($f_i$ convex):</b> The constraint $f_i(x) \le 0$ defines the set of points "inside the bowl". The intersection of these sets is always convex. If we used concave functions ($f_i(x) \ge 0$), we would get the region "outside the bowl", which typically has holes.</li>
+            <li><b>Equalities ($Ax=b$):</b> Restricts the solution to a flat plane. A plane is the only surface that is simultaneously convex and concave, preserving the convexity of the intersection.</li>
+          </ul>
+          <div class="example-box">
+            <h4>🚫 Counter-Example: The Circle Boundary</h4>
+            <p>Consider the constraint $x_1^2 + x_2^2 = 1$. Let $h(x) = x_1^2 + x_2^2 - 1$. This function is convex.
+            <br>The equality constraint $h(x)=0$ defines the <b>boundary</b> of the unit circle.</p>
+            <ul>
+              <li>The points $A=(-1, 0)$ and $B=(1, 0)$ are feasible.</li>
+              <li>Their midpoint $M=(0, 0)$ is <b>not</b> feasible ($0^2 + 0^2 = 0 \neq 1$).</li>
+            </ul>
+            <p>Thus, the feasible set is not convex. In convex optimization, we can constrain solutions to be <i>inside</i> a bowl ($f_i(x) \le 0$) or <i>on</i> a flat plane ($Ax=b$), but not on the curved boundary of a bowl.</p>
+          </div>
+        </div>
 
         <h4>Sets and Functions: The Vocabulary of Constraints</h4>
         <p>Before optimizing, we must define what "allowed" means.
@@ -258,17 +263,6 @@
             </ul>
             <p>Thus, the feasible set is not convex. In convex optimization, we can constrain solutions to be <i>inside</i> a bowl ($f_i(x) \le 0$) or <i>on</i> a flat plane ($Ax=b$), but not on the curved boundary of a bowl.</p>
           </div>
-        </div>
-
-        <div class="insight">
-          <h4>Why These Conditions Matter</h4>
-          <p>These three conditions guarantee that:</p>
-          <ul>
-            <li>The <b>feasible set</b> $\mathcal{F} = \{x \mid f_i(x) \le 0, Ax = b\}$ is a convex set.</li>
-            <li>Every local minimum is guaranteed to be a <b>global minimum</b>.</li>
-            <li>Efficient algorithms (interior-point, first-order methods) converge with <b>provable guarantees</b>.</li>
-          </ul>
-          <p>Violating even one condition (e.g., a non-affine equality constraint like $x^2=1$) can make the problem NP-hard.</p>
         </div>
 
         <h3>2.4 The Feasible Set</h3>
@@ -656,39 +650,45 @@
         </div>
 
         <h3>4.5 Summary: The Complexity Hierarchy</h3>
-        <p>It is useful to view these problems as a hierarchy of increasing expressiveness (and computational cost).</p>
+        <p>It is useful to view these problems as a hierarchy of increasing expressiveness. Each class is a subset of the next (LP $\subset$ QP $\subset$ SOCP $\subset$ SDP), but the computational cost generally increases with expressiveness.</p>
         <table class="data-table" style="width: 100%; margin-top: 16px;">
           <thead>
             <tr>
               <th>Class</th>
-              <th>Objective</th>
-              <th>Constraints</th>
+              <th>Expressiveness</th>
+              <th>Geometry of Feasible Set</th>
               <th>Typical Scale (Vars)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><b>LP</b></td>
-              <td>Linear ($c^\top x$)</td>
-              <td>Linear inequalities ($Ax \le b$)</td>
+              <td>Lowest (Linear)</td>
+              <td>Polyhedron (flat faces, sharp corners)</td>
               <td>$10^6 - 10^7$</td>
             </tr>
             <tr>
               <td><b>QP</b></td>
-              <td>Convex Quadratic ($\frac{1}{2}x^\top Qx$)</td>
-              <td>Linear inequalities</td>
+              <td>+ Quadratic Costs</td>
+              <td>Polyhedron (constraints are linear)</td>
               <td>$10^4 - 10^6$</td>
             </tr>
             <tr>
+              <td><b>QCQP</b></td>
+              <td>+ Quadratic Constraints</td>
+              <td>Intersection of Ellipsoids</td>
+              <td>$10^4 - 10^5$</td>
+            </tr>
+            <tr>
               <td><b>SOCP</b></td>
-              <td>Linear</td>
-              <td>Norm balls ($\|Ax+b\|_2 \le c^\top x + d$)</td>
+              <td>+ Norm Constraints</td>
+              <td>Ice-cream cones (smooth, pointed)</td>
               <td>$10^4 - 10^5$</td>
             </tr>
             <tr>
               <td><b>SDP</b></td>
-              <td>Linear</td>
-              <td>PSD Matrices (LMIs: $\sum x_i A_i \succeq B$)</td>
+              <td>Highest (Matrix)</td>
+              <td>Spectrahedron (walls are "curved" by eigenvalues)</td>
               <td>$10^3 - 10^4$</td>
             </tr>
           </tbody>
@@ -842,25 +842,30 @@
           <p>The $\ell_1$ regularizer promotes sparsity due to the geometry of its unit ball:</p>
           <ul>
             <li>The $\ell_1$ ball $\{x \mid \|x\|_1 \le 1\}$ is a <b>cross-polytope</b> (diamond in 2D) with sharp corners at the coordinate axes.</li>
-            <li>When the loss function's level sets (ellipsoids for least squares) expand outward, they tend to first touch the $\ell_1$ constraint set at a corner.</li>
-            <li>At these corners, many coordinates are exactly zero.</li>
-            <li>In contrast, the $\ell_2$ ball is round—contact points typically have no zero coordinates.</li>
+            <li>When minimizing a loss function (whose level sets are smooth ellipsoids) subject to an $\ell_1$ constraint, the optimal point is where the ellipsoid first touches the $\ell_1$ ball.</li>
+            <li>Because the $\ell_1$ ball is "pointy", this contact is highly likely to occur at a vertex or edge where some coordinates are zero.</li>
+            <li>In contrast, the $\ell_2$ ball is smooth (round). Contact points are almost never on the axes, so solutions are dense (non-sparse).</li>
           </ul>
         </div>
 
         <div class="proof-box">
           <h4>Analytical Reason: Subgradients at Zero</h4>
-          <p>We can also see this algebraically. Consider minimizing a 1D objective $f(x) = \frac{1}{2}(x - y)^2 + \lambda |x|$.</p>
+          <p>We can also see this algebraically. Consider minimizing a 1D objective $f(x) = \frac{1}{2}(x - y)^2 + \lambda |x|$. This is the proximal operator of the $\ell_1$ norm.</p>
           <div class="proof-step">
-            <strong>Smooth case ($\ell_2$):</strong> If we used $\lambda x^2$, the derivative is $(x-y) + 2\lambda x = 0$, giving $x = y / (1+2\lambda)$. This shrinks $y$ towards 0, but never hits exactly 0 unless $y=0$.
+            <strong>Smooth case ($\ell_2$):</strong> If we used $\lambda x^2$, the objective is $f(x) = \frac{1}{2}(x - y)^2 + \lambda x^2$. Setting derivative to 0: $(x-y) + 2\lambda x = 0 \implies x = y / (1+2\lambda)$. This simply scales $y$ down. It never sets $x=0$ unless $y=0$.
           </div>
           <div class="proof-step">
-            <strong>Sparse case ($\ell_1$):</strong> The subdifferential of $|x|$ at $x=0$ is the interval $[-1, 1]$. The optimality condition is:
-            $$ 0 \in \partial f(x) \iff 0 \in (x - y) + \lambda \partial |x| $$
-            If we test $x=0$, the condition becomes $0 \in -y + [-\lambda, \lambda]$, which is true if $|y| \le \lambda$.
+            <strong>Sparse case ($\ell_1$):</strong> The derivative of $|x|$ is $\text{sign}(x)$ for $x \ne 0$, and the subdifferential at $0$ is $[-1, 1]$.
+            <br>The optimality condition $0 \in \partial f(x)$ gives:
+            $$ 0 \in x - y + \lambda \partial |x| $$
+            <b>Case 1 ($x > 0$):</b> $x - y + \lambda = 0 \implies x = y - \lambda$. Requires $y > \lambda$.
+            <br><b>Case 2 ($x < 0$):</b> $x - y - \lambda = 0 \implies x = y + \lambda$. Requires $y < -\lambda$.
+            <br><b>Case 3 ($x = 0$):</b> $0 \in -y + [-\lambda, \lambda] \iff y \in [-\lambda, \lambda]$.
           </div>
           <div class="proof-step">
-            <strong>Conclusion:</strong> If the data evidence ($y$) is small (specifically $|y| \le \lambda$), the optimal solution is <b>exactly zero</b>. The "kink" in the absolute value function at zero creates a "force field" that traps small values at zero. This generalizes to high dimensions.
+            <strong>Conclusion:</strong> The solution is the <b>Soft Thresholding</b> operator:
+            $$ x^* = \begin{cases} y - \lambda & \text{if } y > \lambda \\ 0 & \text{if } |y| \le \lambda \\ y + \lambda & \text{if } y < -\lambda \end{cases} $$
+            If the data evidence ($y$) is weak (specifically $|y| \le \lambda$), the solution is snapped <b>exactly to zero</b>. This "dead zone" is what creates sparsity.
           </div>
         </div>
 
@@ -1299,10 +1304,10 @@
 
           <p><b>DCP Verification</b>:</p>
           <ul>
-            <li><b>Objective</b>: $w^\top \Sigma w$ is a <i>quadratic form</i> with $\Sigma \succ 0$, hence <b>convex</b></li>
-            <li><b>Constraint 1</b>: $\mu^\top w \ge r_{\text{target}}$ is affine in $w$ (valid for convex problems)</li>
-            <li><b>Constraint 2</b>: $\mathbf{1}^\top w = 1$ is affine (equality constraints must be affine)</li>
-            <li><b>Constraint 3</b>: $w \ge 0$ is componentwise affine</li>
+            <li><b>Objective</b>: $w^\top \Sigma w$ is recognized by the atom <code>quad_form(w, Sigma)</code>. Since <code>Sigma</code> is PSD constant, this atom is <b>convex</b>.</li>
+            <li><b>Constraint 1</b>: $\mu^\top w \ge r_{\text{target}}$ is an affine inequality (Convex $\le$ Constant, or Concave $\ge$ Constant).</li>
+            <li><b>Constraint 2</b>: $\mathbf{1}^\top w = 1$ is an affine equality.</li>
+            <li><b>Constraint 3</b>: $w \ge 0$ is elementwise affine.</li>
           </ul>
 
           <p><b>CVXPY Implementation</b>:</p>
@@ -1311,13 +1316,16 @@ import numpy as np
 
 # Problem data
 n = 10
+# Generate random PSD matrix
 Sigma = np.random.randn(n, n)
-Sigma = Sigma.T @ Sigma + 0.1 * np.eye(n)  # Ensure PSD
+Sigma = Sigma.T @ Sigma + 0.1 * np.eye(n)
 mu = np.random.randn(n) * 0.1 + 0.05
 r_target = 0.07
 
 # DCP formulation
 w = cp.Variable(n)
+# cp.quad_form(x, P) corresponds to x^T P x
+# It checks if P is PSD.
 objective = cp.Minimize(cp.quad_form(w, Sigma))
 constraints = [
     mu @ w >= r_target,
@@ -1326,12 +1334,12 @@ constraints = [
 ]
 problem = cp.Problem(objective, constraints)
 
-# Solve (CVXPY automatically selects QP solver)
+# Solve
 problem.solve()
 print(f"Optimal risk: {problem.value:.4f}")
 print(f"Optimal weights: {w.value}")</code></pre>
 
-          <p><b>Key insight</b>: CVXPY <i>automatically verified</i> that this problem is convex (a quadratic program). If we had mistakenly written a non-convex objective, CVXPY would raise a <code>DCPError</code> at construction time.</p>
+          <p><b>Key insight</b>: The atom <code>cp.quad_form(w, Sigma)</code> encapsulates the curvature check. CVXPY checks the eigenvalues of <code>Sigma</code> at runtime. If they were negative, it would raise an error because the function would be concave (or indefinite), violating the Minimize(Convex) rule.</p>
         </div>
 
         <h3>7.4 When DCP Isn't Enough</h3>

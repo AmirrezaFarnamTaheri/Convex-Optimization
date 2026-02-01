@@ -54,30 +54,17 @@
     <section class="section-card" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
-      <h3>1. Distance Between Convex Sets</h3>
-      <p>The distance between two convex sets $\mathcal{C}_1$ and $\mathcal{C}_2$ is $d(\mathcal{C}_1, \mathcal{C}_2) = \min \{ \|x_1 - x_2\|_2 : x_1 \in \mathcal{C}_1, x_2 \in \mathcal{C}_2 \}$. This is a convex problem. If the sets are polyhedra defined by inequalities, it is a QP. If the distance is positive, there exists a separating hyperplane.</p>
+      <h3>1. Distance and Projection</h3>
+      <p>The distance between convex sets is the solution to a convex problem. Specifically, finding the Euclidean projection of a point $x_0$ onto a set $C$ is a QP if $C$ is a polyhedron. The condition for the projection $z = P_C(x_0)$ is the variational inequality $(x_0 - z)^\top(y - z) \le 0$ for all $y \in C$, which geometrically means the angle between the error vector and any vector into the set is obtuse.</p>
 
-      <h3>2. Euclidean Projection</h3>
-      <p>The projection of a point $x_0$ onto a convex set $\mathcal{C}$ is $P_{\mathcal{C}}(x_0) = \text{argmin}_{x \in \mathcal{C}} \|x - x_0\|_2^2$. By the Hilbert Projection Theorem, $z = P_{\mathcal{C}}(x_0)$ iff $(x_0 - z)^\top (y - z) \le 0$ for all $y \in \mathcal{C}$. This is a crucial primitive in algorithms (Projected Gradient Descent).</p>
+      <h3>2. Extremal Ellipsoids</h3>
+      <p>We often approximate complex convex bodies with ellipsoids. The <b>Löwner-John Ellipsoid</b> is the minimum volume ellipsoid covering a set $C$; for a finite set of points, finding it corresponds to maximizing $\log\det(A)$ subject to norm constraints. Conversely, the <b>Maximum Volume Inscribed Ellipsoid</b> finds the largest ellipsoid inside a polyhedron, which can be cast as a log-det maximization problem subject to linear inequalities derived from the support function of the ball.</p>
 
-      <h3>3. Minimum Volume Enclosing Ellipsoid (MVEE)</h3>
-      <p>For a set of points $S = \{x_1, \ldots, x_m\}$, the MVEE (Löwner-John ellipsoid) is found by minimizing the volume of $\mathcal{E} = \{v : \|Av + b\|_2 \le 1\}$. This is equivalent to maximizing $\det(A)$ (or minimizing $-\log\det(A)$) subject to $\|Ax_i + b\|_2 \le 1$. This is a convex problem (SDP-like) solvable via interior-point methods.</p>
+      <h3>3. Centering Problems</h3>
+      <p>Finding the "center" of a set depends on the metric. The <b>Chebyshev Center</b> is the center of the largest inscribed ball, found via LP for polyhedra. The <b>Analytic Center</b> minimizes the log-barrier function, which is useful for interior-point methods. Other centers include the center of gravity (hard to compute) and the point of minimum total distance (Weber problem).</p>
 
-      <h3>4. Chebyshev Center</h3>
-      <p>The Chebyshev center of a set $\mathcal{C}$ is the center of the largest Euclidean ball inscribed in $\mathcal{C}$. For a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$, finding the center $x_c$ and radius $r$ is an LP:
-      $$ \max r \quad \text{s.t.} \quad a_i^\top x_c + r\|a_i\|_2 \le b_i, \quad r \ge 0 $$</p>
-
-      <h3>5. Separating and Supporting Hyperplanes</h3>
-      <p>Two disjoint convex sets $\mathcal{C}_1, \mathcal{C}_2$ can be separated by a hyperplane $a^\top x = b$. The maximum margin separating hyperplane minimizes $\|a\|_2$ subject to separation constraints (SVM). For general sets, finding a separating hyperplane is equivalent to finding a point in the Minkowski difference $\mathcal{C}_1 - \mathcal{C}_2$ closest to the origin.</p>
-
-      <h3>6. Extremal Volume Ellipsoids</h3>
-      <p>The Maximum Volume Inscribed Ellipsoid (MVIE) inside a polyhedron $\mathcal{P} = \{x : a_i^\top x \le b_i\}$ is found by maximizing $\det(A)$ subject to $\sup_{\|u\| \le 1} a_i^\top (Au + d) \le b_i$, which simplifies to $\|A a_i\|_2 + a_i^\top d \le b_i$. This is a convex problem in $A, d$.</p>
-
-      <h3>7. Placement and Location Problems</h3>
-      <p>Facility location problems minimize a cost function of distances $\sum_i w_i \|x - x_i\|$ (Weber problem) or $\max_i w_i \|x - x_i\|$. The Weber problem is a Second-Order Cone Program (SOCP). The Minimax problem can be solved as an SOCP or geometrically as the Smallest Enclosing Circle.</p>
-
-      <h3>8. Geometric Fitting</h3>
-      <p>Fitting a shape to data minimizes the sum of squared distances. For lines/planes, this is Total Least Squares (PCA). For circles/ellipses, the geometric error is non-convex, but algebraic error approximations allow convex formulations.</p>
+      <h3>4. Classification and Separation</h3>
+      <p>Finding a separating hyperplane between two sets is equivalent to computing the distance between their convex hulls. If the distance is positive, a separator exists. Maximizing the <b>margin</b> of separation leads to Support Vector Machines (SVM), which minimize the norm of the normal vector $\|a\|_2$ subject to separation constraints.</p>
     </section>
 
     <!-- Interactive widgets -->
@@ -139,6 +126,28 @@
         </div>
       </div>
     </section>
+
+<!-- SECTION 9: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 The Hilbert Projection Theorem</h3>
+  <div class="proof-box">
+    <h4>Characterization of Projection</h4>
+    <p>Let $C$ be a closed convex set. The projection $P_C(x)$ is the unique point $z \in C$ such that $(x-z)^\top(y-z) \le 0$ for all $y \in C$.
+    <br><b>Proof:</b> Let $f(y) = \frac{1}{2}\|y-x\|^2$. Since $f$ is convex, $z$ minimizes $f$ over $C$ iff $\nabla f(z)^\top (y-z) \ge 0$ for all $y \in C$.
+    <br>$\nabla f(z) = z-x$. Condition: $(z-x)^\top(y-z) \ge 0 \iff (x-z)^\top(y-z) \le 0$.</p>
+  </div>
+
+  <h3>A.2 Minimum Volume Ellipsoid (Dual Problem)</h3>
+  <div class="proof-box">
+    <h4>Dual Derivation</h4>
+    <p>Primal: $\min -\log\det A$ s.t. $\|Ax_i + b\| \le 1$.
+    <br>This is equivalent to $\max \log\det A$ s.t. $x_i^\top A^2 x_i + 2b^\top A x_i + b^2 \le 1$.
+    <br>Using Lagrange duality, the dual problem is to maximize $\log\det(\sum \lambda_i x_i x_i^\top) - \sum \lambda_i + n$.
+    <br>This connects MVEE to the statistical concept of D-optimal design.</p>
+  </div>
+</section>
 
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">

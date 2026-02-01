@@ -136,30 +136,9 @@
         Geometrically, this inequality says that the first-order Taylor approximation (the tangent hyperplane) is a <strong>global underestimator</strong> of the function. The graph of the function lies entirely <em>above</em> its tangent plane at any point $x$.
       </p>
 
-      <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 24px;">
-          <h4 style="margin-top: 0;">Detailed Proof of the Global Underestimator Property $(\star)$</h4>
-          <p>We start from the definition of convexity and derive the gradient inequality.</p>
-          <ol>
-              <li><strong>Definition of Convexity:</strong> By definition, for any two points $x, y$ and any $t \in [0,1]$, the function segment lies below the chord connecting them:
-                  $$ f(x+t(y-x)) \le (1-t)f(x)+t f(y) $$
-              </li>
-              <li><strong>Isolate $f(y)$:</strong> We want to bound $f(y)$. Let's rearrange the inequality.
-                  $$ f(x+t(y-x)) \le f(x) - tf(x) + tf(y) $$
-                  $$ f(x+t(y-x)) - f(x) \le t(f(y)-f(x)) $$
-              </li>
-              <li><strong>Form Difference Quotient:</strong> Divide both sides by $t$ (assuming $t > 0$):
-                  $$ \frac{f(x+t(y-x))-f(x)}{t} \le f(y)-f(x) $$
-              </li>
-              <li><strong>Take the Limit ($t \to 0$):</strong> Now, let $t$ approach 0 from the positive side ($t \downarrow 0$).
-                  <br>The Left Hand Side is exactly the definition of the <strong>directional derivative</strong> of $f$ at $x$ in the direction $(y-x)$.
-                  $$ \lim_{t \to 0} \frac{f(x+t(y-x))-f(x)}{t} = \nabla f(x)^\top(y-x) $$
-              </li>
-              <li><strong>Conclusion:</strong> Substituting the limit back into the inequality:
-                  $$ \nabla f(x)^\top(y-x) \le f(y) - f(x) $$
-                  Rearranging gives the result:
-                  $$ f(y) \ge f(x) + \nabla f(x)^\top (y-x) $$
-              </li>
-          </ol>
+      <div class="proof-box">
+        <h4>Proof: Global Underestimator Property</h4>
+        <p>The first-order condition $f(y) \ge f(x) + \nabla f(x)^\top (y-x)$ is derived directly from the definition of convexity by taking the limit of the difference quotient. It states that the tangent hyperplane lies below the function everywhere. This global property turns local stationary points ($\nabla f(x)=0$) into global minimizers.</p>
       </div>
 
       <p><strong>Proof of Equivalence ($\nabla f(x^\star)=0 \iff \text{Global Min}$):</strong></p>
@@ -200,26 +179,9 @@
         $$ \min_x \ f(x) = \frac12 x^\top P x + q^\top x + r,\qquad P\in S^n_+ \tag{9.4} $$
         where $P$ is symmetric positive semidefinite ($P \succeq 0$). This is the "Hello World" of optimization.
       </p>
-      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 16px;">
-        <strong>Step-by-Step Derivation of the Gradient $\nabla f(x)$:</strong>
-        <br>
-        1. <strong>Linear Term:</strong> The gradient of $q^\top x = \sum q_i x_i$ is simply the vector $q$.
-        <br>
-        2. <strong>Quadratic Term:</strong> Let's compute $\nabla (\frac{1}{2} x^\top P x)$. It helps to write it in scalar sum notation:
-        $$ \phi(x) = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n P_{ij} x_i x_j $$
-        Now take the partial derivative with respect to a specific variable $x_k$. We need to find all terms in the sum that contain $x_k$.
-        <br>
-        - Terms where $i=k$ and $j \neq k$: $\frac{1}{2} \sum_{j \neq k} P_{kj} x_k x_j$. Derivative is $\frac{1}{2} \sum_{j \neq k} P_{kj} x_j$.
-        <br>
-        - Terms where $j=k$ and $i \neq k$: $\frac{1}{2} \sum_{i \neq k} P_{ik} x_i x_k$. Derivative is $\frac{1}{2} \sum_{i \neq k} P_{ik} x_i$.
-        <br>
-        - Term where $i=k$ and $j=k$: $\frac{1}{2} P_{kk} x_k^2$. Derivative is $P_{kk} x_k$.
-        <br>
-        Adding them up:
-        $$ \frac{\partial \phi}{\partial x_k} = \frac{1}{2} \sum_{j} P_{kj} x_j + \frac{1}{2} \sum_{i} P_{ik} x_i $$
-        Since $P$ is symmetric ($P_{ij} = P_{ji}$), the indices $i$ and $j$ play the same role. Both sums are effectively the same: the dot product of the $k$-th row of $P$ with $x$.
-        $$ \frac{\partial \phi}{\partial x_k} = \sum_{j} P_{kj} x_j = (Px)_k $$
-        Thus, the vector gradient is $\nabla f(x) = Px + q$.
+      <div class="proof-box">
+        <h4>Gradient of a Quadratic</h4>
+        <p>For the quadratic function $f(x) = \frac{1}{2} x^\top P x + q^\top x + r$ (where $P$ is symmetric), the gradient is $\nabla f(x) = Px + q$ and the Hessian is $\nabla^2 f(x) = P$. This follows from the scalar expansion $\frac{1}{2} \sum_{i,j} P_{ij} x_i x_j$ and differentiation.</p>
       </div>
       <p>
         Setting the gradient to zero gives the linear system:
@@ -755,13 +717,9 @@ def newton_step(f, grad, hess, x):
           </li>
       </ul>
 
-      <div style="background: var(--code-bg); padding: 12px; border-left: 4px solid var(--accent); margin-bottom: 24px;">
-        <strong>Derivation of Quadratic Convergence (Proof Sketch):</strong>
-        <br>
-        Assume the Hessian is Lipschitz continuous ($\|H(y)-H(x)\| \le L\|y-x\|$).
-        <br>1. <strong>Residual Bound:</strong> By analyzing the error in the gradient update $\nabla f(x_{k+1})$, one can show:
-        $$ \|\nabla f(x_{k+1})\|_2 \le \frac{L}{2m^2} \|\nabla f(x_k)\|_2^2 $$
-        <br>2. <strong>Implication:</strong> This inequality has the form $u_{k+1} \le C u_k^2$. If $u_k$ is small enough (specifically $< 1/C$), squaring it makes it vanish incredibly fast.
+      <div class="proof-box">
+        <h4>Quadratic Convergence</h4>
+        <p>Assuming the Hessian is Lipschitz continuous, the gradient error satisfies $\|\nabla f(x_{k+1})\| \le C \|\nabla f(x_k)\|^2$. This recurrence $u_{k+1} \le C u_k^2$ implies that once the error is small enough, it squares at every step, doubling the number of correct digits. For the detailed proof, see <a href="#section-appendix">Appendix A.2</a>.</p>
       </div>
 
       <h4>9.2 Self-Concordance: Removing the Unknown Constants</h4>
@@ -1215,6 +1173,33 @@ def solve_analytic_center(m=300, n=50):
       </div>
 
     </section>
+
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Convergence Proofs</h2>
+
+  <h3>A.1 Convergence of Gradient Descent</h3>
+  <div class="proof-box">
+    <h4>Proof of Linear Convergence</h4>
+    <p>Assume $f$ is $m$-strongly convex and $M$-smooth.
+    <br>From smoothness: $f(x^+) \le f(x) - \frac{1}{2M}\|\nabla f(x)\|^2$.
+    <br>From strong convexity: $\|\nabla f(x)\|^2 \ge 2m(f(x) - p^\star)$.
+    <br>Combine: $f(x^+) - p^\star \le f(x) - p^\star - \frac{m}{M}(f(x) - p^\star) = (1 - \frac{m}{M})(f(x) - p^\star)$.
+    <br>This proves linear convergence with rate $1 - m/M$.</p>
+  </div>
+
+  <h3>A.2 Quadratic Convergence of Newton's Method</h3>
+  <div class="proof-box">
+    <h4>Proof Sketch</h4>
+    <p>Assume Lipschitz Hessian: $\|\nabla^2 f(x) - \nabla^2 f(y)\| \le L\|x-y\|$.
+    <br>Newton step: $x^+ = x - H^{-1}g$.
+    <br>Gradient update: $\nabla f(x^+) = \nabla f(x) + \int_0^1 \nabla^2 f(x + t\Delta x)\Delta x dt$.
+    <br>Using $\nabla f(x) + \nabla^2 f(x)\Delta x = 0$:
+    $$ \|\nabla f(x^+)\| = \|\int_0^1 (\nabla^2 f(x+t\Delta x) - \nabla^2 f(x))\Delta x dt\| \le \frac{L}{2}\|\Delta x\|^2 $$
+    Since $\|\Delta x\| \le \frac{1}{m}\|\nabla f(x)\|$, we get $\|\nabla f(x^+)\| \le \frac{L}{2m^2}\|\nabla f(x)\|^2$.
+    <br>This quadratic recurrence $u_{k+1} \le C u_k^2$ implies doubling of accurate digits.</p>
+  </div>
+</section>
 
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">

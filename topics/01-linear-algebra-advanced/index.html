@@ -273,6 +273,23 @@
         </ul>
       </div>
 
+      <div class="row" style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 24px 0; flex-wrap: wrap;">
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/svd-wiki.png" alt="SVD Decomposition Wiki" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <figcaption><i>Figure 5a:</i> Standard SVD visualization (Wikimedia).</figcaption>
+        </figure>
+        <figure style="text-align: center; flex: 1; min-width: 280px;">
+          <img src="assets/svd-ellipse.png" alt="SVD Ellipse" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 8px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <figcaption><i>Figure 5b:</i> Unit circle to ellipse transformation.</figcaption>
+        </figure>
+      </div>
+
+      <div class="widget-container" style="margin: 24px 0;">
+        <h3 style="margin-top: 0;">Interactive Demo: 3D SVD Geometry</h3>
+        <p>Visualize the SVD decomposition $A = U \Sigma V^\top$ in 3D as a sequence of three geometric transformations: rotation ($V^\top$), axis-aligned scaling ($\Sigma$), and rotation ($U$).</p>
+        <iframe src="widgets/la_batch3.html?mode=svd3" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
+      </div>
+
       <h3>5.2 The Four Fundamental Subspaces via SVD</h3>
       <p>Let $r$ be the rank (number of $\sigma_i > 0$).
       <ul>
@@ -945,7 +962,142 @@
       </div>
 </section>
 
-    <!-- SECTION 9: READINGS -->
+<!-- SECTION 9: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 Variance and the Rayleigh Quotient</h3>
+  <p>In Section 5.5, we connected PCA to the SVD. Here we derive this connection from first principles by maximizing variance.</p>
+
+  <h4>Variance as a Quadratic Form</h4>
+  <p>Let $X$ be the $N \times n$ centered data matrix (rows are samples). We want to find a unit direction $\mathbf{v}$ that maximizes the variance of the projected data.
+  <br>The projection of sample $\mathbf{x}_i$ onto $\mathbf{v}$ is scalar $\mathbf{x}_i^\top \mathbf{v}$.
+  <br>The sample variance is the average squared projection:
+  $$ \text{Var}(\mathbf{v}) = \frac{1}{N} \sum_{i=1}^N (\mathbf{x}_i^\top \mathbf{v})^2 = \frac{1}{N} \|X\mathbf{v}\|_2^2 $$
+  Expanding the norm:
+  $$ \text{Var}(\mathbf{v}) = \frac{1}{N} (X\mathbf{v})^\top (X\mathbf{v}) = \mathbf{v}^\top \left( \frac{1}{N} X^\top X \right) \mathbf{v} $$
+  Let $C = \frac{1}{N} X^\top X$ be the empirical covariance matrix. The problem is:
+  $$ \max_{\mathbf{v}} \mathbf{v}^\top C \mathbf{v} \quad \text{subject to} \quad \|\mathbf{v}\|_2 = 1 $$
+  This is exactly the maximization of the Rayleigh Quotient for the matrix $C$.
+  </p>
+
+  <div class="proof-box">
+    <h4>Proof: The Maximizer is the Top Eigenvector</h4>
+    <p>Since $C$ is symmetric positive semidefinite, it has an eigendecomposition $C = Q \Lambda Q^\top$ with eigenvalues $\lambda_1 \ge \dots \ge \lambda_n \ge 0$.
+    <br>Let $\mathbf{y} = Q^\top \mathbf{v}$. Then $\|\mathbf{y}\| = \|Q^\top \mathbf{v}\| = \|\mathbf{v}\| = 1$.
+    The objective becomes:
+    $$ \mathbf{v}^\top C \mathbf{v} = \mathbf{v}^\top Q \Lambda Q^\top \mathbf{v} = \mathbf{y}^\top \Lambda \mathbf{y} = \sum_{i=1}^n \lambda_i y_i^2 $$
+    We want to maximize $\sum \lambda_i y_i^2$ subject to $\sum y_i^2 = 1$.
+    <br>Since $\lambda_1$ is the largest coefficient, we should put all "mass" on $y_1$.
+    Setting $y_1=1$ (and others 0) gives the value $\lambda_1$.
+    <br>This corresponds to $\mathbf{y} = e_1$, which means $\mathbf{v} = Q e_1 = q_1$ (the first eigenvector).
+    </p>
+  </div>
+
+  <h4>Connection to SVD</h4>
+  <p>The eigenvectors of the covariance matrix $C = \frac{1}{N} X^\top X$ are the right singular vectors of $X$.
+  <br>Recall $X = U \Sigma V^\top$. Then:
+  $$ X^\top X = (V \Sigma^\top U^\top) (U \Sigma V^\top) = V (\Sigma^\top \Sigma) V^\top = V \Sigma^2 V^\top $$
+  The eigenvectors of $X^\top X$ are the columns of $V$.
+  <br>Thus, the principal component directions (eigenvectors of covariance) are exactly the right singular vectors of the data matrix.</p>
+
+  <h3>A.2 Rigorous Derivation of SVD via $A^\top A$</h3>
+  <div class="proof-box">
+    <h4>Proof: Existence of SVD</h4>
+    <p>The existence of the SVD is a direct consequence of the Spectral Theorem applied to the symmetric positive semidefinite matrix $G = A^\top A$.</p>
+    <div class="proof-step">
+        <strong>Step 1: Spectral Decomposition of $G$.</strong>
+          The matrix $G = A^\top A \in \mathbb{R}^{n \times n}$ is symmetric ($G^\top = G$). By the Spectral Theorem, there exists an orthonormal basis $\{v_1, \dots, v_n\}$ of eigenvectors with real eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$.
+        $$ A^\top A v_i = \lambda_i v_i $$
+          We can verify non-negativity: $\lambda_i = \lambda_i \|v_i\|^2 = v_i^\top (\lambda_i v_i) = v_i^\top (A^\top A v_i) = (Av_i)^\top (Av_i) = \|A v_i\|^2 \ge 0$.
+          Thus $\lambda_i \ge 0$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Define Singular Values and Right Singular Vectors.</strong>
+          Define the singular values $\sigma_i = \sqrt{\lambda_i}$. Let $r$ be the number of non-zero singular values.
+          Define the matrix of right singular vectors $V = [v_1 \dots v_n]$. Since the $v_i$ are orthonormal, $V$ is an orthogonal matrix.
+    </div>
+    <div class="proof-step">
+          <strong>Step 3: Construct Left Singular Vectors ($U$).</strong>
+          We need to construct an orthonormal basis $\{u_1, \dots, u_m\}$ for the codomain $\mathbb{R}^m$.
+          <br><b>For $i \le r$ (The Range):</b> Define $u_i = \frac{1}{\sigma_i} A v_i$.
+          We must verify these are orthonormal:
+          $$ u_i^\top u_j = \left( \frac{1}{\sigma_i} A v_i \right)^\top \left( \frac{1}{\sigma_j} A v_j \right) = \frac{1}{\sigma_i \sigma_j} v_i^\top (A^\top A v_j) = \frac{\lambda_j}{\sigma_i \sigma_j} (v_i^\top v_j) $$
+          Since $v_i \perp v_j$, this is 0 for $i \ne j$. If $i=j$, it is $\sigma_i^2/\sigma_i^2 = 1$. Thus, $\{u_1, \dots, u_r\}$ are orthonormal.
+          <br><b>For $i > r$ (The Null Complement):</b> Pick any orthonormal vectors $\{u_{r+1}, \dots, u_m\}$ orthogonal to the first $r$ vectors.
+          <br>Construct $U = [u_1 \dots u_m]$. This is an orthogonal matrix.
+    </div>
+    <div class="proof-step">
+          <strong>Step 4: Matrix Factorization ($AV = U\Sigma$).</strong>
+          We compare the action of $A$ on the basis $V$ with the action of $U\Sigma$.
+          <br><b>Case $i \le r$:</b> $A v_i = \sigma_i u_i$.
+          <br><b>Case $i > r$:</b> Since $\sigma_i = 0$, we have $\lambda_i = 0$, so $\|A v_i\|^2 = 0 \implies A v_i = 0$. Also $\sigma_i u_i = 0$.
+          <br>Thus $A v_i = \sigma_i u_i$ for all $i$. In matrix form: $A V = U \Sigma \implies A = U \Sigma V^\top$.
+    </div>
+  </div>
+
+  <h3>A.3 Low-Rank Approximation (Eckart-Young-Mirsky)</h3>
+  <div class="proof-box">
+    <h4>Why Truncation Works (The Energy Argument)</h4>
+    <p>We want to minimize $\|A - B\|_F$ subject to $\operatorname{rank}(B) \le k$.
+    <br><b>Frobenius Norm:</b>
+    The Frobenius norm is invariant under orthogonal transformations: $\|U M V^\top\|_F = \|M\|_F$.
+    <br>Let $B$ be our rank-$k$ candidate. Work in the SVD coordinates of $A = U \Sigma V^\top$.
+    $$ \|A - B\|_F^2 = \|U \Sigma V^\top - B\|_F^2 = \|U (\Sigma - U^\top B V) V^\top\|_F^2 $$
+    Let $\tilde{B} = U^\top B V$. Since $U, V$ are invertible, $\operatorname{rank}(\tilde{B}) = \operatorname{rank}(B) \le k$.
+    $$ \|A - B\|_F^2 = \|\Sigma - \tilde{B}\|_F^2 = \sum_{i=1}^n (\sigma_i - \tilde{B}_{ii})^2 + \sum_{i \neq j} \tilde{B}_{ij}^2 $$
+    To minimize this sum, the off-diagonal terms $\tilde{B}_{ij}$ should be zero. Thus $\tilde{B}$ should be diagonal.
+    <br>This reduces to choosing $k$ non-zero diagonal entries $d_1, \dots, d_k$ to approximate $\sigma_1, \dots, \sigma_n$. The optimal choice is to keep the $k$ largest $\sigma_i$.
+    <br>The residual error is the tail energy $\sum_{i=k+1}^r \sigma_i^2$.</p>
+  </div>
+
+  <h3>A.4 The Leibniz Formula for Determinant</h3>
+  <div class="proof-box">
+    <h4>Derivation: Why Axioms Force the Formula</h4>
+    <p>Starting from the three axioms (Multilinearity, Alternating, Normalization):</p>
+    <div class="proof-step">
+      <strong>Step 1: Expand columns.</strong> $a_j = \sum_{k=1}^n A_{kj} e_k$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Apply Multilinearity.</strong>
+      $$ \det(A) = \sum_{k_1=1}^n \dots \sum_{k_n=1}^n A_{k_1, 1} \dots A_{k_n, n} \det(e_{k_1}, \dots, e_{k_n}) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Apply Alternation.</strong>
+      If any indices match ($k_i = k_j$), the term vanishes. Only permutations survive.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Apply Normalization.</strong>
+      $\det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = \mathrm{sgn}(\sigma) \det(I) = \mathrm{sgn}(\sigma)$.
+    </div>
+    <div class="proof-step">
+      <strong>Result:</strong> $\det(A) = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_{j=1}^n A_{\sigma(j), j}$.
+    </div>
+  </div>
+
+  <h3>A.5 Householder QR Example</h3>
+  <div class="example-box">
+    <h4>Example: QR via Householder for a 3×2 Matrix</h4>
+    <p>Consider $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{bmatrix}$. We want to zero out the entries below $A_{11}$.</p>
+    <div class="proof-step">
+      <strong>Step 1: The Target Vector.</strong>
+      First column $\mathbf{a}_1 = (1, 1, 0)^\top$. Target length $\sqrt{2}$. Target vector $\mathbf{t} = (-\sqrt{2}, 0, 0)^\top$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: The Reflection Normal.</strong>
+      $\mathbf{v} = \mathbf{a}_1 - \mathbf{t} = (1+\sqrt{2}, 1, 0)^\top$.
+      $\|\mathbf{v}\|^2 = 4 + 2\sqrt{2}$. Unit normal $\mathbf{u} = \mathbf{v}/\|\mathbf{v}\|$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Apply $H_1$.</strong>
+      $H_1 \mathbf{a}_1 = \mathbf{t}$.
+      $H_1 \mathbf{a}_2 = \mathbf{a}_2 - 2\mathbf{u}(\mathbf{u}^\top \mathbf{a}_2) = \begin{bmatrix} -1/\sqrt{2} \\ -1/\sqrt{2} \\ 1 \end{bmatrix}$.
+    </div>
+    <p><b>Result:</b> $A$ is transformed into an upper triangular form (for the first column).</p>
+  </div>
+</section>
+
+<!-- SECTION 10: READINGS -->
     <section class="section-card" id="section-readings">
       <h2>Readings & Resources</h2>
       <ul class="link-list">

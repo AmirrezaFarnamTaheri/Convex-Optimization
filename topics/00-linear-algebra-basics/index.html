@@ -3069,7 +3069,77 @@
 
 
 
-<!-- SECTION 10: READINGS -->
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Derivation of the Triangle of Equivalence (Schur Complement)</h3>
+  <p>In Section 5.5, we stated that for $Y \succ 0$, the condition $tY - \mathbf{x}\mathbf{x}^\top \succeq 0$ is equivalent to the scalar inequality $t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$. Here is the step-by-step derivation.</p>
+
+  <div class="proof-box">
+    <h4>Proof: From Rank-1 Update to Scalar Condition</h4>
+    <p>We want to show $tY - \mathbf{x}\mathbf{x}^\top \succeq 0 \iff t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$.</p>
+    <div class="proof-step">
+        <strong>Step 1: Variational Definition.</strong>
+        $tY - \mathbf{x}\mathbf{x}^\top \succeq 0$ means for all $\mathbf{v} \in \mathbb{R}^n$:
+        $$ \mathbf{v}^\top (tY - \mathbf{x}\mathbf{x}^\top) \mathbf{v} \ge 0 \implies t (\mathbf{v}^\top Y \mathbf{v}) - (\mathbf{v}^\top \mathbf{x})(\mathbf{x}^\top \mathbf{v}) \ge 0 \implies (\mathbf{x}^\top \mathbf{v})^2 \le t (\mathbf{v}^\top Y \mathbf{v}) $$
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Change of Variables.</strong>
+        Since $Y \succ 0$, it has a square root $Y^{1/2}$. Let $\mathbf{u} = Y^{1/2} \mathbf{v}$. Then $\mathbf{v} = Y^{-1/2} \mathbf{u}$.
+        The term $\mathbf{v}^\top Y \mathbf{v} = \mathbf{u}^\top Y^{-1/2} Y Y^{-1/2} \mathbf{u} = \mathbf{u}^\top \mathbf{u} = \|\mathbf{u}\|_2^2$.
+        The term $\mathbf{x}^\top \mathbf{v} = \mathbf{x}^\top Y^{-1/2} \mathbf{u} = (Y^{-1/2} \mathbf{x})^\top \mathbf{u}$. Let $\mathbf{w} = Y^{-1/2} \mathbf{x}$. Then $\mathbf{x}^\top \mathbf{v} = \mathbf{w}^\top \mathbf{u}$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 3: Optimization View.</strong>
+        The inequality becomes $(\mathbf{w}^\top \mathbf{u})^2 \le t \|\mathbf{u}\|_2^2$ for all $\mathbf{u}$.
+        We want to find the minimum $t$ that satisfies this. This is equivalent to:
+        $$ t \ge \sup_{\mathbf{u} \neq 0} \frac{(\mathbf{w}^\top \mathbf{u})^2}{\|\mathbf{u}\|_2^2} $$
+        By the Cauchy-Schwarz inequality, $(\mathbf{w}^\top \mathbf{u})^2 \le \|\mathbf{w}\|_2^2 \|\mathbf{u}\|_2^2$, with equality when $\mathbf{u}$ is parallel to $\mathbf{w}$.
+        Thus, the supremum is $\|\mathbf{w}\|_2^2$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 4: Conclusion.</strong>
+        $$ t \ge \|\mathbf{w}\|_2^2 = \mathbf{w}^\top \mathbf{w} = (Y^{-1/2} \mathbf{x})^\top (Y^{-1/2} \mathbf{x}) = \mathbf{x}^\top Y^{-1} \mathbf{x} $$
+    </div>
+  </div>
+
+  <h3>A.2 The Steinitz Exchange Lemma</h3>
+  <div class="proof-box">
+    <h4>Lemma: Steinitz Exchange Lemma (Proof)</h4>
+    <p>Let $V$ be a vector space. Suppose:
+    <ul>
+        <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
+        <li>$L = \{\ell_1,\dots,\ell_k\}$ is linearly independent in $V$.</li>
+    </ul>
+    Then <b>$k \le m$</b>, and we can replace $k$ vectors in $S$ with $L$ to form a new spanning set.</p>
+
+    <h4>Proof by Step-by-Step Replacement</h4>
+    <p>We proceed by induction to inject elements of $L$ into $S$ one by one.</p>
+    <div class="proof-step">
+        <strong>Step 0:</strong> Start with $S^{(0)} = S$, which spans $V$.
+    </div>
+    <div class="proof-step">
+        <strong>Inductive Step:</strong> Assume $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$. We want to insert $\ell_j$.
+        <br>Since $S^{(j-1)}$ spans, write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$.
+        $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
+        Rearranging: $0 = \ell_j - \sum c_u u$.
+        <br>Crucially, at least one vector $u^* \in S^{(j-1)}$ <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{u^*} \neq 0$.
+        <br><i>Why?</i> If only $\ell$'s had non-zero coefficients, then $\ell_j$ would be in the span of previous $\ell$'s, contradicting independence of $L$.
+    </div>
+    <div class="proof-step">
+        <strong>Replacement:</strong> Solve for $u^*$:
+        $$ u^* = \frac{1}{c_{u^*}} \ell_j - \sum \dots $$
+        This shows $u^*$ is in the span of the new set $S^{(j)} = (S^{(j-1)} \setminus \{u^*\}) \cup \{\ell_j\}$.
+        Thus, the new set still spans $V$.
+    </div>
+    <div class="proof-step">
+        <strong>Conclusion:</strong> We can continue this for all $k$ elements of $L$. Since each step consumes a distinct vector from the original $S$ (and never one of the inserted $\ell$'s), we must have enough capacity in $S$. Thus $k \le m$.
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11: READINGS -->
     <section class="section-card" id="section-readings">
       <h2>Readings & Resources</h2>
       <ul>

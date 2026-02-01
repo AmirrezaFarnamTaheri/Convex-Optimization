@@ -113,18 +113,8 @@
         <li><b>Exact Equivalence:</b> At optimality, the constraint $f_0(x) \le t$ is tight ($t = f_0(x)$). Minimizing $t$ forces it down to the graph of $f_0$.</li>
       </ol>
 
-      <h4>The "Epigraph Checklist" (Your Automatic Procedure)</h4>
-      <p>Whenever you see a nontrivial objective, follow this mechanical procedure:</p>
-      <ol>
-          <li><b>Introduce $t$:</b> Rewrite $\min f(x)$ as $\min t$.</li>
-          <li><b>Add Constraint:</b> Add $f(x) \le t$.</li>
-          <li><b>Decompose:</b> If $f(x) = \max_i f_i(x)$, split into $f_i(x) \le t$ for all $i$.</li>
-          <li><b>Classify:</b> Ask "Which cone does $f(x) \le t$ belong to?"
-              <br>$\bullet$ Norm $\to$ SOC.
-              <br>$\bullet$ Max/Abs $\to$ Linear (LP).
-              <br>$\bullet$ Quadratic $\to$ LMI/Rotated SOC.
-          </li>
-      </ol>
+      <h4>The Epigraph Procedure</h4>
+      <p>Whenever you encounter a complex objective function, apply the epigraph procedure mechanically. First, replace $\min f(x)$ with $\min t$ and add the constraint $f(x) \le t$. Next, decompose the constraint if possible; for example, $f(x) = \max_i f_i(x)$ splits into multiple constraints $f_i(x) \le t$. Finally, classify the resulting constraint geometry: a norm suggests a Second-Order Cone, a maximum or absolute value suggests linear constraints (LP), and a quadratic suggests a Linear Matrix Inequality or Rotated SOC.</p>
 
       <div class="proof-box">
         <h4>Proof: $e^\star = p^\star$</h4>
@@ -272,18 +262,7 @@
         $$
         where $c_k > 0$. This is <b>not convex</b> in $x$.
         <br><br>
-        <b>Change of variables:</b> Let $y_i = \log x_i$ (so $x_i = e^{y_i}$). Then:
-        $$
-        f_0(x) = \sum_{k} c_k e^{a_{1k}y_1 + a_{2k}y_2 + \cdots + a_{nk}y_n}
-        $$
-        Taking the logarithm of the objective and constraints transforms the GP into a <b>convex problem</b>:
-        $$
-        \begin{aligned}
-        \text{minimize} \quad & \log\left(\sum_{k} c_k e^{a^\top_k y}\right) \quad \text{(log-sum-exp, convex)} \\
-        \text{subject to} \quad & \log\left(\sum_{k} c_{ik} e^{a^\top_{ik} y}\right) \le 0, \quad i=1,\ldots,m
-        \end{aligned}
-        $$
-        This is now solvable by standard convex optimization tools.</p>
+        <p>By applying a logarithmic change of variables ($y_i = \log x_i$) and taking the logarithm of the objective and constraints, we can transform any GP into a convex optimization problem involving Log-Sum-Exp functions. For the detailed algebraic derivation, see <a href="#section-appendix">Appendix A.1</a>.</p>
       </div>
 
       <h4>2. Introducing Slack Variables</h4>
@@ -638,36 +617,7 @@
         </p>
       </div>
 
-      <div class="proof-box">
-        <h4>Derivation of the Chebyshev LP</h4>
-        <div class="proof-step">
-            <strong>Step 1: Set Containment.</strong>
-            The condition $\mathcal{B} \subseteq \mathcal{P}$ is equivalent to requiring that every point $x \in \mathcal{B}$ satisfies $a_i^\top x \le b_i$ for all $i$.
-            $$ \sup_{x \in \mathcal{B}} a_i^\top x \le b_i $$
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Support Function of the Ball.</strong>
-            Substitute $\mathbf{x} = \mathbf{x}_c + \mathbf{u}$ where $\|\mathbf{u}\|_2 \le r$.
-            The condition becomes:
-            $$ \sup_{\|u\|_2 \le r} a_i^\top (x_c + u) \le b_i \implies a_i^\top x_c + \sup_{\|u\|_2 \le r} (a_i^\top u) \le b_i $$
-            We need to evaluate the term $\sup_{\|u\|_2 \le r} (a_i^\top u)$.
-            <ul>
-                <li>Recall the definition of the <b>dual norm</b>: $\|y\|_* = \sup \{y^\top x \mid \|x\| \le 1\}$.</li>
-                <li>By scaling the constraint $\|x\| \le r$ to $\|x/r\| \le 1$, we get:
-                    $$ \sup_{\|u\| \le r} a_i^\top u = r \sup_{\|v\| \le 1} a_i^\top v = r \|a_i\|_* $$
-                </li>
-                <li>For the Euclidean norm (L2), the dual is itself ($\|\cdot\|_2^* = \|\cdot\|_2$). Thus:
-                    $$ \sup_{\|u\|_2 \le r} a_i^\top u = r \|a_i\|_2 $$
-                </li>
-            </ul>
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Linear Constraints.</strong>
-            The containment condition becomes:
-            $$ a_i^\top x_c + r \|a_i\|_2 \le b_i $$
-            Since $\|a_i\|_2$ is a constant (computed from data), this is a linear inequality in variables $x_c$ (center) and $r$ (radius).
-        </div>
-      </div>
+      <p>By using the support function of the ball (which involves the dual norm), we can convert the set containment condition $\mathcal{B} \subseteq \mathcal{P}$ into a system of linear inequalities. See <a href="#section-appendix">Appendix A.2</a> for the step-by-step derivation.</p>
 
       <p><strong>LP Formulation:</strong></p>
       <p style="text-align: center;">
@@ -710,33 +660,8 @@
         <p>Since the functions $f_i(x) = a_i^\top x + b_i$ are affine, this becomes a <b>Linear Program</b> with one extra variable.</p>
       </div>
 
-      <h4>The Dual of Max-of-Affines: Complete Derivation</h4>
-      <p>Let's derive the dual problem from first principles to understand the geometric structure:</p>
-      
-      <div class="proof-box">
-        <h4>Dual Derivation via Lagrangian</h4>
-        <div class="proof-step">
-            <strong>Step 1: LP Lagrangian.</strong>
-            Let $\lambda_i \ge 0$ be multipliers for constraints $a_i^\top x + b_i - t \le 0$:
-            $$ \mathcal{L}(x, t, \lambda) = t + \sum_{i=1}^m \lambda_i (a_i^\top x + b_i - t) $$
-            Rearranging:
-            $$ \mathcal{L}(x, t, \lambda) = (1 - \mathbf{1}^\top \lambda) t + (A\lambda)^\top x + b^\top \lambda $$
-            where $A = [a_1 \cdots a_m] \in \mathbb{R}^{n \times m}$ has columns $a_i$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Dual Function.</strong>
-            $g(\lambda) = \inf_{x,t} \mathcal{L}(x, t, \lambda)$. For this to be finite:
-            <ul>
-                <li><b>Infimum over $t$:</b> Finite iff $\mathbf{1}^\top \lambda = 1$ (else $-\infty$)</li>
-                <li><b>Infimum over $x$:</b> Finite iff $A\lambda = 0$ (else $-\infty$)</li>
-            </ul>
-            Under these constraints: $g(\lambda) = b^\top \lambda$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Dual Problem.</strong>
-            $$ \max_{\lambda \in \mathbb{R}^m} \ b^\top \lambda \quad \text{s.t.} \quad A\lambda = 0, \ \mathbf{1}^\top \lambda = 1, \ \lambda \succeq 0 $$
-        </div>
-      </div>
+      <h4>The Dual of Max-of-Affines</h4>
+      <p>The dual problem reveals the geometric structure of the solution. It maximizes $b^\top \lambda$ subject to $A\lambda = 0$ and $\lambda$ being a probability vector ($\mathbf{1}^\top \lambda = 1, \lambda \ge 0$). This interpretation shows that the optimal $x$ balances the gradients of the active affine functions. For the Lagrangian derivation, see <a href="#section-appendix">Appendix A.3</a>.</p>
       
       <p><b>Interpretation:</b> The dual variables $\lambda$ form a <em>probability distribution</em> over the $m$ affine functions. At optimality:
       <ul>
@@ -1269,30 +1194,7 @@
       <h3>5.3 Reformulation as an LP</h3>
       <p>We can transform the LFP into an equivalent LP using the <strong>Charnes-Cooper transformation</strong>. This is a specific instance of the "perspective transformation" applied to the entire problem.</p>
 
-      <div class="proof-box">
-        <h4>Derivation of Charnes-Cooper Transformation</h4>
-        <div class="proof-step">
-            <strong>Step 1: Homogenization Variable.</strong>
-            Introduce a scalar variable $z = \frac{1}{e^\top x + f}$. Since the domain assumes $e^\top x + f > 0$, we have $z > 0$.
-            Define the vector $y = x z$. Note that $x = y/z$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Constraint Transformation.</strong>
-            Substitute $x = y/z$ into the original constraints:
-            <ul>
-                <li>$Ax = b \iff A(y/z) = b \iff Ay - bz = 0$.</li>
-                <li>$Gx \le h \iff G(y/z) \le h \iff Gy - hz \le 0$ (multiplying by $z>0$ preserves inequality).</li>
-            </ul>
-            We also need to enforce the definition of $z$:
-            $$ e^\top x + f = \frac{1}{z} \iff z(e^\top x + f) = 1 \iff e^\top (xz) + fz = 1 \iff e^\top y + fz = 1 $$
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Objective Transformation.</strong>
-            The objective function becomes:
-            $$ \frac{c^\top x + d}{e^\top x + f} = \frac{c^\top (y/z) + d}{1/z} = z(c^\top (y/z) + d) = c^\top y + dz $$
-            This is a linear function of $(y, z)$.
-        </div>
-      </div>
+      <p>We can transform the LFP into an equivalent LP using the <strong>Charnes-Cooper transformation</strong>. This is a specific instance of the "perspective transformation" applied to the entire problem. By introducing a homogenization variable $z = 1/(e^\top x + f)$ and defining $y = xz$, we linearize both the objective and constraints. See <a href="#section-appendix">Appendix A.4</a> for the derivation.</p>
 
       <p>This yields the equivalent <strong>Linear Program</strong>:</p>
       <p style="text-align: center;">
@@ -2152,6 +2054,65 @@
         </div>
       </div>
     </section>
+
+<!-- SECTION 11: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 Geometric Programming Reformulation</h3>
+  <div class="proof-box">
+    <h4>Log-Transformation of Posynomials</h4>
+    <p>A GP minimizes a posynomial subject to posynomial inequalities.
+    $$ \min \sum c_k \prod x_i^{a_{ik}} \quad \text{s.t.} \quad \sum d_j \prod x_i^{b_{ij}} \le 1 $$
+    Let $y_i = \log x_i$ (so $x_i = e^{y_i}$).
+    <br>A monomial becomes: $c \prod x_i^{a_i} = c \exp(\sum a_i y_i) = \exp(a^\top y + \tilde{c})$.
+    <br>A posynomial becomes a sum of exponentials: $\sum \exp(a_k^\top y + b_k)$.
+    <br>The objective (min posynomial) becomes: $\min \sum \exp(\dots)$. Taking log gives $\min \log(\sum \exp(\dots))$, which is convex (LSE).
+    <br>The constraint (posynomial $\le 1$) becomes: $\sum \exp(\dots) \le 1 \iff \log(\sum \exp(\dots)) \le 0$.
+    This transforms the GP into a convex problem in $y$.</p>
+  </div>
+
+  <h3>A.2 Chebyshev Center Derivation</h3>
+  <div class="proof-box">
+    <h4>From Robustness to LP</h4>
+    <p>We maximize $r$ such that the ball $B(x_c, r) \subseteq \{x \mid a_i^\top x \le b_i\}$.
+    This requires that for every $i$, $\sup_{u \in B(0,1)} a_i^\top (x_c + ru) \le b_i$.
+    $$ a_i^\top x_c + r \sup_{u \in B(0,1)} a_i^\top u \le b_i $$
+    The support function of the unit ball is the dual norm. For Euclidean norm, dual is Euclidean.
+    $$ a_i^\top x_c + r \|a_i\|_2 \le b_i $$
+    This is a linear constraint in $(x_c, r)$ since $\|a_i\|_2$ is a constant data parameter.</p>
+  </div>
+
+  <h3>A.3 Dual of Max-of-Affines</h3>
+  <div class="proof-box">
+    <h4>Derivation via Lagrangian</h4>
+    <div class="proof-step">
+        <strong>Step 1: LP Lagrangian.</strong>
+        Problem: $\min t$ s.t. $a_i^\top x + b_i - t \le 0$.
+        $$ \mathcal{L}(x, t, \lambda) = t + \sum \lambda_i (a_i^\top x + b_i - t) = (1 - \mathbf{1}^\top \lambda)t + (\sum \lambda_i a_i)^\top x + \sum \lambda_i b_i $$
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Dual Function.</strong>
+        Minimizing over $t$ requires $\mathbf{1}^\top \lambda = 1$. Minimizing over $x$ requires $\sum \lambda_i a_i = 0$.
+        Under these conditions, the minimum is $b^\top \lambda$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 3: Dual Problem.</strong>
+        $\max b^\top \lambda$ s.t. $A\lambda = 0, \mathbf{1}^\top \lambda = 1, \lambda \ge 0$.
+    </div>
+  </div>
+
+  <h3>A.4 Charnes-Cooper Transformation</h3>
+  <div class="proof-box">
+    <h4>Linearizing Fractional Programs</h4>
+    <p>Problem: $\min \frac{c^\top x + d}{e^\top x + f}$ s.t. $Ax \le b, e^\top x + f > 0$.
+    <br>Let $z = \frac{1}{e^\top x + f}$ and $y = xz$.
+    <br><b>Constraints:</b> $Ax \le b \implies A(y/z) \le b \implies Ay - bz \le 0$.
+    <br><b>Normalization:</b> $e^\top x + f = 1/z \implies e^\top (y/z) + f = 1/z \implies e^\top y + fz = 1$.
+    <br><b>Objective:</b> $(c^\top x + d)z = c^\top y + dz$.
+    <br>Result is an LP in $(y, z)$.</p>
+  </div>
+</section>
 
     <!-- SECTION 10: READINGS -->
     <section class="section-card" id="section-10">

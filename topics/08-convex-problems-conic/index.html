@@ -109,28 +109,10 @@
 
       <div class="proof-box">
         <h4>Convexity of the Second-Order Cone</h4>
-        <div class="proof-step">
-          <strong>Setup:</strong> Let $\mathbf{z}_1 = (t_1, \mathbf{x}_1)$ and $\mathbf{z}_2 = (t_2, \mathbf{x}_2)$ be points in $\mathcal{Q}^{n+1}$.
-          By definition, $\|\mathbf{x}_1\|_2 \le t_1$ and $\|\mathbf{x}_2\|_2 \le t_2$.
-          Let $\mathbf{z} = \theta \mathbf{z}_1 + (1-\theta)\mathbf{z}_2 = (\theta t_1 + (1-\theta)t_2, \theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2)$ for $\theta \in [0,1]$.
-        </div>
-        <div class="proof-step">
-          <strong>Check Norm Condition:</strong> We need to check if $\|\theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2\|_2 \le \theta t_1 + (1-\theta)t_2$.
-          <br>Applying the <b>triangle inequality</b> $\|a+b\| \le \|a\| + \|b\|$:
-          $$ \|\theta \mathbf{x}_1 + (1-\theta)\mathbf{x}_2\|_2 \le \|\theta \mathbf{x}_1\|_2 + \|(1-\theta)\mathbf{x}_2\|_2 $$
-          Since $\theta \ge 0$ and $1-\theta \ge 0$, scalars pull out with absolute value unchanged:
-          $$ = \theta \|\mathbf{x}_1\|_2 + (1-\theta)\|\mathbf{x}_2\|_2 $$
-        </div>
-        <div class="proof-step">
-          <strong>Apply Membership:</strong> Substitute the cone conditions $\|\mathbf{x}_i\|_2 \le t_i$:
-          $$ \le \theta t_1 + (1-\theta) t_2 $$
-        </div>
-        <div class="proof-step">
-          <strong>Conclusion:</strong> The convex combination satisfies the cone definition. Thus $\mathcal{Q}^{n+1}$ is a convex set.
-        </div>
+        <p>The Second-Order Cone is convex because the Euclidean norm satisfies the triangle inequality. For the algebraic proof, see <a href="#section-appendix">Appendix A.1</a>.</p>
       </div>
 
-      <h4>Phase 5.3: The Euclidean Norm → SOCP Atom</h4>
+      <h4>The Euclidean Norm Atom</h4>
       <p>LP handles $\ell_1$ and $\ell_\infty$ because they have polyhedral epigraphs. The $\ell_2$ norm is different: its epigraph is curved (an ice-cream cone). This is where SOCP comes in.</p>
       
       <div class="theorem-box">
@@ -154,32 +136,19 @@
         </ul>
       </div>
 
-      <h4>Phase 5.4: The Rotated Second-Order Cone (RSOC)</h4>
+      <h4>The Rotated Second-Order Cone (RSOC)</h4>
       <p>The <strong>rotated second-order cone</strong> handles products and squares. It is the "bridge" between conic programming and quadratic/product constraints.</p>
       $$ \mathcal{Q}_r^{n+2} = \{(u, v, w) \in \mathbb{R} \times \mathbb{R} \times \mathbb{R}^n \mid \|w\|_2^2 \le 2uv, \ u \ge 0, v \ge 0\} $$
       
       <div class="theorem-box">
-        <h4>The Hyperbolic Atom (Phase 5.4 Core)</h4>
+        <h4>The Hyperbolic Atom</h4>
         <p>The canonical hyperbolic constraint involves a product dominating a square:</p>
         $$ w^2 \le xy, \quad x \ge 0, y \ge 0 $$
         <p>This is exactly RSOC membership: $(x, y/2, w) \in \mathcal{Q}_r^3$. (Note the factor of 2 in definition $2uv \ge w^2$).</p>
         <p><b>Quadratic-over-Linear:</b> This also handles $w^2/x \le y$ (for $x>0$). Rewrite as $w^2 \le xy$ with $y \ge 0$.</p>
       </div>
       
-      <div class="proof-box">
-        <h4>Converting RSOC ↔ Standard SOC</h4>
-        <div class="proof-step">
-          <strong>Algebraic Identity:</strong> Let $t = u + v$ and $s = u - v$. Then:
-          $$ t^2 - s^2 = (u+v)^2 - (u-v)^2 = 4uv $$
-        </div>
-        <div class="proof-step">
-          <strong>Equivalence:</strong>
-          $$ \|w\|_2^2 \le 2uv, \ u \ge 0, v \ge 0 \iff \left\| \begin{bmatrix} 2w \\ u-v \end{bmatrix} \right\|_2 \le u + v $$
-        </div>
-        <div class="proof-step">
-          <strong>Practical:</strong> RSOC is not a new cone—it's SOC in rotated coordinates. Solvers accept both.
-        </div>
-      </div>
+      <p>The RSOC is equivalent to the standard SOC under a linear change of coordinates (rotation by 45 degrees). For the derivation, see <a href="#section-appendix">Appendix A.1</a>.</p>
       
       <p><b>Equivalence to SOC:</b> $\mathcal{Q}_r$ is just $\mathcal{Q}$ rotated by 45 degrees.
       $$ (u, v, w) \in \mathcal{Q}_r \iff \left( u+v, \ \begin{bmatrix} u-v \\ \sqrt{2}w \end{bmatrix} \right) \in \mathcal{Q} $$
@@ -199,16 +168,8 @@
           <p><b>Trap:</b> A constraint like $xy \le w^2$ (product $\le$ square) is NOT convex. Only $w^2 \le xy$ (square $\le$ product) is convex (RSOC).</p>
       </div>
 
-      <h3>1.3 SOCP Modeling Cookbook</h3>
-      <p>These are the patterns you should recognize instantly.</p>
-      <div class="recap-box">
-          <ul>
-              <li><b>Norm Objective:</b> $\min \|Ax-b\|_2 \to \min t \text{ s.t. } \|Ax-b\|_2 \le t$ (SOC).</li>
-              <li><b>Robust Linear Constraint:</b> $a^\top x + \rho\|x\|_2 \le b$ (SOC).</li>
-              <li><b>Hyperbolic Constraint:</b> $w^2 \le xy, x,y \ge 0$ (Rotated SOC).</li>
-              <li><b>Quadratic-over-Linear:</b> $\frac{\|Fx+g\|_2^2}{a^\top x+b} \le t$ (Rotated SOC).</li>
-          </ul>
-      </div>
+      <h3>1.3 SOCP Modeling Patterns</h3>
+      <p>Several standard modeling patterns appear repeatedly in SOCP. A <b>Norm Objective</b> $\min \|Ax-b\|_2$ transforms via the epigraph trick into $\min t$ subject to the cone constraint $\|Ax-b\|_2 \le t$. <b>Robust Linear Constraints</b> with ellipsoidal uncertainty naturally map to SOC constraints of the form $a^\top x + \rho\|x\|_2 \le b$. Finally, <b>Hyperbolic</b> constraints ($w^2 \le xy$) and <b>Quadratic-over-Linear</b> terms ($\|Fx+g\|^2 / (a^\top x+b) \le t$) are handled by the Rotated Second-Order Cone.</p>
 
       <h3>1.4 Key Properties of SOCP</h3>
       <ul>
@@ -228,52 +189,8 @@
       </p>
 
       <div class="proof-box">
-        <h4>Derivation of Robust Least Squares SOCP (Unstructured Uncertainty)</h4>
-
-        <div class="proof-step">
-          <strong>Step 1: Formulate the Worst-Case Objective.</strong>
-          Let $r(x) = \max_{\|\Delta A\|_2 \le \rho} \|(Ax - b) + \Delta A x\|_2$.
-          We want to find the perturbation $\Delta A$ that maximizes the residual norm.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 2: Triangle Inequality Upper Bound.</strong>
-          Using the triangle inequality:
-          $$ \|(Ax - b) + \Delta A x\|_2 \le \|Ax - b\|_2 + \|\Delta A x\|_2 $$
-          Since $\|\Delta A x\|_2 \le \|\Delta A\|_2 \|x\|_2 \le \rho \|x\|_2$, we have the upper bound:
-          $$ r(x) \le \|Ax - b\|_2 + \rho \|x\|_2 $$
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 3: Construct Worst-Case Perturbation (Tightness Proof).</strong>
-          Is the bound $\|Ax - b\|_2 + \rho \|x\|_2$ achievable? We construct a specific $\Delta A$ that hits it.
-          <br>Let $r = Ax - b$ be the current residual. We want the perturbation error $\Delta A x$ to align perfectly with $r$.
-          <br><b>Construction:</b> Define the rank-1 matrix:
-          $$ \Delta A = \rho \frac{r}{\|r\|_2} \frac{x^\top}{\|x\|_2} $$
-          (If $r=0$ or $x=0$, use arbitrary unit vectors).
-          <br><b>Verify Norm:</b> The spectral norm is $\|\Delta A\|_2 = \rho \| \frac{r}{\|r\|} \|_2 \| \frac{x^\top}{\|x\|} \|_2 = \rho \cdot 1 \cdot 1 = \rho$. Valid.
-          <br><b>Verify Effect:</b>
-          $$ \Delta A x = \left( \rho \frac{r}{\|r\|_2} \frac{x^\top}{\|x\|_2} \right) x = \rho \frac{r}{\|r\|_2} \frac{x^\top x}{\|x\|_2} = \rho \frac{r}{\|r\|_2} \|x\|_2 $$
-          The total residual is:
-          $$ r + \Delta A x = r + \rho \|x\|_2 \frac{r}{\|r\|_2} = r \left( 1 + \frac{\rho \|x\|_2}{\|r\|_2} \right) $$
-          The norm is:
-          $$ \|r + \Delta A x\|_2 = \|r\|_2 \left( 1 + \frac{\rho \|x\|_2}{\|r\|_2} \right) = \|r\|_2 + \rho \|x\|_2 $$
-          Thus, the bound is tight.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 4: Formulate as SOCP.</strong>
-          The problem minimizes the sum of two Euclidean norms: $\|A\mathbf{x} - \mathbf{b}\|_2 + \rho \|\mathbf{x}\|_2$.
-          We introduce epigraph variables $t_1, t_2$ to move the norms to the constraints:
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & t_1 + \rho t_2 \\
-          \text{subject to} \quad & \|A\mathbf{x} - \mathbf{b}\|_2 \le t_1 \\
-          & \|\mathbf{x}\|_2 \le t_2
-          \end{aligned}
-          $$
-          These are standard Second-Order Cone (SOC) constraints. Thus, Robust Least Squares is an SOCP.
-        </div>
+        <h4>Derivation of Robust Least Squares SOCP</h4>
+        <p>The worst-case residual norm simplifies to $\|Ax-b\|_2 + \rho\|x\|_2$. This sum of norms can be minimized by introducing two auxiliary variables, leading to an SOCP. For the proof of tightness (constructing the worst-case perturbation), see <a href="#section-appendix">Appendix A.2</a>.</p>
       </div>
 
       <h4>Example 8.2: Sum of Euclidean Norms (Fermat-Weber Problem)</h4>
@@ -359,7 +276,7 @@
       </ul>
 
       <div class="proof-box">
-        <h4>Derivation: Robust Ellipsoidal Constraint (Phase 5.5)</h4>
+        <h4>Derivation: Robust Ellipsoidal Constraint</h4>
         <div class="proof-step">
           <strong>Step 1: Expand.</strong> Let $a_i \in \{ \bar{a}_i + P_i u \mid \|u\|_2 \le 1 \}$. We require $(\bar{a}_i + P_i u)^\top x \le b_i$ for all $\|u\|_2 \le 1$.
           This is equivalent to the worst-case condition:
@@ -493,27 +410,7 @@
 
       <div class="proof-box">
         <h4>Full Proof of the Schur Complement Lemma</h4>
-        <div class="proof-step">
-            <strong>Step 1: Gaussian Elimination (Block Form).</strong>
-            To diagonalize the matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$, we want to eliminate the off-diagonal block $B$.
-            <br>Multiply by the elimination matrix $L$:
-            $$ L = \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} $$
-            Compute the congruence transformation $L M L^\top$:
-            $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} I & -A^{-1}B \\ 0 & I \end{bmatrix} $$
-            $$ = \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top - B^\top A^{-1} A & C - B^\top A^{-1} B \end{bmatrix} $$
-            $$ = \begin{bmatrix} A & 0 \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Inertia Property.</strong>
-            Since $L$ is invertible (determinant 1), the matrix $M$ is congruent to the block diagonal matrix.
-            By Sylvester's Law of Inertia, $M \succeq 0 \iff L M L^\top \succeq 0$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Block Diagonal PSD.</strong>
-            A block diagonal matrix is PSD if and only if its diagonal blocks are PSD.
-            $$ \begin{bmatrix} A & 0 \\ 0 & S \end{bmatrix} \succeq 0 \iff A \succeq 0 \text{ and } S \succeq 0 $$
-            Since we assumed $A \succ 0$, the condition reduces to $S = C - B^\top A^{-1} B \succeq 0$.
-        </div>
+        <p>The proof uses block Gaussian elimination (congruence transformation) to diagonalize the block matrix. For the detailed algebraic steps, see <a href="#section-appendix">Appendix A.3</a>.</p>
       </div>
 
       <h4>Schur Complement Applications: The SDP Modeling Cookbook</h4>
@@ -571,7 +468,7 @@
       <p>SDP power comes from two main sources: the Schur Complement (handling inverses) and the Variational Characterization of eigenvalues.</p>
 
       <div class="example-box">
-          <h4>Phase 5.6: The Matrix Inverse Atom (Schur)</h4>
+          <h4>The Matrix Inverse Atom</h4>
           <p>Constraints involving $X^{-1}$ (where $X$ is a variable) are handled by the <b>Schur Complement</b>. This "lifts" the nonlinear inverse into a linear matrix inequality.
           <br><b>Scalar Atom:</b> $x^\top X^{-1} x \le t \iff \begin{bmatrix} X & x \\ x^\top & t \end{bmatrix} \succeq 0$.
           <br><b>Conditions:</b> $X \succ 0$ (strict) or extended definition.
@@ -579,7 +476,7 @@
       </div>
 
       <div class="example-box">
-          <h4>Phase 5.7: The Spectral Atom (Eigenvalues)</h4>
+          <h4>The Spectral Atom</h4>
           <p>Spectral constraints transform directly into LMIs because the PSD cone is defined by eigenvalues.
           <br><b>Max Eigenvalue:</b> $\lambda_{\max}(X) \le t \iff tI - X \succeq 0$.
           <br><b>Min Eigenvalue:</b> $\lambda_{\min}(X) \ge t \iff X - tI \succeq 0$.
@@ -604,55 +501,13 @@
       <p>Minimize the maximum eigenvalue of a symmetric matrix affine in $\mathbf{x}$: $A(\mathbf{x}) = A_0 + \sum x_i A_i$.</p>
       $$ \min_{\mathbf{x}} \lambda_{\max}(A(\mathbf{x})) $$
 
-      <div class="proof-box">
-        <h4>Derivation via Loewner Order</h4>
-        <div class="proof-step">
-          <strong>Variational Characterization:</strong>
-          $\lambda_{\max}(M) = \sup_{\|u\|_2=1} u^\top M u$. This shows $\lambda_{\max}$ is convex.
-        </div>
-        <div class="proof-step">
-          <strong>Loewner Condition:</strong>
-          We know $\lambda_{\max}(M) \le t \iff M \preceq tI$.
-          Proof: $M \preceq tI \iff tI - M \succeq 0 \iff \lambda_{\min}(tI - M) \ge 0 \iff t - \lambda_{\max}(M) \ge 0$.
-        </div>
-        <div class="proof-step">
-          <strong>SDP Form:</strong>
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & t \\
-          \text{subject to} \quad & tI - A(x) \succeq 0
-          \end{aligned}
-          $$
-          This minimizes the largest eigenvalue using an LMI constraint.
-        </div>
-      </div>
+      <p>The condition $\lambda_{\max}(A(x)) \le t$ is equivalent to $A(x) \preceq tI$, which is a Linear Matrix Inequality $tI - A(x) \succeq 0$. Thus, eigenvalue minimization is an SDP.</p>
 
       <h4>Example 8.6: Matrix Norm Minimization</h4>
       <p>Minimize the spectral norm (largest singular value) of $A(x) \in \mathbb{R}^{p \times q}$.</p>
       $$ \min_x \|A(x)\|_2 = \min_x \sqrt{\lambda_{\max}(A(x)^\top A(x))} $$
 
-      <div class="proof-box">
-        <h4>Derivation via Schur Complement</h4>
-        <div class="proof-step">
-          <strong>Eigenvalue Condition:</strong>
-          $\|A\|_2 \le t \iff \lambda_{\max}(A^\top A) \le t^2 \iff A^\top A \preceq t^2 I$.
-        </div>
-        <div class="proof-step">
-          <strong>Schur Complement:</strong>
-          Consider the block matrix $M = \begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix}$.
-          For $t > 0$, $M \succeq 0 \iff tI - A^\top (tI)^{-1} A \succeq 0 \iff tI - \frac{1}{t} A^\top A \succeq 0 \iff A^\top A \preceq t^2 I$.
-        </div>
-        <div class="proof-step">
-          <strong>SDP Form:</strong>
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & t \\
-          \text{subject to} \quad & \begin{bmatrix} tI & A(x) \\ A(x)^\top & tI \end{bmatrix} \succeq 0
-          \end{aligned}
-          $$
-          This LMI exactly encodes the norm constraint.
-        </div>
-      </div>
+      <p>The spectral norm condition $\|A\|_2 \le t$ is equivalent to $A^\top A \preceq t^2 I$. Using the Schur complement, this becomes the LMI $\begin{bmatrix} tI & A \\ A^\top & tI \end{bmatrix} \succeq 0$.</p>
 
       <h4>Deep Dive: Semidefinite Relaxation (SDR)</h4>
       <p>Semidefinite Relaxation (SDR) is a powerful technique for approximating non-convex quadratically constrained quadratic programs (QCQPs).
@@ -716,64 +571,7 @@
       
       <div class="proof-box">
         <h4>SDP Formulation via Log-Det</h4>
-        <div class="proof-step">
-          <strong>Ellipsoid Representation:</strong> A centered ellipsoid is $\mathcal{E}(X) = \{x : x^\top X x \le 1\}$ with $X \succ 0$.
-          <br>Point $a_i$ is contained iff $a_i^\top X a_i \le 1$.
-        </div>
-        <div class="proof-step">
-          <strong>Volume:</strong> $\text{vol}(\mathcal{E}(X)) \propto \det(X^{-1/2}) = (\det X)^{-1/2}$.
-          <br>Minimizing volume $\equiv$ minimizing $\log \det(X^{-1})$.
-        </div>
-        <div class="proof-step">
-          <strong>Primal Problem:</strong>
-          $$
-          \begin{aligned}
-          \text{minimize} \quad & \log \det(X^{-1}) \\
-          \text{subject to} \quad & a_i^\top X a_i \le 1, \ i = 1, \ldots, m \\
-          & X \succ 0
-          \end{aligned}
-          $$
-          The objective is convex (log-det of inverse is convex on PSD cone). Constraints are linear in $X$.
-        </div>
-      </div>
-      
-      <div class="theorem-box">
-        <h4>A Simple Feasible Solution via Schur Complement</h4>
-        <p>Let $S = \sum_{k=1}^m a_k a_k^\top$. Then $X_{\text{simple}} = S^{-1}$ is feasible.</p>
-        <div class="proof-box">
-          <h4>Proof</h4>
-          <p><b>Step 1:</b> Since $\{a_k\}$ span $\mathbb{R}^n$, we have $S \succ 0$, so $S^{-1}$ exists and is PD.</p>
-          <p><b>Step 2:</b> For each $i$, consider the block matrix:
-          $$ M_i = \begin{bmatrix} S & a_i \\ a_i^\top & 1 \end{bmatrix} $$
-          This can be written as a sum of rank-1 PSD matrices, hence $M_i \succeq 0$.</p>
-          <p><b>Step 3:</b> By Schur complement: $M_i \succeq 0$ and $S \succ 0$ implies $1 - a_i^\top S^{-1} a_i \ge 0$.
-          <br>Thus $a_i^\top X_{\text{simple}} a_i \le 1$ for all $i$.</p>
-        </div>
-      </div>
-      
-      <div class="proof-box">
-        <h4>Dual Analysis: Quantifying Suboptimality</h4>
-        <p>The dual of the minimum-volume ellipsoid problem is:</p>
-        $$ \maximize_{\lambda \ge 0} \; \log\det\Big(\sum_{i=1}^m \lambda_i a_i a_i^\top\Big) - \mathbf{1}^\top \lambda + n $$
-        <p>subject to $\sum_{i=1}^m \lambda_i a_i a_i^\top \succ 0$.</p>
-        
-        <div class="proof-step">
-          <strong>Restricted Dual:</strong> Restrict to $\lambda = t\mathbf{1}$ (equal weights). Then $\sum_i \lambda_i a_i a_i^\top = tS$, and the dual objective becomes:
-          $$ \Phi(t) = \log\det(tS) - mt + n = n\log t + \log\det S - mt + n $$
-        </div>
-        <div class="proof-step">
-          <strong>Optimize:</strong> Setting $\Phi'(t) = n/t - m = 0$ gives $t^* = n/m$. The optimal restricted dual value is:
-          $$ \Phi(t^*) = \log\det S + n\log(n/m) - n + n = \log\det S - n\log(m/n) $$
-        </div>
-        <div class="proof-step">
-          <strong>Gap Bound:</strong> By weak duality, $p^* \ge \Phi(t^*)$. Since $f_0(X_{\text{simple}}) = \log\det S$:
-          $$ f_0(X_{\text{simple}}) - p^* \le n\log(m/n) $$
-        </div>
-        <div class="proof-step">
-          <strong>Volume Ratio:</strong> Since $\text{vol}(\mathcal{E}(X)) \propto \exp(\frac{1}{2}f_0(X))$:
-          $$ \boxed{\frac{\text{vol}(\mathcal{E}(X_{\text{simple}}))}{\text{vol}(\mathcal{E}(X^*))} \le \left(\frac{m}{n}\right)^{n/2}} $$
-        </div>
-        <p>This bound depends only on the number of points $m$ and dimension $n$, providing a worst-case guarantee that the simple covariance-type ellipsoid is never catastrophically worse than optimal.</p>
+        <p>The problem minimizes $\log\det(X^{-1})$ subject to $a_i^\top X a_i \le 1$. This is a convex problem in $X$. A simple feasible solution is $X = (\sum a_k a_k^\top)^{-1}$. Using duality, we can show this simple solution is within a factor of $(m/n)^{n/2}$ of the optimal volume.</p>
       </div>
 
       <h4>Phase 5.6: The Matrix Inverse Atom</h4>
@@ -803,27 +601,7 @@
 
       <div class="proof-box">
         <h4>Proof: Embedding SOCP into SDP</h4>
-        <p>We want to encode the Lorentz cone constraint $\|y\|_2 \le t$ (where $y \in \mathbb{R}^k, t \in \mathbb{R}$) as a matrix inequality.</p>
-        <div class="proof-step">
-          <strong>Step 1: Schur Complement Logic.</strong>
-          The inequality $\|y\|_2 \le t$ is equivalent to $t^2 - y^\top y \ge 0$ (assuming $t \ge 0$).
-          Dividing by $t$ (for $t > 0$), this is $t - y^\top (tI)^{-1} y \ge 0$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Constructing the Matrix.</strong>
-          Consider the block matrix:
-          $$ A = \begin{bmatrix} tI & y \\ y^\top & t \end{bmatrix} \in \mathbb{S}^{k+1} $$
-          By the Schur Complement Lemma, $A \succeq 0$ if and only if:
-          <ol>
-              <li>$tI \succ 0$ (which means $t > 0$)</li>
-              <li>The Schur complement $t - y^\top (tI)^{-1} y \ge 0$</li>
-          </ol>
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Conclusion.</strong>
-          The condition $\|y\|_2 \le t$ is equivalent to the LMI $\begin{bmatrix} tI & y \\ y^\top & t \end{bmatrix} \succeq 0$.
-          Since the matrix entries are linear in $(y, t)$, this is a valid SDP constraint.
-        </div>
+        <p>The SOC constraint $\|y\|_2 \le t$ can be rewritten as $t - y^\top (tI)^{-1} y \ge 0$ (for $t > 0$). By the Schur Complement lemma, this is equivalent to the Linear Matrix Inequality $\begin{bmatrix} tI & y \\ y^\top & t \end{bmatrix} \succeq 0$. For the complete derivation, see <a href="#section-appendix">Appendix A.5</a>.</p>
       </div>
 
       <p><b>Computational Trade-off:</b> While SDP is the most general, its solvers (typically $O(n^6)$ or $O(n^4)$ depending on structure) are significantly slower than dedicated SOCP ($O(n^3)$) or LP/QP solvers. <strong>Rule of Thumb:</strong> Always use the most specific problem class that fits your model.</p>
@@ -976,21 +754,7 @@
 
       <div class="proof-box">
           <h4>Algorithm: Bisection</h4>
-          <ol>
-            <li><b>Initialize:</b> Find an interval $[l, u]$ known to contain the optimal value $p^*$.</li>
-            <li><b>Check Feasibility:</b> Let $t = (l+u)/2$. Solve the convex feasibility problem:
-              $$ \text{find } \mathbf{x} \quad \text{subject to } \quad f_i(\mathbf{x}) \le 0, \ A\mathbf{x} = \mathbf{b}, \ f_0(\mathbf{x}) \le t $$
-              Note that $f_0(\mathbf{x}) \le t$ is a convex constraint.
-            </li>
-            <li><b>Update:</b>
-              <ul>
-                <li>If feasible, then the optimal value $p^*$ is at most $t$. Set $u = t$.</li>
-                <li>If infeasible, then $p^*$ must be greater than $t$. Set $l = t$.</li>
-              </ul>
-            </li>
-            <li><b>Repeat:</b> Continue until $u - l < \epsilon$.</li>
-          </ol>
-          <p><b>Complexity:</b> $\lceil \log_2((U_{init}-L_{init})/\epsilon) \rceil$ feasibility solves. This is very efficient.</p>
+          <p>We perform binary search on the optimal value $p^\star$. At each step with midpoint $t$, we check if the convex set $\{x \mid f_0(x) \le t, f_i(x) \le 0, Ax=b\}$ is non-empty. If feasible, $p^\star \le t$; otherwise $p^\star > t$. This requires only a sequence of convex feasibility problems.</p>
       </div>
     </section>
 
@@ -2037,6 +1801,62 @@ problem.solve()</code></pre>
 
     </section>
 
+
+<!-- SECTION 12: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 Geometry of the Second-Order Cone</h3>
+  <div class="proof-box">
+    <h4>Convexity of $\mathcal{Q}^{n+1}$</h4>
+    <p>Let $z_1=(t_1, x_1), z_2=(t_2, x_2) \in \mathcal{Q}$.
+    $\|\theta x_1 + (1-\theta)x_2\| \le \theta \|x_1\| + (1-\theta)\|x_2\| \le \theta t_1 + (1-\theta)t_2$.
+    Thus the convex combination is in $\mathcal{Q}$.</p>
+
+    <h4>RSOC $\leftrightarrow$ SOC</h4>
+    <p>Identity: $4uv = (u+v)^2 - (u-v)^2$.
+    Condition $\|w\|^2 \le 2uv$ becomes $\|w\|^2 + (u-v)^2/2 \le (u+v)^2/2$.
+    This is $\|(\sqrt{2}w, (u-v)/\sqrt{2})\| \le (u+v)/\sqrt{2}$.</p>
+  </div>
+
+  <h3>A.2 Robust Least Squares (SOCP)</h3>
+  <div class="proof-box">
+    <h4>Worst-Case Analysis</h4>
+    <p>Objective: $\max_{\|\Delta A\| \le \rho} \|(A+\Delta A)x - b\|$.
+    By triangle inequality: $\le \|Ax-b\| + \rho \|x\|$.
+    Tightness: Choose $\Delta A = \rho u v^\top$ where $u$ aligns with residual and $v$ aligns with $x$.
+    Result: Minimize $t_1 + \rho t_2$ s.t. $\|Ax-b\| \le t_1, \|x\| \le t_2$.</p>
+  </div>
+
+  <h3>A.3 The Schur Complement Lemma</h3>
+  <div class="proof-box">
+    <h4>Proof via Block Gaussian Elimination</h4>
+    <p>To check $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \succeq 0$ (assuming $A \succ 0$):
+    Minimize $u^\top A u + 2u^\top B v + v^\top C v$ with respect to $u$.
+    Optimal $u = -A^{-1} B v$.
+    Substituted value: $v^\top (C - B^\top A^{-1} B) v$.
+    For $M \succeq 0$, this minimum must be $\ge 0$ for all $v$.
+    Thus $S = C - B^\top A^{-1} B \succeq 0$.</p>
+  </div>
+
+  <h3>A.4 Semidefinite Relaxations</h3>
+  <div class="proof-box">
+    <h4>Max-Cut Relaxation</h4>
+    <p>Original: $\max x^\top L x$ s.t. $x_i \in \{-1, 1\}$.
+    Lift: $X = xx^\top$. Then $X \succeq 0, \text{rank}(X)=1, X_{ii}=1$.
+    Relax: Drop rank constraint.
+    Result: $\max \text{tr}(LX)$ s.t. $X \succeq 0, X_{ii}=1$.
+    This provides an upper bound on the Max-Cut value.</p>
+  </div>
+
+  <h3>A.5 Embedding SOCP in SDP</h3>
+  <div class="proof-box">
+    <h4>Proof via Schur Complement</h4>
+    <p>$\|x\| \le t \iff t^2 - x^\top x \ge 0$ (for $t \ge 0$).
+    $\iff t - x^\top (tI)^{-1} x \ge 0$ (for $t > 0$).
+    Using Schur complement on $\begin{bmatrix} tI & x \\ x^\top & t \end{bmatrix}$, this is equivalent to the LMI.</p>
+  </div>
+</section>
 
 <section class="section-card" id="section-8">
       <h2>Readings & Resources</h2>

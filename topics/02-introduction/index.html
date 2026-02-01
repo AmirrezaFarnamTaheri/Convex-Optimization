@@ -130,18 +130,15 @@
         </div>
 
         <h3>1.3 When Convexity is Lost</h3>
-        <p>Certain structural features act as "kryptonite" to convexity. Recognizing these patterns allows you to immediately identify intractable components.</p>
-        <ul>
-          <li><b>Integer constraints:</b> $x_i \in \mathbb{Z}$ or $x_i \in \{0,1\}$.
-            <br><i>The pathology:</i> <b>Disconnectedness.</b> Convex sets must be connected (you can walk between any two points). Integer sets are discrete islands.
-            <br><i>Why it breaks solvers:</i> Gradient descent relies on "sliding down the hill". If the variables are integers, there is no smooth hill—only discrete jumps. You cannot define a derivative on integers. This forces algorithms to use combinatorial enumeration (checking $2^n$ possibilities), leading to exponential time complexity.</li>
-          <li><b>Nonlinear Equality Constraints:</b> $h(x) = 0$ where $h$ is nonlinear.
-            <br><i>The pathology:</i> Curvature. The constraint $x_1^2 + x_2^2 = 1$ describes a circle. If you take two points on the circle, the line segment connecting them lies <i>inside</i> the circle, violating the constraint. Thus, the feasible set is not convex. Only <b>flat</b> surfaces (planes/affine sets) are valid equality constraints.</li>
-          <li><b>Maximizing a Convex Function:</b> $\max \|x\|_2$.
-            <br><i>The pathology:</i> Boundary solutions. A convex function (like a bowl) achieves its maximum at the <i>boundary</i> of the domain, usually at a vertex. Finding the furthest point from the center requires searching all boundary points, which is combinatorial and difficult. (Minimizing a convex function finds the center, which is easy).</li>
-          <li><b>Products of Variables:</b> $x \cdot y \ge 1$ (or bilinear terms).
-            <br><i>The pathology:</i> Indefinite curvature. The set $\{(x,y) \mid xy \ge 1\}$ defines a hyperbola, which consists of two disconnected components (if $x,y \ne 0$) or a non-convex shape. The Hessian of $f(x,y) = xy$ is $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, which has eigenvalues $+1$ and $-1$. This saddle-point geometry is the hallmark of non-convexity.</li>
-        </ul>
+        <p>Certain structural features act as "kryptonite" to convexity, fundamentally breaking the geometry that allows for efficient solution. Recognizing these patterns allows you to immediately identify intractable components.</p>
+
+        <p><b>Integer constraints</b> ($x_i \in \mathbb{Z}$) destroy the connectedness of the feasible set. A convex set must be "filled in" so you can draw a line between any two points, but integer constraints create discrete islands. This eliminates the ability to compute gradients or "slide down the hill," forcing solvers to fall back on combinatorial enumeration, which generally has exponential complexity.</p>
+
+        <p><b>Nonlinear equality constraints</b> ($h(x)=0$) almost always introduce non-convex curvature. For instance, the constraint $x_1^2 + x_2^2 = 1$ defines a circle. A line connecting two points on the circle passes through the interior, violating the constraint. To maintain convexity, equality constraints must define flat surfaces—points, lines, or hyperplanes—meaning they must be affine.</p>
+
+        <p><b>Maximizing a convex function</b> is geometrically equivalent to finding the furthest point from the center of a bowl. The solution always lies on the boundary, often at a vertex. Finding this point requires searching the entire boundary, which is a combinatorially hard global optimization problem, unlike minimizing a convex function, which simply finds the bottom of the bowl.</p>
+
+        <p>Finally, <b>products of variables</b> or bilinear terms ($x \cdot y$) introduce indefinite curvature. The graph of $f(x,y) = xy$ is a saddle shape—curving up in one direction and down in another. This mixed curvature prevents the "chord above graph" property from holding, destroying the guarantee of a unique global minimum.</p>
 
         <div class="insight">
           <h4>⚠️ Convex Relaxations</h4>
@@ -183,34 +180,9 @@
         </figure>
 
         <h3>2.3 Formal Definition</h3>
-        <p>A mathematical optimization problem is <b>convex</b> if it can be cast in the following canonical form:</p>
-        $$
-        \begin{aligned}
-        \min_{x \in \mathbb{R}^n} \quad & f_0(x) && \text{(Objective function)} \\
-        \text{subject to} \quad & f_i(x) \le 0, && i=1,\dots,m \quad \text{(Inequality constraints)}\\
-        & A x = b && \text{(Equality constraints)}
-        \end{aligned}
-        $$
-        <div class="insight">
-          <h4>Why these specific conditions?</h4>
-          <p>Each condition serves a geometric purpose to ensure the "bowl" shape:</p>
-          <ul>
-            <li><b>Objective ($f_0$ convex):</b> Ensures that if you draw a line between any two points on the cost surface, the line stays <i>above</i> the surface. This prevents "bumps" that create local minima.</li>
-            <li><b>Inequalities ($f_i$ convex):</b> The constraint $f_i(x) \le 0$ defines the set of points "inside the bowl". The intersection of these sets is always convex. If we used concave functions ($f_i(x) \ge 0$), we would get the region "outside the bowl", which typically has holes.</li>
-            <li><b>Equalities ($Ax=b$):</b> Restricts the solution to a flat plane. A plane is the only surface that is simultaneously convex and concave, preserving the convexity of the intersection.</li>
-          </ul>
-        </div>
-        <p>where three conditions must be satisfied:</p>
-        <ol>
-          <li><b>Convex Objective:</b> The function $f_0: \mathcal{D} \to \mathbb{R}$ is convex. Geometrically, this means the graph of the function is bowl-shaped, ensuring that any local minimum is a global minimum.</li>
-          <li><b>Convex Inequality Constraints:</b> The functions $f_i$ defining the sublevel sets must be convex. This ensures that the feasible region defined by $f_i(x) \le 0$ is a convex set (no "dents" or holes).</li>
-          <li><b>Affine Equality Constraints:</b> The equality constraints must be linear/affine ($Ax=b$).
-          <br><i>Intuition:</i> An equality constraint $h(x)=0$ forces the solution to lie on a surface. For the feasible set to be convex, this surface must be "flat". If the surface curves (like a sphere), the line segment connecting two points on the surface will cut through the interior, leaving the set. Affine sets (points, lines, planes, hyperplanes) are the <i>only</i> sets that are both convex and whose boundaries don't curve.
-          <div class="footnote">
-            <b>Terminology Note:</b> We often say "linear constraints" for historical reasons (like in "Linear Programming"), but mathematically, constraints of the form $Ax=b$ or $a^\top x \le b$ are <b>affine</b> (linear + translation). True linearity ($f(x+y)=f(x)+f(y)$) requires the line to pass through the origin ($b=0$). In this course, "linear constraint" always implies "affine constraint".
-          </div>
-          </li>
-        </ol>
+        <p>A mathematical optimization problem is defined as <b>convex</b> if it adheres to a specific canonical structure. We minimize a function $f_0(x)$ subject to $m$ inequality constraints $f_i(x) \le 0$ and a set of equality constraints $Ax=b$. For this problem to be convex, three rigid conditions must be met simultaneously.</p>
+
+        <p>First, the <b>objective function</b> $f_0$ must be convex, ensuring the cost surface is bowl-shaped and free of local "bumps." Second, the <b>inequality constraints</b> must involve convex functions $f_i(x) \le 0$. This condition defines the feasible region as the intersection of sublevel sets, which are themselves convex; essentially, we are constraining the solution to lie "inside" various bowls. Finally, the <b>equality constraints</b> must be affine ($Ax=b$). This restricts the search to a flat subspace (like a line or plane). Flat surfaces are the only geometric objects that are simultaneously convex and concave, preserving the convexity of the intersection without introducing curvature that would violate the definition.</p>
         <p><i>Note:</i> Minimizing a concave function is generally non-convex. Equality constraints $h(x)=0$ where $h$ is convex (but not affine) are generally non-convex (see "Counter-Example Corner" below).</p>
 
         <h4>Sets and Functions: The Vocabulary of Constraints</h4>
@@ -386,50 +358,12 @@
 
         <div class="proof-box">
           <h4>Proof of Global Optimality (The "Straight Line" Argument)</h4>
-          <p>This is the most important theorem in the course. It guarantees that we never get stuck in a "false bottom" when optimizing convex functions. The proof relies on a simple geometric idea: if a better point existed far away, the convex "bowl" shape would force the path towards it to slope downward immediately, meaning our current point wasn't even a local minimum.</p>
+          <p>The proof relies on the geometric property that a convex function cannot have a "bump" blocking the view to a lower point. We proceed by contradiction. Assume $\mathbf{x}^*$ is a <b>local minimum</b>, meaning it is the best point within some small radius $R$. Suppose, however, that it is <b>not</b> a global minimum—that there exists a "challenger" point $\mathbf{y}$ further away with a strictly lower value, $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$.</p>
 
-          <div class="proof-step">
-            <strong>1. Setup: The Local Minimum.</strong>
-            Assume $\mathbf{x}^*$ is a <b>local minimum</b>. This means $\mathbf{x}^*$ is the best point in its immediate neighborhood.
-            <br><i>Mathematically:</i> There is a radius $R > 0$ such that for all feasible $\mathbf{z}$ with $\|\mathbf{z} - \mathbf{x}^*\| < R$, we have $f_0(\mathbf{x}^*) \le f_0(\mathbf{z})$.
-          </div>
+          <p>Because the feasible set is convex, the entire line segment connecting $\mathbf{x}^*$ and $\mathbf{y}$ lies inside the feasible region. We can define points on this line as $\mathbf{z}(\theta) = (1-\theta)\mathbf{x}^* + \theta \mathbf{y}$ for $\theta \in [0, 1]$. Using the definition of convexity (Jensen's inequality), the function value along this line is bounded by the chord connecting the endpoints:</p>
+          $$ f_0(\mathbf{z}(\theta)) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
 
-          <div class="proof-step">
-            <strong>2. The Challenger.</strong>
-            Suppose for the sake of contradiction that $\mathbf{x}^*$ is <b>not</b> a global minimum. Then there must be some "challenger" point $\mathbf{y}$ elsewhere in the feasible set such that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$.
-          </div>
-
-          <div class="proof-step">
-            <strong>3. The Path (Convexity of Set).</strong>
-            Consider the line segment connecting $\mathbf{x}^*$ to $\mathbf{y}$.
-            $$ \mathbf{z}(\theta) = (1-\theta)\mathbf{x}^* + \theta \mathbf{y}, \quad \theta \in [0, 1] $$
-            Since the feasible set is convex, every point on this line is feasible. We can walk straight towards $\mathbf{y}$ without hitting a wall.
-          </div>
-
-          <div class="proof-step">
-            <strong>4. The Value (Convexity of Function).</strong>
-            By Jensen's inequality (the definition of a convex function), the value of the function along this line is bounded by the chord connecting the endpoints:
-            $$ f_0(\mathbf{z}(\theta)) = f_0((1-\theta)\mathbf{x}^* + \theta \mathbf{y}) \le (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{y}) $$
-            We are given that $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$. This means the "challenger" is strictly better.
-            We substitute this strict inequality into the Jensen bound:
-            $$ (1-\theta)f_0(\mathbf{x}^*) + \theta \underbrace{f_0(\mathbf{y})}_{< f_0(\mathbf{x}^*)} < (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) $$
-            Now simplify the right-hand side:
-            $$ (1-\theta)f_0(\mathbf{x}^*) + \theta f_0(\mathbf{x}^*) = (1 - \theta + \theta) f_0(\mathbf{x}^*) = f_0(\mathbf{x}^*) $$
-            Combining these, we get:
-            $$ f_0(\mathbf{z}(\theta)) < f_0(\mathbf{x}^*) $$
-            This inequality holds for <b>any</b> $\theta \in (0, 1]$. It means that as soon as we take even a microscopic step towards $\mathbf{y}$, the function value drops strictly below $f_0(\mathbf{x}^*)$.
-          </div>
-
-          <div class="proof-step">
-            <strong>5. The Contradiction.</strong>
-            Choose a step size $\theta$ small enough so that $\mathbf{z}(\theta)$ is inside the local neighborhood of $\mathbf{x}^*$ (i.e., $\|\mathbf{z}(\theta) - \mathbf{x}^*\| < R$).
-            <br>For this point, we have established two contradictory facts:
-            <ul>
-                <li>It is better than $\mathbf{x}^*$ (from Step 4).</li>
-                <li>It is worse than or equal to $\mathbf{x}^*$ (by definition of local minimum in Step 1).</li>
-            </ul>
-            This contradiction implies that no such challenger $\mathbf{y}$ can exist. Therefore, $\mathbf{x}^*$ is a global minimum.
-          </div>
+          <p>Since $f_0(\mathbf{y}) < f_0(\mathbf{x}^*)$, substituting this strict inequality reveals that for any $\theta > 0$, the value on the line is strictly less than $f_0(\mathbf{x}^*)$. Even for a microscopic step $\theta$ (small enough to stay within the local neighborhood of $\mathbf{x}^*$), the function value drops immediately. This contradicts the definition of $\mathbf{x}^*$ as a local minimum. Therefore, no such challenger $\mathbf{y}$ can exist, and $\mathbf{x}^*$ must be a global minimum.</p>
         </div>
 
         <h3>3.2 Practical Implications</h3>

@@ -67,14 +67,7 @@
       <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match. Most errors in convex optimization are not conceptual—they are <b>type errors</b> disguised as math.</p>
 
       <h4>The Type System of Optimization</h4>
-      <p>Think like a compiler. Every symbol has a declared type.</p>
-      <ul>
-        <li><b>Scalar:</b> $a \in \mathbb{R}$. Simple numbers. They scale vectors and matrices.</li>
-        <li><b>Vector:</b> $x \in \mathbb{R}^n$. An ordered list of $n$ scalars. Interpretation: a point in space or a direction.</li>
-        <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$. A typed operator that transforms vectors from $\mathbb{R}^n$ to $\mathbb{R}^m$.</li>
-        <li><b>Set:</b> $C \subseteq \mathbb{R}^n$. A boolean predicate (membership test) on the space. Constraints define sets.</li>
-        <li><b>Function:</b> $f: D \to Y$. A rule assigning values to inputs. Domains are mandatory, not optional.</li>
-      </ul>
+      <p>Think like a compiler: every symbol in optimization must have a declared type. <b>Scalars</b> ($a \in \mathbb{R}$) are simple numbers that act as weights or objective values. <b>Vectors</b> ($x \in \mathbb{R}^n$) represent points in space or directions, essentially ordered lists of $n$ scalars. <b>Matrices</b> ($A \in \mathbb{R}^{m \times n}$) are typed operators that transform vectors from one space to another. <b>Sets</b> ($C \subseteq \mathbb{R}^n$) function as boolean predicates or membership tests, defining the constraints of a problem. Finally, <b>Functions</b> ($f: D \to Y$) are rules assigning values to inputs, where the domain $D$ is a mandatory part of the definition, not just a suggestion.</p>
 
       <h4>Type Checking Rules</h4>
       <p>You may only add vectors of the same dimension. You may only multiply $A$ and $x$ if inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" prevents silent errors like writing $Ax=b$ with incompatible dimensions or forming gradients of the wrong shape.</p>
@@ -96,28 +89,7 @@
       <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
 
       <h4>The Field Axioms (From Scratch)</h4>
-      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying three bundles of axioms:</p>
-      <ul>
-        <li><b>A) Addition ($\mathbb{F}, +$ is an abelian group):</b>
-            <ul>
-            <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
-            <li><b>Commutativity:</b> $a+b = b+a$.</li>
-            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
-            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
-            </ul>
-        </li>
-        <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
-          <ul>
-            <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
-            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
-            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
-            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
-          </ul>
-        </li>
-        <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
-      </ul>
+      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—that behave like the arithmetic of rational numbers. First, addition must form an <b>abelian group</b>, meaning it is closed, associative, and commutative, with a unique additive identity ($0$) and inverses ($-a$) that allow for subtraction. Second, multiplication on non-zero elements must also form an abelian group, requiring closure, associativity, commutativity, a unique identity ($1 \neq 0$), and inverses ($a^{-1}$) that allow for division. Finally, these two structures are connected by the <b>distributive law</b> ($a(b+c) = ab + ac$), which ensures that multiplication respects addition.</p>
 
       <div class="proof-box">
         <h4>Fundamental Field Lemmas</h4>
@@ -171,10 +143,7 @@
       <p><b>Equality is Coordinatewise:</b> $x=y \iff x_i=y_i$ for all $i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
 
       <h3>1.4 Vector Operations (Forced by Consistency)</h3>
-      <p><b>Vector Operations (Forced by Consistency):</b>
-      <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
-      <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
-      <br>This is why operations on $\mathbb{R}^n$ are "boring"—they are literally scalar algebra applied $n$ times.</p>
+      <p>The definitions of vector operations are forced by the requirement of consistency with scalar algebra. <b>Addition</b> is defined component-wise ($(x+y)_i := x_i + y_i$) to ensure it commutes and inherits the properties of the underlying field. <b>Scalar multiplication</b> is similarly defined ($(ax)_i := a x_i$) to guarantee distributivity, so that $a(x+y) = ax + ay$. Because these operations are simply scalar algebra applied $n$ times in parallel, the structure of $\mathbb{R}^n$ is completely determined by the field $\mathbb{R}$.</p>
 
       <h4>The Axioms Verified (Why it works)</h4>
       <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
@@ -709,17 +678,11 @@
         <br><b>Result:</b> The kernel is the span of $(-2, 1, 0)^\top$ and $(-3, 0, 1)^\top$. It is a 2D plane inside $\mathbb{R}^3$.
         </p>
       </div>
-      <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
-      <ul>
-        <li><b>Kernel (Nullspace):</b> $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
-          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel ($\mathbf{u}-\mathbf{v} \in \mathcal{N}(A)$). It measures the <b>indistinguishable</b> inputs.
-          <br><b>Theorem (Subspace):</b> $\mathcal{N}(A)$ is a subspace of $\mathbb{R}^n$ (closed under addition/scaling).
-        </li>
-        <li><b>Image (Column Space):</b> $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
-          <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. The equation $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \in \mathcal{R}(A)$.
-          <br><b>Theorem (Subspace):</b> $\mathcal{R}(A)$ is a subspace of $\mathbb{R}^m$.
-        </li>
-      </ul>
+      <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$, the domain and codomain are structured by what the map destroys and what it creates.</p>
+
+      <p>The <b>Kernel</b> (or Nullspace), $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$, represents <b>information loss</b>. It contains all the input directions that are flattened to zero by the transformation. This subspace measures ambiguity: two inputs $\mathbf{u}$ and $\mathbf{v}$ are indistinguishable (produce the same output) if and only if their difference lies in the kernel. If the kernel contains non-zero vectors, the map is not invertible because it destroys information.</p>
+
+      <p>The <b>Image</b> (or Column Space), $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$, represents <b>information survival</b>. It is the set of all possible outputs the system can produce. Solving a linear system $A\mathbf{x}=\mathbf{b}$ is simply asking whether the target $\mathbf{b}$ lies within this reachable subspace. If $\mathbf{b}$ is outside the image, the system is inconsistent.</p>
 
       <div class="theorem-box">
         <h4>Structure of Solution Sets: Affine Geometry</h4>
@@ -744,50 +707,16 @@
       </div>
 
       <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
-      <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily. Every input degree of freedom ($n$) must either be annihilated (go to Nullspace) or preserved (go to Rank).</p>
+      <p>The <b>Rank-Nullity Theorem</b> acts as the fundamental conservation law of linear algebra. It asserts that a linear map cannot create or destroy degrees of freedom arbitrarily; every dimension in the input space must be accounted for. Specifically, the dimension of the domain ($n$) splits perfectly into the dimensions of the kernel and the image:</p>
       $$ \boxed{ n = \dim(\mathcal{N}(A)) + \dim(\mathcal{R}(A)) } $$
-      <p><i>Interpretation:</i>
-      <br><b>Rank ($r$):</b> Number of independent constraints the system <i>can</i> impose (or independent directions it can reach).
-      <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
-      <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
-      <div class="insight">
-        <h4>Analogy: Conservation of Information</h4>
-        <p>Think of the input vector $\mathbf{x} \in \mathbb{R}^n$ as a packet containing $n$ independent pieces of information. When it passes through the matrix $A$:</p>
-        <ul>
-            <li><b>Rank ($r$):</b> The number of pieces that survive and appear in the output.</li>
-            <li><b>Nullity ($k$):</b> The number of pieces that get "crushed" to zero (lost).</li>
-        </ul>
-        <p><b>Conservation Law:</b> Input Information = Surviving Info + Lost Info.
-        <br>$$ n = r + k $$
-        This means you cannot compress information (lower dimension) without losing something (nullity > 0), nor can you create information from nothing (output dimension cannot exceed input dimension unless redundancy exists).</p>
-      </div>
+      <p>This equation tells a story of information flow. Think of the input vector $\mathbf{x} \in \mathbb{R}^n$ as carrying $n$ independent degrees of freedom. When it passes through the matrix $A$, some of these dimensions survive to form the output (the <b>Rank</b>, $r$), while others are crushed to zero (the <b>Nullity</b>, $k$). The theorem guarantees that $n = r + k$. You cannot compress a high-dimensional space into a lower one without losing information (nullity must be positive), nor can you create dimensions out of thin air.</p>
 
       <h3>2.3 The Four Fundamental Subspaces: Invariant Anatomy</h3>
-      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces. These are not artifacts of calculation; they are the <b>invariant anatomy</b> of the map. They live in two different ambient spaces ($\mathbb{R}^n$ and $\mathbb{R}^m$) and are paired by orthogonality.</p>
+      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ generates four intrinsic subspaces that describe its complete anatomy. These spaces pair up across the domain and codomain, linked by the transpose operation.</p>
 
-      <h4>The Map Spaces (Primal)</h4>
-      <ul>
-        <li><b>Column Space ($\mathcal{R}(A)$):</b> The image of the map $T_A$.
-          $$ \mathcal{R}(A) = \{A\mathbf{x} : \mathbf{x} \in \mathbb{R}^n\} \subseteq \mathbb{R}^m $$
-          It answers: <i>Which vectors in the output space are reachable?</i>
-        </li>
-        <li><b>Nullspace ($\mathcal{N}(A)$):</b> The kernel of the map $T_A$.
-          $$ \mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n : A\mathbf{x} = 0\} \subseteq \mathbb{R}^n $$
-          It answers: <i>Which input directions are annihilated by the map?</i>
-        </li>
-      </ul>
+      <p>In the <b>Primal View</b> (the map itself), we have the <b>Column Space</b> $\mathcal{R}(A) \subseteq \mathbb{R}^m$, which defines the reachable outputs, and the <b>Nullspace</b> $\mathcal{N}(A) \subseteq \mathbb{R}^n$, which defines the directions that are annihilated. These describe existence and uniqueness of solutions.</p>
 
-      <h4>The Dual Spaces (Transpose)</h4>
-      <ul>
-        <li><b>Row Space ($\mathcal{R}(A^\top)$):</b> The image of the dual map $A^\top$.
-          $$ \mathcal{R}(A^\top) = \{A^\top \mathbf{y} : \mathbf{y} \in \mathbb{R}^m\} \subseteq \mathbb{R}^n $$
-          It answers: <i>Which linear constraints are actually active?</i> Each row represents a measurement direction; dependencies among rows mean redundant measurements.
-        </li>
-        <li><b>Left Nullspace ($\mathcal{N}(A^\top)$):</b> The kernel of the dual map.
-          $$ \mathcal{N}(A^\top) = \{\mathbf{y} \in \mathbb{R}^m : A^\top \mathbf{y} = 0\} \subseteq \mathbb{R}^m $$
-          It answers: <i>Which combinations of equations sum to $0=0$?</i> A non-zero vector here represents a dependency among the constraints.
-        </li>
-      </ul>
+      <p>In the <b>Dual View</b> (the transpose $A^\top$), we have the <b>Row Space</b> $\mathcal{R}(A^\top) \subseteq \mathbb{R}^n$, which represents the active measurement directions or constraints. Complementing this is the <b>Left Nullspace</b> $\mathcal{N}(A^\top) \subseteq \mathbb{R}^m$, which reveals dependencies among the equations themselves. A non-zero vector in the left nullspace corresponds to a combination of equations that sums to $0=0$, indicating redundancy.</p>
 
       <table class="data-table">
         <thead>
@@ -961,16 +890,13 @@
       <p>While a matrix $A$ represents a linear map in a specific basis, we are often interested in properties that are intrinsic to the map itself, independent of the basis. These are called <b>invariants</b>.</p>
 
       <h3>3.1 The "Big Three" Invariants and the Spectral Layer</h3>
-      <p>For a square matrix $A \in \mathbb{R}^{n \times n}$ with eigenvalues $\lambda_1, \dots, \lambda_n$ (counted with algebraic multiplicity):</p>
-      <ul>
-        <li><b>Trace:</b> $\mathrm{tr}(A) = \sum_{i=1}^n A_{ii} = \sum_{i=1}^n \lambda_i$.</li>
-        <li><b>Determinant:</b> $\det(A) = \prod_{i=1}^n \lambda_i$.</li>
-        <li><b>Eigenvalues:</b> Roots of the characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$.
-            <br><i>Definition:</i> $\lambda$ is an eigenvalue if there exists $v \neq 0$ such that $Av = \lambda v$.
-            <br><i>Geometric Meaning:</i> $v$ is an <b>invariant direction</b>. The matrix $A$ maps the line spanned by $v$ into itself, scaling it by $\lambda$.
-            <br><i>Dynamics Intuition:</i> If $x_{k+1} = Ax_k$, components of the state aligned with $v$ grow or decay according to $\lambda^k$. This determines the stability of the system.
-        </li>
-      </ul>
+      <p>Algebraic invariants capture properties of a matrix that remain constant regardless of the basis used to represent it. The three most significant invariants—Trace, Determinant, and Eigenvalues—provide different windows into the behavior of the linear operator.</p>
+
+      <p>The <b>Trace</b>, $\mathrm{tr}(A) = \sum_{i=1}^n A_{ii}$, measures the "total energy" or aggregate scaling of the system. Remarkably, this sum of diagonal elements equals the sum of the eigenvalues, $\sum \lambda_i$. It is a linear invariant, meaning the trace of a sum is the sum of the traces.</p>
+
+      <p>The <b>Determinant</b>, $\det(A)$, measures the volume scaling factor of the transformation. Geometrically, it tells us how much the matrix expands or contracts space. Algebraically, it equals the product of the eigenvalues, $\prod \lambda_i$. A determinant of zero signals that the map flattens the space into a lower dimension, destroying volume and invertibility.</p>
+
+      <p><b>Eigenvalues</b> are the roots of the characteristic polynomial $p_A(\lambda) = \det(A - \lambda I)$. An eigenvalue $\lambda$ corresponds to a non-zero eigenvector $v$ such that $Av = \lambda v$. Geometrically, $v$ represents an invariant direction where the complex matrix operation reduces to simple scalar multiplication. These values govern the dynamics of iterative systems: if $|\lambda| > 1$, components along $v$ grow exponentially; if $|\lambda| < 1$, they decay.</p>
 
       <div class="definition-box">
         <h4>Diagonalization Criterion</h4>
@@ -1153,13 +1079,13 @@
 
       <h3>3.5 Spectral Shift</h3>
 
-      <p>Adding a scalar multiple of the identity to a matrix shifts all eigenvalues uniformly while preserving eigenvectors and their multiplicities. This simple operation has profound consequences for conditioning, positive definiteness, and algorithm design.</p>
+      <p>The operation of adding a scalar multiple of the identity matrix, $A \to A + tI$, is known as a <b>spectral shift</b>. This transformation is unique because it shifts every eigenvalue by the scalar $t$ while leaving the eigenvectors completely unchanged. Geometrically, it acts as a uniform background scaling added to the operator's existing behavior.</p>
 
       <div class="theorem-box">
         <h4>Theorem: Spectral Shift Formula</h4>
-        <p>If $A\mathbf{x} = \lambda \mathbf{x}$, then:
-        $$ (A + tI)\mathbf{x} = A\mathbf{x} + tI\mathbf{x} = (\lambda + t)\mathbf{x} $$
-        Thus, the eigenvalues of $A+tI$ are $\{\lambda_i(A) + t\}_{i=1}^n$, and the eigenvectors remain unchanged.</p>
+        <p>If $A\mathbf{x} = \lambda \mathbf{x}$, then applying the shifted operator yields:
+        $$ (A + tI)\mathbf{x} = A\mathbf{x} + tI\mathbf{x} = \lambda \mathbf{x} + t \mathbf{x} = (\lambda + t)\mathbf{x} $$
+        This proves that the eigenvalues of $A+tI$ are exactly $\{\lambda_i(A) + t\}_{i=1}^n$, and the eigenvectors remain identical to those of $A$. This "surgery without side effects" allows us to adjust the spectrum—for instance, making a matrix positive definite—without distorting its geometric structure.</p>
       </div>
 
       <div class="proof-box">

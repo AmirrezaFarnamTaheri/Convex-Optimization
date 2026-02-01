@@ -57,37 +57,17 @@
       <h3>1. Maximum Likelihood Estimation (MLE)</h3>
       <p>MLE seeks parameters $\theta$ that maximize the probability of observed data. For an exponential family with density $p(y|\theta) = \exp(y^\top \theta - \psi(\theta))$, the negative log-likelihood is convex because the log-partition function $\psi(\theta)$ is convex. Minimizing $-\log L(\theta)$ is therefore a convex problem.</p>
 
-      <h3>2. Logistic Regression</h3>
-      <p>For binary classification $y \in \{0,1\}$, we model $p(y=1|x) = \sigma(w^\top x + b)$. The negative log-likelihood is:
-      $$ \ell(w,b) = \sum_{i=1}^n \left( \log(1 + e^{w^\top x_i + b}) - y_i(w^\top x_i + b) \right) $$
-      This function is convex. Its Hessian is $X^\top D X$ where $D$ is a diagonal matrix of variances $p_i(1-p_i)$, ensuring positive semidefiniteness.</p>
+      <h3>2. Logistic Regression and GLMs</h3>
+      <p><b>Logistic Regression</b> models binary outcomes using the sigmoid function. The negative log-likelihood is a sum of softplus functions, which is convex. This framework extends to <b>Generalized Linear Models (GLMs)</b>, where the canonical link function ensures convexity of the negative log-likelihood for distributions like Poisson and Exponential.</p>
 
       <h3>3. Support Vector Machines (SVM)</h3>
-      <p>The hard-margin SVM maximizes the margin $2/\|w\|_2$ separating two classes. This is equivalent to minimizing $\frac{1}{2}\|w\|_2^2$ subject to $y_i(w^\top x_i + b) \ge 1$. The soft-margin variant minimizes $\frac{1}{2}\|w\|_2^2 + C \sum_i \xi_i$ with slack variables, equivalent to minimizing the hinge loss $\sum_i \max(0, 1-y_i(w^\top x_i+b))$.</p>
+      <p>SVMs find the hyperplane that separates classes with the maximum margin. The soft-margin SVM minimizes a trade-off between the $\ell_2$ norm of the weights (regularization) and the hinge loss (classification error). This is a convex quadratic program.</p>
 
-      <h3>4. Regularized Maximum Likelihood</h3>
-      <p>Adding a convex regularizer $R(\theta)$ (like $\|w\|_2^2$ or $\|w\|_1$) to the negative log-likelihood defines a MAP estimate or regularized MLE. This controls overfitting and can induce sparsity (LASSO) or smoothness (Ridge).</p>
+      <h3>4. Regularization and MAP Estimation</h3>
+      <p>Regularization adds a penalty term $R(\theta)$ to the negative log-likelihood, interpreting it as a prior in Bayesian <b>Maximum A Posteriori (MAP)</b> estimation. $\ell_2$ regularization corresponds to a Gaussian prior (Ridge), while $\ell_1$ corresponds to a Laplacian prior (LASSO), inducing sparsity.</p>
 
-      <h3>5. Generalized Linear Models (GLMs)</h3>
-      <p>GLMs extend linear regression to other distributions (Poisson, Exponential) using a link function $g(\mu) = w^\top x$. With the canonical link, the negative log-likelihood is convex. For Poisson regression, $\log(\lambda) = w^\top x$, leading to loss $\sum_i (e^{w^\top x_i} - y_i w^\top x_i)$.</p>
-
-      <h3>6. Multi-Class Classification</h3>
-      <p>Softmax regression handles $K$ classes. The probability of class $k$ is $e^{w_k^\top x} / \sum_j e^{w_j^\top x}$. The cross-entropy loss is convex in the concatenated weight vector. The Hessian is block-structured, facilitating Newton's method.</p>
-
-      <h3>7. Robust Estimation</h3>
-      <p>Standard MLE (like Least Squares) is sensitive to outliers. Robust estimation replaces the quadratic loss with a robust loss like the Huber loss (quadratic near zero, linear far away) or the $\ell_1$ loss. These remain convex but limit the influence of outliers.</p>
-
-      <h3>8. Empirical Risk Minimization (ERM)</h3>
-      <p>Modern ML is often framed as ERM: $\min_\theta \frac{1}{n}\sum_i L(f_\theta(x_i), y_i) + \lambda R(\theta)$. If the loss $L$ is convex (Hinge, Logistic, Exponential) and the model is linear in parameters, the problem is convex.</p>
-
-      <h3>9. Experiment Design</h3>
-      <p>We choose measurement vectors $v_i$ to estimate a vector $x$ from $y_i = v_i^\top x + \epsilon_i$. The error covariance is proportional to $(\sum v_i v_i^\top)^{-1}$. We maximize this "information matrix" in various senses:
-      <ul>
-          <li><strong>D-optimal:</strong> Maximize $\det(\sum v_i v_i^\top)$ (minimize ellipsoid volume).</li>
-          <li><strong>E-optimal:</strong> Maximize $\lambda_{\min}(\sum v_i v_i^\top)$ (minimize worst-case diameter).</li>
-          <li><strong>A-optimal:</strong> Minimize $\text{tr}((\sum v_i v_i^\top)^{-1})$ (minimize average variance).</li>
-      </ul>
-      These can be relaxed to convex problems over the probability simplex of experiment weights.</p>
+      <h3>5. Experiment Design</h3>
+      <p>In experiment design, we choose measurement vectors $v_i$ to minimize the variance of our estimator. This leads to optimizing the information matrix $\sum \lambda_i v_i v_i^\top$. Different scalarizations lead to different designs: <b>D-optimal</b> (determinant) minimizes the confidence ellipsoid volume, while <b>E-optimal</b> (eigenvalue) minimizes the worst-case error. These are convex problems over the probability simplex.</p>
     </section>
 
     <!-- Interactive widgets -->
@@ -123,6 +103,40 @@
       </div>
     </section>
 
+<!-- SECTION 12: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 Logistic Regression Hessian</h3>
+  <div class="proof-box">
+    <h4>Proof of Convexity</h4>
+    <p>Loss: $J(w) = \sum \log(1+e^{z_i}) - y_i z_i$ where $z_i = w^\top x_i$.
+    <br>Gradient: $\nabla J = \sum (\sigma(z_i) - y_i) x_i$.
+    <br>Hessian: $\nabla^2 J = \sum \sigma'(z_i) x_i x_i^\top = \sum \sigma(z_i)(1-\sigma(z_i)) x_i x_i^\top$.
+    <br>Since $\sigma(1-\sigma) > 0$, the Hessian is a sum of rank-1 PSD matrices, so it is PSD.</p>
+  </div>
+
+  <h3>A.2 SVM Dual Problem</h3>
+  <div class="proof-box">
+    <h4>Derivation</h4>
+    <p>Lagrangian: $L = \frac{1}{2}\|w\|^2 + C\sum \xi_i - \sum \alpha_i(y_i(w^\top x_i+b)-1+\xi_i) - \sum \mu_i \xi_i$.
+    <br>Stationarity ($w$): $w = \sum \alpha_i y_i x_i$.
+    <br>Stationarity ($b$): $\sum \alpha_i y_i = 0$.
+    <br>Stationarity ($\xi$): $C - \alpha_i - \mu_i = 0 \implies \alpha_i \le C$.
+    <br>Substitute back: $\max \sum \alpha_i - \frac{1}{2}\sum \alpha_i \alpha_j y_i y_j x_i^\top x_j$ subject to $0 \le \alpha_i \le C, \sum \alpha_i y_i = 0$.</p>
+  </div>
+
+  <h3>A.3 Experiment Design (A-Optimal)</h3>
+  <div class="proof-box">
+    <h4>SDP Formulation</h4>
+    <p>Minimize $\text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$.
+    <br>Using epigraph variables $u_k$: $\min \sum u_k$ s.t. $e_k^\top (\sum \lambda_i v_i v_i^\top)^{-1} e_k \le u_k$.
+    <br>By Schur complement, this is equivalent to:
+    $$ \begin{bmatrix} \sum \lambda_i v_i v_i^\top & e_k \\ e_k^\top & u_k \end{bmatrix} \succeq 0 $$
+    This is an SDP in $\lambda$ and $u$.</p>
+  </div>
+</section>
+
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">
       <h2>Readings & Resources</h2>
@@ -152,30 +166,12 @@
 
       <div class="example-box">
         <h4>Example 11.2: Logistic Regression Gradient</h4>
-        <p><strong>Problem:</strong> Derive the gradient of the negative log-likelihood for logistic regression.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Loss function: $J(w) = \sum_{i=1}^n \left( -y_i \log(\sigma(z_i)) - (1-y_i) \log(1-\sigma(z_i)) \right)$ where $z_i = w^\top x_i$.
-        Simplify to $J(w) = \sum_{i=1}^n \left( \log(1+e^{z_i}) - y_i z_i \right)$.
-        Differentiate with respect to $w$:
-        $$ \nabla J(w) = \sum_{i=1}^n \left( \frac{e^{z_i}}{1+e^{z_i}} x_i - y_i x_i \right) = \sum_{i=1}^n (\sigma(z_i) - y_i) x_i $$
-        In matrix form: $\nabla J(w) = X^\top (\sigma(Xw) - y)$.
-        The Hessian is $\nabla^2 J(w) = X^\top \text{diag}(\sigma(z_i)(1-\sigma(z_i))) X$, which is PSD.</p>
+        <p>The gradient of the logistic loss is $\nabla J(w) = \sum (\sigma(w^\top x_i) - y_i) x_i$. This intuitive result says that we update weights based on the correlation between the input $x_i$ and the prediction error $(\hat{y}_i - y_i)$. For the derivation of the Hessian and proof of convexity, see <a href="#section-appendix">Appendix A.1</a>.</p>
       </div>
 
       <div class="example-box">
         <h4>Example 11.3: Hard-Margin SVM Dual</h4>
-        <p><strong>Problem:</strong> Derive the dual of $\min \frac{1}{2}\|w\|_2^2$ s.t. $y_i(w^\top x_i + b) \ge 1$.</p>
-        <p><strong>Solution:</strong></p>
-        <p>Lagrangian: $L(w,b,\alpha) = \frac{1}{2}\|w\|^2 - \sum_i \alpha_i [y_i(w^\top x_i + b) - 1]$ with $\alpha_i \ge 0$.
-        Minimize w.r.t $w, b$:
-        $$ \nabla_w L = w - \sum_i \alpha_i y_i x_i = 0 \implies w = \sum_i \alpha_i y_i x_i $$
-        $$ \nabla_b L = -\sum_i \alpha_i y_i = 0 \implies \sum_i \alpha_i y_i = 0 $$
-        Substitute $w$ back:
-        $$ L = \frac{1}{2}\|\sum \alpha_i y_i x_i\|^2 - \sum_i \alpha_i y_i (\sum_j \alpha_j y_j x_j)^\top x_i - b\sum \alpha_i y_i + \sum \alpha_i $$
-        $$ = \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j - \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j + \sum \alpha_i $$
-        Dual Problem:
-        $$ \max_\alpha \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i,j=1}^n \alpha_i \alpha_j y_i y_j x_i^\top x_j $$
-        Subject to: $\alpha_i \ge 0$, $\sum \alpha_i y_i = 0$. This is a QP.</p>
+        <p>The dual of the Hard-Margin SVM is a Quadratic Program (QP) that maximizes $\sum \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^\top x_j$ subject to $\alpha_i \ge 0$ and $\sum \alpha_i y_i = 0$. This formulation depends only on dot products $x_i^\top x_j$, enabling the "Kernel Trick". The full derivation parallels the Soft-Margin case in <a href="#section-appendix">Appendix A.2</a> (set $C=\infty$).</p>
       </div>
 
       <div class="example-box">
@@ -302,18 +298,7 @@
 
       <div class="problem">
         <h3>P11.4 — Experiment Design (A-optimal)</h3>
-        <p>Formulate the A-optimal experiment design problem as an SDP.</p>
-        <div class="solution-box">
-          <h4>Solution</h4>
-          <p>We want to minimize $\text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ s.t. $\sum \lambda_i = 1, \lambda_i \ge 0$.</p>
-          <div class="proof-step">
-            Let $X = \sum \lambda_i v_i v_i^\top$. Minimize $\text{tr}(X^{-1})$.
-            Introduce variables $u_k$ to bound eigenvalues or use Schur complement.
-            More simply, cast as:
-            $$ \min \sum_k t_k \quad \text{s.t.} \quad \begin{bmatrix} X & e_k \\ e_k^\top & t_k \end{bmatrix} \succeq 0 $$
-            This is an SDP in $\lambda$ and auxiliary variables $t$.
-          </div>
-        </div>
+        <p>Formulate the A-optimal experiment design problem $\min \text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ as an SDP. See <a href="#section-appendix">Appendix A.3</a> for the Schur Complement derivation.</p>
       </div>
 
       <div class="problem">

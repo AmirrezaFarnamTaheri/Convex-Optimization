@@ -107,42 +107,7 @@
           C = x_0 + V = \{x_0 + v \mid v \in V\}
           $$
           <p>where $x_0$ is any specific point in $C$, and $V$ is a linear subspace of $\mathbb{R}^n$.</p>
-          <div class="proof-box">
-            <h4>Proof: The Geometric Shift</h4>
-            <div class="proof-step">
-              <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. We check if $C$ contains the line through any two points $x_1, x_2 \in C$.
-              <br>Since $x_1, x_2 \in C$, we can write $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
-              <br>Form the affine combination for any $\theta \in \mathbb{R}$:
-              $$
-              z = \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2)
-              $$
-              Distribute and regroup terms relative to $x_0$:
-              $$ z = \theta x_0 + \theta v_1 + (1-\theta)x_0 + (1-\theta)v_2 = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
-              Since $V$ is a subspace, it is closed under scalar multiplication and vector addition.
-              <ul>
-                <li>$\theta v_1 \in V$ and $(1-\theta)v_2 \in V$.</li>
-                <li>Their sum $v' = \theta v_1 + (1-\theta)v_2$ is in $V$.</li>
-              </ul>
-              <br>Therefore, $z = x_0 + v' \in x_0 + V = C$.
-            </div>
-            <div class="proof-step">
-              <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick a base point $x_0 \in C$. Define the set of displacements $V = C - x_0 = \{c - x_0 \mid c \in C\}$. We must prove $V$ is a linear subspace.
-              <ul>
-                <li><b>Contains zero:</b> Since $x_0 \in C$, $x_0 - x_0 = 0 \in V$.</li>
-                <li><b>Closed under scaling:</b> Let $v \in V$ and $\alpha \in \mathbb{R}$. We want $\alpha v \in V$.
-                <br>Since $v \in V$, $x_0 + v \in C$. Since $C$ is affine, the affine combination of $(x_0 + v)$ and $x_0$ with weights $\alpha$ and $(1-\alpha)$ is in $C$:
-                $$ \alpha(x_0 + v) + (1-\alpha)x_0 = \alpha x_0 + \alpha v + x_0 - \alpha x_0 = x_0 + \alpha v $$
-                Since $x_0 + \alpha v \in C$, by definition $\alpha v \in V$.</li>
-                <li><b>Closed under addition:</b> Let $u, w \in V$. We want $u+w \in V$.
-                <br>Since $u, w \in V$, $x_0+u \in C$ and $x_0+w \in C$.
-                <br>Since $C$ is affine, the midpoint is in $C$:
-                $$ m = \frac{1}{2}(x_0+u) + \frac{1}{2}(x_0+w) = x_0 + \frac{1}{2}(u+w) $$
-                Thus $\frac{1}{2}(u+w) \in V$.
-                <br>Since $V$ is closed under scaling (proven above), $2 \cdot \frac{1}{2}(u+w) = u+w \in V$.</li>
-              </ul>
-              Since $V$ contains 0 and is closed under addition and scaling, it is a subspace.
-            </div>
-          </div>
+          <p>This characterization connects the algebraic definition (sums to 1) with the geometric intuition (shifted planes). The proof verifies that the set of displacements $V = C - x_0$ is closed under addition and scaling (see Appendix A.1).</p>
         </div>
 
 
@@ -246,14 +211,7 @@
         </div>
 
         <h4>Operations that Preserve Convexity</h4>
-        <p>The following operations preserve convexity. This is the "calculus" of convex sets.</p>
-        <ul>
-          <li><b>Intersection:</b> $\cap_i C_i$. (Corresponds to logical AND).</li>
-          <li><b>Affine Image:</b> $f(C)$ where $f(x)=Ax+b$.</li>
-          <li><b>Affine Preimage:</b> $f^{-1}(D)$ where $D$ is convex and $f(x)=Ax+b$. (This is the most used constraint form).</li>
-          <li><b>Cartesian Product:</b> $C \times D$.</li>
-          <li><b>Minkowski Sum:</b> $C + D$.</li>
-        </ul>
+        <p>The "calculus" of convex sets relies on operations that preserve convexity. The intersection of any collection of convex sets is convex (corresponding to the logical AND of constraints). Affine maps preserve convexity both forward (images) and backward (preimages), making them the workhorse of modeling linear constraints. Additionally, convexity is preserved under Cartesian products and Minkowski sums ($C+D$). We prove these properties in Section 3.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/convex-vs-nonconvex.png"
@@ -295,59 +253,8 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof of Carathéodory's Theorem (Step-by-Step Reduction)</h4>
-          <p><b>Goal:</b> Show that if a point $\mathbf{x}$ is a convex combination of $k$ points where $k > n+1$, we can rewrite it as a convex combination of $k-1$ points. By repeating this, we stop at $n+1$.</p>
-
-          <div class="proof-step">
-            <strong>Step 1: Setup.</strong>
-            Suppose $\mathbf{x} = \sum_{i=1}^k \theta_i \mathbf{x}_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$. Assume $k > n+1$.
-            The $k$ points are <b>affinely dependent</b>. This means we can find coefficients $\alpha_1, \dots, \alpha_k$ (not all zero) that sum to zero, such that the weighted sum of vectors is also zero:
-            $$ \sum_{i=1}^k \alpha_i \mathbf{x}_i = 0, \quad \sum_{i=1}^k \alpha_i = 0 $$
-            Since $\sum \alpha_i = 0$, some $\alpha_i$ must be positive and some negative.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: The Perturbation Strategy.</strong>
-            We want to change the weights $\theta_i$ to eliminate one point while keeping the sum valid.
-            Consider new weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$.
-            We need to verify two things:
-            <ol>
-                <li><b>Affine Sum is Preserved:</b> The weights still sum to 1.
-                $$ \sum \theta'_i = \sum (\theta_i - \lambda \alpha_i) = \sum \theta_i - \lambda \sum \alpha_i = 1 - \lambda(0) = 1 $$
-                </li>
-                <li><b>Point is Preserved:</b> The combination still produces $\mathbf{x}$.
-                $$ \sum \theta'_i \mathbf{x}_i = \sum (\theta_i - \lambda \alpha_i)\mathbf{x}_i = \sum \theta_i \mathbf{x}_i - \lambda \sum \alpha_i \mathbf{x}_i = \mathbf{x} - \lambda(0) = \mathbf{x} $$
-                </li>
-            </ol>
-            Thus, for any $\lambda$, the new combination is a valid affine representation of $\mathbf{x}$. Our goal is to choose $\lambda$ so it becomes a valid <i>convex</i> representation (non-negative weights) with fewer non-zero terms.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Moving to the Boundary.</strong>
-            We need to choose $\lambda$ so that all new weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$ remain non-negative, but at least one becomes exactly 0.
-            <br>Analyze the condition $\theta_i - \lambda \alpha_i \ge 0$ for each index $i$:
-            <ul>
-                <li><b>Case 1: $\alpha_i \le 0$.</b> Since $\lambda > 0$, the term $-\lambda \alpha_i \ge 0$. The weight $\theta'_i$ increases or stays constant. Since we started with $\theta_i > 0$, we are safe.</li>
-                <li><b>Case 2: $\alpha_i > 0$.</b> Here, the weight decreases as $\lambda$ increases. To keep $\theta'_i \ge 0$, we require $\theta_i \ge \lambda \alpha_i$, or $\lambda \le \frac{\theta_i}{\alpha_i}$.</li>
-            </ul>
-            To ensure <i>all</i> weights remain non-negative, $\lambda$ must satisfy this upper bound for all $i$ where $\alpha_i > 0$. To eliminate at least one point, we push $\lambda$ to the tightest such bound:
-            $$ \lambda^* = \min_{\{i \mid \alpha_i > 0\}} \frac{\theta_i}{\alpha_i} $$
-            Let $j$ be an index that achieves this minimum. By construction, $\theta'_j(\lambda^*) = 0$ and $\theta'_i(\lambda^*) \ge 0$ for all $i$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: Reduction.</strong>
-            Set the new weights $\theta'_i = \theta_i - \lambda^* \alpha_i$.
-            <ul>
-                <li>For all $i$, $\theta'_i \ge 0$ by construction.</li>
-                <li>For the index $j$, $\theta'_j = 0$.</li>
-                <li>The point $\mathbf{x}$ is now a convex combination of the remaining $k-1$ points (excluding $\mathbf{x}_j$).</li>
-            </ul>
-          </div>
-
-          <div class="proof-step">
-            <strong>Conclusion:</strong> We reduced the count from $k$ to $k-1$. We can repeat this process as long as $k-1 > n+1$. Thus, we eventually express $\mathbf{x}$ using at most $n+1$ points.
-          </div>
+          <h4>Proof Strategy: Reduction via Dependence</h4>
+          <p>The proof relies on linear dependence. If a point $x$ is formed by $k > n+1$ points, the vectors connecting them are linearly dependent. We can then "shift" weights between these points without changing $x$ or the sum of weights, until one weight hits zero. This reduces the representation to $k-1$ points. The full algebraic reduction is detailed in Appendix A.2.</p>
         </div>
 
         <figure style="text-align: center; margin: 24px 0;">
@@ -411,12 +318,7 @@
         </div>
 
         <h3>1.5 Key Properties</h3>
-
-        <ul>
-          <li>Every affine set is convex (but not vice versa).</li>
-          <li>The intersection of any collection of convex sets is convex (proven in Section 3).</li>
-          <li>The union of convex sets is generally <b>not</b> convex.</li>
-        </ul>
+        <p>It is useful to remember the hierarchy: every subspace is an affine set, and every affine set is convex. The converse does not hold. While intersections of convex sets remain convex (allowing us to stack constraints), the <b>union</b> of convex sets is generally non-convex (forming disjunctions or holes), which makes optimization over unions computationally hard.</p>
 
         <div class="widget-container" style="margin: 24px 0;">
           <h3 style="margin-top: 0;">Interactive Tool: Convex Set Checker</h3>
@@ -560,19 +462,11 @@
             </figure>
         </div>
 
-        <ul>
-            <li><b>$\ell_2$ (Euclidean): Circle/Sphere.</b>
-            <br><i>Geometry:</i> Rotationally symmetric and <b>smooth</b> everywhere.
-            <br><i>Optimization Consequence:</i> <b>Uniqueness.</b> When minimizing a linear function $c^\top x$ over the $\ell_2$ ball, there is a unique boundary point where the normal vector aligns with $-c$. Solutions vary continuously with data.</li>
+        <p>The <b>$\ell_2$ (Euclidean)</b> ball is a sphere. Its boundary is rotationally symmetric and smooth everywhere. In optimization, this smoothness leads to <b>uniqueness</b>: when minimizing a linear function over the ball, there is exactly one point where the gradient aligns with the normal. Solutions vary continuously with the data.</p>
 
-            <li><b>$\ell_\infty$ (Max Norm): Square/Box.</b>
-            <br><i>Geometry:</i> <b>Flat faces</b> and corners. The unit ball is the hypercube $\{x : -1 \le x_i \le 1\}$.
-            <br><i>Optimization Consequence:</i> <b>Non-uniqueness.</b> Linear functionals are maximized on entire faces. If the gradient points "mostly" in the $x_1$ direction, the solution is the entire face $x_1=1$. This corresponds to "box constraints" in modeling.</li>
+        <p>The <b>$\ell_\infty$ (Max Norm)</b> ball is a hypercube (box). Its boundary consists of flat faces and corners. This geometry leads to <b>non-uniqueness</b>: linear functionals are often maximized on entire faces. For example, if the gradient points "mostly" in the $x_1$ direction, the solution might be the entire face $x_1=1$. This corresponds to standard box constraints in modeling.</p>
 
-            <li><b>$\ell_1$ (Sum Norm): Diamond/Cross-Polytope.</b>
-            <br><i>Geometry:</i> <b>Pointy corners</b> on the axes. The vertices are $\pm e_i$.
-            <br><i>Optimization Consequence:</i> <b>Sparsity.</b> Because the "pointiest" parts of the ball lie on the coordinate axes, linear optimization tends to land exactly on a vertex (where $n-1$ coordinates are zero). This is the geometric engine behind LASSO and compressed sensing.</li>
-        </ul>
+        <p>The <b>$\ell_1$ (Sum Norm)</b> ball is a cross-polytope (diamond). Its boundary is characterized by <b>pointy corners</b> aligned with the coordinate axes. This leads to <b>sparsity</b>: linear optimization over the diamond tends to land exactly on a vertex where most coordinates are zero. This geometric property is the engine behind LASSO and compressed sensing.</p>
 
         <figure style="text-align: center; margin: 24px 0;">
           <img src="assets/norm-balls.png"
@@ -634,23 +528,8 @@
         </ul>
 
         <div class="proof-box">
-          <h4>Complete Proof: Dual of $\ell_\infty$ is $\ell_1$</h4>
-          <div class="proof-step">
-            <strong>Goal:</strong> Show $\sup_{\|x\|_\infty \le 1} u^\top x = \|u\|_1 = \sum_i |u_i|$.
-          </div>
-          <div class="proof-step">
-            <strong>Upper Bound:</strong> For any $x$ with $\|x\|_\infty \le 1$, we have $|x_i| \le 1$ for all $i$.
-            We use the standard inequality $a \cdot b \le |a| \cdot |b|$:
-            $$ u^\top x = \sum_{i=1}^n u_i x_i \le \sum_{i=1}^n |u_i x_i| = \sum_{i=1}^n |u_i| |x_i| $$
-            Since $|x_i| \le 1$ and $|u_i| \ge 0$, we have $|u_i| |x_i| \le |u_i|$. Thus:
-            $$ \sum_{i=1}^n |u_i| |x_i| \le \sum_{i=1}^n |u_i| = \|u\|_1 $$
-            So $u^\top x \le \|u\|_1$ for all feasible $x$.
-          </div>
-          <div class="proof-step">
-            <strong>Achievability:</strong> Choose $x_i = \text{sign}(u_i)$ for each $i$. Since each component is $\pm 1$ or 0, we have $\|x\|_\infty \le 1$.
-            $$ u^\top x = \sum_i u_i \cdot \text{sign}(u_i) = \sum_i |u_i| = \|u\|_1 $$
-            Since the upper bound is achievable, it is the supremum.
-          </div>
+          <h4>Proof Strategy</h4>
+          <p>We maximize the linear function $u^\top x$ over the box $\|x\|_\infty \le 1$. The upper bound is derived by term-wise absolute values. Achievability is shown by choosing $x$ to match the signs of $u$ (see Appendix A.3).</p>
         </div>
 
         <h4>Geometry: Dual Ball = Polar of Primal Ball</h4>
@@ -995,53 +874,8 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof: Perspective Preserves Convexity (Step-by-Step)</h4>
-          <p>We want to show that if $u, v$ are in the perspective image $P(C)$, then the entire line segment connecting them is also in $P(C)$.</p>
-
-          <div class="proof-step">
-            <strong>Step 1: Lift to the source set (Pre-image).</strong>
-            Since $u \in P(C)$, there exists $(y, t) \in C$ with $t>0$ such that $u = y/t$.
-            Since $v \in P(C)$, there exists $(y', t') \in C$ with $t'>0$ such that $v = y'/t'$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Target point (Image).</strong>
-            Consider a point on the segment in the image space: $w = \alpha u + (1-\alpha)v$ for $\alpha \in [0, 1]$.
-            $$ w = \alpha \frac{y}{t} + (1-\alpha) \frac{y'}{t'} $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Construct the convex combination in the domain.</strong>
-            We need to find a point in $C$ that maps to $\mathbf{w}$. This point will be a convex combination of $(\mathbf{y},t)$ and $(\mathbf{y}',t')$.
-            <br><b>The Weight Trick:</b> We cannot simply use $\alpha$ as the mixing weight because the perspective map $P$ scales inputs by $1/t$. We need to "compensate" for the different denominators $t$ and $t'$.
-            <br>Define the domain mixing weight $\mu$ proportional to the denominators:
-            $$ \mu = \frac{\alpha t'}{\alpha t' + (1-\alpha)t} $$
-            Observe that since $t, t' > 0$ and $\alpha \in [0,1]$, the denominator is positive and $\mu \in [0, 1]$.
-            <br>Consider the point $\mathbf{z} = \mu (\mathbf{y}, t) + (1-\mu) (\mathbf{y}', t')$. Since $C$ is convex, $\mathbf{z} \in C$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 4: Verify mapping.</strong>
-            We calculate $P(\mathbf{z}) = Y_{num} / D$, where $Y_{num}$ is the vector part and $D$ is the scalar part of $\mathbf{z}$.
-            <br>The scalar denominator is $D = \mu t + (1-\mu)t'$.
-            <br>The vector numerator is $Y_{num} = \mu \mathbf{y} + (1-\mu) \mathbf{y}'$.
-            <br>The projection is:
-            $$ P(\mathbf{z}) = \frac{\mu}{D} \mathbf{y} + \frac{1-\mu}{D} \mathbf{y}' $$
-            Let's simplify the coefficient $\frac{\mu}{D}$:
-            $$ \frac{\mu}{D} = \frac{\mu}{\mu t + (1-\mu)t'} $$
-            Divide numerator and denominator by $\mu$:
-            $$ \frac{\mu}{D} = \frac{1}{t + \frac{1-\mu}{\mu} t'} $$
-            From the definition of $\mu$, we know the ratio $\frac{1-\mu}{\mu} = \frac{(1-\alpha)t}{\alpha t'}$. Substituting this back:
-            $$ \frac{\mu}{D} = \frac{1}{t + \frac{(1-\alpha)t}{\alpha t'} t'} = \frac{1}{t + \frac{1-\alpha}{\alpha} t} = \frac{1}{t (1 + \frac{1-\alpha}{\alpha})} = \frac{1}{t (\frac{1}{\alpha})} = \frac{\alpha}{t} $$
-            Similarly, we can show $\frac{1-\mu}{D} = \frac{1-\alpha}{t'}$.
-            <br>Substituting these coefficients back into the expression for $P(\mathbf{z})$:
-            $$ P(\mathbf{z}) = \frac{\alpha}{t} \mathbf{y} + \frac{1-\alpha}{t'} \mathbf{y}' = \alpha \left(\frac{\mathbf{y}}{t}\right) + (1-\alpha) \left(\frac{\mathbf{y}'}{t'}\right) = \alpha u + (1-\alpha) v = w $$
-          </div>
-
-          <div class="proof-step">
-            <strong>Conclusion:</strong>
-            We found a point $z \in C$ such that $P(z) = w$. Thus $w \in P(C)$.
-          </div>
+          <h4>Proof Strategy: The Weight Trick</h4>
+          <p>We lift points $u, v \in P(C)$ back to $(y,t), (y',t') \in C$. To show the segment $\alpha u + (1-\alpha)v$ is in $P(C)$, we construct a specific convex combination in $C$ using weights proportional to the $t$-coordinates. The detailed algebraic verification is in Appendix A.4.</p>
         </div>
 
         <p>A <a href="javascript:void(0)" class="definition-link">linear-fractional function</a> is a composition of perspective with an affine function:</p>
@@ -1255,15 +1089,9 @@
 
         <h3>5.1 Basic Topological Definitions</h3>
 
-        <p>Let $C \subseteq \mathbb{R}^n$ be any set.</p>
+        <p>To analyze sets rigorously, we need precise definitions of boundaries. The <b>closure</b> $\mathrm{cl}(C)$ is the set of all limits of convergent sequences in $C$; it is the smallest closed set containing $C$. The <b>interior</b> $\mathrm{int}(C)$ consists of points that can be surrounded by a small open ball fully contained in $C$. The <b>boundary</b> is their difference: $\partial C = \mathrm{cl}(C) \setminus \mathrm{int}(C)$.</p>
 
-        <ul>
-          <li><b>Closure</b> $\mathrm{cl}(C)$: The set of all limits of convergent sequences in $C$. It's the smallest closed set containing $C$.</li>
-          <li><b>Interior</b> $\mathrm{int}(C)$: Points with some open ball fully contained in $C$. Intuitively, "strictly inside" $C$.</li>
-          <li><b>Boundary</b> $\partial C = \mathrm{cl}(C) \setminus \mathrm{int}(C)$: The "edge" of $C$.</li>
-          <li><b>Affine hull</b> $\mathrm{aff}(C)$: The smallest affine set containing $C$.</li>
-          <li><b>Relative interior</b> $\mathrm{ri}(C)$: The interior of $C$ <i>relative to</i> $\mathrm{aff}(C)$. Points strictly inside when viewed in the affine hull.</li>
-        </ul>
+        <p>However, for convex sets, the standard interior is often too restrictive. We define the <b>affine hull</b> $\mathrm{aff}(C)$ as the smallest affine set containing $C$. The <b>relative interior</b> $\mathrm{ri}(C)$ is then defined as the interior of $C$ <i>relative</i> to this affine hull. It captures points that are "strictly inside" the set when viewed in its own dimension.</p>
 
         <div class="example-box">
           <h4>Example 3.12: Line Segment in $\mathbb{R}^2$</h4>
@@ -1299,20 +1127,9 @@
         <h3>5.2 Key Properties for Convex Sets</h3>
 
         <div class="theorem-box">
-          <h4>Facts About Convex Sets</h4>
-          <ol>
-            <li><b>Closure is Convex:</b> $\mathrm{cl}(C)$ is convex.
-              <br><i>Proof:</i> Let $a, b \in \mathrm{cl}(C)$. Then there exist sequences $a_k \to a, b_k \to b$ with $a_k, b_k \in C$. For any $\theta$, the sequence $z_k = \theta a_k + (1-\theta)b_k$ lies in $C$ (by convexity) and converges to $\theta a + (1-\theta)b$. Thus the limit is in $\mathrm{cl}(C)$.
-            </li>
-            <li>$\mathrm{int}(C)$ (if nonempty) and $\mathrm{ri}(C)$ are convex.</li>
-            <li>If $C$ is convex with nonempty interior, then $\mathrm{cl}(C) = \mathrm{cl}(\mathrm{int}(C))$ and $\mathrm{int}(C) = \mathrm{int}(\mathrm{cl}(C))$.</li>
-            <li><b>Relative interior of intersection:</b> If $\mathrm{ri}(C) \cap \mathrm{ri}(D) \neq \emptyset$, then:
-              $$
-              \mathrm{ri}(C \cap D) = \mathrm{ri}(C) \cap \mathrm{ri}(D)
-              $$
-            </li>
-            <li><b>Affine functions:</b> If $f(x) = Ax + b$, then $f(\mathrm{ri}(C)) = \mathrm{ri}(f(C))$ for convex $C$.</li>
-          </ol>
+          <h4>Topological Stability of Convexity</h4>
+          <p>Convexity is robust under topological operations. If $C$ is convex, then its closure $\mathrm{cl}(C)$ is convex. This follows because limits preserve non-strict inequalities ($\theta a + (1-\theta)b \in C$). Similarly, the relative interior $\mathrm{ri}(C)$ is always convex.</p>
+          <p>The relative interior respects operations better than the ordinary interior. For example, the relative interior of an intersection is the intersection of relative interiors (provided they overlap), and affine maps commute with the relative interior operator: $f(\mathrm{ri}(C)) = \mathrm{ri}(f(C))$.</p>
         </div>
 
         <h3>5.3 Why Relative Interior Matters</h3>
@@ -1385,6 +1202,96 @@
 
       </section>
 
+
+<!-- SECTION 6: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Affine Set $\iff$ Translated Subspace</h3>
+  <div class="proof-box">
+    <h4>Proof: The Geometric Shift</h4>
+    <div class="proof-step">
+      <strong>($\Leftarrow$ Subspace $\to$ Affine):</strong> Suppose $C = x_0 + V$. We check if $C$ contains the line through any two points $x_1, x_2 \in C$.
+      <br>Since $x_1, x_2 \in C$, we can write $x_1 = x_0 + v_1$ and $x_2 = x_0 + v_2$ for some $v_1, v_2 \in V$.
+      <br>Form the affine combination for any $\theta \in \mathbb{R}$:
+      $$ z = \theta x_1 + (1-\theta)x_2 = \theta(x_0 + v_1) + (1-\theta)(x_0 + v_2) $$
+      Regrouping relative to $x_0$:
+      $$ z = (\theta + 1 - \theta)x_0 + \theta v_1 + (1-\theta)v_2 = x_0 + (\theta v_1 + (1-\theta)v_2) $$
+      Since $V$ is a subspace, the term in parentheses is in $V$. Thus $z \in x_0 + V = C$.
+    </div>
+    <div class="proof-step">
+      <strong>($\Rightarrow$ Affine $\to$ Subspace):</strong> Suppose $C$ is affine. Pick $x_0 \in C$ and define $V = C - x_0$.
+      <ul>
+        <li>$0 \in V$ since $x_0 \in C$.</li>
+        <li><b>Scaling:</b> If $v \in V$, then $x_0+v \in C$. The affine combination $\alpha(x_0+v) + (1-\alpha)x_0 = x_0 + \alpha v$ is in $C$, so $\alpha v \in V$.</li>
+        <li><b>Addition:</b> If $u,w \in V$, their midpoint $\frac{1}{2}(u+w)$ is in $V$ (via affine combo of $x_0+u, x_0+w$). By scaling, $u+w \in V$.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>A.2 Carathéodory's Theorem</h3>
+  <div class="proof-box">
+    <h4>Proof: Reduction via Affine Dependence</h4>
+    <p><b>Goal:</b> If $x = \sum_{i=1}^k \theta_i x_i$ with $k > n+1$, reduce to $k-1$.</p>
+    <div class="proof-step">
+      <strong>Step 1: Affine Dependence.</strong>
+      Since $k > n+1$, the points $x_1, \dots, x_k$ are affinely dependent. There exist scalars $\alpha_1, \dots, \alpha_k$ not all zero such that $\sum \alpha_i x_i = 0$ and $\sum \alpha_i = 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Perturbation.</strong>
+      Consider weights $\theta'_i(\lambda) = \theta_i - \lambda \alpha_i$.
+      These valid affine weights because $\sum \theta'_i = 1 - \lambda(0) = 1$.
+      They produce the same point $x$ because $\sum \theta'_i x_i = x - \lambda(0) = x$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Boundary Finding.</strong>
+      We want $\theta'_i \ge 0$. This requires $\theta_i \ge \lambda \alpha_i$.
+      For $\alpha_i \le 0$, this holds for all $\lambda > 0$.
+      For $\alpha_i > 0$, we need $\lambda \le \theta_i/\alpha_i$.
+      Choose $\lambda^* = \min_{i: \alpha_i > 0} (\theta_i/\alpha_i)$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Reduction.</strong>
+      At $\lambda^*$, one weight becomes zero. The others remain non-negative. We have expressed $x$ as a convex combination of $k-1$ points. Repeat until $k \le n+1$.
+    </div>
+  </div>
+
+  <h3>A.3 Dual of $\ell_\infty$ is $\ell_1$</h3>
+  <div class="proof-box">
+    <h4>Proof Details</h4>
+    <div class="proof-step">
+      <strong>Upper Bound:</strong>
+      $$ u^\top x = \sum u_i x_i \le \sum |u_i| |x_i| \le \sum |u_i| (1) = \|u\|_1 $$
+      (since $|x_i| \le 1$).
+    </div>
+    <div class="proof-step">
+      <strong>Achievability:</strong>
+      Choose $x_i = \mathrm{sign}(u_i)$. Then $x$ is feasible ($\|x\|_\infty \le 1$) and $u^\top x = \sum u_i \mathrm{sign}(u_i) = \sum |u_i| = \|u\|_1$.
+    </div>
+  </div>
+
+  <h3>A.4 Perspective Preserves Convexity</h3>
+  <div class="proof-box">
+    <h4>Algebraic Proof</h4>
+    <p>Let $g(x,t) = t f(x/t)$. We check the definition for $(x,t) = \theta(x_1,t_1) + (1-\theta)(x_2,t_2)$.</p>
+    <div class="proof-step">
+      The argument of $f$ in $g(x,t)$ is:
+      $$ \frac{x}{t} = \frac{\theta x_1 + (1-\theta)x_2}{\theta t_1 + (1-\theta)t_2} $$
+      Define $\lambda = \frac{\theta t_1}{t}$. Then $1-\lambda = \frac{(1-\theta)t_2}{t}$.
+      $$ \frac{x}{t} = \lambda \frac{x_1}{t_1} + (1-\lambda)\frac{x_2}{t_2} $$
+    </div>
+    <div class="proof-step">
+      By convexity of $f$:
+      $$ f(x/t) \le \lambda f(x_1/t_1) + (1-\lambda)f(x_2/t_2) $$
+    </div>
+    <div class="proof-step">
+      Multiply by $t$:
+      $$ t f(x/t) \le t \lambda f(x_1/t_1) + t (1-\lambda) f(x_2/t_2) $$
+      Substitute $\lambda$:
+      $$ g(x,t) \le \theta t_1 f(x_1/t_1) + (1-\theta) t_2 f(x_2/t_2) = \theta g(x_1,t_1) + (1-\theta) g(x_2,t_2) $$
+    </div>
+  </div>
+</section>
 
       <!-- SECTION 6: REVIEW -->
       <section class="section-card" id="section-6">

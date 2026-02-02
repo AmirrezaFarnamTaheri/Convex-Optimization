@@ -126,7 +126,7 @@
         <li><b>Fields:</b> $\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex), and finite fields $\mathbb{F}_p$ (integers mod prime $p$). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$).</li>
         <li><b>Integers ($\mathbb{Z}$):</b> NOT a field (it is a <b>Ring</b>). The equation $2x=1$ has no solution in $\mathbb{Z}$ because 2 has no multiplicative inverse. Linear algebra over $\mathbb{Z}$ is "Module Theory," where bases are not guaranteed.</li>
         <li><b>Integers mod composite ($\mathbb{Z}_6$):</b> NOT a field.
-            <br><i>Failure 1 (Zero Divisors):</i> $2 \cdot 3 = 0 \pmod 6$. Non-zero numbers multiply to zero, destroying the cancellation law ($2x=2y \doesnot \implies x=y$).
+            <br><i>Failure 1 (Zero Divisors):</i> $2 \cdot 3 = 0 \pmod 6$. Non-zero numbers multiply to zero, destroying the cancellation law ($2x=2y \not\implies x=y$).
             <br><i>Failure 2 (Singular Non-zeros):</i> The number 2 has no inverse; you cannot divide by it. Scaling by 2 is not an injective map.
         </li>
       </ul>
@@ -263,7 +263,7 @@
 
       <div class="proof-box">
         <h4>Proof: Preimage Convexity</h4>
-        <p>Let $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$, where $D$ is convex.
+        <p>Let $f(x) = Ax+b$ be an affine map and let $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$, where $D$ is convex.
         <br>Take $x_1, x_2 \in C$ and $\theta \in [0,1]$.
         <br>We test if $x_\theta = \theta x_1 + (1-\theta)x_2$ is in $C$.
         $$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b = \theta (Ax_1+b) + (1-\theta)(Ax_2+b) = \theta y_1 + (1-\theta)y_2 $$
@@ -304,13 +304,13 @@
     <section class="section-card" id="section-subspaces">
       <h2>2. Subspaces and the Four Fundamental Spaces</h2>
 
-      <p>A <a href="javascript:void(0)" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
+      <p>A <a href="#" onclick="event.preventDefault()" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
 
       <h3>2.1 Kernel and Image</h3>
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Kernel and Image</h3>
         <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
+        <iframe sandbox="allow-scripts allow-same-origin" title="Kernel and Image Demo" src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
       <div class="example-box">
@@ -376,7 +376,7 @@
             <td>Null Space</td>
             <td>$\mathcal{N}(A)$</td>
             <td>$\mathbb{R}^n$</td>
-            <td>Lost inputs</td>
+            <td>Indistinguishable inputs</td>
           </tr>
           <tr>
             <td>Row Space</td>

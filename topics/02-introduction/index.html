@@ -1320,6 +1320,7 @@
 import numpy as np
 
 # Problem data
+np.random.seed(0)
 n = 10
 # Generate random PSD matrix
 Sigma = np.random.randn(n, n)
@@ -1341,6 +1342,10 @@ problem = cp.Problem(objective, constraints)
 
 # Solve
 problem.solve()
+
+if problem.status not in ["optimal", "optimal_inaccurate"]:
+    raise RuntimeError(f"Solver failed with status {problem.status}")
+
 print(f"Optimal risk: {problem.value:.4f}")
 print(f"Optimal weights: {w.value}")</code></pre>
 

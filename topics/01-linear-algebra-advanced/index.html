@@ -76,12 +76,11 @@
       <div class="insight">
         <h4>Geometric Interpretation: Volume and Orientation</h4>
         <p>For $A \in \mathbb{R}^{n \times n}$, $|\det(A)|$ represents the volume of the parallelepiped spanned by the columns of $A$. The sign indicates orientation (parity of reflections).
-        <br><b>Properties forced by geometry:</b>
+      <br><b>Properties forced by geometry:</b></p>
         <ul>
           <li><b>Invertibility:</b> $\det(A) \neq 0 \iff$ volume is non-zero $\iff$ columns are linearly independent.</li>
           <li><b>Multiplicativity:</b> $\det(AB) = \det(A)\det(B)$. The volume scaling of a composite map is the product of individual scalings.</li>
         </ul>
-        </p>
       </div>
 
       <h3>1.2 Trace: The Unique Linear Invariant</h3>
@@ -130,13 +129,13 @@
 
       <h3>2.3 Diagonalization and its Failure</h3>
       <p><b>Diagonalization ($A = PDP^{-1}$) is the ideal case.</b>
-      <br><b>Defective Matrices:</b> If geometric multiplicity $<$ algebraic multiplicity, the matrix cannot be diagonalized. This corresponds to the presence of <b>Jordan Blocks</b>.</p>
+      <br><b>Defective Matrices:</b> If geometric multiplicity &lt; algebraic multiplicity, the matrix cannot be diagonalized. This corresponds to the presence of <b>Jordan Blocks</b>.</p>
 
       <h4>Jordan Canonical Form</h4>
       <p>Every matrix $A$ is similar to a block diagonal matrix $J$ with Jordan blocks:
       $$ J_k(\lambda) = \begin{bmatrix} \lambda & 1 & 0 \\ 0 & \lambda & 1 \\ 0 & 0 & \lambda \end{bmatrix} $$
       The "1"s on the superdiagonal represent the "defect"—the coupling between modes that prevents pure diagonalization.
-      <br><i>Practical Note:</i> Jordan form is numerically unstable. In practice (e.g., NumPy), we use the Schur Decomposition ($A = QUQ^\top$, unitary triangular) or SVD.</p>
+      <br><i>Practical Note:</i> Jordan form is numerically unstable. In practice (e.g., NumPy), we use the Schur Decomposition ($A = QUQ^\top$, with Q orthogonal and U quasi-triangular) or SVD.</p>
 
       <h3>2.4 The Spectral Theorem: Perfect Geometry</h3>
       <p><b>Theorem:</b> If $A$ is <b>symmetric</b> ($A = A^\top$), then:
@@ -208,7 +207,7 @@
       <h3>3.4 Convexity of Induced Norms</h3>
       <p>Why are induced norms convex functions of the matrix $A$?
       <br><b>Proof:</b>
-      $$ \|X\|_{a,\mathbf{b}} = \sup_{\|\mathbf{v}\|_\mathbf{b} = 1} \|X\mathbf{v}\|_a = \sup_{\|\mathbf{v}\|_\mathbf{b} = 1} \sup_{\|\mathbf{u}\|_{a^*} \le 1} \mathbf{u}^\top X \mathbf{v} $$
+      $$ \|X\|_{p,q} = \sup_{\|\mathbf{v}\|_p = 1} \|X\mathbf{v}\|_q = \sup_{\|\mathbf{v}\|_p = 1} \sup_{\|\mathbf{u}\|_{q^*} \le 1} \mathbf{u}^\top X \mathbf{v} $$
       For fixed $\mathbf{u}, \mathbf{v}$, the function $f(X) = \mathbf{u}^\top X \mathbf{v} = \langle \mathbf{u}\mathbf{v}^\top, X \rangle$ is linear in $X$.
       <br>Thus, the induced norm is the <b>pointwise supremum</b> of a family of linear functions, which implies it is convex.</p>
     </section>

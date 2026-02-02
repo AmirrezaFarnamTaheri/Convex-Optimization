@@ -127,26 +127,8 @@
       <h3>1.4 Optimality Conditions</h3>
       <div class="theorem-box">
         <h4>Theorem: Subgradient Optimality Condition</h4>
-        <p>For a convex function $f$, a point $\mathbf{x}^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(\mathbf{x}^*)$.</p>
-        <div class="proof-box">
-          <h4>Proof</h4>
-          <div class="proof-step">
-            <strong>1. Direction: Minimizer $\implies$ $0 \in \partial f(\mathbf{x}^*)$</strong>
-            <br>Assume $\mathbf{x}^*$ is a global minimizer. By definition, this means:
-            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) \quad \text{for all } \mathbf{y} \in \mathrm{dom}\, f $$
-            We can rewrite the right-hand side artificially as:
-            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) + 0^\top (\mathbf{y} - \mathbf{x}^*) $$
-            Comparing this to the definition of subgradient ($f(\mathbf{y}) \ge f(\mathbf{x}) + g^\top (\mathbf{y}-\mathbf{x})$), we see that the zero vector $\mathbf{g} = 0$ satisfies the condition. Therefore, $0 \in \partial f(\mathbf{x}^*)$.
-          </div>
-          <div class="proof-step">
-            <strong>2. Direction: $0 \in \partial f(\mathbf{x}^*) \implies$ Minimizer</strong>
-            <br>Assume the zero vector is in the subdifferential set. By definition, this means:
-            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) + 0^\top (\mathbf{y} - \mathbf{x}^*) \quad \text{for all } \mathbf{y} $$
-            The dot product term vanishes:
-            $$ f(\mathbf{y}) \ge f(\mathbf{x}^*) $$
-            This inequality holds for all $\mathbf{y}$ in the domain, which is exactly the definition of $\mathbf{x}^*$ being a global minimizer.
-          </div>
-        </div>
+        <p>For a convex function $f$, a point $\mathbf{x}^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(\mathbf{x}^*)$.
+        <br>This is the subgradient analog of Fermat's rule ($\nabla f(x) = 0$). For the proof showing that $0$ serves as a horizontal supporting hyperplane, see <a href="#section-appendix">Appendix A.1</a>.</p>
       </div>
 
       <div class="insight">
@@ -163,105 +145,31 @@
 
       <h3>1.5 Calculus Rules for Subdifferentials</h3>
 
-      <p>The subdifferential has algebraic properties that mirror those of ordinary derivatives, but with important caveats. These rules are fundamental for computing subdifferentials of composite functions and for deriving optimality conditions in complex problems.</p>
+      <p>Just as smooth calculus allows us to differentiate complex functions using the chain rule and sum rule, subdifferential calculus allows us to compute subgradients of composite convex functions. These rules are sets of vectors, so we use Minkowski sums and convex hulls rather than simple addition.</p>
 
-      <h4>1. Sum Rule</h4>
-      <div class="theorem-box">
-        <h4>Theorem: Sum Rule (Always Valid)</h4>
-        <p>If $f_1, f_2$ are convex, then:
-        $$ \partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x) $$
-        where the right-hand side is the <b>Minkowski sum</b> of sets:
-        $$ \partial f_1(x) + \partial f_2(x) = \{g_1 + g_2 \mid g_1 \in \partial f_1(x), g_2 \in \partial f_2(x)\} $$
-        </p>
-      </div>
-      <p><b>Key insight:</b> The sum rule for subdifferentials holds <i>without any regularity conditions</i>, unlike many other calculus rules. This is one of the major advantages of subdifferential calculus over smooth calculus.</p>
-
-      <h4>2. Scalar Multiplication</h4>
-      <p>For $\alpha > 0$:
-      $$ \partial (\alpha f)(x) = \alpha \partial f(x) = \{\alpha g \mid g \in \partial f(x)\} $$
-      For $\alpha = 0$: $\partial (0 \cdot f)(x) = \{0\}$ (constant function has zero subdifferential).
-      <br>For $\alpha < 0$: This doesn't apply directly since $\alpha f$ is concave, not convex. Use $\partial(-f)(x) = -\partial f(x)$ for concave $f$.</p>
-
-      <h4>3. Affine Composition</h4>
-      <div class="theorem-box">
-        <h4>Theorem: Affine Composition Rule</h4>
-        <p>If $f: \mathbb{R}^m \to \mathbb{R}$ is convex and $g(x) = f(Ax + b)$ where $A \in \mathbb{R}^{m \times n}$, then:
-        $$ \partial g(x) = A^\top \partial f(Ax + b) = \{A^\top v \mid v \in \partial f(Ax + b)\} $$
-        </p>
-      </div>
+      <h4>Sums and Scaling</h4>
+      <p>The <b>Sum Rule</b> is remarkably robust: if $f_1, f_2$ are convex, then $\partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x)$. Unlike in general analysis where domain qualifications are needed, for polyhedral functions (and most practical cases in finite dimensions), equality holds without strict conditions. <b>Scalar multiplication</b> by $\alpha > 0$ scales the set: $\partial (\alpha f)(x) = \alpha \partial f(x)$.</p>
 
       <div class="example-box">
-        <h4>Example 6.4: Ridge Regression Subdifferential</h4>
-        <p>Consider $f(x) = \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$.
-        <br><b>Step 1:</b> Subdifferential of $h(r) = \frac{1}{2}\|r\|_2^2$ is $\partial h(r) = \{r\}$ (since $h$ is differentiable).
-        <br><b>Step 2:</b> By affine composition with $r = Ax - b$:
-        $$ \partial \left(\frac{1}{2}\|Ax - b\|_2^2\right) = A^\top (Ax - b) $$
-        <b>Step 3:</b> By sum rule:
-        $$ \partial f(x) = A^\top(Ax - b) + \lambda x $$
-        Setting $0 \in \partial f(x)$ gives the normal equations: $(A^\top A + \lambda I)x = A^\top b$.</p>
+        <h4>Example 6.4: Ridge Regression</h4>
+        <p>For $f(x) = \frac{1}{2}\|Ax - b\|_2^2 + \frac{\lambda}{2}\|x\|_2^2$, the sum rule gives $\partial f(x) = A^\top(Ax - b) + \lambda x$. Setting $0 \in \partial f(x)$ recovers the normal equations: $(A^\top A + \lambda I)x = A^\top b$. Subdifferential calculus seamlessly handles smooth terms.</p>
       </div>
 
-      <h4>4. Pointwise Maximum</h4>
-      <div class="theorem-box">
-        <h4>Theorem: Max Rule</h4>
-        <p>Let $f(x) = \max\{f_1(x), \ldots, f_m(x)\}$ where each $f_i$ is convex. Then:
-        $$ \partial f(x) = \mathrm{conv}\left(\bigcup_{i \in I(x)} \partial f_i(x)\right) $$
-        where $I(x) = \{i \mid f_i(x) = f(x)\}$ is the set of <b>active</b> functions at $x$, and $\mathrm{conv}$ denotes the convex hull.</p>
-      </div>
-      <p><b>Interpretation:</b> The subdifferential is the convex hull of the subdifferentials of the active functions. If only one function is active (say $f_1(x) > f_i(x)$ for $i \neq 1$), then $\partial f(x) = \partial f_1(x)$.</p>
+      <h4>Affine Composition</h4>
+      <p>If $g(x) = f(Ax + b)$, then $\partial g(x) = A^\top \partial f(Ax + b)$. This rule allows us to "pull back" subgradients through linear maps, exactly like the chain rule $\nabla g(x) = A^\top \nabla f(Ax+b)$.</p>
 
-      <div class="example-box">
-        <h4>Example 6.5: Hinge Loss</h4>
-        <p>The hinge loss $f(z) = \max\{0, 1-z\}$ is used in SVMs. Let $f_1(z) = 0$ and $f_2(z) = 1-z$.
-        <br><b>Case 1:</b> $z > 1$. Then $f(z) = 0$ (only $f_1$ active), so $\partial f(z) = \{0\}$.
-        <br><b>Case 2:</b> $z < 1$. Then $f(z) = 1-z$ (only $f_2$ active), so $\partial f(z) = \{-1\}$.
-        <br><b>Case 3:</b> $z = 1$. Both active! $\partial f_1(1) = \{0\}$, $\partial f_2(1) = \{-1\}$. Thus:
-        $$ \partial f(1) = \mathrm{conv}\{0, -1\} = [-1, 0] $$
-        The subdifferential is an entire interval at the kink.</p>
-      </div>
+      <h4>Pointwise Maximum (The "Envelope" Rule)</h4>
+      <p>If $f(x) = \max\{f_1(x), \ldots, f_m(x)\}$, the subdifferential is the <b>convex hull</b> of the subgradients of the <i>active</i> functions. Let $I(x) = \{i \mid f_i(x) = f(x)\}$ be the indices attaining the maximum. Then:</p>
+      $$ \partial f(x) = \mathrm{conv}\left(\bigcup_{i \in I(x)} \partial f_i(x)\right) $$
+      <p>This explains the behavior of the Hinge Loss $f(z) = \max\{0, 1-z\}$. At $z=1$, both branches are active (0 and $1-z$), with subgradients $\{0\}$ and $\{-1\}$. The subdifferential is the segment $[-1, 0]$.</p>
 
-      <h4>5. Composition with Monotone Functions (Chain Rule)</h4>
-      <div class="theorem-box">
-        <h4>Theorem: Chain Rule for Subdifferentials</h4>
-        <p>Let $f: \mathbb{R}^n \to \mathbb{R}$ and $h: \mathbb{R} \to \mathbb{R}$. Define $g(x) = h(f(x))$.
-        <ul>
-          <li>If $h$ is <b>convex nondecreasing</b> and $f$ is <b>convex</b>, then:
-          $$ \partial g(x) \supseteq \{v \cdot w \mid v \in \partial h(f(x)), w \in \partial f(x)\} $$
-          Equality holds when $\mathrm{int}(\mathrm{dom}\, h) \cap \mathrm{range}(f) \neq \emptyset$.</li>
-          <li>If $h$ is <b>convex nonincreasing</b> and $f$ is <b>concave</b>, the same holds.</li>
-        </ul>
-        </p>
-      </div>
-      <p><b>Warning:</b> The chain rule for subdifferentials requires monotonicity of the outer function $h$. Unlike smooth calculus, $\partial (h \circ f)$ does NOT always equal $h'(f(x)) \cdot \partial f(x)$ for general $h$.</p>
+      <h4>Chain Rule</h4>
+      <p>For a composition $g(x) = h(f(x))$, we need monotonicity to preserve convexity. If $h$ is convex nondecreasing and $f$ is convex, the chain rule is:</p>
+      $$ \partial g(x) \supseteq \{v \cdot w \mid v \in \partial h(f(x)), w \in \partial f(x)\} $$
+      <p>Equality typically holds under mild domain conditions (e.g., if the domain of $h$ overlaps the range of $f$ appropriately).</p>
 
-      <div class="example-box">
-        <h4>Example 6.6: Subgradient of $e^{|x|}$</h4>
-        <p>Let $g(x) = e^{|x|}$. This is the composition of $h(u) = e^u$ (convex, non-decreasing) and $f(x) = |x|$ (convex).
-        <br>We compute $\partial g(0)$ using the chain rule.
-        <ul>
-            <li>At $x=0$, $f(0) = 0$. The outer subgradient is $\partial h(0) = \{e^0\} = \{1\}$.</li>
-            <li>The inner subgradient is $\partial f(0) = [-1, 1]$.</li>
-            <li>Chain rule set: $\{v \cdot w \mid v \in \{1\}, w \in [-1, 1]\} = [-1, 1]$.</li>
-        </ul>
-        Thus $\partial g(0) = [-1, 1]$. This matches the geometric intuition of a "V" shape curved exponentially.</p>
-      </div>
-
-      <h4>6. Conditions for Sum Rule Equality</h4>
-      <p>While the sum rule $\partial (f_1 + f_2)(x) = \partial f_1(x) + \partial f_2(x)$ always holds, many other rules require <b>qualification conditions</b>:</p>
-      <ul>
-        <li><b>Relative Interior Condition:</b> $\mathrm{ri}(\mathrm{dom}(f_1)) \cap \mathrm{ri}(\mathrm{dom}(f_2)) \neq \emptyset$</li>
-        <li>This ensures that the domains "overlap sufficiently" for the calculus to behave well</li>
-        <li>When this fails, inclusions may be strict (e.g., $\partial (h \circ f)(x) \supsetneq$ the chain rule formula)</li>
-      </ul>
-
-      <h4>7. Indicator Function Calculus</h4>
-      <p>The <b>indicator function</b> $I_C(x) = 0$ if $x \in C$, else $+\infty$, has subdifferential:
-      $$ \partial I_C(x) = \begin{cases} N_C(x) & \text{if } x \in C \\ \emptyset & \text{if } x \notin C \end{cases} $$
-      where $N_C(x) = \{g \mid g^\top (y - x) \le 0 \text{ for all } y \in C\}$ is the <b>normal cone</b>.
-      <br><br>
-      <b>Application:</b> For constrained optimization $\min f(x)$ subject to $x \in C$, the optimality condition is:
-      $$ 0 \in \partial f(x^*) + N_C(x^*) $$
-      This unifies KKT conditions for smooth problems and subdifferential optimality for nonsmooth ones.</p>
+      <h4>The Indicator Function and Normal Cone</h4>
+      <p>The subdifferential of the indicator function $I_C(x)$ connects analysis to geometry. It is exactly the <b>normal cone</b> $N_C(x)$ introduced in <a href="../04-convex-sets-cones/index.html">Lecture 04</a>. This unifies unconstrained and constrained optimization: minimizing $f(x)$ over $C$ is equivalent to minimizing $f(x) + I_C(x)$. The condition $0 \in \partial(f + I_C)(x)$ becomes $0 \in \partial f(x) + N_C(x)$, which states that the negative subgradient must be a normal vector to the constraint set.</p>
 
       <div class="insight">
         <h4>Summary: When Do Subdifferential Rules Hold?</h4>
@@ -421,24 +329,7 @@
       <h3>3.2 Core Properties</h3>
 
       <h4>Property 1: $f^*$ is Always Convex</h4>
-      <p>A crucial property is that $f^*$ is convex <b>regardless</b> of whether $f$ is convex.</p>
-      <div class="proof-box">
-        <h4>Proof</h4>
-        <p>Take any fixed $\mathbf{x}$. As a function of $\mathbf{y}$, the expression $\phi_{\mathbf{x}}(\mathbf{y}) := \mathbf{y}^\top \mathbf{x} - f(\mathbf{x})$ is <b>affine</b> in $\mathbf{y}$ (linear term $\mathbf{y}^\top \mathbf{x}$ plus constant $-f(\mathbf{x})$).
-        <br>Now $f^*$ is the pointwise supremum over all these affine functions:
-        $$ f^*(y) = \sup_{x} \phi_x(y) $$
-        <b>Fact:</b> The pointwise supremum of any family of convex (or affine) functions is convex.
-        <br>Explicitly, if $g(y) = \sup_i g_i(y)$ where each $g_i$ is convex, then for any $\theta \in [0,1]$:
-        $$
-        \begin{aligned}
-        g(\theta y_1+(1-\theta)y_2) &= \sup_i g_i(\theta y_1+(1-\theta)y_2) \\
-        &\le \sup_i \big( \theta g_i(y_1) + (1-\theta)g_i(y_2) \big) \\
-        &\le \theta \sup_i g_i(y_1) + (1-\theta)\sup_i g_i(y_2) \\
-        &= \theta g(y_1) + (1-\theta)g(y_2)
-        \end{aligned}
-        $$
-        Thus, $f^*$ is convex for <b>any</b> $f$. The conjugate lives in the "convex world" even if $f$ doesn't.</p>
-      </div>
+      <p>A crucial property is that $f^*$ is convex <b>regardless</b> of whether $f$ is convex. This happens because $f^*$ is the pointwise supremum of affine functions. For the detailed proof, see <a href="#section-appendix">Appendix A.2</a>.</p>
 
       <h4>Property 2: Fenchel's Inequality</h4>
       <p>From the definition $f^*(y) \ge y^\top x - f(x)$, we immediately get <b>Fenchel's Inequality</b>:</p>
@@ -580,39 +471,11 @@
 
       <div class="example-box">
         <h4>Example 6.18: Negative Entropy & Log-Sum-Exp</h4>
-          <p>Let $f(x) = \sum_{i=1}^n x_i \log x_i$ on the probability simplex $\Delta_n = \{x \mid x \ge 0, \sum x_i = 1\}$. This is the negative Shannon entropy.
-          <br><b>Conjugate Derivation:</b>
-          We wish to calculate $f^*(y) = \sup_{x \in \Delta_n} (y^\top x - \sum x_i \log x_i)$. This is a constrained optimization problem:
-          $$ \begin{array}{ll} \text{maximize} & \sum y_i x_i - \sum x_i \log x_i \\ \text{subject to} & \sum x_i = 1, \ x \ge 0 \end{array} $$
-          <br><b>Step 1: Form the Lagrangian.</b>
-          We introduce a Lagrange multiplier $\nu$ for the equality constraint $\sum x_i = 1$. (We implicitly handle $x \ge 0$ by the domain of $\log$).
-          $$ L(x, \nu) = \sum y_i x_i - \sum x_i \log x_i + \nu \left(\sum x_i - 1\right) $$
-          <br><b>Step 2: Find Stationary Point.</b>
-          Take the derivative with respect to $x_i$ and set to zero:
-          $$ \frac{\partial L}{\partial x_i} = y_i - (\log x_i + 1) + \nu = 0 $$
-          Solving for $x_i$:
-          $$ \log x_i = y_i + \nu - 1 \implies x_i(\nu) = e^{y_i + \nu - 1} = e^{y_i} e^{\nu - 1} $$
-          <br><b>Step 3: Determine Multiplier $\nu$.</b>
-          Use the constraint $\sum x_i = 1$:
-          $$ \sum_{i=1}^n x_i(\nu) = \sum_{i=1}^n (e^{y_i} e^{\nu - 1}) = e^{\nu - 1} \sum_{i=1}^n e^{y_i} = 1 $$
-          Solving for the term $e^{\nu-1}$:
-          $$ e^{\nu - 1} = \frac{1}{\sum_{k=1}^n e^{y_k}} $$
-          <br><b>Step 4: Substitute Back.</b>
-          The optimal $x_i^*$ is:
-          $$ x_i^* = e^{y_i} \left( \frac{1}{\sum e^{y_k}} \right) = \frac{e^{y_i}}{\sum_{k=1}^n e^{y_k}} $$
-          (This is the famous <b>Softmax</b> function!)
-          <br><b>Step 5: Compute Optimal Value.</b>
-          Plug $x^*$ into the objective $y^\top x - f(x)$:
-          $$ \text{Value} = \sum_i y_i x_i^* - \sum_i x_i^* \log x_i^* $$
-          Substitute $\log x_i^* = y_i - \log(\sum e^{y_k})$:
-          $$ \begin{aligned}
-             \text{Value} &= \sum y_i x_i^* - \sum x_i^* (y_i - \log(\sum e^{y_k})) \\
-             &= \sum y_i x_i^* - \sum y_i x_i^* + \sum x_i^* \log(\sum e^{y_k}) \\
-             &= \left(\sum x_i^*\right) \log\left(\sum e^{y_k}\right)
-             \end{aligned} $$
-          Since $\sum x_i^* = 1$, the result is:
-          <br><b>Result:</b> $f^*(y) = \log\left(\sum_{i=1}^n e^{y_i}\right)$ (Log-Sum-Exp).
-          <br>This duality is fundamental to Maximum Entropy modeling and Logistic Regression.</p>
+          <p>Let $f(x) = \sum_{i=1}^n x_i \log x_i$ on the probability simplex $\Delta_n$. This is the negative Shannon entropy.
+          <br>The conjugate is the <b>Log-Sum-Exp</b> function:
+          $$ f^*(y) = \log\left(\sum_{i=1}^n e^{y_i}\right) $$
+          The maximizer $x^*$ in the conjugate definition turns out to be the <b>softmax</b> of $y$: $x_i^* = e^{y_i} / \sum e^{y_k}$. This relationship underpins Maximum Entropy modeling and Logistic Regression.
+          <br>For the full step-by-step derivation using Lagrange multipliers, see <a href="#section-appendix">Appendix A.3</a>.</p>
       </div>
 
       <div class="example-box">
@@ -926,11 +789,9 @@
 
         <h3>4.5 Operations Preserving Quasiconvexity</h3>
       <div id="widget-operations-preserving" style="width: 100%; height: 600px; position: relative; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0;"></div>
-        <ul>
-            <li><b>Max:</b> $f(x) = \max_i f_i(x)$ is quasiconvex (Intersection of convex sublevel sets).</li>
-            <li><b>Composition:</b> $g(h(x))$ is quasiconvex if $h$ is quasiconvex and $g$ is <b>non-decreasing</b>.</li>
-            <li><b>Warning:</b> Sums of quasiconvex functions are generally <b>not</b> quasiconvex.</li>
-        </ul>
+        <p>Quasiconvexity is preserved under several operations, the most important being the <b>pointwise maximum</b>. If $f_1, \dots, f_m$ are quasiconvex, then their maximum $f(x) = \max_i f_i(x)$ is also quasiconvex. This follows directly from set theory: the sublevel set of the maximum is the intersection of the sublevel sets of each component, and the intersection of convex sets is convex.</p>
+
+        <p><b>Composition</b> rules also apply, but with fewer restrictions than for convexity. If $h$ is quasiconvex and $g$ is a non-decreasing function (on $\mathbb{R}$), then $g(h(x))$ is quasiconvex. Note that $g$ does not need to be convex; it just needs to preserve the ordering of values. However, a major warning applies: the <b>sum</b> of quasiconvex functions is generally <b>not</b> quasiconvex (e.g., the sum of two bell curves can have two humps).</p>
 
         <h3>4.6 Worked Example: Classification Challenge</h3>
         <p>Determine the convexity properties of the following functions.</p>
@@ -1000,35 +861,7 @@
           <h4>Gradient Condition (3.47)</h4>
           <p>If $f$ is differentiable and $f(x) > 0$, then $f$ is log-concave if and only if for all $x, y \in \mathrm{dom}\, f$:</p>
           $$ \boxed{ \frac{f(y)}{f(x)} \le \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) } $$
-          <p><b>Interpretation:</b> Log-concavity means $f$ grows at most exponentially, with a rate controlled by the tangent of the log. In log-space, this is simply the statement that the tangent hyperplane is a global upper bound.</p>
-
-          <div class="proof-box">
-            <h4>Detailed Proof</h4>
-            <p>Let $h(x) = \log f(x)$. Then $f$ is log-concave $\iff h$ is concave.</p>
-            <div class="proof-step">
-                <strong>Step 1: The Concavity Inequality.</strong>
-                A differentiable function $h$ is concave if and only if for all $x, y$:
-                $$ h(y) \le h(x) + \nabla h(x)^\top (y-x) $$
-            </div>
-            <div class="proof-step">
-                <strong>Step 2: Compute the Gradient of Log.</strong>
-                Using the chain rule:
-                $$ \nabla h(x) = \nabla (\log f(x)) = \frac{1}{f(x)} \nabla f(x) $$
-            </div>
-            <div class="proof-step">
-                <strong>Step 3: Substitute and Rearrange.</strong>
-                Substitute $\nabla h(x)$ into the inequality:
-                $$ \log f(y) \le \log f(x) + \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
-                Move $\log f(x)$ to the left side:
-                $$ \log f(y) - \log f(x) \le \frac{\nabla f(x)^\top (y-x)}{f(x)} \implies \log \left( \frac{f(y)}{f(x)} \right) \le \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
-            </div>
-            <div class="proof-step">
-                <strong>Step 4: Exponentiate.</strong>
-                Since $e^z$ is strictly increasing, we can exponentiate both sides:
-                $$ \frac{f(y)}{f(x)} \le \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) $$
-                This completes the proof.
-            </div>
-          </div>
+          <p><b>Interpretation:</b> Log-concavity means $f$ grows at most exponentially, with a rate controlled by the tangent of the log. In log-space, this is simply the statement that the tangent hyperplane is a global upper bound. For the derivation, see <a href="#section-appendix">Appendix A.4</a>.</p>
         </div>
 
         <div class="theorem-box">
@@ -2210,6 +2043,97 @@
   </div>
 </div>
 
+</section>
+
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Subgradient Optimality Condition</h3>
+  <div class="proof-box">
+    <h4>Proof: $0 \in \partial f(x^*) \iff$ Global Minimum</h4>
+    <div class="proof-step">
+      <strong>($\Rightarrow$)</strong> Assume $0 \in \partial f(x^*)$. By definition of subgradient:
+      $$ f(y) \ge f(x^*) + 0^\top (y - x^*) = f(x^*) \quad \forall y $$
+      Thus $x^*$ is a global minimizer.
+    </div>
+    <div class="proof-step">
+      <strong>($\Leftarrow$)</strong> Assume $x^*$ is a global minimizer. Then $f(y) \ge f(x^*)$ for all $y$.
+      This can be written as $f(y) \ge f(x^*) + 0^\top (y - x^*)$.
+      Comparing this to the subgradient inequality, we see that $g=0$ is a valid subgradient.
+    </div>
+  </div>
+
+  <h3>A.2 Convexity of the Conjugate</h3>
+  <div class="proof-box">
+    <h4>Proof: $f^*$ is always convex</h4>
+    <p>We show that $f^*$ is the pointwise supremum of a family of convex (affine) functions.</p>
+    <div class="proof-step">
+      Fix $x$. Define $\phi_x(y) = x^\top y - f(x)$. This is an affine function of $y$, and thus convex.
+    </div>
+    <div class="proof-step">
+      The conjugate is defined as $f^*(y) = \sup_x \phi_x(y)$.
+    </div>
+    <div class="proof-step">
+      The pointwise supremum of any collection of convex functions is convex.
+      Explicitly, for $\theta \in [0,1]$:
+      $$ f^*(\theta y_1 + (1-\theta)y_2) = \sup_x \phi_x(\theta y_1 + (1-\theta)y_2) $$
+      $$ = \sup_x (\theta \phi_x(y_1) + (1-\theta)\phi_x(y_2)) \le \theta \sup_x \phi_x(y_1) + (1-\theta)\sup_x \phi_x(y_2) $$
+      $$ = \theta f^*(y_1) + (1-\theta)f^*(y_2) $$
+    </div>
+  </div>
+
+  <h3>A.3 Derivation of Log-Sum-Exp Conjugate</h3>
+  <div class="proof-box">
+    <h4>Detailed Derivation</h4>
+    <p>Let $f(x) = \log(\sum e^{x_i})$. We solve the optimization problem defining $f^*(y) = \sup_x (y^\top x - f(x))$.</p>
+    <div class="proof-step">
+        <strong>Step 1: Optimality Condition.</strong>
+        Differentiating with respect to $x$:
+        $$ y - \nabla f(x) = 0 \implies y_i = \frac{e^{x_i}}{\sum_k e^{x_k}} $$
+        This implies two things:
+        1. $y_i > 0$ for all $i$.
+        2. $\sum y_i = \sum \frac{e^{x_i}}{\sum e^{x_k}} = 1$.
+        If $y$ is not in the probability simplex $\Delta$, the supremum is $\infty$ (unbounded).
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Solving for $x$.</strong>
+        We have $y_i = e^{x_i}/(\sum e^{x_k})$. Taking logs: $\log y_i = x_i - \log(\sum e^{x_k})$.
+        Let $C = \log(\sum e^{x_k})$. Then $x_i = \log y_i + C$.
+        Note that $f(x)$ is shift-invariant ($f(x+c\mathbf{1}) = f(x)+c$), so the specific value of $C$ cancels out in the objective $y^\top x - f(x)$ as long as $\sum y_i = 1$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 3: Substitute back.</strong>
+        $$ y^\top x - f(x) = \sum y_i (\log y_i + C) - \log(\sum e^{\log y_i + C}) $$
+        $$ = \sum y_i \log y_i + C \sum y_i - \log(e^C \sum y_i) $$
+        Since $\sum y_i = 1$:
+        $$ = \sum y_i \log y_i + C - (C + \log(1)) = \sum y_i \log y_i $$
+    </div>
+    <div class="proof-step">
+        <strong>Conclusion:</strong>
+        $f^*(y) = \sum y_i \log y_i$ (negative entropy) if $y \in \Delta$, and $\infty$ otherwise.
+    </div>
+  </div>
+
+  <h3>A.4 Log-Concavity Gradient Condition</h3>
+  <div class="proof-box">
+    <h4>Proof: $f(y) \le f(x) \exp\left(\frac{\nabla f(x)^\top(y-x)}{f(x)}\right)$</h4>
+    <div class="proof-step">
+        <strong>Step 1: Log-Concavity Definition.</strong>
+        $f$ is log-concave $\iff h(x) = \log f(x)$ is concave.
+        Differentiable concavity condition: $h(y) \le h(x) + \nabla h(x)^\top (y-x)$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Chain Rule.</strong>
+        $\nabla h(x) = \nabla (\log f(x)) = \frac{\nabla f(x)}{f(x)}$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 3: Substitute and Exponentiate.</strong>
+        $$ \log f(y) \le \log f(x) + \frac{\nabla f(x)^\top (y-x)}{f(x)} $$
+        Exponentiating both sides (since $e^z$ is increasing):
+        $$ f(y) \le f(x) \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right) $$
+    </div>
+  </div>
 </section>
 
     <section class="section-card" id="section-8">

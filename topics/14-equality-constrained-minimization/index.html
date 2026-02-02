@@ -63,7 +63,7 @@
       Here we assume a feasible start ($Ax=b$). The KKT matrix is nonsingular if $\nabla^2 f(x)$ is positive definite on the null space of $A$ and $A$ has full rank.</p>
 
       <h3>3. Elimination Method</h3>
-      <p>We can eliminate the constraints by parameterizing the feasible set as $\{x : Ax=b\} = \{ Fz + \hat{x} : z \in \mathbb{R}^{n-p} \}$, where $F$ is a matrix whose columns span the null space of $A$, and $\hat{x}$ is a particular solution. This reduces the problem to unconstrained minimization of $\phi(z) = f(Fz + \hat{x})$.</p>
+      <p>We can eliminate the constraints by parameterizing the feasible set as $\{x : Ax=b\} = \{ Fz + \hat{x} : z \in \mathbb{R}^{n-p} \}$, where $F$ is a matrix whose columns span the null space of $A$, and $\hat{x}$ is a particular solution. This reduces the problem to unconstrained minimization of $\phi(z) = f(Fz + \hat{x})$. The reduced Hessian $\nabla^2 \phi(z) = F^\top \nabla^2 f(x) F$ relates the KKT system to the unconstrained Newton step.</p>
 
       <h3>4. Newton's Method with Equality Constraints</h3>
       <p>Just like the unconstrained case, we iterate $x_{k+1} = x_k + t \Delta x_{nt}$ with backtracking line search. The Newton decrement is $\lambda(x) = (\Delta x_{nt}^\top \nabla^2 f(x) \Delta x_{nt})^{1/2}$. Convergence is quadratic near the solution.</p>
@@ -114,6 +114,30 @@
         </div>
       </div>
     </section>
+
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 Solvability of KKT System</h3>
+  <div class="proof-box">
+    <h4>Proof of Nonsingularity</h4>
+    <p>Let $M = \begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix}$. Assume $M \begin{bmatrix} x \\ y \end{bmatrix} = 0$.
+    <br>1. $Px + A^\top y = 0$ and $Ax = 0$.
+    <br>2. Multiply first eq by $x^\top$: $x^\top P x + x^\top A^\top y = 0$. Since $Ax=0$, $x^\top P x = 0$.
+    <br>3. Since $P \succ 0$ on $\mathcal{N}(A)$, $x$ must be 0.
+    <br>4. Then $A^\top y = 0$. Since $A$ has full rank, $y=0$.
+    <br>Thus $M$ is nonsingular.</p>
+  </div>
+
+  <h3>A.2 Newton Step as Weighted Least Squares</h3>
+  <div class="proof-box">
+    <h4>Least Squares Interpretation</h4>
+    <p>If $H = L L^\top$, then the Newton step minimizes $\|\nabla f + L^\top L v\|_{L^{-1}}$.
+    <br>Equivalently, it solves $\min \|L v + L^{-\top} g\|_2^2$ subject to $Av = 0$.
+    <br>This connects the Newton step to a constrained least squares problem.</p>
+  </div>
+</section>
 
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">

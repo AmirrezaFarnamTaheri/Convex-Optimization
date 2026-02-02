@@ -64,74 +64,51 @@
       <h2>1. Mathematical Atoms: From Fields to Functions</h2>
 
       <h3>1.1 The Optimization Type System</h3>
-      <p>Optimization is "glue math": we compose maps, stack constraints, take gradients, and build Lagrangians. To do this without errors, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match. Most errors in convex optimization are not conceptual—they are <b>type errors</b> disguised as math.</p>
+      <p>Optimization combines analysis, linear algebra, and geometry: we compose maps, stack constraints, take gradients, and build Lagrangians. To do this effectively, we must treat mathematics as a <b>typed language</b>. Every object has a declared type, and operations are only defined when types match. Most errors in convex optimization are not conceptual—they are <b>type errors</b> disguised as mathematics.</p>
 
       <h4>The Type System of Optimization</h4>
       <p>Think like a compiler. Every symbol has a declared type.</p>
       <ul>
-        <li><b>Scalar:</b> $a \in \mathbb{R}$. Simple numbers. They scale vectors and matrices.</li>
-        <li><b>Vector:</b> $x \in \mathbb{R}^n$. An ordered list of $n$ scalars. Interpretation: a point in space or a direction.</li>
+        <li><b>Scalar:</b> $a \in \mathbb{R}$. Simple numbers used to scale vectors and matrices.</li>
+        <li><b>Vector:</b> $x \in \mathbb{R}^n$. An ordered list of $n$ scalars, interpreted as a point in space or a direction.</li>
         <li><b>Matrix:</b> $A \in \mathbb{R}^{m \times n}$. A typed operator that transforms vectors from $\mathbb{R}^n$ to $\mathbb{R}^m$.</li>
         <li><b>Set:</b> $C \subseteq \mathbb{R}^n$. A boolean predicate (membership test) on the space. Constraints define sets.</li>
         <li><b>Function:</b> $f: D \to Y$. A rule assigning values to inputs. Domains are mandatory, not optional.</li>
       </ul>
 
       <h4>Type Checking Rules</h4>
-      <p>You may only add vectors of the same dimension. You may only multiply $A$ and $x$ if inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" prevents silent errors like writing $Ax=b$ with incompatible dimensions or forming gradients of the wrong shape.</p>
+      <p>Rigorous typing prevents silent errors. You may only add vectors of the same dimension. Matrix-vector multiplication $Ax$ is valid only if the inner dimensions match ($m \times n$ times $n \times 1$). This "shape discipline" is critical when translating math to code (e.g., NumPy or PyTorch), where broadcasting can mask dimensional mismatches.</p>
+
       <div class="example-box">
         <h4>Example: The Silent Killer</h4>
         <p>Consider the gradient update $\mathbf{x}_{k+1} = \mathbf{x}_k - \alpha \nabla f(\mathbf{x}_k)$.
-        <br>If $\mathbf{x} \in \mathbb{R}^n$ (column), then mathematically $\nabla f(\mathbf{x})$ is often treated as a row vector (dual space). However, in code (NumPy/PyTorch), adding a shape $(n,)$ array to a shape $(1, n)$ array might trigger broadcasting, resulting in an $(n, n)$ matrix!
+        <br>If $\mathbf{x} \in \mathbb{R}^n$ is a column vector, mathematically $\nabla f(\mathbf{x})$ is often treated as a row vector (living in the dual space). However, in code, adding a shape $(n,)$ array to a shape $(1, n)$ array might trigger broadcasting, resulting in an $(n, n)$ matrix instead of a vector update!
         <br><b>Rigorous Typing:</b> Always enforce that gradients are column vectors in implementation to match the primal variable's shape.</p>
       </div>
-      <ol>
-        <li><b>Addition:</b> only same type/shape. ($x+y$ defined iff $x, y \in \mathbb{R}^n$)</li>
-        <li><b>Multiplication:</b> inner dimensions must match. ($A x$ defined iff $A \in \mathbb{R}^{m \times n}$ and $x \in \mathbb{R}^n$)</li>
-        <li><b>Equality:</b> both sides must have identical shape. ($Ax = b$ asserts $Ax$ and $b$ live in the same $\mathbb{R}^m$)</li>
-      </ol>
 
       <h3>1.2 Scalars: The Rulebook</h3>
-      <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. Scalars play two roles: weights (coefficients) and objective values.</p>
+      <p>A <b>scalar</b> is an element of a field, usually $\mathbb{R}$. A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—that behave like standard arithmetic. While most linear algebra courses focus on $\mathbb{R}$ or $\mathbb{C}$, the definitions apply to any field.</p>
 
-      <p>You can think of a field as: "a number system where you can add, subtract, multiply, and divide (except by 0), and the usual algebra works." Most linear algebra courses live over $\mathbb{R}$ (real numbers) or $\mathbb{C}$ (complex numbers), but the definitions are built to work over any field $\mathbb{F}$.</p>
-
-      <h4>The Field Axioms (From Scratch)</h4>
-      <p>A <b>field</b> $\mathbb{F}$ is a set equipped with two operations—addition ($+$) and multiplication ($\cdot$)—satisfying three bundles of axioms:</p>
-      <ul>
-        <li><b>A) Addition ($\mathbb{F}, +$ is an abelian group):</b>
-            <ul>
-            <li><b>Closure:</b> $a+b \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(a+b)+c = a+(b+c)$.</li>
-            <li><b>Commutativity:</b> $a+b = b+a$.</li>
-            <li><b>Additive Identity:</b> There exists $0 \in \mathbb{F}$ such that $a+0=a$. (Unique).</li>
-            <li><b>Additive Inverse:</b> For every $a$, there exists $-a$ such that $a+(-a)=0$. This allows subtraction: $a-b := a+(-b)$.</li>
-            </ul>
-        </li>
-        <li><b>B) Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b>
-          <ul>
-            <li><b>Closure:</b> $ab \in \mathbb{F}$.</li>
-            <li><b>Associativity:</b> $(ab)c = a(bc)$.</li>
-            <li><b>Commutativity:</b> $ab = ba$. (Required for fields, unlike skew-fields).</li>
-            <li><b>Multiplicative Identity:</b> There exists $1 \in \mathbb{F}, 1 \neq 0$ such that $a \cdot 1 = a$. (Unique).</li>
-            <li><b>Multiplicative Inverse:</b> For every $a \neq 0$, there exists $a^{-1}$ such that $aa^{-1}=1$. This allows division: $a/b := ab^{-1}$.</li>
-          </ul>
-        </li>
-        <li><b>C) The Bridge Axiom (Distributivity):</b> $a(b+c) = ab + ac$. This ensures multiplication respects addition.</li>
-      </ul>
+      <h4>The Field Axioms</h4>
+      <p>A field must satisfy three groups of axioms:</p>
+      <ol>
+        <li><b>Addition ($\mathbb{F}, +$ is an abelian group):</b> Addition is closed, associative, and commutative. There exists an additive identity $0$ (such that $a+0=a$) and an additive inverse $-a$ (such that $a+(-a)=0$).</li>
+        <li><b>Multiplication ($\mathbb{F} \setminus \{0\}, \cdot$ is an abelian group):</b> Multiplication is closed, associative, and commutative. There exists a multiplicative identity $1 \neq 0$ (such that $a \cdot 1 = a$) and a multiplicative inverse $a^{-1}$ for every non-zero $a$ (such that $a a^{-1} = 1$).</li>
+        <li><b>Distributivity:</b> Multiplication distributes over addition: $a(b+c) = ab + ac$.</li>
+      </ol>
 
       <div class="proof-box">
         <h4>Fundamental Field Lemmas</h4>
         <p>These proofs demonstrate how algebraic rigor underpins "obvious" arithmetic.</p>
         <div class="proof-step">
           <strong>Lemma 1: $0 \cdot a = 0$ for all $a$.</strong>
-          <p>This isn't an axiom; it's a consequence of the additive identity and distributivity.</p>
+          <p>This isn't an axiom; it's a consequence.
           $$ 0\cdot a = (0+0)\cdot a = 0\cdot a + 0\cdot a \quad \text{(Distributivity)} $$
-          Now, we have an equation $x = x + x$ where $x = 0 \cdot a$. To solve for $x$, we add its additive inverse $-(0\cdot a)$ to both sides (cancellation law):
-          $$ 0 = 0\cdot a $$
+          Subtracting $0 \cdot a$ from both sides yields $0 = 0 \cdot a$.</p>
         </div>
         <div class="proof-step">
           <strong>Lemma 2: $(-1)a = -a$.</strong>
-          We must show that $(-1)a$ acts as the additive inverse of $a$.
+          We check if $(-1)a$ acts as the additive inverse of $a$.
           $$ a + (-1)a = 1\cdot a + (-1)\cdot a = (1 + (-1))a = 0\cdot a = 0 $$
           By uniqueness of the additive inverse, $(-1)a = -a$.
         </div>
@@ -140,660 +117,250 @@
           If $ab=0$ and $a \neq 0$, then $b=0$.
           <br><i>Proof:</i> Since $a \neq 0$, $a^{-1}$ exists. Multiply both sides by $a^{-1}$:
           $$ a^{-1}(ab) = a^{-1}(0) \implies (a^{-1}a)b = 0 \implies 1\cdot b = 0 \implies b=0 $$
-          This property fails in rings like $\mathbb{Z}_6$ (where $2 \cdot 3 = 0$), which is why linear algebra requires a field.
         </div>
       </div>
 
-      <h4>Concrete Examples & The Failure Museum</h4>
-      <p>Understanding what <i>breaks</i> when axioms are missing is the best way to understand the axioms.</p>
+      <h4>Examples and Counterexamples</h4>
+      <p>Understanding what <i>breaks</i> when axioms are missing clarifies their importance.</p>
       <ul>
-        <li><b>Fields (Good Citizens):</b>
-            <ul>
-                <li>$\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex).</li>
-                <li><b>Finite fields $\mathbb{F}_p$:</b> Integers mod $p$ (where $p$ is prime). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$). Linear algebra works perfectly here.</li>
-            </ul>
-        </li>
-        <li><b>$\mathbb{Z}$ (Integers):</b> NOT a field. It is a <b>Ring</b>. You cannot solve $2x=1$ in integers because 2 has no multiplicative inverse ($1/2 \notin \mathbb{Z}$). Linear algebra over $\mathbb{Z}$ becomes "Module Theory" (where bases might not exist, and Smith Normal Form replaces SVD).</li>
-        <li><b>$\mathbb{Z}_n$ (Integers mod $n$, composite $n$):</b> NOT a field.
-            <br><i>Example:</i> In $\mathbb{Z}_6$, we have $2 \cdot 3 = 0 \pmod 6$.
-            <br><b>Failure 1 (Zero Divisors):</b> Non-zero numbers multiply to zero. This destroys the cancellation law: $2x=2y$ does <i>not</i> imply $x=y$ (e.g., $2\cdot 0 = 0$ and $2\cdot 3 = 0$).
-            <br><b>Failure 2 (Singular Non-zeros):</b> The number 2 has no inverse. You cannot divide by it.
-            <br>In a field, scaling by a non-zero scalar is always an <b>injective</b> map (it preserves information). In $\mathbb{Z}_6$, scaling by 2 destroys information (collapses 0 and 3 to 0).
+        <li><b>Fields:</b> $\mathbb{Q}$ (rationals), $\mathbb{R}$ (reals), $\mathbb{C}$ (complex), and finite fields $\mathbb{F}_p$ (integers mod prime $p$). In $\mathbb{F}_5$, the inverse of 2 is 3 (since $2 \cdot 3 = 6 \equiv 1 \pmod 5$).</li>
+        <li><b>Integers ($\mathbb{Z}$):</b> NOT a field (it is a <b>Ring</b>). The equation $2x=1$ has no solution in $\mathbb{Z}$ because 2 has no multiplicative inverse. Linear algebra over $\mathbb{Z}$ is "Module Theory," where bases are not guaranteed.</li>
+        <li><b>Integers mod composite ($\mathbb{Z}_6$):</b> NOT a field.
+            <br><i>Failure 1 (Zero Divisors):</i> $2 \cdot 3 = 0 \pmod 6$. Non-zero numbers multiply to zero, destroying the cancellation law ($2x=2y \not\implies x=y$).
+            <br><i>Failure 2 (Singular Non-zeros):</i> The number 2 has no inverse; you cannot divide by it. Scaling by 2 is not an injective map.
         </li>
       </ul>
 
-      <p><b>Extended Reals:</b> In optimization, we often work with the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows us to encode "forbidden" regions by assigning them infinite cost (e.g., indicator functions), effectively treating constraints as part of the objective.</p>
+      <p><b>Extended Reals:</b> In optimization, we often use the <b>extended reals</b> $\overline{\mathbb{R}} := \mathbb{R} \cup \{+\infty\}$. This allows encoding constraints directly into the objective function (infinite cost for forbidden regions).</p>
 
       <h3>1.3 Vectors: Elements of $\mathbb{R}^n$</h3>
-      <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple of scalars. We almost always treat vectors as <b>columns</b>:
+      <p>A vector $x \in \mathbb{R}^n$ is an ordered $n$-tuple of scalars, usually treated as a <b>column</b>:
       $$ x = \begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix} $$
-      <b>"$\mathbb{R}^n$" is a Type Tag:</b> It asserts (1) Length/Shape: $x$ has exactly $n$ coordinates, and (2) Ambient Space: $x$ lives in a vector space where addition and scaling are defined.</p>
-      <p><b>Equality is Coordinatewise:</b> $x=y \iff x_i=y_i$ for all $i$. This is the bridge that converts $n$ scalar equalities into one vector equality.</p>
+      The notation "$\mathbb{R}^n$" asserts that $x$ has exactly $n$ coordinates and lives in a vector space where addition and scaling are defined. Equality is defined componentwise: $x=y$ if and only if $x_i=y_i$ for all $i$. This bridges $n$ scalar equalities into a single vector equation.</p>
 
-      <h3>1.4 Vector Operations (Forced by Consistency)</h3>
-      <p><b>Vector Operations (Forced by Consistency):</b>
-      <br>1. <b>Addition:</b> $(x+y)_i := x_i + y_i$. We want addition to commute and reduce to scalar addition in each slot.
-      <br>2. <b>Scalar Multiplication:</b> $(ax)_i := a x_i$. We want scaling to distribute: $a(x+y) = ax + ay$.
-      <br>This is why operations on $\mathbb{R}^n$ are "boring"—they are literally scalar algebra applied $n$ times.</p>
-
-      <h4>The Axioms Verified (Why it works)</h4>
-      <p>For $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$ and $\alpha \in \mathbb{R}$, we define $(\mathbf{x}+\mathbf{y})_i = x_i+y_i$ and $(\alpha \mathbf{x})_i = \alpha x_i$. This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate.</p>
-      <ul>
-        <li><b>Additive Inverse:</b> The vector $-\mathbf{x} = (-x_1, \dots, -x_n)$ satisfies $\mathbf{x} + (-\mathbf{x}) = \mathbf{0}$. Uniqueness is guaranteed by componentwise uniqueness.</li>
-        <li><b>Derived Facts:</b> $0 \cdot \mathbf{x} = \mathbf{0}$, $(-1)\mathbf{x} = -\mathbf{x}$. These are not assumptions; they are theorems derived from the axioms.</li>
-        <li><b>Standard Basis:</b> The vectors $e_j$ (1 in pos $j$, 0 elsewhere) allow any vector to be written as a linear combination: $\mathbf{x} = \sum x_i e_i$. This means coordinates are literally coefficients in a linear combination.</li>
-      </ul>
+      <h3>1.4 Vector Operations</h3>
+      <p>Operations on $\mathbb{R}^n$ are defined to be consistent with scalar arithmetic:</p>
+      <ol>
+        <li><b>Addition:</b> $(x+y)_i := x_i + y_i$. This ensures addition commutes and reduces to scalar addition in each slot.</li>
+        <li><b>Scalar Multiplication:</b> $(ax)_i := a x_i$. This ensures scaling distributes: $a(x+y) = ax + ay$.</li>
+      </ol>
+      <p>This structure satisfies all 8 vector space axioms because each axiom holds in $\mathbb{R}$ at every coordinate. For example, the zero vector $\mathbf{0}$ is the vector of all zeros, and the additive inverse $-\mathbf{x}$ consists of the negated coordinates.</p>
 
       <h3>1.5 Matrices: Typed Operators</h3>
-      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>linear map</b> $A: \mathbb{R}^n \to \mathbb{R}^m$.
-      <br><b>Input Type:</b> $\mathbb{R}^n$ (Columns).
-      <br><b>Output Type:</b> $\mathbb{R}^m$ (Rows).</p>
-      <p><b>Matrix-Vector Multiplication Definition:</b>
+      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best viewed as a <b>linear map</b> $A: \mathbb{R}^n \to \mathbb{R}^m$. The dimensions act as types: $n$ columns correspond to the input dimension, and $m$ rows correspond to the output dimension.</p>
+
+      <p><b>Matrix-Vector Multiplication:</b>
       $$ (Ax)_i := \sum_{j=1}^n A_{ij} x_j $$
-      This definition does three jobs at once:
-      <br>1. <b>Typing:</b> Maps $n$-vector to $m$-vector.
-      <br>2. <b>Linearity:</b> $A(ax+by) = aAx + bAy$.
-      <br>3. <b>Composition:</b> It ensures $(BA)x = B(Ax)$. Matrix multiplication corresponds to function composition.</p>
+      This definition satisfies linearity $A(ax+by) = aAx + bAy$ and ensures compatibility with function composition ($A(Bx) = (AB)x$). It offers two essential perspectives:</p>
 
-      <p><b>Two Essential Views:</b>
-      <br><b>1. Row View (Measurement):</b> $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional measuring $x$.
-      <br><b>2. Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the view for span, range, and feasibility.</p>
+      <ul>
+        <li><b>Row View (Measurement):</b> $(Ax)_i = \langle A_{i:}^\top, x \rangle$. Each row acts as a linear functional (a "sensor") measuring the input $x$.</li>
+        <li><b>Column View (Synthesis):</b> $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns of $A$. This is the primary view for analyzing range, span, and feasibility.</li>
+      </ul>
 
-      <h3>1.6 Generalizing $\mathbb{R}^n$: The Abstract Vector Space</h3>
-      <p>While $\mathbb{R}^n$ is our working model, the power of linear algebra comes from the fact that it applies to <i>any</i> set behaving like $\mathbb{R}^n$. This allows us to treat functions, polynomials, and matrices as vectors.</p>
+      <h3>1.6 The Abstract Vector Space</h3>
+      <p>While $\mathbb{R}^n$ is our working model, linear algebra applies to <i>any</i> set that behaves like $\mathbb{R}^n$. This abstraction allows us to treat functions, polynomials, and matrices themselves as vectors.</p>
       <div class="definition-box">
         <h4>Definition: Vector Space</h4>
-        <p>A vector space $V$ over a field $\mathbb{F}$ is a set equipped with two operations (addition $+$ and scalar multiplication $\cdot$) satisfying eight axioms:</p>
+        <p>A vector space $V$ over a field $\mathbb{F}$ is a set equipped with addition and scalar multiplication satisfying:</p>
         <ul>
-            <li><b>Axioms for Addition (Abelian Group):</b>
-                <ul>
-                    <li>(VS1) Closure: $u+v \in V$.</li>
-                    <li>(VS2) Associativity: $(u+v)+w = u+(v+w)$.</li>
-                    <li>(VS3) Commutativity: $u+v = v+u$.</li>
-                    <li>(VS4) Identity: There exists $\mathbf{0} \in V$ such that $u+\mathbf{0} = u$.</li>
-                    <li>(VS5) Inverse: For every $u$, there exists $-u$ such that $u+(-u) = \mathbf{0}$.</li>
-                </ul>
-            </li>
-            <li><b>Axioms for Scalar Multiplication:</b>
-                <ul>
-                    <li>(VS6) Compatibility: $\alpha(\beta u) = (\alpha\beta)u$.</li>
-                    <li>(VS7) Identity: $1 \cdot u = u$.</li>
-                </ul>
-            </li>
-            <li><b>Distributive Laws (The Glue):</b>
-                <ul>
-                    <li>(VS8) $\alpha(u+v) = \alpha u + \alpha v$ and $(\alpha+\beta)u = \alpha u + \beta u$.</li>
-                </ul>
-            </li>
+            <li><b>Addition:</b> Associative, commutative, has identity $\mathbf{0}$, and every element has an inverse.</li>
+            <li><b>Scalar Multiplication:</b> Associative with field multiplication, has identity $1 \cdot u = u$.</li>
+            <li><b>Distributivity:</b> Operations interact consistently: $\alpha(u+v) = \alpha u + \alpha v$ and $(\alpha+\beta)u = \alpha u + \beta u$.</li>
         </ul>
       </div>
-      <p><b>Consequences:</b> Any theorem proved using only these axioms is true for $\mathbb{R}^n$, spaces of functions, spaces of matrices, and infinite sequences.</p>
 
-      <h3>1.7 Sets: The Logic Layer of Feasibility</h3>
-      <p>Optimization problems ask us to minimize a function over a <b>feasible set</b>. Constraints are not fundamentally "inequalities"—they are membership tests defining a set.</p>
+      <h3>1.7 Sets: The Logic of Feasibility</h3>
+      <p>Optimization minimizes a function over a <b>feasible set</b>. Constraints are membership tests defining this set.</p>
 
-      <h4>Constraints as Sets (Semantics)</h4>
-      <p>A constraint like $g(x) \le 0$ is shorthand for the membership statement:
-      $$ x \in \{z \in \mathbb{R}^n : g(z) \le 0\} $$
-      This matters because convexity is a property of <b>sets</b>. We prove a problem is convex by showing the feasible set (intersection of constraints) is convex.</p>
+      <h4>Constraints as Sets</h4>
+      <p>An inequality constraint $g(x) \le 0$ is shorthand for $x \in \{z \in \mathbb{R}^n : g(z) \le 0\}$. Feasibility requires satisfying <i>all</i> constraints simultaneously, which corresponds to the <b>intersection</b> of sets:
+      $$ \mathcal{F} = \bigcap_{i=1}^m C_i $$
+      Infeasibility means this intersection is empty. This geometric view is crucial because convexity is a property of sets: we prove a problem is convex by showing the intersection of its constraint sets is convex.</p>
 
-      <h4>Set Logic: Intersection = Logical AND</h4>
-      <p>If we have multiple constraints, we require $x$ to satisfy all of them simultaneously.
-      $$ \bigcap_{i=1}^m C_i = \{x : x \in C_i \text{ for all } i\} $$
-      <b>Infeasibility</b> means the intersection is the empty set $\emptyset$. This is not a numerical error; it is a logical contradiction.</p>
-
-      <h4>Preimages: The Engine of Modeling (Substitution)</h4>
-      <p>Most constraints in optimization are of the form "an expression belongs to a set".
-      Given a function $g: \mathbb{R}^n \to \mathbb{R}^m$ and a target set $D \subseteq \mathbb{R}^m$, the <b>preimage</b> is:
+      <h4>Preimages and Modeling</h4>
+      <p>Most constraints take the form "an expression belongs to a set". Given a function $g: \mathbb{R}^n \to \mathbb{R}^m$ and a target set $D \subseteq \mathbb{R}^m$, the constraint $g(x) \in D$ defines the <b>preimage</b>:
       $$ g^{-1}(D) = \{x \in \mathbb{R}^n : g(x) \in D\} $$
-      Examples:
-      <br>$\bullet$ $Ax=b \iff Ax \in \{b\}$ (Preimage of a singleton).
-      <br>$\bullet$ $g(x) \le 0 \iff g(x) \in \mathbb{R}^m_-$ (Preimage of the non-positive orthant).
-      <br>$\bullet$ $\|Ax-b\|_2 \le t \iff (Ax-b, t) \in \text{SOC}$ (Preimage of the Second-Order Cone).</p>
-      <p><b>Why this matters:</b> Convexity is preserved under affine preimages. If $D$ is convex and $g(x) = Ax+b$ is affine, then $g^{-1}(D)$ is convex. This one rule explains why linear constraints, norm constraints, and LMIs are convex.</p>
+      <b>Modeling Power:</b> If $D$ is convex and $g(x) = Ax+b$ is affine, then $g^{-1}(D)$ is convex. This single rule justifies why linear constraints ($Ax=b$), orthant constraints ($x \ge 0$), and norm constraints ($\|Ax\| \le 1$) all define convex sets.</p>
 
-      <h3>1.8 Functions: The Rulebook</h3>
-      <p>A function $f: D \to Y$ consists of a <b>domain</b> $D$, a <b>codomain</b> $Y$, and a rule. In optimization, we must be precise about domains.</p>
+      <h3>1.8 Functions: Domain Definitions</h3>
+      <p>A function $f: D \to Y$ is defined by its domain $D$, codomain $Y$, and mapping rule. In optimization, the domain is not optional—it is a strict constraint.</p>
 
-      <h4>Domain is Law</h4>
-      <p>The domain is part of the function definition, not a suggestion.
-      <br>Example: $f(x) = -\log x$ has domain $D = \{x \in \mathbb{R} : x > 0\}$.
-      <br>If you write "minimize $-\log x$ subject to $x \le -1$", the feasible set is empty because the domain constraint ($x > 0$) contradicts the explicit constraint ($x \le -1$).</p>
+      <p><b>Implicit Constraints:</b> For $f(x) = -\log x$, the domain $x > 0$ is implicit. An optimization problem minimizing $-\log x$ implicitly includes the constraint $x > 0$. Violating this domain is a logical error, not just a numerical one.</p>
 
-      <h4>Extended-Real-Valued Functions</h4>
-      <p>We often define functions mapping to $\overline{\mathbb{R}} = \mathbb{R} \cup \{+\infty\}$.
-      <br><b>Effective Domain:</b> $\mathrm{dom}\, f = \{x : f(x) < +\infty\}$.
-      <br>This allows us to encode constraints into the objective. The <b>indicator function</b> of a set $C$ is:
-      $$ \delta_C(x) = \begin{cases} 0 & x \in C \\ +\infty & x \notin C \end{cases} $$
-      Then $\min_{x \in C} f(x)$ is equivalent to the unconstrained problem $\min_x (f(x) + \delta_C(x))$.</p>
+      <p><b>Indicator Functions:</b> We can encode constraints into the objective using the extended reals. The indicator function of a set $C$ is $\delta_C(x) = 0$ if $x \in C$ and $+\infty$ otherwise. Minimizing $f(x)$ over $C$ is equivalent to minimizing the unconstrained function $f(x) + \delta_C(x)$.</p>
 
-      <h4>Epigraphs: Functions as Sets</h4>
-      <p>The <b>graph</b> of $f$ is $\{(x, f(x))\}$. The <b>epigraph</b> is the set of points on or above the graph:
-      $$ \mathrm{epi}(f) = \{(x, t) : f(x) \le t\} $$
-      A function is <b>convex</b> if and only if its epigraph is a <b>convex set</b>. This bridges the analysis of functions and the geometry of sets.</p>
+      <p><b>Epigraphs:</b> The epigraph $\mathrm{epi}(f) = \{(x, t) : f(x) \le t\}$ links functions to sets. A function is convex if and only if its epigraph is a convex set.</p>
 
-      <h3>1.9 Geometry as a Representation (Points vs. Vectors)</h3>
-      <p>In elementary math, "point $(1,1)$" and "vector $(1,1)$" are treated as the same thing. In optimization, the distinction is critical.
-      <br><b>Vectors</b> are displacements (elements of a vector space $V$). You can add them and scale them.
-      <br><b>Points</b> are locations (elements of an affine space $A$). You cannot add points intrinsically. Adding locations depends on where you put the origin.</p>
+      <h3>1.9 Affine Geometry: Points vs. Vectors</h3>
+      <p>In classical geometry, points and vectors are distinct.
+      <br><b>Vectors</b> are displacements; they can be added and scaled.
+      <br><b>Points</b> are locations; they cannot be added intrinsically (what is "Paris + London"?). However, they can be subtracted to yield a vector ($q - p = v$).</p>
 
-      <h4>The Affine Rules and Combinations</h4>
-      <ul>
-        <li><b>Point - Point = Vector:</b> $q - p$ is the unique displacement from $p$ to $q$.</li>
-        <li><b>Point + Vector = Point:</b> $p + v$ is the translation of $p$ by $v$.</li>
-        <li><b>Affine Combinations:</b> $\sum \alpha_i p_i$ is a valid point if and only if $\sum \alpha_i = 1$. This makes the result origin-independent.</li>
-        <li><b>Convex Combinations:</b> A special case of affine combinations where $\sum \alpha_i = 1$ AND $\alpha_i \ge 0$. This represents a "mixture" or interpolation between points, remaining strictly within the shape defined by them.</li>
-      </ul>
+      <p><b>Affine Combinations:</b> While $p+q$ is undefined for points, the weighted sum $\sum \alpha_i p_i$ is a valid point <i>if and only if</i> $\sum \alpha_i = 1$. This restriction makes the result independent of the choice of origin.</p>
 
       <div class="proof-box">
         <h4>Proof: Affine Combinations are Origin-Independent</h4>
         <p>Let $p_1, \dots, p_k$ be points. Choose an origin $o$ and represent points as vectors $v_i = p_i - o$.
-        The "computed point" in this coordinate system is $p = o + \sum \alpha_i v_i$.
+        The computed point is $p = o + \sum \alpha_i v_i$.
         <br>Now choose a different origin $o' = o + t$. The coordinates change to $v_i' = p_i - o' = v_i - t$.
         The computed point in the new system is:
         $$ p' = o' + \sum \alpha_i v_i' = (o+t) + \sum \alpha_i (v_i - t) $$
         $$ = o + t + \sum \alpha_i v_i - (\sum \alpha_i) t $$
         $$ = \left(o + \sum \alpha_i v_i\right) + t (1 - \sum \alpha_i) $$
-        Thus, $p' = p$ if and only if $\sum \alpha_i = 1$. If the weights sum to 1, the result is intrinsic geometry; otherwise, it is an artifact of the coordinate system.</p>
+        For $p'$ to equal $p$ (consistency), the term involving $t$ must vanish. This requires $1 - \sum \alpha_i = 0$, or $\sum \alpha_i = 1$.</p>
       </div>
 
-      <p><b>Why this matters:</b> The solution set to $Ax=0$ is a <b>subspace</b> (contains 0, vectors). The solution set to $Ax=b$ ($b \ne 0$) is an <b>affine set</b> (does not contain 0, points). Mixing them up leads to errors in duality and tangent space calculations.</p>
+      <p><b>Relevance:</b> The solution set to $Ax=0$ is a subspace (contains the origin). The solution set to $Ax=b$ (for $b \neq 0$) is an <b>affine set</b> (does not contain the origin). Affine sets are "shifted subspaces".</p>
 
       <h3>1.10 Linear Combinations: The Fundamental Constructor</h3>
-      <p>Linear algebra is built on one atomic operation: the <b>finite linear combination</b>.
-      $$ \mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i $$
-      Every concept in the course reduces to this.</p>
+      <p>The finite linear combination $\mathbf{y} = \sum_{i=1}^k \alpha_i \mathbf{v}_i$ is the atomic operation of linear algebra.</p>
 
       <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/05_linear_combinations_lattice.png"
                alt="A lattice of linear combinations generated by two vectors"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
-          <figcaption><i>Figure 2:</i> The span of two vectors creates a lattice of reachable points. Every intersection is a linear combination with integer coefficients.</figcaption>
+          <figcaption><i>Figure 2:</i> The span of two vectors creates a lattice of reachable points.</figcaption>
         </figure>
         <figure style="text-align: center; flex: 1; min-width: 280px;">
           <img src="assets/layer1_13_linear_combinations.gif"
                alt="Animation showing how varying coefficients sweeps out the plane"
                style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: white;" />
-          <figcaption><i>Animation:</i> By varying coefficients $\alpha_1, \alpha_2$, the linear combination $\alpha_1 v_1 + \alpha_2 v_2$ can reach any point in the plane (the span).</figcaption>
+          <figcaption><i>Animation:</i> Varying coefficients $\alpha_1, \alpha_2$ sweeps out the entire plane (the span).</figcaption>
         </figure>
       </div>
 
-      <h4>(A) Systems of Linear Equations as Linear Maps</h4>
-      <p>The equation $A\mathbf{x} = \mathbf{b}$ is usually taught as "a system of $m$ equations in $n$ unknowns." That description is correct but shallow. The more powerful interpretation is this:
-      <br><b>$A$ defines a linear map, and $A\mathbf{x}=\mathbf{b}$ asks whether $\mathbf{b}$ lies in its image.</b>
-      <br>Everything else—Gaussian elimination, pivots, ranks—is machinery for answering that one question.</p>
+      <h4>Systems of Equations as Linear Maps</h4>
+      <p>The equation $A\mathbf{x} = \mathbf{b}$ asks a fundamental geometric question: <b>Does $\mathbf{b}$ lie in the image of the linear map defined by $A$?</b></p>
 
-      <p><b>1. Interpret $A$ as a function, not a table of numbers:</b> A matrix $A \in \mathbb{R}^{m\times n}$ defines a linear transformation $T_A : \mathbb{R}^n \to \mathbb{R}^m, \ T_A(\mathbf{x}) = A\mathbf{x}$. This is literally a function with two defining properties:
-      <ul>
-        <li>$T_A(\mathbf{x}+\mathbf{y}) = T_A(\mathbf{x}) + T_A(\mathbf{y})$</li>
-        <li>$T_A(\alpha \mathbf{x}) = \alpha T_A(\mathbf{x})$</li>
-      </ul>
-      Those properties mean the entire behavior of $T_A$ is determined by what it does to basis vectors, and concretely, to the <b>columns of $A$</b>.</p>
-
-      <p><b>2. The "Fundamental Identity" (Column-space interpretation):</b> Write the columns of $A$ as $A = [\mathbf{a}_1 \dots \mathbf{a}_n]$. Then for any $\mathbf{x} = (x_1,\dots,x_n)$,
-      $$ \boxed{ A\mathbf{x} = x_1 \mathbf{a}_1 + x_2 \mathbf{a}_2 + \dots + x_n \mathbf{a}_n } $$
-      This identity is not a trick. It <i>is</i> matrix–vector multiplication. So now the equation $A\mathbf{x}=\mathbf{b}$ becomes: <i>Does there exist a choice of scalars $x_1,\dots,x_n$ such that $\mathbf{b} = x_1 \mathbf{a}_1 + \cdots + x_n \mathbf{a}_n$?</i> That is exactly the definition of <b>membership in a span</b>.</p>
-
-      <p><b>3. Span as the "Smallest Closed World":</b>
-      <br>The <b>span</b> of a set of vectors $S = \{v_1, \dots, v_k\}$ is formally defined as the set of all possible finite linear combinations:
-      $$ \mathrm{span}(S) = \left\{ \sum_{i=1}^k \alpha_i v_i \mid \alpha_i \in \mathbb{F} \right\} $$
-      <b>Theorem:</b> $\mathrm{span}(S)$ is the <b>smallest subspace</b> containing $S$.
-      <br><i>Why?</i>
-      <ul>
-        <li>It is a subspace (closed under addition and scaling).</li>
-        <li>Any subspace containing $S$ must contain all linear combinations of $S$ (by closure), so it must contain $\mathrm{span}(S)$.</li>
-      </ul>
-      This defines "generation": $S$ generates the subspace $W$ if $W = \mathrm{span}(S)$.</p>
-
-      <p><b>4. The Column Space Answers Consistency:</b> Define the <b>column space</b> of $A$: $\mathcal{R}(A) = \operatorname{span}\{\mathbf{a}_1,\dots,\mathbf{a}_n\} \subseteq \mathbb{R}^m$. Now the fundamental equivalence:
-      $$ \boxed{ A\mathbf{x} = \mathbf{b} \text{ is solvable } \iff \mathbf{b} \in \mathcal{R}(A). } $$
-      Nothing more, nothing less. If $\mathbf{b}$ lies in the column space, the system is <b>consistent</b>. If $\mathbf{b}$ lies outside it, the system is <b>inconsistent</b>, and no amount of algebra will fix that.</p>
-
-      <h4>(B) Row Reduction as Invertible Transformation</h4>
-      <p>Gaussian elimination is often taught as a sequence of mechanical steps. However, it has a precise algebraic meaning: <b>Row operations are left-multiplications by invertible matrices.</b></p>
-      <p>If we perform a row operation on the augmented matrix $[A \mid \mathbf{b}]$, we are effectively multiplying the system $A\mathbf{x} = \mathbf{b}$ by an elementary matrix $E$:
-      $$ E A \mathbf{x} = E \mathbf{b} $$
-      Since every elementary row operation (swap, scale, add) is reversible, the matrix $E$ is <b>invertible</b>.
-      <br><b>Theorem:</b> If $E$ is invertible, the solution sets of $A\mathbf{x}=\mathbf{b}$ and $(EA)\mathbf{x} = E\mathbf{b}$ are identical.
-      <br><i>Proof:</i> If $A\mathbf{x}=\mathbf{b}$, then $EA\mathbf{x}=E\mathbf{b}$. Conversely, if $EA\mathbf{x}=E\mathbf{b}$, multiplying by $E^{-1}$ yields $A\mathbf{x}=\mathbf{b}$.
-      <br>Thus, row reduction transforms the system into a "simpler" linear map (RREF) without changing the solution set. It changes the <i>coordinate representation</i> of the constraints, not the geometry of the solution space.</p>
+      <ol>
+        <li><b>Column Space Interpretation:</b> Using the column view of matrix multiplication, $A\mathbf{x} = x_1 \mathbf{a}_1 + \dots + x_n \mathbf{a}_n$. The equation asks if $\mathbf{b}$ can be synthesized as a linear combination of the columns of $A$.</li>
+        <li><b>Consistency:</b> The system is solvable if and only if $\mathbf{b} \in \mathcal{R}(A) = \operatorname{span}\{\mathbf{a}_1, \dots, \mathbf{a}_n\}$. If $\mathbf{b}$ is outside the column space, the system is inconsistent.</li>
+        <li><b>Row Reduction:</b> Gaussian elimination is equivalent to left-multiplying by an invertible matrix $E$. Since $E$ is invertible, the solution sets of $A\mathbf{x}=\mathbf{b}$ and $(EA)\mathbf{x} = E\mathbf{b}$ are identical. Row operations change the <i>coordinate representation</i> but preserve the solution geometry.</li>
+      </ol>
 
       <div class="insight">
-        <h4>Immediate Consequences (Geometry vs. Algebra)</h4>
-        <ol>
-            <li><b>Why inconsistent systems exist:</b> If $\mathcal{R}(A)$ is a proper subspace of $\mathbb{R}^m$ (rank < m), then "most" vectors $\mathbf{b}$ are outside it. Inconsistency is the generic case, not a pathology.</li>
-            <li><b>Why adding columns can make systems solvable:</b> Adding a column to $A$ enlarges $\mathcal{R}(A)$. You are literally adding a new direction you can combine.</li>
-            <li><b>Why rank matters:</b> The rank of $A$ is $\operatorname{rank}(A) = \dim(\mathcal{R}(A))$. Rank measures how "big" the image of the linear map is.</li>
-            <li><b>Why overdetermined systems often fail:</b> If $m > n$, the column space lives in $\mathbb{R}^m$ but has dimension at most $n$. It cannot fill the space. Many $\mathbf{b}$’s are unreachable.</li>
-        </ol>
-        <h4>The Mental Model to Keep Forever</h4>
+        <h4>The Mental Model</h4>
         <p>Do not think: <i>"I have equations and unknowns."</i></p>
-        <p>Think instead: <i>"I have a linear map. What outputs can it produce?"</i></p>
+        <p>Think: <i>"I have a linear map. What outputs can it produce?"</i></p>
         <p>Solving $A\mathbf{x}=\mathbf{b}$ is not algebra first and geometry later. It is <b>geometry first, algebra as a tool</b>.</p>
       </div>
 
-      <h4>(B) Linear Independence as "No Redundancy"</h4>
-      <p>Linear independence is the rule that says: “none of these vectors is secretly unnecessary.” We define it precisely to ensure coordinates are unique.</p>
+      <h3>1.11 Affine vs Linear Mappings</h3>
+      <p>A map $L: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if it preserves linear combinations: $L(\alpha x + \beta y) = \alpha L(x) + \beta L(y)$. Linear maps must fix the origin ($L(0)=0$).</p>
+      <p>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it preserves affine combinations: $f(\theta x + (1-\theta)y) = \theta f(x) + (1-\theta)f(y)$ for all $\theta \in \mathbb{R}$. This implies the form $f(x) = Ax + b$. Affine maps allow for translation.</p>
 
-      <p><b>Definition:</b> A list of vectors $\mathbf{v}_1,\dots,\mathbf{v}_k$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
-      $$ \alpha_1 \mathbf{v}_1+\cdots+\alpha_k \mathbf{v}_k = 0 \quad\Longrightarrow\quad \alpha_1=\cdots=\alpha_k=0. $$
-      If there exists a non-trivial combination (some $\alpha_i \neq 0$) summing to zero, the vectors are <b>linearly dependent</b>.</p>
-
-      <p><b>Why check for zero?</b> You might wonder: why not check if two combinations produce the same vector? Because those are the same question.
-      $$ \sum \alpha_i \mathbf{v}_i = \sum \beta_i \mathbf{v}_i \iff \sum (\alpha_i - \beta_i) \mathbf{v}_i = 0 $$
-      Thus, <b>Independence $\iff$ Uniqueness of Representation</b>. Once you choose independent vectors as building blocks, every vector in their span has a unique recipe (coordinates).</p>
-
-      <div class="proof-box">
-        <h4>Proposition: Independence $\iff$ Uniqueness of Representation</h4>
-        <p>Independence is the "secret meaning" of coordinate uniqueness.
-        <br><b>1. Independence $\implies$ Uniqueness:</b>
-        <br>Suppose $\mathbf{v}_1,\dots,\mathbf{v}_k$ are linearly independent. If a vector $\mathbf{w}$ has two representations:
-        $$ \mathbf{w} = \sum_{i=1}^k \alpha_i \mathbf{v}_i = \sum_{i=1}^k \beta_i \mathbf{v}_i $$
-        Subtracting the equations gives $\sum (\alpha_i - \beta_i)\mathbf{v}_i = \mathbf{0}$.
-        By independence, the only linear combination that yields $\mathbf{0}$ is the trivial one, so $\alpha_i - \beta_i = 0$ for all $i$. Thus $\alpha_i = \beta_i$. The coordinates are unique.
-        <br><b>2. Uniqueness $\implies$ Independence:</b>
-        <br>Assume every vector in the span has a unique representation. The zero vector $\mathbf{0}$ is in the span and has the trivial representation $\mathbf{0} = \sum 0\mathbf{v}_i$. If there were <i>any</i> other representation $\sum c_i \mathbf{v}_i = \mathbf{0}$ with non-zero $c_i$, uniqueness would be violated. Thus, the only representation of $\mathbf{0}$ is the trivial one, which is the definition of independence.</p>
-      </div>
-
+      <h4>Convexity Invariance</h4>
+      <p>Affine maps are the "structural backbone" of convex optimization because they preserve convexity.</p>
       <div class="theorem-box">
-        <h4>Theorem: The Redundancy Test</h4>
-        <p>A set of vectors is linearly independent if and only if <b>no vector in the set is redundant</b> (i.e., lies in the span of the others).
-        <br><i>Proof:</i>
-        <br>($\Rightarrow$) <b>Independence implies No Redundancy:</b> Assume the set is independent. Suppose, for contradiction, that $v_j$ is redundant: $v_j = \sum_{i \neq j} c_i v_i$. Then $1 \cdot v_j - \sum_{i \neq j} c_i v_i = 0$. This is a non-trivial linear combination summing to zero (the coefficient of $v_j$ is 1), which contradicts independence.
-        <br>($\Leftarrow$) <b>No Redundancy implies Independence:</b> Assume no vector is in the span of the others. Suppose the set is dependent: $\sum_{i=1}^k \alpha_i v_i = 0$ with some coefficients not zero. Pick an index $j$ where $\alpha_j \neq 0$. We can isolate $v_j$:
-        $$ \alpha_j v_j = -\sum_{i \neq j} \alpha_i v_i \implies v_j = \sum_{i \neq j} \left( -\frac{\alpha_i}{\alpha_j} \right) v_i $$
-        This expresses $v_j$ as a linear combination of the other vectors, meaning $v_j$ is redundant. This contradicts the assumption. Thus, the set must be independent.</p>
+        <h4>Theorem: Preservation of Convexity</h4>
+        <ul>
+            <li><b>Image:</b> If $C \subseteq \mathbb{R}^n$ is convex and $f$ is affine, then the image $f(C)$ is convex.</li>
+            <li><b>Preimage:</b> If $D \subseteq \mathbb{R}^m$ is convex and $f$ is affine, then the preimage $f^{-1}(D)$ is convex.</li>
+        </ul>
       </div>
-
-      <p><b>Geometric Intuition:</b>
-      <br>In $\mathbb{R}^2$: Two vectors are independent iff they are not collinear.
-      <br>In $\mathbb{R}^3$: Three vectors are independent iff they do not lie in the same plane through the origin.
-      <br><b>Redundancy:</b> If a set is dependent, at least one vector adds no new dimension to the span.</p>
-
-      <h4>(C) Algorithmic Check: The Pivot Column Method</h4>
-      <p>How do we practically check for independence or finding a basis? We use the <b>Pivot Column Algorithm</b> (Gaussian Elimination).</p>
-      <ol>
-        <li><b>Form a Matrix:</b> Stack the vectors as columns of a matrix $A = [\mathbf{v}_1 \dots \mathbf{v}_k]$.</li>
-        <li><b>Row Reduce:</b> Compute the Row Reduced Echelon Form (RREF) of $A$.</li>
-        <li><b>Identify Pivots:</b> A column with a pivot (leading 1) corresponds to a vector that adds a new dimension. A column <i>without</i> a pivot is linearly dependent on the previous pivot columns.</li>
-      </ol>
-      <p><b>Why this works:</b> Row operations preserve linear relationships between columns. If column 3 is the sum of columns 1 and 2 in the RREF, it was the sum of columns 1 and 2 in the original matrix.</p>
-
-      <h3>1.11 Affine vs Linear Mappings: The Structural Backbone</h3>
-      <p>Linear algebra is not just about sets of vectors; it is about the functions that respect their structure. Optimization is essentially the study of problems whose feasible sets and objective geometry survive a specific class of transformations: <b>affine maps</b>.</p>
-
-      <h4>Linear Maps: The Origin-Anchored Structure</h4>
-      <p>A map $L: \mathbb{R}^n \to \mathbb{R}^m$ is <b>linear</b> if for all $x,y$ and scalars $\alpha,\beta$:
-      $$ L(\alpha x + \beta y) = \alpha L(x) + \beta L(y) $$
-      <b>Immediate Consequences:</b>
-      <br>1. $L(0) = 0$. Linear maps must fix the origin.
-      <br>2. <b>Matrix Representation:</b> Every linear map $L: \mathbb{R}^n \to \mathbb{R}^m$ can be written as $L(x) = Ax$ for a unique matrix $A$. The $j$-th column of $A$ is $L(e_j)$.
-      <br>3. <b>Subspaces map to Subspaces:</b> If $S$ is a subspace, $L(S)$ is a subspace.
-      <br>4. <b>Convex sets map to Convex sets:</b> If $C$ is convex, $L(C)$ is convex.</p>
-
-      <h4>Affine Maps: Linear + Translation</h4>
-      <p>Most feasible sets (like $Ax=b$) do not pass through the origin. We need maps that allow <b>translation</b>.
-      <br>A map $f: \mathbb{R}^n \to \mathbb{R}^m$ is <b>affine</b> if it has the form $f(x) = Ax + b$.
-      <br>This decomposes behavior into linear structure ($Ax$) and a shift ($+b$).</p>
-
-      <div class="theorem-box">
-        <h4>Theorem: Affine Combination Characterization</h4>
-        <p>A map $f$ is affine if and only if it preserves <b>affine combinations</b>:
-        $$ f(\theta x + (1-\theta)y) = \theta f(x) + (1-\theta)f(y) \quad \forall x,y \in \mathbb{R}^n, \forall \theta \in \mathbb{R} $$
-        Note the quantifier $\theta \in \mathbb{R}$. This condition is strong enough to force the form $Ax+b$.
-        </p>
-      </div>
-
-      <h4>Geometry of Affine Maps</h4>
-      <ul>
-        <li><b>Lines to Lines:</b> $f(x_0 + td) = (Ax_0+b) + t(Ad)$. A line maps to a line (or a point).</li>
-        <li><b>Parallelism:</b> Parallel lines map to parallel lines (or points). Affine maps preserve "straightness" and relative proportions on lines.</li>
-      </ul>
-
-      <h4>Convexity Invariance: The Modeling Engine</h4>
-      <p>This is the single most-used fact in convex modeling.
-      <br><b>Theorem A (Image):</b> If $C \subseteq \mathbb{R}^n$ is convex and $f$ is affine, then $f(C)$ is convex.
-      <br><b>Theorem B (Preimage):</b> If $D \subseteq \mathbb{R}^m$ is convex and $f(x)=Ax+b$, then the preimage $f^{-1}(D) = \{x : Ax+b \in D\}$ is convex.</p>
 
       <div class="proof-box">
         <h4>Proof: Preimage Convexity</h4>
-        <p>We want to show that if $D$ is a convex set, then its preimage $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$ is also convex.</p>
-        <div class="proof-step">
-          <strong>Step 1: Pick two points in the preimage.</strong>
-          Let $x_1, x_2 \in C$. By definition, this means their images map into $D$:
-          $$ y_1 = Ax_1+b \in D \quad \text{and} \quad y_2 = Ax_2+b \in D $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Form a convex combination.</strong>
-          Let $\theta \in [0,1]$. We need to show that $x_\theta = \theta x_1 + (1-\theta)x_2$ is also in $C$.
-          This requires checking if $f(x_\theta) \in D$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Apply the affine map.</strong>
-          $$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b $$
-          Distribute the matrix $A$ (linearity):
-          $$ = \theta A x_1 + (1-\theta) A x_2 + b $$
-          Rewrite $b$ as $\theta b + (1-\theta)b$ (since $\theta + 1 - \theta = 1$):
-          $$ = \theta A x_1 + (1-\theta) A x_2 + \theta b + (1-\theta)b $$
-          Group terms:
-          $$ = \theta (A x_1 + b) + (1-\theta) (A x_2 + b) $$
-          $$ = \theta y_1 + (1-\theta) y_2 $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 4: Use convexity of D.</strong>
-          Since $y_1, y_2 \in D$ and $D$ is convex, the combination $\theta y_1 + (1-\theta) y_2$ must be in $D$.
-          Therefore, $f(x_\theta) \in D$, which implies $x_\theta \in C$.
-        </div>
-      </div>
-
-      <p><b>Application:</b>
-      <br>$\bullet$ $Ax=b \iff Ax \in \{b\}$. Singletons are convex; affine preimages are convex. Thus affine sets are convex.
-      <br>$\bullet$ $Ax \le b \iff Ax-b \in \mathbb{R}^m_-$. Orthants are convex; thus polyhedra are convex.
-      <br>$\bullet$ $\|Ax+b\|_2 \le c^\top x + d \iff (Ax+b, c^\top x+d) \in \text{SOC}$. The Second-Order Cone is convex; thus SOC constraints define convex sets.</p>
-
-      <div class="theorem-box">
-        <h4>Theorem: Basis Determines Linear Maps</h4>
-        <p>Let $\mathcal{B} = \{b_1, \dots, b_n\}$ be a basis of $V$. A linear transformation $T: V \to W$ is <b>completely determined</b> by its values on the basis vectors $T(b_1), \dots, T(b_n)$.
-        <br><i>Proof:</i> Take any vector $v \in V$. Since $\mathcal{B}$ is a basis, there exist <b>unique</b> scalars $c_i$ such that $v = \sum_{i=1}^n c_i b_i$.
-        Applying $T$:
-        $$ T(v) = T\left(\sum_{i=1}^n c_i b_i\right) = \sum_{i=1}^n c_i T(b_i) $$
-        There is no freedom left. Once the images of the basis vectors are chosen, the image of every other vector is forced by linearity. This explains why an infinite number of input-output pairs can be encoded by a finite matrix.</p>
+        <p>Let $f(x) = Ax+b$ be an affine map and let $C = f^{-1}(D) = \{x \mid Ax+b \in D\}$, where $D$ is convex.
+        <br>Take $x_1, x_2 \in C$ and $\theta \in [0,1]$.
+        <br>We test if $x_\theta = \theta x_1 + (1-\theta)x_2$ is in $C$.
+        $$ f(x_\theta) = A(\theta x_1 + (1-\theta)x_2) + b = \theta (Ax_1+b) + (1-\theta)(Ax_2+b) = \theta y_1 + (1-\theta)y_2 $$
+        Since $x_1, x_2 \in C$, their images $y_1, y_2$ are in $D$. Since $D$ is convex, the combination $\theta y_1 + (1-\theta)y_2$ is in $D$.
+        <br>Thus $f(x_\theta) \in D$, so $x_\theta \in C$. $C$ is convex.</p>
       </div>
 
       <h3>1.12 Matrix Algebra from Linear Maps</h3>
-      <p>A matrix $A \in \mathbb{R}^{m \times n}$ is best treated as a <b>typed operator</b>: $A: \mathbb{R}^n \to \mathbb{R}^m$. The number of columns $n$ is the input dimension, and the number of rows $m$ is the output dimension. This prevents shape errors: $BA$ is only defined if the output space of $A$ matches the input space of $B$.</p>
+      <p>Every linear map $T: V \to W$ between finite-dimensional spaces can be represented by a matrix, once bases are chosen.</p>
 
-      <h4>Theorem (Matrix Representation)</h4>
-      <p>Let $T: V \to W$ be a linear map between finite-dimensional vector spaces. Fix a basis $\mathcal{B}=\{v_1,\dots,v_n\}$ for $V$ and a basis $\mathcal{C}=\{w_1,\dots,w_m\}$ for $W$. Then there exists a unique matrix $A \in \mathbb{R}^{m \times n}$ such that for every $x \in V$:</p>
-      $$ [T(x)]_\mathcal{C} = A [x]_\mathcal{B} $$
-      <p><b>Explicit Construction:</b> The $j$-th column of $A$ consists of the coordinates of the image of the $j$-th basis vector $v_j$ with respect to the basis $\mathcal{C}$:</p>
-      $$ \text{Column } j \text{ of } A = [T(v_j)]_\mathcal{C} $$
-      <p>This theorem bridges the abstract definition of linear maps (additivity, homogeneity) with the concrete world of matrix algebra. It implies that every property of matrices (rank, trace, determinant) corresponds to an intrinsic property of linear maps, provided we account for coordinate systems.</p>
+      <h4>Matrix Representation Theorem</h4>
+      <p>Given bases $\mathcal{B}=\{v_j\}$ for $V$ and $\mathcal{C}=\{w_i\}$ for $W$, there is a unique matrix $A$ such that $[T(x)]_\mathcal{C} = A [x]_\mathcal{B}$.
+      <br><b>Construction:</b> The $j$-th column of $A$ is the coordinate vector of the image of the $j$-th basis vector: $\text{Column } j = [T(v_j)]_\mathcal{C}$.
+      <br>This theorem bridges abstract operators and concrete arrays. Matrix multiplication corresponds to function composition: if $T \circ S$ represents doing $S$ then $T$, the matrix is $BA$ (where $B$ represents $T$ and $A$ represents $S$).</p>
 
-      <div class="proof-box">
-        <h4>Proof of Matrix Representation (Step-by-Step)</h4>
-        <div class="proof-step">
-          <strong>Step 1: Express input in basis $\mathcal{B}$.</strong>
-          Any $x \in V$ has unique coordinates $c_j$ such that $x = \sum_{j=1}^n c_j v_j$. Thus $[x]_\mathcal{B} = (c_1, \dots, c_n)^\top$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Apply Linearity.</strong>
-          $$ T(x) = T\left(\sum_{j=1}^n c_j v_j\right) = \sum_{j=1}^n c_j T(v_j) $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 3: Coordinate Mapping.</strong>
-          Take coordinates in $\mathcal{C}$ (which is a linear map itself):
-          $$ [T(x)]_\mathcal{C} = \left[ \sum_{j=1}^n c_j T(v_j) \right]_\mathcal{C} = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
-        </div>
-        <div class="proof-step">
-          <strong>Step 4: Matrix Definition.</strong>
-          Let $A$ be the matrix where the $j$-th column is $[T(v_j)]_\mathcal{C}$. Then by definition of matrix-vector multiplication:
-          $$ A [x]_\mathcal{B} = \sum_{j=1}^n c_j (\text{Column } j) = \sum_{j=1}^n c_j [T(v_j)]_\mathcal{C} $$
-          Comparing with Step 3, we have $[T(x)]_\mathcal{C} = A [x]_\mathcal{B}$.
-        </div>
-      </div>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/linear_map_grid.gif"
-             alt="A linear map preserving structure: straight lines remain straight, parallel lines remain parallel"
-             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Animation:</i> A linear map is a structure-preserving deformation. Straight lines remain straight, parallel lines remain parallel, and the origin never moves. This is the geometric essence of linearity.</figcaption>
-      </figure>
-
-      <p><b>Matrix-Vector Multiplication Definition:</b>
-      $$ (Ax)_i := \sum_{j=1}^n A_{ij} x_j $$
-      This definition is not arbitrary. It is forced by the requirement of linearity ($A(ax+by) = aAx + bAy$) and compatibility with composition. It allows two powerful interpretations:</p>
-
-      <ul>
-        <li><b>Row View (Measurement):</b> Let $A_{i:}$ be the $i$-th row. Then $(Ax)_i = A_{i:} x = \langle A_{i:}^\top, x \rangle$. Each row is a linear functional that "measures" the input $x$.</li>
-        <li><b>Column View (Synthesis):</b> Let $A_{:j}$ be the $j$-th column. Then $Ax = \sum_{j=1}^n x_j A_{:j}$. The output is a linear combination of the columns, with coefficients given by $x$. This is the view used for range, span, and feasibility.</li>
-      </ul>
-
-      <p><b>Coordinate Representation:</b>
-      <br>Let $V$ be a vector space with basis $B = \{b_1,\dots,b_n\}$ and $W$ be a vector space with basis $C = \{c_1,\dots,c_m\}$.
-      <br>For a linear map $T: V \to W$, we want a matrix $A$ that transforms coordinates in $B$ to coordinates in $C$:
-      $$ [T(v)]_C = A [v]_B $$
-      This leads to the constructive definition of a matrix:</p>
-
-      <div class="insight">
-        <h4>Construction of the Matrix</h4>
-        <p><b>The $j$-th column of the matrix $A$ is the coordinate vector of the image of the $j$-th basis vector.</b>
-        $$ \text{Column } j = [T(b_j)]_C $$
-        <br><i>Why this works:</i>
-        $$ T(v) = T\left(\sum x_j b_j\right) = \sum x_j T(b_j) $$
-        Taking coordinates in $C$:
-        $$ [T(v)]_C = \sum x_j [T(b_j)]_C = \sum x_j (\text{Column } j) $$
-        This is exactly the definition of matrix-vector multiplication: a linear combination of columns.</p>
-      </div>
-
-      <h4>Composition = Matrix Multiplication</h4>
-      <p>Why do we multiply matrices using the "row-by-column" rule? It is forced by the composition of linear maps.
-      <br>If $S: U \to V$ (Matrix $A$) and $T: V \to W$ (Matrix $B$), then $T \circ S$ corresponds to $BA$.
-      $$ [T(S(u))]_D = B [S(u)]_C = B (A [u]_B) = (BA) [u]_B $$
-      We derive the entry-wise formula $(BA)_{ij} = \sum_k B_{ik} A_{kj}$ not as a definition, but as the inevitable algebraic consequence of tracking these coordinates.
-      <br><b>Consequences:</b>
-      <ul>
-        <li><b>Associativity:</b> Matrix multiplication is associative ($(AB)C = A(BC)$) because function composition is associative.</li>
-        <li><b>Non-Commutativity:</b> It is not commutative ($AB \neq BA$) because the order of operations matters (rotating then projecting is different from projecting then rotating).</li>
-      </ul>
-      </p>
-
-      <h4>Change of Basis</h4>
-      <p>Since matrices depend on the choice of basis, we must understand how they transform when the basis changes. Let $\mathcal{B}$ and $\mathcal{B}'$ be two bases for $V$. The <b>change-of-basis matrix</b> $P$ transforms coordinates from $\mathcal{B}'$ to $\mathcal{B}$:</p>
-      $$ [x]_\mathcal{B} = P [x]_{\mathcal{B}'} $$
-      <p>The columns of $P$ are simply the coordinates of the new basis vectors expressed in the old basis. If a linear operator $T: V \to V$ is represented by matrix $A$ in basis $\mathcal{B}$ and by matrix $A'$ in basis $\mathcal{B}'$, the relationship is:</p>
-      $$ A' = P^{-1} A P $$
-      <p>This is the definition of <b>similarity</b>. Properties invariant under this transformation (like eigenvalues, trace, and determinant) are intrinsic properties of the operator $T$, not artifacts of the coordinate system.</p>
-
-      <h3>1.13 Linear Independence, Basis, and Dimension</h3>
-      <p>A <b>basis</b> is where linear algebra stops being about abstract sets and becomes a working coordinate system. To get there, we first need to formalize "redundancy".</p>
-
-      <h4>(A) Linear Independence as "No Redundancy"</h4>
-      <p>A set of vectors $\{v_1, \dots, v_k\}$ is <b>linearly independent</b> if the only way to combine them to get the zero vector is the trivial way:
-      $$ \sum_{i=1}^k \alpha_i v_i = \mathbf{0} \implies \alpha_1 = \dots = \alpha_k = 0 $$
-      <b>Equivalently (The Redundancy Test):</b> The set is independent if and only if <b>no vector is in the span of the others</b>.
-      <br><i>Proof:</i> If $\sum \alpha_i v_i = 0$ with $\alpha_j \neq 0$, then $v_j = -\sum_{i \neq j} \frac{\alpha_i}{\alpha_j} v_i$, so $v_j$ is redundant. Conversely, if $v_j$ is in the span of others, we can build a non-trivial relation.</p>
-
-      <div class="insight">
-        <h4>Independence $\iff$ Uniqueness of Representation</h4>
-        <p>If vectors are independent, coordinates are unique.
-        <br>Suppose $v = \sum \alpha_i v_i = \sum \beta_i v_i$. Subtracting gives $\sum (\alpha_i - \beta_i)v_i = \mathbf{0}$.
-        <br>Independence implies $\alpha_i - \beta_i = 0$, so $\alpha_i = \beta_i$.
-        <br>Without independence, coordinates are ambiguous (multiple recipes for the same vector).</p>
-      </div>
-
-      <h4>(B) Basis: A Coordinate System that Actually Works</h4>
-      <p>A set of vectors $\mathcal{B} = \{b_1, \dots, b_n\}$ is a <b>basis</b> for $V$ if:
-      <ol>
-        <li><b>Spanning:</b> $\mathcal{B}$ generates $V$. Every vector can be built from $\mathcal{B}$. (Existence of coordinates).</li>
-        <li><b>Independence:</b> $\mathcal{B}$ has no redundancy. Every vector is built in a <i>unique</i> way. (Uniqueness of coordinates).</li>
-      </ol>
-      </p>
+      <h3>1.13 Independence, Basis, and Dimension</h3>
+      <p>A set of vectors is <b>linearly independent</b> if no vector in the set is redundant (i.e., no vector lies in the span of the others). Independence ensures that coordinates are unique.</p>
+      <p>A <b>basis</b> is a set that is both independent and spanning. It provides a perfect coordinate system for the space.
+      <br><b>Dimension</b> is the number of vectors in a basis. It is an invariant property of the vector space: every basis for $V$ has the same number of elements.</p>
 
       <div class="theorem-box">
-        <h4>The Basis Theorem</h4>
-        <p>If $\mathcal{B}$ is a basis, then every vector $\mathbf{v} \in V$ can be written in <b>exactly one way</b> as a linear combination:
-        $$ \mathbf{v} = c_1 b_1 + \dots + c_n b_n $$
-        The unique scalars $(c_1, \dots, c_n)$ are the <b>coordinates</b> of $\mathbf{v}$ in basis $\mathcal{B}$, denoted $[\mathbf{v}]_\mathcal{B}$.
-        <br>This creates a perfect dictionary (bijection) between the abstract space $V$ and the concrete space $\mathbb{F}^n$.
-        </p>
-      </div>
-      
-      <figure style="text-align:center; margin: 24px 0;">
-        <img src="assets/basis_coordinates.gif"
-             alt="Basis and Coordinates Animation"
-             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Animation:</i> A fixed vector $\mathbf{v}$ (blue) in a skewed basis $\{b_1, b_2\}$ (red grid). The coefficients $(c_1, c_2)$ update live as the basis changes, always satisfying $\mathbf{v} = c_1 b_1 + c_2 b_2$. This illustrates that coordinates depend on the choice of basis—the vector itself is the geometry.</figcaption>
-      </figure>
-
-      <h4>(B) Dimension: The Invariant Number</h4>
-      <p>A vector space can have infinitely many different bases. However, a structural theorem ensures they all share one property: the <b>number of elements</b>. This invariant is the <b>dimension</b> of $V$.</p>
-
-      <div class="proof-box">
-        <h4>Lemma: Steinitz Exchange Lemma (Proof)</h4>
-        <p>Let $V$ be a vector space. Suppose:
-        <ul>
-            <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
-            <li>$L = \{\ell_1,\dots,\ell_k\}$ is linearly independent in $V$.</li>
-        </ul>
-        Then <b>$k \le m$</b>, and we can replace $k$ vectors in $S$ with $L$ to form a new spanning set.</p>
-
-        <h4>Proof by Step-by-Step Replacement</h4>
-        <p>We proceed by induction to inject elements of $L$ into $S$ one by one.</p>
-        <div class="proof-step">
-            <strong>Step 0:</strong> Start with $S^{(0)} = S$, which spans $V$.
-        </div>
-        <div class="proof-step">
-            <strong>Inductive Step:</strong> Assume $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$. We want to insert $\ell_j$.
-            <br>Since $S^{(j-1)}$ spans, write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$.
-            $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
-            Rearranging: $0 = \ell_j - \sum c_u u$.
-            <br>Crucially, at least one vector $u^* \in S^{(j-1)}$ <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{u^*} \neq 0$.
-            <br><i>Why?</i> If only $\ell$'s had non-zero coefficients, then $\ell_j$ would be in the span of previous $\ell$'s, contradicting independence of $L$.
-        </div>
-        <div class="proof-step">
-            <strong>Replacement:</strong> Solve for $u^*$:
-            $$ u^* = \frac{1}{c_{u^*}} \ell_j - \sum \dots $$
-            This shows $u^*$ is in the span of the new set $S^{(j)} = (S^{(j-1)} \setminus \{u^*\}) \cup \{\ell_j\}$.
-            Thus, the new set still spans $V$.
-        </div>
-        <div class="proof-step">
-            <strong>Conclusion:</strong> We can continue this for all $k$ elements of $L$. Since each step consumes a distinct vector from the original $S$ (and never one of the inserted $\ell$'s), we must have enough capacity in $S$. Thus $k \le m$.
-        </div>
-      </div>
-
-      <div class="theorem-box">
-        <h4>Theorem: Characterizations of Dimension</h4>
-        <p>Let $V$ be finite-dimensional with dimension $n$. The following are equivalent:</p>
+        <h4>Characterizations of Dimension $n$</h4>
+        <p>For a vector space of dimension $n$:
         <ol>
             <li>Every basis has exactly $n$ vectors.</li>
-            <li>The largest possible size of a linearly independent set is $n$.</li>
-            <li>The smallest possible size of a spanning set is $n$.</li>
+            <li>Any linearly independent set has size $\le n$.</li>
+            <li>Any spanning set has size $\ge n$.</li>
         </ol>
-        <p><i>Proof:</i>
-        <br>If $B$ is a basis ($|B|=n$), then any independent set $L$ satisfies $|L| \le |B|=n$ (Steinitz).
-        <br>Any spanning set $S$ satisfies $|S| \ge |B|=n$ (Steinitz with $L=B, S=S$).
-        <br>Thus $n$ is the unique crossover point where max-independence meets min-spanning.</p>
+        </p>
       </div>
 
       <h3>1.14 Functions and Preimages</h3>
-      <p>A function $f: \mathcal{X} \to \mathcal{Y}$ maps inputs to outputs.
-      <br>The <b>Preimage</b> $f^{-1}(B) = \{\mathbf{x} \in \mathcal{X} : f(\mathbf{x}) \in B\}$ is the set of inputs mapping to $B$.
-      <br><b>Crucial Property:</b> Preimages preserve set operations (union, intersection, complement). This means if we define a feasible region by intersecting constraints $g_i(\mathbf{x}) \le 0$, the geometry of the region is the intersection of the preimages of $(-\infty, 0]$. Since preimages of convex sets under convex functions are convex, this explains why "convex constraints define convex sets".</p>
+      <p>Recall that set operations are key to defining feasible regions.
+      <br><b>Preimages preserve set logic:</b> $f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B)$. This allows us to define regions by intersecting simple constraints. For example, the feasible set of a linear program is the intersection of halfspaces (preimages of $(-\infty, 0]$ under affine maps).</p>
     </section>
 
     <!-- SECTION 2: SUBSPACES -->
     <section class="section-card" id="section-subspaces">
       <h2>2. Subspaces and the Four Fundamental Spaces</h2>
 
-      <p>A <a href="javascript:void(0)" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
+      <p>A <a href="#" onclick="event.preventDefault()" class="definition-link">linear subspace</a> is a set of vectors that is closed under addition and scalar multiplication. When a linear map $T: V \to W$ acts, it decomposes the domain and codomain based on <b>what information is lost</b> and <b>what survives</b>.</p>
 
-      <h3>2.1 Kernel and Image: Where Information Dies and Survives</h3>
+      <h3>2.1 Kernel and Image</h3>
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Kernel and Image</h3>
         <p>Visualize how the kernel (nullspace) and image (column space) relate. Vectors in the kernel map to zero. The image is the set of all reachable outputs.</p>
-        <iframe src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
+        <iframe sandbox="allow-scripts allow-same-origin" title="Kernel and Image Demo" src="widgets/la_batch2.html?mode=kernel" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
+
       <div class="example-box">
-        <h4>Manual Computation: Finding the Kernel</h4>
-        <p>Let $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \end{bmatrix}$. Find $\mathcal{N}(A)$.
-        <br><b>Step 1: Solve $A\mathbf{x} = 0$.</b>
-        <br>Augmented matrix: $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 2 & 4 & 6 & 0 \end{array}\right]$.
-        <br>Row reduce ($R_2 = R_2 - 2R_1$): $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 0 & 0 & 0 & 0 \end{array}\right]$.
-        <br><b>Step 2: Identify Pivot and Free Variables.</b>
-        <br>$x_1$ is a pivot variable. $x_2$ and $x_3$ are free variables.
-        <br>Equation: $x_1 + 2x_2 + 3x_3 = 0 \implies x_1 = -2x_2 - 3x_3$.
-        <br><b>Step 3: Write in Parametric Vector Form.</b>
-        $$ \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} = \begin{bmatrix} -2x_2 - 3x_3 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix} + x_3 \begin{bmatrix} -3 \\ 0 \\ 1 \end{bmatrix} $$
-        <br><b>Result:</b> The kernel is the span of $(-2, 1, 0)^\top$ and $(-3, 0, 1)^\top$. It is a 2D plane inside $\mathbb{R}^3$.
-        </p>
+        <h4>Example: Finding the Kernel</h4>
+        <p>Let $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \end{bmatrix}$. To find $\mathcal{N}(A)$, we solve $A\mathbf{x} = 0$.
+        <br>The augmented matrix $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 2 & 4 & 6 & 0 \end{array}\right]$ reduces to $\left[\begin{array}{ccc|c} 1 & 2 & 3 & 0 \\ 0 & 0 & 0 & 0 \end{array}\right]$.
+        <br>Here, $x_1$ is a pivot variable, while $x_2$ and $x_3$ are free. The equation $x_1 + 2x_2 + 3x_3 = 0$ implies $x_1 = -2x_2 - 3x_3$.
+        <br>In parametric vector form:
+        $$ \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} = x_2 \begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix} + x_3 \begin{bmatrix} -3 \\ 0 \\ 1 \end{bmatrix} $$
+        The kernel is the 2D plane spanned by $(-2, 1, 0)^\top$ and $(-3, 0, 1)^\top$.</p>
       </div>
+
       <p>For a linear map $T: \mathbb{R}^n \to \mathbb{R}^m$ represented by matrix $A$:</p>
       <ul>
         <li><b>Kernel (Nullspace):</b> $\mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} = 0\}$.
-          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel ($\mathbf{u}-\mathbf{v} \in \mathcal{N}(A)$). It measures the <b>indistinguishable</b> inputs.
-          <br><b>Theorem (Subspace):</b> $\mathcal{N}(A)$ is a subspace of $\mathbb{R}^n$ (closed under addition/scaling).
+          <br><i>Meaning:</i> <b>Information Loss.</b> Two inputs $\mathbf{u}, \mathbf{v}$ produce the same output ($A\mathbf{u}=A\mathbf{v}$) if and only if their difference lies in the kernel. It measures the indistinguishable inputs.
         </li>
         <li><b>Image (Column Space):</b> $\mathcal{R}(A) = \{A\mathbf{x} \mid \mathbf{x} \in \mathbb{R}^n\}$.
-          <br><i>Meaning:</i> <b>Information Survival.</b> These are the outputs that can actually be produced. The equation $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \in \mathcal{R}(A)$.
-          <br><b>Theorem (Subspace):</b> $\mathcal{R}(A)$ is a subspace of $\mathbb{R}^m$.
+          <br><i>Meaning:</i> <b>Information Survival.</b> These are the reachable outputs. The equation $A\mathbf{x}=\mathbf{b}$ is solvable iff $\mathbf{b} \in \mathcal{R}(A)$.
         </li>
       </ul>
 
       <div class="theorem-box">
-        <h4>Structure of Solution Sets: Affine Geometry</h4>
-        <p>$$ \boxed{ \{\text{solutions of } A\mathbf{x}=\mathbf{b}\} = \mathbf{x}_p + \mathcal{N}(A) } $$
-        <br><b>Why every consistent linear system produces an affine space:</b>
-        <br>Assume the system is consistent and fix <b>one</b> particular solution $\mathbf{x}_p$ such that $A\mathbf{x}_p = \mathbf{b}$.
-        <br><b>1. Closure (Translating by Kernel):</b> Take any $\mathbf{x}_h \in \mathcal{N}(A)$. Then $A(\mathbf{x}_p + \mathbf{x}_h) = A\mathbf{x}_p + A\mathbf{x}_h = \mathbf{b} + 0 = \mathbf{b}$. Every vector of the form $\mathbf{x}_p + \mathbf{x}_h$ is a solution.
-        <br><b>2. Exhaustion (No other solutions):</b> Let $\mathbf{x}$ be <i>any</i> solution ($A\mathbf{x}=\mathbf{b}$). Then $A(\mathbf{x} - \mathbf{x}_p) = A\mathbf{x} - A\mathbf{x}_p = \mathbf{b} - \mathbf{b} = 0$. So $\mathbf{x} - \mathbf{x}_p \in \mathcal{N}(A)$, which means $\mathbf{x} = \mathbf{x}_p + \mathbf{x}_h$ for some null-space vector.
-        <br><b>Conclusion:</b> The solution set is a translation of the subspace $\mathcal{N}(A)$.
-        <ul>
-            <li>If $\mathbf{b}=0$, the set is a subspace (contains 0).</li>
-            <li>If $\mathbf{b} \ne 0$, the set is an <b>affine subspace</b> (does not contain 0).</li>
-        </ul>
-        This implies that $\dim(\text{solution set}) = \dim(\mathcal{N}(A))$. The nullspace controls the <b>multiplicity</b> (degrees of freedom), while the column space controls the <b>existence</b>.</p>
+        <h4>Structure of Solution Sets</h4>
+        <p>For a consistent linear system $A\mathbf{x}=\mathbf{b}$, the solution set is an affine subspace:
+        $$ \{\text{solutions}\} = \mathbf{x}_p + \mathcal{N}(A) $$
+        where $\mathbf{x}_p$ is any particular solution.
+        <br><b>Proof intuition:</b>
+        <br>1. <b>Closure:</b> If $\mathbf{x}_p$ works, then $\mathbf{x}_p + \mathbf{x}_n$ also works for any $\mathbf{x}_n \in \mathcal{N}(A)$, since $A(\mathbf{x}_p+\mathbf{x}_n) = \mathbf{b} + 0$.
+        <br>2. <b>Exhaustion:</b> If $\mathbf{x}$ is any other solution, $A(\mathbf{x}-\mathbf{x}_p) = \mathbf{b}-\mathbf{b}=0$, so the difference must lie in the kernel.
+        <br>This implies that $\dim(\text{solution set}) = \dim(\mathcal{N}(A))$. The nullspace controls the <b>degrees of freedom</b> of the solution.</p>
 
         <h4>Theorem: Injectivity $\iff$ Trivial Kernel</h4>
-        <p>A linear map is injective (one-to-one) if and only if its kernel contains only the zero vector.
-        <br><i>Proof:</i>
-        <br>($\Rightarrow$) Assume injective. Since $T(0)=0$, if $v \in \mathcal{N}(T)$ then $T(v)=0=T(0)$, so $v=0$.
-        <br>($\Leftarrow$) Assume $\mathcal{N}(T)=\{0\}$. If $T(u)=T(v)$, then $T(u-v)=0$, so $u-v \in \mathcal{N}(T)$. Thus $u-v=0 \implies u=v$.
-        </p>
+        <p>A linear map is injective (one-to-one) if and only if its kernel contains only the zero vector.</p>
       </div>
 
-      <h3>2.2 Rank-Nullity: Conservation of Degrees of Freedom</h3>
-      <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily. Every input degree of freedom ($n$) must either be annihilated (go to Nullspace) or preserved (go to Rank).</p>
+      <h3>2.2 Rank-Nullity: Conservation of Information</h3>
+      <p>The <b>Rank-Nullity Theorem</b> is the fundamental conservation law of linear algebra. It states that a linear map cannot create or destroy dimension arbitrarily.</p>
       $$ \boxed{ n = \dim(\mathcal{N}(A)) + \dim(\mathcal{R}(A)) } $$
-      <p><i>Interpretation:</i>
-      <br><b>Rank ($r$):</b> Number of independent constraints the system <i>can</i> impose (or independent directions it can reach).
-      <br><b>Nullity ($n-r$):</b> Number of free variables. This measures the dimension of the solution space for $A\mathbf{x}=0$.
-      <br><b>Consequence:</b> You cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
-      <div class="insight">
-        <h4>Analogy: Conservation of Information</h4>
-        <p>Think of the input vector $\mathbf{x} \in \mathbb{R}^n$ as a packet containing $n$ independent pieces of information. When it passes through the matrix $A$:</p>
-        <ul>
-            <li><b>Rank ($r$):</b> The number of pieces that survive and appear in the output.</li>
-            <li><b>Nullity ($k$):</b> The number of pieces that get "crushed" to zero (lost).</li>
-        </ul>
-        <p><b>Conservation Law:</b> Input Information = Surviving Info + Lost Info.
-        <br>$$ n = r + k $$
-        This means you cannot compress information (lower dimension) without losing something (nullity > 0), nor can you create information from nothing (output dimension cannot exceed input dimension unless redundancy exists).</p>
-      </div>
+      <p>Input Information ($n$) = Lost Information (Nullity) + Surviving Information (Rank).
+      <br>This implies you cannot map a high-dimensional space injectively into a low-dimensional one (nullity must be positive), nor surjectively map a low-dimensional space onto a high-dimensional one.</p>
 
-      <h3>2.3 The Four Fundamental Subspaces: Invariant Anatomy</h3>
-      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces. These are not artifacts of calculation; they are the <b>invariant anatomy</b> of the map. They live in two different ambient spaces ($\mathbb{R}^n$ and $\mathbb{R}^m$) and are paired by orthogonality.</p>
-
-      <h4>The Map Spaces (Primal)</h4>
-      <ul>
-        <li><b>Column Space ($\mathcal{R}(A)$):</b> The image of the map $T_A$.
-          $$ \mathcal{R}(A) = \{A\mathbf{x} : \mathbf{x} \in \mathbb{R}^n\} \subseteq \mathbb{R}^m $$
-          It answers: <i>Which vectors in the output space are reachable?</i>
-        </li>
-        <li><b>Nullspace ($\mathcal{N}(A)$):</b> The kernel of the map $T_A$.
-          $$ \mathcal{N}(A) = \{\mathbf{x} \in \mathbb{R}^n : A\mathbf{x} = 0\} \subseteq \mathbb{R}^n $$
-          It answers: <i>Which input directions are annihilated by the map?</i>
-        </li>
-      </ul>
-
-      <h4>The Dual Spaces (Transpose)</h4>
-      <ul>
-        <li><b>Row Space ($\mathcal{R}(A^\top)$):</b> The image of the dual map $A^\top$.
-          $$ \mathcal{R}(A^\top) = \{A^\top \mathbf{y} : \mathbf{y} \in \mathbb{R}^m\} \subseteq \mathbb{R}^n $$
-          It answers: <i>Which linear constraints are actually active?</i> Each row represents a measurement direction; dependencies among rows mean redundant measurements.
-        </li>
-        <li><b>Left Nullspace ($\mathcal{N}(A^\top)$):</b> The kernel of the dual map.
-          $$ \mathcal{N}(A^\top) = \{\mathbf{y} \in \mathbb{R}^m : A^\top \mathbf{y} = 0\} \subseteq \mathbb{R}^m $$
-          It answers: <i>Which combinations of equations sum to $0=0$?</i> A non-zero vector here represents a dependency among the constraints.
-        </li>
-      </ul>
+      <h3>2.3 The Four Fundamental Subspaces</h3>
+      <p>Every linear map $A: \mathbb{R}^n \to \mathbb{R}^m$ induces four intrinsic subspaces, paired by orthogonality.</p>
 
       <table class="data-table">
         <thead>
           <tr>
             <th>Space</th>
-            <th>Definition</th>
+            <th>Notation</th>
             <th>Lives in</th>
             <th>Geometric Meaning</th>
           </tr>
@@ -801,25 +368,25 @@
         <tbody>
           <tr>
             <td>Column Space</td>
-            <td>$\mathrm{Im}(A)$</td>
+            <td>$\mathcal{R}(A)$</td>
             <td>$\mathbb{R}^m$</td>
-            <td>Reachable outputs (Consistency)</td>
+            <td>Reachable outputs</td>
           </tr>
           <tr>
             <td>Null Space</td>
-            <td>$\mathrm{Ker}(A)$</td>
+            <td>$\mathcal{N}(A)$</td>
             <td>$\mathbb{R}^n$</td>
-            <td>Invisible inputs (Non-uniqueness)</td>
+            <td>Indistinguishable inputs</td>
           </tr>
           <tr>
             <td>Row Space</td>
-            <td>$\mathrm{Im}(A^\top)$</td>
+            <td>$\mathcal{R}(A^\top)$</td>
             <td>$\mathbb{R}^n$</td>
             <td>Active measurement directions</td>
           </tr>
           <tr>
             <td>Left Null Space</td>
-            <td>$\mathrm{Ker}(A^\top)$</td>
+            <td>$\mathcal{N}(A^\top)$</td>
             <td>$\mathbb{R}^m$</td>
             <td>Redundant constraints</td>
           </tr>
@@ -830,120 +397,72 @@
         <img src="assets/four_fundamental_subspaces.gif"
              alt="The four fundamental subspaces under a linear map"
              style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Animation:</i> The four fundamental subspaces in action. Domain (left): Row(A) vs Null(A). Codomain (right): Col(A) vs LeftNull(A). Inputs differing only in the nullspace direction map to the same output.</figcaption>
+        <figcaption><i>Animation:</i> The four fundamental subspaces. Inputs differing only in the nullspace direction map to the same output.</figcaption>
       </figure>
 
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="assets/kernel_image_rank_unified.gif"
-             alt="Unified view of kernel, image, and rank"
-             style="max-width: 900px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Animation:</i> Left: Input vector explores all directions; the kernel direction (dashed) maps to zero. Right: Output always lands on the image line. When input aligns with the kernel, output snaps to zero. $\dim(\mathbb{R}^2) = \mathrm{rank}(A) + \mathrm{nullity}(A) = 1 + 1$.</figcaption>
-      </figure>
-
-      <h3>2.4 Orthogonality Relations (The Fundamental Theorem)</h3>
-      <p>The four subspaces are not independent. They are locked together by orthogonality. This is the geometric core of the Fundamental Theorem of Linear Algebra.</p>
+      <h3>2.4 Orthogonality Relations</h3>
+      <p>The four subspaces are locked together by orthogonality. This is the geometric core of the Fundamental Theorem of Linear Algebra.</p>
 
       <div class="theorem-box">
         <h4>Theorem: Orthogonal Complements</h4>
-        <p>
-        1. <b>In the Domain $\mathbb{R}^n$:</b> The nullspace is the orthogonal complement of the row space.
-        $$ \mathcal{N}(A) = \mathcal{R}(A^\top)^\perp $$
-        2. <b>In the Codomain $\mathbb{R}^m$:</b> The left nullspace is the orthogonal complement of the column space.
-        $$ \mathcal{N}(A^\top) = \mathcal{R}(A)^\perp $$
-        </p>
+        <ol>
+            <li><b>Domain ($\mathbb{R}^n$):</b> $\mathcal{N}(A) = \mathcal{R}(A^\top)^\perp$. The nullspace is orthogonal to the row space.</li>
+            <li><b>Codomain ($\mathbb{R}^m$):</b> $\mathcal{N}(A^\top) = \mathcal{R}(A)^\perp$. The left nullspace is orthogonal to the column space.</li>
+        </ol>
       </div>
 
       <div class="proof-box">
         <h4>Proof: $\mathcal{N}(A) = \mathcal{R}(A^\top)^\perp$</h4>
-        <p>We prove this by showing double inclusion.</p>
         <div class="proof-step">
           <strong>Step 1: $\mathcal{N}(A) \subseteq \mathcal{R}(A^\top)^\perp$.</strong>
-          Let $\mathbf{x} \in \mathcal{N}(A)$. Then $A\mathbf{x} = 0$.
-          Write the rows of $A$ as $r_1^\top, \dots, r_m^\top$. Then $A\mathbf{x}=0$ means $r_i^\top \mathbf{x} = 0$ for all $i$.
-          Since $\mathbf{x}$ is orthogonal to every row, it is orthogonal to any linear combination of rows.
-          Thus $\mathbf{x} \perp \mathcal{R}(A^\top)$.
+          Let $\mathbf{x} \in \mathcal{N}(A)$, so $A\mathbf{x} = 0$.
+          Writing $A$ as rows $r_1^\top, \dots, r_m^\top$, this means $r_i^\top \mathbf{x} = 0$ for all $i$.
+          Since $\mathbf{x}$ is orthogonal to every row, it is orthogonal to their span (the row space).
         </div>
         <div class="proof-step">
           <strong>Step 2: $\mathcal{R}(A^\top)^\perp \subseteq \mathcal{N}(A)$.</strong>
-          Let $\mathbf{x} \in \mathcal{R}(A^\top)^\perp$. By definition, $\mathbf{x}$ is orthogonal to every vector in the row space, including each row $r_i$.
-          So $r_i^\top \mathbf{x} = 0$ for all $i$.
-          Stacking these equations gives $A\mathbf{x} = 0$, so $\mathbf{x} \in \mathcal{N}(A)$.
-        </div>
-        <div class="proof-step">
-          <strong>Conclusion:</strong> The sets are identical. This geometric fact ($\perp$) implies the algebraic fact that constraints kill degrees of freedom.
+          Let $\mathbf{x}$ be orthogonal to the row space. Then $\mathbf{x}$ is orthogonal to each row $r_i$.
+          The product $A\mathbf{x}$ is simply the vector of dot products $[r_1^\top \mathbf{x}, \dots, r_m^\top \mathbf{x}]^\top$.
+          Since all dot products are zero, $A\mathbf{x}=0$, so $\mathbf{x} \in \mathcal{N}(A)$.
         </div>
       </div>
 
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/linear-subspaces.svg"
-             alt="Visual representation of intersecting planes showing linear subspaces"
-             style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Figure 4:</i> The orthogonal decomposition of the domain and codomain.</figcaption>
-      </figure>
-
-      <h4>The Fredholm Alternative (Theorem of Alternatives)</h4>
-      <p>A crucial consequence of the orthogonality $\mathcal{R}(A) = \mathcal{N}(A^\top)^\perp$ is a solvability criterion for linear systems, known as the <b>Fredholm Alternative</b>. For any $A \in \mathbb{R}^{m \times n}$ and $\mathbf{b} \in \mathbb{R}^m$, exactly one of the following two statements is true:</p>
+      <h4>The Fredholm Alternative</h4>
+      <p>Because $\mathcal{R}(A)^\perp = \mathcal{N}(A^\top)$, a system $A\mathbf{x}=\mathbf{b}$ has a solution ($\mathbf{b} \in \mathcal{R}(A)$) if and only if $\mathbf{b}$ is orthogonal to every vector in the left nullspace ($\mathbf{b} \perp \mathcal{N}(A^\top)$).
+      <br>This implies that for any $\mathbf{b}$, exactly one of the following holds:
       <ol>
-        <li><b>Primal Feasibility:</b> The system $A\mathbf{x} = \mathbf{b}$ has a solution.</li>
-        <li><b>Dual Certificate of Infeasibility:</b> There exists a vector $\mathbf{y}$ such that $A^\top \mathbf{y} = 0$ but $\mathbf{b}^\top \mathbf{y} \neq 0$.</li>
+        <li>$A\mathbf{x} = \mathbf{b}$ has a solution.</li>
+        <li>There exists $\mathbf{y}$ such that $A^\top \mathbf{y} = 0$ and $\mathbf{y}^\top \mathbf{b} \neq 0$.</li>
       </ol>
-      <p><i>Interpretation:</i> If $A\mathbf{x}=\mathbf{b}$ has no solution, then $\mathbf{b}$ does not lie in $\mathcal{R}(A)$. Since $\mathcal{R}(A)^\perp = \mathcal{N}(A^\top)$, there must be a component of $\mathbf{b}$ that lies in $\mathcal{N}(A^\top)$. This component $\mathbf{y}$ serves as a witness (or certificate) that proving $\mathbf{b}$ is unreachable by $A$. This logic generalizes to <b>Farkas' Lemma</b> and strong duality in later lectures.</p>
+      This "theorem of alternatives" is the basis for duality theory.</p>
 
       <div class="example-box">
         <h4>Geometric Example: $\mathbb{R}^3$</h4>
         <p>Let $A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix}$.
-        <br><b>Column Space $\mathcal{R}(A)$:</b> The span of $(1,0,0)^\top$ and $(0,1,0)^\top$, i.e., the $xy$-plane ($\mathbf{z}=0$).
-        <br><b>Left Nullspace $\mathcal{N}(A^\top)$:</b> We solve $A^\top \mathbf{y} = 0$.
-        $$ \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} y_1 \\ y_2 \\ y_3 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix} \implies y_1 = 0, y_2 = 0 $$
-        So $\mathbf{y} = (0, 0, y_3)^\top$. This is the $\mathbf{z}$-axis.
-        <br><b>Orthogonality:</b> The $xy$-plane is clearly orthogonal to the $\mathbf{z}$-axis.</p>
+        <br><b>Column Space:</b> The $xy$-plane ($\mathbf{z}=0$).
+        <br><b>Left Nullspace:</b> Solving $A^\top \mathbf{y} = 0$ yields $\mathbf{y} = (0, 0, y_3)^\top$, the $\mathbf{z}$-axis.
+        <br><b>Orthogonality:</b> The $xy$-plane is orthogonal to the $\mathbf{z}$-axis.</p>
       </div>
-
-      <h3>Rank and Rank–Nullity Theorem</h3>
-      <p>$\mathrm{rank}(A) = \dim \mathcal{R}(A)$. For $A \in \mathbb{R}^{m \times n}$:
-      $$ \dim \mathcal{N}(A) + \mathrm{rank}(A) = n $$
-      This fundamental result relates the dimensions of the domain's subspaces to the rank of the mapping.</p>
 
       <div class="proof-box">
         <h4>Proof of the Rank-Nullity Theorem</h4>
-
+        <p>We use the orthogonality to prove the dimension formula.</p>
         <div class="proof-step">
-          <strong>Step 1: Construct a basis for the Nullspace.</strong> Let $k = \dim(\mathcal{N}(A))$ be the nullity. Let $\{v_1, \dots, v_k\}$ be a basis for the nullspace $\mathcal{N}(A)$. These are $k$ linearly independent vectors in $\mathbb{R}^n$ such that $Av_i = 0$.
+          <strong>Step 1: Basis Construction.</strong> Let $v_1, \dots, v_k$ be a basis for $\mathcal{N}(A)$ (dimension $k$). Extend this to a basis for $\mathbb{R}^n$ by adding $w_1, \dots, w_r$ (where $r = n-k$).
         </div>
-
         <div class="proof-step">
-          <strong>Step 2: Extend to a basis for $\mathbb{R}^n$.</strong> By the Basis Extension Theorem, we can always extend a linearly independent set (like the nullspace basis) to a full basis for the vector space. We add $r = n-k$ vectors $\{w_1, \dots, w_r\}$ such that the full set $B = \{v_1, \dots, v_k, w_1, \dots, w_r\}$ is a basis for $\mathbb{R}^n$.
+          <strong>Step 2: Image of Basis.</strong> Consider the vectors $Aw_1, \dots, Aw_r$. These lie in the column space.
+          Any vector $\mathbf{x} \in \mathbb{R}^n$ is a combination of $v$'s and $w$'s. Since $Av_i = 0$, $A\mathbf{x}$ is a combination only of $Aw_j$'s. Thus $\{Aw_1, \dots, Aw_r\}$ spans $\mathcal{R}(A)$.
         </div>
-
         <div class="proof-step">
-          <strong>Step 3: Analyze the image of the basis vectors.</strong> Consider the image of an arbitrary vector $\mathbf{x} \in \mathbb{R}^n$. Since $B$ is a basis, we can write $\mathbf{x}$ uniquely as:
-          $$ \mathbf{x} = \sum_{i=1}^k c_i v_i + \sum_{j=1}^{r} d_j w_j $$
-          Applying the linear map $A$:
-          $$ A\mathbf{x} = \sum_{i=1}^k c_i \underbrace{A v_i}_{0} + \sum_{j=1}^{r} d_j A w_j = \sum_{j=1}^{r} d_j A w_j $$
-          This equation shows that any vector in the column space ($A\mathbf{x}$) can be written as a linear combination of the vectors $\{Aw_1, \dots, Aw_r\}$. Thus, these $r$ vectors span the column space $\mathcal{R}(A)$.
+          <strong>Step 3: Independence.</strong> Suppose $\sum c_j Aw_j = 0$. Then $A(\sum c_j w_j) = 0$.
+          This means $\sum c_j w_j \in \mathcal{N}(A)$.
+          But the only vector in the span of $w$'s that is also in the nullspace (span of $v$'s) is the zero vector (by basis construction).
+          Thus $\sum c_j w_j = 0$. Since $w$'s are independent, all $c_j = 0$.
         </div>
-
         <div class="proof-step">
-          <strong>Step 4: Prove Linear Independence in the Range.</strong> To verify that $\{Aw_1, \dots, Aw_r\}$ form a basis for $\mathcal{R}(A)$, we must show they are linearly independent. Suppose we have a linear combination summing to zero:
-          $$ \sum_{j=1}^{r} \alpha_j A w_j = 0 $$
-          By linearity, this implies $A \left( \sum_{j=1}^{r} \alpha_j w_j \right) = 0$.
-          Let $\mathbf{u} = \sum_{j=1}^{r} \alpha_j w_j$. Since $A\mathbf{u} = 0$, the vector $\mathbf{u}$ must lie in the nullspace $\mathcal{N}(A)$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 5: Prove Independence via Basis Uniqueness.</strong> Since $\mathbf{u} \in \mathcal{N}(A)$, it can be written as a linear combination of the nullspace basis $\{v_i\}$:
-          $$ \mathbf{u} = \sum_{i=1}^k \beta_i v_i $$
-          Equating the two expressions for $\mathbf{u}$:
-          $$ \sum_{j=1}^{r} \alpha_j w_j = \sum_{i=1}^k \beta_i v_i \quad \implies \quad \sum_{j=1}^{r} \alpha_j w_j - \sum_{i=1}^k \beta_i v_i = 0 $$
-          This equation is a linear combination of the full basis set $\{v_1, \dots, v_k, w_1, \dots, w_r\}$ summing to zero. Since these vectors form a basis for $\mathbb{R}^n$, they are linearly independent, implying all coefficients must be zero. Specifically, $\alpha_j = 0$ for all $j=1, \dots, r$.
-          <br>Since the only solution to $\sum \alpha_j A w_j = 0$ is the trivial solution $\alpha = 0$, the set $\{Aw_1, \dots, Aw_r\}$ is linearly independent.
-        </div>
-
-        <div class="proof-step">
-          <strong>Step 6: Count Dimensions.</strong> Since $\{Aw_1, \dots, Aw_r\}$ is a linearly independent spanning set for $\mathcal{R}(A)$, it is a basis.
-          Thus, the dimension of the column space (rank) is exactly $r$.
-          From Step 2, we defined $r = n - k$. Rearranging gives the theorem:
-          $$ \dim(\mathcal{R}(A)) + \dim(\mathcal{N}(A)) = r + k = n $$
+          <strong>Conclusion:</strong> $\{Aw_1, \dots, Aw_r\}$ is a basis for $\mathcal{R}(A)$.
+          Rank = $r = n - k = n - \text{Nullity}$.
         </div>
       </div>
 
@@ -960,7 +479,7 @@
 
       <p>While a matrix $A$ represents a linear map in a specific basis, we are often interested in properties that are intrinsic to the map itself, independent of the basis. These are called <b>invariants</b>.</p>
 
-      <h3>3.1 The "Big Three" Invariants and the Spectral Layer</h3>
+      <h3>3.1 Trace, Determinant, and Eigenvalues</h3>
       <p>For a square matrix $A \in \mathbb{R}^{n \times n}$ with eigenvalues $\lambda_1, \dots, \lambda_n$ (counted with algebraic multiplicity):</p>
       <ul>
         <li><b>Trace:</b> $\mathrm{tr}(A) = \sum_{i=1}^n A_{ii} = \sum_{i=1}^n \lambda_i$.</li>
@@ -975,7 +494,7 @@
       <div class="definition-box">
         <h4>Diagonalization Criterion</h4>
         <p>A matrix $A$ is <b>diagonalizable</b> ($A = PDP^{-1}$) if and only if:
-        <br>1. The sum of geometric multiplicities equals $n$.
+        <br>1. For every eigenvalue, the <b>geometric multiplicity</b> (dimension of eigenspace) equals the <b>algebraic multiplicity</b> (root multiplicity).
         <br>2. Equivalently, there exists a basis of eigenvectors.
         <br><i>Note:</i> Symmetric matrices are <b>always</b> diagonalizable (Spectral Theorem), and moreover, they are orthogonally diagonalizable ($A = Q \Lambda Q^\top$).</p>
       </div>
@@ -1039,27 +558,21 @@
         <h4>Proof of the Isotropic Scaling Lemma</h4>
         <div class="proof-step">
             <strong>Step 1: Linearly Independent Vectors Share Eigenvalues.</strong>
-            Let $\mathbf{u}, \mathbf{v}$ be linearly independent vectors. By assumption, they are eigenvectors: $A\mathbf{u} = \lambda_u \mathbf{u}$ and $A\mathbf{v} = \lambda_v \mathbf{v}$.
-            Consider their sum $\mathbf{w} = \mathbf{u}+\mathbf{v}$. Since every vector is an eigenvector, $\mathbf{w}$ must also be one: $A(\mathbf{u}+\mathbf{v}) = \lambda_w (\mathbf{u}+\mathbf{v})$.
+            Let $\mathbf{u}, \mathbf{v}$ be linearly independent eigenvectors with values $\lambda_u, \lambda_v$.
+            Consider $\mathbf{w} = \mathbf{u}+\mathbf{v}$. By assumption, $\mathbf{w}$ is an eigenvector with value $\lambda_w$:
+            $$ A(\mathbf{u}+\mathbf{v}) = \lambda_w (\mathbf{u}+\mathbf{v}) = \lambda_w \mathbf{u} + \lambda_w \mathbf{v} $$
             By linearity:
-            $$ \lambda_w \mathbf{u} + \lambda_w \mathbf{v} = \lambda_w(\mathbf{u}+\mathbf{v}) = A(\mathbf{u}+\mathbf{v}) = A\mathbf{u} + A\mathbf{v} = \lambda_u \mathbf{u} + \lambda_v \mathbf{v} $$
-            Rearranging terms to group by vector:
-            $$ (\lambda_w - \lambda_u)\mathbf{u} + (\lambda_w - \lambda_v)\mathbf{v} = 0 $$
-            Since $\mathbf{u}$ and $\mathbf{v}$ are linearly independent, the only solution to this linear combination is the trivial one. Thus, their coefficients must vanish:
-            $$ \lambda_w - \lambda_u = 0 \quad \text{and} \quad \lambda_w - \lambda_v = 0 $$
-            This implies $\lambda_u = \lambda_w = \lambda_v$. Conclusion: Any two linearly independent vectors must correspond to the same eigenvalue.
+            $$ A(\mathbf{u}+\mathbf{v}) = A\mathbf{u} + A\mathbf{v} = \lambda_u \mathbf{u} + \lambda_v \mathbf{v} $$
+            Equating coefficients (unique by independence): $\lambda_w = \lambda_u$ and $\lambda_w = \lambda_v$. Thus $\lambda_u = \lambda_v$.
         </div>
         <div class="proof-step">
             <strong>Step 2: Linearly Dependent Vectors Share Eigenvalues.</strong>
-            Suppose $\mathbf{v}$ and $\mathbf{u}$ are linearly dependent, meaning $\mathbf{v} = cu$ for some scalar $c \neq 0$. We cannot use the independence argument directly on the pair $(\mathbf{u}, \mathbf{v})$.
-            <br>However, assuming the dimension $n \ge 2$, the space is not just a line. We can choose a third vector $\mathbf{z}$ that is linearly independent of $\mathbf{u}$. Since $\mathbf{v}$ is a multiple of $\mathbf{u}$, $\mathbf{z}$ is also linearly independent of $\mathbf{v}$.
-            <br>Applying the result from Step 1 to the pair $(\mathbf{u}, \mathbf{z})$, we get $\lambda_u = \lambda_z$.
-            <br>Applying it to the pair $(\mathbf{v}, \mathbf{z})$, we get $\lambda_v = \lambda_z$.
-            <br>By transitivity, $\lambda_u = \lambda_v$.
+            Let $\mathbf{v} = c\mathbf{u}$ ($c \neq 0$). Pick a third vector $\mathbf{z}$ independent of $\mathbf{u}$ (exists if $n \ge 2$).
+            From Step 1, $\lambda_u = \lambda_z$ and $\lambda_v = \lambda_z$. Thus $\lambda_u = \lambda_v$.
         </div>
         <div class="proof-step">
             <strong>Step 3: Conclusion.</strong>
-            Since all non-zero vectors share the same eigenvalue $\lambda$, we have $A\mathbf{x} = \lambda \mathbf{x}$ for all $\mathbf{x}$. This is exactly the definition of the scalar matrix $A = \lambda I$.
+            All vectors have the same eigenvalue $\lambda$. Thus $A\mathbf{x} = \lambda \mathbf{x} = (\lambda I)\mathbf{x}$ for all $\mathbf{x}$, so $A = \lambda I$.
         </div>
       </div>
       <p><b>Geometric Intuition:</b> A general symmetric matrix maps the unit sphere to an ellipsoid. The eigenvectors correspond to the axes of the ellipsoid. If <i>every</i> vector is an eigenvector, then every direction is a principal axis. The only ellipsoid with this symmetry is a sphere (isotropic scaling).</p>
@@ -1070,11 +583,6 @@
       <p>The trace is a linear functional:
       $$ \mathrm{tr}(A + B) = \mathrm{tr}(A) + \mathrm{tr}(B) \quad \text{and} \quad \mathrm{tr}(cA) = c\,\mathrm{tr}(A). $$
       </p>
-      <div class="proof-box">
-        <h4>Proof</h4>
-        <p>By definition, $\mathrm{tr}(A) = \sum_{i=1}^n a_{ii}$. Then:</p>
-        $$ \mathrm{tr}(A+B) = \sum_{i=1}^n (a_{ii} + b_{ii}) = \sum_{i=1}^n a_{ii} + \sum_{i=1}^n b_{ii} = \mathrm{tr}(A) + \mathrm{tr}(B) $$
-      </div>
 
       <h4>Multiplicativity of Determinant</h4>
       <p>The determinant is multiplicative:
@@ -1090,26 +598,11 @@
 
       <div class="proof-box">
         <h4>Proof: $\mathrm{tr}(AB) = \mathrm{tr}(BA)$</h4>
-        <div class="proof-step">
-          <strong>Coordinate Definition:</strong> Let $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times m}$. The diagonal elements of the product $AB$ are:
-          $$ (AB)_{ii} = \sum_{k=1}^n a_{ik} b_{ki} $$
-        </div>
-        <div class="proof-step">
-          <strong>Summing the diagonal:</strong>
-          $$ \mathrm{tr}(AB) = \sum_{i=1}^m (AB)_{ii} = \sum_{i=1}^m \sum_{k=1}^n a_{ik} b_{ki} $$
-        </div>
-        <div class="proof-step">
-          <strong>Switching order:</strong> Since the sums are finite, we can swap the order of summation. We also commute the scalar terms $a_{ik} b_{ki} = b_{ki} a_{ik}$:
-          $$ \sum_{i=1}^m \sum_{k=1}^n a_{ik} b_{ki} = \sum_{k=1}^n \sum_{i=1}^m b_{ki} a_{ik} $$
-        </div>
-        <div class="proof-step">
-          <strong>Recognize the diagonal of BA:</strong> The inner sum $\sum_{i=1}^m b_{ki} a_{ik}$ is exactly the element $(BA)_{kk}$ (the $k$-th diagonal entry of the matrix product $BA$).
-          $$ \sum_{k=1}^n \left( \sum_{i=1}^m b_{ki} a_{ik} \right) = \sum_{k=1}^n (BA)_{kk} $$
-        </div>
-        <div class="proof-step">
-          <strong>Conclusion:</strong> The sum of the diagonal entries is the trace.
-          $$ \sum_{k=1}^n (BA)_{kk} = \mathrm{tr}(BA) $$
-        </div>
+        <p>
+        $$ \mathrm{tr}(AB) = \sum_{i=1}^m (AB)_{ii} = \sum_{i=1}^m \sum_{k=1}^n a_{ik} b_{ki} $$
+        Switching the order of summation (valid for finite sums):
+        $$ = \sum_{k=1}^n \sum_{i=1}^m b_{ki} a_{ik} = \sum_{k=1}^n (BA)_{kk} = \mathrm{tr}(BA) $$
+        </p>
       </div>
 
       <figure style="text-align: center; margin: 24px 0;">
@@ -1142,11 +635,11 @@
 
       <div class="theorem-box">
         <h4>Theorem: Invariance under Similarity</h4>
-        <p>If $A$ and $B$ are similar, they share the same algebraic invariants:</p>
+        <p>If $A$ and $B$ are similar ($B = P A P^{-1}$), they share the same algebraic invariants:</p>
         <ul>
-          <li>$\det(PAP^{-1}) = \det(P)\det(A)\det(P^{-1}) = \det(A)$.</li>
-          <li>$\mathrm{tr}(PAP^{-1}) = \mathrm{tr}(AP^{-1}P) = \mathrm{tr}(A)$.</li>
-          <li>$p_{PAP^{-1}}(\lambda) = \det(PAP^{-1} - \lambda I) = \det(P(A-\lambda I)P^{-1}) = p_A(\lambda)$.</li>
+          <li>$\det(B) = \det(P)\det(A)\det(P^{-1}) = \det(A)$.</li>
+          <li>$\mathrm{tr}(B) = \mathrm{tr}(AP^{-1}P) = \mathrm{tr}(A)$.</li>
+          <li>$p_{B}(\lambda) = \det(P(A-\lambda I)P^{-1}) = p_A(\lambda)$.</li>
         </ul>
         <p>Thus, they have the <b>same eigenvalues</b>.</p>
       </div>
@@ -1160,13 +653,6 @@
         <p>If $A\mathbf{x} = \lambda \mathbf{x}$, then:
         $$ (A + tI)\mathbf{x} = A\mathbf{x} + tI\mathbf{x} = (\lambda + t)\mathbf{x} $$
         Thus, the eigenvalues of $A+tI$ are $\{\lambda_i(A) + t\}_{i=1}^n$, and the eigenvectors remain unchanged.</p>
-      </div>
-
-      <div class="proof-box">
-        <h4>Proof via Characteristic Polynomial</h4>
-        <p>The characteristic polynomial of $A+tI$ is:
-        $$ \det((A+tI) - \mu I) = \det(A - (\mu - t)I) $$
-        Setting this equal to zero gives the same roots as $\det(A - \lambda I) = 0$ but shifted: $\mu = \lambda + t$.</p>
       </div>
 
       <h4>Applications and Consequences</h4>
@@ -1236,7 +722,7 @@
       <h2>4. Inner Products & Norms: Geometry from Algebra</h2>
       <p>Inner products and norms bridge the gap between abstract vector spaces and geometry. They allow us to talk about <b>angles</b>, <b>lengths</b>, <b>distances</b>, and <b>projections</b>. Without these, a vector space is just a "floppy" elastic sheet; with them, it becomes a rigid structure capable of supporting optimization.</p>
 
-      <h3>4.1 Inner Products: The Source of Angles</h3>
+      <h3>4.1 Inner Products</h3>
       <p>An <b>inner product</b> on a real vector space $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{R}$ satisfying three axioms for all $x, y, z \in V$ and $\alpha \in \mathbb{R}$:</p>
       <ol>
         <li><b>Linearity (in first argument):</b> $\langle \alpha x + y, z \rangle = \alpha \langle x, z \rangle + \langle y, z \rangle$.</li>
@@ -1266,7 +752,7 @@
         <figcaption><i>Figure 3:</i> The parallelogram law, an identity satisfied only by norms induced by inner products.</figcaption>
       </figure>
 
-      <h3>4.2 Geometry Extracted from Axioms</h3>
+      <h3>4.2 From Algebra to Geometry</h3>
       <p>Once you have an inner product, you define:</p>
       <ul>
         <li><b>Norm:</b> $\|x\| = \sqrt{\langle x, x \rangle}$.</li>
@@ -1274,49 +760,28 @@
         <li><b>Angles:</b> $\cos \theta = \frac{\langle x, y \rangle}{\|x\| \|y\|}$ (valid by Cauchy-Schwarz).</li>
       </ul>
 
-      <h4>Proof of Norm Properties</h4>
-      <ol>
-        <li><b>Definiteness:</b> $\|x\|=0 \iff \sqrt{\langle x,x \rangle} = 0 \iff \langle x,x \rangle = 0 \iff x=0$ (by inner product axioms).</li>
-        <li><b>Homogeneity:</b> $\|\alpha x\|^2 = \langle \alpha x, \alpha x \rangle = \alpha^2 \langle x,x \rangle$. Taking square roots gives $\sqrt{\alpha^2}\|x\| = |\alpha| \|x\|$.</li>
-        <li><b>Triangle Inequality:</b> $\|x+y\| \le \|x\| + \|y\|$. This requires the Cauchy-Schwarz inequality.</li>
-      </ol>
-
-        <h4>The Cauchy-Schwarz Inequality (Rigorous Proof)</h4>
+      <div class="proof-box">
+        <h4>The Cauchy-Schwarz Inequality</h4>
         <p><b>Theorem:</b> $|\langle x, y \rangle| \le \|x\| \|y\|$. Equality holds iff $x$ and $y$ are collinear.
         <br><i>Proof:</i> Consider the function $\phi(t) = \|x - ty\|^2 = \langle x - ty, x - ty \rangle$. By positive definiteness, $\phi(t) \ge 0$ for all $t \in \mathbb{R}$.
         Expanding using bilinearity:
         $$ \phi(t) = \langle x, x \rangle - 2t\langle x, y \rangle + t^2\langle y, y \rangle = \|x\|^2 - 2t\langle x, y \rangle + t^2\|y\|^2 $$
-        This is a quadratic polynomial $P(t) = at^2 + bt + c$ in $t$, with $a=\|y\|^2, b=-2\langle x,y\rangle, c=\|x\|^2$.
-        Since norms are non-negative, $P(t) = \|x-ty\|^2 \ge 0$ for all real $t$.
-        Geometrically, this means the parabola opens upwards ($a \ge 0$) and either touches the horizontal axis or stays strictly above it. It never crosses the axis to become negative.
-        Algebraically, this implies the quadratic equation $P(t)=0$ has at most one real root (a double root or no real roots). Therefore, its <b>discriminant must be non-positive</b> ($b^2 - 4ac \le 0$).
+        This is a quadratic polynomial $P(t) = at^2 + bt + c$ in $t$.
+        Since it is non-negative for all $t$, its <b>discriminant must be non-positive</b> ($b^2 - 4ac \le 0$).
         $$ (-2\langle x, y \rangle)^2 - 4(\|y\|^2)(\|x\|^2) \le 0 $$
-        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies \langle x, y \rangle^2 \le \|x\|^2 \|y\|^2 $$
-        Taking square roots gives $|\langle x, y \rangle| \le \|x\| \|y\|$.
-        <br><b>Equality Condition:</b> Discriminant is 0 iff the quadratic has a real root, meaning $\phi(t)=0$ for some $t$, i.e., $x-ty=0$. Thus equality holds iff $x$ and $y$ are linearly dependent.</p>
-
-        <h4>Derivation: Triangle Inequality</h4>
-        <p>Now we can prove the final norm axiom.
-        $$ \begin{aligned}
-        \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
-        &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
-        &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 \\
-        &= (\|x\| + \|y\|)^2
-        \end{aligned} $$
-        Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
-        <br><b>Conclusion:</b> Every inner product space is a normed space. The converse is false (only norms satisfying the Parallelogram Law come from inner products).
+        $$ 4\langle x, y \rangle^2 \le 4\|x\|^2 \|y\|^2 \implies |\langle x, y \rangle| \le \|x\| \|y\| $$
         </p>
+      </div>
 
-          <h4>Proof: Norm Balls are Convex</h4>
-          <p>Let $x, y \in B(x_c, r)$ and $\theta \in [0,1]$. Then $\|x - x_c\| \le r$ and $\|y - x_c\| \le r$.</p>
-          $$
-          \begin{aligned}
-          \|(\theta x + (1-\theta)y) - x_c\| &= \|\theta(x - x_c) + (1-\theta)(y - x_c)\| \\
-          &\le \theta\|x - x_c\| + (1-\theta)\|y - x_c\| \\
-          &\le \theta r + (1-\theta)r = r
-          \end{aligned}
-          $$
-          <p>Thus the convex combination is in the ball.</p>
+      <h4>Derivation: Triangle Inequality</h4>
+      <p>
+      $$ \begin{aligned}
+      \|x+y\|^2 &= \langle x+y, x+y \rangle = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \\
+      &\le \|x\|^2 + 2|\langle x, y \rangle| + \|y\|^2 \quad (\text{by Cauchy-Schwarz}) \\
+      &\le \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 = (\|x\| + \|y\|)^2
+      \end{aligned} $$
+      Taking square roots yields $\|x+y\| \le \|x\| + \|y\|$.
+      </p>
 
       <h3>4.3 Norms: The Mental Model and Axioms</h3>
 
@@ -1338,7 +803,6 @@
         <p>1. $\|x\| \ge 0$.</p>
         <p>2. $\|x\| = 0 \iff x = 0$.</p>
         <p><i>What it enforces:</i> "Non-negative length" prevents physical nonsense. Definiteness forbids "invisible nonzero vectors"—if a nonzero vector had zero cost, optimization would break.</p>
-        <p><i>What happens if you drop the "$\Rightarrow$" direction?</i> If you keep $\|x\|\ge 0$ and $\|0\|=0$ but allow $\|x\|=0$ for some nonzero $x$, you have a <b>seminorm</b>. Example: $\|x\| := |a^\top x|$ is zero for every $x$ orthogonal to $a$. Geometrically: everything on a whole hyperplane is "free."</p>
       </div>
 
       <div class="definition-box">
@@ -1351,7 +815,6 @@
         <h4>(N3) Triangle Inequality</h4>
         <p>$$ \|x+y\| \le \|x\| + \|y\| $$</p>
         <p><i>What it enforces:</i> The "no cheating by zig-zagging" law. The straight path is always the shortest. This axiom is the main engine behind convexity.</p>
-        <p><i>What breaks if you drop it?</i> You can create "size" functions that are homogeneous and definite but wildly nonconvex, with nonconvex "balls," which instantly kills convex optimization use.</p>
       </div>
 
       <h3>4.4 Core Lemmas: Reusable Proof Templates</h3>
@@ -1706,6 +1169,133 @@
         <div class="proof-step">
           <strong>Step 4: Factorization Trick.</strong>
           Define $\alpha_i = \|A_i\|_2^2$ and $\beta_j = \|B^j\|_2^2$. The double sum splits because the terms are independent:
+          $$ \sum_{i=1}^m \sum_{j=1}^p \alpha_i \beta_j = \left( \sum_{i=1}^m \alpha_i \right) \left( \sum_{j=1}^p \beta_j \right) $$
+          Recognize that $\sum \alpha_i = \sum \|A_i\|_2^2 = \|A\|_F^2$ and $\sum \beta_j = \sum \|B^j\|_2^2 = \|B\|_F^2$.
+          <br>Thus $\|AB\|_F^2 \le \|A\|_F^2 \|B\|_F^2$.
+        </div>
+      </div>
+
+      <h4>Gradients with Respect to Matrices</h4>
+      <p>For a matrix variable $X \in \mathbb{R}^{m \times n}$, the gradient is an $m \times n$ matrix. The definition is consistent with the scalar directional derivative.</p>
+      <ul>
+        <li><b>Rule 1: Linear Trace:</b> $\nabla_X \mathrm{tr}(A^\top X) = A$.
+        <br><i>Proof:</i> $\mathrm{tr}(A^\top X) = \langle A, X \rangle$. The function is linear: $f(X+\Delta) = \langle A, X+\Delta \rangle = f(X) + \langle A, \Delta \rangle$. The gradient is the coefficient of $\Delta$, which is $A$.</li>
+        <li><b>Rule 2: Quadratic Trace:</b> $\nabla_X \mathrm{tr}(X^\top A X) = (A + A^\top)X$. If $A$ is symmetric, this is $2AX$.
+        <br><i>Note:</i> This corresponds to $\frac{d}{dx}(ax^2) = 2ax$. For vector $\mathbf{x}$, $\nabla (\mathbf{x}^\top A\mathbf{x}) = (A+A^\top)\mathbf{x}$. For matrix $X$, the columns transform independently if $A$ is scalar, but coupled if $A$ is a matrix.
+        <br><i>Derivation:</i>
+        $$ \begin{aligned}
+        f(X+\Delta) &= \mathrm{tr}((X+\Delta)^\top A (X+\Delta)) \\
+        &= \mathrm{tr}(X^\top AX + \Delta^\top AX + X^\top A\Delta + \Delta^\top A\Delta) \\
+        &\approx f(X) + \mathrm{tr}(\Delta^\top AX) + \mathrm{tr}(X^\top A \Delta) \\
+        &= f(X) + \mathrm{tr}(\Delta^\top AX) + \mathrm{tr}(\Delta^\top A^\top X) \quad \text{(using } \mathrm{tr}(M)=\mathrm{tr}(M^\top)) \\
+        &= f(X) + \mathrm{tr}(\Delta^\top (A+A^\top)X) \\
+        &= f(X) + \langle (A+A^\top)X, \Delta \rangle
+        \end{aligned} $$
+        Thus $\nabla f(X) = (A+A^\top)X$.
+        </li>
+        <li><b>Rule 3: Log Determinant:</b> $\nabla_X \log \det X = X^{-\top}$. If $X \in \mathbb{S}^n_{++}$ (symmetric positive definite), then $\nabla_X \log \det X = X^{-1}$.
+        <br>
+        <div class="proof-box">
+          <h4>Derivation: Gradient of Log Determinant</h4>
+          <p>We derive the gradient of $f(X) = \log \det X$ (defined for $\det X > 0$) by identifying the linear term in the Taylor expansion of $f(X+\Delta)$ around $X$. This step-by-step derivation uses the perturbation method, which is robust and general.</p>
+          <div class="proof-step">
+            <strong>Step 1: Factor out X.</strong>
+            We want to isolate the perturbation $\Delta$. Since $X$ is invertible, we can write $X+\Delta = X(I + X^{-1}\Delta)$.
+            $$ \log \det (X + \Delta) = \log \det (X(I + X^{-1}\Delta)) $$
+            Using the multiplicative property of the determinant ($\det(AB) = \det(A)\det(B)$) and the additive property of the logarithm ($\log(ab) = \log a + \log b$):
+            $$ = \log (\det X \cdot \det(I + X^{-1}\Delta)) = \log \det X + \log \det(I + X^{-1}\Delta) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 2: Relate Determinant to Trace via Eigenvalues.</strong>
+            Let $E = X^{-1}\Delta$. We need to approximate $\log \det(I + E)$ for small $E$.
+            Let $\lambda_i$ be the eigenvalues of $E$. The eigenvalues of $I+E$ are then $1+\lambda_i$.
+            $$ \det(I + E) = \prod_{i=1}^n (1 + \lambda_i) $$
+            Taking the natural logarithm turns the product into a sum:
+            $$ \log \det(I + E) = \sum_{i=1}^n \log(1 + \lambda_i) $$
+          </div>
+          <div class="proof-step">
+            <strong>Step 3: Linearize via Taylor Series.</strong>
+            Recall the scalar Taylor series expansion for the natural logarithm near 1:
+            $$ \log(1+z) \approx z \quad \text{for } z \approx 0 $$
+            For small perturbations $E$, the eigenvalues $\lambda_i$ are small.
+            Applying this approximation to each term:
+            $$ \sum_{i=1}^n \log(1 + \lambda_i) \approx \sum_{i=1}^n \lambda_i $$
+            We recognize the sum of eigenvalues $\sum \lambda_i$ as the <b>trace</b> of the matrix $E$.
+            $$ \sum_{i=1}^n \lambda_i = \mathrm{tr}(E) = \mathrm{tr}(X^{-1}\Delta) $$
+            Thus, to first order, the change in the log-determinant is exactly the trace of the relative change matrix $E$.
+          </div>
+          <div class="proof-step">
+            <strong>Step 4: Extract the Gradient.</strong>
+            Substituting back, the first-order approximation of the function is:
+            $$ f(X+\Delta) \approx f(X) + \mathrm{tr}(X^{-1}\Delta) $$
+            The gradient $\nabla f(X)$ is defined as the matrix $G$ such that the linear term is $\langle G, \Delta \rangle = \mathrm{tr}(G^\top \Delta)$.
+            We rewrite our linear term to match this form:
+            $$ \mathrm{tr}(X^{-1}\Delta) = \mathrm{tr}((X^{-\top})^\top \Delta) = \langle X^{-\top}, \Delta \rangle $$
+            Comparing terms, we identify $G = X^{-\top}$.
+            <br><b>Result:</b> $\nabla_X \log \det X = X^{-\top}$.
+            <br>If $X$ is symmetric ($X=X^\top$), then $\nabla f(X) = X^{-1}$.
+          </div>
+        </div>
+        </li>
+      </ul>
+      <div class="insight">
+        <h4>Chain Rule for Matrix Functions</h4>
+        <p>If $f(X) = g(h(X))$, then the differential is $df = \mathbf{g}'(h(X)) \circ dh$. For example, to differentiate $\|Ax - b\|_2^2$:</p>
+        <ol>
+          <li>Let $\mathbf{r} = A\mathbf{x} - \mathbf{b}$. Then $f = \mathbf{r}^\top \mathbf{r}$.</li>
+          <li>$df = 2\mathbf{r}^\top dr$.</li>
+          <li>$dr = A dx$.</li>
+          <li>Substitute: $df = 2\mathbf{r}^\top A dx = (2A^\top \mathbf{r})^\top dx$.</li>
+          <li>The gradient is the transpose of the coefficient of $dx^\top$ (or the vector multiplying $dx$), so $\nabla f = 2A^\top \mathbf{r} = 2A^\top(A\mathbf{x}-\mathbf{b})$.</li>
+        </ol>
+      </div>
+
+      <div class="proof-box">
+        <h4>Derivation: Hessian of Least Squares</h4>
+        <p>Let $f(\mathbf{x}) = \|A\mathbf{x} - \mathbf{b}\|_2^2$. We show $\nabla^2 f(\mathbf{x}) = 2A^\top A$ and prove its convexity.</p>
+
+        <div class="proof-step">
+          <strong>Step 1: Expand.</strong>
+          $$ f(\mathbf{x}) = (A\mathbf{x} - \mathbf{b})^\top (A\mathbf{x} - \mathbf{b}) = \mathbf{x}^\top A^\top A \mathbf{x} - 2\mathbf{b}^\top A \mathbf{x} + \mathbf{b}^\top \mathbf{b} $$
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 2: Gradient.</strong>
+          Using the rules derived above:
+          <ul>
+            <li>$\nabla (\mathbf{x}^\top (A^\top A) \mathbf{x}) = 2A^\top A \mathbf{x}$ (since $A^\top A$ is symmetric).</li>
+            <li>$\nabla (-2(A^\top \mathbf{b})^\top \mathbf{x}) = -2A^\top \mathbf{b}$.</li>
+            <li>$\nabla (\mathbf{b}^\top \mathbf{b}) = 0$.</li>
+          </ul>
+          Summing these: $\nabla f(\mathbf{x}) = 2A^\top A \mathbf{x} - 2A^\top \mathbf{b} = 2A^\top (A\mathbf{x} - \mathbf{b})$.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 3: Hessian.</strong>
+          Differentiating $\nabla f(\mathbf{x})$ with respect to $\mathbf{x}$:
+          $$ \nabla^2 f(\mathbf{x}) = \nabla_x (2A^\top A \mathbf{x}) = 2A^\top A $$
+          The Hessian is constant, characteristic of quadratic functions.
+        </div>
+
+        <div class="proof-step">
+          <strong>Step 4: Convexity (PSD Check).</strong>
+          For any vector $\mathbf{v} \in \mathbb{R}^n$:
+          $$ \mathbf{v}^\top \nabla^2 f(\mathbf{x}) \mathbf{v} = \mathbf{v}^\top (2A^\top A) \mathbf{v} = 2(A\mathbf{v})^\top (A\mathbf{v}) = 2\|A\mathbf{v}\|_2^2 \ge 0 $$
+          Since the quadratic form is always non-negative, the Hessian is Positive Semidefinite (PSD). Thus, the least squares objective is always <b>convex</b>.
+        </div>
+      </div>
+
+      <div class="theorem-box">
+        <h4>Lemma: Quadratic Minimization (Completion of the Square)</h4>
+        <p>This result is fundamental to convex optimization derivation. Let $H \in \mathbb{S}_{++}^n$ (symmetric positive definite) and $\mathbf{g} \in \mathbb{R}^n$. Then the unique minimizer of the quadratic form:
+        $$ \inf_{\mathbf{x}\in\mathbb R^n}\left\{\frac12 \mathbf{x}^\top H\mathbf{x} + \mathbf{g}^\top \mathbf{x}\right\} $$
+        is given by $\boxed{\mathbf{x}^\star = -H^{-1}\mathbf{g}}$, and the optimal value is $\boxed{-\frac12 \mathbf{g}^\top H^{-1}\mathbf{g}}$.</p>
+        <p><i>Proof:</i> Complete the square. Let $\mathbf{x} = \mathbf{z} - H^{-1}\mathbf{g}$.
+        $$ \frac12 (\mathbf{z} - H^{-1}\mathbf{g})^\top H (\mathbf{z} - H^{-1}\mathbf{g}) + \mathbf{g}^\top (\mathbf{z} - H^{-1}\mathbf{g}) $$
+        Expanding this yields $\frac12 \mathbf{z}^\top H \mathbf{z} - \frac12 \mathbf{g}^\top H^{-1}\mathbf{g}$. Since $H \succ 0$, the minimum is at $\mathbf{z}=0$.
+        </p>
+      </div>
+    </section>
           $$ \sum_{i,j} \alpha_i \beta_j = \sum_i \alpha_i \left(\sum_j \beta_j\right) = \left(\sum_i \alpha_i\right) \left(\sum_j \beta_j\right) $$
           Substituting back:
           $$ \sum_{i,j} \|A_i\|_2^2 \|B^j\|_2^2 = \left(\sum_{i=1}^m \|A_i\|_2^2\right) \left(\sum_{j=1}^p \|B^j\|_2^2\right) $$
@@ -2065,7 +1655,7 @@
     <section class="section-card" id="section-psd">
       <h2>5. Positive Semidefinite Matrices</h2>
 
-      <h3>5.1 The Space of Symmetric Matrices ($\mathbb{S}^n$)</h3>
+      <h3>5.1 Symmetric Matrices and the Spectral Theorem</h3>
       <p>In convex optimization, a central object is the Hessian matrix $\nabla^2 f(\mathbf{x})$. By Schwarz's Theorem, if a function is twice continuously differentiable, its Hessian is symmetric. A matrix $A \in \mathbb{R}^{n \times n}$ is symmetric if $A = A^\top$. The set of such matrices is denoted $\mathbb{S}^n$.</p>
 
       <h4>The Spectral Theorem</h4>
@@ -2079,42 +1669,24 @@
       <h4>Why are Eigenvectors of Symmetric Matrices Orthogonal?</h4>
       <p>The Spectral Theorem guarantees orthogonal eigenvectors for symmetric matrices. The proof relies on the adjoint property.</p>
       <div class="proof-box">
-        <h4>Proof of Orthogonality (Step-by-Step Walkthrough)</h4>
-        <p><b>Goal:</b> Show that eigenvectors corresponding to distinct eigenvalues of a symmetric matrix are orthogonal.</p>
-        <p><b>Strategy:</b> We will compute the quantity $\langle A v_1, v_2 \rangle$ in two different ways and compare the results. This technique—evaluating a scalar in two ways—is a standard trick in linear algebra proofs.</p>
-
+        <h4>Proof of Orthogonality</h4>
         <div class="proof-step">
             <strong>Setup:</strong>
             Let $A$ be symmetric ($A^\top = A$). Let $v_1, v_2$ be eigenvectors with distinct eigenvalues $\lambda_1 \neq \lambda_2$:
             $$ A v_1 = \lambda_1 v_1, \quad A v_2 = \lambda_2 v_2 $$
         </div>
-
         <div class="proof-step">
-            <strong>Step 1: Evaluate $\langle A v_1, v_2 \rangle$ using the first eigenvalue.</strong>
-            Since $A v_1 = \lambda_1 v_1$, we substitute directly:
+            <strong>Step 1: Evaluate $\langle A v_1, v_2 \rangle$ directly.</strong>
             $$ \langle A v_1, v_2 \rangle = \langle \lambda_1 v_1, v_2 \rangle = \lambda_1 \langle v_1, v_2 \rangle $$
         </div>
-
         <div class="proof-step">
-            <strong>Step 2: Evaluate $\langle A v_1, v_2 \rangle$ by moving the matrix.</strong>
-            By the definition of the adjoint (transpose), we can move $A$ to the other side of the inner product: $\langle Ax, y \rangle = \langle x, A^\top y \rangle$.
-            $$ \langle A v_1, v_2 \rangle = \langle v_1, A^\top v_2 \rangle $$
-            <b>Crucial Step:</b> Since $A$ is symmetric, $A^\top = A$.
-            $$ = \langle v_1, A v_2 \rangle $$
-            Now substitute $A v_2 = \lambda_2 v_2$:
-            $$ = \langle v_1, \lambda_2 v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
+            <strong>Step 2: Evaluate using symmetry.</strong>
+            $$ \langle A v_1, v_2 \rangle = \langle v_1, A^\top v_2 \rangle = \langle v_1, A v_2 \rangle = \langle v_1, \lambda_2 v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
         </div>
-
         <div class="proof-step">
-            <strong>Step 3: Compare and Conclude.</strong>
-            We have two expressions for the same quantity:
-            $$ \lambda_1 \langle v_1, v_2 \rangle = \lambda_2 \langle v_1, v_2 \rangle $$
-            Subtracting the right side from the left:
-            $$ (\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0 $$
-            Since we assumed the eigenvalues are distinct ($\lambda_1 \neq \lambda_2$), the term $(\lambda_1 - \lambda_2)$ is non-zero.
-            Therefore, the other term must be zero:
-            $$ \langle v_1, v_2 \rangle = 0 $$
-            Thus, $v_1$ and $v_2$ are orthogonal.
+            <strong>Step 3: Conclusion.</strong>
+            Subtracting the two results: $(\lambda_1 - \lambda_2) \langle v_1, v_2 \rangle = 0$.
+            Since $\lambda_1 \neq \lambda_2$, we must have $\langle v_1, v_2 \rangle = 0$.
         </div>
       </div>
 
@@ -2128,24 +1700,22 @@
         <p>The set of all PSD matrices forms a convex cone, denoted $\mathbb{S}^n_+$. This geometric object is the foundation of <b>Semidefinite Programming (SDP)</b>, a powerful generalization of linear programming that we will study in <a href="../07-convex-problems-standard/index.html">Lecture 08</a>. As LP optimizes over the non-negative orthant, SDP optimizes over the PSD cone.</p>
       </div>
 
-      <h4>Definition A: The Variational Definition</h4>
+      <h4>The Variational Definition</h4>
       <p>A symmetric matrix $A \in \mathbb{S}^n$ is <a href="javascript:void(0)" class="definition-link" data-term="positive semidefinite">Positive Semidefinite (PSD)</a>, denoted as $A \succeq 0$, if:</p>
       $$ \mathbf{x}^\top A \mathbf{x} \ge 0 \quad \text{for all } \mathbf{x} \in \mathbb{R}^n $$
       <p><b>Geometric Intuition (Generalized Non-Negative Numbers):</b> Just as a non-negative number $a \ge 0$ allows us to define convex quadratic functions like $f(\mathbf{x}) = ax^2$, a PSD matrix allows us to define convex quadratic forms in higher dimensions. If $A \succeq 0$, the function $f(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x}$ looks like a bowl. If $A$ has a negative eigenvalue, the function looks like a saddle (curves down in some directions), breaking convexity.</p>
+
       <div class="example-box">
         <h4>Example: Checking Energy</h4>
         <p>Let $A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$. Is it PSD?
         <br>Let's check the "energy" for an arbitrary vector $\mathbf{x} = (x_1, x_2)^\top$.
-        $$ \mathbf{x}^\top A \mathbf{x} = \begin{bmatrix} x_1 & x_2 \end{bmatrix} \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} $$
-        $$ = \begin{bmatrix} x_1 & x_2 \end{bmatrix} \begin{bmatrix} 2x_1 - x_2 \\ -x_1 + 2x_2 \end{bmatrix} = x_1(2x_1 - x_2) + x_2(-x_1 + 2x_2) $$
-        $$ = 2x_1^2 - 2x_1 x_2 + 2x_2^2 = x_1^2 + (x_1^2 - 2x_1 x_2 + x_2^2) + x_2^2 = x_1^2 + (x_1 - x_2)^2 + x_2^2 $$
+        $$ \mathbf{x}^\top A \mathbf{x} = 2x_1^2 - 2x_1 x_2 + 2x_2^2 = x_1^2 + (x_1 - x_2)^2 + x_2^2 $$
         Since squares are always non-negative, the sum is $\ge 0$ for any real $x_1, x_2$.
         <br>Thus, $A \succeq 0$. In fact, it is Positive Definite (strictly positive for $\mathbf{x} \neq 0$).
         </p>
       </div>
-      <p><b>Curvature:</b> If $A$ is the Hessian $\nabla^2 f(\mathbf{x})$, the term $\mathbf{x}^\top A \mathbf{x}$ is the second derivative along the line defined by vector $\mathbf{x}$. $A \succeq 0$ means the function has non-negative curvature in <i>every</i> possible direction.</p>
 
-      <h4>Definition B: The Eigenvalue Definition</h4>
+      <h4>The Spectral Definition</h4>
       <p>A symmetric matrix $A \in \mathbb{S}^n$ is PSD if and only if all its eigenvalues are non-negative:</p>
       $$ \lambda_i(A) \ge 0 \quad \text{for all } i = 1, \dots, n $$
 
@@ -2156,35 +1726,19 @@
       </p>
 
       <div class="proof-box">
-        <h4>Proof: Equivalence of Definitions (Detailed Walkthrough)</h4>
-        <p><b>Goal:</b> Prove that the variational definition ("energy is always non-negative") is equivalent to the spectral definition ("all eigenvalues are non-negative").</p>
-        <p>$$ (\forall \mathbf{x}, \mathbf{x}^\top A \mathbf{x} \ge 0) \iff (\forall i, \lambda_i(A) \ge 0) $$</p>
-
+        <h4>Proof: Equivalence of Definitions</h4>
+        <p><b>Goal:</b> Prove $(\forall \mathbf{x}, \mathbf{x}^\top A \mathbf{x} \ge 0) \iff (\forall i, \lambda_i(A) \ge 0)$.</p>
         <div class="proof-step">
-          <strong>Direction 1: Variational $\implies$ Eigenvalues $(\Rightarrow)$</strong>
-          <br><b>Assumption:</b> $\mathbf{x}^\top A \mathbf{x} \ge 0$ holds for <i>every</i> vector $\mathbf{x}$.
-          <br><b>Strategy:</b> Since the condition holds for <i>all</i> vectors, we are free to choose a specific "test vector" that makes the math easy. The best candidate is an eigenvector.
-          <br>1. Let $\mathbf{v}$ be an eigenvector with eigenvalue $\lambda$. ($A \mathbf{v} = \lambda \mathbf{v}$, with $\mathbf{v} \neq 0$).
-          <br>2. Plug $\mathbf{x} = \mathbf{v}$ into the quadratic form:
-          $$ \mathbf{v}^\top A \mathbf{v} = \mathbf{v}^\top (\lambda \mathbf{v}) = \lambda (\mathbf{v}^\top \mathbf{v}) = \lambda \|\mathbf{v}\|_2^2 $$
-          <br>3. By our assumption, this quantity must be non-negative: $\lambda \|\mathbf{v}\|_2^2 \ge 0$.
-          <br>4. Since $\mathbf{v} \neq 0$, the squared norm $\|\mathbf{v}\|_2^2$ is strictly positive. We can divide by it.
-          <br><b>Conclusion:</b> $\lambda \ge 0$. This holds for any eigenvalue.
+          <strong>Variational $\implies$ Eigenvalues:</strong>
+          Let $\mathbf{v}$ be an eigenvector with eigenvalue $\lambda$.
+          $$ \mathbf{v}^\top A \mathbf{v} = \mathbf{v}^\top (\lambda \mathbf{v}) = \lambda \|\mathbf{v}\|_2^2 $$
+          Since $\mathbf{v}^\top A \mathbf{v} \ge 0$ and $\|\mathbf{v}\|_2^2 > 0$, we must have $\lambda \ge 0$.
         </div>
-
         <div class="proof-step">
-          <strong>Direction 2: Eigenvalues $\implies$ Variational $(\Leftarrow)$</strong>
-          <br><b>Assumption:</b> All eigenvalues $\lambda_i \ge 0$.
-          <br><b>Strategy:</b> We use the Spectral Decomposition to diagonalize the matrix, decoupling the quadratic form into a sum of squares.
-          <br>1. Since $A$ is symmetric, we can write $A = Q \Lambda Q^\top$, where $Q$ is orthogonal and $\Lambda = \mathrm{diag}(\lambda_1, \dots, \lambda_n)$.
-          <br>2. Substitute this into the quadratic form for an arbitrary $\mathbf{x}$:
-          $$ \mathbf{x}^\top A \mathbf{x} = \mathbf{x}^\top (Q \Lambda Q^\top) \mathbf{x} $$
-          <br>3. Group the terms. Let $\mathbf{y} = Q^\top \mathbf{x}$. (This represents $\mathbf{x}$ in the eigenbasis).
-          $$ = (Q^\top \mathbf{x})^\top \Lambda (Q^\top \mathbf{x}) = \mathbf{y}^\top \Lambda \mathbf{y} $$
-          <br>4. Expand the diagonal quadratic form:
-          $$ \mathbf{y}^\top \Lambda \mathbf{y} = \sum_{i=1}^n \lambda_i y_i^2 $$
-          <br>5. Analyze the signs. We know $y_i^2 \ge 0$ (squares are non-negative) and $\lambda_i \ge 0$ (by assumption).
-          <br><b>Conclusion:</b> The sum of non-negative terms is non-negative. Thus $\mathbf{x}^\top A \mathbf{x} \ge 0$ for any $\mathbf{x}$.
+          <strong>Eigenvalues $\implies$ Variational:</strong>
+          Since $A$ is symmetric, $A = Q \Lambda Q^\top$. Let $\mathbf{y} = Q^\top \mathbf{x}$.
+          $$ \mathbf{x}^\top A \mathbf{x} = \mathbf{x}^\top Q \Lambda Q^\top \mathbf{x} = \mathbf{y}^\top \Lambda \mathbf{y} = \sum_{i=1}^n \lambda_i y_i^2 $$
+          Since $\lambda_i \ge 0$ and $y_i^2 \ge 0$, the sum is non-negative.
         </div>
       </div>
 
@@ -2195,25 +1749,13 @@
       </p>
       <ul>
         <li><b>Axes alignment:</b> The axes of the ellipsoid are aligned with the eigenvectors of $P$.</li>
-        <li><b>Axis lengths:</b> The semi-axis lengths are $1/\sqrt{\lambda_i}$, where $\lambda_i$ are the eigenvalues of $P$. Note the inverse relationship: a <i>large</i> eigenvalue means steep curvature in the quadratic bowl, which corresponds to a <i>short</i> axis in the level set ellipsoid (the function rises quickly).</li>
+        <li><b>Axis lengths:</b> The semi-axis lengths are $1/\sqrt{\lambda_i}$. Note the inverse relationship: large eigenvalue $\implies$ steep curvature $\implies$ short axis.</li>
       </ul>
-      <p>This geometric link explains why "conditioning" matters. If the ratio $\lambda_{\max}/\lambda_{\min}$ is large, the ellipsoid is very long and thin (a narrow valley in one direction, flat in another), making optimization difficult.</p>
 
       <h3>5.4 The Rayleigh Quotient: Bridge to Optimization</h3>
       <p>For a symmetric matrix $A \in \mathbb{S}^n$, the <b>Rayleigh Quotient</b> is defined as:</p>
       $$ R_A(\mathbf{x}) := \frac{\mathbf{x}^\top A \mathbf{x}}{\mathbf{x}^\top \mathbf{x}}, \quad \mathbf{x} \neq 0 $$
       
-      <div class="insight">
-        <h4>The Rayleigh Quotient as Effective Eigenvalue</h4>
-        <p>The Rayleigh quotient measures the "effective scaling" of $A$ along direction $\mathbf{x}$. It is a scalar field on the unit sphere whose "special points" (stationary points) are the eigenvectors, and whose values at those points are the eigenvalues. It turns the algebraic problem of finding roots of a polynomial into the analytic problem of finding critical points on a sphere.</p>
-      </div>
-
-      <h4>Key Properties</h4>
-      <ul>
-        <li><b>Scale Invariance:</b> $R_A(\alpha \mathbf{x}) = R_A(\mathbf{x})$ for any $\alpha \neq 0$. It depends only on the <i>direction</i> of $\mathbf{x}$.</li>
-        <li><b>Eigenvalue Readout:</b> If $A\mathbf{v} = \lambda \mathbf{v}$, then $R_A(\mathbf{v}) = \frac{\mathbf{v}^\top (\lambda \mathbf{v})}{\mathbf{v}^\top \mathbf{v}} = \lambda$.</li>
-      </ul>
-
       <h4>The Core Theorem: Min/Max = Extreme Eigenvalues</h4>
       <p>For symmetric $A$ with eigenvalues $\lambda_{\min} \le \dots \le \lambda_{\max}$:</p>
       $$ \lambda_{\min} = \min_{\mathbf{x} \neq 0} R_A(\mathbf{x}) \quad \text{and} \quad \lambda_{\max} = \max_{\mathbf{x} \neq 0} R_A(\mathbf{x}) $$
@@ -2221,173 +1763,62 @@
 
       <div class="proof-box">
         <h4>Proof: The "Weighted Average" Intuition</h4>
-        <p>Why does the Rayleigh quotient never escape the range $[\lambda_{\min}, \lambda_{\max}]$? Because it is literally an average.</p>
+        <p>Why does the Rayleigh quotient never escape the range $[\lambda_{\min}, \lambda_{\max}]$?</p>
         <div class="proof-step">
           <strong>Step 1: Spectral Decomposition.</strong>
-          Since $A$ is symmetric, $A = Q \Lambda Q^\top$ with orthonormal $Q$. Let $\mathbf{y} = Q^\top \mathbf{x}$. Then $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
-        </div>
-        <div class="proof-step">
-          <strong>Step 2: Rewrite in Eigen-Coordinates.</strong>
+          Let $\mathbf{y} = Q^\top \mathbf{x}$. Then $\|\mathbf{y}\|_2 = \|\mathbf{x}\|_2$.
           $$ R_A(\mathbf{x}) = \frac{\mathbf{y}^\top \Lambda \mathbf{y}}{\mathbf{y}^\top \mathbf{y}} = \frac{\sum_{i=1}^n \lambda_i y_i^2}{\sum_{i=1}^n y_i^2} $$
         </div>
         <div class="proof-step">
-          <strong>Step 3: Define Weights.</strong>
+          <strong>Step 2: Define Weights.</strong>
           Let $w_i = \frac{y_i^2}{\sum_j y_j^2}$. Notice that $w_i \ge 0$ and $\sum w_i = 1$. Thus:
           $$ R_A(\mathbf{x}) = \sum_{i=1}^n w_i \lambda_i $$
           This is a <b>convex combination</b> of the eigenvalues.
         </div>
         <div class="proof-step">
-          <strong>Step 4: Conclusion.</strong>
-          The value must lie in $[\min \lambda_i, \max \lambda_i]$. To achieve the maximum, we must put all the "weight" $w_i$ on the largest eigenvalue. This implies $y_i=0$ for all $i$ except $i_{\max}$, which means $\mathbf{x}$ aligns perfectly with the top eigenvector.
+          <strong>Step 3: Conclusion.</strong>
+          The value must lie in $[\min \lambda_i, \max \lambda_i]$.
         </div>
-      </div>
-
-      <div class="insight">
-        <h4>Connection to Lagrange Multipliers</h4>
-        <p>The constrained optimization problem "maximize $\mathbf{x}^\top A \mathbf{x}$ subject to $\mathbf{x}^\top \mathbf{x} = 1$" has Lagrangian $\mathcal{L}(\mathbf{x}, \mu) = \mathbf{x}^\top A \mathbf{x} - \mu(\mathbf{x}^\top \mathbf{x} - 1)$. Setting $\nabla_{\mathbf{x}} \mathcal{L} = 0$ gives $2A\mathbf{x} - 2\mu \mathbf{x} = 0$, or $A\mathbf{x} = \mu \mathbf{x}$. Thus <b>every critical point is an eigenvector</b>, and the multiplier $\mu$ is the corresponding eigenvalue.</p>
       </div>
 
       <h4>Convexity of $\lambda_{\max}$</h4>
       <p>This variational characterization proves that $\lambda_{\max}(A)$ is a <b>convex function</b> of $A$. For fixed $\mathbf{x}$, the function $g(A) = \mathbf{x}^\top A \mathbf{x}$ is linear in $A$. Since $\lambda_{\max}(A)$ is the pointwise supremum of linear functions (indexed by $\mathbf{x}$), it is convex.</p>
 
       <h3>5.5 The Schur Complement Lemma</h3>
-      <p>The Schur Complement is essential for handling block matrices in optimization. It allows conversion of nonlinear constraints into Linear Matrix Inequalities (LMIs) and provides a systematic method for checking positive semidefiniteness.</p>
+      <p>The Schur Complement is essential for handling block matrices in optimization. It allows conversion of nonlinear constraints into Linear Matrix Inequalities (LMIs).</p>
 
       <div class="insight">
         <h4>Geometric Intuition: Completing the Square</h4>
-        <p>The Schur Complement is the matrix generalization of "completing the square". Consider a scalar quadratic form in two variables $\mathbf{x}, \mathbf{y}$:</p>
-        $$ q(\mathbf{x}, \mathbf{y}) = ax^2 + 2bxy + cy^2 $$
-        <p>To determine if this is non-negative for all $\mathbf{x}, \mathbf{y}$, we complete the square with respect to $\mathbf{x}$ (assuming $a > 0$):</p>
-        $$ a(\mathbf{x} + \frac{\mathbf{b}}{a}\mathbf{y})^2 + (c - \frac{\mathbf{b}^2}{a})\mathbf{y}^2 $$
-        <p>The first term is always non-negative. The sign of the entire expression depends on the second term coefficient: $S = c - \mathbf{b}^2/a$.
-        <br>In the matrix case $\begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$, the term $S = C - B^\top A^{-1} B$ plays exactly the same role. The block diagonal decomposition $ME$ derived below is the matrix equivalent of this algebraic rearrangement.</p>
-      </div>
-
-      <div class="insight">
-        <h4>Why is this useful?</h4>
-        <p>Often in optimization we encounter nonlinear inequalities like $\frac{\mathbf{x}^2}{\mathbf{y}} \le t$ or $\|Ax\|_2^2 \le c$. These look difficult to handle with linear algebra. The Schur Complement allows us to rewrite them as <b>linear</b> constraints on a matrix variable. For example, $\mathbf{x}^2 \le ty$ (with $\mathbf{y}>0$) is equivalent to the matrix condition $\begin{bmatrix} \mathbf{y} & \mathbf{x} \\ \mathbf{x} & t \end{bmatrix} \succeq 0$. This "lifting" trick is the key to Semidefinite Programming.</p>
+        <p>Consider a scalar quadratic form $q(\mathbf{x}, \mathbf{y}) = ax^2 + 2bxy + cy^2$. Completing the square ($a>0$):
+        $$ q(\mathbf{x}, \mathbf{y}) = a(\mathbf{x} + \frac{b}{a}\mathbf{y})^2 + (c - \frac{b^2}{a})\mathbf{y}^2 $$
+        The sign depends on $S = c - b^2/a$. The Schur complement is the matrix generalization of this coefficient.</p>
       </div>
 
       <figure style="text-align: center;">
         <img src="assets/schur_complement_block.png"
              alt="Schur Complement Block Matrix Transformation Visualization"
              style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white;" />
-        <figcaption><i>Figure 9:</i> Visualization of the Schur complement process. Left: Original block matrix. Center: Elimination matrix. Right: Resulting block upper-triangular matrix where the top-left block has been transformed into the Schur complement.</figcaption>
+        <figcaption><i>Figure 9:</i> Visualization of the Schur complement process.</figcaption>
       </figure>
 
+      <h4>Theorem: Schur Complement Condition for PSD</h4>
+      <p>Let $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$. Then:
+      $$ M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0 $$
+      </p>
+
       <div class="proof-box">
-        <h4>1. Block Matrix Setup and Dimensions</h4>
-        <p>Consider a block matrix $M$ partitioned as follows:</p>
-        $$ M = \begin{bmatrix} A & B \\ C & D \end{bmatrix} $$
-        <p>where $A \in \mathbb{R}^{\mathbf{p} \times \mathbf{p}}$, $B \in \mathbb{R}^{\mathbf{p} \times \mathbf{q}}$, $C \in \mathbb{R}^{\mathbf{q} \times \mathbf{p}}$, and $D \in \mathbb{R}^{\mathbf{q} \times \mathbf{q}}$. Assume the bottom-right block $D$ is invertible.</p>
-        <p>The <b>Schur complement</b> of $D$ in $M$ is the matrix defined as:</p>
-        $$ S := A - B D^{-1} C $$
-
-        <h4>2. Constructing the Elimination Matrix (Derivation)</h4>
-        <p>To understand the origin of $S$, we apply <b>Block Gaussian Elimination</b>. The goal is to zero out the $C$ block (bottom-left) to obtain a block upper-triangular matrix, from which properties like determinant and invertibility are easily read.</p>
-
-        <div class="proof-step">
-            <strong>Goal:</strong> We want to find a matrix $E$ such that multiplying $M$ by $E$ eliminates the bottom-left block.
-            $$ M E = \begin{bmatrix} A & B \\ C & D \end{bmatrix} \begin{bmatrix} I & 0 \\ Z & I \end{bmatrix} = \begin{bmatrix} \star & B \\ 0 & D \end{bmatrix} $$
-            Here, $Z$ is the unknown "multiplier" we need to find.
-        </div>
-        <div class="proof-step">
-            <strong>Solving for Z:</strong>
-            Let's multiply the bottom row of blocks:
-            $$ \text{Bottom-Left Result} = C \cdot I + D \cdot Z $$
-            We require this to be the zero matrix:
-            $$ C + DZ = 0 \implies DZ = -C $$
-            Since $D$ is invertible, we solve for $Z$ by left-multiplying by $D^{-1}$:
-            $$ Z = -D^{-1}C $$
-            This gives us the exact form of the elimination matrix.
-        </div>
-
-        <p>We define the elimination matrix $E$ using this $Z$:</p>
-        $$ E = \begin{bmatrix} I_p & 0 \\ -D^{-1}C & I_q \end{bmatrix} $$
-        <p>This matrix $E$ is block lower-triangular with identity matrices on the diagonal, so $\det(E) = 1$. It acts as a "column operation": it subtracts $D^{-1}C$ times the second column-block from the first column-block.</p>
-
-        <p>Multiplying $M$ by $E$ yields the factorization:</p>
-        $$ ME = \begin{bmatrix} A & B \\ C & D \end{bmatrix} \begin{bmatrix} I_p & 0 \\ -D^{-1}C & I_q \end{bmatrix} = \begin{bmatrix} A - BD^{-1}C & B \\ 0 & D \end{bmatrix} = \begin{bmatrix} S & B \\ 0 & D \end{bmatrix} $$
-
-        <div class="proof-box">
-          <h4>Line-by-Line Verification of Block Multiplication</h4>
-          <p>We verify this multiplication explicitly using the standard block multiplication rule $\begin{bmatrix} A & B \\ C & D \end{bmatrix} \begin{bmatrix} X & Y \\ Z & W \end{bmatrix} = \begin{bmatrix} AX+BZ & AY+BW \\ CX+DZ & CY+DW \end{bmatrix}$.</p>
-          <p>Here we set $X=I_p, Y=0, Z=-D^{-1}C, W=I_q$.</p>
-          <ul>
-            <li><b>Top-left (The Pivot):</b> $A(I_p) + B(-D^{-1}C) = A - BD^{-1}C = S$. This term is exactly the "pivot" remaining after elimination.</li>
-            <li><b>Top-right:</b> $A(0) + B(I_q) = B$. (Unchanged).</li>
-            <li><b>Bottom-left (The Zero):</b> $C(I_p) + D(-D^{-1}C) = C - C = 0$. (This was the specific design goal of the elimination step).</li>
-            <li><b>Bottom-right:</b> $C(0) + D(I_q) = D$. (Unchanged).</li>
-          </ul>
-        </div>
-
-        <div class="insight">
-          <h4>Choice of Elimination Matrix</h4>
-          <p>The goal is to eliminate the bottom-left block $C$, analogous to Gaussian elimination. We require the $(2,1)$ block of the product to be zero:
-          $$ C \cdot I_p + D \cdot Z = 0 \implies D Z = -C \implies Z = -D^{-1}C $$
-          This determines the entry $-D^{-1}C$ in the elimination matrix $E$.</p>
-        </div>
-
-        <p>Since $ME$ is block upper-triangular, its determinant is the product of the determinants of its diagonal blocks: $\det(ME) = \det(S)\det(D)$. Because $\det(E) = 1$, we derive the <b>Determinant Identity</b>:</p>
-        $$ \det(M) = \det(D) \det(A - B D^{-1} C) $$
-
-        <div class="example-box">
-          <h4>Numerical Example (Sanity Check)</h4>
-          <p>Let $A=[2], B=[1], C=[3], D=[4]$. Then $M = \begin{bmatrix} 2 & 1 \\ 3 & 4 \end{bmatrix}$.</p>
-          <ul>
-            <li><b>Direct Determinant:</b> $\det(M) = 2(4) - 1(3) = 8 - 3 = 5$.</li>
-            <li><b>Schur Complement:</b> $S = A - B D^{-1} C = 2 - 1(\frac{1}{4})3 = 2 - 0.75 = 1.25$.</li>
-            <li><b>Formula Check:</b> $\det(D)\det(S) = 4(1.25) = 5$.</li>
-          </ul>
-          <p>It matches perfectly.</p>
-        </div>
-
-        <h4>3. Symmetric Variant: Schur Complement of $A$</h4>
-        <p>Similarly, if $A$ is invertible, we can eliminate $C$ using the Schur complement of $A$, defined as $D - C A^{-1} B$. The determinant identity becomes:</p>
-        $$ \det(M) = \det(A) \det(D - C A^{-1} B) $$
-
-        <h4>4. Schur Complement and Positive Semidefiniteness</h4>
-        <p>This is the crucial property for convex optimization. Let $M$ be a symmetric matrix ($C = B^\top$):</p>
-        $$ M = \begin{bmatrix} A & B \\ B^\top & D \end{bmatrix} $$
-        <p><b>Theorem:</b> If $D \succ 0$, then $M \succeq 0$ if and only if the Schur complement $S = A - B D^{-1} B^\top \succeq 0$.</p>
-
-        <div class="proof-step">
-          <strong>Proof ($\Rightarrow$):</strong> Assume $M \succeq 0$.
-          We need to show that the Schur complement is PSD, i.e., $\mathbf{x}^\top S \mathbf{x} \ge 0$ for any $\mathbf{x}$.
-          Since $M \succeq 0$, we know that $\mathbf{z}^\top M \mathbf{z} \ge 0$ for <i>any</i> vector $\mathbf{z}$. The trick is to choose a specific test vector $\mathbf{z}$ that isolates $S$.
-          <br>Let $\mathbf{z} = \begin{bmatrix} \mathbf{x} \\ \mathbf{y} \end{bmatrix}$. The quadratic form is:
-          $$ \mathbf{z}^\top M \mathbf{z} = \mathbf{x}^\top A \mathbf{x} + 2 \mathbf{x}^\top B \mathbf{y} + \mathbf{y}^\top D \mathbf{y} $$
-          We want to choose $\mathbf{y}$ to minimize this expression for a fixed $\mathbf{x}$, effectively "concentrating" the condition onto $\mathbf{x}$. Setting the gradient with respect to $\mathbf{y}$ to zero:
-          $$ \nabla_y (\mathbf{z}^\top M \mathbf{z}) = 2B^\top \mathbf{x} + 2D\mathbf{y} = 0 \implies \mathbf{y} = -D^{-1}B^\top \mathbf{x} $$
-          Now, we substitute this optimal $\mathbf{y}$ back into the quadratic form:
-          $$ \mathbf{z}^\top M \mathbf{z} = \mathbf{x}^\top A \mathbf{x} + 2 \mathbf{x}^\top B (-D^{-1}B^\top \mathbf{x}) + (-D^{-1}B^\top \mathbf{x})^\top D (-D^{-1}B^\top \mathbf{x}) $$
-          $$ = \mathbf{x}^\top A \mathbf{x} - 2 \mathbf{x}^\top B D^{-1} B^\top \mathbf{x} + \mathbf{x}^\top B D^{-1} D D^{-1} B^\top \mathbf{x} $$
-          $$ = \mathbf{x}^\top A \mathbf{x} - 2 \mathbf{x}^\top B D^{-1} B^\top \mathbf{x} + \mathbf{x}^\top B D^{-1} B^\top \mathbf{x} $$
-          $$ = \mathbf{x}^\top (A - B D^{-1} B^\top) \mathbf{x} = \mathbf{x}^\top S \mathbf{x} $$
-          Since $M \succeq 0$, we must have $\mathbf{z}^\top M \mathbf{z} \ge 0$. Therefore, $\mathbf{x}^\top S \mathbf{x} \ge 0$ for all $\mathbf{x}$, which means $S \succeq 0$.
-        </div>
-
-        <div class="proof-step">
-          <strong>Proof ($\Leftarrow$):</strong> Assume $S \succeq 0$ and $D \succ 0$.
-          Take any $\mathbf{z} = [\mathbf{x}^\top, \mathbf{y}^\top]^\top$. We can factor $M$ using the elimination matrix from the proof of the lemma:
-          $$ \mathbf{z}^\top M \mathbf{z} = \mathbf{x}^\top S \mathbf{x} + (\mathbf{y} + D^{-1}B^\top \mathbf{x})^\top D (\mathbf{y} + D^{-1}B^\top \mathbf{x}) $$
-          Since $S \succeq 0$, the first term is non-negative. Since $D \succ 0$, the second term is non-negative. Thus $\mathbf{z}^\top M \mathbf{z} \ge 0$ for all $\mathbf{z}$.
-        </div>
-      <div class="example-box">
-        <h4>Example: Determinant of Symmetric Block Matrix</h4>
-        <p>Consider the matrix $M = \begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix}$ where $Y \succ 0$.
-        Using the general determinant formula with $A=Y, B=\mathbf{x}, C=\mathbf{x}^\top, D=t$:
-        $$ \det M = \det Y \cdot \det(t - \mathbf{x}^\top Y^{-1} \mathbf{x}) = (\det Y)(t - \mathbf{x}^\top Y^{-1} \mathbf{x}) $$
-        This scalar formula is frequently used to check if $M \succ 0$: we need $\det Y > 0$ (given) and the Schur complement $t - \mathbf{x}^\top Y^{-1} \mathbf{x} > 0$.</p>
+        <h4>Proof via Gaussian Elimination</h4>
+        <p>We can diagonalize $M$ using a block elimination matrix:
+        $$ \begin{bmatrix} I & 0 \\ -B^\top A^{-1} & I \end{bmatrix} \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix} \begin{bmatrix} I & -A^{-1}B \\ 0 & I \end{bmatrix} = \begin{bmatrix} A & 0 \\ 0 & C - B^\top A^{-1} B \end{bmatrix} $$
+        Let the transformation matrix be $L^\top$. Then $L^\top M L = \text{diag}(A, S)$.
+        By congruence (Sylvester's Law of Inertia), $M$ has the same number of positive, negative, and zero eigenvalues as the block diagonal matrix.
+        Since $A \succ 0$, $M \succeq 0$ iff $S \succeq 0$.
+        </p>
       </div>
 
-      </div>
-
-      <p><b>Forward Connection:</b> This result can also be viewed as minimizing the quadratic form $f(\mathbf{x}, \mathbf{y}) = [\mathbf{x}^\top \ \mathbf{y}^\top] M [\mathbf{x}^\top \ \mathbf{y}^\top]^\top$ with respect to $\mathbf{y}$ (partial minimization), yielding a new quadratic form in $\mathbf{x}$ defined by the Schur complement matrix. This perspective is explored in <a href="../05-convex-functions-basics/index.html">Lecture 05</a>.</p>
-
-        <div class="insight">
+      <div class="insight">
           <h4>The Triangle of Equivalence</h4>
-          <p>For a positive definite matrix $Y \succ 0$, the following three conditions are equivalent. They represent three different "faces" of the same object:</p>
+          <p>For a positive definite matrix $Y \succ 0$, the following are equivalent:</p>
           $$
           \boxed{
           \begin{matrix}
@@ -2395,63 +1826,11 @@
           t \ge \mathbf{x}^\top Y^{-1} \mathbf{x} & \iff & \begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix} \succeq 0 \\
           & \Updownarrow & \\
           & \textbf{Rank-1 Update} & \\
-          & tY - xx^\top \succeq 0 &
+          & tY - \mathbf{x}\mathbf{x}^\top \succeq 0 &
           \end{matrix}
           }
           $$
-          <ul>
-            <li><b>Scalar:</b> Useful for epigraphs of quadratic-over-linear functions.</li>
-            <li><b>Block Matrix:</b> Useful for Semidefinite Programming (SDP) constraints.</li>
-            <li><b>Rank-1 Update:</b> Useful for algebraic manipulation ($tY \succeq xx^\top$).</li>
-          </ul>
-          <div class="proof-box">
-            <h4>Derivation: From Rank-1 to Scalar</h4>
-            <p>We want to show $tY - xx^\top \succeq 0 \iff t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$.</p>
-            <div class="proof-step">
-                <strong>Step 1: Variational Definition.</strong>
-                $tY - xx^\top \succeq 0$ means for all $\mathbf{v} \in \mathbb{R}^n$:
-                $$ \mathbf{v}^\top (tY - xx^\top) \mathbf{v} \ge 0 \implies t (\mathbf{v}^\top Y \mathbf{v}) - (\mathbf{v}^\top \mathbf{x})(\mathbf{x}^\top \mathbf{v}) \ge 0 \implies (\mathbf{x}^\top \mathbf{v})^2 \le t (\mathbf{v}^\top Y \mathbf{v}) $$
-            </div>
-            <div class="proof-step">
-                <strong>Step 2: Change of Variables.</strong>
-                Since $Y \succ 0$, it has a square root $Y^{1/2}$. Let $\mathbf{u} = Y^{1/2} \mathbf{v}$. Then $\mathbf{v} = Y^{-1/2} \mathbf{u}$.
-                The term $\mathbf{v}^\top Y \mathbf{v} = \mathbf{u}^\top Y^{-1/2} Y Y^{-1/2} \mathbf{u} = \mathbf{u}^\top \mathbf{u} = \|\mathbf{u}\|_2^2$.
-                The term $\mathbf{x}^\top \mathbf{v} = \mathbf{x}^\top Y^{-1/2} \mathbf{u} = (Y^{-1/2} \mathbf{x})^\top \mathbf{u}$. Let $\mathbf{w} = Y^{-1/2} \mathbf{x}$. Then $\mathbf{x}^\top \mathbf{v} = \mathbf{w}^\top \mathbf{u}$.
-            </div>
-            <div class="proof-step">
-                <strong>Step 3: Apply Cauchy-Schwarz.</strong>
-                The inequality becomes $(\mathbf{w}^\top \mathbf{u})^2 \le t \|\mathbf{u}\|_2^2$ for all $\mathbf{u}$.
-                We want to find the minimum $t$ that satisfies this. This is equivalent to:
-                $$ t \ge \sup_{\mathbf{u} \neq 0} \frac{(\mathbf{w}^\top \mathbf{u})^2}{\|\mathbf{u}\|_2^2} $$
-                By the Cauchy-Schwarz inequality, $(\mathbf{w}^\top \mathbf{u})^2 \le \|\mathbf{w}\|_2^2 \|\mathbf{u}\|_2^2$, with equality when $\mathbf{u}$ is parallel to $\mathbf{w}$.
-                Thus, the supremum is $\|w\|_2^2$.
-            </div>
-            <div class="proof-step">
-                <strong>Step 4: Conclusion.</strong>
-                $$ t \ge \|\mathbf{w}\|_2^2 = \mathbf{w}^\top \mathbf{w} = (Y^{-1/2} \mathbf{x})^\top (Y^{-1/2} \mathbf{x}) = \mathbf{x}^\top Y^{-1} \mathbf{x} $$
-            </div>
-          </div>
-        </div>
-
-      <p><b>Application:</b> This lemma turns the nonlinear constraint $\|Bx\|_2^2 \le c$ (equivalent to $\mathbf{x}^\top B^\top B \mathbf{x} \le c$) into an LMI:
-      $$ \begin{bmatrix} I & B\mathbf{x} \\ (B\mathbf{x})^\top & c \end{bmatrix} \succeq 0 $$
-      This is central to Semidefinite Programming.</p>
-
-      <p>A positive definite matrix $Q$ can be used to define a generalized norm, $\|x\|_Q = \sqrt{\mathbf{x}^\top Q \mathbf{x}}$. The unit ball for this norm, $\{x \mid \mathbf{x}^\top Q \mathbf{x} \le 1\}$, is an ellipsoid, whose geometry is determined by the eigenvalues and eigenvectors of $Q$.</p>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/eigenvalues-psd.png"
-             alt="Eigenvalue visualization for PSD matrices"
-             style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Figure 10:</i> Eigenvalues and positive semidefiniteness—the signs determine the matrix's curvature properties.</figcaption>
-      </figure>
-
-      <figure style="text-align: center; margin: 24px 0;">
-        <img src="../../static/assets/topics/00-linear-algebra-basics/eigenvectors.gif"
-             alt="Animated eigenvector visualization"
-             style="max-width: 600px; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);" />
-        <figcaption><i>Figure 11:</i> Eigenvectors in action—how matrices transform space along principal directions.</figcaption>
-      </figure>
+      </div>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Explorer: Matrix Geometry & Definiteness</h3>
@@ -2481,20 +1860,11 @@
         <h4>Key Properties of the Loewner Order</h4>
         <ul>
           <li><b>Eigenvalue characterization:</b> $X \succeq 0$ if and only if all eigenvalues of $X$ are nonnegative.</li>
-          <li><b>Inner product property:</b> If $X \succeq 0$ and $Y \succeq 0$, then:
-            $$ \langle X, Y \rangle = \mathrm{tr}(XY) \ge 0 $$
-            (This follows because $XY$ has nonnegative trace when both are PSD.)
-          </li>
-          <li><b>Partial order:</b> The relation $\succeq$ is reflexive, transitive, and antisymmetric (hence a partial order).</li>
+          <li><b>Transitivity:</b> $X \succeq Y$ and $Y \succeq Z \implies X \succeq Z$.</li>
+          <li><b>Additivity:</b> $X \succeq Y \implies X+Z \succeq Y+Z$.</li>
+          <li><b>Congruence:</b> $X \succeq Y \implies T^\top X T \succeq T^\top Y T$ for any matrix $T$.</li>
         </ul>
       </div>
-
-      <p>The Loewner order is the language of:</p>
-      <ul>
-        <li><b>Ellipsoids</b> (defined by PSD matrices in quadratic forms)</li>
-        <li><b>PSD cone</b> $\mathbb{S}^n_+ = \{X \in \mathbb{S}^n \mid X \succeq 0\}$ in <a href="../03-convex-sets-geometry/index.html">Lecture 03</a></li>
-        <li><b>Semidefinite programs (SDPs)</b> in <a href="../08-convex-problems-conic/index.html">Lecture 08</a></li>
-      </ul>
 
       <div class="recap-box">
         <h3>Summary: The PSD Checklist</h3>
@@ -2514,7 +1884,7 @@
 
       <p>The concept of "finding the closest point" is the geometric heart of optimization. Whether solving least squares, applying constraints, or analyzing duality, we are often just computing an orthogonal projection.</p>
 
-      <h3>6.1 Projection onto a Line (1D Case)</h3>
+      <h3>6.1 1D Projection: The Shadow</h3>
       <p>Before tackling general subspaces, let's derive the projection of a vector $\mathbf{x}$ onto the line spanned by a single non-zero vector $a \in \mathbb{R}^n$. This simple case contains all the intuition needed for the general theory.</p>
       <p>We seek the scalar $\alpha$ that minimizes the squared distance $\|x - \alpha a\|_2^2$.
       $$ f(\alpha) = \|\mathbf{x} - \alpha a\|_2^2 = (\mathbf{x} - \alpha a)^\top (\mathbf{x} - \alpha a) = \|\mathbf{x}\|_2^2 - 2\alpha (a^\top \mathbf{x}) + \alpha^2 \|a\|_2^2 $$
@@ -2523,6 +1893,7 @@
       The projection is the vector $\mathbf{p} = \alpha^\star a$:
       $$ \mathbf{p} = \frac{a^\top \mathbf{x}}{a^\top a} a = \left( \frac{a a^\top}{a^\top a} \right) \mathbf{x} $$
       </p>
+
       <div class="insight">
         <h4>Geometric Insight: Orthogonality of the Residual</h4>
         <p>Let $\mathbf{r} = \mathbf{x} - \mathbf{p}$ be the error (residual) vector. Check its inner product with $a$:
@@ -2601,7 +1972,7 @@
         This is because $\mathbf{p}$ already lives in $W$, so the closest point in $W$ to $\mathbf{p}$ is just $\mathbf{p}$ itself. Idempotence says that projection is a "stabilizing" operation: once you're in the target subspace, you stay there.</p>
       </div>
 
-      <h3>6.2.2 Projection onto $\mathcal{R}(A)$ using $A$</h3>
+      <h3>6.2.2 The Hat Matrix</h3>
       <p>If $A \in \mathbb{R}^{m \times n}$ has full column rank, the projection matrix onto its column space is given by the famous "Hat Matrix":
       $$ P = A(A^\top A)^{-1} A^\top \quad \text{and} \quad \mathbf{p} = P\mathbf{b} $$
       <b>Derivation:</b> This formula is not magic. It arises from solving the Least Squares problem $\min \|A\mathbf{x} - \mathbf{b}\|^2$.
@@ -3698,7 +3069,77 @@
 
 
 
-<!-- SECTION 10: READINGS -->
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Derivation of the Triangle of Equivalence (Schur Complement)</h3>
+  <p>In Section 5.5, we stated that for $Y \succ 0$, the condition $tY - \mathbf{x}\mathbf{x}^\top \succeq 0$ is equivalent to the scalar inequality $t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$. Here is the step-by-step derivation.</p>
+
+  <div class="proof-box">
+    <h4>Proof: From Rank-1 Update to Scalar Condition</h4>
+    <p>We want to show $tY - \mathbf{x}\mathbf{x}^\top \succeq 0 \iff t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$.</p>
+    <div class="proof-step">
+        <strong>Step 1: Variational Definition.</strong>
+        $tY - \mathbf{x}\mathbf{x}^\top \succeq 0$ means for all $\mathbf{v} \in \mathbb{R}^n$:
+        $$ \mathbf{v}^\top (tY - \mathbf{x}\mathbf{x}^\top) \mathbf{v} \ge 0 \implies t (\mathbf{v}^\top Y \mathbf{v}) - (\mathbf{v}^\top \mathbf{x})(\mathbf{x}^\top \mathbf{v}) \ge 0 \implies (\mathbf{x}^\top \mathbf{v})^2 \le t (\mathbf{v}^\top Y \mathbf{v}) $$
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Change of Variables.</strong>
+        Since $Y \succ 0$, it has a square root $Y^{1/2}$. Let $\mathbf{u} = Y^{1/2} \mathbf{v}$. Then $\mathbf{v} = Y^{-1/2} \mathbf{u}$.
+        The term $\mathbf{v}^\top Y \mathbf{v} = \mathbf{u}^\top Y^{-1/2} Y Y^{-1/2} \mathbf{u} = \mathbf{u}^\top \mathbf{u} = \|\mathbf{u}\|_2^2$.
+        The term $\mathbf{x}^\top \mathbf{v} = \mathbf{x}^\top Y^{-1/2} \mathbf{u} = (Y^{-1/2} \mathbf{x})^\top \mathbf{u}$. Let $\mathbf{w} = Y^{-1/2} \mathbf{x}$. Then $\mathbf{x}^\top \mathbf{v} = \mathbf{w}^\top \mathbf{u}$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 3: Optimization View.</strong>
+        The inequality becomes $(\mathbf{w}^\top \mathbf{u})^2 \le t \|\mathbf{u}\|_2^2$ for all $\mathbf{u}$.
+        We want to find the minimum $t$ that satisfies this. This is equivalent to:
+        $$ t \ge \sup_{\mathbf{u} \neq 0} \frac{(\mathbf{w}^\top \mathbf{u})^2}{\|\mathbf{u}\|_2^2} $$
+        By the Cauchy-Schwarz inequality, $(\mathbf{w}^\top \mathbf{u})^2 \le \|\mathbf{w}\|_2^2 \|\mathbf{u}\|_2^2$, with equality when $\mathbf{u}$ is parallel to $\mathbf{w}$.
+        Thus, the supremum is $\|\mathbf{w}\|_2^2$.
+    </div>
+    <div class="proof-step">
+        <strong>Step 4: Conclusion.</strong>
+        $$ t \ge \|\mathbf{w}\|_2^2 = \mathbf{w}^\top \mathbf{w} = (Y^{-1/2} \mathbf{x})^\top (Y^{-1/2} \mathbf{x}) = \mathbf{x}^\top Y^{-1} \mathbf{x} $$
+    </div>
+  </div>
+
+  <h3>A.2 The Steinitz Exchange Lemma</h3>
+  <div class="proof-box">
+    <h4>Lemma: Steinitz Exchange Lemma (Proof)</h4>
+    <p>Let $V$ be a vector space. Suppose:
+    <ul>
+        <li>$S = \{s_1,\dots,s_m\}$ spans $V$.</li>
+        <li>$L = \{\ell_1,\dots,\ell_k\}$ is linearly independent in $V$.</li>
+    </ul>
+    Then <b>$k \le m$</b>, and we can replace $k$ vectors in $S$ with $L$ to form a new spanning set.</p>
+
+    <h4>Proof by Step-by-Step Replacement</h4>
+    <p>We proceed by induction to inject elements of $L$ into $S$ one by one.</p>
+    <div class="proof-step">
+        <strong>Step 0:</strong> Start with $S^{(0)} = S$, which spans $V$.
+    </div>
+    <div class="proof-step">
+        <strong>Inductive Step:</strong> Assume $S^{(j-1)}$ spans $V$ and contains $\{\ell_1, \dots, \ell_{j-1}\}$. We want to insert $\ell_j$.
+        <br>Since $S^{(j-1)}$ spans, write $\ell_j$ as a linear combination of vectors in $S^{(j-1)}$.
+        $$ \ell_j = \sum_{u \in S^{(j-1)}} c_u u $$
+        Rearranging: $0 = \ell_j - \sum c_u u$.
+        <br>Crucially, at least one vector $u^* \in S^{(j-1)}$ <b>not</b> in $\{\ell_1, \dots, \ell_{j-1}\}$ must have a non-zero coefficient $c_{u^*} \neq 0$.
+        <br><i>Why?</i> If only $\ell$'s had non-zero coefficients, then $\ell_j$ would be in the span of previous $\ell$'s, contradicting independence of $L$.
+    </div>
+    <div class="proof-step">
+        <strong>Replacement:</strong> Solve for $u^*$:
+        $$ u^* = \frac{1}{c_{u^*}} \ell_j - \sum \dots $$
+        This shows $u^*$ is in the span of the new set $S^{(j)} = (S^{(j-1)} \setminus \{u^*\}) \cup \{\ell_j\}$.
+        Thus, the new set still spans $V$.
+    </div>
+    <div class="proof-step">
+        <strong>Conclusion:</strong> We can continue this for all $k$ elements of $L$. Since each step consumes a distinct vector from the original $S$ (and never one of the inserted $\ell$'s), we must have enough capacity in $S$. Thus $k \le m$.
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11: READINGS -->
     <section class="section-card" id="section-readings">
       <h2>Readings & Resources</h2>
       <ul>

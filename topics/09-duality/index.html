@@ -509,38 +509,7 @@
 
         <div class="proof-box">
           <h4>Geometric Proof via Separation</h4>
-          <p>This proof constructs the dual variables as the coefficients of a separating hyperplane in the space of (constraints, objective).</p>
-          <div class="proof-step">
-            <strong>Step 1: The Set of Achievable Values $\mathcal{G}$.</strong>
-            Define the set $\mathcal{G} \subset \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}$ of achievable constraint and objective values:
-            $$ \mathcal{G} = \{ (f_1(x), \dots, f_m(x), h_1(x), \dots, h_p(x), f_0(x)) \mid x \in \mathcal{D} \} $$
-            This set is not necessarily convex. We consider its epigraph-like extension $\mathcal{A}$:
-            $$ \mathcal{A} = \mathcal{G} + (\mathbb{R}_+^m \times \{0\} \times \mathbb{R}_+) $$
-            Since the problem is convex, the set $\mathcal{A}$ is convex.
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Separation.</strong>
-            The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$ (it cannot be in the interior, or we could achieve a better objective value).
-            By the <a href="../03-convex-sets-geometry/index.html#section-3">Supporting Hyperplane Theorem</a>, there exists a non-zero vector $(\lambda, \nu, \mu)$ such that:
-            $$ \lambda^\top u + \nu^\top v + \mu t \ge \lambda^\top 0 + \nu^\top 0 + \mu p^* = \mu p^* \quad \forall (u,v,t) \in \mathcal{A} $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Slater's Condition implies Non-Verticality ($\mu > 0$).</strong>
-            First, observe that $\mu \ge 0$ and $\lambda \succeq 0$ because the set $\mathcal{A}$ is unbounded in the positive directions (we can always increase constraint values without leaving $\mathcal{A}$).
-            <br><b>Proof by Contradiction:</b> Suppose $\mu = 0$. Then the separation inequality becomes:
-            $$ \sum \lambda_i f_i(x) + \sum \nu_j h_j(x) \ge 0 \quad \forall x \in \mathcal{D} $$
-            Apply this to the Slater point $\tilde{x}$ where $f_i(\tilde{x}) < 0$ and $h_j(\tilde{x}) = 0$:
-            $$ \sum_{i=1}^m \lambda_i \underbrace{f_i(\tilde{x})}_{< 0} \ge 0 $$
-            Since $\lambda_i \ge 0$ and $f_i(\tilde{x}) < 0$, each term in the sum is non-positive. For the sum to be non-negative, every term must be zero. Since $f_i(\tilde{x}) \ne 0$, we must have $\lambda_i = 0$ for all $i$.
-            <br>This implies $\lambda = 0, \mu = 0$. But if $\lambda=0$ and $\mu=0$, the separation inequality implies $\nu^\top h(\tilde{x}) \ge 0$, which is trivial ($0=0$). A deeper analysis shows $\nu$ must also be 0, contradicting the fact that the separating vector $(\lambda, \nu, \mu)$ is non-zero.
-            <br><b>Conclusion:</b> We must have $\mu > 0$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 4: Recovering Strong Duality.</strong>
-            Divide the separation inequality by $\mu$. Let $\tilde{\lambda} = \lambda/\mu, \tilde{\nu} = \nu/\mu$.
-            This leads to $g(\tilde{\lambda}, \tilde{\nu}) \ge p^*$.
-            Since $d^* \le p^*$ always, we conclude $d^* = p^*$.
-          </div>
+          <p>The proof relies on constructing a separating hyperplane for the set of achievable constraint and objective values in $\mathbb{R}^{m+p+1}$. The normal vector to this hyperplane yields the dual multipliers. Slater's condition ensures this hyperplane is not vertical, allowing us to recover a finite Lagrange multiplier. For the step-by-step geometric construction, see <a href="#section-appendix">Appendix A.1</a>.</p>
         </div>
       </section>
 
@@ -582,39 +551,7 @@
 
         <div class="proof-box">
           <h4>Derivation from Strong Duality</h4>
-          <p>Assume strong duality holds ($p^* = d^*$) and let $x^*$ and $(\lambda^*, \nu^*)$ be primal and dual optimal.</p>
-          <div class="proof-step">
-            <strong>The Duality Sandwich:</strong>
-            We construct a chain of inequalities starting from the optimal dual value and ending at the optimal primal value.
-            $$
-            \begin{aligned}
-            d^* &= g(\lambda^*, \nu^*) \quad \text{(Definition of Dual Optimal)} \\
-            &= \inf_x \mathcal{L}(x, \lambda^*, \nu^*) \quad \text{(Definition of Dual Function)} \\
-            &\le \mathcal{L}(x^*, \lambda^*, \nu^*) \quad \text{(Infimum is } \le \text{ value at } x^*) \\
-            &\le f_0(x^*) \quad \text{(Since } \lambda^* \ge 0 \text{ and } f_i(x^*) \le 0 \text{, the sum is } \le 0) \\
-            &= p^* \quad \text{(Definition of Primal Optimal)}
-            \end{aligned}
-            $$
-            Because Strong Duality holds ($d^* = p^*$), the start and end of this chain are equal. This forces <b>every inequality in the middle to be an equality</b>.
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion 1: Stationarity (First-Order Condition).</strong>
-            The sandwich equality implies:
-            $$ \inf_x \mathcal{L}(x, \lambda^*, \nu^*) = \mathcal{L}(x^*, \lambda^*, \nu^*) $$
-            This states that $x^*$ is a <b>global minimizer</b> of the Lagrangian function $\mathcal{L}(\cdot, \lambda^*, \nu^*)$ over the entire domain $\mathcal{D}$.
-            <br>If the functions are differentiable, the gradient of the Lagrangian with respect to $x$ must vanish at $x^*$:
-            $$ \nabla_x \mathcal{L}(x^*, \lambda^*, \nu^*) = \nabla f_0(x^*) + \sum_{i=1}^m \lambda_i^* \nabla f_i(x^*) + \sum_{j=1}^p \nu_j^* \nabla h_j(x^*) = 0 $$
-            This explains the "balance of forces" interpretation.
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion 2: Complementary Slackness.</strong>
-            The equality $\mathcal{L}(x^*, \lambda^*, \nu^*) = f_0(x^*)$ implies:
-            $$ f_0(x^*) + \sum \lambda_i^* f_i(x^*) + \sum \nu_j^* h_j(x^*) = f_0(x^*) $$
-            Since $h_j(x^*) = 0$ (primal feasibility), this simplifies to $\sum \lambda_i^* f_i(x^*) = 0$.
-            Since $\lambda_i^* \ge 0$ and $f_i(x^*) \le 0$, each term $\lambda_i^* f_i(x^*)$ is $\le 0$.
-            The sum of non-positive terms is zero if and only if <b>each term is zero</b>:
-            $$ \lambda_i^* f_i(x^*) = 0 \quad \forall i $$
-          </div>
+          <p>If $p^*=d^*$, the "duality gap" vanishes. We can write a chain of inequalities $d^* \le \dots \le p^*$ where every step must be an equality. This forces two conditions: the Lagrangian gradient must vanish at the optimum (stationarity), and the penalty terms must be zero (complementary slackness). For the full "Duality Sandwich" derivation, see <a href="#section-appendix">Appendix A.2</a>.</p>
         </div>
 
         <img src="assets/duality_kkt_2d_fast.gif" alt="KKT Geometry" style="max-width: 900px; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); padding: 16px; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block; margin: 24px auto;">
@@ -667,16 +604,7 @@
         <h3>6.3 Global Inequality (Subgradient Interpretation)</h3>
         <div class="theorem-box">
           <h4>Theorem: Optimal Multipliers as Subgradients</h4>
-          <p>The optimal dual variables are (negative) subgradients of the value function at zero:</p>
-          $$ \boxed{ (-\lambda^*, -\nu^*) \in \partial p^*(0, 0) } $$
-          <p>This implies the global inequality:
-          $$ p^*(u, v) \ge p^*(0, 0) - \lambda^{*\top} u - \nu^{*\top} v $$
-          <b>Shadow Price Interpretation:</b>
-          <ul>
-            <li>$\lambda_i^* \ge 0$. Relaxing constraint $i$ ($u_i > 0$) lowers the optimal value. $\lambda_i^*$ is the rate of this improvement.</li>
-            <li>If $p^*$ is differentiable, then $\frac{\partial p^*}{\partial u_i} = -\lambda_i^*$ and $\frac{\partial p^*}{\partial v_j} = -\nu_j^*$. The Lagrange multipliers are exactly the <strong>sensitivity</strong> of the optimal value to constraint perturbations.</li>
-          </ul>
-          </p>
+          <p>The optimal dual variables act as negative subgradients of the perturbed optimal value function $p^*(u,v)$. Specifically, the inequality $p^*(u, v) \ge p^*(0, 0) - \lambda^{*\top} u - \nu^{*\top} v$ holds globally for convex problems. This means the dual variables provide a guaranteed bound on how much the objective can improve if constraints are relaxed. For the subgradient derivation, see <a href="#section-appendix">Appendix A.3</a>.</p>
 
           <div class="example-box">
             <h4>Example 9.4: Resource Limits</h4>
@@ -726,47 +654,14 @@
         </div>
 
         <h3>7.1 Linear Programming (Standard Inequality Form)</h3>
-        <p><b>Primal:</b> $\min c^\top x$ subject to $Ax \le b$. (Note: $x$ is free, only inequality constraints).</p>
-        <div class="proof-box">
-          <h4>Step-by-Step Derivation</h4>
-          <div class="proof-step">
-            <strong>Step 1: Lagrangian.</strong>
-            Assign multiplier $\lambda \ge 0$ to $Ax - b \le 0$.
-            $$ L(x, \lambda) = c^\top x + \lambda^\top (Ax - b) = (c + A^\top \lambda)^\top x - b^\top \lambda $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Minimize over $x$.</strong>
-            The term is linear in $x$. The infimum is $-\infty$ unless the gradient is zero.
-            $$ \nabla_x L = c + A^\top \lambda = 0 $$
-            If this holds, the term vanishes, leaving $-b^\top \lambda$.
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Dual Problem.</strong>
-            $$ \max_{\lambda \ge 0} \ -b^\top \lambda \quad \text{s.t.} \quad A^\top \lambda + c = 0 $$
-          </div>
-        </div>
+        <p><b>Primal:</b> $\min c^\top x$ subject to $Ax \le b$.
+        <br><b>Dual:</b> $\max -b^\top \lambda$ subject to $A^\top \lambda + c = 0, \lambda \ge 0$.
+        <br><b>Derivation:</b> The Lagrangian is linear in $x$. Minimizing it requires the gradient $c + A^\top \lambda$ to vanish, otherwise the value is $-\infty$. If the gradient vanishes, the value is $-b^\top \lambda$.</p>
 
         <h3>7.2 Quadratic Programming</h3>
-        <p><b>Primal:</b> $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax \le b$. (Assume $P \succ 0$).</p>
-        <div class="proof-box">
-          <h4>Step-by-Step Derivation</h4>
-          <div class="proof-step">
-            <strong>Step 1: Lagrangian.</strong>
-            $$ L(x, \lambda) = \frac{1}{2}x^\top P x + q^\top x + \lambda^\top (Ax - b) = \frac{1}{2}x^\top P x + (q + A^\top \lambda)^\top x - b^\top \lambda $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Minimize over $x$.</strong>
-            This is an unconstrained quadratic minimization. Set gradient to zero:
-            $$ P x + (q + A^\top \lambda) = 0 \implies x^* = -P^{-1}(q + A^\top \lambda) $$
-            Substitute back into $L$:
-            $$ \inf_x L = -\frac{1}{2}(q + A^\top \lambda)^\top P^{-1} (q + A^\top \lambda) - b^\top \lambda $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Dual Problem.</strong>
-            $$ \max_{\lambda \ge 0} \ -\frac{1}{2}(q + A^\top \lambda)^\top P^{-1} (q + A^\top \lambda) - b^\top \lambda $$
-            This is a concave quadratic maximization over the non-negative orthant.
-          </div>
-        </div>
+        <p><b>Primal:</b> $\min \frac{1}{2}x^\top P x + q^\top x$ subject to $Ax \le b$ ($P \succ 0$).
+        <br><b>Dual:</b> $\max_{\lambda \ge 0} -\frac{1}{2}(q + A^\top \lambda)^\top P^{-1} (q + A^\top \lambda) - b^\top \lambda$.
+        <br><b>Derivation:</b> The Lagrangian is a strictly convex quadratic in $x$. The minimum is found by setting the gradient $Px + q + A^\top \lambda = 0$ and substituting back.</p>
 
         <figure class="animation-figure">
           <div class="animation-container">
@@ -776,32 +671,9 @@
         </figure>
 
         <h3>7.3 Semidefinite Programming</h3>
-        <p><b>Primal:</b> $\min \mathrm{tr}(CX)$ subject to $\mathrm{tr}(A_i X) = b_i$ for $i=1\dots m$, and $X \succeq 0$.</p>
-        <div class="proof-box">
-          <h4>Step-by-Step Derivation</h4>
-          <div class="proof-step">
-            <strong>Step 1: Lagrangian.</strong>
-            Assign scalar multipliers $\nu_i$ to equalities and matrix multiplier $S \succeq 0$ to $X \succeq 0$.
-            $$
-            \begin{aligned}
-            L(X, \nu, S) &= \mathrm{tr}(CX) + \sum \nu_i (b_i - \mathrm{tr}(A_i X)) - \mathrm{tr}(SX) \\
-            &= \mathrm{tr}\left( \left( C - \sum \nu_i A_i - S \right) X \right) + b^\top \nu
-            \end{aligned}
-            $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Minimize over $X$.</strong>
-            The term is linear in $X$ (trace inner product). The infimum is $-\infty$ unless the coefficient matrix is zero.
-            $$ C - \sum \nu_i A_i - S = 0 \iff S = C - \sum \nu_i A_i $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Dual Problem.</strong>
-            Maximize $b^\top \nu$ subject to $S \succeq 0$.
-            Substituting $S$:
-            $$ \max_\nu \ b^\top \nu \quad \text{s.t.} \quad \sum_{i=1}^m \nu_i A_i \preceq C $$
-            This is the standard dual SDP.
-          </div>
-        </div>
+        <p><b>Primal:</b> $\min \mathrm{tr}(CX)$ subject to $\mathrm{tr}(A_i X) = b_i$, $X \succeq 0$.
+        <br><b>Dual:</b> $\max b^\top \nu$ subject to $\sum \nu_i A_i \preceq C$.
+        <br><b>Derivation:</b> The Lagrangian term $\mathrm{tr}((C - \sum \nu_i A_i - S)X)$ must vanish for the infimum to be finite, implying the dual slack $S = C - \sum \nu_i A_i$ must be PSD.</p>
 
         <h3>7.4 Problem 1: Least Squares (Residual Form)</h3>
         <p><b>Primal:</b> $\min \frac{1}{2} \|Ax - b\|_2^2$.
@@ -2135,6 +2007,74 @@
 </div>
 
       </section>
+
+<!-- SECTION 12: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Slater's Condition (Geometric Proof)</h3>
+  <div class="proof-box">
+    <h4>Proof via Separation in Value Space</h4>
+    <div class="proof-step">
+      <strong>Step 1: The Value Set.</strong>
+      Define the set of achievable constraint/objective values:
+      $$ \mathcal{A} = \{ (u, v, t) \mid \exists x \in \mathcal{D}, f_i(x) \le u_i, h_j(x) = v_j, f_0(x) \le t \} $$
+      Since the problem is convex, $\mathcal{A}$ is a convex set.
+      The optimal value $p^*$ is the infimum of $t$ such that $(0, 0, t) \in \mathcal{A}$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Supporting Hyperplane.</strong>
+      The point $(0, 0, p^*)$ is on the boundary of $\mathcal{A}$. By the Supporting Hyperplane Theorem, there exists a non-zero vector $(\lambda, \nu, \mu)$ such that:
+      $$ \lambda^\top u + \nu^\top v + \mu t \ge \mu p^* \quad \forall (u, v, t) \in \mathcal{A} $$
+      Boundedness of $\mathcal{A}$ implies $\mu \ge 0, \lambda \succeq 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Slater Implies Non-Verticality.</strong>
+      If $\mu=0$, the inequality involves only constraints. Slater's condition (strictly feasible point $\tilde{x}$) implies $\sum \lambda_i f_i(\tilde{x}) < 0$ (if $\lambda \ne 0$), leading to a contradiction. Thus $\mu > 0$.
+    </div>
+    <div class="proof-step">
+      <strong>Step 4: Strong Duality.</strong>
+      Dividing by $\mu$, we get a lower bound $L(x, \lambda/\mu, \nu/\mu) \ge p^*$ for all feasible $x$.
+      This implies the dual optimal $d^* \ge p^*$. Since $d^* \le p^*$ always, we have $d^*=p^*$.
+    </div>
+  </div>
+
+  <h3>A.2 Derivation of KKT Conditions</h3>
+  <div class="proof-box">
+    <h4>From Strong Duality to Stationarity</h4>
+    <p>Assume $p^* = d^*$. Let $x^*$ be primal optimal and $(\lambda^*, \nu^*)$ be dual optimal.</p>
+    <div class="proof-step">
+      <strong>The Duality Sandwich:</strong>
+      $$ p^* = f_0(x^*) \ge L(x^*, \lambda^*, \nu^*) \ge \inf_x L(x, \lambda^*, \nu^*) = g(\lambda^*, \nu^*) = d^* $$
+      Since $p^*=d^*$, all inequalities are equalities.
+    </div>
+    <div class="proof-step">
+      <strong>Implication 1 (Complementary Slackness):</strong>
+      $f_0(x^*) = L(x^*, \lambda^*, \nu^*) \implies \sum \lambda_i^* f_i(x^*) = 0$. Since terms are non-positive, each must be zero.
+    </div>
+    <div class="proof-step">
+      <strong>Implication 2 (Stationarity):</strong>
+      $x^*$ minimizes $L(x, \lambda^*, \nu^*)$ over $\mathbb{R}^n$. If differentiable, $\nabla_x L = 0$.
+    </div>
+  </div>
+
+  <h3>A.3 Sensitivity Analysis</h3>
+  <div class="proof-box">
+    <h4>Shadow Prices as Subgradients</h4>
+    <p>Let $p^*(u, v)$ be the optimal value with perturbed constraints $f_i(x) \le u_i, h_j(x) = v_j$.
+    <br>We show $p^*(u, v) \ge p^*(0,0) - \lambda^{*\top} u - \nu^{*\top} v$.
+    <br>For any feasible $x$ of the perturbed problem:</p>
+    $$
+    \begin{aligned}
+    f_0(x) &\ge f_0(x) + \sum \lambda_i^* (f_i(x) - u_i) + \sum \nu_j^* (h_j(x) - v_j) \\
+    &= L(x, \lambda^*, \nu^*) - \lambda^{*\top} u - \nu^{*\top} v \\
+    &\ge g(\lambda^*, \nu^*) - \lambda^{*\top} u - \nu^{*\top} v \\
+    &= p^*(0,0) - \lambda^{*\top} u - \nu^{*\top} v
+    \end{aligned}
+    $$
+    <p>Taking the infimum over $x$ gives the result. Thus $(-\lambda^*, -\nu^*) \in \partial p^*(0,0)$.</p>
+  </div>
+</section>
 
       <section class="section-card" id="section-11">
         <h2>Readings & Resources</h2>

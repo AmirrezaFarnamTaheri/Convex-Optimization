@@ -96,32 +96,11 @@
       </div>
 
       <h3>Why Convex Functions Matter for Optimization</h3>
-      <p>Convex functions are <b>the objectives and constraints</b> in convex optimization problems. Here's why they're special:</p>
+      <p>Convex functions serve as both the objectives and constraints in convex optimization problems, offering unique properties that make solving them tractable. The most critical property is that <b>any local minimum is a global minimum</b>. Unlike nonconvex functions, which may trap algorithms in suboptimal local valleys, convex functions ensure that if you find a minimum, you have found the best possible solution. This guarantee eliminates the risk of getting stuck, making gradient descent and other algorithms highly effective.</p>
 
-      <ol>
-        <li><b>Local Minimum = Global Minimum:</b> Unlike nonconvex functions (which may have many local minima), a convex function has the property that <i>any local minimum is a global minimum</i>. This makes optimization tractable—gradient descent won't get stuck!</li>
+      <p>Verifying convexity is a structured process supported by powerful tools. This lecture introduces three primary methods: the direct <b>definition</b> involving Jensen's inequality (applicable to any function), the <b>first-order condition</b> which uses gradients to establish global underestimators (for differentiable functions), and the <b>second-order condition</b> which checks if the Hessian matrix is positive semidefinite (the standard test for twice-differentiable functions). You will learn not just the theory, but the strategy for choosing the right tool for the job.</p>
 
-        <li><b>Efficient Verification Tools:</b> This lecture gives you three ways to verify convexity:
-          <ul style="margin-top: 0.5rem;">
-            <li><b>Definition</b> (§1): Check Jensen's inequality directly (works for any function)</li>
-            <li><b>First-order condition</b> (§3): Check that the gradient defines a global underestimator (requires differentiability)</li>
-            <li><b>Second-order condition</b> (§4): Check that the Hessian is PSD (requires twice-differentiability, easiest in practice!)</li>
-          </ul>
-          You'll learn when to use each method in §7.0.
-        </li>
-
-        <li><b>Composition Rules</b> (§5): You can <i>build</i> complex convex functions from simple ones using operations that preserve convexity (sums, compositions, pointwise maxima). This is the foundation of <b>Disciplined Convex Programming (DCP)</b> in tools like CVXPY.</li>
-
-        <li><b>Foundation for Standard Problem Classes:</b> The convex functions you'll see in this lecture (norms, quadratic forms, log-sum-exp, etc.) are the building blocks for:
-          <ul style="margin-top: 0.5rem;">
-            <li><b>Linear Programs (LP):</b> Minimize/maximize a linear function</li>
-            <li><b>Quadratic Programs (QP):</b> Minimize a quadratic function</li>
-            <li><b>Geometric Programs (GP):</b> Minimize posynomials (after log transform)</li>
-            <li><b>Conic Programs (SOCP, SDP):</b> Constraints defined by norms and matrix inequalities</li>
-          </ul>
-          You'll see these in <a href="../07-convex-problems-standard/index.html">Lecture 07</a> (standard forms) and <a href="../08-convex-problems-conic/index.html">Lecture 08</a> (conic forms).
-        </li>
-      </ol>
+      <p>Beyond verification, we emphasize construction. Using <b>composition rules</b>, you can build complex convex functions from simple atoms like norms and exponentials. This "algebra of convexity"—comprising sums, compositions, and pointwise maxima—forms the foundation of <b>Disciplined Convex Programming (DCP)</b> used in modern solvers like CVXPY. By mastering these rules, you gain the ability to recognize and formulate a vast array of standard problems, from Linear and Quadratic Programs (LP, QP) to more advanced Geometric and Conic Programs (GP, SOCP, SDP), which we will explore in subsequent lectures.</p>
 
       <div class="insight">
         <h4>What's Next: From Theory to Practice</h4>
@@ -223,25 +202,9 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof: Norms are Convex (The Sublinear Template)</h4>
-          <p>Norms are a special case of <b>sublinear functions</b>—functions that are positively homogeneous and subadditive. Any sublinear function is convex.</p>
-          <div class="proof-step">
-            <strong>Step 1: Convex Combination.</strong> Let $x, y \in \mathbb{R}^n$ and $\theta \in [0, 1]$.
-            $$ f(\theta x + (1-\theta)y) = \|\theta x + (1-\theta)y\| $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 2: Subadditivity (Triangle Inequality).</strong> Using $\|a+b\| \le \|a\| + \|b\|$:
-            $$ \|\theta x + (1-\theta)y\| \le \|\theta x\| + \|(1-\theta)y\| $$
-          </div>
-          <div class="proof-step">
-            <strong>Step 3: Positive Homogeneity.</strong> Since $\theta \ge 0$ and $1-\theta \ge 0$:
-            $$ \|\theta x\| = \theta \|x\| \quad \text{and} \quad \|(1-\theta)y\| = (1-\theta)\|y\| $$
-            Substituting back:
-            $$ \|\theta x + (1-\theta)y\| \le \theta \|x\| + (1-\theta)\|y\| = \theta f(x) + (1-\theta)f(y) $$
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion:</strong> All norms (and all sublinear functions like support functions) are convex.
-          </div>
+          <h4>Proof: Norms are Convex</h4>
+          <p>Norms are a special case of <b>sublinear functions</b>—functions that are positively homogeneous and subadditive. Any sublinear function is convex.
+          <br>For a detailed proof using the Triangle Inequality and Homogeneity, see <a href="#section-appendix">Appendix A.1</a>.</p>
         </div>
 
         <h3>1.5 Jensen's Inequality: The General Form</h3>
@@ -258,28 +221,8 @@
         f\left(\sum_{i=1}^k \theta_i x_i\right) \le \sum_{i=1}^k \theta_i f(x_i)
         $$
         <div class="proof-box">
-          <h4>Proof of Finite Jensen by Induction</h4>
-          <div class="proof-step">
-            <strong>Base Case ($k=2$):</strong> The inequality $f(\theta_1 x_1 + \theta_2 x_2) \le \theta_1 f(x_1) + \theta_2 f(x_2)$ holds by the definition of convexity.
-          </div>
-          <div class="proof-step">
-            <strong>Inductive Step:</strong> Assume the inequality holds for any convex combination of $k$ points. Consider a combination of $k+1$ points: $x = \sum_{i=1}^{k+1} \theta_i x_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$.
-            <br>We can "peel off" the last point $x_{k+1}$ and treat the rest as a sub-combination.
-            Let $\tilde{\theta} = \sum_{i=1}^{k} \theta_i = 1 - \theta_{k+1}$. Since $\theta_{k+1} < 1$, $\tilde{\theta} > 0$.
-            $$ x = \theta_{k+1} x_{k+1} + \tilde{\theta} \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} x_i = \theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x} $$
-            where $\bar{x} = \sum_{i=1}^{k} (\theta_i/\tilde{\theta}) x_i$ is a valid convex combination of $k$ points (weights sum to 1).
-          </div>
-          <div class="proof-step">
-            <strong>Apply Convexity Twice:</strong>
-            <br>1. Apply the 2-point definition to $x_{k+1}$ and $\bar{x}$:
-            $$ f(x) = f(\theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x}) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} f(\bar{x}) $$
-            2. Apply the inductive hypothesis to $f(\bar{x})$:
-            $$ f(\bar{x}) \le \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i) $$
-          </div>
-          <div class="proof-step">
-            <strong>Conclusion:</strong> Substituting back:
-            $$ f(x) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} \left(\sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i)\right) = \theta_{k+1} f(x_{k+1}) + \sum_{i=1}^{k} \theta_i f(x_i) = \sum_{i=1}^{k+1} \theta_i f(x_i) $$
-          </div>
+          <h4>Proof of Finite Jensen</h4>
+          <p>The finite form can be proved by induction on the number of points $k$. For the complete inductive step, see <a href="#section-appendix">Appendix A.2</a>.</p>
         </div>
 
         <h4>Expectation Form</h4>
@@ -295,16 +238,7 @@
 
         <div class="proof-box">
           <h4>Proof via Supporting Hyperplane</h4>
-          <p>This proof connects Jensen's inequality directly to the geometry of convex sets (see <a href="../04-convex-sets-cones/index.html#section-2">Lecture 04: Separation Theorems</a>).
-          <br><b>Fact:</b> If $f$ is convex, its epigraph is a convex set. By the <b>Supporting Hyperplane Theorem</b>, at any boundary point $(\mu, f(\mu))$, there exists a supporting hyperplane. This hyperplane defines a subgradient $g \in \partial f(\mu)$ such that:
-          $$ f(x) \ge f(\mu) + g^\top(x - \mu) \quad \forall x $$
-          <br><b>Step 1:</b> Let $\mu = \mathbb{E}[Z]$. Apply the subgradient inequality at $\mu$:
-          $$ f(Z) \ge f(\mu) + g^\top(Z - \mu) $$
-          <b>Step 2:</b> Take expectation (linear operator):
-          $$ \mathbb{E}[f(Z)] \ge f(\mu) + g^\top(\mathbb{E}[Z] - \mu) $$
-          Since $\mathbb{E}[Z] = \mu$, the linear term vanishes.
-          $$ \mathbb{E}[f(Z)] \ge f(\mathbb{E}[Z]) $$
-          This proof confirms Jensen is conceptually "supporting hyperplanes + linearity of expectation".</p>
+          <p>This proof connects Jensen's inequality directly to the geometry of convex sets via the Supporting Hyperplane Theorem. For the detailed subgradient argument, see <a href="#section-appendix">Appendix A.3</a>.</p>
         </div>
 
         <div class="insight">
@@ -443,13 +377,9 @@
         <p>While convex functions have "bowl-shaped" graphs where every chord lies above the function, concave functions have "dome-shaped" or "hill-like" graphs where every chord lies below. If you flip a convex function upside down (negate it), you get a concave function.</p>
 
         <h4>Examples of Concave Functions</h4>
-        <ul>
-          <li><b>Logarithm:</b> $f(x) = \log x$ on $\mathbb{R}_{++}$ is strictly concave. The second derivative $f''(x) = -1/x^2 < 0$ confirms concavity via the second-order condition.</li>
-          <li><b>Negative Quadratic:</b> $f(x) = -x^\top Q x$ where $Q \succeq 0$ (positive semidefinite). This is the negation of a convex quadratic.</li>
-          <li><b>Geometric Mean:</b> $f(\mathbf{x}) = \left(\prod_{i=1}^n x_i\right)^{1/n}$ on $\mathbb{R}_{++}^n$ is concave (proven via the Hessian in Section 4).</li>
-          <li><b>Entropy:</b> $f(\mathbf{x}) = -\sum_{i=1}^n x_i \log x_i$ on the probability simplex is concave, which is fundamental in information theory and statistical mechanics.</li>
-          <li><b>Minimum Function:</b> $f(\mathbf{x}) = \min\{x_1, x_2, \dots, x_n\}$ is concave (the pointwise minimum of concave functions is concave).</li>
-        </ul>
+        <p>The <b>logarithm</b> $f(x) = \log x$ on $\mathbb{R}_{++}$ is the prototypical concave function, with strict concavity confirmed by its negative second derivative ($f''(x) = -1/x^2 < 0$). Similarly, any <b>negative quadratic</b> form $f(x) = -x^\top Q x$ (where $Q \succeq 0$) represents an inverted bowl and is concave.</p>
+
+        <p>In higher dimensions, the <b>geometric mean</b> $f(\mathbf{x}) = (\prod x_i)^{1/n}$ is a concave function on the positive orthant, a fact that underpins the AM-GM inequality. Information theory relies heavily on the <b>entropy</b> function $f(\mathbf{x}) = -\sum x_i \log x_i$, which is concave on the probability simplex. Finally, just as the pointwise maximum of convex functions is convex, the <b>pointwise minimum</b> of linear functions, $f(\mathbf{x}) = \min\{x_1, \dots, x_n\}$, is concave.</p>
 
         <h4>Connection to Maximization Problems</h4>
         <p>Concave functions are the natural objective functions for <b>maximization</b> problems. Just as minimizing a convex function is tractable (any local minimum is global), <b>maximizing a concave function is equally tractable</b> (any local maximum is global). In fact, the problems are equivalent:
@@ -462,23 +392,12 @@
         </div>
 
         <h4>Key Characterizations (Duals of Convex Results)</h4>
-        <p>All the characterizations of convexity have "flipped" analogs for concavity:</p>
-        <ul>
-          <li><b>First-Order Condition (Supergradient):</b> A differentiable $f$ is concave if and only if the first-order Taylor approximation is a <i>global overestimate</i>:
-          $$ f(\mathbf{y}) \le f(\mathbf{x}) + \nabla f(\mathbf{x})^\top (\mathbf{y} - \mathbf{x}) \quad \forall \mathbf{x}, \mathbf{y} $$
-          The tangent hyperplane lies <i>above</i> the graph everywhere.</li>
-          <li><b>Second-Order Condition:</b> A twice-differentiable $f$ is concave if and only if its Hessian is <b>negative semidefinite</b> everywhere: $\nabla^2 f(\mathbf{x}) \preceq 0$ for all $\mathbf{x} \in \mathrm{dom}\, f$.</li>
-          <li><b>Epigraph Characterization:</b> While the epigraph $\{(x,t) : f(x) \le t\}$ characterizes convex functions, the <b>hypograph</b> $\{(\mathbf{x}, t) : f(\mathbf{x}) \ge t\}$ (the region <i>below</i> the graph) is convex if and only if $f$ is concave.</li>
-        </ul>
+        <p>All characterizations of convexity have "flipped" analogs for concavity. The <b>first-order condition</b> states that a differentiable function is concave if and only if its tangent hyperplane is a <i>global overestimate</i> everywhere: $f(\mathbf{y}) \le f(\mathbf{x}) + \nabla f(\mathbf{x})^\top (\mathbf{y} - \mathbf{x})$. Geometrically, the graph sits below its tangent planes.</p>
+
+        <p>For curvature, the <b>second-order condition</b> requires the Hessian matrix to be <b>negative semidefinite</b> ($\nabla^2 f(\mathbf{x}) \preceq 0$) at every point in the domain. In terms of set theory, concavity is characterized by the <b>hypograph</b>—the region $\{(\mathbf{x}, t) : f(\mathbf{x}) \ge t\}$ lying <i>below</i> the graph. A function is concave if and only if its hypograph is a convex set.</p>
 
         <h4>Preservation Under Operations</h4>
-        <p>The rules for preserving concavity mirror those for convexity with sign flips:</p>
-        <ul>
-          <li><b>Sums:</b> The sum of concave functions is concave.</li>
-          <li><b>Positive Scaling:</b> If $f$ is concave and $\alpha \ge 0$, then $\alpha f$ is concave.</li>
-          <li><b>Pointwise Minimum:</b> If $f_1, \dots, f_m$ are concave, then $f(\mathbf{x}) = \min\{f_1(\mathbf{x}), \dots, f_m(\mathbf{x})\}$ is concave.</li>
-          <li><b>Composition:</b> Concave functions composed with affine maps remain concave. However, composition with nonlinear transformations requires careful analysis of monotonicity, just as with convex functions.</li>
-        </ul>
+        <p>The algebra of concave functions mirrors that of convex functions, with sign flips where appropriate. The <b>nonnegative sum</b> of concave functions is concave, as is the product of a concave function with a positive scalar. While the pointwise maximum preserves convexity, the <b>pointwise minimum</b> preserves concavity: if $f_1, \dots, f_m$ are concave, their minimum is concave. Finally, composition rules apply similarly: an affine map composed with a concave function preserves concavity, but nonlinear compositions require careful monotonicity checks (e.g., a non-decreasing concave function of a concave function is concave).</p>
 
         <div class="theorem-box">
           <h4>Theorem: Equivalence Principle</h4>
@@ -1415,53 +1334,12 @@
 
           <div class="proof-box">
             <h4>Proof: Scalar Composition Rules</h4>
-            <p>We prove the two most critical cases rigorously.</p>
-
-            <h5>Case 1: Outer Convex & Non-decreasing, Inner Convex</h5>
-            <p>Assume $g$ is convex, and $h$ is convex and <b>non-decreasing</b> on the range of $g$.</p>
-            <div class="proof-step">
-              <strong>Step 1: Inner Convexity.</strong>
-              Take arbitrary $x, y \in \mathbb{R}^n$ and $\theta \in [0,1]$. By convexity of $g$:
-              $$ g(\theta x + (1-\theta) y) \le \theta g(x) + (1-\theta) g(y) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Apply Monotonicity.</strong>
-              Apply $h$ to both sides. Since $h$ is <b>non-decreasing</b>, the inequality direction is maintained:
-              $$ h\big(g(\theta x + (1-\theta) y)\big) \le h\big(\theta g(x) + (1-\theta) g(y)\big) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Apply Outer Convexity.</strong>
-              Now use the convexity of $h$ on the argument $\theta g(x) + (1-\theta) g(y)$:
-              $$ h\big(\theta g(x) + (1-\theta) g(y)\big) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Combine:</strong>
-              $$ f(\theta x + (1-\theta)y) = h(g(\theta x + (1-\theta)y)) \le \theta f(x) + (1-\theta) f(y) $$
-              Thus $f$ is convex.
-            </div>
-
-            <hr style="border-top: 1px dashed var(--border); margin: 16px 0;">
-
-            <h5>Case 2: Outer Convex & Non-increasing, Inner Concave</h5>
-            <p>Assume $g$ is concave, and $h$ is convex and <b>non-increasing</b>.</p>
-            <div class="proof-step">
-              <strong>Step 1: Inner Concavity.</strong>
-              $$ g(\theta x + (1-\theta)y) \ge \theta g(x) + (1-\theta) g(y) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Apply Monotonicity (Flip).</strong>
-              Because $h$ is <b>non-increasing</b>, applying it flips the inequality:
-              $$ h\big(g(\theta x + (1-\theta)y)\big) \le h\big( \theta g(x) + (1-\theta)g(y)\big) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Apply Outer Convexity.</strong>
-              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta)h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Conclusion:</strong>
-              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y) $$
-              Thus $f$ is convex.
-            </div>
+            <p>We prove the two most critical cases rigorously in <a href="#section-appendix">Appendix A.4</a>:
+            <ul>
+                <li>Case 1: Outer Convex & Non-decreasing, Inner Convex</li>
+                <li>Case 2: Outer Convex & Non-increasing, Inner Concave</li>
+            </ul>
+            </p>
           </div>
         </div>
 
@@ -1512,27 +1390,8 @@
           </ul>
 
           <div class="proof-box">
-            <h4>Proof (Convex + Non-decreasing Case)</h4>
-            <p>We prove the case where each $g_i$ is convex and $h$ is convex and non-decreasing in each coordinate.</p>
-            <div class="proof-step">
-              <strong>Step 1: Vector Jensen Inequality.</strong>
-              Since each $g_i$ is convex, for $\theta \in [0,1]$:
-              $$ g(\theta x + (1-\theta)y) \le \theta g(x) + (1-\theta)g(y) \quad \text{(componentwise)} $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 2: Monotonicity.</strong>
-              Since $h$ is non-decreasing in every coordinate, applying it preserves the inequality:
-              $$ h(g(\theta x + (1-\theta)y)) \le h(\theta g(x) + (1-\theta)g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Step 3: Convexity of Outer Function.</strong>
-              By convexity of $h$:
-              $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
-            </div>
-            <div class="proof-step">
-              <strong>Conclusion.</strong> Combining these:
-              $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
-            </div>
+            <h4>Proof: Vector Composition Rule</h4>
+            <p>For a detailed proof of the case where each $g_i$ is convex and $h$ is convex and non-decreasing, see <a href="#section-appendix">Appendix A.5</a>.</p>
           </div>
         </div>
 
@@ -2015,34 +1874,8 @@
         </div>
 
         <div class="proof-box">
-          <h4>Proof: Convexity $\iff$ PSD Hessian (via Line Restriction)</h4>
-          <p>We use the scalar chain rule on $\phi(t) = f(x+tv)$. Recall: $f$ is convex iff $\phi''(t) \ge 0$ for all lines.</p>
-
-          <div class="proof-step">
-            <strong>Part 1: Convex $\implies$ Hessian PSD.</strong>
-            Assume $f$ is convex. Pick any $x \in \mathrm{dom} f$ and any direction $v \in \mathbb{R}^n$.
-            Define the 1D function $g(t) = f(x + tv)$.
-            Since $f$ is convex, $g$ is convex.
-            For a twice-differentiable 1D function, convexity implies $g''(t) \ge 0$.
-            By the chain rule:
-            $$ g'(t) = \nabla f(x+tv)^\top v \implies g''(t) = v^\top \nabla^2 f(x+tv) v $$
-            Evaluating at $t=0$: $g''(0) = v^\top \nabla^2 f(x) v \ge 0$.
-            Since $\mathbf{v}$ was arbitrary, this means $\nabla^2 f(\mathbf{x})$ is PSD.
-          </div>
-
-          <div class="proof-step">
-            <strong>Part 2: Hessian PSD $\implies$ Convex.</strong>
-            Assume $\nabla^2 f(\mathbf{x}) \succeq 0$ for all $\mathbf{x}$.
-            Consider any two points $\mathbf{x}, \mathbf{y}$ and define $g(t) = f(\mathbf{x} + t(\mathbf{y}-\mathbf{x}))$ for $t \in [0, 1]$.
-            The second derivative is $g''(t) = (\mathbf{y}-\mathbf{x})^\top \nabla^2 f(\mathbf{z}) (\mathbf{y}-\mathbf{x})$, where $\mathbf{z}$ is on the line segment.
-            By assumption, the Hessian is PSD at $z$, so $g''(t) \ge 0$ for all $t$.
-            A function with non-negative second derivative is convex.
-            Thus $g(t)$ is convex, which implies:
-            $$ g(\theta) \le (1-\theta)g(0) + \theta g(1) $$
-            Substituting back:
-            $$ f(x + \theta(y-x)) \le (1-\theta)f(x) + \theta f(y) $$
-            This is exactly the definition of convexity for $f$.
-          </div>
+          <h4>Proof: Convexity $\iff$ PSD Hessian</h4>
+          <p>This proof relies on reducing the $n$-dimensional curvature condition to a 1-dimensional condition along lines. For the full derivation, see <a href="#section-appendix">Appendix A.6</a>.</p>
         </div>
 
         <h3>7.2 Practical Verification</h3>
@@ -2122,41 +1955,7 @@
 
         <div class="proof-box">
           <h4>Deep Dive: Hessian of Geometric Mean</h4>
-          <p>Let $g(x) = (\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We prove concavity by showing $\nabla^2 g(x) \preceq 0$.</p>
-
-          <div class="proof-step">
-            <strong>Step 1: First Derivative.</strong>
-            Let $\mu = g(x)$. Using the logarithmic derivative:
-            $$ \log g(x) = \frac{1}{n} \sum \log x_i \implies \frac{\nabla g(x)}{g(x)} = \frac{1}{n} \begin{bmatrix} 1/x_1 \\ \vdots \\ 1/x_n \end{bmatrix} $$
-            So $\nabla g(x) = \frac{g(x)}{n} [1/x_1, \dots, 1/x_n]^\top$.
-            <br>Let $y_i = 1/x_i$. Then $\nabla g(x) = \frac{\mu}{n} y$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 2: Second Derivative.</strong>
-            We differentiate $\frac{\partial g}{\partial x_i} = \frac{\mu}{n x_i}$ with respect to $x_j$.
-            <ul>
-              <li><b>Case $i=j$:</b> $\frac{\partial}{\partial x_i} (\frac{\mu}{n} x_i^{-1}) = \frac{1}{n} (\frac{\partial \mu}{\partial x_i} x_i^{-1} - \mu x_i^{-2})$.
-              $$ = \frac{1}{n} \left( (\frac{\mu}{n x_i}) \frac{1}{x_i} - \frac{\mu}{x_i^2} \right) = \frac{\mu}{n x_i^2} \left( \frac{1}{n} - 1 \right) $$</li>
-              <li><b>Case $i \ne j$:</b> $\frac{\partial}{\partial x_j} (\frac{\mu}{n x_i}) = \frac{1}{n x_i} \frac{\partial \mu}{\partial x_j} = \frac{1}{n x_i} (\frac{\mu}{n x_j}) = \frac{\mu}{n^2 x_i x_j}$.</li>
-            </ul>
-            In matrix form:
-            $$ \nabla^2 g(x) = \frac{\mu}{n^2} y y^\top - \frac{\mu}{n} \mathrm{diag}(y^2) $$
-            where $y = [1/x_1, \dots, 1/x_n]^\top$.
-          </div>
-
-          <div class="proof-step">
-            <strong>Step 3: Quadratic Form Analysis.</strong>
-            For any vector $v$:
-            $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (y^\top v)^2 - \frac{\mu}{n} \sum y_i^2 v_i^2 $$
-            Let $w_i = y_i v_i = v_i/x_i$.
-            $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (\sum w_i)^2 - \frac{\mu}{n} \sum w_i^2 = \frac{\mu}{n^2} \left[ (\sum w_i)^2 - n \sum w_i^2 \right] $$
-            We need to show $(\sum w_i)^2 \le n \sum w_i^2$.
-            <br>This is exactly the <b>Cauchy-Schwarz inequality</b> applied to the vector $w$ and the all-ones vector $\mathbf{1}$:
-            $$ (\mathbf{1}^\top w)^2 \le \|\mathbf{1}\|^2 \|w\|^2 = n \sum w_i^2 $$
-            Thus, the expression in the bracket is $\le 0$. Since $\mu > 0$, the quadratic form is $\le 0$.
-            <br><b>Conclusion:</b> $\nabla^2 g(x) \preceq 0$, so the geometric mean is concave.
-          </div>
+          <p>We prove the concavity of the geometric mean $g(x) = (\prod x_i)^{1/n}$ by showing its Hessian is negative semidefinite. The proof involves a clever application of Cauchy-Schwarz. See <a href="#section-appendix">Appendix A.7</a>.</p>
         </div>
 
         <div class="example-box">
@@ -2199,19 +1998,8 @@
         </div>
 
         <div class="proof-box">
-          <h4>Deep Dive: Hessian of $\ell_p$ Quasi-Norm ($0 < p \le 1$)</h4>
-          <p>Consider $h(z) = (\sum_{i=1}^n z_i^p)^{1/p}$ on $\mathbb{R}_{++}^n$ with $0 < p \le 1$.
-          <br>We verify concavity by showing the Hessian is negative semidefinite.
-          <br>Let $S = \sum z_i^p$. Then $h = S^{1/p}$.
-          <br><b>Gradient:</b> $\frac{\partial h}{\partial z_j} = \frac{1}{p}S^{1/p-1} (p z_j^{p-1}) = S^{1/p-1} z_j^{p-1}$.
-          <br><b>Hessian entries:</b>
-          $$ H_{jk} = S^{1/p-2} \left[ (1-p) z_j^{p-1} z_k^{p-1} + (p-1) S z_j^{p-2} \delta_{jk} \right] $$
-          <b>Quadratic Form:</b> For any vector $\mathbf{v}$:
-          $$ \mathbf{v}^\top H \mathbf{v} = (1-p) S^{1/p-2} \left( (\sum v_i z_i^{p-1})^2 - (\sum z_i^p)(\sum v_i^2 z_i^{p-2}) \right) $$
-          Let $a_i = v_i z_i^{(p-2)/2}$ and $b_i = z_i^{p/2}$.
-          The term in the parenthesis is $(\sum a_i b_i)^2 - (\sum b_i^2)(\sum a_i^2)$.
-          <br>By <b>Cauchy-Schwarz</b>, this is $\le 0$. Since $1-p \ge 0$, we have $v^\top H v \le 0$.
-          <br>Thus $h$ is concave.</p>
+          <h4>Deep Dive: Hessian of $\ell_p$ Quasi-Norm</h4>
+          <p>For $0 < p \le 1$, the function $h(z) = (\sum z_i^p)^{1/p}$ is concave. This is a subtle result proved via Hessian analysis in <a href="#section-appendix">Appendix A.8</a>.</p>
         </div>
 
 
@@ -2348,27 +2136,13 @@
 
         <h4>Decision Tree: Which Method Should I Use?</h4>
         <div class="recap-box" style="background: var(--surface-2); border: 1px dashed var(--primary-300); padding: 16px; border-radius: 8px; margin-top: 16px;">
-          <ol style="margin-top: 0.5rem; line-height: 1.8;">
-            <li><b>Is $f$ twice differentiable?</b>
-              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
-                <li>✓ <b>Yes</b> → Use <b>Second-Order Condition</b> (Hessian $\nabla^2 f(x) \succeq 0$). Easiest option!</li>
-                <li>✗ <b>No</b> → Go to step 2.</li>
-              </ul>
-            </li>
-            <li><b>Is $f$ differentiable (but not twice)?</b>
-              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
-                <li>✓ <b>Yes</b> → Use <b>First-Order Condition</b> (tangent underestimates). Good for analysis.</li>
-                <li>✗ <b>No</b> → Go to step 3.</li>
-              </ul>
-            </li>
-            <li><b>Function is non-smooth or complex?</b>
-              <ul style="margin-left: 1.5rem; margin-top: 0.25rem;">
-                <li>→ Try <b>Composition Rules</b> (§5) if $f$ is built from known convex functions.</li>
-                <li>→ Otherwise, fall back to <b>Definition</b> (check Jensen's inequality directly).</li>
-              </ul>
-            </li>
-          </ol>
-          <p style="margin-top: 1rem; margin-bottom: 0;"><b>Pro Tip:</b> In practice, most textbook functions are twice differentiable, so the Hessian test (second-order) is your workhorse. For real-world ML/optimization, functions are often non-smooth (e.g., $\ell_1$ regularization, hinge loss), so composition rules (§5) become essential.</p>
+          <p>The choice of verification method follows a hierarchy based on smoothness. If the function is <b>twice differentiable</b>, the <b>Second-Order Condition</b> (Hessian $\nabla^2 f(x) \succeq 0$) is almost always the easiest and most direct path. This reduces the problem to checking eigenvalues.</p>
+
+          <p>If the function is <b>differentiable but not twice differentiable</b>, rely on the <b>First-Order Condition</b>, which requires proving that the tangent hyperplane is a global underestimator. This is common in theoretical analysis.</p>
+
+          <p>For <b>non-smooth or complex functions</b>, avoid the basic definition if possible. Instead, try to decompose the function using <b>Composition Rules</b> (§5) to show it is built from known convex atoms. Only if all else fails should you fall back to the raw <b>Definition</b> (Jensen's inequality), which is robust but algebraically tedious.</p>
+
+          <p style="margin-top: 1rem; margin-bottom: 0;"><b>Pro Tip:</b> In practice, most textbook functions are twice differentiable, so the Hessian test is your workhorse. However, in modern machine learning (e.g., $\ell_1$ regularization, hinge loss), functions are often non-smooth, making the composition rules essential.</p>
         </div>
 
         <h4>Examples: Applying the Decision Tree</h4>
@@ -2412,37 +2186,22 @@
 
         <div class="warning-box" style="background: #fff5f5; border: 1px solid #fc8181; padding: 16px; border-radius: 8px; margin-top: 16px;">
           <h4 style="margin-top: 0; color: #c53030;">Illegal Moves (Ways to Destroy Convexity)</h4>
-          <p>These operations generally result in non-convex functions:</p>
-          <ul style="margin-bottom: 0;">
-            <li><b>Products:</b> $f(x)g(x)$ (even if both convex, e.g., $x \cdot x^2$ is convex but $x \cdot (-x)$ is not).</li>
-            <li><b>Ratios:</b> $f(x)/g(x)$ (unless specifically structured like perspective).</li>
-            <li><b>Difference:</b> $f(x) - g(x)$ (DC functions are a broad class, but generally not convex).</li>
-            <li><b>Composition with Decreasing Convex:</b> $h(g(x))$ where $h$ is convex but decreasing (e.g., $e^{-x^2}$).</li>
-            <li><b>Separate Convexity:</b> Being convex in $x$ and convex in $y$ does <b>not</b> imply joint convexity in $(x,y)$. (Counterexample: $f(x,y) = xy$).</li>
-          </ul>
+          <p>Certain operations are notorious for destroying convexity and should be approached with extreme caution. <b>Products</b> ($f(x)g(x)$) and <b>ratios</b> ($f(x)/g(x)$) of convex functions are generally non-convex, with rare exceptions like perspective functions. Similarly, the <b>difference</b> of two convex functions ($f(x) - g(x)$) is almost never convex, although it belongs to the broader class of Difference-of-Convex (DC) functions.</p>
+
+          <p>Composition requires strict adherence to monotonicity rules; composing a convex function with a <b>decreasing convex function</b> (like $e^{-x^2}$) breaks convexity. Finally, beware of <b>separate convexity</b>: a function that is convex in $x$ (for fixed $y$) and convex in $y$ (for fixed $x$) is not necessarily jointly convex. The classic counterexample is $f(x,y) = xy$, which is linear along axes but a saddle point globally.</p>
         </div>
 
         <h3>8.3 Summary: A Complete "Legal Moves Checklist"</h3>
-        <p>When you build or analyze a function, follow this "compiler" checklist. If your function passes, it is certified convex.</p>
-        <ul>
-            <li>Is it an <b>atom</b> from the standard library? (See Section 6).</li>
-            <li>Is it a <b>nonnegative sum</b> of convex functions?</li>
-            <li>Is it a <b>max/sup</b> of convex functions?</li>
-            <li>Is it a convex function of an <b>affine expression</b> (affine precomposition)?</li>
-            <li>Is it obtained by <b>partial minimization</b> of a jointly convex function?</li>
-            <li>Is it a <b>monotone convex composition</b> (e.g., convex non-decreasing of convex)?</li>
-            <li>Is it a <b>perspective</b> of a convex function?</li>
-        </ul>
-        <p>If <b>yes</b> $\to$ convex.<br>If <b>no</b> $\to$ stop. You likely need a specific proof engine (Hessian, definition, or line restriction).</p>
+        <p>To certify a function as convex, treat verification like a compiler checking valid syntax. Start by identifying if the function is a standard <b>atom</b> from the library (like norms or exponentials). If not, check if it is constructed using safe operations: is it a <b>nonnegative sum</b> or a <b>pointwise maximum</b> of convex functions? Is it a convex function composed with an <b>affine map</b>?</p>
+
+        <p>For more complex structures, determine if the function arises from <b>partial minimization</b> of a jointly convex function or via <b>monotone composition</b> (e.g., a convex non-decreasing function of a convex function). Finally, check if it is a <b>perspective</b> transform, which scales both the domain and the function value. If your function passes any of these checks, it is convex. If not, you may need to revert to first-principles proofs using the Hessian or definition.</p>
 
         <div class="recap-box" style="background: var(--surface-2); border: 1px dashed var(--primary-300); padding: 16px; border-radius: 8px;">
           <h4 style="margin-top: 0;">Quick Recognition Guide</h4>
-          <ul style="margin-top: 0.5rem;">
-            <li><b>Pointwise Max / Sup:</b> "Upper envelope". Intersection of epigraphs. (e.g., $\lambda_{\max}$, support function).</li>
-            <li><b>Partial Minimization:</b> "Projection". Requires joint convexity. (e.g., distance to convex set, Schur complement).</li>
-            <li><b>Composition:</b> Check curvature ("bowl vs dome") and monotonicity.</li>
-            <li><b>Perspective:</b> Scales the domain and function value together; preserves convexity.</li>
-          </ul>
+          <p><b>Pointwise Max / Sup:</b> Think "Upper Envelope." This operation corresponds to the intersection of epigraphs (e.g., $\lambda_{\max}$, support function).</p>
+          <p><b>Partial Minimization:</b> Think "Projection." This preserves convexity but requires the original function to be jointly convex (e.g., distance to a set, Schur complement).</p>
+          <p><b>Composition:</b> Think "Curvature + Monotonicity." Always verify that the outer function's slope doesn't invert the inner function's curvature.</p>
+          <p><b>Perspective:</b> Think "Homogenization." This operation scales the geometry linearly, turning a convex set into a cone, thereby preserving convexity.</p>
         </div>
 
         <div class="widget-container" style="margin: 24px 0;">
@@ -3012,6 +2771,238 @@
         </div>
 
       </section>
+
+
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Proofs</h2>
+
+  <h3>A.1 Norms are Convex (The Sublinear Template)</h3>
+  <div class="proof-box">
+    <h4>Proof: Triangle + Homogeneity = Convexity</h4>
+    <p>We show $f(x) = \|x\|$ satisfies $f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y)$ for $\theta \in [0,1]$.</p>
+    <div class="proof-step">
+        <strong>Step 1: Triangle Inequality (Subadditivity).</strong>
+        $$ \|\theta x + (1-\theta)y\| \le \|\theta x\| + \|(1-\theta)y\| $$
+    </div>
+    <div class="proof-step">
+        <strong>Step 2: Homogeneity.</strong>
+        Since $\theta \ge 0$ and $1-\theta \ge 0$, we have $\|\alpha z\| = \alpha \|z\|$.
+        $$ \|\theta x\| = \theta \|x\| \quad \text{and} \quad \|(1-\theta)y\| = (1-\theta)\|y\| $$
+    </div>
+    <div class="proof-step">
+        <strong>Conclusion:</strong>
+        $$ \|\theta x + (1-\theta)y\| \le \theta \|x\| + (1-\theta)\|y\| $$
+    </div>
+  </div>
+
+  <h3>A.2 Finite Jensen's Inequality</h3>
+  <div class="proof-box">
+    <h4>Proof by Induction</h4>
+    <div class="proof-step">
+      <strong>Base Case ($k=2$):</strong> The inequality $f(\theta_1 x_1 + \theta_2 x_2) \le \theta_1 f(x_1) + \theta_2 f(x_2)$ holds by the definition of convexity.
+    </div>
+    <div class="proof-step">
+      <strong>Inductive Step:</strong> Assume the inequality holds for any convex combination of $k$ points. Consider a combination of $k+1$ points: $x = \sum_{i=1}^{k+1} \theta_i x_i$ with $\sum \theta_i = 1$ and $\theta_i > 0$.
+      <br>We can "peel off" the last point $x_{k+1}$ and treat the rest as a sub-combination.
+      Let $\tilde{\theta} = \sum_{i=1}^{k} \theta_i = 1 - \theta_{k+1}$. Since $\theta_{k+1} < 1$, $\tilde{\theta} > 0$.
+      $$ x = \theta_{k+1} x_{k+1} + \tilde{\theta} \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} x_i = \theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x} $$
+      where $\bar{x} = \sum_{i=1}^{k} (\theta_i/\tilde{\theta}) x_i$ is a valid convex combination of $k$ points (weights sum to 1).
+    </div>
+    <div class="proof-step">
+      <strong>Apply Convexity Twice:</strong>
+      <br>1. Apply the 2-point definition to $x_{k+1}$ and $\bar{x}$:
+      $$ f(x) = f(\theta_{k+1} x_{k+1} + \tilde{\theta} \bar{x}) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} f(\bar{x}) $$
+      2. Apply the inductive hypothesis to $f(\bar{x})$:
+      $$ f(\bar{x}) \le \sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i) $$
+    </div>
+    <div class="proof-step">
+      <strong>Conclusion:</strong> Substituting back:
+      $$ f(x) \le \theta_{k+1} f(x_{k+1}) + \tilde{\theta} \left(\sum_{i=1}^{k} \frac{\theta_i}{\tilde{\theta}} f(x_i)\right) = \theta_{k+1} f(x_{k+1}) + \sum_{i=1}^{k} \theta_i f(x_i) = \sum_{i=1}^{k+1} \theta_i f(x_i) $$
+    </div>
+  </div>
+
+  <h3>A.3 Jensen's via Supporting Hyperplane</h3>
+  <div class="proof-box">
+    <h4>Proof via Subgradient</h4>
+    <p>This proof connects Jensen's inequality directly to the geometry of convex sets.
+    <br><b>Fact:</b> If $f$ is convex, its epigraph is a convex set. By the <b>Supporting Hyperplane Theorem</b>, at any boundary point $(\mu, f(\mu))$, there exists a supporting hyperplane. This hyperplane defines a subgradient $g \in \partial f(\mu)$ such that:
+    $$ f(x) \ge f(\mu) + g^\top(x - \mu) \quad \forall x $$
+    <br><b>Step 1:</b> Let $\mu = \mathbb{E}[Z]$. Apply the subgradient inequality at $\mu$:
+    $$ f(Z) \ge f(\mu) + g^\top(Z - \mu) $$
+    <b>Step 2:</b> Take expectation (linear operator):
+    $$ \mathbb{E}[f(Z)] \ge f(\mu) + g^\top(\mathbb{E}[Z] - \mu) $$
+    Since $\mathbb{E}[Z] = \mu$, the linear term vanishes.
+    $$ \mathbb{E}[f(Z)] \ge f(\mathbb{E}[Z]) $$
+    This proof confirms Jensen is conceptually "supporting hyperplanes + linearity of expectation".</p>
+  </div>
+
+  <h3>A.4 Scalar Composition Rules</h3>
+  <div class="proof-box">
+    <h4>Proof: Scalar Composition Rules</h4>
+    <p>We prove the two most critical cases rigorously.</p>
+
+    <h5>Case 1: Outer Convex & Non-decreasing, Inner Convex</h5>
+    <p>Assume $g$ is convex, and $h$ is convex and <b>non-decreasing</b> on the range of $g$.</p>
+    <div class="proof-step">
+      <strong>Step 1: Inner Convexity.</strong>
+      Take arbitrary $x, y \in \mathbb{R}^n$ and $\theta \in [0,1]$. By convexity of $g$:
+      $$ g(\theta x + (1-\theta) y) \le \theta g(x) + (1-\theta) g(y) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Apply Monotonicity.</strong>
+      Apply $h$ to both sides. Since $h$ is <b>non-decreasing</b>, the inequality direction is maintained:
+      $$ h\big(g(\theta x + (1-\theta) y)\big) \le h\big(\theta g(x) + (1-\theta) g(y)\big) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Apply Outer Convexity.</strong>
+      Now use the convexity of $h$ on the argument $\theta g(x) + (1-\theta) g(y)$:
+      $$ h\big(\theta g(x) + (1-\theta) g(y)\big) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
+    </div>
+    <div class="proof-step">
+      <strong>Combine:</strong>
+      $$ f(\theta x + (1-\theta)y) = h(g(\theta x + (1-\theta)y)) \le \theta f(x) + (1-\theta) f(y) $$
+      Thus $f$ is convex.
+    </div>
+
+    <hr style="border-top: 1px dashed var(--border); margin: 16px 0;">
+
+    <h5>Case 2: Outer Convex & Non-increasing, Inner Concave</h5>
+    <p>Assume $g$ is concave, and $h$ is convex and <b>non-increasing</b>.</p>
+    <div class="proof-step">
+      <strong>Step 1: Inner Concavity.</strong>
+      $$ g(\theta x + (1-\theta)y) \ge \theta g(x) + (1-\theta) g(y) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Apply Monotonicity (Flip).</strong>
+      Because $h$ is <b>non-increasing</b>, applying it flips the inequality:
+      $$ h\big(g(\theta x + (1-\theta)y)\big) \le h\big( \theta g(x) + (1-\theta)g(y)\big) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Apply Outer Convexity.</strong>
+      $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta)h(g(y)) $$
+    </div>
+    <div class="proof-step">
+      <strong>Conclusion:</strong>
+      $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y) $$
+      Thus $f$ is convex.
+    </div>
+  </div>
+
+  <h3>A.5 Vector Composition Rule</h3>
+  <div class="proof-box">
+    <h4>Proof (Convex + Non-decreasing Case)</h4>
+    <p>We prove the case where each $g_i$ is convex and $h$ is convex and non-decreasing in each coordinate.</p>
+    <div class="proof-step">
+      <strong>Step 1: Vector Jensen Inequality.</strong>
+      Since each $g_i$ is convex, for $\theta \in [0,1]$:
+      $$ g(\theta x + (1-\theta)y) \le \theta g(x) + (1-\theta)g(y) \quad \text{(componentwise)} $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 2: Monotonicity.</strong>
+      Since $h$ is non-decreasing in every coordinate, applying it preserves the inequality:
+      $$ h(g(\theta x + (1-\theta)y)) \le h(\theta g(x) + (1-\theta)g(y)) $$
+    </div>
+    <div class="proof-step">
+      <strong>Step 3: Convexity of Outer Function.</strong>
+      By convexity of $h$:
+      $$ h(\theta g(x) + (1-\theta)g(y)) \le \theta h(g(x)) + (1-\theta) h(g(y)) $$
+    </div>
+    <div class="proof-step">
+      <strong>Conclusion.</strong> Combining these:
+      $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) $$
+    </div>
+  </div>
+
+  <h3>A.6 Convexity $\iff$ PSD Hessian</h3>
+  <div class="proof-box">
+    <h4>Proof: Convexity $\iff$ PSD Hessian (via Line Restriction)</h4>
+    <p>We use the scalar chain rule on $\phi(t) = f(x+tv)$. Recall: $f$ is convex iff $\phi''(t) \ge 0$ for all lines.</p>
+
+    <div class="proof-step">
+    <strong>Part 1: Convex $\implies$ Hessian PSD.</strong>
+    Assume $f$ is convex. Pick any $x \in \mathrm{dom} f$ and any direction $v \in \mathbb{R}^n$.
+    Define the 1D function $g(t) = f(x + tv)$.
+    Since $f$ is convex, $g$ is convex.
+    For a twice-differentiable 1D function, convexity implies $g''(t) \ge 0$.
+    By the chain rule:
+    $$ g'(t) = \nabla f(x+tv)^\top v \implies g''(t) = v^\top \nabla^2 f(x+tv) v $$
+    Evaluating at $t=0$: $g''(0) = v^\top \nabla^2 f(x) v \ge 0$.
+    Since $\mathbf{v}$ was arbitrary, this means $\nabla^2 f(\mathbf{x})$ is PSD.
+    </div>
+
+    <div class="proof-step">
+    <strong>Part 2: Hessian PSD $\implies$ Convex.</strong>
+    Assume $\nabla^2 f(\mathbf{x}) \succeq 0$ for all $\mathbf{x}$.
+    Consider any two points $\mathbf{x}, \mathbf{y}$ and define $g(t) = f(\mathbf{x} + t(\mathbf{y}-\mathbf{x}))$ for $t \in [0, 1]$.
+    The second derivative is $g''(t) = (\mathbf{y}-\mathbf{x})^\top \nabla^2 f(\mathbf{z}) (\mathbf{y}-\mathbf{x})$, where $\mathbf{z}$ is on the line segment.
+    By assumption, the Hessian is PSD at $z$, so $g''(t) \ge 0$ for all $t$.
+    A function with non-negative second derivative is convex.
+    Thus $g(t)$ is convex, which implies:
+    $$ g(\theta) \le (1-\theta)g(0) + \theta g(1) $$
+    Substituting back:
+    $$ f(x + \theta(y-x)) \le (1-\theta)f(x) + \theta f(y) $$
+    This is exactly the definition of convexity for $f$.
+    </div>
+  </div>
+
+  <h3>A.7 Hessian of Geometric Mean</h3>
+  <div class="proof-box">
+    <h4>Deep Dive: Hessian of Geometric Mean</h4>
+    <p>Let $g(x) = (\prod_{i=1}^n x_i)^{1/n}$ on $\mathbb{R}_{++}^n$. We prove concavity by showing $\nabla^2 g(x) \preceq 0$.</p>
+
+    <div class="proof-step">
+    <strong>Step 1: First Derivative.</strong>
+    Let $\mu = g(x)$. Using the logarithmic derivative:
+    $$ \log g(x) = \frac{1}{n} \sum \log x_i \implies \frac{\nabla g(x)}{g(x)} = \frac{1}{n} \begin{bmatrix} 1/x_1 \\ \vdots \\ 1/x_n \end{bmatrix} $$
+    So $\nabla g(x) = \frac{g(x)}{n} [1/x_1, \dots, 1/x_n]^\top$.
+    <br>Let $y_i = 1/x_i$. Then $\nabla g(x) = \frac{\mu}{n} y$.
+    </div>
+
+    <div class="proof-step">
+    <strong>Step 2: Second Derivative.</strong>
+    We differentiate $\frac{\partial g}{\partial x_i} = \frac{\mu}{n x_i}$ with respect to $x_j$.
+    <ul>
+        <li><b>Case $i=j$:</b> $\frac{\partial}{\partial x_i} (\frac{\mu}{n} x_i^{-1}) = \frac{1}{n} (\frac{\partial \mu}{\partial x_i} x_i^{-1} - \mu x_i^{-2})$.
+        $$ = \frac{1}{n} \left( (\frac{\mu}{n x_i}) \frac{1}{x_i} - \frac{\mu}{x_i^2} \right) = \frac{\mu}{n x_i^2} \left( \frac{1}{n} - 1 \right) $$</li>
+        <li><b>Case $i \ne j$:</b> $\frac{\partial}{\partial x_j} (\frac{\mu}{n x_i}) = \frac{1}{n x_i} \frac{\partial \mu}{\partial x_j} = \frac{1}{n x_i} (\frac{\mu}{n x_j}) = \frac{\mu}{n^2 x_i x_j}$.</li>
+    </ul>
+    In matrix form:
+    $$ \nabla^2 g(x) = \frac{\mu}{n^2} y y^\top - \frac{\mu}{n} \mathrm{diag}(y^2) $$
+    where $y = [1/x_1, \dots, 1/x_n]^\top$.
+    </div>
+
+    <div class="proof-step">
+    <strong>Step 3: Quadratic Form Analysis.</strong>
+    For any vector $v$:
+    $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (y^\top v)^2 - \frac{\mu}{n} \sum y_i^2 v_i^2 $$
+    Let $w_i = y_i v_i = v_i/x_i$.
+    $$ v^\top \nabla^2 g(x) v = \frac{\mu}{n^2} (\sum w_i)^2 - \frac{\mu}{n} \sum w_i^2 = \frac{\mu}{n^2} \left[ (\sum w_i)^2 - n \sum w_i^2 \right] $$
+    We need to show $(\sum w_i)^2 \le n \sum w_i^2$.
+    <br>This is exactly the <b>Cauchy-Schwarz inequality</b> applied to the vector $w$ and the all-ones vector $\mathbf{1}$:
+    $$ (\mathbf{1}^\top w)^2 \le \|\mathbf{1}\|^2 \|w\|^2 = n \sum w_i^2 $$
+    Thus, the expression in the bracket is $\le 0$. Since $\mu > 0$, the quadratic form is $\le 0$.
+    <br><b>Conclusion:</b> $\nabla^2 g(x) \preceq 0$, so the geometric mean is concave.
+    </div>
+  </div>
+
+  <h3>A.8 Hessian of $\ell_p$ Quasi-Norm</h3>
+  <div class="proof-box">
+    <h4>Deep Dive: Hessian of $\ell_p$ Quasi-Norm ($0 < p \le 1$)</h4>
+    <p>Consider $h(z) = (\sum_{i=1}^n z_i^p)^{1/p}$ on $\mathbb{R}_{++}^n$ with $0 < p \le 1$.
+    <br>We verify concavity by showing the Hessian is negative semidefinite.
+    <br>Let $S = \sum z_i^p$. Then $h = S^{1/p}$.
+    <br><b>Gradient:</b> $\frac{\partial h}{\partial z_j} = \frac{1}{p}S^{1/p-1} (p z_j^{p-1}) = S^{1/p-1} z_j^{p-1}$.
+    <br><b>Hessian entries:</b>
+    $$ H_{jk} = S^{1/p-2} \left[ (1-p) z_j^{p-1} z_k^{p-1} + (p-1) S z_j^{p-2} \delta_{jk} \right] $$
+    <b>Quadratic Form:</b> For any vector $\mathbf{v}$:
+    $$ \mathbf{v}^\top H \mathbf{v} = (1-p) S^{1/p-2} \left( (\sum v_i z_i^{p-1})^2 - (\sum z_i^p)(\sum v_i^2 z_i^{p-2}) \right) $$
+    Let $a_i = v_i z_i^{(p-2)/2}$ and $b_i = z_i^{p/2}$.
+    The term in the parenthesis is $(\sum a_i b_i)^2 - (\sum b_i^2)(\sum a_i^2)$.
+    <br>By <b>Cauchy-Schwarz</b>, this is $\le 0$. Since $1-p \ge 0$, we have $v^\top H v \le 0$.
+    <br>Thus $h$ is concave.</p>
+  </div>
+</section>
 
       <section class="section-card" id="section-10">
         <h2>10. Readings &amp; Resources</h2>

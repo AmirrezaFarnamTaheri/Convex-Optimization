@@ -78,7 +78,7 @@
       <p>For conic problems (SOCP, SDP), we use generalized log-barriers. For $X \succeq 0$, the barrier is $-\log\det(X)$. For $x \in \mathcal{K}_{soc}$, it is $-\log(t^2 - \|y\|^2)$. The theory of self-concordance extends seamlessly.</p>
 
       <h3>7. Primal-Dual Interior-Point Methods</h3>
-      <p>Unlike the barrier method which keeps primal points strictly feasible and updates duals implicitly, Primal-Dual methods update primal ($x$) and dual ($\lambda, \nu$) variables simultaneously by linearizing the modified KKT conditions (perturbed complementary slackness). They are generally more efficient and robust, handling infeasible starts.</p>
+      <p>While the Barrier Method updates dual variables implicitly, <b>Primal-Dual methods</b> treat primal ($x$) and dual ($\lambda, \nu$) variables on equal footing. They solve a linearized system of the <b>modified KKT conditions</b>, where the complementary slackness condition $\lambda_i f_i(x) = 0$ is relaxed to $\lambda_i f_i(x) = -1/t$. This allows the algorithm to take larger steps and converge faster, often in fewer than 50 iterations regardless of problem size. Crucially, they can handle <b>infeasible starts</b>, meaning we don't need a separate Phase I to find a valid initial point.</p>
 
       <h3>8. Feasibility Phase</h3>
       <p>Finding a strictly feasible starting point $x_0$ is necessary for the barrier method. This is done by solving a "Phase I" problem: minimize $s$ subject to $f_i(x) \le s$, $Ax=b$. If $s^* < 0$, we found a feasible point.</p>
@@ -116,6 +116,32 @@
         </div>
       </div>
     </section>
+
+<!-- SECTION 10: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Theory</h2>
+
+  <h3>A.1 The Central Path</h3>
+  <div class="proof-box">
+    <h4>Existence and Properties</h4>
+    <p>Define $x^*(t)$ as the minimizer of $t f_0(x) + \phi(x)$.
+    <br>Condition: $t \nabla f_0(x) + \nabla \phi(x) = 0$.
+    <br>$\nabla \phi(x) = \sum \frac{1}{-f_i(x)} \nabla f_i(x)$.
+    <br>Define $\lambda_i^*(t) = -1/(t f_i(x^*(t)))$. Then $\lambda_i > 0$ and $\lambda_i f_i = -1/t$.
+    <br>The point $x^*(t)$ is primal feasible, and $\lambda^*(t)$ is dual feasible.
+    <br>Duality gap: $\sum (-\lambda_i f_i) = \sum (1/t) = m/t$.
+    <br>As $t \to \infty$, the gap vanishes, proving convergence to optimum.</p>
+  </div>
+
+  <h3>A.2 Complexity Analysis</h3>
+  <div class="proof-box">
+    <h4>Newton Steps Bound</h4>
+    <p>The number of Newton steps to center is bounded by a constant if the barrier is self-concordant.
+    <br>Updating $t^+ = \mu t$ keeps the iterate in the quadratic convergence region of the new center if $\mu$ is close to 1.
+    <br>To reduce gap by factor $\epsilon$, we need roughly $\sqrt{m} \log(1/\epsilon)$ total steps.
+    <br>This relies on the property $|\phi'''(x)| \le 2(\phi''(x))^{3/2}$.</p>
+  </div>
+</section>
 
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">

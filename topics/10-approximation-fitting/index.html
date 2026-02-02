@@ -56,11 +56,7 @@
       <h2>Key Concepts</h2>
 
       <h3>1. Least Squares and Projections</h3>
-      <p>The least squares problem minimizes the Euclidean norm of the residual:
-      $$ \min_x \|Ax - b\|_2^2 = \min_x \sum_{i=1}^m (a_i^\top x - b_i)^2 $$
-      Geometrically, this finds the orthogonal projection of the vector $b$ onto the range of $A$.
-      <br><b>Solution:</b> The optimality condition is the <b>normal equations</b> $A^\top A x = A^\top b$.
-      <br><b>Algorithms:</b> Solved via Cholesky factorization of $A^\top A$ or, for better stability, QR factorization of $A$.</p>
+      <p>The method of least squares minimizes the Euclidean norm of the residual, $\|Ax - b\|_2^2$. Geometrically, this projects the vector $b$ orthogonally onto the range of $A$. The analytic solution is given by the normal equations $A^\top A x = A^\top b$, which are typically solved via Cholesky or QR factorization.</p>
 
       <figure style="margin: 16px 0; text-align: center;">
         <img src="../../static/assets/topics/10-approximation-fitting/least-squares-fit.gif" alt="Animation of a least squares fit" style="max-width: 500px; height: auto; border-radius: 8px;" />
@@ -70,37 +66,16 @@
       </figure>
 
       <h3>2. Regularization and Trade-offs</h3>
-      <p>Regularization adds a penalty term $\phi(x)$ to the objective to control the properties of the solution (smoothness, size, sparsity) and prevent overfitting.
-      $$ \min_x \|Ax - b\|_2^2 + \lambda \phi(x) $$
-      As $\lambda$ varies, the solution $x^*(\lambda)$ traces a <b>regularization path</b>. This path represents the Pareto frontier between the fitting error and the complexity penalty.</p>
-      <ul>
-        <li><b>Ridge (Tikhonov):</b> $\phi(x) = \|x\|_2^2$. Shrinks coefficients, handles collinearity.</li>
-        <li><b>LASSO:</b> $\phi(x) = \|x\|_1$. Induces sparsity (feature selection).</li>
-      </ul>
+      <p>To combat overfitting, we introduce regularization, adding a penalty term $\lambda \phi(x)$ to the objective. This creates a trade-off between fitting error and model complexity. <b>Ridge regression</b> uses the $\ell_2$ norm squared, shrinking coefficients evenly. <b>LASSO</b> uses the $\ell_1$ norm, promoting sparsity by driving small coefficients to exactly zero.</p>
 
       <h3>3. Robust Fitting</h3>
-      <p>Standard least squares is sensitive to outliers because the squared error grows quadratically. <b>Robust regression</b> uses penalty functions that grow more slowly.
-      <br><b>$\ell_1$ Regression:</b> $\min \|Ax - b\|_1$. Equivalent to an LP. Robust but non-differentiable at 0.
-      <br><b>Huber Loss:</b> A hybrid penalty that is quadratic for small errors and linear for large errors.
-      $$ \phi_{hub}(u) = \begin{cases} u^2 & |u| \le M \\ 2M|u| - M^2 & |u| > M \end{cases} $$
-      This combines the efficiency of LS with the robustness of $\ell_1$.</p>
+      <p>Standard least squares is vulnerable to outliers due to the quadratic growth of its penalty. <b>Robust regression</b> employs penalties with slower growth, such as the $\ell_1$ norm (absolute deviation) or the <b>Huber loss</b>, which transitions from quadratic to linear for large errors, balancing efficiency with robustness.</p>
 
-      <h3>4. Sparse Recovery (Compressed Sensing)</h3>
-      <p>We often want to find the sparsest solution to an underdetermined system $Ax = b$ ($m < n$).
-      <br><b>$\ell_0$ Minimization:</b> $\min \|x\|_0$ s.t. $Ax=b$. This is NP-Hard (combinatorial).
-      <br><b>$\ell_1$ Relaxation (Basis Pursuit):</b> $\min \|x\|_1$ s.t. $Ax=b$. This is a convex LP.
-      <br><b>Theory:</b> Under conditions like the Restricted Isometry Property (RIP), the $\ell_1$ solution <b>is</b> the $\ell_0$ solution. This discovery launched the field of Compressed Sensing.</p>
+      <h3>4. Sparse Recovery and Signal Processing</h3>
+      <p>In signal processing, we often seek sparse solutions. <b>Compressed Sensing</b> theory shows that minimizing the $\ell_1$ norm can recover the true sparse signal from limited measurements, solving the combinatorial $\ell_0$ problem via convex relaxation. Similarly, <b>Total Variation (TV) Denoising</b> uses the $\ell_1$ norm of the gradient to remove noise from images while preserving sharp edges.</p>
 
-      <h3>5. Total Variation (TV) Denoising</h3>
-      <p>Used in image processing to remove noise while preserving edges.
-      $$ \min_x \|x - x_{corrupt}\|_2^2 + \lambda \sum |x_{i+1} - x_i| $$
-      The TV penalty $\sum |x_{i+1} - x_i| = \|Dx\|_1$ promotes piecewise-constant solutions (sparse derivatives), avoiding the "blurring" effect of Tikhonov smoothing.</p>
-
-      <h3>6. Matrix Approximation and Completion</h3>
-      <p>We seek a low-rank matrix $X$ that approximates data $A$.
-      <br><b>PCA:</b> $\min \|A - X\|_F$ s.t. $\text{rank}(X) \le k$. Solved via SVD.
-      <br><b>Matrix Completion:</b> Recover missing entries. Rank minimization is hard.
-      <br><b>Nuclear Norm Relaxation:</b> Minimize $\|X\|_* = \sum \sigma_i(X)$ (sum of singular values). This is the convex envelope of rank on the unit ball, analogous to $\ell_1$ for vectors.</p>
+      <h3>5. Matrix Approximation</h3>
+      <p>We extend approximation to matrices, seeking low-rank structures. The <b>Singular Value Decomposition (SVD)</b> provides the optimal low-rank approximation in the Frobenius norm. For <b>matrix completion</b> with missing entries, the <b>nuclear norm</b> (sum of singular values) serves as a convex relaxation for the rank function, enabling recovery of low-rank matrices from partial data.</p>
     </section>
 
     <!-- Interactive widgets -->
@@ -154,6 +129,40 @@
       </div>
     </section>
 
+<!-- SECTION 7: APPENDIX -->
+<section class="section-card" id="section-appendix">
+  <h2>Appendix: Detailed Derivations</h2>
+
+  <h3>A.1 The LASSO Path</h3>
+  <div class="proof-box">
+    <h4>Soft-Thresholding Derivation</h4>
+    <p>Problem: $\min \frac{1}{2}(x-b)^2 + \lambda |x|$. Subgradient condition: $0 \in x-b + \lambda \partial |x|$.
+    <br>If $x > 0$, $x-b+\lambda = 0 \implies x = b-\lambda$ (requires $b > \lambda$).
+    <br>If $x < 0$, $x-b-\lambda = 0 \implies x = b+\lambda$ (requires $b < -\lambda$).
+    <br>If $x = 0$, $|b| \le \lambda$.
+    <br>Result: $x^* = \text{sign}(b)\max(|b|-\lambda, 0)$.</p>
+  </div>
+
+  <h3>A.2 Robust Regression as QP</h3>
+  <div class="proof-box">
+    <h4>Huber Loss Reformulation</h4>
+    <p>Minimize $\sum \phi_{hub}(r_i)$.
+    <br>Variational form: $\phi_{hub}(u) = \min_v (u-v)^2 + 2M|v|$.
+    <br>Problem becomes: $\min_{x,v} \sum (r_i(x)-v_i)^2 + 2M|v_i|$.
+    <br>This is a convex QP with constraints or absolute value reformulation.</p>
+  </div>
+
+  <h3>A.3 Eckart-Young-Mirsky Theorem</h3>
+  <div class="proof-box">
+    <h4>Low-Rank Approximation</h4>
+    <p>To minimize $\|A-X\|_F$ s.t. rank$(X) \le k$:
+    <br>Let $A = U \Sigma V^\top$. Construct $X = \sum_{i=1}^k \sigma_i u_i v_i^\top$.
+    <br>Error is $\sum_{i=k+1}^r \sigma_i u_i v_i^\top$.
+    <br>Frobenius norm squared is $\sum_{i=k+1}^r \sigma_i^2$.
+    <br>Any other rank-$k$ matrix has larger error.</p>
+  </div>
+</section>
+
     <!-- Readings -->
     <section class="section-card" id="readings" style="margin-bottom: 32px;">
       <h2>Readings & Resources</h2>
@@ -199,47 +208,8 @@
       </div>
 
       <div class="example-box">
-      <h4>Example 10.2: The LASSO Path and Soft Thresholding</h4>
-      <p><strong>Problem:</strong> Consider the simplified LASSO problem with orthogonal design ($A=I$):
-      $$ \min_x \frac{1}{2}\|x-b\|_2^2 + \lambda \|x\|_1 $$
-      Derive the explicit solution $x^*(\lambda)$ and sketch the solution path as $\lambda$ increases.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Separability.</strong>
-            The objective separates into a sum of 1D problems:
-            $$ \sum_{i=1}^n \left( \frac{1}{2}(x_i - b_i)^2 + \lambda |x_i| \right) $$
-            We can solve for each $x_i$ independently.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Subgradient Optimality.</strong>
-            For a scalar problem $\min_x \frac{1}{2}(x-b)^2 + \lambda |x|$, the condition $0 \in \partial f(x)$ is:
-            $$ 0 \in (x-b) + \lambda \partial |x| \iff b-x \in \lambda \partial |x| $$
-            where $\partial |x|$ is $\text{sign}(x)$ if $x \ne 0$, and $[-1, 1]$ if $x=0$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Case Analysis (Soft Thresholding).</strong>
-            <ul>
-                <li>If $x > 0$: $b-x = \lambda \implies x = b - \lambda$. Valid if $b - \lambda > 0 \iff b > \lambda$.</li>
-                <li>If $x < 0$: $b-x = -\lambda \implies x = b + \lambda$. Valid if $b + \lambda < 0 \iff b < -\lambda$.</li>
-                <li>If $x = 0$: $b \in [-\lambda, \lambda] \iff |b| \le \lambda$.</li>
-            </ul>
-            Combining these, we get the <b>Soft Thresholding Operator</b> $\mathcal{S}_\lambda(b)$:
-            $$ x_i^* = \begin{cases} b_i - \lambda & b_i > \lambda \\ 0 & |b_i| \le \lambda \\ b_i + \lambda & b_i < -\lambda \end{cases} = \text{sign}(b_i) \max(|b_i| - \lambda, 0) $$
-        </div>
-        <div class="proof-step">
-            <strong>Step 4: The Sparsity Path.</strong>
-            As $\lambda$ increases from 0:
-            <ul>
-                <li>At $\lambda=0$, $x^* = b$.</li>
-                <li>As $\lambda$ grows, all coefficients shrink toward zero.</li>
-                <li>When $\lambda$ crosses the threshold $|b_i|$, the coordinate $x_i$ snaps to zero and stays there.</li>
-                <li>For $\lambda \ge \|b\|_\infty$, the solution is the zero vector.</li>
-            </ul>
-            This proves that $\ell_1$ regularization produces exact zeros (sparsity).
-        </div>
-      </div>
+      <h4>Example 10.2: The LASSO Path</h4>
+      <p>The simplified LASSO problem $\min_x \frac{1}{2}\|x-b\|_2^2 + \lambda \|x\|_1$ decomposes into 1D problems solved by the <b>Soft Thresholding</b> operator. This operator sets small coefficients (where $|b_i| \le \lambda$) to zero and shrinks large coefficients by $\lambda$. This mechanism explains why LASSO produces sparse solutions. For the full subgradient derivation, see <a href="#section-appendix">Appendix A.1</a>.</p>
       </div>
 
       <div class="example-box">
@@ -271,37 +241,7 @@
 
       <div class="example-box">
       <h4>Example 10.4: Robust Regression with Huber Loss</h4>
-      <p><strong>Problem:</strong> Standard Least Squares is sensitive to outliers because the quadratic cost grows rapidly. The Huber loss function is defined as:
-      $$ \phi_{hub}(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
-      Formulate the robust regression problem $\min_x \sum \phi_{hub}(a_i^\top x - b_i)$ as a Quadratic Program (QP).</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: Variational Definition.</strong>
-            The Huber function is the <b>infimal convolution</b> of the squared function and the absolute value function:
-            $$ \phi_{hub}(u) = \inf_{v} \left( (u-v)^2 + 2M|v| \right) $$
-            Basically, we split the residual $u$ into a "small" part $(u-v)$ and a "large" part $v$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Problem Reformulation.</strong>
-            Substitute $u_i = a_i^\top x - b_i$. We minimize $\sum_i ((u_i - v_i)^2 + 2M|v_i|)$ over $x$ and $v$.
-            Let $z_i = u_i - v_i$. Then $u_i = z_i + v_i$.
-            We minimize $\sum z_i^2 + 2M \sum |v_i|$ subject to $a_i^\top x - b_i = z_i + v_i$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: QP Form.</strong>
-            To make it a standard QP, we handle $|v_i|$ by splitting $v_i = v_i^+ - v_i^-$ with $v_i^+, v_i^- \ge 0$.
-            $$
-            \begin{aligned}
-            \min_{x, z, v^+, v^-} \quad & \sum z_i^2 + 2M \sum (v_i^+ + v_i^-) \\
-            \text{subject to} \quad & Ax - b = z + v^+ - v^- \\
-            & v^+ \ge 0, \ v^- \ge 0
-            \end{aligned}
-            $$
-            This is a convex QP. The vector $z$ captures inlier noise (Gaussian), while $v$ captures sparse outliers (Laplacian).
-        </div>
-      </div>
+      <p>The Huber loss combines the best of both worlds: quadratic for small errors (differentiable) and linear for large errors (robust). The robust regression problem $\min_x \sum \phi_{hub}(a_i^\top x - b_i)$ can be reformulated as a Quadratic Program by splitting the residual into an "inlier" part (squared) and an "outlier" part (absolute value). For the derivation, see <a href="#section-appendix">Appendix A.2</a>.</p>
       </div>
 
       <div class="example-box">
@@ -368,28 +308,8 @@
       </div>
 
       <div class="example-box">
-      <h4>Example 10.7: Low-Rank Matrix Approximation (Eckart-Young)</h4>
-      <p><strong>Problem:</strong> Given a matrix $A \in \mathbb{R}^{m \times n}$, find the matrix $X$ of rank at most $k$ that minimizes the Frobenius norm error $\|A - X\|_F$. Prove the optimality of the truncated SVD.</p>
-
-      <div class="solution-box">
-        <h4>Solution</h4>
-        <div class="proof-step">
-            <strong>Step 1: SVD Decomposition.</strong>
-            Let $A = U \Sigma V^\top = \sum_{i=1}^r \sigma_i u_i v_i^\top$, where $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 2: Truncated SVD.</strong>
-            Define $A_k = \sum_{i=1}^k \sigma_i u_i v_i^\top$. This matrix clearly has rank $k$.
-            The error is $A - A_k = \sum_{i=k+1}^r \sigma_i u_i v_i^\top$.
-            The Frobenius norm of the error is $\sqrt{\sum_{i=k+1}^r \sigma_i^2}$.
-        </div>
-        <div class="proof-step">
-            <strong>Step 3: Eckart-Young-Mirsky Theorem.</strong>
-            The theorem states that for any $X$ with rank $k$:
-            $$ \|A - X\|_F^2 \ge \sum_{i=k+1}^r \sigma_i^2 $$
-            Thus, the truncated SVD $A_k$ is the global minimizer. It is also optimal in the Spectral norm ($\|A - A_k\|_2 = \sigma_{k+1}$).
-        </div>
-      </div>
+      <h4>Example 10.7: Low-Rank Matrix Approximation</h4>
+      <p>The problem of finding the best rank-$k$ approximation to a matrix $A$ in the Frobenius norm is solved by the <b>truncated Singular Value Decomposition (SVD)</b>. This result, known as the Eckart-Young-Mirsky theorem, states that one should keep the largest $k$ singular values and zero out the rest. For the proof details, see <a href="#section-appendix">Appendix A.3</a>.</p>
       </div>
 
       <div class="example-box">

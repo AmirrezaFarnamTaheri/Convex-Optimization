@@ -4,7 +4,7 @@
  * Description: Interactive guide to selecting the appropriate solver based on problem type
  * Version: 3.0.0 - Enhanced with modern framework
  */
-import { createModernWidget, createTabs, createSelect, createBadge } from '/static/js/modern-components.js';
+import { createModernWidget, createTabs, createSelect, createBadge } from '../../../../static/js/modern-components.js';
 
 export function initSolverGuide(containerId) {
     const container = document.getElementById(containerId);

@@ -182,7 +182,7 @@
         <p><strong>Problem:</strong> Compare projected gradient descent with Newton for minimizing $\|x\|^2$ s.t. $Ax=b$.</p>
         <p><strong>Solution:</strong></p>
         <p>Objective is quadratic with Hessian $2I$.
-        Newton's method converges in **one step** for quadratic problems.
+        Newton's method converges in <b>one step</b> for quadratic problems.
         Projected gradient descent: $x_{k+1} = \Pi(x_k - t \nabla f(x_k))$.
         For $f(x) = \|x\|^2$, $\nabla f = 2x$. With optimal step, it also converges fast, but depends on conditioning of $A$.
         Newton solves the KKT system directly, which is equivalent to the analytic solution here.</p>

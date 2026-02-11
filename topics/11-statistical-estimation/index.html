@@ -160,8 +160,11 @@
         $$ (y - \mu)^\top \Sigma^{-1} (y - \mu) = y^\top P y - 2 y^\top q + q^\top P^{-1} q $$
         The log-likelihood becomes (ignoring constants):
         $$ \mathcal{L}(P, q) = \frac{n}{2}\log\det(P) - \frac{1}{2}\sum_i (y_i^\top P y_i - 2 y_i^\top q + q^\top P^{-1} q) $$
-        This involves concave term $\log\det(P)$ and convex term $q^\top P^{-1} q$ (matrix fractional). We want to maximize $\mathcal{L}$, which means minimizing $-\mathcal{L}$.
-        Wait, for Gaussian, usually we fix mean or covariance. If both vary, the problem is not jointly convex in standard parameters. However, optimizing $\mu$ gives $\hat{\mu} = \bar{y}$. Then optimizing $\Sigma$ gives $\hat{\Sigma} = \frac{1}{n}\sum (y_i-\bar{y})(y_i-\bar{y})^\top$. The problem is convex in $P = \Sigma^{-1}$ if $\mu$ is known.</p>
+        This involves the concave term $\log\det(P)$ and the convex term $q^\top P^{-1} q$ (matrix fractional function). We want to maximize $\mathcal{L}$, which means minimizing $-\mathcal{L}$.
+        <br><b>Key subtlety:</b> The joint problem over both $\mu$ and $\Sigma$ is not jointly convex in the standard parameterization. However, we can decouple the estimation:
+        <br>(1) Optimizing over $\mu$ in closed form gives $\hat{\mu} = \bar{y}$ (the sample mean).
+        <br>(2) Substituting $\hat{\mu}$ back, optimizing over $P = \Sigma^{-1}$ gives $\hat{\Sigma} = \frac{1}{n}\sum (y_i-\bar{y})(y_i-\bar{y})^\top$.
+        <br>If $\mu$ is known (or fixed at $\hat{\mu}$), the negative log-likelihood in $P$ is $-\frac{n}{2}\log\det(P) + \frac{1}{2}\text{tr}(SP)$ where $S = \frac{1}{n}\sum(y_i-\mu)(y_i-\mu)^\top$. This is convex in $P \succ 0$ (since $-\log\det$ is convex on the PSD cone and the trace term is linear).</p>
       </div>
 
       <div class="example-box">

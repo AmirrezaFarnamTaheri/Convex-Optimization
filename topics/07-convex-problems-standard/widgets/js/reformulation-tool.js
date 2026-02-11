@@ -5,7 +5,7 @@
  *              convex forms (LP, QP, SOCP, SDP)
  * Version: 3.0.0 - Enhanced with modern framework
  */
-import { createModernWidget, createTabs, createSelect, createButton, createBadge } from '/static/js/modern-components.js';
+import { createModernWidget, createTabs, createSelect, createButton, createBadge } from '../../../../static/js/modern-components.js';
 
 export function initProblemReformulationTool(containerId) {
     const container = document.getElementById(containerId);
@@ -231,7 +231,7 @@ export function initProblemReformulationTool(containerId) {
                 "Rewrite objective: ¼Σᵢⱼ wᵢⱼ(1 - Xᵢⱼ)",
                 "= constant - ¼ trace(WX) where W is weight matrix",
                 "Result: SDP relaxation with approximation guarantee!"
-            },
+            ],
             finalForm: {
                 problem: "maximize: -(1/4)trace(WX)\nsubject to: X ⪰ 0\n            diag(X) = 1",
                 type: "Semidefinite Program (SDP)"

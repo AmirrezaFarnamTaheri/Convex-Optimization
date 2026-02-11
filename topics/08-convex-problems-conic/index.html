@@ -637,15 +637,15 @@
       </div>
 
       <div class="insight">
-        <h4>Why This Matters: Unlocking Exponential and Logarithmic Functions</h4>
-        <p>The exponential cone is <b>essential for modern convex optimization</b> because it enables efficient modeling and solution of problems involving <b>non-polynomial nonlinearities</b>. Here's why you should care:</p>
+        <h4>Why This Matters: Exponential and Logarithmic Functions in Conic Form</h4>
+        <p>The exponential cone is essential for modern convex optimization because it enables efficient modeling and solution of problems involving non-polynomial nonlinearities:</p>
         <ul>
-          <li><b>Powers Logistic Regression and Classification:</b> Logistic regression minimizes $\sum_i \log(1 + e^{-y_i (w^\top x_i + b)})$. The log-sum-exp function is convex and can be expressed exactly using exponential cone constraints. Without the exponential cone, logistic regression would require general nonlinear solvers (slower, less reliable). With it, we get interior-point solver performance (fast, robust).</li>
-          <li><b>Enables Maximum Likelihood Estimation:</b> Many statistical models (Poisson regression, exponential family distributions) involve log-likelihood functions with exponential terms. The exponential cone allows these to be formulated as conic programs, enabling provably optimal parameter estimation with convergence guarantees.</li>
-          <li><b>Unlocks Geometric Mean and Relative Entropy:</b> The geometric mean $(\prod x_i)^{1/n}$ (used in portfolio optimization and control theory) and relative entropy $\sum x_i \log(x_i/y_i)$ (Kullback-Leibler divergence in information theory and ML) are not quadratic or norm-based, but they ARE representable via exponential cone constraints. This makes problems like D-optimal experiment design and minimum KL divergence solvable by conic solvers.</li>
+          <li><b>Logistic Regression and Classification:</b> Logistic regression minimizes $\sum_i \log(1 + e^{-y_i (w^\top x_i + b)})$. The log-sum-exp function is convex and can be expressed exactly using exponential cone constraints. Without the exponential cone, logistic regression would require general nonlinear solvers (slower, less reliable). With it, we get interior-point solver performance (fast, robust).</li>
+          <li><b>Maximum Likelihood Estimation:</b> Many statistical models (Poisson regression, exponential family distributions) involve log-likelihood functions with exponential terms. The exponential cone allows these to be formulated as conic programs, enabling provably optimal parameter estimation with convergence guarantees.</li>
+          <li><b>Geometric Mean and Relative Entropy:</b> The geometric mean $(\prod x_i)^{1/n}$ (used in portfolio optimization and control theory) and relative entropy $\sum x_i \log(x_i/y_i)$ (Kullback-Leibler divergence in information theory and ML) are not quadratic or norm-based, but they ARE representable via exponential cone constraints. This makes problems like D-optimal experiment design and minimum KL divergence solvable by conic solvers.</li>
           <li><b>Generalizes Geometric Programming:</b> Geometric programs (GP) model problems in circuit design, optical systems, and structural engineering. After log-transformation, GPs become exponential cone programs. Modern GP solvers (like CVX, CVXPY with MOSEK) use the exponential cone under the hood.</li>
         </ul>
-        <p><b>Real-World Impact:</b> Companies like Google (optimal experiment design for A/B testing), pharmaceutical firms (dose-response modeling), and chip manufacturers (circuit optimization) rely on exponential cone solvers. The exponential cone bridges the gap between "simple" conic forms (LP, SOCP, SDP) and "complex" nonlinear functions, making previously intractable problems solvable at scale.</p>
+        <p>The exponential cone bridges the gap between standard conic forms (LP, SOCP, SDP) and nonlinear functions involving logarithms and exponentials, extending the reach of conic solvers to a broader class of problems.</p>
         <p><b>Solver Support:</b> Modern solvers (MOSEK, ECOS, SCS) natively support exponential cone constraints. CVXPY automatically detects atoms like <code>log</code>, <code>exp</code>, <code>entr</code>, <code>kl_div</code> and compiles them to exponential cone form.</p>
         <p><b>Takeaway:</b> If your problem involves $e^x$, $\log x$, entropy, or geometric means, the exponential cone is your gateway to efficient convex optimization.</p>
       </div>
@@ -851,6 +851,10 @@
           <li>If it mixes all of the above → Compiled to a <b>mixed conic program</b> combining multiple cone types</li>
         </ul>
         <p>This classification determines which solver to use (ECOS for SOC+Exp, MOSEK for mixed, SCS for everything) and enables the framework to choose the most efficient algorithm.</p>
+      </div>
+
+      <div id="widget-solver-guide" style="width: 100%; max-width: 900px; margin: 24px auto; min-height: 400px; position: relative; border-radius: 8px;">
+        <!-- Solver Selection Guide widget rendered here -->
       </div>
 
       <h3>5.4 The DCP Verification Process</h3>
@@ -1088,7 +1092,7 @@ problem.solve()</code></pre>
             The objective function is strictly convex if and only if its Hessian matrix $P = 2A^\top A$ is positive definite ($P \succ 0$).
             Since $A^\top A$ is always positive semidefinite, positive definiteness requires that $x^\top A^\top A x = \|Ax\|^2 > 0$ for all $x \ne 0$.
             This condition holds if and only if $Ax \ne 0$ for all $x \ne 0$, which means $A$ must have a trivial nullspace.
-            Thus, the problem is strictly convex (and has a unique solution) if and only if $A$ has **full column rank** ($\text{rank}(A) = n$).
+            Thus, the problem is strictly convex (and has a unique solution) if and only if $A$ has <b>full column rank</b> ($\text{rank}(A) = n$).
           </div>
   </div>
 </div>
@@ -1515,7 +1519,7 @@ problem.solve()</code></pre>
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
     <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
         <li><b>Schur Complement Epigraph:</b> The condition $t \ge \mathbf{x}^\top Y^{-1} \mathbf{x}$ is equivalent to the LMI $\begin{bmatrix} Y & \mathbf{x} \\ \mathbf{x}^\top & t \end{bmatrix} \succeq 0$. This is the standard "trick" for handling quadratic-over-linear terms in SDPs.</li>
-        <li><b>Triangle of Equivalence:</b> This transformation connects the scalar inequality (objective) to a block matrix inequality (SDP constraint), completing the "Triangle of Equivalence" introduced in <a href="../01-linear-algebra-advanced/index.html">Lecture 01</a>.</li>
+        <li><b>Triangle of Equivalence:</b> This transformation connects the scalar inequality (objective) to a block matrix inequality (SDP constraint), completing the "Triangle of Equivalence" introduced in <a href="../00-linear-algebra-basics/index.html#section-psd">Lecture 00, Section 7.5</a>.</li>
     </ul>
   </div>
 

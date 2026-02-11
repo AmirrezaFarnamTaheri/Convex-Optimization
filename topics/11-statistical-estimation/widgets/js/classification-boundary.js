@@ -6,7 +6,7 @@
  * Version: 2.0.0
  */
 import * as d3 from "../../../../static/lib/d3/d3.esm.js";
-import { getPyodide } from "/static/js/pyodide-manager.js";
+import { getPyodide } from "../../../../static/js/pyodide-manager.js";
 
 export async function initClassificationBoundaryVisualizer(containerId) {
     const container = document.getElementById(containerId);

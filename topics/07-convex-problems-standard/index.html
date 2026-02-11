@@ -1377,7 +1377,7 @@
           <br><b>Proof (Step-by-Step):</b>
           <br>1. Let $x_i = e^{y_i}$. Then a monomial becomes $c \prod e^{a_{ik} y_i} = c e^{\mathbf{a}_k^\top \mathbf{y}}$.
           <br>2. A posynomial becomes a sum of exponentials: $\sum c_k e^{\mathbf{a}_k^\top \mathbf{y}} = \sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k}$ (where $b_k = \log c_k$).
-          <br>3. Taking the log gives the function $g(y) = \log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$. This is the composition of the **Log-Sum-Exp** function with affine maps.
+          <br>3. Taking the log gives the function $g(y) = \log(\sum e^{\mathbf{a}_k^\top \mathbf{y} + b_k})$. This is the composition of the <b>Log-Sum-Exp</b> function with affine maps.
           <br>4. <b>Why is Log-Sum-Exp convex?</b> We prove $f(u) = \log(\sum e^{u_i})$ is convex using Hölder's inequality.
           <br>Let $u, v \in \mathbb{R}^n$ and $\theta \in (0,1)$. We want to show:
           $$ f(\theta u + (1-\theta)v) \le \theta f(u) + (1-\theta)f(v) $$

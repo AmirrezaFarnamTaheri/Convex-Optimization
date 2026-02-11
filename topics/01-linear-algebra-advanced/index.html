@@ -310,10 +310,8 @@
         <iframe src="widgets/la_batch2.html?mode=rank1" width="100%" height="500" style="border:none; border-radius: 8px; background:#0b0f14; width: 100%; max-width: 900px; display: block; margin: 0 auto;"></iframe>
       </div>
 
-      <h3>5.4 The Schur Complement</h3>
-      <p>For a block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$:
-      $$ M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0 $$
-      This "completing the square" for matrices is essential for converting nonlinear constraints to Linear Matrix Inequalities (SDP).</p>
+      <h3>5.4 The Schur Complement (Review)</h3>
+      <p>Recall from <a href="../00-linear-algebra-basics/index.html#section-psd">Lecture 00, Section 7.5</a>: for a block matrix $M = \begin{bmatrix} A & B \\ B^\top & C \end{bmatrix}$ with $A \succ 0$, $M \succeq 0 \iff S = C - B^\top A^{-1} B \succeq 0$. This "completing the square" for matrices converts nonlinear constraints to Linear Matrix Inequalities (SDP).</p>
 
       <div class="widget-container" style="margin: 24px 0;">
         <h3 style="margin-top: 0;">Interactive Demo: Schur Complement Feasibility</h3>
@@ -529,7 +527,7 @@
       </div>
 
       <div class="insight">
-        <h4>The Irreducible Truth</h4>
+        <h4>The Unifying Theme</h4>
         <p>You should now be able to see the single thread connecting these topics:
         <br><b>PCA, Least Squares, Pseudoinverses, and Regularization are all consequences of the SVD.</b>
         <br>The SVD exposes the intrinsic geometry of a linear map: which directions survive, which collapse, and which amplify noise. Every stable algorithm in optimization is, explicitly or implicitly, an SVD-aware algorithm.</p>

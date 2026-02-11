@@ -1169,7 +1169,7 @@
 
       <h4>Derivation: Epigraph via Schur Complement</h4>
       <p>The epigraph condition is $t \ge x^\top Y^{-1} x$ with $Y \succ 0$.
-      <br>Using the <a href="../00-linear-algebra-basics/index.html#section-5">Schur Complement Lemma</a>, this is equivalent to the Linear Matrix Inequality (LMI):
+      <br>Using the <a href="../00-linear-algebra-basics/index.html#section-psd">Schur Complement Lemma</a>, this is equivalent to the Linear Matrix Inequality (LMI):
       $$ M = \begin{bmatrix} Y & x \\ x^\top & t \end{bmatrix} \succeq 0 $$
       Since the PSD cone is convex, and $M$ depends linearly on $(x, Y, t)$, the epigraph is convex.</p>
 
@@ -2504,38 +2504,7 @@
   </div>
 </div>
 
-<div class="problem">
-  <h3>P5.8 — Sensitivity Analysis using Subgradients</h3>
-  <p>Let $p^*(u)$ be the optimal value of the perturbed problem $\min f_0(x)$ s.t. $f_i(x) \le u_i, Ax=b$. Prove that the optimal dual variables $\lambda^*$ provide a lower bound on the perturbed value: $p^*(u) \ge p^*(0) - \lambda^{*\top} u$. This implies $\lambda_i^* \approx -\frac{\partial p^*}{\partial u_i}$ (Shadow Prices).</p>
-
-  <div class="recap-box">
-    <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
-    <ul style="margin: 8px 0 0 20px; font-size: 0.9em; color: var(--text-secondary);">
-        <li><b>Weak Duality:</b> $p^*(u) \ge g(\lambda, \nu)$ for any feasible dual variables.</li><li><b>Global Inequality:</b> Convexity gives us a global linear underestimator, not merely a local derivative.</li>
-    </ul>
-  </div>
-
-  <div class="solution-box">
-    <h4>Solution</h4>
-    <div class="proof-step"><strong>Step 1: Perturbed Lagrangian.</strong>
-    The primal problem is $\min f_0(x)$ s.t. $f_i(x) \le u_i$.
-    The Lagrangian is $L(x, \lambda) = f_0(x) + \sum \lambda_i (f_i(x) - u_i) = f_0(x) + \lambda^\top f(x) - \lambda^\top u$.
-    (Ignoring equality constraints for brevity, logic is identical).</div>
-    <div class="proof-step"><strong>Step 2: Dual Function.</strong>
-    $g(\lambda) = \inf_x (f_0(x) + \lambda^\top f(x) - \lambda^\top u) = (\inf_x L_0(x, \lambda)) - \lambda^\top u$.
-    Where $L_0$ is the unperturbed Lagrangian. So $g(\lambda) = g_0(\lambda) - \lambda^\top u$.</div>
-    <div class="proof-step"><strong>Step 3: Weak Duality.</strong>
-    For any feasible $x$ of the perturbed problem and any $\lambda \ge 0$:
-    $f_0(x) \ge g(\lambda) = g_0(\lambda) - \lambda^\top u$.
-    Taking inf over $x$: $p^*(u) \ge g_0(\lambda) - \lambda^\top u$.</div>
-    <div class="proof-step"><strong>Step 4: Use Optimal Dual.</strong>
-    Let $\lambda^*$ be the optimal dual for the *unperturbed* problem ($u=0$).
-    Then $g_0(\lambda^*) = p^*(0)$ (Strong Duality assumption).
-    So:
-    $$ p^*(u) \ge p^*(0) - \lambda^{*\top} u $$
-    This shows $-\lambda^*$ is a subgradient of $p^*$ at $u=0$.</div>
-  </div>
-</div>
+<!-- Exercise on Sensitivity Analysis moved to Lecture 09 (Duality), Exercise P9.3, where the prerequisite concepts (Lagrangian, dual variables, strong duality) are covered. -->
 
 <div class="problem">
   <h3>P5.9 — Advanced Composition Rules (3.22)</h3>

@@ -52,7 +52,7 @@
     </section>
 
     <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
+    <section class="section-card" id="key-concepts" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
       <h3>1. Least Squares and Projections</h3>
@@ -343,7 +343,7 @@
       <h2><i data-feather="edit-3"></i> Exercises</h2>
 
       <div class="problem">
-        <h3>P10.1 — Ridge Regression Uniqueness</h3>
+        <h3 id="prob-10-001">P10.1 — Ridge Regression Uniqueness</h3>
         <p>Show that the solution to $\min_x \|Ax-b\|_2^2 + \lambda\|x\|_2^2$ is unique for any $\lambda > 0$, even if $A$ is rank-deficient.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -355,7 +355,7 @@
       </div>
 
       <div class="problem">
-        <h3>P10.2 — Equivalence of Penalized and Constrained Forms</h3>
+        <h3 id="prob-10-002">P10.2 — Equivalence of Penalized and Constrained Forms</h3>
         <p>Prove that for every $\lambda > 0$, there exists a $t \ge 0$ such that the solution to $\min_x \|Ax-b\|_2^2 + \lambda \|x\|_1$ is also a solution to $\min_x \|Ax-b\|_2^2$ subject to $\|x\|_1 \le t$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -369,7 +369,7 @@
       </div>
 
       <div class="problem">
-        <h3>P10.3 — Weighted Least Squares and MLE</h3>
+        <h3 id="prob-10-003">P10.3 — Weighted Least Squares and MLE</h3>
         <p>Derive the solution to $\min_x (Ax-b)^\top W (Ax-b)$ for diagonal $W \succ 0$. Show that this corresponds to Maximum Likelihood Estimation (MLE) for $y = Ax + \nu$ where $\nu_i \sim \mathcal{N}(0, \sigma_i^2)$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -386,7 +386,7 @@
       </div>
 
       <div class="problem">
-        <h3>P10.4 — Subdifferential of $\ell_1$ Norm</h3>
+        <h3 id="prob-10-004">P10.4 — Subdifferential of $\ell_1$ Norm</h3>
         <p>Derive the subdifferential $\partial \|x\|_1$. Use it to state the optimality condition for Basis Pursuit Denoising: $\min \frac{1}{2}\|Ax-y\|_2^2 + \lambda \|x\|_1$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -400,7 +400,7 @@
       </div>
 
       <div class="problem">
-        <h3>P10.5 — Total Variation vs. Ridge</h3>
+        <h3 id="prob-10-005">P10.5 — Total Variation vs. Ridge</h3>
         <p>Explain why TV denoising ($\lambda \|Dx\|_1$) preserves edges while Ridge ($\lambda \|Dx\|_2^2$) blurs them.</p>
         <div class="solution-box">
           <h4>Solution</h4>

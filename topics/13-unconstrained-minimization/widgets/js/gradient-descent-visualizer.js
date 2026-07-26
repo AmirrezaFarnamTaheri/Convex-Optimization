@@ -1,3 +1,14 @@
+/**
+ * Widget: Gradient Descent Visualizer
+ *
+ * Description: Traces gradient-descent iterates on an anisotropic quadratic
+ *              whose anisotropy gamma sets the condition number kappa. Shows
+ *              the characteristic zig-zag across narrow valleys.
+ * Concept: L13 section 6 (Descent Methods) - the conditioning/convergence link.
+ * What to notice: raising gamma widens the zig-zag angle and multiplies the
+ *              iterations needed; the path crosses the valley instead of
+ *              running along it.
+ */
 export function initGradientDescentVisualizer(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;

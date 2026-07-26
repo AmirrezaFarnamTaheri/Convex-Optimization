@@ -1124,7 +1124,7 @@
       </div>
 
         <div class="problem">
-  <h3>P9.1 — Deriving the Dual of a Quadratic Program</h3>
+  <h3 id="prob-09-001">P9.1 — Deriving the Dual of a Quadratic Program</h3>
   <p>Consider the QP: $\min x^\top x$ subject to $Ax \preceq b$.
   <br>(a) Derive the Lagrange dual function $g(\lambda)$.
   <br>(b) State the dual problem explicitly.
@@ -1161,7 +1161,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.2 — KKT Conditions for Entropy Maximization</h3>
+  <h3 id="prob-09-002">P9.2 — KKT Conditions for Entropy Maximization</h3>
   <p>Maximize the entropy $-\sum x_i \log x_i$ subject to $\mathbf{1}^\top x = 1$ and $Ax \le b$.
   <br>Derive the KKT conditions. Show that the optimal solution has the form $x_i = e^{-\nu - 1 - (A^\top \lambda)_i}$.</p>
 
@@ -1207,7 +1207,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.3 — Sensitivity Analysis and Shadow Prices</h3>
+  <h3 id="prob-09-003">P9.3 — Sensitivity Analysis and Shadow Prices</h3>
   <p>Consider $\min x^2$ s.t. $x \le -1$. Optimal $x^*=-1, p^*=1$.
   <br>Perturb to $\mathbf{x} \le -1 + u$. New optimum $\mathbf{x}^* = -1+u$ (for small $u$), $p^*(u) = (-1+u)^2 \approx 1 - 2u$.
   <br>Find the dual optimal $\lambda^*$ of the original problem and verify $p^*(u) \approx p^*(0) - \lambda^* u$.</p>
@@ -1247,7 +1247,7 @@
   </div>
         </div>
         <div class="problem">
-  <h3>P9.4 — Dual of a Linear Program</h3>
+  <h3 id="prob-09-004">P9.4 — Dual of a Linear Program</h3>
   <p>Derive the dual of the standard form LP:
   $$ \min c^\top x \quad \text{s.t.} \quad Ax = b, \ x \ge 0 $$
   Show it is $\max -b^\top \nu$ s.t. $A^\top \nu + c \ge 0$ (or equivalently $\max b^\top y$ s.t. $A^\top y \le c$ via reparameterization).</p>
@@ -1283,7 +1283,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.5 — Farkas' Lemma</h3>
+  <h3 id="prob-09-005">P9.5 — Farkas' Lemma</h3>
   <p>Use Strong Duality for LP to prove Farkas' Lemma:
   Exactly one of the following systems has a solution:
   <ol>
@@ -1337,7 +1337,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.6 — KKT for Water-filling</h3>
+  <h3 id="prob-09-006">P9.6 — KKT for Water-filling</h3>
   <p>Solve $\min \sum_{i=1}^n -\log(\alpha_i + x_i)$ subject to $x \ge 0, \mathbf{1}^\top x = 1$. Assume $\alpha_i > 0$. Derive the water-filling solution.</p>
 
   <div class="recap-box">
@@ -1377,7 +1377,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.7 — KKT for Standard QP</h3>
+  <h3 id="prob-09-007">P9.7 — KKT for Standard QP</h3>
   <p>Consider the Quadratic Program:</p>
   $$ \min_x \frac{1}{2} x^\top P x + q^\top x \quad \text{s.t.} \quad Ax \le b $$
   <p>where $P \in \mathbb{S}^n_{++}$ (positive definite).</p>
@@ -1418,7 +1418,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.8 — Certificates of Infeasibility (Gordan's Theorem)</h3>
+  <h3 id="prob-09-008">P9.8 — Certificates of Infeasibility (Gordan's Theorem)</h3>
   <p>A system of inequalities is <b>infeasible</b> if no solution exists. A <b>certificate of infeasibility</b> is a dual vector that proves this fact.
   <br><strong>Gordan's Theorem</strong> states that exactly one of the following systems has a solution:</p>
   <ol>
@@ -1467,7 +1467,7 @@
 
 
         <div class="problem">
-  <h3>P9.9 — The Gap Certificate Cookbook</h3>
+  <h3 id="prob-09-009">P9.9 — The Gap Certificate Cookbook</h3>
   <p>For each of the following problems, determine the dual variables, the dual objective function $d(\lambda, \nu)$, and the formula for the duality gap $\text{gap} = p(x) - d(\lambda, \nu)$.</p>
   <ol>
     <li><b>Least Squares:</b> $\min_x \frac{1}{2}\|Ax-b\|_2^2$ (Use the equivalent constrained form $\min \frac{1}{2}\|y\|_2^2$ s.t. $y=Ax-b$)</li>
@@ -1509,7 +1509,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.10 — SDP Duality: Max Cut Relaxation</h3>
+  <h3 id="prob-09-010">P9.10 — SDP Duality: Max Cut Relaxation</h3>
   <p>The Max Cut problem can be relaxed to the following SDP:
   $$ \max_X \quad \frac{1}{4} \mathrm{tr}(W X) \quad \text{s.t.} \quad X_{ii} = 1, \quad X \succeq 0 $$
   where $W$ is the weighted adjacency matrix. Derive the dual problem.</p>
@@ -1547,7 +1547,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.11 — SOCP Duality: Robust Least Squares</h3>
+  <h3 id="prob-09-011">P9.11 — SOCP Duality: Robust Least Squares</h3>
   <p>Derive the dual of the Robust Least Squares problem:
   $$ \min_x \|Ax - b\|_2 + \rho \|x\|_2 $$
   Formulate the primal as an SOCP first.</p>
@@ -1593,7 +1593,7 @@
         </div>
 
         <div class="problem">
-  <h3>P9.12 — Deep Dive: Chebyshev Approximation vs Least Squares (Problem 5.6)</h3>
+  <h3 id="prob-09-012">P9.12 — Deep Dive: Chebyshev Approximation vs Least Squares (Problem 5.6)</h3>
   <p>Consider the problem of minimizing the $\ell_\infty$ norm of the residual: $p^\star = \min_x \|Ax - b\|_\infty$.
   <br>Let $x_{\text{ls}}$ be the least-squares solution ($p_{\text{ls}} = \min \|Ax-b\|_2$).
   <br><strong>(a)</strong> Prove that the least-squares solution provides a $\sqrt{m}$-approximation: $\|Ax_{\text{ls}} - b\|_\infty \le \sqrt{m} p^\star$.
@@ -1662,7 +1662,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.13 — Case Study: The Geometry of Max-of-Affines (Problem 5.7)</h3>
+  <h3 id="prob-09-013">P9.13 — Case Study: The Geometry of Max-of-Affines (Problem 5.7)</h3>
   <p>Consider the classic piecewise-linear minimization problem:
   $$ \min_{x \in \mathbb{R}^n} \; \max_{i=1,\dots,m} (a_i^\top x + b_i) $$
   This problem is convex but nonsmooth. We analyze it through four different lenses to see how smoothing relates to duality.</p>
@@ -1742,7 +1742,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation) (Problem 5.9)</h3>
+  <h3 id="prob-09-014">P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation) (Problem 5.9)</h3>
   <p><strong>Context:</strong> We seek the minimum-volume ellipsoid $\mathcal{E}(X) = \{x \in \mathbb{R}^n \mid x^\top X x \le 1\}$ centered at the origin that contains a set of points $a_1, \dots, a_m \in \mathbb{R}^n$ (which span $\mathbb{R}^n$).
   <br>This is formulated as the convex problem:
   $$ \min_{X \in \mathbb{S}_{++}^n} \log \det(X^{-1}) \quad \text{s.t.} \quad a_i^\top X a_i \le 1, \quad i=1,\dots,m $$
@@ -1811,7 +1811,7 @@
 </div>
 
         <div class="problem">
-  <h3>P9.15 — Dual of General LP (Problem 5.5)</h3>
+  <h3 id="prob-09-015">P9.15 — Dual of General LP (Problem 5.5)</h3>
   <p>Find the dual function and dual problem of the general Linear Program:
   $$
   \begin{aligned}
@@ -1870,7 +1870,7 @@
 </div>
 
 <div class="problem">
-  <h3>P9.16 — Conjugate-based dual of least-squares (Problem 5.3)</h3>
+  <h3 id="prob-09-016">P9.16 — Conjugate-based dual of least-squares (Problem 5.3)</h3>
   <p>Consider the least-squares problem
   $$
   \min_{x \in \mathbb R^n} \ \|Ax - b\|_2,
@@ -1951,7 +1951,7 @@
 </div>
 
 <div class="problem">
-  <h3>P9.17 — Quadratic inequality via duality (Problem 5.4)</h3>
+  <h3 id="prob-09-017">P9.17 — Quadratic inequality via duality (Problem 5.4)</h3>
   <p>Consider the quadratic inequality
   $$
   x^\top Q x + 2 b^\top x + c \le 0

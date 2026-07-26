@@ -51,7 +51,7 @@
     </section>
 
     <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
+    <section class="section-card" id="key-concepts" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
       <h3>1. Distance and Projection</h3>
@@ -256,7 +256,7 @@
       <h2><i data-feather="edit-3"></i> Exercises</h2>
 
       <div class="problem">
-        <h3>P12.1 — Projection Non-expansiveness</h3>
+        <h3 id="prob-12-001">P12.1 — Projection Non-expansiveness</h3>
         <p>Prove that for a convex set $C$, the projection operator is non-expansive: $\|P_C(x) - P_C(y)\|_2 \le \|x - y\|_2$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -280,7 +280,7 @@
       </div>
 
       <div class="problem">
-        <h3>P12.2 — Chebyshev Center of Polyhedron</h3>
+        <h3 id="prob-12-002">P12.2 — Chebyshev Center of Polyhedron</h3>
         <p>Explicitly write the LP for the Chebyshev center of the unit box $\{x \in \mathbb{R}^n : 0 \le x \le 1\}$. Verify the solution is center $(0.5, \dots, 0.5)$ with radius $0.5$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -305,7 +305,7 @@
       </div>
 
       <div class="problem">
-        <h3>P12.3 — Convexity of MVEE Objective</h3>
+        <h3 id="prob-12-003">P12.3 — Convexity of MVEE Objective</h3>
         <p>Prove that $f(A) = -\log\det(A)$ is convex on the domain of positive definite matrices $\mathbb{S}_{++}^n$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -328,7 +328,7 @@
       </div>
 
       <div class="problem">
-        <h3>P12.4 — Distance Implies Intersection</h3>
+        <h3 id="prob-12-004">P12.4 — Distance Implies Intersection</h3>
         <p>Show that if the distance between two compact convex sets $C_1, C_2$ is 0, then their intersection is non-empty.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -348,7 +348,7 @@
       </div>
 
       <div class="problem">
-        <h3>P12.5 — Weber Problem Reformulation</h3>
+        <h3 id="prob-12-005">P12.5 — Weber Problem Reformulation</h3>
         <p>Show that the Weber problem $\min_x \sum_{i=1}^m w_i \|x - p_i\|_2$ with $w_i \ge 0$ can be cast as a Second-Order Cone Program (SOCP).</p>
         <div class="solution-box">
           <h4>Solution</h4>

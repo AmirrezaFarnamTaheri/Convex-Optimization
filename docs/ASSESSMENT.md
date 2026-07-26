@@ -38,30 +38,71 @@ Target mix per bank: roughly **3 : 4 : 2** (easy : medium : hard), adjusted
 per lecture in `docs/CURRICULUM.md` §4. Hard problems should preferentially be
 cross-lecture compositions (`docs/PEDAGOGY.md` §9).
 
-## 3. Per-Lecture Bank Targets vs. Current State
+## 3. Per-Lecture Bank Inventory
 
-Current indexed inventory (audit 2026-07): **15 problems**, all under stale
-slugs; L15 additionally has 5 in-page problems (P15.1–P15.5) not yet indexed.
+### 3.1 What the index used to say, and why it was rebuilt
 
-| Lecture | Target (e/m/h) | Currently indexed | Action |
-| :--- | :--- | :--- | :--- |
-| L00 | 8 (3/3/2) | 0 | author |
-| L01 | 6 (2/3/1) | 0 | author |
-| L02 | 8 (3/3/2) | 0 | author |
-| L03 | 8 (3/3/2) | 14 under stale `02-convex-sets` | re-key, rebalance, prune to 8 |
-| L04 | 7 (2/3/2) | 0 | author |
-| L05 | 9 (3/4/2) | 0 | author |
-| L06 | 8 (2/4/2) | 1 under stale `03-convex-functions` (Fenchel/biconjugate → belongs here, see §5) | re-key, extend |
-| L07 | 8 (2/4/2) | 0 | author |
-| L08 | 7 (2/3/2) | 0 | author |
-| L09 | 10 (3/4/3) | 0 (page has exercises; index empty) | index + extend |
-| L10 | 8 (3/3/2) | 0 | author with build-out (R1) |
-| L11 | 7 (2/3/2) | 0 | author with build-out |
-| L12 | 6 (2/3/1) | 0 | author with build-out |
-| L13 | 8 (2/4/2) | 0 (page has solved exercises) | index + extend |
-| L14 | 6 (2/3/1) | 0 | author with build-out |
-| L15 | 8 (2/4/2) | 0 indexed; 5 in-page (P15.1–5) | index existing + 3 new |
-| **Total** | **122** | **15 indexed** | |
+The pre-2026-07 `data/problems-index.json` held 15 entries under pre-renumbering
+slugs (`02-convex-sets`, `03-convex-functions`). Verifying each against page
+content showed the problem was worse than stale keys: **14 of the 15 referenced
+exercises that no longer exist anywhere on the site** (titles like "P1 — Epigraph
+of a norm is convex" and "BV 2.1 — Two-point convexity implies k-point
+convexity" return no match in any `topics/*/index.html`). They were residue from
+a content generation that has since been rewritten. The single survivor,
+Fenchel's inequality and the biconjugate, lives in **L06** — confirming the
+per-problem re-key call in §5 rather than a bulk rename to L05.
+
+The index was therefore **regenerated from page content** rather than repaired:
+every `<h3 id="prob-NN-XXX">` exercise heading across all 16 lectures is now
+indexed, and each problem heading carries a stable `id` so `solutionAnchor`
+resolves to a real target.
+
+### 3.2 Current inventory (regenerated 2026-07)
+
+**211 problems indexed; 211 carry a complete in-page solution** — invariant 4
+(Complete Solution Duality) verified mechanically, not assumed.
+
+| Lecture | Indexed | e / m / h | Target (§2 mix) | Gap |
+| :--- | ---: | :--- | :--- | :--- |
+| L00 | 21 | 0 / 14 / 7 | 8 | over target; **no easy tier** |
+| L01 | 12 | 0 / 8 / 4 | 6 | over target; no easy tier |
+| L02 | 8 | 0 / 5 / 3 | 8 | count met; no easy tier |
+| L03 | 21 | 7 / 12 / 2 | 8 | over target; well-balanced |
+| L04 | 17 | 6 / 9 / 2 | 7 | over target |
+| L05 | 11 | 2 / 6 / 3 | 9 | healthy |
+| L06 | 32 | 4 / 24 / 4 | 8 | largest bank; medium-heavy |
+| L07 | 12 | 0 / 9 / 3 | 8 | no easy tier |
+| L08 | 20 | 1 / 16 / 3 | 7 | medium-heavy |
+| L09 | 17 | 0 / 11 / 6 | 10 | keystone bank; **no easy tier** |
+| L10 | 5 | 3 / 2 / 0 | 8 | **thin; no hard tier** |
+| L11 | 5 | 4 / 1 / 0 | 7 | **thin; no hard tier** |
+| L12 | 5 | 0 / 5 / 0 | 6 | **thin; no hard tier** |
+| L13 | 15 | 5 / 10 / 0 | 8 | count fine; **no hard tier** |
+| L14 | 5 | 5 / 0 / 0 | 6 | **thin; easy-only** |
+| L15 | 5 | 5 / 0 / 0 | 8 | **thin; easy-only** |
+| **Total** | **211** | 42 / 132 / 37 | — | |
+
+> **Difficulty labels are provisional.** They are assigned by a length proxy
+> (solution length plus half the statement length) at index-generation time, not
+> by human judgment. The proxy is honest about direction — long multi-part
+> derivations do land in `hard` — but it systematically misreads two cases: a
+> terse statement of a genuinely deep result reads `easy`, and a verbose
+> walkthrough of a routine computation reads `hard`. **Calibrating these labels
+> by hand is roadmap item R2b**; until then, treat the tier as a hint and the
+> `estimatedTime` derived from it as a lower bound.
+
+### 3.3 What the inventory reveals
+
+- **Application and algorithm lectures are the assessment gap**, matching the
+  content-depth gap: L10–L12, L14, L15 have exactly 5 problems each with **no
+  hard tier at all**, while L06 alone has 32.
+- **Seven lectures have no easy-tier problems** (L00, L01, L02, L07, L09 and,
+  by the proxy, others), meaning there is no gentle on-ramp for the
+  completion-problem scaffolding described in `docs/PEDAGOGY.md` §3.
+- **Type mix skews to `verification`** (130 of 211). The balance rule in §1 caps
+  any single type at 40%; the bank is at ~62%. Authoring priority is
+  `modeling`, `implementation` (currently 1), `computation` (4), and
+  `counterexample` (1).
 
 ## 4. Solution-Key Standard (invariant 4, operationalized)
 
@@ -81,35 +122,48 @@ code must pass *before* they open the solution (self-service grading).
 
 ## 5. `data/problems-index.json` Schema (v2)
 
-Current entries use `{id, lecture, title, difficulty, type, estimatedTime}`.
-Extended schema — existing fields keep their meaning:
+The file is `{schemaVersion: 2, generatedNote, problems: [...]}`. Each problem:
 
 ```json
 {
   "id": "09-004",
   "lecture": "09-duality",
-  "title": "P4 — Dual of basis pursuit",
+  "title": "P9.4 — Dual of basis pursuit",
   "difficulty": "hard",
   "type": "derivation",
-  "estimatedTime": 45,
+  "estimatedTime": 55,
+  "solutionAnchor": "#prob-09-004",
+  "hasSolution": true,
   "requiresLectures": ["06-convex-functions-advanced"],
-  "threads": ["duality"],
-  "solutionAnchor": "#sol-09-004"
+  "threads": ["duality"]
 }
 ```
 
-- `lecture` **must** be a current `topics/` slug. Stale-slug repair
-  (per-problem, verified against each problem's actual content 2026-07):
-  all 14 `02-convex-sets` problems are convex-sets material (several are
-  literally [BV] Ch. 2 exercises) → `03-convex-sets-geometry`; the single
-  `03-convex-functions` problem (`03-015`, Fenchel's inequality &
-  biconjugate) is conjugacy material → `06-convex-functions-advanced`, **not**
-  L05 — in this course conjugates live in L06. The stale keys are a
-  pre-renumbering scheme from before the two linear-algebra lectures were
-  prepended; re-keying is a per-problem decision, not a bulk rename.
-- Problems titled "BV x.y" are re-derivations of [BV] exercises with original
-  solutions (`docs/REFERENCES.md` §1); keep the "BV x.y" title prefix so the
-  provenance stays visible.
+Field notes:
+
+- `id` is `NN-XXX` (lecture number, zero-padded problem number) and matches the
+  in-page heading id `prob-NN-XXX` exactly — that pairing is what makes the
+  index verifiable against content.
+- `solutionAnchor` is the in-page fragment; `#prob-NN-XXX` resolves because
+  every problem `<h3>` now carries that id.
+- `hasSolution` records the mechanical check that the problem body contains a
+  solution block (a `solution-box`, a `Solution:`/`Proof:`/`Analysis:` marker, or
+  an explicit appendix pointer). It is `true` for all 211 problems; a `false`
+  here is an invariant-4 violation and should fail review.
+- `requiresLectures` lists detected cross-lecture prerequisites (81 problems
+  carry one), driving the "what to backfill" hints of roadmap R8.
+- `threads` ⊆ {`duality`, `conditioning`, `reformulation`} (CURRICULUM §1.2).
+
+**Regenerating.** The index is derived from page content, so after adding or
+retitling exercises, regenerate rather than hand-editing — hand edits drift
+from the pages, which is exactly how the previous index came to reference
+14 nonexistent problems.
+
+- `lecture` **must** be a current `topics/` slug; regeneration guarantees this
+  because the slug is the directory the problem was read from.
+- If a future problem is a re-derivation of a [BV] exercise, keep a "BV x.y"
+  marker in its title so the provenance stays visible
+  (`docs/REFERENCES.md` §1) — solutions must still be original.
 - `requiresLectures` encodes cross-lecture composition (drives the "what to
   backfill" hints, roadmap R6).
 - `threads` ⊆ {`duality`, `conditioning`, `reformulation`} (CURRICULUM §1.2).

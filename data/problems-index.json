@@ -1,124 +1,2787 @@
 {
+  "schemaVersion": 2,
+  "generatedNote": "Indexes every in-page exercise across topics/*/index.html. Field semantics: docs/ASSESSMENT.md section 5.",
   "problems": [
     {
-      "id": "02-001",
-      "lecture": "02-convex-sets",
-      "title": "P1 — Epigraph of a norm is convex",
-      "difficulty": "easy",
+      "id": "00-001",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.1 — Linear Independence",
+      "difficulty": "hard",
       "type": "verification",
-      "estimatedTime": 15
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-001",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "00-002",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.2 — The Rank-Nullity Theorem",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-002",
+      "hasSolution": true
+    },
+    {
+      "id": "00-003",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.3 — Trace and Determinant",
+      "difficulty": "hard",
+      "type": "counterexample",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-003",
+      "hasSolution": true
+    },
+    {
+      "id": "00-004",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.4 — Norm Equivalence",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-004",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "00-005",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.5 — Least Squares from Scratch",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-006",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.6 — Matrix Calculus Practice",
+      "difficulty": "medium",
+      "type": "computation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-006",
+      "hasSolution": true
+    },
+    {
+      "id": "00-007",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.7 — Hessian of a Cubic",
+      "difficulty": "medium",
+      "type": "computation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-007",
+      "hasSolution": true
+    },
+    {
+      "id": "00-008",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.8 — Testing Positive Semidefiniteness",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-008",
+      "hasSolution": true
+    },
+    {
+      "id": "00-009",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.9 — Schur Complement Application",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-009",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "00-010",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.10 — Projection onto a Line",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-010",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-011",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.11 — Projection onto a Hyperplane",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-011",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-012",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.12 — Orthogonal Complements",
+      "difficulty": "medium",
+      "type": "computation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-012",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-013",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.13 — Frobenius Norm Submultiplicativity",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-013",
+      "hasSolution": true
+    },
+    {
+      "id": "00-014",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.14 — Spectral Norm Properties",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-014",
+      "hasSolution": true,
+      "requiresLectures": [
+        "01-linear-algebra-advanced"
+      ]
+    },
+    {
+      "id": "00-015",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.15 — Isometries",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-015",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "00-016",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.16 — Loewner Order Transitivity",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-016",
+      "hasSolution": true
+    },
+    {
+      "id": "00-017",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.17 — Weighted Inner Product",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-017",
+      "hasSolution": true
+    },
+    {
+      "id": "00-018",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.18 — Characterization of Projectors",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-018",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-019",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.19 — PSD Cone in 2D",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-019",
+      "hasSolution": true
+    },
+    {
+      "id": "00-020",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.20 — General Quadratic Minimization",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-00-020",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "00-021",
+      "lecture": "00-linear-algebra-basics",
+      "title": "P0.21 — Chebyshev Approximation Bound",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-00-021",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "01-001",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.1 — Dual of $\\ell_p$ Norm",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-01-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced",
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "01-002",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.2 — Frobenius Cauchy–Schwarz",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-002",
+      "hasSolution": true
+    },
+    {
+      "id": "01-003",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.3 — SVD Computation",
+      "difficulty": "hard",
+      "type": "computation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-01-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "01-004",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.4 — Normal Equations vs. QR",
+      "difficulty": "hard",
+      "type": "analysis",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-01-004",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "01-005",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.5 — Pseudoinverse Projectors",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-005",
+      "hasSolution": true
+    },
+    {
+      "id": "01-006",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.6 — Projector Formula",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-006",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "01-007",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.7 — Hyperplane Projection",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-007",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "01-008",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.8 — Condition Number Calculation",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-008",
+      "hasSolution": true,
+      "requiresLectures": [
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "01-009",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.9 — Pseudoinverse of Rank-1 Matrix",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-01-009",
+      "hasSolution": true,
+      "requiresLectures": [
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "01-010",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.10 — Operator Norm Properties",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-010",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "01-011",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.11 — Orthogonal Invariance",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-011",
+      "hasSolution": true
+    },
+    {
+      "id": "01-012",
+      "lecture": "01-linear-algebra-advanced",
+      "title": "P1.12 — The Orthogonal Group",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-01-012",
+      "hasSolution": true
+    },
+    {
+      "id": "02-001",
+      "lecture": "02-introduction",
+      "title": "P2.1 — Classify as Convex / Not Convex",
+      "difficulty": "hard",
+      "type": "analysis",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-02-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "reformulation"
+      ]
     },
     {
       "id": "02-002",
-      "lecture": "02-convex-sets",
-      "title": "P2 — Convex hull is convex",
-      "difficulty": "easy",
-      "type": "verification",
-      "estimatedTime": 20
+      "lecture": "02-introduction",
+      "title": "P2.2 — Real-World Modeling: Warehouse Location",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-02-002",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
     },
     {
       "id": "02-003",
-      "lecture": "02-convex-sets",
-      "title": "P3 — Inner product induced by A ≻ 0; Cauchy–Schwarz; ellipsoid is convex",
+      "lecture": "02-introduction",
+      "title": "P2.3 — Reformulation: $\\ell_1$ Regression as LP",
       "difficulty": "medium",
-      "type": "verification",
-      "estimatedTime": 35
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-02-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
     },
     {
       "id": "02-004",
-      "lecture": "02-convex-sets",
-      "title": "P4 — Minkowski sum of convex sets; nonconvex summands may still sum to convex",
+      "lecture": "02-introduction",
+      "title": "P2.4 — Prove: Feasible Set is Convex",
       "difficulty": "medium",
       "type": "verification",
-      "estimatedTime": 25
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-02-004",
+      "hasSolution": true
     },
     {
       "id": "02-005",
-      "lecture": "02-convex-sets",
-      "title": "P5 — Thickening a convex set is convex",
+      "lecture": "02-introduction",
+      "title": "P2.5 — Proving Uniqueness",
       "difficulty": "medium",
       "type": "verification",
-      "estimatedTime": 20
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-02-005",
+      "hasSolution": true
     },
     {
       "id": "02-006",
-      "lecture": "02-convex-sets",
-      "title": "P6 — Closure of a convex set is convex",
-      "difficulty": "easy",
-      "type": "verification",
-      "estimatedTime": 15
+      "lecture": "02-introduction",
+      "title": "P2.6 — Modeling: Maximum Likelihood Estimation",
+      "difficulty": "hard",
+      "type": "modeling",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-02-006",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
     },
     {
       "id": "02-007",
-      "lecture": "02-convex-sets",
-      "title": "P7 — Cartesian products and convexity",
-      "difficulty": "medium",
+      "lecture": "02-introduction",
+      "title": "P2.7 — Proving Convexity from First Principles",
+      "difficulty": "hard",
       "type": "verification",
-      "estimatedTime": 20
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-02-007",
+      "hasSolution": true
     },
     {
       "id": "02-008",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.1 — Two-point convexity implies k-point convexity",
+      "lecture": "02-introduction",
+      "title": "P2.8 — Strict vs. Strong Convexity",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-02-008",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "03-001",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.1 — Voronoi Regions",
       "difficulty": "medium",
       "type": "verification",
-      "estimatedTime": 20
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-001",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
     },
     {
-      "id": "02-009",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.2 — A set is convex/affine iff every line slice is",
+      "id": "03-002",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.2 — Midpoint Convexity",
       "difficulty": "medium",
       "type": "verification",
-      "estimatedTime": 20
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-002",
+      "hasSolution": true
     },
     {
-      "id": "02-010",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.3 — Closed + midpoint-convex implies convex",
-      "difficulty": "hard",
+      "id": "03-003",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.3 — Convex Hull of a Union",
+      "difficulty": "medium",
       "type": "verification",
-      "estimatedTime": 30
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-003",
+      "hasSolution": true
     },
     {
-      "id": "02-011",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.4 — Convex hull equals intersection of all convex supersets",
+      "id": "03-004",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.4 — Linear-Fractional Functions",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-004",
+      "hasSolution": true
+    },
+    {
+      "id": "03-005",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.5 — Convexity of Quadratic Sublevel Set",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "03-006",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.6 — Relative Interior of the Simplex",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-006",
+      "hasSolution": true
+    },
+    {
+      "id": "03-007",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.7 — Convex Hull Characterizations",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-007",
+      "hasSolution": true
+    },
+    {
+      "id": "03-008",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.8 — Minkowski Sum of Sets",
       "difficulty": "easy",
       "type": "verification",
-      "estimatedTime": 15
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-008",
+      "hasSolution": true
     },
     {
-      "id": "02-012",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.10 — Solution set of a quadratic inequality",
-      "difficulty": "hard",
-      "type": "verification",
-      "estimatedTime": 35
+      "id": "03-009",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.9 — Convexity of Thickened Sets",
+      "difficulty": "easy",
+      "type": "analysis",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-009",
+      "hasSolution": true
     },
     {
-      "id": "02-013",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.11 — Hyperbolic sets are convex",
+      "id": "03-010",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.10 — Closure of a Convex Set",
       "difficulty": "easy",
       "type": "verification",
-      "estimatedTime": 20
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-010",
+      "hasSolution": true
     },
     {
-      "id": "02-014",
-      "lecture": "02-convex-sets",
-      "title": "BV 2.12 — Which sets are convex?",
+      "id": "03-011",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.11 — Product of Convex Sets",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-011",
+      "hasSolution": true
+    },
+    {
+      "id": "03-012",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.12 — Finite Convex Combinations (Jensen's for Sets)",
       "difficulty": "medium",
-      "type": "computation",
-      "estimatedTime": 40
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-012",
+      "hasSolution": true
+    },
+    {
+      "id": "03-013",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.13 — Convexity via Line Intersections",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-013",
+      "hasSolution": true
+    },
+    {
+      "id": "03-014",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.14 — Hyperbolic Sets",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-014",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
     },
     {
       "id": "03-015",
-      "lecture": "03-convex-functions",
-      "title": "P3.15 — Fenchel's Inequality and Biconjugate",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.15 — Set Classification Challenge",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-015",
+      "hasSolution": true
+    },
+    {
+      "id": "03-016",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.16 — Partial Sum of Convex Sets",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-016",
+      "hasSolution": true
+    },
+    {
+      "id": "03-017",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.17 — Perspective of Polyhedral Sets",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-017",
+      "hasSolution": true
+    },
+    {
+      "id": "03-018",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.18 — Invertible Linear-Fractional Functions",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-03-018",
+      "hasSolution": true
+    },
+    {
+      "id": "03-019",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.19 — Projection onto a Convex Set",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-03-019",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "03-020",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.20 — Preimages under Linear-Fractional Maps",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-03-020",
+      "hasSolution": true
+    },
+    {
+      "id": "03-021",
+      "lecture": "03-convex-sets-geometry",
+      "title": "P3.21 — Projection onto the Probability Simplex",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-03-021",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "04-001",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.1 — Dual of a Subspace",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-002",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.2 — Self-Duality of Second-Order Cone",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-04-002",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-003",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.3 — Dual Cone Identities",
       "difficulty": "medium",
       "type": "derivation",
-      "estimatedTime": 30
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-004",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.4 — Generalized Inequality Properties",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-004",
+      "hasSolution": true
+    },
+    {
+      "id": "04-005",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.5 — Norm Cone (Epigraph of Norm)",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-005",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "04-006",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.6 — Cones in $\\mathbb{R}^2$",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-006",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-007",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.7 — Properties of Dual Cones",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-007",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-008",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.8 — Dual Cone of Generated Cone",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-008",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-009",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.9 — The Monotone Nonnegative Cone",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-009",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-010",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.10 — The Lexicographic Cone",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-010",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-011",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.11 — Dual of Intersection",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-011",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced",
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "04-012",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.12 — Separation by Projection",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-012",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "04-013",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.13 — Support Function Determines Set",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-04-013",
+      "hasSolution": true
+    },
+    {
+      "id": "04-014",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.14 — Converse Supporting Hyperplane Theorem",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-014",
+      "hasSolution": true
+    },
+    {
+      "id": "04-015",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.15 — Euclidean Distance Matrices (EDM)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-015",
+      "hasSolution": true
+    },
+    {
+      "id": "04-016",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.16 — SOCP Canonical Dual",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-04-016",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "04-017",
+      "lecture": "04-convex-sets-cones",
+      "title": "P4.17 — Homogeneous Envelope and Directional Derivatives",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-04-017",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ]
+    },
+    {
+      "id": "05-001",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.1 — Convexity of Basic Functions",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-05-001",
+      "hasSolution": true
+    },
+    {
+      "id": "05-002",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.2 — Arithmetic-Geometric Mean Inequality",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-002",
+      "hasSolution": true
+    },
+    {
+      "id": "05-003",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.3 — Log-Sum-Exp",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-003",
+      "hasSolution": true
+    },
+    {
+      "id": "05-004",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.4 — Quadratic-over-Linear",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-004",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "05-005",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.5 — Distance to a Set",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-05-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "05-006",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.6 — Entropy",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-05-006",
+      "hasSolution": true
+    },
+    {
+      "id": "05-007",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.7 — Convexity of Log-Sum-Exp via Cauchy-Schwarz",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-007",
+      "hasSolution": true
+    },
+    {
+      "id": "05-009",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.9 — Advanced Composition Rules (3.22)",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-05-009",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "05-010",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.10 — Perspective Examples (3.23)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-010",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "05-011",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.11 — Hessian of $\\log f(x)$ and Log-Concavity",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-05-011",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "05-012",
+      "lecture": "05-convex-functions-basics",
+      "title": "P5.12 — Log-Concavity of Shifted Function",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-05-012",
+      "hasSolution": true
+    },
+    {
+      "id": "06-001",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.1 — Conjugate of Norm Squared",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-002",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.2 — Quasi-Convexity of Ceiling",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-002",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-003",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.3 — Softmax Analysis",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-06-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "06-004",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.4 — Concavity of Geometric Mean",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-06-004",
+      "hasSolution": true
+    },
+    {
+      "id": "06-005",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.5 — Geometric Mean Cone",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-005",
+      "hasSolution": true
+    },
+    {
+      "id": "06-006",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.6 — Matrix Fractional Function",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-006",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-007",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.7 — Fenchel's Inequality & Biconjugate",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-007",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-008",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.8 — Quasiconvexity of Distance Ratio",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-008",
+      "hasSolution": true
+    },
+    {
+      "id": "06-009",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.9 — Log-Concavity of Probability Measures",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-009",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-010",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.10 — Log-Concavity of Gaussian",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-010",
+      "hasSolution": true
+    },
+    {
+      "id": "06-011",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.11 — Legendre Transform of Quadratic",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-011",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-012",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.12 — Log-Concavity Examples (3.49)",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-06-012",
+      "hasSolution": true
+    },
+    {
+      "id": "06-013",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.13 — Log-Convexity of the Gamma Function",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-013",
+      "hasSolution": true
+    },
+    {
+      "id": "06-014",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.14 — Log-Sum-Exp Conjugate",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-06-014",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-015",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.15 — Norm Conjugate",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-06-015",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-016",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.16 — Convex Hull of a Function",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-016",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-017",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.17 — Log-Concavity Characterization (Breakdown of 3.47)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-017",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-018",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.18 — Convexity of Maximum Eigenvalue (3.10)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-018",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "06-019",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.19 — Convexity of Induced Matrix Norms (3.11)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-019",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-020",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.20 — Vector Composition Rules (3.14)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-020",
+      "hasSolution": true
+    },
+    {
+      "id": "06-021",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.21 — Perspective of Affine Composition (3.20)",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-06-021",
+      "hasSolution": true
+    },
+    {
+      "id": "06-022",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.22 — Convexity Drills (3.22)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-022",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-023",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.23 — Perspective Practice (3.23)",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-06-023",
+      "hasSolution": true
+    },
+    {
+      "id": "06-024",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.24 — Shifting Log-Concavity (3.48)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-024",
+      "hasSolution": true
+    },
+    {
+      "id": "06-025",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.25 — Cardinality on $\\mathbb{R}_+^n$ (3.35)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-025",
+      "hasSolution": true
+    },
+    {
+      "id": "06-026",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.26 — Rank on PSD Cone (3.36)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-026",
+      "hasSolution": true
+    },
+    {
+      "id": "06-027",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.27 — Homogenization (3.31)",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-06-027",
+      "hasSolution": true
+    },
+    {
+      "id": "06-028",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.28 — Strong Convexity of Quadratic",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-028",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "conditioning",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "06-029",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.29 — Dual of a Strictly Convex Function",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-029",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "conditioning"
+      ]
+    },
+    {
+      "id": "06-030",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.30 — Dual via Conjugates",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-030",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-031",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.31 — Derivation: Dual of QP",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-031",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "06-032",
+      "lecture": "06-convex-functions-advanced",
+      "title": "P6.32 — Dual of Single Inequality (Perspective of Conjugate)",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-06-032",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "07-001",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.1 — Diet Problem (LP)",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-001",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-002",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.2 — Transportation Problem (LP)",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-002",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-003",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.3 — PSD Block Matrix (Matrix Viewpoint)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "07-004",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.4 — L1 Reformulation",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-004",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-005",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.5 — LP Reformulation: Piecewise Linear Objective",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-005",
+      "hasSolution": true,
+      "threads": [
+        "conditioning",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-006",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.6 — The Log-Barrier Problem",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-07-006",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-007",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.7 — LASSO Primal",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-007",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-008",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.8 — Soft-Margin SVM Primal",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-008",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-009",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.9 — Robust Least Squares (Huber Penalty) Formulation",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-07-009",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-010",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.10 — Matrix Norm Approximation (4.14)",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-010",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-011",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.11 — Minimum Fuel Optimal Control (4.16)",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-07-011",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "07-012",
+      "lecture": "07-convex-problems-standard",
+      "title": "P7.12 — Convex-Concave Fractional Programming (4.7)",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-07-012",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-001",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.1 — Classify and Reformulate: Minimizing Maximum Absolute Deviation",
+      "difficulty": "hard",
+      "type": "modeling",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-08-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-002",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.2 — QP Formulation: Constrained Least Squares",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-002",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "08-003",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.3 — SOCP Reformulation: $\\ell_2$ Regularized Least Squares",
+      "difficulty": "hard",
+      "type": "analysis",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-08-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-004",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.4 — SDP Example: Largest Eigenvalue Minimization",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-004",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-005",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.5 — Problem Classification: Portfolio Optimization with Risk Constraint",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-005",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-006",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.6 — Equivalence: $\\ell_1$ Minimization and LP",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-006",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-007",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.7 — Quasiconvex Optimization: Bisection Algorithm",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-007",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-008",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.8 — Minimum Enclosing Ellipsoid as SDP",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-008",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-009",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.9 — Resource Allocation Formulation",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-009",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-010",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.10 — Standard Form Transformation: Linear-Fractional Programming",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-08-010",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-011",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.11 — Vector Optimization (Pareto Optimality)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-011",
+      "hasSolution": true
+    },
+    {
+      "id": "08-012",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.12 — Matrix Fractional Minimization",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-012",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-013",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.13 — SOCP Canonical Form (Primal)",
+      "difficulty": "easy",
+      "type": "modeling",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-08-013",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-014",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.14 — SDP Canonical Form (Primal)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-014",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-015",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.15 — Entropy Maximization as Exponential Cone Program",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-015",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-016",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.16 — Log-Sum-Exp via Exponential Cone",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-016",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-017",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.17 — Generalized Eigenvalues",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-017",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-018",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.18 — SDP Encodings of Other Problems",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-018",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "08-019",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.19 — Suboptimality of Simple Covering Ellipsoid (Problem 5.9)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-019",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "08-020",
+      "lecture": "08-convex-problems-conic",
+      "title": "P8.20 — Robust Linear Programming (Ex 4.25)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-08-020",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-001",
+      "lecture": "09-duality",
+      "title": "P9.1 — Deriving the Dual of a Quadratic Program",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-001",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "conditioning"
+      ]
+    },
+    {
+      "id": "09-002",
+      "lecture": "09-duality",
+      "title": "P9.2 — KKT Conditions for Entropy Maximization",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-002",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-003",
+      "lecture": "09-duality",
+      "title": "P9.3 — Sensitivity Analysis and Shadow Prices",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-003",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "09-004",
+      "lecture": "09-duality",
+      "title": "P9.4 — Dual of a Linear Program",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-004",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-005",
+      "lecture": "09-duality",
+      "title": "P9.5 — Farkas' Lemma",
+      "difficulty": "hard",
+      "type": "verification",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-005",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "09-006",
+      "lecture": "09-duality",
+      "title": "P9.6 — KKT for Water-filling",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-006",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-007",
+      "lecture": "09-duality",
+      "title": "P9.7 — KKT for Standard QP",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-007",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-008",
+      "lecture": "09-duality",
+      "title": "P9.8 — Certificates of Infeasibility (Gordan's Theorem)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-008",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "09-009",
+      "lecture": "09-duality",
+      "title": "P9.9 — The Gap Certificate Cookbook",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-009",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-010",
+      "lecture": "09-duality",
+      "title": "P9.10 — SDP Duality: Max Cut Relaxation",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-010",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-011",
+      "lecture": "09-duality",
+      "title": "P9.11 — SOCP Duality: Robust Least Squares",
+      "difficulty": "medium",
+      "type": "modeling",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-011",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-012",
+      "lecture": "09-duality",
+      "title": "P9.12 — Deep Dive: Chebyshev Approximation vs Least Squares (Problem 5.6)",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-012",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "09-013",
+      "lecture": "09-duality",
+      "title": "P9.13 — Case Study: The Geometry of Max-of-Affines (Problem 5.7)",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-013",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-014",
+      "lecture": "09-duality",
+      "title": "P9.14 — Ellipsoid Volume Minimization (Löwner-John Approximation) (Problem 5.9)",
+      "difficulty": "hard",
+      "type": "modeling",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-014",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-015",
+      "lecture": "09-duality",
+      "title": "P9.15 — Dual of General LP (Problem 5.5)",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-09-015",
+      "hasSolution": true,
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-016",
+      "lecture": "09-duality",
+      "title": "P9.16 — Conjugate-based dual of least-squares (Problem 5.3)",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-016",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "09-017",
+      "lecture": "09-duality",
+      "title": "P9.17 — Quadratic inequality via duality (Problem 5.4)",
+      "difficulty": "hard",
+      "type": "derivation",
+      "estimatedTime": 55,
+      "solutionAnchor": "#prob-09-017",
+      "hasSolution": true,
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "10-001",
+      "lecture": "10-approximation-fitting",
+      "title": "P10.1 — Ridge Regression Uniqueness",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-10-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "10-002",
+      "lecture": "10-approximation-fitting",
+      "title": "P10.2 — Equivalence of Penalized and Constrained Forms",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-10-002",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality",
+        "reformulation"
+      ]
+    },
+    {
+      "id": "10-003",
+      "lecture": "10-approximation-fitting",
+      "title": "P10.3 — Weighted Least Squares and MLE",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-10-003",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "10-004",
+      "lecture": "10-approximation-fitting",
+      "title": "P10.4 — Subdifferential of $\\ell_1$ Norm",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-10-004",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced",
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "10-005",
+      "lecture": "10-approximation-fitting",
+      "title": "P10.5 — Total Variation vs. Ridge",
+      "difficulty": "easy",
+      "type": "analysis",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-10-005",
+      "hasSolution": true
+    },
+    {
+      "id": "11-001",
+      "lecture": "11-statistical-estimation",
+      "title": "P11.1 — SVM Dual Derivation (Soft Margin)",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-11-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "11-002",
+      "lecture": "11-statistical-estimation",
+      "title": "P11.2 — Logistic Hessian Analysis",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-11-002",
+      "hasSolution": true
+    },
+    {
+      "id": "11-003",
+      "lecture": "11-statistical-estimation",
+      "title": "P11.3 — Poisson Regression Hessian",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-11-003",
+      "hasSolution": true
+    },
+    {
+      "id": "11-004",
+      "lecture": "11-statistical-estimation",
+      "title": "P11.4 — Experiment Design (A-optimal)",
+      "difficulty": "easy",
+      "type": "modeling",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-11-004",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "11-005",
+      "lecture": "11-statistical-estimation",
+      "title": "P11.5 — L1 Proximal Operator",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-11-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ]
+    },
+    {
+      "id": "12-001",
+      "lecture": "12-geometric-problems",
+      "title": "P12.1 — Projection Non-expansiveness",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-12-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "12-002",
+      "lecture": "12-geometric-problems",
+      "title": "P12.2 — Chebyshev Center of Polyhedron",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-12-002",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "12-003",
+      "lecture": "12-geometric-problems",
+      "title": "P12.3 — Convexity of MVEE Objective",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-12-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "12-004",
+      "lecture": "12-geometric-problems",
+      "title": "P12.4 — Distance Implies Intersection",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-12-004",
+      "hasSolution": true
+    },
+    {
+      "id": "12-005",
+      "lecture": "12-geometric-problems",
+      "title": "P12.5 — Weber Problem Reformulation",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-12-005",
+      "hasSolution": true,
+      "threads": [
+        "reformulation"
+      ]
+    },
+    {
+      "id": "13-001",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.1 — Minimizing a Quadratic Function (Detailed)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics"
+      ]
+    },
+    {
+      "id": "13-002",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.2 — Quadratic-over-Linear Fraction",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-002",
+      "hasSolution": true
+    },
+    {
+      "id": "13-003",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.3 — Backtracking Line Search Proof (Rigorous)",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-003",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-004",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.4 — Steepest Descent Identities",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-13-004",
+      "hasSolution": true
+    },
+    {
+      "id": "13-005",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.5 — Steepest Descent in $\\ell_\\infty$ Norm",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-13-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "13-006",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.6 — Proving Self-Concordance",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-006",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-007",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.7 — Newton's Method for Logistic Regression",
+      "difficulty": "medium",
+      "type": "derivation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-007",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-008",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.8 — Steepest Descent in $\\ell_\\infty$ Norm",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-13-008",
+      "hasSolution": true
+    },
+    {
+      "id": "13-009",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.9 — Proving Self-Concordance (Hypograph)",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-13-009",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-010",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.10 — Analytic Center (Gradient vs Newton)",
+      "difficulty": "medium",
+      "type": "implementation",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-010",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-011",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.11 — Approximate Newton Methods",
+      "difficulty": "easy",
+      "type": "analysis",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-13-011",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-012",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.12 — BFGS Update Rank",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-012",
+      "hasSolution": true
+    },
+    {
+      "id": "13-013",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.13 — Convergence Rate Comparison ($f(x)=x^4$)",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-013",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-014",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.14 — Nesterov Acceleration",
+      "difficulty": "medium",
+      "type": "analysis",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-014",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "13-015",
+      "lecture": "13-unconstrained-minimization",
+      "title": "P13.15 — The Newton Decrement",
+      "difficulty": "medium",
+      "type": "verification",
+      "estimatedTime": 30,
+      "solutionAnchor": "#prob-13-015",
+      "hasSolution": true,
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "14-001",
+      "lecture": "14-equality-constrained-minimization",
+      "title": "P14.1 — Invertibility of KKT Matrix",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-14-001",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "14-002",
+      "lecture": "14-equality-constrained-minimization",
+      "title": "P14.2 — Newton Step as Weighted Projection",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-14-002",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality",
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "duality",
+        "conditioning"
+      ]
+    },
+    {
+      "id": "14-003",
+      "lecture": "14-equality-constrained-minimization",
+      "title": "P14.3 — Projection Operator Derivation",
+      "difficulty": "easy",
+      "type": "derivation",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-14-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "09-duality"
+      ],
+      "threads": [
+        "duality"
+      ]
+    },
+    {
+      "id": "14-004",
+      "lecture": "14-equality-constrained-minimization",
+      "title": "P14.4 — Penalty Method Convergence",
+      "difficulty": "easy",
+      "type": "analysis",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-14-004",
+      "hasSolution": true,
+      "requiresLectures": [
+        "00-linear-algebra-basics",
+        "01-linear-algebra-advanced"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "14-005",
+      "lecture": "14-equality-constrained-minimization",
+      "title": "P14.5 — Null-Space Operation Count",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-14-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "15-001",
+      "lecture": "15-interior-point-methods",
+      "title": "P15.1 — Central Path Convergence",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-15-001",
+      "hasSolution": true
+    },
+    {
+      "id": "15-002",
+      "lecture": "15-interior-point-methods",
+      "title": "P15.2 — Gradient of Log-Barrier",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-15-002",
+      "hasSolution": true
+    },
+    {
+      "id": "15-003",
+      "lecture": "15-interior-point-methods",
+      "title": "P15.3 — Complexity Bound",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-15-003",
+      "hasSolution": true,
+      "requiresLectures": [
+        "06-convex-functions-advanced",
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "conditioning"
+      ]
+    },
+    {
+      "id": "15-004",
+      "lecture": "15-interior-point-methods",
+      "title": "P15.4 — LP Central Path",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-15-004",
+      "hasSolution": true
+    },
+    {
+      "id": "15-005",
+      "lecture": "15-interior-point-methods",
+      "title": "P15.5 — Primal-Dual Direction",
+      "difficulty": "easy",
+      "type": "verification",
+      "estimatedTime": 15,
+      "solutionAnchor": "#prob-15-005",
+      "hasSolution": true,
+      "requiresLectures": [
+        "09-duality",
+        "13-unconstrained-minimization"
+      ],
+      "threads": [
+        "duality",
+        "conditioning"
+      ]
     }
   ]
 }

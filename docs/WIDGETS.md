@@ -43,13 +43,30 @@ Two mechanisms coexist (both offline-only, vendored libs, per `CLAUDE.md`):
   instead of using site CSS variables, so they ignore the site theme switcher
   (roadmap item W-R2 below).
 
-### 1.3 Loader stub (housekeeping)
+### 1.3 Optional convention-based loader
 
-`static/js/widgets-loader.js` contains only a placeholder comment — **no page
-actually loads widgets through it**. Either implement it as a real
-convention-based mounter (scan for `[id^="widget-"]`, dynamic-import the
-matching module) or delete it and the references to it in docs. Until then it
-is a documentation trap (roadmap W-R1).
+`static/js/widgets-loader.js` exports `mountWidgets({root, basePath})`, which
+dynamic-imports and mounts every element carrying an explicit `data-widget`
+attribute:
+
+```html
+<div id="widget-gd-vs-newton" data-widget="gd-vs-newton"></div>
+<script type="module">
+  import { mountWidgets } from '../../static/js/widgets-loader.js';
+  mountWidgets();
+</script>
+```
+
+It resolves `data-widget="gd-vs-newton"` to `./widgets/js/gd-vs-newton.js` and
+calls `init` + PascalCase(name), falling back to a default export or a lone
+named export (which is how the real-world `initGDvsNewton` casing resolves).
+It returns a per-element result array so failures are inspectable rather than
+silent, and it skips elements already marked `data-widget-mounted`.
+
+**The inline form in §1.1 remains the default** — it is greppable and fails
+loudly. Reach for the loader only on pages that would otherwise repeat the same
+boilerplate many times. No page uses it today; it exists so the choice is
+available rather than the file being dead code.
 
 ## 2. Design Standard (merge bar for any new/modified widget)
 
@@ -131,7 +148,10 @@ Widget-building effort ranks by how badly statics fail:
 | L12 | `best-fit-shape.js` | best-fit line/circle to points | |
 | L12 | `robust-geometry.js` | smallest enclosing circle, standard vs. robust | |
 | L12 | `rank-minimization.js` | nuclear-norm heuristic toy example | overlaps L10 `matrix-completion.js` — differentiate or merge (W-R3) |
-| L13 | `gradient-descent-visualizer.js`, `gd-vs-newton.js`, `convergence-rate.js`, `norm-steepest.js` | *(no header docstrings — violates §2)* | fix headers (W-R4) |
+| L13 | `gradient-descent-visualizer.js` | GD iterates on an anisotropic quadratic; anisotropy γ sets κ | zig-zag demo |
+| L13 | `gd-vs-newton.js` | GD vs. Newton from the same start on $x^2 + 10y^2$ | |
+| L13 | `convergence-rate.js` | log-error plot: linear (GD) vs. quadratic (Newton) rates | |
+| L13 | `norm-steepest.js` | steepest-descent direction as the norm's unit ball changes | |
 | L14 | `null-space-visualizer.js` | null-space method on an equality-constrained QP | |
 | L14 | `projected-gd.js` | projected GD: gradient step + projection animated | |
 | L14 | `feasible-vs-interior.js` | projected-GD path vs. interior-path comparison | |
@@ -143,10 +163,10 @@ Widget-building effort ranks by how badly statics fail:
 
 | ID | Item | Detail |
 | :--- | :--- | :--- |
-| W-R1 | Resolve `widgets-loader.js` stub | Implement convention-based mounting **or** delete the stub; today it's dead code that docs falsely imply is load-bearing |
+| W-R1 | ~~Resolve `widgets-loader.js` stub~~ | **Done** — implemented as an opt-in `mountWidgets()` mounter (§1.3) |
 | W-R2 | Theme-unify L09 iframes | Replace hardcoded dark palettes with site CSS variables (or port to ES-module widgets); until then they clash in light theme |
 | W-R3 | De-duplicate | `sdp-visualizer.js` vs `psd_cone_2x2.html`; `rank-minimization.js` vs `matrix-completion.js` — keep one canonical widget each, cross-link from the other lecture |
-| W-R4 | L13 headers | Add the §2 header docstrings to all four L13 widgets |
+| W-R4 | ~~L13 headers~~ | **Done** — all four L13 widgets carry §2 headers (Widget/Description/Concept/What to notice) |
 | W-R5 | Presets audit | Verify every existing widget ships an interesting-regime preset; add where missing |
 
 ## 6. Build Backlog (specs; ordered by priority-function §3)

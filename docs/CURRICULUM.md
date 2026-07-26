@@ -165,18 +165,25 @@ depth; section structure is the real signal):
 | L14 Equality-Constrained | 19 KB | Generic shell | **THIN — needs build-out** |
 | L15 Interior-Point Methods | 18 KB | 8 concept subsections + 3 widgets + 5 problems, all compact | **THIN — needs build-out** |
 
-Data-layer audit: `data/problems-index.json` holds only **15 problems** keyed to
-**obsolete slugs** (`02-convex-sets` → today's L03; the lone
-`03-convex-functions` entry is Fenchel/biconjugate material → today's **L06** —
-per-problem repair map in `docs/ASSESSMENT.md` §5). `data/glossary.json` has 84
-terms but is **missing at least 11 load-bearing ones**: subgradient,
-subdifferential, strong convexity, smoothness, barrier, central path, Newton
-decrement, self-concordance, Huber, soft thresholding, proximal.
-`data/diagrams-index.json` has 39 entries. Infrastructure notes:
-`static/js/widgets-loader.js` is an **empty stub** no page uses (widgets mount
-via inline ES-module scripts; L09 uses iframes — mechanics in
-`docs/WIDGETS.md` §1), and the L09 iframe widgets hardcode a dark palette that
-ignores the site theme switcher.
+Data-layer audit and repairs (2026-07):
+
+- `data/problems-index.json` previously held **15 entries, 14 of which
+  referenced exercises that no longer existed on any page** — residue from a
+  superseded content generation, not merely stale keys. It has been
+  **regenerated from page content**: **211 problems across all 16 lectures, all
+  211 carrying complete in-page solutions** (invariant 4 verified mechanically).
+  Every problem heading now has a stable `prob-NN-XXX` id so index anchors
+  resolve. Inventory and remaining gaps: `docs/ASSESSMENT.md` §3.
+- `data/glossary.json` grew from 84 to **98 terms**; the missing load-bearing
+  entries (subgradient, subdifferential, strong convexity, smoothness, log
+  barrier, central path, Newton decrement, self-concordance, backtracking line
+  search, Huber loss, soft thresholding, proximal operator, Newton step, KKT
+  system) are in, and all 98 URLs/anchors verified to resolve.
+- `data/diagrams-index.json` has 39 entries (unaudited).
+- `static/js/widgets-loader.js` was an empty stub; it is now an **opt-in
+  `mountWidgets()`** helper (`docs/WIDGETS.md` §1.3) — inline ES-module mounting
+  remains the default. The L09 iframe widgets still hardcode a dark palette that
+  ignores the site theme switcher (W-R2).
 
 > **Note:** The per-lecture specs in §4 are written to the *target* state. For
 > THIN lectures they are the build-out specification, not a description of
@@ -693,11 +700,12 @@ Widget names refer to real files under `topics/NN-*/widgets/` (inventory in `doc
 | ID | Item | Detail | Priority |
 | :--- | :--- | :--- | :--- |
 | R1 | **Build out the five THIN lectures** | L10, L11, L12, L14, L15 to the numbered-section standard per the §4 target structures; L13 promoted from Partial | **Highest** |
-| R2 | **Repair `data/problems-index.json`** | Per-problem re-key (14 × `02-convex-sets`→`03-convex-sets-geometry`; `03-015`→`06-convex-functions-advanced`); index L15's in-page P15.1–P15.5; then populate per-lecture banks to the §4 targets (schema in `docs/ASSESSMENT.md` §5) | **Highest** |
+| R2 | ~~**Repair `data/problems-index.json`**~~ | **Done** — regenerated from page content: 211 problems, all with solutions, stable anchors (`docs/ASSESSMENT.md` §3) | — |
+| R2b | **Calibrate difficulty tiers by hand** | Current `difficulty`/`estimatedTime` come from a length proxy, not judgment; and the type mix is 62% `verification` against a 40% cap. Re-tier by hand and author the missing tiers: no hard-tier problems exist in L10–L15, no easy tier in L00/L01/L02/L07/L09 | **Highest** |
 | R3 | L06 widget identity | Replace the L05-duplicated widgets with dedicated conjugate-geometry and subgradient widgets (specs W2, W3 in `docs/WIDGETS.md` §6) | High |
 | R4 | Algorithm-lecture widgets | Central-path dashboard (W1), conditioning arena (W4), KKT anatomy (W5) per `docs/WIDGETS.md` §6 | High |
-| R5 | Glossary completion | Add the 11 missing load-bearing terms (§3 list) with definitions matching `docs/NOTATION.md` | High |
-| R6 | Widget infrastructure debt | Resolve `widgets-loader.js` stub, theme-unify L09 iframes, de-duplicate overlapping widgets, add L13 headers (W-R1…W-R5 in `docs/WIDGETS.md` §5) | Medium |
+| R5 | ~~Glossary completion~~ | **Done** — 84 → 98 terms, all URLs/anchors verified | — |
+| R6 | Widget infrastructure debt | Remaining: theme-unify L09 iframes (W-R2), de-duplicate overlapping widgets (W-R3), presets audit (W-R5). Loader stub (W-R1) and L13 headers (W-R4) done | Medium |
 | R7 | Capstone scaffold | `topics/capstone-template/` implementing §6 with a worked mini-example (small QP end-to-end) | Medium |
 | R8 | Track surfacing | Syllabus page exposes the §2.2 tracks and the §1.1 edge table as "what to backfill" hints | Medium |
 | R9 | Symbol table | Promote `docs/NOTATION.md` §2–4 core table into `data/glossary.json` so it surfaces on every page | Medium |

@@ -2173,7 +2173,7 @@
         <h4>Recap & Key Concepts</h4>
         <p>These exercises reinforce the foundational tools of linear algebra used in optimization. Focus on the geometry of subspaces, the calculus of gradients (crucial for finding optimality conditions), and the properties of PSD matrices (essential for convexity).</p>
       </div>
-<h3>P0.1 — Linear Independence</h3>
+<h3 id="prob-00-001">P0.1 — Linear Independence</h3>
       <p>Determine whether the following sets of vectors are linearly independent. If dependent, exhibit a linear combination summing to zero.</p>
       <ol type="a">
         <li>$v_1 = (1, 2, 3)^\top, v_2 = (4, 5, 6)^\top, v_3 = (7, 8, 9)^\top$.</li>
@@ -2219,7 +2219,7 @@
 
 
 
-<h3>P0.2 — The Rank-Nullity Theorem</h3>
+<h3 id="prob-00-002">P0.2 — The Rank-Nullity Theorem</h3>
       <p>Let $A$ be a $10 \times 15$ matrix.</p>
       <ol type="a">
         <li>What is the maximum possible rank of $A$?</li>
@@ -2249,7 +2249,7 @@
 
 
 
-<h3>P0.3 — Trace and Determinant</h3>
+<h3 id="prob-00-003">P0.3 — Trace and Determinant</h3>
       <ol type="a">
         <li>Show that $\mathrm{tr}(ABC) = \mathrm{tr}(BCA)$ but generally $\mathrm{tr}(ABC) \neq \mathrm{tr}(BAC)$. Construct a $2 \times 2$ counterexample.</li>
         <li>Let $A \in \mathbb{R}^{n \times n}$ be skew-symmetric ($A^\top = -A$). Show that $\mathbf{x}^\top A \mathbf{x} = 0$ for all $\mathbf{x}$.</li>
@@ -2296,7 +2296,7 @@
 
 
 
-<h3>P0.4 — Norm Equivalence</h3>
+<h3 id="prob-00-004">P0.4 — Norm Equivalence</h3>
       <p>In finite dimensions, all norms are equivalent. For $\mathbf{x} \in \mathbb{R}^n$, prove the following inequalities:</p>
       <ol type="a">
         <li>$\|x\|_\infty \le \|\mathbf{x}\|_2 \le \sqrt{n} \|\mathbf{x}\|_\infty$</li>
@@ -2334,7 +2334,7 @@
 
 
 
-<h3>P0.5 — Least Squares from Scratch</h3>
+<h3 id="prob-00-005">P0.5 — Least Squares from Scratch</h3>
       <p>Consider the function $f(\mathbf{x}) = \frac{1}{2} \|A\mathbf{x} - \mathbf{b}\|_2^2$.</p>
       <ol type="a">
         <li>Expand the squared norm into terms involving $\mathbf{x}^\top A^\top A \mathbf{x}$, etc.</li>
@@ -2399,7 +2399,7 @@
 
 
 
-<h3>P0.6 — Matrix Calculus Practice</h3>
+<h3 id="prob-00-006">P0.6 — Matrix Calculus Practice</h3>
       <p>Compute the gradient with respect to $X \in \mathbb{R}^{n \times n}$ for the following functions:</p>
       <ol type="a">
         <li>$f(X) = \mathrm{tr}(A X B)$, where $A, B$ are constant matrices.</li>
@@ -2440,7 +2440,7 @@
 
 
 
-<h3>P0.7 — Hessian of a Cubic</h3>
+<h3 id="prob-00-007">P0.7 — Hessian of a Cubic</h3>
       <p>Let $f: \mathbb{R}^2 \to \mathbb{R}$ be defined by $f(\mathbf{x}) = x_1^3 + x_2^3 + 2x_1 x_2$.</p>
       <ol type="a">
         <li>Compute the gradient $\nabla f(\mathbf{x})$.</li>
@@ -2477,7 +2477,7 @@
 
 
 
-<h3>P0.8 — Testing Positive Semidefiniteness</h3>
+<h3 id="prob-00-008">P0.8 — Testing Positive Semidefiniteness</h3>
       <p>Determine whether the following matrices are PSD, PD, Indefinite, or Negative Definite/Semidefinite.</p>
       <ol type="a">
         <li>$A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$</li>
@@ -2511,7 +2511,7 @@
 
 
 
-<h3>P0.9 — Schur Complement Application</h3>
+<h3 id="prob-00-009">P0.9 — Schur Complement Application</h3>
       <p>Use the Schur Complement condition (assuming the top-left pivot is positive) to determine the range of $\mathbf{x}$ for which the matrix $M(\mathbf{x})$ is Positive Semidefinite:</p>
       $$ M(\mathbf{x}) = \begin{bmatrix} \mathbf{x} & 1 \\ 1 & \mathbf{x} \end{bmatrix} $$
       <p>Verify your answer by computing the eigenvalues directly.</p>
@@ -2542,7 +2542,7 @@
 
 
 
-<h3>P0.10 — Projection onto a Line</h3>
+<h3 id="prob-00-010">P0.10 — Projection onto a Line</h3>
       <p>Let $a = (1, 1, 1)^\top$. Find the projection of $\mathbf{b} = (1, 0, 0)^\top$ onto the line spanned by $a$. Verify that the residual $\mathbf{b} - \mathbf{p}$ is orthogonal to $a$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -2564,7 +2564,7 @@
 
 
 
-<h3>P0.11 — Projection onto a Hyperplane</h3>
+<h3 id="prob-00-011">P0.11 — Projection onto a Hyperplane</h3>
       <p>Find the projection of the point $\mathbf{y} = (3, 3)^\top$ onto the line (hyperplane in 2D) defined by $x_1 + x_2 = 2$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -2586,7 +2586,7 @@
 
 
 
-<h3>P0.12 — Orthogonal Complements</h3>
+<h3 id="prob-00-012">P0.12 — Orthogonal Complements</h3>
       <p>Let $S$ be a subspace of $\mathbb{R}^n$. The orthogonal complement is $S^\perp = \{\mathbf{y} \mid \mathbf{y}^\top \mathbf{x} = 0 \ \forall \mathbf{x} \in S\}$.</p>
       <ol type="a">
         <li>Prove that $S^\perp$ is a subspace.</li>
@@ -2624,7 +2624,7 @@
 
 
 
-<h3>P0.13 — Frobenius Norm Submultiplicativity</h3>
+<h3 id="prob-00-013">P0.13 — Frobenius Norm Submultiplicativity</h3>
       <p>We proved $\|AB\|_F \le \|A\|_F \|B\|_F$ in the lecture using Cauchy-Schwarz.
       <br>Re-derive this result by writing $\|X\|_F^2 = \mathrm{tr}(X^\top X)$ and using the property $\mathrm{tr}(M) = \sum \lambda_i(M)$ along with the fact that $\lambda_{\max}(A^\top A) \le \mathrm{tr}(A^\top A)$.</p>
       <div class="solution-box">
@@ -2690,7 +2690,7 @@
 
 
 
-<h3>P0.14 — Spectral Norm Properties</h3>
+<h3 id="prob-00-014">P0.14 — Spectral Norm Properties</h3>
       <p>Let $\|A\|_2$ denote the spectral norm (max singular value).</p>
       <ol type="a">
         <li>Show that $\|A\|_2 = 0$ if and only if $A=0$.</li>
@@ -2714,7 +2714,7 @@
 
 
 
-<h3>P0.15 — Isometries</h3>
+<h3 id="prob-00-015">P0.15 — Isometries</h3>
       <p>An isometry is a linear map $f(\mathbf{x}) = Q\mathbf{x}$ that preserves distances: $\|Qx - Qy\|_2 = \|x - y\|_2$ for all $\mathbf{x}, \mathbf{y}$.
       <br>Show that this condition implies $Q^\top Q = I$. Thus, isometries are represented by orthogonal matrices.</p>
       <div class="solution-box">
@@ -2749,7 +2749,7 @@
 
 
 
-<h3>P0.16 — Loewner Order Transitivity</h3>
+<h3 id="prob-00-016">P0.16 — Loewner Order Transitivity</h3>
       <p>The Loewner order is defined as $X \succeq Y \iff X - Y \succeq 0$. Prove that this order is transitive: if $X \succeq Y$ and $Y \succeq Z$, then $X \succeq Z$. Use the variational definition of PSD matrices.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -2775,7 +2775,7 @@
 
 
 
-<h3>P0.17 — Weighted Inner Product</h3>
+<h3 id="prob-00-017">P0.17 — Weighted Inner Product</h3>
       <p>Let $A \in \mathbb{S}^n_{++}$ be a symmetric positive definite matrix.
       <br>(a) Prove that $\langle \mathbf{x}, \mathbf{y} \rangle_A = \mathbf{x}^\top A \mathbf{y}$ satisfies all axioms of an inner product.
       <br>(b) Write down the Cauchy-Schwarz inequality for this inner product.</p>
@@ -2801,7 +2801,7 @@
 
 
 
-<h3>P0.18 — Characterization of Projectors</h3>
+<h3 id="prob-00-018">P0.18 — Characterization of Projectors</h3>
       <p>A matrix $P$ is an orthogonal projector if and only if it is idempotent ($P^2=P$) and symmetric ($P^\top=P$).
       <br>(a) Prove that if $P$ is an orthogonal projector onto a subspace $S$, it satisfies these conditions.
       <br>(b) Prove the converse.</p>
@@ -2838,7 +2838,7 @@
 
 
 
-<h3>P0.19 — PSD Cone in 2D</h3>
+<h3 id="prob-00-019">P0.19 — PSD Cone in 2D</h3>
       <p>Consider the space of $2 \times 2$ symmetric matrices, which has dimension 3.
       <br>Write down the explicit inequalities defining the PSD cone $S \succeq 0$ in terms of the matrix entries $\mathbf{x}, \mathbf{y}, \mathbf{z}$ (where $S = \begin{bmatrix} \mathbf{x} & \mathbf{y} \\ \mathbf{y} & \mathbf{z} \end{bmatrix}$). Relate this to the trace and determinant conditions.</p>
       <div class="solution-box">
@@ -2863,7 +2863,7 @@
 
 
 
-<h3>P0.20 — General Quadratic Minimization</h3>
+<h3 id="prob-00-020">P0.20 — General Quadratic Minimization</h3>
       <p>Solve the unconstrained minimization problem for a general quadratic function:
       $$ \min_{\mathbf{x} \in \mathbb{R}^n} f(\mathbf{x}) := \frac{1}{2} \mathbf{x}^\top H \mathbf{x} + \mathbf{g}^\top \mathbf{x} + c $$
       where $H \in \mathbb{S}_{++}^n$ (Positive Definite).</p>
@@ -2883,7 +2883,7 @@
         <br><b>Completing the Square:</b> The minimum value is always "constant minus quadratic form of the gradient inverse".</p>
       </div>
 
-      <h3>P0.21 — Chebyshev Approximation Bound</h3>
+      <h3 id="prob-00-021">P0.21 — Chebyshev Approximation Bound</h3>
       <p>Let $x_{\text{ls}}$ be the least-squares solution to $A\mathbf{x} \approx \mathbf{b}$, minimizing $\|A\mathbf{x}-\mathbf{b}\|_2$. Let $x_{\text{ch}}$ be the solution to the Chebyshev approximation problem minimizing $\|A\mathbf{x}-\mathbf{b}\|_\infty$.
       <br>Show that the $\ell_\infty$ error of the least-squares solution is at most $\sqrt{m}$ times the optimal $\ell_\infty$ error.</p>
       <div class="solution-box">

@@ -617,7 +617,7 @@
         <p>These exercises explore the theoretical depths of matrix norms, the geometry of projections, and the algebraic properties of the trace. P1.1 links norms to duality (Lecture 02). P1.12 links SVD to the operator norm.</p>
       </div>
 
-      <h3>P1.1 — Dual of $\ell_p$ Norm</h3>
+      <h3 id="prob-01-001">P1.1 — Dual of $\ell_p$ Norm</h3>
       <p>Show that for $1 < p < \infty$, the dual norm of $\|\cdot\|_p$ is $\|\cdot\|_q$ where $\frac{1}{p} + \frac{1}{q} = 1$. Use Hölder's Inequality for the upper bound and construct an alignment vector for the lower bound.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -663,7 +663,7 @@
         <br><b>Alignment Condition:</b> Equality holds if $|x_i|^p$ is proportional to $|y_i|^q$ (and signs match). This is crucial for constructing worst-case examples in robustness analysis.</p>
       </div>
 
-      <h3>P1.2 — Frobenius Cauchy–Schwarz</h3>
+      <h3 id="prob-01-002">P1.2 — Frobenius Cauchy–Schwarz</h3>
       <p>Prove that $|\mathrm{tr}(A^\top B)| \le \|A\|_F \|B\|_F$ by viewing matrices in $\mathbb{R}^{m \times n}$ as vectors in $\mathbb{R}^{mn}$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -683,7 +683,7 @@
         <br><b>Result:</b> Cauchy-Schwarz for vectors immediately implies $|\mathrm{tr}(A^\top B)| \le \|A\|_F \|B\|_F$.</p>
       </div>
 
-      <h3>P1.3 — SVD Computation</h3>
+      <h3 id="prob-01-003">P1.3 — SVD Computation</h3>
       <p>Compute the Singular Value Decomposition $A = U \Sigma V^\top$ by hand for the matrix $A = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$. Verify that the singular values are the square roots of the eigenvalues of $A^\top A$.</p>
       <div class="solution-box">
         <h4>Solution (Detailed Walkthrough)</h4>
@@ -737,7 +737,7 @@
         <br><b>Check:</b> Verify $AV = U\Sigma$.</p>
       </div>
 
-      <h3>P1.4 — Normal Equations vs. QR</h3>
+      <h3 id="prob-01-004">P1.4 — Normal Equations vs. QR</h3>
       <p>Solve the system $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}, \mathbf{b} = \begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}$ using (a) Normal Equations and (b) QR factorization. Compare the intermediate steps.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -773,7 +773,7 @@
         </ul></p>
       </div>
 
-      <h3>P1.5 — Pseudoinverse Projectors</h3>
+      <h3 id="prob-01-005">P1.5 — Pseudoinverse Projectors</h3>
       <p>Show that $P = AA^+$ is the orthogonal projector onto $\mathcal{R}(A)$. Verify $P^2=P$ and $P^\top=P$ using SVD.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -795,7 +795,7 @@
         <br><b>Intuition:</b> $A^+$ inverts the action on the range and kills the orthogonal complement. $AA^+$ maps range $\to$ range (identity) and orthogonal complement $\to$ 0.</p>
       </div>
 
-      <h3>P1.6 — Projector Formula</h3>
+      <h3 id="prob-01-006">P1.6 — Projector Formula</h3>
       <p>Let $A$ have linearly independent columns. Derive the projection formula $P = A(A^\top A)^{-1}A^\top$ by minimizing $\|Ax - b\|_2^2$.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -816,7 +816,7 @@
         <br><b>Properties:</b> $P^2=P$ and $P^\top=P$. The residual is $(I-P)\mathbf{b}$, which projects onto $\mathcal{N}(A^\top)$.</p>
       </div>
 
-      <h3>P1.7 — Hyperplane Projection</h3>
+      <h3 id="prob-01-007">P1.7 — Hyperplane Projection</h3>
       <p>Find the projection of $(1, 2, 3)^\top$ onto $x_1 + x_2 + x_3 = 3$. Verify your result using the standard formula for distance to a plane.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -836,7 +836,7 @@
         <br><b>Lagrange Multiplier:</b> The term $\frac{a^\top \mathbf{y} - \mathbf{b}}{\|a\|^2}$ corresponds to the Lagrange multiplier $\nu$ associated with the constraint.</p>
       </div>
 
-      <h3>P1.8 — Condition Number Calculation</h3>
+      <h3 id="prob-01-008">P1.8 — Condition Number Calculation</h3>
       <p>Calculate the condition number $\kappa(A) = \sigma_{\max}(A)/\sigma_{\min}(A)$ for the matrix $A = \begin{bmatrix} 1 & 0 \\ 0 & \epsilon \end{bmatrix}$ where $\epsilon > 0$. What happens as $\epsilon \to 0$?</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -856,7 +856,7 @@
         </ul></p>
       </div>
 
-      <h3>P1.9 — Pseudoinverse of Rank-1 Matrix</h3>
+      <h3 id="prob-01-009">P1.9 — Pseudoinverse of Rank-1 Matrix</h3>
       <p>Let $A = \mathbf{x}\mathbf{y}^\top$ where $\mathbf{x} \in \mathbb{R}^m, \mathbf{y} \in \mathbb{R}^n$ are non-zero vectors.
       <br>(a) Construct the Singular Value Decomposition (SVD) of $A$.
       <br>(b) Use the SVD to show that $A^+ = \frac{A^\top}{\|\mathbf{x}\|_2^2 \|\mathbf{y}\|_2^2}$.</p>
@@ -893,7 +893,7 @@
         <br><b>Pseudoinverse Formula:</b> For rank-1 matrices, $A^+ = \frac{A^\top}{\|A\|_F^2}$. This formula is extremely useful for updating inverse approximations (like in Quasi-Newton methods).</p>
       </div>
 
-      <h3>P1.10 — Operator Norm Properties</h3>
+      <h3 id="prob-01-010">P1.10 — Operator Norm Properties</h3>
       <p>Prove that $\|A\|_2 = \sqrt{\lambda_{\max}(A^\top A)}$. Use the Rayleigh Quotient definition of eigenvalues.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -909,7 +909,7 @@
         <br><b>Implication:</b> The spectral norm is the square root of the largest eigenvalue of the Gram matrix.</p>
       </div>
 
-      <h3>P1.11 — Orthogonal Invariance</h3>
+      <h3 id="prob-01-011">P1.11 — Orthogonal Invariance</h3>
       <p>Show that $\|U A V^\top\|_F = \|A\|_F$ and $\|U A V^\top\|_2 = \|A\|_2$ for orthogonal $U, V$. This proves that these norms depend only on the singular values.</p>
       <div class="solution-box">
         <h4>Solution</h4>
@@ -933,7 +933,7 @@
         <br>These are the "natural" norms for matrix analysis.</p>
       </div>
 
-      <h3>P1.12 — The Orthogonal Group</h3>
+      <h3 id="prob-01-012">P1.12 — The Orthogonal Group</h3>
       <p>Show that the set of orthogonal matrices forms a compact group.</p>
       <div class="solution-box">
         <h4>Solution</h4>

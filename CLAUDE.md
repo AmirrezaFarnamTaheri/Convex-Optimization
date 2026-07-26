@@ -18,7 +18,12 @@ new lectures, revisions, widgets, exercises — follows the protocol in this fil
 │   ├── problems-index.json     # Exercise/problem metadata index
 │   └── diagrams-index.json     # Diagram metadata index
 ├── docs/
-│   ├── CURRICULUM.md           # Course blueprint (learning graph, objectives, capstone)
+│   ├── CURRICULUM.md           # Course blueprint (learning graph, per-lecture specs, capstone, roadmap)
+│   ├── PEDAGOGY.md             # Teaching protocol (concept pipeline, cognitive-load rules, audits)
+│   ├── NOTATION.md             # Course-wide symbol standard + code↔math naming map
+│   ├── ASSESSMENT.md           # Problem-bank architecture, tiers, rubrics, solved exemplars
+│   ├── WIDGETS.md              # Widget inventory, design standard, build backlog
+│   ├── REFERENCES.md           # Bibliography, per-lecture [BV] mapping, citation rules
 │   ├── SETUP.md                # Local development setup
 │   └── IMAGE_SOURCES.md        # Image provenance
 ├── topics/NN-slug/
@@ -40,8 +45,13 @@ new lectures, revisions, widgets, exercises — follows the protocol in this fil
   `$$ … $$` for display math inside lecture HTML.
 - All libraries are **vendored** under `static/lib/`. Never add CDN links; never add
   network fetches at runtime.
-- Widgets are standalone HTML files under `topics/NN/widgets/`, loaded into lecture
-  pages; interactive code execution uses the vendored **Pyodide**.
+- Widgets mount via **inline ES-module scripts** at the bottom of each lecture
+  page: `topics/NN/widgets/js/<name>.js` exports `init<Name>(containerId)`,
+  imported and called against a `#widget-<name>` div (mechanics and merge bar:
+  `docs/WIDGETS.md` §1–2). Exception: L09 embeds standalone HTML widgets via
+  iframes. `static/js/widgets-loader.js` is an empty stub no page uses — do not
+  route new widgets through it. Python-powered widgets use the vendored
+  **Pyodide** via `static/js/pyodide-manager.js`.
 - Lecture pages share a common shell: sticky header with Prev/Next nav, sidebar TOC
   (`#toc-container`), `<main id="main" class="lecture-content">`, content in
   `<section class="section-card">` blocks, callouts via `.insight` / note / warning
@@ -84,22 +94,32 @@ Every authored artifact must satisfy all six:
 For any lecture-content change, run this loop:
 
 1. **Read the neighbors.** Open the previous and next lectures; keep notation,
-   terminology, and shell markup consistent across the course
-   (e.g., $f_0$ for objective, $f_i \le 0$ for inequality constraints,
-   $\lambda, \nu$ for dual variables — Boyd & Vandenberghe conventions).
-2. **Draft against the invariants** in §2. Pair every proof with a geometric or
-   economic interpretation. Match widget variable names to the LaTeX symbols.
+   terminology, and shell markup consistent across the course. Notation is
+   normative in `docs/NOTATION.md` (Boyd & Vandenberghe conventions: $f_0$
+   objective, $f_i \le 0$, $\lambda \succeq 0$, $\nu$ free; sign rules,
+   layout conventions, reserved-letter table).
+2. **Draft against the invariants** in §2, following the concept pipeline and
+   cognitive-load rules of `docs/PEDAGOGY.md` (intuition → formalism →
+   mechanism → reality check; one new object per subsection; analogies only
+   from the registry, with breaking points stated).
 3. **Lint pass.**
-   - Math: every step explicit; every symbol defined at first use; KaTeX-renderable
-     (no unsupported macros).
-   - Code/widgets: self-contained file, vendored libs only, deterministic seeds,
-     works offline.
+   - Math: every step explicit; every symbol defined at first use or in
+     `docs/NOTATION.md`; KaTeX-renderable (no unsupported macros).
+   - Code/widgets: `docs/WIDGETS.md` §2 merge bar (self-contained module,
+     vendored libs only, CSS custom properties, deterministic seeds, symbol-
+     labeled controls, "what to notice" caption, offline).
+   - Citations: numbered results verified against `docs/REFERENCES.md` sources;
+     never cite from memory.
    - Links: `python verify_site.py` passes.
 4. **Update the indexes** when adding problems, glossary terms, or diagrams
-   (`data/*.json`).
-5. **Cross-check the blueprint.** New or restructured content must stay consistent
-   with `docs/CURRICULUM.md` (objectives, prerequisite edges, assessment). Update
-   the blueprint in the same commit if scope changed.
+   (`data/*.json`; problems follow the schema and solution standard of
+   `docs/ASSESSMENT.md` §4–5).
+5. **Cross-check the blueprint.** New or restructured content must stay
+   consistent with `docs/CURRICULUM.md` (objectives, prerequisite edges,
+   status table §3, roadmap §7). Update the blueprint in the same commit if
+   scope changed.
+6. **Run the dual-perspective audit** (`docs/PEDAGOGY.md` §8) before finalizing;
+   zero unresolved marks is the merge bar.
 
 ---
 

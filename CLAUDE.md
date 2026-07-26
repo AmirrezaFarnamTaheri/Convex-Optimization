@@ -46,7 +46,7 @@ new lectures, revisions, widgets, exercises — follows the protocol in this fil
 - All libraries are **vendored** under `static/lib/`. Never add CDN links; never add
   network fetches at runtime.
 - Widgets mount via **inline ES-module scripts** at the bottom of each lecture
-  page: `topics/NN/widgets/js/<name>.js` exports `init<Name>(containerId)`,
+  page: `topics/NN-slug/widgets/js/<name>.js` exports `init<Name>(containerId)`,
   imported and called against a `#widget-<name>` div (mechanics and merge bar:
   `docs/WIDGETS.md` §1–2). Exception: L09 embeds standalone HTML widgets via
   iframes. `static/js/widgets-loader.js` is an empty stub no page uses — do not

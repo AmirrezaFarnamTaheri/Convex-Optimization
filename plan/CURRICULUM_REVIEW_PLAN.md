@@ -223,16 +223,70 @@ Every core optimization algorithm is benchmarked across **6 industry-standard ba
 
 ---
 
-## 7. Interactive D3.js, Three.js & Pyodide Laboratory
+---
 
-- **D3.js 2D Geometry**:
-  - Interactive hyperplane draggers showing separating vs supporting hyperplanes in real time.
-  - Dynamic 2D subgradient bundles at non-differentiable points (e.g. $|x_1| + |x_2|$).
-- **Three.js 3D Geometric Manifolds**:
-  - 3D epigraph rendering for convex ($x^2 + y^2$), non-convex (saddle/Rosenbrock), and quasiconvex functions.
-  - 3D Second-Order (Lorentz) cone and PSD matrix cone slices ($\mathbb{S}_+^2$).
-- **Pyodide In-Browser Optimization Console**:
-  - Live execution of CVXPY scripts directly inside the browser with zero server roundtrips.
+## 7. Comprehensive Quality, Mathematical & Performance Criteria for All Visual Assets & Interactive Widgets
+
+*An exhaustive specification establishing strict rendering, mathematical accuracy, memory management, and anti-slop criteria for every visual illustration, diagram, D3 canvas, Three.js 3D manifold, and Pyodide solver widget.*
+
+```
+                 VISUAL ASSET & INTERACTIVE WIDGET CRITERIA MATRIX
+   ┌──────────────────────────────────────────────┬──────────────────────────────────────────────┐
+   │ 🖼️ 1. STATIC VISUAL ASSETS (PNG/SVG/GIF)     │ 🕹️ 2. INTERACTIVE D3.js 2D MANIPULATORS      │
+   │ · 300 DPI vector clarity & WebP optimization │ · 60 FPS smooth pointer drag & touch events  │
+   │ · KaTeX LaTeX formatted math in all labels   │ · Real-time mathematical invariant locks     │
+   │ · Shared asset deduplication (Zero redundancy)│ · Responsive viewBox auto-scaling            │
+   │ · WCAG AA contrast & descriptive alt text    │ · Hallmark 8-state interactive control UI    │
+   ├──────────────────────────────────────────────┼──────────────────────────────────────────────┤
+   │ 🧊 3. THREE.JS 3D EPIGRAPH MANIFOLDS         │ 🐍 4. PYODIDE IN-BROWSER CVXPY CONSOLES     │
+   │ · PBR lighting (Key + Rim + Ambient fill)    │ · Non-blocking WebAssembly worker execution  │
+   │ · Exact parametric surface equations         │ · Real CVXPY status codes (OPTIMAL/INFEASIBLE│
+   │ · Explicit WebGL GPU memory `.dispose()`     │ · High-precision tabular primal/dual logging │
+   │ · Inertial orbit controls with angle clamps  │ · Step-by-step solver iteration convergence  │
+   └──────────────────────────────────────────────┴──────────────────────────────────────────────┘
+```
+
+### A. Static Visual Asset Criteria (Diagrams, Plots, Illustrations)
+1. **Mathematical LaTeX Precision**:
+   - Every axis label, tick marker, legend entry, and annotation must be formatted using strict KaTeX / LaTeX math formatting (e.g. `$f(x) \ge f(x_0) + \nabla f(x_0)^T(x - x_0)$`, `$\mathcal{K}^*$`, `$\mathbb{S}_+^n$`). Raw ASCII approximations (like `f(x) >= ...` or `K*`) are strictly prohibited.
+2. **Color Token Alignment (`DESIGN.md`)**:
+   - Primal sets: Primal Blue (`oklch(0.55 0.18 240)`).
+   - Dual cones & multipliers: Dual Magenta (`oklch(0.58 0.22 340)`).
+   - Optimal solution points / subgradient tangents: Optimal Emerald (`oklch(0.62 0.18 145)`).
+   - Infeasible / Separating boundaries: Warning Amber (`oklch(0.72 0.16 75)`).
+3. **Asset Deduplication & Centralization**:
+   - Zero duplicate image files across topic folders. All cross-cutting illustrations (e.g. `epigraph_dual_norm.gif`, `minkowski_sum.png`) must reside in `static/assets/shared/illustrations/` and be referenced via relative paths.
+4. **Resolution, Format & Compression**:
+   - Diagrams must be rendered at 300 DPI equivalent.
+   - Large uncompressed PNGs must be losslessly optimized (WebP / optimized PNG) targeting $< 250\text{ KB}$ per static asset, eliminating 5+ MB bloated files.
+
+### B. Interactive D3.js 2D Geometric Manipulators
+1. **Mathematical Invariant Enforcement**:
+   - **Supporting Hyperplane Manipulator**: The separating/supporting line must dynamically compute the exact normal vector $a = \nabla f(x_0)$ and maintain the inequality $a^T(x - x_0) \le 0$ without penetrating the interior $\text{int } C$.
+   - **Subgradient Bundle Widget**: At non-smooth points $x_0$ (e.g. $L_1$ norm corner), the widget must render the full convex hull of subgradients $\partial f(x_0) = \text{conv}(\{g_1, g_2, \dots\})$.
+   - **Fenchel Conjugate Slider**: Dragging the slope $y$ must dynamically display the supporting line $y^T x - f^*(y)$ tangent to $f(x)$ with the exact supremum contact point.
+2. **Interactive UI & Performance Standards**:
+   - 60 FPS requestAnimationFrame rendering on mousemove/touchmove.
+   - Full 8-state button and slider styling (`default`, `hover`, `focus-visible`, `active`, `disabled`, `loading`, `error`, `success`).
+   - Touch-screen coordinate normalization with bounding-box collision prevention.
+
+### C. Three.js 3D Geometric & Epigraph Manifolds
+1. **Rendering & Lighting Pipeline**:
+   - PBR Material Standard: `MeshStandardMaterial` / `MeshPhysicalMaterial` with realistic surface roughness ($0.35$) and metalness ($0.15$).
+   - Three-point lighting setup: Key directional light ($I=2.0$), cool-tinted rim backlight ($I=0.85$), and soft ambient fill light ($I=0.45$).
+2. **Parametric Surface Accuracy**:
+   - Real mathematical equations for surfaces (e.g. paraboloid $z = x^2 + y^2$, hyperbolic paraboloid saddle $z = x^2 - y^2$, Lorentz cone $z = \sqrt{x^2 + y^2}$, PSD cone slice $\det(X) \ge 0$).
+   - Wireframe grid overlays displaying coordinate axes $(x, y, z)$ and tangent hyperplane planes.
+3. **GPU Memory & Teardown Safety**:
+   - Explicit cleanup calling `geometry.dispose()`, `material.dispose()`, and `renderer.dispose()` on window unmount or resize to eliminate WebGL context leaks.
+
+### D. Pyodide In-Browser Optimization Console
+1. **Execution Reliability & Status Reporting**:
+   - Live Python/CVXPY script execution with execution time benchmarking in milliseconds.
+   - Explicit reporting of solver status: `OPTIMAL` (green badge), `INFEASIBLE` (red badge), `UNBOUNDED` (amber badge).
+2. **Precision & Output Formatting**:
+   - Tabular display of optimal variables $x^*$, Lagrange multipliers $\lambda^*, \nu^*$, optimal value $p^*$, and duality gap $p^* - d^* \le 10^{-8}$.
+   - Self-grading unit test assertion cells providing immediate visual feedback for students.
 
 ---
 

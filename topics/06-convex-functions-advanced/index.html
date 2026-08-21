@@ -995,7 +995,7 @@
       <h2><i data-feather="edit-3"></i> 7. Exercises</h2>
 
 <div class="problem">
-  <h3>P6.1 — Conjugate of Norm Squared</h3>
+  <h3 id="prob-06-001">P6.1 — Conjugate of Norm Squared</h3>
   <p>Compute the conjugate of $f(x) = \frac{1}{2}\|x\|^2$ for a general norm $\|\cdot\|$. Show it is $\frac{1}{2}\|y\|_*^2$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1033,7 +1033,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.2 — Quasi-Convexity of Ceiling</h3>
+  <h3 id="prob-06-002">P6.2 — Quasi-Convexity of Ceiling</h3>
   <p>Show that $f(x) = \lceil x \rceil$ (on $\mathbb{R}$) is quasi-convex.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1064,7 +1064,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.3 — Softmax Analysis</h3>
+  <h3 id="prob-06-003">P6.3 — Softmax Analysis</h3>
   <p>For $f(x) = \log(\sum_{i=1}^n e^{x_i})$: <ol type="a"><li>Show $\max x_i \le f(x) \le \max x_i + \log n$.</li><li>Show $f$ is convex via Hessian analysis.</li></ol></p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1106,7 +1106,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.4 — Concavity of Geometric Mean</h3>
+  <h3 id="prob-06-004">P6.4 — Concavity of Geometric Mean</h3>
   <p>Prove $G(x) = (\prod_{i=1}^n x_i)^{1/n}$ is concave on $\mathbb{R}^n_{++}$ using log-concavity properties.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1150,7 +1150,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.5 — Geometric Mean Cone</h3>
+  <h3 id="prob-06-005">P6.5 — Geometric Mean Cone</h3>
   <p>Show $K = \{x \in \mathbb{R}^n_+ \mid G(x) \ge \alpha A(x)\}$ is a convex cone for $\alpha \in [0,1]$, where $A(x) = \frac{1}{n}\sum x_i$ is the arithmetic mean.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1188,7 +1188,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.6 — Matrix Fractional Function</h3>
+  <h3 id="prob-06-006">P6.6 — Matrix Fractional Function</h3>
   <p>Prove convexity of $f(x, Y) = x^\top Y^{-1} x$ (for $Y \succ 0$) using the epigraph characterization.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1220,7 +1220,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.7 — Fenchel's Inequality & Biconjugate</h3>
+  <h3 id="prob-06-007">P6.7 — Fenchel's Inequality & Biconjugate</h3>
   <p>For $f(x) = \frac{1}{2}x^\top Q x$ with $Q \succ 0$: 1. Verify Fenchel's inequality. 2. Verify $f^{**} = f$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1252,7 +1252,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.8 — Quasiconvexity of Distance Ratio</h3>
+  <h3 id="prob-06-008">P6.8 — Quasiconvexity of Distance Ratio</h3>
   <p>Show $S_\theta = \{x \mid \|x-a\|_2 \le \theta \|x-b\|_2\}$ is convex for $\theta \le 1$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1284,7 +1284,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.9 — Log-Concavity of Probability Measures</h3>
+  <h3 id="prob-06-009">P6.9 — Log-Concavity of Probability Measures</h3>
   <p>If $p(x)$ is a log-concave probability density, show that the function $f(x) = \mathbb{P}(x+W \in C)$ is log-concave, where $W \sim p$ and $C$ is a convex set.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1317,7 +1317,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.10 — Log-Concavity of Gaussian</h3>
+  <h3 id="prob-06-010">P6.10 — Log-Concavity of Gaussian</h3>
   <p>Show that the multivariate Gaussian density function $f(x)$ is log-concave. $$ f(x) = \frac{1}{(2\pi)^{n/2} (\det \Sigma)^{1/2}} \exp\left(-\frac{1}{2}(x-\mu)^\top \Sigma^{-1} (x-\mu)\right) $$ where $\Sigma \succ 0$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1351,7 +1351,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.11 — Legendre Transform of Quadratic</h3>
+  <h3 id="prob-06-011">P6.11 — Legendre Transform of Quadratic</h3>
   <p>Consider $f(x) = \frac{1}{2}x^\top Q x$ with $Q \succ 0$. Verify the Legendre transform formula $f^*(y) = x^\top y - f(x)$ where $y = \nabla f(x)$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1381,7 +1381,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.12 — Log-Concavity Examples (3.49)</h3>
+  <h3 id="prob-06-012">P6.12 — Log-Concavity Examples (3.49)</h3>
   <p>Verify the log-concavity of the following functions.</p>
   <ol type="a">
     <li><b>Logistic:</b> $f(x) = e^x / (1+e^x)$ on $\mathbb{R}$.</li>
@@ -1465,7 +1465,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.13 — Log-Convexity of the Gamma Function</h3>
+  <h3 id="prob-06-013">P6.13 — Log-Convexity of the Gamma Function</h3>
   <p>The Gamma function is defined as $\Gamma(x) = \int_0^\infty t^{x-1} e^{-t} dt$ for $x > 0$. Show that $\Gamma(x)$ is log-convex using the integration rule.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1499,7 +1499,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.14 — Log-Sum-Exp Conjugate</h3>
+  <h3 id="prob-06-014">P6.14 — Log-Sum-Exp Conjugate</h3>
   <p>Derive the conjugate of $f(x) = \log(\sum_{i=1}^n e^{x_i})$. Show that $f^*(y) = \sum y_i \log y_i$ if $y \in \Delta$ (simplex), else $\infty$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1513,7 +1513,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.15 — Norm Conjugate</h3>
+  <h3 id="prob-06-015">P6.15 — Norm Conjugate</h3>
   <p>Let $\|\cdot\|$ be a norm. Show that its conjugate is the indicator function of the dual norm unit ball: $f^*(y) = 0$ if $\|y\|_* \le 1$, else $\infty$. Use Lemma A3 from the Drill.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1524,7 +1524,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.16 — Convex Hull of a Function</h3>
+  <h3 id="prob-06-016">P6.16 — Convex Hull of a Function</h3>
   <p>The convex envelope of $f$ is defined as the function $g$ whose epigraph is the convex hull of $\mathrm{epi}(f)$. Prove that $g(x) = \inf \{ \sum \theta_i f(x_i) \mid \sum \theta_i x_i = x, \theta \ge 0, \sum \theta_i = 1 \}$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1547,7 +1547,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.17 — Log-Concavity Characterization (Breakdown of 3.47)</h3>
+  <h3 id="prob-06-017">P6.17 — Log-Concavity Characterization (Breakdown of 3.47)</h3>
   <p>Let $f > 0$ be differentiable on a convex domain. Prove that $f$ is log-concave if and only if $f(y) \le f(x) \exp\left( \frac{\nabla f(x)^\top (y-x)}{f(x)} \right)$ for all $x, y$.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1592,7 +1592,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.18 — Convexity of Maximum Eigenvalue (3.10)</h3>
+  <h3 id="prob-06-018">P6.18 — Convexity of Maximum Eigenvalue (3.10)</h3>
   <p>Define $f(X) = \lambda_{\max}(X)$ for symmetric matrices $X \in \mathbb{S}^n$. Show that $f$ is convex.</p>
   <div class="recap-box">
     <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1629,7 +1629,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.19 — Convexity of Induced Matrix Norms (3.11)</h3>
+  <h3 id="prob-06-019">P6.19 — Convexity of Induced Matrix Norms (3.11)</h3>
   <p>Let $\|\cdot\|_a$ and $\|\cdot\|_b$ be norms on $\mathbb{R}^m$ and $\mathbb{R}^n$. The induced norm (operator norm) is defined as:
   $$ \|X\|_{a,b} = \sup_{v \ne 0} \frac{\|Xv\|_a}{\|v\|_b} = \sup_{\|v\|_b=1} \|Xv\|_a $$
   Show that $f(X) = \|X\|_{a,b}$ is convex.</p>
@@ -1661,7 +1661,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.20 — Vector Composition Rules (3.14)</h3>
+  <h3 id="prob-06-020">P6.20 — Vector Composition Rules (3.14)</h3>
   <p>Use the composition rules to prove convexity/concavity for the following functions constructed from convex/concave components $g_i(x)$.
   <br><strong>(a)</strong> $f(x) = \sum_{i=1}^r g_{[i]}(x)$ (sum of $r$ largest), where $g_i$ are convex.
   <br><strong>(b)</strong> $f(x) = \log(\sum e^{g_i(x)})$, where $g_i$ are convex.
@@ -1698,7 +1698,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.21 — Perspective of Affine Composition (3.20)</h3>
+  <h3 id="prob-06-021">P6.21 — Perspective of Affine Composition (3.20)</h3>
   <p>Let $f: \mathbb{R}^m \to \mathbb{R}$ be convex. Show that $g(x) = (c^\top x + d) f\left( \frac{Ax+b}{c^\top x + d} \right)$ is convex on $\{x \mid c^\top x + d > 0\}$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1720,7 +1720,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.22 — Convexity Drills (3.22)</h3>
+  <h3 id="prob-06-022">P6.22 — Convexity Drills (3.22)</h3>
   <p>Determine the convexity of the following functions using composition rules.</p>
   <p><strong>(a)</strong> $f(x) = -\log(-\log(\sum e^{a_i^\top x + b_i}))$ on domain where sum $< 1$.
   <br><strong>(b)</strong> $f(x, u, v) = -\sqrt{uv - x^\top x}$ on $uv > x^\top x, u,v > 0$.
@@ -1759,7 +1759,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.23 — Perspective Practice (3.23)</h3>
+  <h3 id="prob-06-023">P6.23 — Perspective Practice (3.23)</h3>
   <p>Show that $f(x, t) = \frac{\|x\|_p^p}{t^{p-1}}$ is convex for $t > 0, p \ge 1$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1774,7 +1774,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.24 — Shifting Log-Concavity (3.48)</h3>
+  <h3 id="prob-06-024">P6.24 — Shifting Log-Concavity (3.48)</h3>
   <p>If $f$ is log-concave and $a \ge 0$, show that $g(x) = f(x) - a$ is log-concave on its domain $\{x \mid f(x) > a\}$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1813,7 +1813,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.25 — Cardinality on $\mathbb{R}_+^n$ (3.35)</h3>
+  <h3 id="prob-06-025">P6.25 — Cardinality on $\mathbb{R}_+^n$ (3.35)</h3>
   <p>Show that $\operatorname{card}(x)$ (number of nonzeros) is not quasiconvex on $\mathbb{R}_+^n$, but is quasiconcave.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1836,7 +1836,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.26 — Rank on PSD Cone (3.36)</h3>
+  <h3 id="prob-06-026">P6.26 — Rank on PSD Cone (3.36)</h3>
   <p>Show that $f(X) = \operatorname{rank}(X)$ is quasiconcave on $\mathbb{S}_+^n$.
   <br>Specifically, show $\operatorname{rank}(\theta X + (1-\theta)Y) \ge \min(\operatorname{rank}(X), \operatorname{rank}(Y))$.</p>
   <div class="solution-box">
@@ -1863,7 +1863,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.27 — Homogenization (3.31)</h3>
+  <h3 id="prob-06-027">P6.27 — Homogenization (3.31)</h3>
   <p>Let $f$ be convex with $f(0)=0$. Define $g(x) = \inf_{\alpha > 0} \frac{f(\alpha x)}{\alpha}$.
   Show that $g$ is convex, homogeneous, and the largest homogeneous underestimator of $f$.</p>
   <div class="solution-box">
@@ -1900,7 +1900,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.28 — Strong Convexity of Quadratic</h3>
+  <h3 id="prob-06-028">P6.28 — Strong Convexity of Quadratic</h3>
   <p>Let $f(\mathbf{x}) = \frac{1}{2}\mathbf{x}^\top P \mathbf{x} + \mathbf{q}^\top \mathbf{x} + r$. Under what condition on $P$ is $f$ strongly convex?</p>
 
   <div class="recap-box">
@@ -1929,7 +1929,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.29 — Dual of a Strictly Convex Function</h3>
+  <h3 id="prob-06-029">P6.29 — Dual of a Strictly Convex Function</h3>
   <p>Let $f$ be a closed, strictly convex function. Prove that its conjugate $f^*(\mathbf{y}) = \sup_{\mathbf{x}} (\mathbf{y}^\top \mathbf{x} - f(\mathbf{x}))$ is differentiable. (Hint: The maximizing $\mathbf{x}$ is unique).</p>
 
   <div class="recap-box">
@@ -1958,7 +1958,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.30 — Dual via Conjugates</h3>
+  <h3 id="prob-06-030">P6.30 — Dual via Conjugates</h3>
   <p>Using the definition of the convex conjugate, show that the dual of the problem $\min f(\mathbf{x})$ subject to $A\mathbf{x} = \mathbf{b}$ is $\max -\mathbf{b}^\top \boldsymbol{\nu} - f^*(-A^\top \boldsymbol{\nu})$.</p>
 
   <div class="recap-box">
@@ -1988,7 +1988,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.31 — Derivation: Dual of QP</h3>
+  <h3 id="prob-06-031">P6.31 — Derivation: Dual of QP</h3>
   <p>Consider the equality constrained Quadratic Program: $\min \frac{1}{2}\mathbf{x}^\top P \mathbf{x} + \mathbf{q}^\top \mathbf{x}$ s.t. $A\mathbf{x} = \mathbf{b}$, with $P \succ 0$. Derive the dual problem using the conjugate method from P6.30.</p>
 
   <div class="recap-box">
@@ -2018,7 +2018,7 @@
 </div>
 
 <div class="problem">
-  <h3>P6.32 — Dual of Single Inequality (Perspective of Conjugate)</h3>
+  <h3 id="prob-06-032">P6.32 — Dual of Single Inequality (Perspective of Conjugate)</h3>
   <p>Consider the problem $\min c^\top x$ subject to $f(x) \le 0$, where $f$ is convex. Show that the dual function is the perspective of the conjugate of $f$:
   $$ g(\lambda) = -\lambda f^*(-c/\lambda), \quad \lambda > 0 $$</p>
   <div class="recap-box">

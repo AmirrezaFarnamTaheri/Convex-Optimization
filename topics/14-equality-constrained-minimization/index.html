@@ -51,7 +51,7 @@
     </section>
 
     <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
+    <section class="section-card" id="key-concepts" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
       <h3>1. Equality Constrained Minimization</h3>
@@ -247,7 +247,7 @@
       <h2><i data-feather="edit-3"></i> Exercises</h2>
 
       <div class="problem">
-        <h3>P14.1 — Invertibility of KKT Matrix</h3>
+        <h3 id="prob-14-001">P14.1 — Invertibility of KKT Matrix</h3>
         <p>Prove that $\begin{bmatrix} P & A^\top \\ A & 0 \end{bmatrix}$ is nonsingular if $P \succ 0$ and $A$ has full row rank.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -268,7 +268,7 @@
       </div>
 
       <div class="problem">
-        <h3>P14.2 — Newton Step as Weighted Projection</h3>
+        <h3 id="prob-14-002">P14.2 — Newton Step as Weighted Projection</h3>
         <p>Show that the Newton step $\Delta x_{nt}$ minimizes the quadratic approximation of $f$ constrained to the linearized feasible set.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -288,7 +288,7 @@
       </div>
 
       <div class="problem">
-        <h3>P14.3 — Projection Operator Derivation</h3>
+        <h3 id="prob-14-003">P14.3 — Projection Operator Derivation</h3>
         <p>Derive the projection of $y$ onto $\{x : Ax=b\}$: $\Pi(y) = y - A^\top(AA^\top)^{-1}(Ay-b)$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -307,7 +307,7 @@
       </div>
 
       <div class="problem">
-        <h3>P14.4 — Penalty Method Convergence</h3>
+        <h3 id="prob-14-004">P14.4 — Penalty Method Convergence</h3>
         <p>Explain why the condition number of the Hessian in the quadratic penalty method diverges as $\rho \to \infty$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -327,7 +327,7 @@
       </div>
 
       <div class="problem">
-        <h3>P14.5 — Null-Space Operation Count</h3>
+        <h3 id="prob-14-005">P14.5 — Null-Space Operation Count</h3>
         <p>Confirm that solving the reduced Newton system requires $O((n-p)^3)$ operations.</p>
         <div class="solution-box">
           <h4>Solution</h4>

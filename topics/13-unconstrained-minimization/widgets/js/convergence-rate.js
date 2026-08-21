@@ -1,3 +1,13 @@
+/**
+ * Widget: Convergence Rate Comparison
+ *
+ * Description: Log-error plot of |f(x_k) - p*| per iteration for gradient
+ *              descent and Newton's method.
+ * Concept: L13 section 9 (Convergence Analysis) - linear vs. quadratic rates.
+ * What to notice: GD traces a straight line on the log plot (linear rate,
+ *              constant digits gained per step); Newton bends sharply downward
+ *              once in the quadratic phase, doubling correct digits per step.
+ */
 export function initConvergenceRate(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;

@@ -2282,7 +2282,7 @@
         <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
 
         <div class="problem">
-          <h3>P5.1 — Convexity of Basic Functions</h3>
+          <h3 id="prob-05-001">P5.1 — Convexity of Basic Functions</h3>
           <p>Determine whether the following functions are convex, concave, or neither. Prove your answer (e.g., using Hessian, composition rules).</p>
           <ol type="a">
             <li>$f(x) = e^{ax}$ on $\mathbb{R}$.</li>
@@ -2327,7 +2327,7 @@
         </div>
 
         <div class="problem">
-          <h3>P5.2 — Arithmetic-Geometric Mean Inequality</h3>
+          <h3 id="prob-05-002">P5.2 — Arithmetic-Geometric Mean Inequality</h3>
           <p>Prove the generalized AM-GM inequality using Jensen's inequality:
           $$ \sum_{i=1}^n \theta_i x_i \ge \prod_{i=1}^n x_i^{\theta_i} $$
           where $x_i > 0, \theta_i \ge 0, \sum \theta_i = 1$.</p>
@@ -2357,7 +2357,7 @@
         </div>
 
         <div class="problem">
-          <h3>P5.3 — Log-Sum-Exp</h3>
+          <h3 id="prob-05-003">P5.3 — Log-Sum-Exp</h3>
           <p>Show that $f(x) = \log(\sum_{i=1}^n e^{x_i})$ is convex.</p>
 
           <div class="recap-box">
@@ -2383,7 +2383,7 @@
         </div>
 
         <div class="problem">
-          <h3>P5.4 — Quadratic-over-Linear</h3>
+          <h3 id="prob-05-004">P5.4 — Quadratic-over-Linear</h3>
           <p>Show that $f(x, y) = x^2/y$ is convex for $y > 0$. Generalize to vector case $f(x,y) = \|x\|^2/y$.</p>
 
           <div class="recap-box">
@@ -2410,7 +2410,7 @@
         </div>
 
         <div class="problem">
-          <h3>P5.5 — Distance to a Set</h3>
+          <h3 id="prob-05-005">P5.5 — Distance to a Set</h3>
           <p>Let $C \subseteq \mathbb{R}^n$ be a convex set. Show that $d(x) = \inf_{y \in C} \|x - y\|$ is a convex function.</p>
 
           <div class="recap-box">
@@ -2431,7 +2431,7 @@
         </div>
 
         <div class="problem">
-          <h3>P5.6 — Entropy</h3>
+          <h3 id="prob-05-006">P5.6 — Entropy</h3>
           <p>Show that the negative entropy function $f(x) = \sum_{i=1}^n x_i \log x_i$ is strictly convex on $\mathbb{R}^n_{++}$.</p>
 
           <div class="recap-box">
@@ -2457,7 +2457,7 @@
             </div>
           </div>
 <div class="problem">
-  <h3>P5.7 — Convexity of Log-Sum-Exp via Cauchy-Schwarz</h3>
+  <h3 id="prob-05-007">P5.7 — Convexity of Log-Sum-Exp via Cauchy-Schwarz</h3>
   <p>Prove that $f(x) = \log(\sum e^{x_i})$ is convex by restricting it to a line and using the Cauchy-Schwarz inequality on the second derivative.</p>
 
   <div class="recap-box">
@@ -2507,7 +2507,7 @@
 <!-- Exercise on Sensitivity Analysis moved to Lecture 09 (Duality), Exercise P9.3, where the prerequisite concepts (Lagrangian, dual variables, strong duality) are covered. -->
 
 <div class="problem">
-  <h3>P5.9 — Advanced Composition Rules (3.22)</h3>
+  <h3 id="prob-05-009">P5.9 — Advanced Composition Rules (3.22)</h3>
   <p>Determine the convexity of the following functions and identify the composition rule used. ($x \in \mathbb{R}^n$).</p>
   <ol type="a">
     <li>$f(x) = -\log(-\log \sum_{i=1}^m e^{a_i^\top x + b_i})$ on domain $\sum e^{a_i^\top x + b_i} < 1$.</li>
@@ -2622,7 +2622,7 @@
 </div>
 
 <div class="problem">
-  <h3>P5.10 — Perspective Examples (3.23)</h3>
+  <h3 id="prob-05-010">P5.10 — Perspective Examples (3.23)</h3>
   <p>Show that the following functions are convex using the perspective transformation.</p>
   <ol type="a">
     <li>$f(x, t) = \|x\|_p^p / t^{p-1}$ for $p > 1, t > 0$.</li>
@@ -2664,7 +2664,7 @@
 </div>
 
 <div class="problem">
-  <h3>P5.11 — Hessian of $\log f(x)$ and Log-Concavity</h3>
+  <h3 id="prob-05-011">P5.11 — Hessian of $\log f(x)$ and Log-Concavity</h3>
   <p>Let $f: \mathbb{R}^n \to \mathbb{R}_{++}$ be twice continuously differentiable.
   <br><b>(a)</b> Show that $\nabla^2 \log f(x) = \frac{1}{f(x)}\nabla^2 f(x) - \frac{1}{f(x)^2}\nabla f(x)\nabla f(x)^\top$.
   <br><b>(b)</b> Use this to show that if $f$ is log-concave, then $f$ satisfies the condition $f(x)\nabla^2 f(x) \preceq \nabla f(x)\nabla f(x)^\top$.</p>
@@ -2718,7 +2718,7 @@
 </div>
 
 <div class="problem">
-  <h3>P5.12 — Log-Concavity of Shifted Function</h3>
+  <h3 id="prob-05-012">P5.12 — Log-Concavity of Shifted Function</h3>
   <p>Suppose $f: \mathbb{R}^n \to \mathbb{R}$ is log-concave and $f(x) > a \ge 0$. Show that the function $g(x) = f(x) - a$ is log-concave.</p>
   <div class="solution-box">
     <h4>Solution</h4>

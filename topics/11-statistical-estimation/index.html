@@ -51,7 +51,7 @@
     </section>
 
     <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
+    <section class="section-card" id="key-concepts" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
       <h3>1. Maximum Likelihood Estimation (MLE)</h3>
@@ -246,7 +246,7 @@
       <h2><i data-feather="edit-3"></i> Exercises</h2>
 
       <div class="problem">
-        <h3>P11.1 — SVM Dual Derivation (Soft Margin)</h3>
+        <h3 id="prob-11-001">P11.1 — SVM Dual Derivation (Soft Margin)</h3>
         <p>Derive the dual of the soft-margin SVM: $\min \frac{1}{2}\|w\|^2 + C \sum \xi_i$ s.t. $y_i(w^\top x_i + b) \ge 1-\xi_i, \xi_i \ge 0$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -269,7 +269,7 @@
       </div>
 
       <div class="problem">
-        <h3>P11.2 — Logistic Hessian Analysis</h3>
+        <h3 id="prob-11-002">P11.2 — Logistic Hessian Analysis</h3>
         <p>Prove that the Hessian of the logistic loss is strictly positive definite if $X$ has full rank.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -285,7 +285,7 @@
       </div>
 
       <div class="problem">
-        <h3>P11.3 — Poisson Regression Hessian</h3>
+        <h3 id="prob-11-003">P11.3 — Poisson Regression Hessian</h3>
         <p>Derive the Hessian for Poisson regression $\ell(w) = \sum (e^{w^\top x_i} - y_i w^\top x_i)$ and show convexity.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -300,12 +300,12 @@
       </div>
 
       <div class="problem">
-        <h3>P11.4 — Experiment Design (A-optimal)</h3>
+        <h3 id="prob-11-004">P11.4 — Experiment Design (A-optimal)</h3>
         <p>Formulate the A-optimal experiment design problem $\min \text{tr}((\sum \lambda_i v_i v_i^\top)^{-1})$ as an SDP. See <a href="#section-appendix">Appendix A.3</a> for the Schur Complement derivation.</p>
       </div>
 
       <div class="problem">
-        <h3>P11.5 — L1 Proximal Operator</h3>
+        <h3 id="prob-11-005">P11.5 — L1 Proximal Operator</h3>
         <p>Derive $\text{prox}_{\lambda \|\cdot\|_1}(v) = \text{argmin}_x \frac{1}{2}\|x-v\|^2 + \lambda \|x\|_1$.</p>
         <div class="solution-box">
           <h4>Solution</h4>

@@ -1,3 +1,14 @@
+/**
+ * Widget: Steepest Descent Geometry
+ *
+ * Description: Shows how the steepest-descent direction changes with the norm
+ *              used to measure step length (Euclidean, quadratic P-norm, l1,
+ *              l-infinity), by drawing the unit ball and the resulting step.
+ * Concept: L13 section 7 (Steepest Descent) - the norm choice is a preconditioner.
+ * What to notice: the direction is the point of the unit ball minimizing the
+ *              inner product with the gradient; a P-norm matched to the Hessian
+ *              recovers the Newton direction.
+ */
 export function initNormSteepest(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;

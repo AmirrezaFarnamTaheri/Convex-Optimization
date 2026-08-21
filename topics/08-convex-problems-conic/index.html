@@ -1005,7 +1005,7 @@ problem.solve()</code></pre>
       <!-- Problem 4.1 -->
 
 <div class="problem">
-  <h3>P8.1 — Classify and Reformulate: Minimizing Maximum Absolute Deviation</h3>
+  <h3 id="prob-08-001">P8.1 — Classify and Reformulate: Minimizing Maximum Absolute Deviation</h3>
   <p>Consider the problem:</p>
         <p style="text-align: center;">
           $
@@ -1058,7 +1058,7 @@ problem.solve()</code></pre>
 
 
 <div class="problem">
-  <h3>P8.2 — QP Formulation: Constrained Least Squares</h3>
+  <h3 id="prob-08-002">P8.2 — QP Formulation: Constrained Least Squares</h3>
   <p>Consider the problem of finding $x \in \mathbb{R}^n$ that minimizes $\|Ax - b\|_2^2$ subject to $l \preceq x \preceq u$ (box constraints).</p>
         <p><strong>(a)</strong> Write this problem in standard QP form.</p>
         <p><strong>(b)</strong> Under what conditions on $A$ is the problem strictly convex (thus having a unique solution)?</p>
@@ -1098,7 +1098,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.3 — SOCP Reformulation: $\ell_2$ Regularized Least Squares</h3>
+  <h3 id="prob-08-003">P8.3 — SOCP Reformulation: $\ell_2$ Regularized Least Squares</h3>
   <p>Consider the problem:</p>
         <p style="text-align: center;">
           $
@@ -1149,7 +1149,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.4 — SDP Example: Largest Eigenvalue Minimization</h3>
+  <h3 id="prob-08-004">P8.4 — SDP Example: Largest Eigenvalue Minimization</h3>
   <p>Consider the problem of minimizing $\lambda_{\max}(A_0 + x_1 A_1 + x_2 A_2)$ where $A_0, A_1, A_2 \in \mathbb{S}^n$ are given symmetric matrices.</p>
         <p><strong>(a)</strong> Formulate this as an SDP.</p>
         <p><strong>(b)</strong> Write the dual problem (you may use the general SDP duality results).</p>
@@ -1199,7 +1199,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.5 — Problem Classification: Portfolio Optimization with Risk Constraint</h3>
+  <h3 id="prob-08-005">P8.5 — Problem Classification: Portfolio Optimization with Risk Constraint</h3>
   <p>Consider a portfolio optimization problem with $n$ assets, expected returns $\mu \in \mathbb{R}^n$, and covariance matrix $\Sigma \in \mathbb{S}_{++}^n$:</p>
         <p style="text-align: center;">
           $
@@ -1248,7 +1248,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.6 — Equivalence: $\ell_1$ Minimization and LP</h3>
+  <h3 id="prob-08-006">P8.6 — Equivalence: $\ell_1$ Minimization and LP</h3>
   <p>Show that the problem $\min \|x\|_1$ subject to $Ax = b$ is equivalent to an LP.</p>
 
 
@@ -1284,7 +1284,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.7 — Quasiconvex Optimization: Bisection Algorithm</h3>
+  <h3 id="prob-08-007">P8.7 — Quasiconvex Optimization: Bisection Algorithm</h3>
   <p>Consider minimizing $f(x) = \frac{x_1}{x_2}$ subject to $x_1 + x_2 \le 1$, $x_1, x_2 > 0$.</p>
         <p><strong>(a)</strong> Show that $f$ is quasiconvex (but not convex) on $\mathbb{R}_{++}^2$.</p>
         <p><strong>(b)</strong> Describe how to solve this problem using bisection over $t$ and convex feasibility problems.</p>
@@ -1336,7 +1336,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.8 — Minimum Enclosing Ellipsoid as SDP</h3>
+  <h3 id="prob-08-008">P8.8 — Minimum Enclosing Ellipsoid as SDP</h3>
   <p>Given points $x_1, \dots, x_m \in \mathbb{R}^n$, find the minimum-volume ellipsoid $\mathcal{E} = \{x \mid \|Ax - b\|_2 \le 1\}$ containing all points.</p>
         <p><strong>(a)</strong> Show that the volume of $\mathcal{E}$ is proportional to $\det(A^{-1})$.</p>
         <p><strong>(b)</strong> Formulate the problem as an SDP by using the objective $\log \det(A)$ (which is concave in $A$ for $A \succ 0$).</p>
@@ -1371,7 +1371,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.9 — Resource Allocation Formulation</h3>
+  <h3 id="prob-08-009">P8.9 — Resource Allocation Formulation</h3>
   <p>Consider a resource allocation problem where we want to distribute a total budget $B$ among $n$ projects to maximize total utility. The utility of project $i$ is given by $U_i(x_i) = \alpha_i \log(1 + x_i)$, where $x_i \ge 0$ is the investment in project $i$ and $\alpha_i > 0$. There are also linear constraints $Ax \le b$ representing resource limits.</p>
         <p><strong>(a)</strong> Formulate this as a convex optimization problem.</p>
         <p><strong>(b)</strong> Verify that the objective is concave (so minimizing negative utility is convex).</p>
@@ -1415,7 +1415,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.10 — Standard Form Transformation: Linear-Fractional Programming</h3>
+  <h3 id="prob-08-010">P8.10 — Standard Form Transformation: Linear-Fractional Programming</h3>
   <p>Consider the linear-fractional optimization problem:</p>
         $$
         \begin{aligned}
@@ -1469,7 +1469,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.11 — Vector Optimization (Pareto Optimality)</h3>
+  <h3 id="prob-08-011">P8.11 — Vector Optimization (Pareto Optimality)</h3>
   <p>A point $\mathbf{x}^\star$ is <b>Pareto optimal</b> for the vector objective $f(\mathbf{x}) = (f_1(\mathbf{x}), \dots, f_k(\mathbf{x}))$ if there is no feasible $\mathbf{y}$ such that $f_i(\mathbf{y}) \le f_i(\mathbf{x}^\star)$ for all $i$ and $f_j(\mathbf{y}) < f_j(\mathbf{x}^\star)$ for at least one $j$.
         Prove that minimizing the weighted sum $\sum w_i f_i(\mathbf{x})$ with weights $\mathbf{w} > 0$ yields a Pareto optimal point.</p>
 
@@ -1502,7 +1502,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.12 — Matrix Fractional Minimization</h3>
+  <h3 id="prob-08-012">P8.12 — Matrix Fractional Minimization</h3>
   <p>Consider the problem of minimizing the matrix fractional function $f(\mathbf{x}, Y) = \mathbf{x}^\top Y^{-1} \mathbf{x}$ subject to linear constraints:</p>
   <p style="text-align: center;">
     $
@@ -1564,7 +1564,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.13 — SOCP Canonical Form (Primal)</h3>
+  <h3 id="prob-08-013">P8.13 — SOCP Canonical Form (Primal)</h3>
   <p>Formulate the general SOCP with constraints $\|A_i \mathbf{x} + \mathbf{b}_i\|_2 \le \mathbf{d}_i^\top \mathbf{x} + e_i$ as a conic program over the product of second-order cones. Specifically, write it as $\min \mathbf{c}^\top \mathbf{x}$ s.t. $\mathcal{A}\mathbf{x} + \boldsymbol{\beta} \in K$ where $K = Q^{m_1+1} \times \dots \times Q^{m_k+1}$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1577,7 +1577,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.14 — SDP Canonical Form (Primal)</h3>
+  <h3 id="prob-08-014">P8.14 — SDP Canonical Form (Primal)</h3>
   <p>Write the SDP $\min \text{tr}(CX)$ s.t. $\langle A_i, X \rangle = b_i$, $X \succeq 0$ in the standard conic form $\min \langle C, X \rangle$ s.t. $\mathcal{A}(X) = b, X \in K$. Identify $K$.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1603,7 +1603,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.15 — Entropy Maximization as Exponential Cone Program</h3>
+  <h3 id="prob-08-015">P8.15 — Entropy Maximization as Exponential Cone Program</h3>
   <p>Consider the entropy maximization problem:</p>
   <p style="text-align: center;">
     $$
@@ -1651,7 +1651,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.16 — Log-Sum-Exp via Exponential Cone</h3>
+  <h3 id="prob-08-016">P8.16 — Log-Sum-Exp via Exponential Cone</h3>
   <p>Show that minimizing the log-sum-exp function $\log(\sum_{i=1}^n e^{x_i})$ can be formulated as an exponential cone program.</p>
   <div class="solution-box">
     <h4>Solution</h4>
@@ -1679,7 +1679,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.17 — Generalized Eigenvalues</h3>
+  <h3 id="prob-08-017">P8.17 — Generalized Eigenvalues</h3>
   <p>Let $A, B \in \mathbb{S}^n$ with $B$ nonsingular. The generalized eigenvalues of the pair $(A, B)$ are the roots of $\det(\lambda B - A) = 0$.
   <br><b>(a)</b> Show that if there exists a nonsingular $R$ such that $R^\top A R = \mathrm{diag}(a)$ and $R^\top B R = \mathrm{diag}(b)$, then the generalized eigenvalues are real and given by $\lambda_i = a_i/b_i$.
   <br><b>(b)</b> Formulate the problem $\min ct$ subject to $tB \succeq A$ as an SDP and derive its optimal value in terms of these generalized eigenvalues.</p>
@@ -1720,7 +1720,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.18 — SDP Encodings of Other Problems</h3>
+  <h3 id="prob-08-018">P8.18 — SDP Encodings of Other Problems</h3>
   <p>Show how to formulate the following as SDP constraints using Linear Matrix Inequalities (LMIs) and Schur Complements.</p>
   <ol type="a">
     <li><b>QCQP Constraint:</b> $x^\top P x + q^\top x + r \le 0$ with $P \succeq 0$.</li>
@@ -1758,7 +1758,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.19 — Suboptimality of Simple Covering Ellipsoid (Problem 5.9)</h3>
+  <h3 id="prob-08-019">P8.19 — Suboptimality of Simple Covering Ellipsoid (Problem 5.9)</h3>
   <p>Find the minimum volume ellipsoid $\mathcal{E}$ centered at the origin containing the points $a_1, \dots, a_m \in \mathbb{R}^n$.
   <br>Let $X_{\text{sim}} = (\sum a_k a_k^\top)^{-1}$ be a simple candidate solution.
   <br>Show that the volume of the ellipsoid defined by $X_{\text{sim}}$ is at most $(m/n)^{n/2}$ times the volume of the optimal ellipsoid.</p>
@@ -1780,7 +1780,7 @@ problem.solve()</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P8.20 — Robust Linear Programming (Ex 4.25)</h3>
+  <h3 id="prob-08-020">P8.20 — Robust Linear Programming (Ex 4.25)</h3>
   <p>Consider the robust linear inequality $a^\top x \le b$ for all $a \in \mathcal{E}$, where $\mathcal{E} = \{ \bar{a} + Pu \mid \|u\|_2 \le 1 \}$ is an ellipsoid.
   <br>Show that this robust constraint is equivalent to a Second-Order Cone (SOC) constraint.</p>
   <div class="solution-box">

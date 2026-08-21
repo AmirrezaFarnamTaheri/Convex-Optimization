@@ -1608,7 +1608,7 @@
       <h2><i data-feather="edit-3"></i> 9. Exercises</h2>
 
       <div class="problem">
-        <h3>P7.1 — Diet Problem (LP)</h3>
+        <h3 id="prob-07-001">P7.1 — Diet Problem (LP)</h3>
         <p>Formulate the classic diet problem as an LP. (See Example 7.5 for the derivation).
         Is the feasible set bounded?</p>
         <div class="recap-box">
@@ -1648,7 +1648,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.2 — Transportation Problem (LP)</h3>
+        <h3 id="prob-07-002">P7.2 — Transportation Problem (LP)</h3>
         <p>Supply $s_i$ at source $i$ ($i=1\dots m$), demand $d_j$ at destination $j$ ($j=1\dots n$). Cost to ship unit from $i$ to $j$ is $C_{ij}$. Formulate as LP.</p>
         <div class="recap-box">
           <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1683,7 +1683,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.3 — PSD Block Matrix (Matrix Viewpoint)</h3>
+        <h3 id="prob-07-003">P7.3 — PSD Block Matrix (Matrix Viewpoint)</h3>
         <p>Verify that the matrix $Q = \begin{bmatrix} I & -I \\ -I & I \end{bmatrix}$ is positive semidefinite by explicitly factoring it as $B^\top B$. What is $B$?</p>
         <div class="recap-box">
           <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1715,7 +1715,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.4 — L1 Reformulation</h3>
+        <h3 id="prob-07-004">P7.4 — L1 Reformulation</h3>
         <p>Reformulate $\min \|Ax - b\|_1$ subject to $\|x\|_\infty \le 1$ as an LP.</p>
         <div class="recap-box">
           <h4 style="margin-top: 0; font-size: 0.9em; color: var(--primary-300); text-transform: uppercase; letter-spacing: 0.05em;">Recap & Key Concepts</h4>
@@ -1755,7 +1755,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.5 — LP Reformulation: Piecewise Linear Objective</h3>
+        <h3 id="prob-07-005">P7.5 — LP Reformulation: Piecewise Linear Objective</h3>
         <p>Consider the problem of minimizing the sum of hinge losses:</p>
         $$ \min_{x} \quad c^\top x + \sum_{i=1}^m \max(0, a_i^\top x + b_i) $$
         <p>Formulate this as a Linear Program.</p>
@@ -1797,7 +1797,7 @@
         </div>
 
       <div class="problem">
-        <h3>P7.6 — The Log-Barrier Problem</h3>
+        <h3 id="prob-07-006">P7.6 — The Log-Barrier Problem</h3>
         <p>Consider $f_0(x) = -\sum_{i=1}^m \log(b_i - a_i^\top x)$ with domain $\{x \mid Ax \prec b\}$.
         Analyze the existence of minimizers (Exercise 4.2).</p>
         <p><strong>(a)</strong> Show that the domain is unbounded if and only if there exists $\mathbf{v} \ne 0$ such that $A\mathbf{v} \preceq 0$.</p>
@@ -1849,7 +1849,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.7 — LASSO Primal</h3>
+        <h3 id="prob-07-007">P7.7 — LASSO Primal</h3>
         <p>Formulate the LASSO problem as a QP:
         $$ \min_x \frac{1}{2}\|Ax - b\|_2^2 + \lambda \|x\|_1 $$
         </p>
@@ -1876,7 +1876,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.8 — Soft-Margin SVM Primal</h3>
+        <h3 id="prob-07-008">P7.8 — Soft-Margin SVM Primal</h3>
         <p>Formulate the Soft-Margin SVM as a QP:
         $$
         \min_{w, b, \xi} \frac{1}{2}\|w\|_2^2 + C \sum_{i=1}^m \xi_i
@@ -1911,7 +1911,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.9 — Robust Least Squares (Huber Penalty) Formulation</h3>
+        <h3 id="prob-07-009">P7.9 — Robust Least Squares (Huber Penalty) Formulation</h3>
         <p>The Huber penalty function is defined as:
         $$ \phi(u) = \begin{cases} u^2 & |u| \le M \\ M(2|u| - M) & |u| > M \end{cases} $$
         We minimize $\sum \phi(a_i^\top x - b_i)$. Show that the following three formulations are equivalent.</p>
@@ -1962,7 +1962,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.10 — Matrix Norm Approximation (4.14)</h3>
+        <h3 id="prob-07-010">P7.10 — Matrix Norm Approximation (4.14)</h3>
         <p>Let $\|A\|_\infty = \max_i \sum_j |a_{ij}|$ be the induced infinity norm.
         We want to minimize $\|A_0 + \sum x_k A_k\|_\infty$. Formulate this as an LP.</p>
         <div class="solution-box">
@@ -1999,7 +1999,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.11 — Minimum Fuel Optimal Control (4.16)</h3>
+        <h3 id="prob-07-011">P7.11 — Minimum Fuel Optimal Control (4.16)</h3>
         <p>Minimize fuel consumption $\sum_{t=0}^{N-1} f(u(t))$ for a linear system $x(t+1) = Ax(t) + bu(t)$, where the fuel cost is piecewise linear:
         $$ f(a) = \begin{cases} |a| & |a| \le 1 \\ 2|a| - 1 & |a| > 1 \end{cases} $$
         Formulate as an LP.</p>
@@ -2026,7 +2026,7 @@
       </div>
 
       <div class="problem">
-        <h3>P7.12 — Convex-Concave Fractional Programming (4.7)</h3>
+        <h3 id="prob-07-012">P7.12 — Convex-Concave Fractional Programming (4.7)</h3>
         <p>Minimize $f_0(x) = \frac{f(x)}{h(x)}$ subject to $Ax \le b$, where $f$ is convex, $h$ is concave, $f \ge 0, h > 0$.
         <br>Show this is quasiconvex and derive the convex reformulation.</p>
         <div class="solution-box">

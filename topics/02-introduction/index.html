@@ -1620,7 +1620,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
       </div>
 
 <div class="problem">
-  <h3>P2.1 — Classify as Convex / Not Convex</h3>
+  <h3 id="prob-02-001">P2.1 — Classify as Convex / Not Convex</h3>
   <p>For each problem, state if it is convex and explain your answer. <ol type="a"> <li>$\min \|Ax - b\|_2^2$ subject to $Fx = g$.</li> <li>$\min -\|x\|_2$ subject to $Ax \le b$.</li> <li>$\min \|x\|_1$ subject to $\|Bx - c\|_\infty \le 1$.</li> <li>$\min x^\top Q x$ subject to $Dx \le e$, where $Q$ is not guaranteed to be PSD.</li> <li>$\min \|x\|_2^2$ subject to $x_i \in \{0, 1\}$ for all $i$.</li> </ol></p>
 
   <div class="recap-box">
@@ -1668,7 +1668,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.2 — Real-World Modeling: Warehouse Location</h3>
+  <h3 id="prob-02-002">P2.2 — Real-World Modeling: Warehouse Location</h3>
   <p>You are tasked with optimizing the placement of a distribution warehouse to minimize the sum of squared Euclidean distances to $k$ retail locations $r_1, \dots, r_k \in \mathbb{R}^2$. The warehouse must be located within a region defined by linear inequalities $C x \le d$. Formulate this as a convex optimization problem.</p>
 
   <div class="recap-box">
@@ -1698,7 +1698,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.3 — Reformulation: $\ell_1$ Regression as LP</h3>
+  <h3 id="prob-02-003">P2.3 — Reformulation: $\ell_1$ Regression as LP</h3>
   <p>Show how to reformulate the following problem as a linear program: $$ \min_{x \in \mathbb{R}^n} \|Ax - b\|_1 \quad \text{s.t.} \quad \|x\|_\infty \le 1 $$</p>
 
   <div class="recap-box">
@@ -1725,7 +1725,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.4 — Prove: Feasible Set is Convex</h3>
+  <h3 id="prob-02-004">P2.4 — Prove: Feasible Set is Convex</h3>
   <p>Prove that for a convex optimization problem, the feasible set $\mathcal{F} = \{x \mid f_i(x) \le 0, Ax = b\}$ is convex.</p>
 
   <div class="recap-box">
@@ -1749,7 +1749,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.5 — Proving Uniqueness</h3>
+  <h3 id="prob-02-005">P2.5 — Proving Uniqueness</h3>
   <p>Prove that if $f_0$ is strictly convex, then the optimization problem has at most one global minimizer.</p>
 
   <div class="recap-box">
@@ -1772,7 +1772,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.6 — Modeling: Maximum Likelihood Estimation</h3>
+  <h3 id="prob-02-006">P2.6 — Modeling: Maximum Likelihood Estimation</h3>
   <p>Consider a logistic regression model for binary classification. We have data points $(\mathbf{x}_i, y_i)$ where $\mathbf{x}_i \in \mathbb{R}^n$ are feature vectors and $y_i \in \{-1, 1\}$ are labels. The probability that $y_i = 1$ is modeled as: $$ P(y_i=1 \mid \mathbf{x}_i; \mathbf{w}) = \frac{1}{1 + e^{-\mathbf{w}^\top \mathbf{x}_i}} $$ Formulate the problem of finding the weight vector $\mathbf{w}$ that maximizes the log-likelihood of the data as a convex optimization problem. (Note: $P(y_i=-1 \mid \mathbf{x}_i; \mathbf{w}) = 1 - P(y_i=1) = \frac{1}{1 + e^{\mathbf{w}^\top \mathbf{x}_i}}$).</p>
 
   <div class="recap-box">
@@ -1810,7 +1810,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.7 — Proving Convexity from First Principles</h3>
+  <h3 id="prob-02-007">P2.7 — Proving Convexity from First Principles</h3>
   <p>Prove that $f(x) = \|Ax - b\|_2^2$ is a convex function using only the definition of convexity: $$ f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) \quad \forall \theta \in [0,1] $$ Do not use the Hessian condition or the composition rule.</p>
 
   <div class="recap-box">
@@ -1851,7 +1851,7 @@ print(f"Optimal weights: {w.value}")</code></pre>
 </div>
 
 <div class="problem">
-  <h3>P2.8 — Strict vs. Strong Convexity</h3>
+  <h3 id="prob-02-008">P2.8 — Strict vs. Strong Convexity</h3>
   <p>Give an example of a function $f: \mathbb{R} \to \mathbb{R}$ that is strictly convex but not strongly convex. Explain why.</p>
 
   <div class="recap-box">

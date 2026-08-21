@@ -51,7 +51,7 @@
     </section>
 
     <!-- Main lecture content -->
-    <section class="section-card" style="margin-bottom: 32px;">
+    <section class="section-card" id="key-concepts" style="margin-bottom: 32px;">
       <h2>Key Concepts</h2>
 
       <h3>1. Inequality Constrained Minimization</h3>
@@ -249,7 +249,7 @@
       <h2><i data-feather="edit-3"></i> Exercises</h2>
 
       <div class="problem">
-        <h3>P15.1 — Central Path Convergence</h3>
+        <h3 id="prob-15-001">P15.1 — Central Path Convergence</h3>
         <p>Prove that if the feasible set is bounded, the central path $\{x^*(t)\}$ has a limit point as $t \to \infty$ which is optimal.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -267,7 +267,7 @@
       </div>
 
       <div class="problem">
-        <h3>P15.2 — Gradient of Log-Barrier</h3>
+        <h3 id="prob-15-002">P15.2 — Gradient of Log-Barrier</h3>
         <p>Verify $\nabla \phi(x) = \sum_{i=1}^m \frac{1}{-f_i(x)} \nabla f_i(x)$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -281,7 +281,7 @@
       </div>
 
       <div class="problem">
-        <h3>P15.3 — Complexity Bound</h3>
+        <h3 id="prob-15-003">P15.3 — Complexity Bound</h3>
         <p>Justify the iteration bound $O(\sqrt{m} \log(1/\epsilon))$.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -296,7 +296,7 @@
       </div>
 
       <div class="problem">
-        <h3>P15.4 — LP Central Path</h3>
+        <h3 id="prob-15-004">P15.4 — LP Central Path</h3>
         <p>For $\min c^\top x$ s.t. $x \ge 0$, find the central path.</p>
         <div class="solution-box">
           <h4>Solution</h4>
@@ -315,7 +315,7 @@
       </div>
 
       <div class="problem">
-        <h3>P15.5 — Primal-Dual Direction</h3>
+        <h3 id="prob-15-005">P15.5 — Primal-Dual Direction</h3>
         <p>Show that the primal-dual direction reduces to the pure Newton centering direction if $x$ is feasible and $s = -1/(t f_i)$.</p>
         <div class="solution-box">
           <h4>Solution</h4>

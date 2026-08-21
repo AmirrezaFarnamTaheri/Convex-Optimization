@@ -15,6 +15,10 @@
     "definition": "A set that contains the line passing through any two distinct points in the set. Equivalently, a translated linear subspace.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-1"
   },
+  "backtracking line search": {
+    "definition": "A step-size rule: start at $s=1$ and shrink $s \\leftarrow \\beta s$ until $f(x + s\\Delta x) \\le f(x) + \\alpha s \\nabla f(x)^\\top \\Delta x$, with $\\alpha \\in (0, 1/2)$, $\\beta \\in (0,1)$.",
+    "url": "../../topics/13-unconstrained-minimization/index.html#key-concepts"
+  },
   "basis pursuit": {
     "definition": "An optimization problem minimizing the L1 norm subject to linear equality constraints, encouraging sparsity.",
     "url": "../../topics/07-convex-problems-standard/index.html#section-8"
@@ -22,6 +26,10 @@
   "caratheodory's theorem": {
     "definition": "A theorem stating that any point in the convex hull of a set S in R^n can be expressed as a convex combination of at most n+1 points from S.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-1"
+  },
+  "central path": {
+    "definition": "The curve $\\{x^\\star(t) : t > 0\\}$ of minimizers of $t f_0(x) + \\phi(x)$. Points on it satisfy perturbed KKT conditions with $\\lambda_i f_i = -1/t$, and have duality gap exactly $m/t$.",
+    "url": "../../topics/15-interior-point-methods/index.html#key-concepts"
   },
   "column space": {
     "definition": "The set of all possible linear combinations of the columns of a matrix A. Also known as the image or range.",
@@ -40,7 +48,7 @@
     "url": "../../topics/01-linear-algebra-advanced/index.html#section-pseudoinverse"
   },
   "cone": {
-    "definition": "A set closed under non-negative scaling: if x in K, then \u03b8x in K for \u03b8 \u2265 0.",
+    "definition": "A set closed under non-negative scaling: if x in K, then θx in K for θ ≥ 0.",
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
   "convex combination": {
@@ -52,11 +60,11 @@
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
   "convex conjugate": {
-    "definition": "The function f*(y) = sup(y\u1d40x - f(x)). It is always convex.",
+    "definition": "The function f*(y) = sup(yᵀx - f(x)). It is always convex.",
     "url": "../../topics/06-convex-functions-advanced/index.html#section-1"
   },
   "convex function": {
-    "definition": "A function f is convex if its domain is a convex set and f(\u03b8x + (1-\u03b8)y) \u2264 \u03b8f(x) + (1-\u03b8)f(y).",
+    "definition": "A function f is convex if its domain is a convex set and f(θx + (1-θ)y) ≤ θf(x) + (1-θ)f(y).",
     "url": "../../topics/05-convex-functions-basics/index.html#section-1"
   },
   "convex hull": {
@@ -72,7 +80,7 @@
     "url": "../../topics/03-convex-sets-geometry/index.html#section-1"
   },
   "dual cone": {
-    "definition": "The set of vectors y such that y\u1d40x \u2265 0 for all x in K.",
+    "definition": "The set of vectors y such that yᵀx ≥ 0 for all x in K.",
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
   "duality gap": {
@@ -80,11 +88,11 @@
     "url": "../../topics/09-duality/index.html#section-2"
   },
   "ellipsoid": {
-    "definition": "A set of the form {x | (x-x0)^\u1d40P^{-1}(x-x0) \u2264 1} with P \u227b 0. It generalizes balls under affine transformations.",
+    "definition": "A set of the form {x | (x-x0)^ᵀP^{-1}(x-x0) ≤ 1} with P ≻ 0. It generalizes balls under affine transformations.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "epigraph": {
-    "definition": "The set of points lying on or above the graph of a function. epi(f) = {(x,t) | f(x) \u2264 t}.",
+    "definition": "The set of points lying on or above the graph of a function. epi(f) = {(x,t) | f(x) ≤ t}.",
     "url": "../../topics/05-convex-functions-basics/index.html#section-2"
   },
   "farkas' lemma": {
@@ -96,7 +104,7 @@
     "url": "../../topics/02-introduction/index.html#section-1"
   },
   "fenchel conjugate": {
-    "definition": "Another name for the convex conjugate: f*(y) = sup_x (y^\u1d40x - f(x)).",
+    "definition": "Another name for the convex conjugate: f*(y) = sup_x (y^ᵀx - f(x)).",
     "url": "../../topics/06-convex-functions-advanced/index.html#section-1"
   },
   "generalized inequality": {
@@ -112,15 +120,19 @@
     "url": "../../topics/07-convex-problems-standard/index.html#section-5"
   },
   "halfspace": {
-    "definition": "A set {x | a\u1d40x \u2264 b}. It is a convex set bounded by a hyperplane.",
+    "definition": "A set {x | aᵀx ≤ b}. It is a convex set bounded by a hyperplane.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
+  },
+  "huber loss": {
+    "definition": "A robust penalty that is quadratic for small residuals and linear beyond a threshold $M$, combining least-squares efficiency near zero with $\\ell_1$ resistance to outliers.",
+    "url": "../../topics/10-approximation-fitting/index.html#key-concepts"
   },
   "hyperbolic cone": {
     "definition": "A type of convex cone defined by a hyperbolic quadratic inequality, generalizing the second-order cone.",
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
   "hyperplane": {
-    "definition": "A set {x | a\u1d40x = b}. It divides the space into two halfspaces.",
+    "definition": "A set {x | aᵀx = b}. It divides the space into two halfspaces.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "indicator function": {
@@ -132,15 +144,19 @@
     "url": "../../topics/00-linear-algebra-basics/index.html#section-norms"
   },
   "jensen's inequality": {
-    "definition": "The inequality f(E[X]) \u2264 E[f(X)] for a convex function f.",
+    "definition": "The inequality f(E[X]) ≤ E[f(X)] for a convex function f.",
     "url": "../../topics/05-convex-functions-basics/index.html#section-1"
   },
   "kkt conditions": {
     "definition": "Karush-Kuhn-Tucker conditions: Necessary conditions for optimality. Sufficient for convex problems with Slater's condition.",
     "url": "../../topics/09-duality/index.html#section-4"
   },
+  "kkt system": {
+    "definition": "The block linear system solved for the equality-constrained Newton step, with a symmetric indefinite (saddle-point) coefficient matrix built from $\\nabla^2 f$ and $A$.",
+    "url": "../../topics/14-equality-constrained-minimization/index.html#key-concepts"
+  },
   "lagrangian": {
-    "definition": "The function L(x,\u03bb,\u03bd) = f\u2080(x) + \u03a3\u03bb\u1d62f\u1d62(x) + \u03a3\u03bd\u2c7ch\u2c7c(x), augmenting the objective with weighted constraints.",
+    "definition": "The function L(x,λ,ν) = f₀(x) + Σλᵢfᵢ(x) + Σνⱼhⱼ(x), augmenting the objective with weighted constraints.",
     "url": "../../topics/09-duality/index.html#section-1"
   },
   "lasso": {
@@ -156,8 +172,12 @@
     "url": "../../topics/00-linear-algebra-basics/index.html#section-subspaces"
   },
   "linear-fractional function": {
-    "definition": "A function of the form f(x) = (Ax+b) / (c\u1d40x+d). Preimages and images of convex sets under this map are convex.",
+    "definition": "A function of the form f(x) = (Ax+b) / (cᵀx+d). Preimages and images of convex sets under this map are convex.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-3"
+  },
+  "log barrier": {
+    "definition": "The function $\\phi(x) = -\\sum_i \\log(-f_i(x))$, a smooth approximation of the indicator of $\\{f_i(x) \\le 0\\}$ that blows up at the boundary; the basis of interior-point methods.",
+    "url": "../../topics/15-interior-point-methods/index.html#key-concepts"
   },
   "log-concave": {
     "definition": "A function f is log-concave if log(f) is concave. Implies f is unimodal.",
@@ -168,7 +188,7 @@
     "url": "../../topics/05-convex-functions-basics/index.html#section-5"
   },
   "lorentz cone": {
-    "definition": "The second-order cone Q = {(x,t) | ||x||\u2082 \u2264 t}. Also known as the ice-cream cone.",
+    "definition": "The second-order cone Q = {(x,t) | ||x||₂ ≤ t}. Also known as the ice-cream cone.",
     "url": "../../topics/08-convex-problems-conic/index.html#section-1"
   },
   "lp": {
@@ -188,15 +208,23 @@
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
   "minkowski sum": {
-    "definition": "The set sum A + B = {a + b | a \u2208 A, b \u2208 B}. Preserves convexity.",
+    "definition": "The set sum A + B = {a + b | a ∈ A, b ∈ B}. Preserves convexity.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-3"
+  },
+  "newton decrement": {
+    "definition": "$\\lambda(x) = \\sqrt{\\nabla f(x)^\\top \\nabla^2 f(x)^{-1} \\nabla f(x)}$. An affine-invariant measure of proximity to the optimum; $\\lambda(x)^2/2$ estimates $f(x) - p^\\star$ and serves as the stopping criterion.",
+    "url": "../../topics/13-unconstrained-minimization/index.html#key-concepts"
+  },
+  "newton step": {
+    "definition": "The direction $\\Delta x_{\\mathrm{nt}} = -\\nabla^2 f(x)^{-1}\\nabla f(x)$, which minimizes the local second-order model of $f$. It is affine invariant, unlike the gradient step.",
+    "url": "../../topics/13-unconstrained-minimization/index.html#key-concepts"
   },
   "norm": {
     "definition": "A function assigning a non-negative length to a vector, satisfying triangle inequality and homogeneity.",
     "url": "../../topics/00-linear-algebra-basics/index.html#section-norms"
   },
   "norm ball": {
-    "definition": "The set {x | ||x|| \u2264 1} for a given norm ||\u22c5||. These balls encode geometry and often become constraints.",
+    "definition": "The set {x | ||x|| ≤ 1} for a given norm ||⋅||. These balls encode geometry and often become constraints.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "nullspace": {
@@ -216,15 +244,19 @@
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "positive semidefinite": {
-    "definition": "A symmetric matrix A is PSD if x\u1d40Ax \u2265 0 for all vectors x. Equivalently, all its eigenvalues are non-negative.",
+    "definition": "A symmetric matrix A is PSD if xᵀAx ≥ 0 for all vectors x. Equivalently, all its eigenvalues are non-negative.",
     "url": "../../topics/00-linear-algebra-basics/index.html#section-psd"
   },
   "proper cone": {
     "definition": "A convex cone that is closed, pointed (contains no lines), and solid (has interior). Used to define generalized inequalities.",
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
   },
+  "proximal operator": {
+    "definition": "$\\mathrm{prox}_{\\lambda f}(v) = \\arg\\min_x \\left( f(x) + \\frac{1}{2\\lambda}\\|x-v\\|_2^2 \\right)$; balances decreasing $f$ against staying near $v$. Soft thresholding is the prox of the $\\ell_1$ norm.",
+    "url": "../../topics/10-approximation-fitting/index.html#section-appendix"
+  },
   "psd cone": {
-    "definition": "The set of positive semidefinite matrices, S\u207f\u208a = {X \u2208 S\u207f | X \u2ab0 0}.",
+    "definition": "The set of positive semidefinite matrices, Sⁿ₊ = {X ∈ Sⁿ | X ⪰ 0}.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "pseudoinverse": {
@@ -240,11 +272,11 @@
     "url": "../../topics/07-convex-problems-standard/index.html#section-3"
   },
   "quasi-convex": {
-    "definition": "A function where all sublevel sets {x | f(x) \u2264 \u03b1} are convex.",
+    "definition": "A function where all sublevel sets {x | f(x) ≤ α} are convex.",
     "url": "../../topics/06-convex-functions-advanced/index.html#section-2"
   },
   "quasiconvex": {
-    "definition": "A function where all sublevel sets {x | f(x) \u2264 \u03b1} are convex.",
+    "definition": "A function where all sublevel sets {x | f(x) ≤ α} are convex.",
     "url": "../../topics/06-convex-functions-advanced/index.html#section-2"
   },
   "rank-nullity theorem": {
@@ -271,6 +303,10 @@
     "definition": "Semidefinite Program: Optimization problem with linear objective and Linear Matrix Inequality (LMI) constraints involving symmetric matrices.",
     "url": "../../topics/08-convex-problems-conic/index.html#section-3"
   },
+  "self-concordance": {
+    "definition": "A convex function is self-concordant if $|\\phi'''(x)| \\le 2(\\phi''(x))^{3/2}$. The property is affine-invariant and makes Newton's convergence analysis free of unknown constants $m$ and $L$.",
+    "url": "../../topics/13-unconstrained-minimization/index.html#key-concepts"
+  },
   "self-dual": {
     "definition": "A cone that is equal to its own dual cone.",
     "url": "../../topics/04-convex-sets-cones/index.html#section-2"
@@ -287,16 +323,24 @@
     "definition": "A sufficient condition for strong duality: existence of a strictly feasible point in the relative interior of the domain.",
     "url": "../../topics/09-duality/index.html#section-3"
   },
+  "smoothness": {
+    "definition": "A function is $L$-smooth if its gradient is Lipschitz with constant $L$, equivalently $\\nabla^2 f \\preceq LI$. Gives the quadratic upper bound that guarantees descent.",
+    "url": "../../topics/06-convex-functions-advanced/index.html#section-2"
+  },
   "socp": {
-    "definition": "Second-Order Cone Program: Optimization problem with linear objective and second-order cone constraints ||Ax+b||\u2082 \u2264 c\u1d40x+d.",
+    "definition": "Second-Order Cone Program: Optimization problem with linear objective and second-order cone constraints ||Ax+b||₂ ≤ cᵀx+d.",
     "url": "../../topics/08-convex-problems-conic/index.html#section-1"
+  },
+  "soft thresholding": {
+    "definition": "The operator $S_\\lambda(b) = \\mathrm{sign}(b)\\max(|b| - \\lambda, 0)$, the exact solution of $\\min_x \\frac{1}{2}(x-b)^2 + \\lambda|x|$. It is why $\\ell_1$ regularization produces exact zeros.",
+    "url": "../../topics/10-approximation-fitting/index.html#section-appendix"
   },
   "spectrahedron": {
     "definition": "The intersection of the PSD cone with an affine subspace; the feasible set of a semidefinite program.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-2"
   },
   "standard form": {
-    "definition": "Minimize convex f\u2080(x) subject to convex inequality constraints f\u1d62(x) \u2264 0 and affine equality constraints Ax=b.",
+    "definition": "Minimize convex f₀(x) subject to convex inequality constraints fᵢ(x) ≤ 0 and affine equality constraints Ax=b.",
     "url": "../../topics/07-convex-problems-standard/index.html#section-1"
   },
   "strict separation": {
@@ -307,13 +351,25 @@
     "definition": "A function where Jensen's inequality is strict for distinct points. Implies unique global minimum.",
     "url": "../../topics/05-convex-functions-basics/index.html#section-1"
   },
+  "strong convexity": {
+    "definition": "A function is $m$-strongly convex if $f(x) - \\frac{m}{2}\\|x\\|^2$ is convex, equivalently $\\nabla^2 f \\succeq mI$. It forces a quadratic lower bound and drives linear convergence rates.",
+    "url": "../../topics/06-convex-functions-advanced/index.html#section-2"
+  },
   "strong duality": {
     "definition": "The condition where the optimal primal and dual values are equal: p* = d*.",
     "url": "../../topics/09-duality/index.html#section-3"
   },
   "strongly convex": {
-    "definition": "A function that is at least as convex as a quadratic: f(x) - (m/2)||x||\u00b2 is convex.",
+    "definition": "A function that is at least as convex as a quadratic: f(x) - (m/2)||x||² is convex.",
     "url": "../../topics/05-convex-functions-basics/index.html#section-1"
+  },
+  "subdifferential": {
+    "definition": "The set $\\partial f(x)$ of all subgradients of $f$ at $x$. It is a single point exactly where $f$ is differentiable, and a nondegenerate set at kinks. Optimality: $0 \\in \\partial f(x^\\star)$.",
+    "url": "../../topics/06-convex-functions-advanced/index.html#section-1"
+  },
+  "subgradient": {
+    "definition": "A vector $g$ satisfying $f(y) \\ge f(x) + g^\\top(y-x)$ for all $y$; generalizes the gradient to nondifferentiable convex functions.",
+    "url": "../../topics/06-convex-functions-advanced/index.html#section-1"
   },
   "supporting hyperplane": {
     "definition": "A hyperplane that touches a convex set at the boundary and contains the set on one side.",
@@ -324,11 +380,11 @@
     "url": "../../topics/04-convex-sets-cones/index.html#section-1"
   },
   "svd": {
-    "definition": "Singular Value Decomposition: Factorization of a matrix into A = U\u03a3V\u1d40, representing rotation, scaling, and rotation.",
+    "definition": "Singular Value Decomposition: Factorization of a matrix into A = UΣVᵀ, representing rotation, scaling, and rotation.",
     "url": "../../topics/01-linear-algebra-advanced/index.html#section-svd"
   },
   "translated subspace": {
-    "definition": "A set of the form {x\u2080 + v | v \u2208 V} where V is a linear subspace. This is the geometric characterization of an affine set.",
+    "definition": "A set of the form {x₀ + v | v ∈ V} where V is a linear subspace. This is the geometric characterization of an affine set.",
     "url": "../../topics/03-convex-sets-geometry/index.html#section-1"
   },
   "weak duality": {

@@ -1,3 +1,13 @@
+/**
+ * Widget: GD vs. Newton Race
+ *
+ * Description: Runs gradient descent and Newton's method side by side on
+ *              f(x,y) = x^2 + 10y^2 from the same start, drawing both paths.
+ * Concept: L13 section 8 (Newton's Method) - curvature information vs. slope only.
+ * What to notice: Newton reaches the optimum in essentially one step on a
+ *              quadratic (the local model is exact), while GD zig-zags; this
+ *              is affine invariance in action.
+ */
 export function initGDvsNewton(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;

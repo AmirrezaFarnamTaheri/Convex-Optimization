@@ -256,18 +256,13 @@ Every core optimization algorithm is benchmarked across **6 industry-standard ba
 
 ---
 
-## 10. Multi-Scale Curriculum Enrichment: 8 New Advanced Frontier Lectures
+## 10. Targeted Curriculum Extension: Stochastic & Online Convex Optimization
 
-| Module / Topic | New Lecture Proposal | Theoretical & Computational Scope |
+*Focused single frontier lecture addition prioritizing high-dimensional modern machine learning and online learning systems:*
+
+| Module / Topic | Lecture Title | Theoretical, Algorithmic & Computational Scope |
 | :--- | :--- | :--- |
-| **Topic 16** | `topics/16-subgradient-methods` | Subgradients, subdifferential calculus, subgradient method convergence $O(1/\sqrt{k})$, Polyak step size. |
-| **Topic 17** | `topics/17-proximal-algorithms-admm` | Proximal operators, Moreau envelope, ISTA/FISTA, ADMM consensus and sharing problems. |
-| **Topic 18** | `topics/18-coordinate-and-frank-wolfe` | Block coordinate descent, Frank-Wolfe (conditional gradient) algorithm, projection-free optimization. |
-| **Topic 19** | `topics/19-nonconvex-relaxations` | Convex envelopes, rank minimization nuclear norm heuristics, Boolean LP relaxation, PhaseLift. |
-| **Topic 20** | `topics/20-conic-duality-advanced` | Copositive programming, Sum-of-Squares (SOS) polynomials, Lasserre/Parrilo moment hierarchies. |
-| **Topic 21** | `topics/21-stochastic-and-online-opt` | Stochastic Gradient Descent (SGD), mini-batching, AdaGrad, Adam, Online Convex Optimization (OCO) regret bounds. |
-| **Topic 22** | `topics/22-distributed-large-scale-opt` | Dual decomposition, distributed ADMM over communication graphs, gossip algorithms. |
-| **Topic 23** | `topics/23-model-predictive-control` | Dynamic systems, quadratic optimal control, state/input constraints, real-time QP solvers (OSQP). |
+| **Topic 16** | `topics/21-stochastic-and-online-opt` | **Stochastic Gradient Descent & Online Convex Optimization**: Expectation-based convergence analysis, mini-batching variance reduction, adaptive learning rate schedules (AdaGrad, RMSprop, Adam), Online Convex Optimization (OCO) framework, Follow-the-Leader (FTL) vs Follow-the-Regularized-Leader (FTRL), and $O(\sqrt{T})$ no-regret bounds. |
 
 ---
 
